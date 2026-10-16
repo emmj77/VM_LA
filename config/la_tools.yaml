@@ -862,47 +862,6 @@ tools:
       done
       [ "$VIVANT" = 0 ] || { echo "refuse : le pid $P est encore vivant apres le signal $S" >&2; exit 1; }
       printf 'pid %s tue (signal %s)\n' "$P" "$S"
-  - id: 128
-    tool: session
-    family: MANAGE
-    description: "opens a dated and named session in sessions/, returns the path"
-    args:
-      - {name: name, type: text}
-    command: |
-      SLUG=$(printf '%s' "{{name}}" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//')
-      [ -n "$SLUG" ] || { echo 'refuse : name hors form ; il ne donne aucun slug (minuscules et tirets, 40 au plus)' >&2; exit 1; }
-      [ ${#SLUG} -le 40 ] || { echo "refuse : name hors form ; le slug fait ${#SLUG} caracteres, 40 au plus" >&2; exit 1; }
-      D="$ROOT/sessions"
-      [ -d "$D" ] || { echo "refuse : sessions introuvable ; la portee du tool n existe pas ($D)" >&2; exit 1; }
-      M="$D/_template.md"
-      [ -f "$M" ] || { echo "refuse : le template_file est introuvable ($M)" >&2; exit 1; }
-      S=$(date -u +%Y-%m-%d_%H%M%S)
-      F="sessions/${S}_${SLUG}.md"
-      C="$D/${S}_${SLUG}.md"
-      if [ -e "$C" ] || [ -L "$C" ]; then echo "refuse : la session du meme STAMP existe deja ($F)" >&2; exit 1; fi
-      J=$(date -u +%Y-%m-%d)
-      sed -e "s|^date: \"\"|date: \"$J\"|" "$M" > "$C" || { echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
-      [ -s "$C" ] || { echo "refuse : la session n a rien ecrit ($F)" >&2; exit 1; }
-      printf '%s\n' "$F"
-  - id: 129
-    tool: signal_task
-    family: MANAGE
-    description: "the end-of-task signal, outside the turn : one dated line, returned"
-    args: []
-    command: |
-      D="$ROOT/sessions"
-      [ -d "$D" ] || { echo "refuse : sessions introuvable ; la portee du tool n existe pas ($D)" >&2; exit 1; }
-      N=0
-      for E in "$D"/*.md; do
-        [ -f "$E" ] || continue
-        case "$E" in */_template.md) continue ;; esac
-        N=$((N + 1))
-      done
-      TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-      L="$TS  signal_task  sessions/  ->  fin de tache, $N session(s)"
-      printf '%s\n' "$L" >> "$D/signal.log" || { echo "refuse : ecriture impossible (sessions/signal.log)" >&2; exit 1; }
-      tail -n 1 "$D/signal.log" | grep -qxF -- "$L" || { echo "refuse : le signal n a pas ete ecrit (sessions/signal.log)" >&2; exit 1; }
-      printf '%s\n' "$L"
   - id: 130
     tool: add_cron
     family: MANAGE
