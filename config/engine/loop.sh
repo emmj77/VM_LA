@@ -657,8 +657,16 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
     '{model:$model, tools:$tools, tool_choice:$choix, max_tokens:$max, stream:false, messages:$messages}') \
     || die "the call could not be built"
 
+  # UN ECHEC DE TRANSPORT N'EST PAS UNE REPONSE (B12) : le meme appel est repose UNE fois, tout
+  # de suite. Un refus, lui, EST une reponse : il ne se rejoue pas, et la boucle le dit tel quel.
   REP=$(call "$PAYLOAD")
   CRC=$?
+  if [ "$CRC" -ne 0 ]; then
+    CURL_WHY=$(head -n 1 "$T/curl.err" 2>/dev/null | tr '\n\t' '  ' | cut -c1-200)
+    log_to_stderr "$(ts)  turn $TURN  echec de transport (curl $CRC : $CURL_WHY) : le meme appel est repose UNE fois"
+    REP=$(call "$PAYLOAD")
+    CRC=$?
+  fi
   if [ "$CRC" -ne 0 ]; then
     # LA PANNE DIT POURQUOI, ET ELLE LAISSE SA RAISON (B7, B10) : le code de curl et la
     # premiere ligne de sa raison entrent dans la phrase, et le fichier de curl est
