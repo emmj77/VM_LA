@@ -1527,3 +1527,23 @@ tools:
       T=$(printf '%s' "$R" | jq -r '.choices[0].message.content // empty' 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
       [ -n "$T" ] || { echo "refuse : le service de vision n a rien rendu (modele $MODELE)" >&2 ; exit 1 ; }
       printf '%s\n' "$T"
+
+  - id: 177
+    tool: sleep
+    family: MANAGE
+    description: "makes the turn wait for the chosen duration, and never longer"
+    args:
+      - {name: seconds, type: enum, values: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]}
+    command: |
+      S={{seconds}}
+      SP=${LA_STOP_FILE:-}
+      i=0
+      while [ "$i" -lt "$S" ]; do
+        if [ -n "$SP" ] && [ -e "$SP" ]; then
+          printf 'sommeil : interrompu a %s s sur %s, mot de l humain\n' "$i" "$S"
+          exit 0
+        fi
+        sleep 1
+        i=$((i + 1))
+      done
+      printf 'sommeil : %s s, echeance atteinte\n' "$S"
