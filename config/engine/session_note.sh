@@ -1,28 +1,28 @@
 #!/bin/sh
-# session_note.sh - LE GESTE DE FIN DE TOUR (config/engine/session_note.sh).
+# session_note.sh - THE END-OF-TURN GESTURE (config/engine/session_note.sh).
 #
-# CE QU'IL FAIT
-#   il prend UN ECHANGE (la demande de l humain, la reply de l agent), il demande au MODELE
-#   LOCAL le compactage des deux cotes, et il POSE une entree horodatee dans
-#   config/sessions.yaml. Il ne rend rien sur sa sortie standard : la reply du tour est deja
-#   passee a l humain, et ce script ne parle pas a sa place.
+# WHAT IT DOES
+#   it takes ONE EXCHANGE (the human's request, the agent's reply), it asks the LOCAL MODEL
+#   to compact both sides, and it PLACES a timestamped entry in config/sessions.yaml. It
+#   returns nothing on its standard output : the turn's reply has already gone to the human,
+#   and this script does not speak in its place.
 #
-# LES ARGUMENTS
-#   $1  la DEMANDE du tour      $2  la REPLY du tour
+# THE ARGUMENTS
+#   $1  the turn's REQUEST     $2  the turn's REPLY
 #
-# LA FORME QU'IL TIENT (declaree dans sessions.yaml, tenue ici)
-#   stamp   l horodatage UTC, pose par CE SCRIPT (jamais par le modele)
-#   human   au plus DEUX lignes : ce que l humain a demande, et ce qu il a obtenu
-#   agent   au plus DEUX lignes : ce que l agent a fait, et ou il en est
-#   Le compactage vient du MODELE (mode SEC de summary.sh, 6 lignes / 400 octets) ; quand le
-#   modele ne separe pas ses deux blocs, on le DIT dans le bloc de l humain et le texte va
-#   dans celui de l agent : JAMAIS un bloc invente par ce script.
+# THE SHAPE IT HOLDS (declared in sessions.yaml, held here)
+#   stamp   the UTC timestamp, placed by THIS SCRIPT (never by the model)
+#   human   at most TWO lines : what the human asked, and what he got
+#   agent   at most TWO lines : what the agent did, and where it stands
+#   The compaction comes from the MODEL (safe mode of summary.sh, 6 lines / 400 bytes) ; when
+#   the model does not separate its two blocks, we SAY so in the human block and the text goes
+#   into the agent block : NEVER a block invented by this script.
 #
-# LE REFUS
-#   une ligne sur la sortie d'erreur, code 1, et RIEN d ecrit : sans modele local qui repond,
-#   ou sans reply, il n y a pas d echange a compacter, donc pas d entree.
+# THE REFUSAL
+#   one line on the error output, code 1, and NOTHING written : without a local model that
+#   answers, or without a reply, there is no exchange to compact, so no entry.
 #
-# POSIX sh (dash) + coreutils, ASCII sans accent grave, aucune cle.
+# POSIX sh (dash) + coreutils, ASCII without backtick, no key.
 
 LC_ALL=C
 export LC_ALL
@@ -36,38 +36,38 @@ FILE=${LA_SESSIONS:-$CONF_DIR/sessions.yaml}
 REQUEST=${1:-}
 REPLY=${2:-}
 
-[ -f "$BRICK" ] || { echo "refuse : la brique de compactage est introuvable ($BRICK)" >&2 ; exit 1 ; }
-[ -f "$FILE" ] || { echo "refuse : le fichier des sessions est introuvable ($FILE)" >&2 ; exit 1 ; }
-[ -w "$FILE" ] || { echo "refuse : le fichier des sessions n est pas inscriptible ($FILE)" >&2 ; exit 1 ; }
-[ -n "$REQUEST" ] || { echo 'refuse : aucune demande a compacter' >&2 ; exit 1 ; }
-[ -n "$REPLY" ] || { echo 'refuse : aucune reply a compacter' >&2 ; exit 1 ; }
+[ -f "$BRICK" ] || { echo "refused: the compacting brick is missing ($BRICK)" >&2 ; exit 1 ; }
+[ -f "$FILE" ] || { echo "refused: the sessions file is missing ($FILE)" >&2 ; exit 1 ; }
+[ -w "$FILE" ] || { echo "refused: the sessions file is not writable ($FILE)" >&2 ; exit 1 ; }
+[ -n "$REQUEST" ] || { echo 'refused: no request to compact' >&2 ; exit 1 ; }
+[ -n "$REPLY" ] || { echo 'refused: no reply to compact' >&2 ; exit 1 ; }
 
-# l echange porte au modele, borne : la demande garde 4000 octets, la reply 19000, pour que
-# le tout reste sous la borne d entree de la brique (24000 octets).
+# the exchange carried to the model, bounded : the request keeps 4000 bytes, the reply 19000,
+# so the whole stays under the brick's input bound (24000 bytes).
 REQUEST=$(printf '%s' "$REQUEST" | head -c 4000)
 REPLY=$(printf '%s' "$REPLY" | head -c 19000)
 
-TEXT="DEMANDE DE L HUMAIN :
+TEXT="HUMAN REQUEST :
 $REQUEST
 
-REPLY DE L AGENT :
+AGENT REPLY :
 $REPLY"
 
-# LE COMPACTAGE, EN DEUX APPELS. Chacun ne demande QU UN cote, sans aucune marque a
-# respecter : le petit modele local ne tient pas un format, il tient une question unique et courte.
-# (mesure faite : une consigne a deux blocs et deux marques, il rend de la prose.)
-compact() {  # $1 = human|agent ; rend le bloc sur la sortie standard
+# THE COMPACTION, IN TWO CALLS. Each asks ONLY ONE side, with no mark to respect : the small
+# local model does not hold a format, it holds a single, short question.
+# (measured : an instruction with two blocks and two marks, it returns prose.)
+compact() {  # $1 = human|agent ; returns the block on the standard output
   case "$1" in
-    agent) CADRE="CE QUE L AGENT A FAIT, ET OU IL EN EST" ;;
-    *)     CADRE="CE QUE L HUMAIN A DEMANDE, ET CE QU IL A OBTENU" ;;
+    agent) FRAME="WHAT THE AGENT DID, AND WHERE IT STANDS" ;;
+    *)     FRAME="WHAT THE HUMAN ASKED, AND WHAT HE GOT" ;;
   esac
-  printf '%s\n\n%s' "$CADRE" "$TEXT" | LA_SUMMARY_BRIEF=1 sh "$BRICK" 2>/dev/null
+  printf '%s\n\n%s' "$FRAME" "$TEXT" | LA_SUMMARY_BRIEF=1 sh "$BRICK" 2>/dev/null
 }
 
 HUMAN_SIDE=$(compact human | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d' | head -n 2)
-[ -n "$HUMAN_SIDE" ] || HUMAN_SIDE='le modele local n a rien rendu du cote de l humain'
+[ -n "$HUMAN_SIDE" ] || HUMAN_SIDE='the local model returned nothing on the human side'
 AGENT_SIDE=$(compact agent | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d' | head -n 2)
-[ -n "$AGENT_SIDE" ] || AGENT_SIDE='le modele local n a rien rendu du cote de l agent'
+[ -n "$AGENT_SIDE" ] || AGENT_SIDE='the local model returned nothing on the agent side'
 
 STAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
@@ -77,16 +77,16 @@ STAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
   printf '%s\n' "$HUMAN_SIDE" | sed -e 's/^/      /'
   printf '    agent: |-\n'
   printf '%s\n' "$AGENT_SIDE" | sed -e 's/^/      /'
-} >> "$FILE" || { echo "refuse : l entree n a pas pu etre posee ($FILE)" >&2 ; exit 1 ; }
+} >> "$FILE" || { echo "refused: the entry could not be placed ($FILE)" >&2 ; exit 1 ; }
 
-echo "session_note : echange compacte et pose a $STAMP"
+echo "session_note : exchange compacted and placed at $STAMP"
 
-# --- LE MICRO-RESUME DU HEAD SECONDAIRE (lois 110, 810, 1716, 1915) ----------------------
-# LES ECHANGES SORTIS DE LA FENETRE sont resumes par le modele local, et la place du head
-# secondaire est ECRASEE a chaque reecriture : elle se REMPLACE, elle ne s allonge pas.
-# La SOURCE est le CORPS (sessions.db), jamais la fenetre : ce qui a quitte le contexte est
-# justement ce que la fenetre ne porte plus.
-#   LA FENETRE garde VINGT echanges (loi 1915) ; le resume couvre les DIX derniers sortis (810).
+# --- THE MICRO-SUMMARY OF THE SECONDARY HEAD (laws 110, 810, 1716, 1915) ------------------
+# THE EXCHANGES THAT LEFT THE WINDOW are summarized by the local model, and the place of the
+# secondary head is OVERWRITTEN at each rewrite : it REPLACES itself, it does not grow.
+# The SOURCE is the BODY (sessions.db), never the window : what left the context is precisely
+# what the window no longer carries.
+#   THE WINDOW keeps TWENTY exchanges (law 1915) ; the summary covers the LAST TEN that left (810).
 DB=${LA_SESSIONS_DB:-$CONF_DIR/sessions.db}
 RESF=${LA_SUMMARY_FILE:-$CONF_DIR/second.yaml}
 WINDOW=${LA_WINDOW:-20}
@@ -97,30 +97,30 @@ MAX_BYTES=${LA_SUMMARY_BYTES:-800}
 if command -v sqlite3 >/dev/null 2>&1 && [ -f "$DB" ]; then
   MAX_EXCHANGE=$(sqlite3 "$DB" 'SELECT COALESCE(MAX(exchange),0) FROM messages;' 2>/dev/null || printf '')
   case "${MAX_EXCHANGE:-}" in ''|*[!0-9]*) MAX_EXCHANGE=0 ;; esac
-  WINDOW_END=$((MAX_EXCHANGE - WINDOW))   # le dernier echange SORTI de la fenetre
+  WINDOW_END=$((MAX_EXCHANGE - WINDOW))   # the last exchange that LEFT the window
   if [ "$WINDOW_END" -ge 1 ]; then
     WINDOW_START=$((WINDOW_END - KEPT + 1))
     [ "$WINDOW_START" -ge 1 ] || WINDOW_START=1
-    TEXT=$(sqlite3 "$DB" "SELECT (CASE role WHEN 'user' THEN 'MOI : ' ELSE 'AGENT : ' END) || COALESCE(content,'') FROM messages WHERE exchange >= $WINDOW_START AND exchange <= $WINDOW_END AND COALESCE(content,'') <> '' ORDER BY id;" 2>/dev/null | head -c 20000)
+    TEXT=$(sqlite3 "$DB" "SELECT (CASE role WHEN 'user' THEN 'ME : ' ELSE 'AGENT : ' END) || COALESCE(content,'') FROM messages WHERE exchange >= $WINDOW_START AND exchange <= $WINDOW_END AND COALESCE(content,'') <> '' ORDER BY id;" 2>/dev/null | head -c 20000)
     if [ -n "$TEXT" ]; then
       RES=$(printf '%s\n' "$TEXT" \
             | LA_SUMMARY_KIND=exchange sh "$BRICK" 2>/dev/null \
             | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d' \
             | head -n "$MAX_LINES" | head -c "$MAX_BYTES")
       if [ -n "$RES" ]; then
-        T=$(mktemp "${TMPDIR:-/tmp}/second.XXXXXX") || { echo 'refuse : aucun espace temporaire' >&2 ; exit 1 ; }
+        T=$(mktemp "${TMPDIR:-/tmp}/second.XXXXXX") || { echo 'refused: no temporary space' >&2 ; exit 1 ; }
         {
-          printf '# LE MICRO-RESUME DU HEAD SECONDAIRE (config/second.yaml).\n'
-          printf '# ECRIT PAR LE MODELE LOCAL ; ECRASE a chaque reecriture : il se remplace, il ne rallonge pas.\n'
+          printf '# THE MICRO-SUMMARY OF THE SECONDARY HEAD (config/second.yaml).\n'
+          printf '# WRITTEN BY THE LOCAL MODEL ; OVERWRITTEN at each rewrite : it replaces itself, it does not grow.\n'
           printf 'stamp: "%s"\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           printf 'exchanges: "%s-%s"\n' "$WINDOW_START" "$WINDOW_END"
-          printf 'bound: "%s lignes, %s octets, tenue par session_note.sh"\n' "$MAX_LINES" "$MAX_BYTES"
+          printf 'bound: "%s lines, %s bytes, held by session_note.sh"\n' "$MAX_LINES" "$MAX_BYTES"
           printf 'summary:\n'
           printf '%s\n' "$RES" | sed -e 's/"/\\"/g' | awk -v d=100 '{ printf "  %d: \"%s\"\n", d + NR, $0 }'
-        } > "$T" || { rm -f "$T"; echo 'refuse : le resume n a pas pu etre monte' >&2 ; exit 1 ; }
-        [ -s "$T" ] || { rm -f "$T"; echo 'refuse : le resume n a rien ecrit' >&2 ; exit 1 ; }
-        mv -f "$T" "$RESF" || { rm -f "$T"; echo "refuse : le resume n a pas pu etre pose ($RESF)" >&2 ; exit 1 ; }
-        echo "session_note : resume du head secondaire reecrit ($RESF, exchanges $WINDOW_START-$WINDOW_END)"
+        } > "$T" || { rm -f "$T"; echo 'refused: the summary could not be built' >&2 ; exit 1 ; }
+        [ -s "$T" ] || { rm -f "$T"; echo 'refused: the summary wrote nothing' >&2 ; exit 1 ; }
+        mv -f "$T" "$RESF" || { rm -f "$T"; echo "refused: the summary could not be placed ($RESF)" >&2 ; exit 1 ; }
+        echo "session_note : secondary head summary rewritten ($RESF, exchanges $WINDOW_START-$WINDOW_END)"
       fi
     fi
   fi
