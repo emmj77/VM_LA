@@ -71,6 +71,12 @@ table_block() {
 
 # --- LES SERVICES DETACHES : le tronc commun -----------------------------------
 # start | stop | status | run | help, partages par les services qui restent DEBOUT.
+# port_busy — $1 = un port : vrai s il est deja lie sur la machine.
+port_busy() {
+  ss -H -ltn 2>/dev/null | awk '{print $4}' | grep -q ":$1\$" && return 0
+  curl -s --max-time 2 "http://127.0.0.1:$1/" >/dev/null 2>&1 && return 0
+  return 1
+}
 # L appelant pose LABEL, PID_FILE, LOGF, PORT, HEALTH et WD (le dossier de lancement),
 # puis : service_ctl "${1:-help}" <la commande de fond...>
 #   run    au premier plan (systemd), depuis WD. Ne rend jamais la main.
@@ -84,6 +90,9 @@ service_ctl() {
     start)
       if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
         echo "$LABEL tourne deja (pid $(cat "$PID_FILE"), port $PORT)" ; exit 0
+      fi
+      if port_busy "$PORT"; then
+        echo "$LABEL refuse : le port $PORT est deja occupe, rien n a ete lance" ; exit 1
       fi
       ( cd "$WD" && nohup "$@" >> "$LOGF" 2>&1 & echo $! > "$PID_FILE" )
       echo "$LABEL lance (pid $(cat "$PID_FILE"), port $PORT, journal $LOGF)"
