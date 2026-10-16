@@ -13,7 +13,6 @@ RULES:
   max_section: 5
   max_section_lines: 100
 TOOLS:
-  200: "signal_task"
   201: "read_file"
   202: "write_file"
   203: "search"

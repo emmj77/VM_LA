@@ -21,7 +21,6 @@ TOOLS:
   203: "write_file"
   204: "trash_file"
   205: "load_doc"
-  206: "session"
 DOCS:
   300: "load_doc"
 PLAN:
