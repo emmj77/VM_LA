@@ -1,92 +1,92 @@
 #!/bin/sh
-# backup.sh — LE FILET (B1). Le projet est tarre, pose sur un support ETRANGER, DEROULE, COMPARE.
-# Ce n est pas une consigne dans une fiche : c est ce script qui la porte, et qui REFUSE.
+# backup.sh — THE NET (B1). The project is tarred, placed on a FOREIGN support, UNROLLED, COMPARED.
+# This is not an instruction on a card : it is this script that carries it, and that REFUSES.
 #
-#   backup.sh put    <support>    le tar du projet va sur le support, on l empreinte
-#   backup.sh unroll <support>    on deroule le tar A COTE, et on compare les du -sb
-#   backup.sh verify              l etat du filet : pose ? deroule ? compare ? a jour ?
+#   backup.sh put    <support>    the project tar goes onto the support, we imprint it
+#   backup.sh unroll <support>    we unroll the tar BESIDE, and compare the du -sb
+#   backup.sh verify              the state of the net : placed ? unrolled ? compared ? up to date ?
 #
-# LE REFUS QUI COMPTE : un support sur le MEME PERIPHERIQUE que le projet n est PAS un support
-# etranger. /dev/sda3 porte /home, donc un tar dans ~/Documents meurt avec ce qu il protege.
-# Le script compare les PERIPHERIQUES (df --output=source), jamais les chemins.
+# THE REFUSAL THAT MATTERS : a support on the SAME DEVICE as the project is NOT a foreign
+# support. /dev/sda3 carries /home, so a tar in ~/Documents dies with what it protects.
+# The script compares the DEVICES (df --output=source), never the paths.
 set -u
 LC_ALL=C; export LC_ALL
 HERE=$(dirname "$(readlink -f "$0")")
 ROOT=${LA_ROOT:-$(dirname "$(dirname "$HERE")")}
 STAMP=$(date -u +%Y-%m-%d_%H%M%S)
 
-say() { printf 'filet: %s\n' "$1"; }
-refuse_hard() { printf 'filet: REFUS — %s\n' "$1" >&2; exit 3; }
+say() { printf 'net: %s\n' "$1"; }
+refuse_hard() { printf 'net: REFUSAL — %s\n' "$1" >&2; exit 3; }
 
-[ -d "$ROOT" ] || refuse_hard "le projet n est pas la : $ROOT"
+[ -d "$ROOT" ] || refuse_hard "the project is not there : $ROOT"
 DEV_ROOT=$(df --output=source "$ROOT" 2>/dev/null | tail -1 | tr -d ' ')
-[ -n "$DEV_ROOT" ] || refuse_hard "je ne sais pas quel peripherique porte le projet"
+[ -n "$DEV_ROOT" ] || refuse_hard "I do not know which device carries the project"
 
-# LE DISQUE, PAS LA PARTITION. /dev/sda2 et /dev/sda3 sont deux partitions du MEME disque : un
-# tar qui passe de l une a l autre meurt avec ce qu il protege, exactement comme un tar dans
-# ~/Documents. C est lsblk qui donne le disque PARENT d une partition. (Mesure 14/10 : mon
-# premier controle comparait les partitions et a ACCEPTE /media/moussa/SAVE, vide mais sur sda2.)
+# THE DISK, NOT THE PARTITION. /dev/sda2 and /dev/sda3 are two partitions of the SAME disk : a
+# tar that crosses from one to the other dies with what it protects, exactly like a tar in
+# ~/Documents. It is lsblk that gives the PARENT disk of a partition. (Measured 14/10 : my first
+# check compared partitions and ACCEPTED /media/moussa/SAVE, empty but on sda2.)
 disk_of() { lsblk -no PKNAME "$1" 2>/dev/null | head -1 | tr -d ' '; }
 foreign_support() {
-  [ -d "$1" ] || refuse_hard "le support n existe pas : $1"
+  [ -d "$1" ] || refuse_hard "the support does not exist : $1"
   D=$(df --output=source "$1" 2>/dev/null | tail -1 | tr -d ' ')
-  [ -n "$D" ] || refuse_hard "je ne sais pas quel peripherique porte le support : $1"
-  [ "$D" != "$DEV_ROOT" ] || refuse_hard "ce support est sur LE MEME peripherique que le projet ($D) : un tar qui meurt avec ce qu il protege n est pas un filet. Branchez le SSD externe."
+  [ -n "$D" ] || refuse_hard "I do not know which device carries the support : $1"
+  [ "$D" != "$DEV_ROOT" ] || refuse_hard "this support is on THE SAME device as the project ($D) : a tar that dies with what it protects is not a net. Plug in the external SSD."
   DC=$(disk_of "$DEV_ROOT"); DS=$(disk_of "$D")
   if [ -n "$DC" ] && [ -n "$DS" ] && [ "$DC" = "$DS" ]; then
-    refuse_hard "ce support est une AUTRE PARTITION DU MEME DISQUE que le projet ($D et $DEV_ROOT sont tous deux sur $DC) : il meurt avec lui. Branchez le SSD externe."
+    refuse_hard "this support is ANOTHER PARTITION OF THE SAME DISK as the project ($D and $DEV_ROOT are both on $DC) : it dies with it. Plug in the external SSD."
   fi
   FOUND=$(findmnt -rno TARGET,SOURCE | grep -F " $D" | head -1 | cut -d' ' -f1)
-  [ -n "$FOUND" ] || refuse_hard "le support $1 n est pas un point de MONTAGE : un dossier ordinaire n est pas un support"
+  [ -n "$FOUND" ] || refuse_hard "the support $1 is not a MOUNT point : an ordinary folder is not a support"
   printf '%s\n' "$FOUND"
 }
 size() { du -sb "$1" 2>/dev/null | cut -f1; }
 
 case "${1:-}" in
 put)
-  [ $# -eq 2 ] || refuse_hard "put prend UN argument : le dossier du support"
+  [ $# -eq 2 ] || refuse_hard "put takes ONE argument : the support folder"
   MNT=$(foreign_support "$2") || exit 3
   TAR="$2/project-$STAMP.tar.gz"
-  say "le projet : $ROOT ($(size "$ROOT") bytes) -> le support : $MNT"
+  say "the project : $ROOT ($(size "$ROOT") bytes) -> the support : $MNT"
   tar czf "$TAR" -C "$(dirname "$ROOT")" "$(basename "$ROOT")" 2>/dev/null \
-    || refuse_hard "le tar a echoue : $TAR"
-  [ -s "$TAR" ] || refuse_hard "le tar est vide : $TAR"
+    || refuse_hard "the tar failed : $TAR"
+  [ -s "$TAR" ] || refuse_hard "the tar is empty : $TAR"
   jq -cn --arg project "$ROOT" --arg tar "$TAR" --arg device "$DEV_ROOT" --arg mount "$MNT" \
     --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson project_size "$(size "$ROOT")" \
     '{project:$project,tar:$tar,device:$device,mount:$mount,date:$date,project_size:$project_size,unrolled:"",unrolled_size:0,compare:false}' \
-    > "$2/.filet.json" || refuse_hard "je n ai pas pu ecrire l empreinte"
-  say "pose : $TAR ($(size "$TAR") bytes) — et l empreinte est ecrite : $2/.filet.json"
+    > "$2/.backup.json" || refuse_hard "I could not write the imprint"
+  say "placed : $TAR ($(size "$TAR") bytes) — and the imprint is written : $2/.backup.json"
   ;;
 unroll)
-  [ $# -eq 2 ] || refuse_hard "unroll prend UN argument : le dossier du support"
-  F="$2/.filet.json"
-  [ -f "$F" ] || refuse_hard "aucun filet pose ici : $F est absent"
+  [ $# -eq 2 ] || refuse_hard "unroll takes ONE argument : the support folder"
+  F="$2/.backup.json"
+  [ -f "$F" ] || refuse_hard "no net placed here : $F is missing"
   TAR=$(jq -r '.tar' "$F"); AT=$(jq -r '.project_size' "$F")
-  [ -f "$TAR" ] || refuse_hard "le tar du filet a disparu : $TAR"
+  [ -f "$TAR" ] || refuse_hard "the net tar has disappeared : $TAR"
   D="$2/log-$STAMP"
-  mkdir -p "$D" || refuse_hard "je n ai pas pu creer le dossier de deroulement : $D"
-  tar xzf "$TAR" -C "$D" 2>/dev/null || refuse_hard "le deroulement a echoue : $TAR"
+  mkdir -p "$D" || refuse_hard "I could not create the unroll folder : $D"
+  tar xzf "$TAR" -C "$D" 2>/dev/null || refuse_hard "the unroll failed : $TAR"
   DR=$(find "$D" -maxdepth 1 -mindepth 1 | head -1)
-  [ -n "$DR" ] || refuse_hard "le tar s est deroule EMPTY : $TAR"
+  [ -n "$DR" ] || refuse_hard "the tar unrolled EMPTY : $TAR"
   N=$(size "$DR")
   jq -c --arg d "$DR" --argjson n "$N" --argjson a "$AT" \
     '.unrolled=$d | .unrolled_size=$n | .compare=($n==$a)' "$F" > "$F.tmp" && mv "$F.tmp" "$F"
   if [ "$N" = "$AT" ]; then
-    say "deroule et COMPARE : $N bytes des deux cotes — le filet tient"
+    say "unrolled and COMPARED : $N bytes on both sides — the net holds"
   else
-    refuse_hard "les tailles DIFFERENT : projet $AT, deroule $N — le tar ne rend pas ce qu il a pris"
+    refuse_hard "the sizes DIFFER : project $AT, unrolled $N — the tar does not return what it took"
   fi
   ;;
 verify)
-  [ $# -eq 1 ] || refuse_hard "verify ne prend aucun argument (le support se lit dans l empreinte)"
-  N=0; for s in /media/moussa/* ; do [ -f "$s/.filet.json" ] && N=$((N+1)) && F="$s/.filet.json"; done
-  [ "$N" -gt 0 ] || refuse_hard "AUCUN filet pose sur aucun support : le projet n est pas protege"
-  jq -r '"\(.date)  \(.tar)  deroule=\(.unrolled|if .=="" then "non" else "oui" end)  compare=\(.compare)"' "$F"
+  [ $# -eq 1 ] || refuse_hard "verify takes no argument (the support is read in the imprint)"
+  N=0; for s in /media/moussa/* ; do [ -f "$s/.backup.json" ] && N=$((N+1)) && F="$s/.backup.json"; done
+  [ "$N" -gt 0 ] || refuse_hard "NO net placed on any support : the project is not protected"
+  jq -r '"\(.date)  \(.tar)  unrolled=\(.unrolled|if .=="" then "no" else "yes" end)  compare=\(.compare)"' "$F"
   C=$(jq -r '.compare' "$F")
-  [ "$C" = "true" ] || refuse_hard "le filet est pose mais PAS compare : il n est pas encore un filet"
+  [ "$C" = "true" ] || refuse_hard "the net is placed but NOT compared : it is not yet a net"
   T=$(size "$ROOT"); A=$(jq -r '.project_size' "$F")
-  [ "$T" = "$A" ] || refuse_hard "le projet a bouge depuis le tar ($A -> $T) : le filet est PERIME"
-  say "le filet est pose, deroule, compare, et a jour — $A bytes"
+  [ "$T" = "$A" ] || refuse_hard "the project moved since the tar ($A -> $T) : the net is STALE"
+  say "the net is placed, unrolled, compared, and up to date — $A bytes"
   ;;
 *)
   printf 'usage : backup.sh put <support> | unroll <support> | verify\n' >&2; exit 2 ;;
