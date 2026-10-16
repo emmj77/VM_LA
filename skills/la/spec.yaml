@@ -173,7 +173,7 @@ SECTION : LE_HARNAIS
   381: "LE TOUR EST TURN-BASED ; LE PLAN OUVERT LE REND GOAL-BASED."
   382: "Turn-based, l'arret est un answer ; goal-based, l'arret est un COMPTE d'etapes restantes."
   383: "Il n'y a AUCUN modele juge."
-  384: "CE QUI N'ENTRE PAS DANS LA BOUCLE : le TEMPS et l'EVENEMENT EXTERNE (cron/)."
+  384: "LE TEMPS ENTRE DANS LA BOUCLE PAR LE SOMMEIL, ET PAR LUI SEUL : le tour ATTEND."
   385: "VOULU LE BANC SE POSE AVANT LE MODELE : un faux modele ecrit a la main, sans reseau ni cle."
   386: "LES CINQ CAS : un tour qui finit ; un refus ; une question ; une borne ; une boucle."
   387: "LE CONTROLE QUI DECIDE DE TOUT : chaque message assistant porte sa cle tool_calls."
@@ -284,6 +284,13 @@ SECTION : LES_OUTILS
   472: "ON GARDE UNE PART DE LA LISTE : 30% au 1er appel, 60% au 2e, 100% au 3e."
 
   473: "UN OUTIL APPELE PAR LE PONT LIT UNE ENTREE VIDE, jamais la socket du client."
+
+  474: "LE SOMMEIL EST UN TOOL DU TOUR ; il n'ouvre NI proc, NI service, NI fichier d'etat."
+  475: "SA DUREE EST UNE LISTE FERMEE (15..180 par pas de 15) ; hors liste, le refus DIS la liste."
+  476: "LE SOMMEIL A DEUX MORTS : l'echeance atteinte, ou le MOT DE L'HUMAIN (LA_STOP_FILE)."
+  477: "IL RESTE SOUS LE DELAI DU ENGINE (600 s) : au-dela, le tool est TUE, pas attendu."
+  478: "LE SOMMEIL LONG SE FAIT PAR REPETITION, jamais en relevant le delai du engine."
+
 SECTION : LES_PROCS
   500: "LES LOIS D'UN TOOL, TELLES QUE LE CODE LES TIENT."
   501: "Il FAIT UNE chose ; il REFUSE EN NOMMANT ; RIEN hors de sa portee ; IL LAISSE UNE LIGNE."
@@ -608,6 +615,19 @@ SECTION : LE_MODELE
   1539: "see_image PREND small (CPU) ET big (cartes) ; big se demarre seul et refuse sans la place."
   1540: "LE COMPACTEUR EST LE 0.5B SUR LE CPU (8088) : 1,5 a 6 s pour 24 000 octets, 1 Go de RAM."
   1541: "LE MODELE LOCAL ECRIT APRES LA REPLY, JAMAIS DEVANT : devant, il paie sa latence."
+  1542: "LE REPOS A DEUX SYSTEMES D JETABLES : le VOLONTAIRE et l'AUTOMATIQUE."
+  1543: "LE VOLONTAIRE : le modele appelle le sommeil, et le retour du systeme revient A LUI."
+  1544: "L'AUTOMATIQUE : answer l'ARME ; son retour va AU JUGE, jamais a l'agent."
+  1545: "LA VEILLE ARMEE PAR answer VIT AU PONT : un tour meurt, le pont vit."
+  1546: "LE JUGE EST LE VEILLEUR : une entree, DEUX SORTIES convenues, reveiller ou dormir."
+  1547: "SON ETAGE EST LE RERANKER : il NOTE les deux sorties, il n'en INVENTE aucune."
+  1548: "IL JUGE LE REVEIL, JAMAIS L'ARRET : l'arret reste un COMPTE d'etapes (lois 382, 393)."
+  1549: "IL PROPOSE, LE ENGINE DECIDE (loi 1533) ; un reveil ouvre une DEMANDE."
+  1550: "UN REVEIL N'ELARGIT JAMAIS LE PERIMETRE DU REVEILLE."
+  1551: "UN SEUL SYSTEME AUTOMATIQUE ARME PAR SESSION ; le plan est sa borne."
+  1552: "CHAQUE VERDICT ECRIT UNE LIGNE : l'HEURE, l'EVENEMENT, la PROPOSITION, la DECISION."
+  1553: "LES EVENEMENTS ADMIS SONT NOMMES : une liste fermee, jamais tout ce qui entre."
+
 SECTION : LE_TRAVAIL
   1600: "UN CHEMIN D'ECRITURE EST RELATIF ET SE RESOUT SOUS LE REGISTRE DU SKILL ACTIF."
   1601: "Le modele ne choisit AUCUN chemin : il nomme une VALEUR."
