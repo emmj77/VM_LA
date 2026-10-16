@@ -45,30 +45,6 @@ LOGF="$W/tts.log"
 [ -f "$PROG" ] || { echo "refuse : la voix est introuvable ($PROG)" >&2 ; exit 1 ; }
 [ -x "$UV" ] || { echo "refuse : uv est introuvable ($UV) ; la voix ne peut pas charger son module" >&2 ; exit 1 ; }
 
-case "${1:-help}" in
-  run)
-    exec "$UV" run --no-project --with sherpa-onnx python3 "$PROG"
-    ;;
-  start)
-    if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
-      echo "la voix tourne deja (pid $(cat "$PID_FILE"), port $PORT)"
-      exit 0
-    fi
-    nohup "$UV" run --no-project --with sherpa-onnx python3 "$PROG" >> "$LOGF" 2>&1 &
-    echo $! > "$PID_FILE"
-    echo "voix lancee (pid $!, port $PORT, journal $LOGF)"
-    ;;
-  stop)
-    if [ ! -f "$PID_FILE" ]; then echo "la voix ne tourne pas : aucune marque" ; exit 0 ; fi
-    P=$(cat "$PID_FILE")
-    if kill "$P" 2>/dev/null; then echo "voix arretee (pid $P)" ; else echo "la voix ne repondait plus (pid $P)" ; fi
-    rm -f "$PID_FILE"
-    ;;
-  status)
-    R=$(curl -s --max-time 3 "http://127.0.0.1:$PORT/health" 2>/dev/null)
-    if [ -n "$R" ]; then echo "voix debout sur 127.0.0.1:$PORT : $R" ; else echo "voix muette sur 127.0.0.1:$PORT" ; exit 1 ; fi
-    ;;
-  *)
-    echo "modes : start | stop | status | run | help"
-    ;;
-esac
+. "$HERE/lib.sh"
+LABEL="la voix" ; HEALTH=health ; WD=.
+service_ctl "${1:-help}" "$UV" run --no-project --with sherpa-onnx python3 "$PROG"

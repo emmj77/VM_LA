@@ -44,30 +44,6 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-$(dirname -- "$BIN")}
 [ -x "$BIN" ] || { echo "refuse : llama-server est introuvable ($BIN)" >&2 ; exit 1 ; }
 [ -f "$GGUF/$MODEL" ] || { echo "refuse : le modele local est introuvable ($GGUF/$MODEL)" >&2 ; exit 1 ; }
 
-case "${1:-help}" in
-  run)
-    exec "$BIN" -m "$GGUF/$MODEL" --host "$HOST" --port "$PORT" -ngl "$NGL" -t "$THREADS" --no-warmup -c "$CTX" --parallel 1
-    ;;
-  start)
-    if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
-      echo "le modele local tourne deja (pid $(cat "$PID_FILE"), port $PORT)"
-      exit 0
-    fi
-    nohup "$BIN" -m "$GGUF/$MODEL" --host "$HOST" --port "$PORT" -ngl "$NGL" -t "$THREADS" --no-warmup -c "$CTX" --parallel 1 >> "$LOGF" 2>&1 &
-    echo $! > "$PID_FILE"
-    echo "modele local lance (pid $!, port $PORT, modele $MODEL, journal $LOGF)"
-    ;;
-  stop)
-    if [ ! -f "$PID_FILE" ]; then echo "le modele local ne tourne pas : aucune marque" ; exit 0 ; fi
-    P=$(cat "$PID_FILE")
-    if kill "$P" 2>/dev/null; then echo "modele local arrete (pid $P)" ; else echo "le modele local ne repondait plus (pid $P)" ; fi
-    rm -f "$PID_FILE"
-    ;;
-  status)
-    R=$(curl -s --max-time 3 "http://127.0.0.1:$PORT/health" 2>/dev/null)
-    if [ -n "$R" ]; then echo "modele local debout sur 127.0.0.1:$PORT : $R" ; else echo "modele local muet sur 127.0.0.1:$PORT" ; exit 1 ; fi
-    ;;
-  *)
-    echo "modes : start | stop | status | run | help"
-    ;;
-esac
+. "$HERE/lib.sh"
+LABEL="le modele local" ; HEALTH=health ; WD=.
+service_ctl "${1:-help}" "$BIN" -m "$GGUF/$MODEL" --host "$HOST" --port "$PORT" -ngl "$NGL" -t "$THREADS" --no-warmup -c "$CTX" --parallel 1

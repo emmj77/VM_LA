@@ -40,30 +40,6 @@ LOGF="$W/asr.log"
 [ -x "$CLI" ] || { echo "refuse : le moteur nemo-speech est introuvable ($CLI)" >&2 ; exit 1 ; }
 [ -f "$ROOT_MODELS/$MODEL" ] || { echo "refuse : le modele de l oreille est introuvable ($MODEL)" >&2 ; exit 1 ; }
 
-case "${1:-help}" in
-  run)
-    cd "$ROOT_MODELS" || exit 1
-    exec "$CLI" serve --asr-model "$MODEL" --host "$HOST" --port "$PORT" --no-ui --threads "$THREADS"
-    ;;
-  start)
-    if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
-      echo "l oreille tourne deja (pid $(cat "$PID_FILE"), port $PORT)"
-      exit 0
-    fi
-    ( cd "$ROOT_MODELS" && nohup "$CLI" serve --asr-model "$MODEL" --host "$HOST" --port "$PORT" --no-ui --threads "$THREADS" >> "$LOGF" 2>&1 & echo $! > "$PID_FILE" )
-    echo "oreille lancee (pid $(cat "$PID_FILE"), port $PORT, journal $LOGF)"
-    ;;
-  stop)
-    if [ ! -f "$PID_FILE" ]; then echo "l oreille ne tourne pas : aucune marque" ; exit 0 ; fi
-    P=$(cat "$PID_FILE")
-    if kill "$P" 2>/dev/null; then echo "oreille arretee (pid $P)" ; else echo "l oreille ne repondait plus (pid $P)" ; fi
-    rm -f "$PID_FILE"
-    ;;
-  status)
-    R=$(curl -s --max-time 3 "http://127.0.0.1:$PORT/ready" 2>/dev/null)
-    if [ -n "$R" ]; then echo "oreille debout sur 127.0.0.1:$PORT : $R" ; else echo "oreille muette sur 127.0.0.1:$PORT" ; exit 1 ; fi
-    ;;
-  *)
-    echo "modes : start | stop | status | run | help"
-    ;;
-esac
+. "$HERE/lib.sh"
+LABEL="l oreille" ; HEALTH=ready ; WD="$ROOT_MODELS"
+service_ctl "${1:-help}" "$CLI" serve --asr-model "$MODEL" --host "$HOST" --port "$PORT" --no-ui --threads "$THREADS"

@@ -8,7 +8,8 @@
 #   . "$HERE/lib.sh"
 # Elle porte ce que les briques partagent, UNE fois : l horodatage (ts), la resolution
 # unique du SKILL ACTIF (active_skill), la lecture de la categorie PERMANENTE
-# (permanent_section) et la lecture de la TABLE (table_ids, table_block).
+# (permanent_section), la lecture de la TABLE (table_ids, table_block) et le tronc
+# commun des services detaches (service_ctl).
 
 # --- L HORODATAGE --------------------------------------------------------------
 ts() { date -u +%Y-%m-%dT%H:%M:%SZ; }
@@ -66,4 +67,37 @@ table_block() {
       done)
   [ -n "$TB_END" ] || TB_END=$(( $(wc -l < "$TB_TABLE") + 1 ))
   sed -n "${TB_START},$((TB_END - 1))p" "$TB_TABLE"
+}
+
+# --- LES SERVICES DETACHES : le tronc commun -----------------------------------
+# start | stop | status | run | help, partages par les services qui restent DEBOUT.
+# L appelant pose LABEL, PID_FILE, LOGF, PORT, HEALTH et WD (le dossier de lancement),
+# puis : service_ctl "${1:-help}" <la commande de fond...>
+#   run    au premier plan (systemd), depuis WD. Ne rend jamais la main.
+#   start  detache la commande, ecrit sa marque (PID_FILE).
+#   stop   arrete le pid de sa marque. JAMAIS par motif : on ne tue que ce qu'on a pose.
+#   status interroge HEALTH sur le port.
+service_ctl() {
+  SC_MODE=$1 ; shift
+  case "$SC_MODE" in
+    run) cd "$WD" || exit 1 ; exec "$@" ;;
+    start)
+      if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+        echo "$LABEL tourne deja (pid $(cat "$PID_FILE"), port $PORT)" ; exit 0
+      fi
+      ( cd "$WD" && nohup "$@" >> "$LOGF" 2>&1 & echo $! > "$PID_FILE" )
+      echo "$LABEL lance (pid $(cat "$PID_FILE"), port $PORT, journal $LOGF)"
+      ;;
+    stop)
+      if [ ! -f "$PID_FILE" ]; then echo "$LABEL ne tourne pas : aucune marque" ; exit 0 ; fi
+      SC_P=$(cat "$PID_FILE")
+      if kill "$SC_P" 2>/dev/null; then echo "$LABEL arrete (pid $SC_P)" ; else echo "$LABEL ne repondait plus (pid $SC_P)" ; fi
+      rm -f "$PID_FILE"
+      ;;
+    status)
+      SC_R=$(curl -s --max-time 3 "http://127.0.0.1:$PORT/$HEALTH" 2>/dev/null)
+      if [ -n "$SC_R" ]; then echo "$LABEL debout sur 127.0.0.1:$PORT : $SC_R" ; else echo "$LABEL muet sur 127.0.0.1:$PORT" ; exit 1 ; fi
+      ;;
+    *) echo "modes : start | stop | status | run | help" ;;
+  esac
 }
