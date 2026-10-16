@@ -658,13 +658,15 @@ refuse_loop() {  # $1 = le texte du refus
 }
 
 plan_open() {   # la COUCHE DE L ETAT rend-il un plan ouvert ? (sinon : termine, ou rien)
-  # LES MARQUEURS REELS SONT CEUX QUE LES BRIQUES DISENT : 'no open plan' (celui de plan.sh quand
-  # aucun plan n'est ouvert) et 'AUCUN PLAN OUVERT' (celui que la boucle pose quand second.sh est
-  # absent). Sans -i, les deux etaient rates : plan_open disait toujours OUVERT, et `answer` ne
-  # fermait plus jamais un tour (verdict B2b du banc).
+  # LES MARQUEURS REELS SONT CEUX QUE LES BRIQUES DISENT : 'no open plan' (celui que la couche du
+  # plan rend quand il n'y a pas de plan), 'AUCUN PLAN OUVERT' (celui que la boucle pose quand
+  # second.sh est absent) et 'the plan could not be obtained' (ce que second.sh DIT quand la
+  # couche casse : jq absent, engine absent, engine 122 muet). Ce dernier etait cherche en
+  # francais ('pas pu etre obtenu'), que PERSONNE n'emet : la garde etait morte. Les trois sont
+  # exerces par les verdicts B2b/B2c/B2d du banc, sur les mots REELS des briques.
   printf '%s' "$PLAN_TXT" | grep -qi 'aucun plan ouvert' && return 1
   printf '%s' "$PLAN_TXT" | grep -qi 'no open plan' && return 1
-  printf '%s' "$PLAN_TXT" | grep -qi 'pas pu etre obtenu' && return 1
+  printf '%s' "$PLAN_TXT" | grep -qi 'could not be obtained' && return 1
   printf '%s' "$PLAN_TXT" | grep -q . || return 1
   return 0
 }
