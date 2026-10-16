@@ -555,7 +555,7 @@ SECTION : LA_VOIX
   1448: "LE CONTRAT DE LA VOIX EST UNE LIGNE : speech : config/audio/<nom> (N Ko, T s) ; le pont et speak la lisent."
   1449: "LE NIVEAU SE REGLE A LA CRETE : -1,5 dBFS, gain borne a 4 -- hors de la doc, MESURE sur voix humaine."
   1450: "MESURE : Piper upmc dit 8,7 s de parole en moins d une seconde, apres chargement du modele."
-  1451: "LA VOIX DU TOUR S ENTEND AU FIL DE L EAU : le pont publie les wav sous /dits, et l appli joue chaque wav des qu il est pret."
+  1451: "LA VOIX DU TOUR S ENTEND AU FIL DE L EAU : le pont publie les wav sous /spoken, et l appli joue chaque wav des qu il est pret."
   1452: "LE PREMIER SON ARRIVE AVEC LE PREMIER MOT DIT ; l appli n attend plus la fin du tour pour un seul wav."
   1453: "LE STREAMING DANS LA VOIX RESTE A FAIRE : il n a de sens que si l oreille lit le wav pendant son ecriture."
 SECTION : LE_MODELE

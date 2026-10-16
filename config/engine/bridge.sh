@@ -122,7 +122,7 @@ speak_word() {  # $1 = le mot a dire ; $2 = le dossier du tour
     N=$(sed -n 's/.*speech : config\/audio\/\([^ ]*\).*/\1/p' "$2/spoken" 2>/dev/null | head -n 1)
     if [ -n "$N" ]; then
       printf '%s\n' "$N" >> "$2/said"
-      printf '%s\n' "$N" >> "$ROOT/work/dits.jsonl" 2>/dev/null || true
+      printf '%s\n' "$N" >> "$ROOT/work/spoken.jsonl" 2>/dev/null || true
       printf '%s' "$W" > "$2/last"
       log_to_file "voix  dit ($(printf '%s' "$W" | wc -c) octets) -> $N"
     fi
@@ -148,7 +148,7 @@ turn() {  # $1 = la demande ; $2 = le fichier ou poser le corps JSON ; $3 = "voi
   # LA LISTE DES WAV DU TOUR, ELLE AUSSI PARTAGEE : meme fichier de work/ que le journal, remis a
   # zero a chaque tour. L'appli la relit AU FIL DE L EAU : elle entend chaque mot des qu il est
   # pret, au lieu d attendre que le tour soit fini et de recevoir le dernier wav en une fois.
-  : > "$ROOT/work/dits.jsonl" 2>/dev/null || true
+  : > "$ROOT/work/spoken.jsonl" 2>/dev/null || true
 
   # LE TOUR COURT, ET SA VOIX EST SURVEILLEE. Le loop tourne en arriere-plan : sa sortie
   # standard porte la reply, sa sortie d erreur porte le JOURNAL et LE CANAL HUMAIN - c est la
@@ -207,7 +207,7 @@ turn() {  # $1 = la demande ; $2 = le fichier ou poser le corps JSON ; $3 = "voi
       N=$(sed -n 's/.*speech : config\/audio\/\([^ ]*\).*/\1/p' "$T/spoken" 2>/dev/null | head -n 1)
       if [ -n "$N" ]; then
         printf '%s\n' "$N" >> "$T/said"
-        printf '%s\n' "$N" >> "$W/dits.jsonl" 2>/dev/null || true
+        printf '%s\n' "$N" >> "$W/spoken.jsonl" 2>/dev/null || true
         AV=$N
       else
         AV=$(find "$AUDIO" -maxdepth 1 -name 'speech-*.wav' -newer "$T/mark" 2>/dev/null | sort | tail -n 1)
@@ -287,12 +287,12 @@ request() {
       answer 200 application/json "$T/out"
       ;;
 
-    /dits*)
+    /spoken*)
       # LES WAV DU TOUR COURANT, DANS L ORDRE OU ILS ONT ETE DITS : la mecanique du journal
       # (loi 610) -- un fichier de work/, remis a zero a chaque tour, que l'appli relit au fil de
       # l eau pour ENTENDRE pendant le tour, au lieu d attendre la fin pour un seul wav.
-      if [ -f "$W/dits.jsonl" ]; then
-        jq -R -s -c 'split("\n") | map(select(length>0))' "$W/dits.jsonl" > "$T/out" 2>/dev/null || printf '[]\n' > "$T/out"
+      if [ -f "$W/spoken.jsonl" ]; then
+        jq -R -s -c 'split("\n") | map(select(length>0))' "$W/spoken.jsonl" > "$T/out" 2>/dev/null || printf '[]\n' > "$T/out"
         case "$(head -c 1 "$T/out" 2>/dev/null)" in '[') ;; *) printf '[]\n' > "$T/out" ;; esac
       else
         printf '[]\n' > "$T/out"
@@ -495,7 +495,7 @@ Reponds a ce que j en attends : dis-moi ce que cette image montre, et ce qu il y
       ;;
 
     *)
-      printf '{"error":"route inconnue","routes":["GET /","GET /widget","GET /la.apk","GET /manifest.webmanifest","GET /icon.svg","GET /sw.js","GET /ping","GET /plan","GET /journal","GET /dits","GET /engine","POST /engine","GET /audio/<nom>","POST /say","POST /voice","POST /image"]}\n' > "$T/out"
+      printf '{"error":"route inconnue","routes":["GET /","GET /widget","GET /la.apk","GET /manifest.webmanifest","GET /icon.svg","GET /sw.js","GET /ping","GET /plan","GET /journal","GET /spoken","GET /engine","POST /engine","GET /audio/<nom>","POST /say","POST /voice","POST /image"]}\n' > "$T/out"
       answer 404 application/json "$T/out"
       ;;
   esac

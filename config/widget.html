@@ -134,7 +134,7 @@ async function journal() {
 }
 
 // --- LA VOIX S ENTEND AU FIL DU TOUR. Le pont synthetise chaque mot des qu il parait (le wav
-// tombe dans config/audio/) et publie la liste sous /dits : ici on la relit pendant le tour et on
+// tombe dans config/audio/) et publie la liste sous /spoken : ici on la relit pendant le tour et on
 // JOUE chaque nouveau wav des qu il est pret, l un apres l autre. Sans ca, l appli n attendait
 // qu UN wav, a la fin du tour : un tour long faisait un long silence.
 let dejaVus = new Set(), file = [], enLecture = null, tourOuvert = false;
@@ -148,12 +148,12 @@ function jouerSuivant() {
 }
 $('audio').addEventListener('ended', () => { enLecture = null; jouerSuivant(); });
 $('audio').addEventListener('error', () => { enLecture = null; jouerSuivant(); });
-async function dits() {
+async function spoken() {
   if (!tourOuvert) return;
   try {
-    const r = await fetch('/dits', { cache: 'no-store' });
+    const r = await fetch('/spoken', { cache: 'no-store' });
     const j = await r.json();
-    const l = Array.isArray(j) ? j : (j.dits || []);
+    const l = Array.isArray(j) ? j : (j.spoken || []);
     l.forEach((n) => {
       if (typeof n === 'string' && n && !dejaVus.has(n)) { dejaVus.add(n); file.push(n); }
     });
@@ -325,7 +325,7 @@ ping(); plan(); engins(); journal();
 setInterval(ping, 60000);
 setInterval(plan, 15000);
 setInterval(journal, 3000);
-setInterval(dits, 1200);
+setInterval(spoken, 1200);
 $('dire').disabled = false;
 </script>
 </body>
