@@ -1080,53 +1080,50 @@ tools:
         *) echo "refuse : la voix a repondu : ${OUT:-rien}" >&2 ; exit 1 ;;
       esac
   - id: 174
-    tool: index_build
-    family: WRITE
-    description: "embeds each table tool in e5-small and writes the survey under tools/"
-    command: |
-      B=/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-embedding
-      M=/home/moussa/LLM_GGUF/multilingual-e5-small-Q8_0.gguf
-      { [ -x "$B" ] && [ -f "$M" ]; } || { echo 'refuse : le plongeur e5 est introuvable' >&2; exit 1; }
-      T="$ROOT/config/la_tools.yaml"
-      R="$ROOT/tools/embeddings-e5.txt"
-      C="$R.corpus"
-      awk '/^  - id: /{i=$3} /^    tool: /{t=$2} /^    description:/{d=$0; sub(/^    description: */,"",d); gsub(/"/,"",d); printf "%s|%s|%s\n", i, t, d}' "$T" > "$C"
-      N=$(wc -l < "$C")
-      [ "$N" -ge 1 ] || { rm -f "$C"; echo 'refuse : la table ne rend aucun tool a plonger' >&2; exit 1; }
-      : > "$R.tmp"
-      while IFS= read -r l; do
-        V=$("$B" -m "$M" -c 512 --embd-normalize 2 -p "passage: $l" 2>/dev/null | sed -n 's/^embedding 0:  *//p')
-        [ -n "$V" ] && printf '%s|%s\n' "$V" "$l" >> "$R.tmp"
-      done < "$C"
-      [ -s "$R.tmp" ] || { rm -f "$R.tmp" "$C"; echo 'refuse : aucun plongement render' >&2; exit 1; }
-      mv -f "$R.tmp" "$R"
-      rm -f "$C"
-      printf 'releve des plongements : %s (%s tools, %s Ko)\n' "${R#$ROOT/}" "$(wc -l < "$R")" "$(du -k "$R" | cut -f1)"
-  - id: 175
-    tool: search_semantic
+    tool: rank_tools
     family: READ
-    description: "finds the tools that answer a request, by meaning, with e5-small"
+    description: "ranks the tour's tools for a request and returns the best share"
     args:
       - {name: text, type: text, stdin: true}
+      - {name: share, type: int}
     command: |
-      B=/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-embedding
-      M=/home/moussa/LLM_GGUF/multilingual-e5-small-Q8_0.gguf
-      R="$ROOT/tools/embeddings-e5.txt"
-      { [ -x "$B" ] && [ -f "$M" ]; } || { echo 'refuse : le plongeur e5 est introuvable' >&2; exit 1; }
-      [ -f "$R" ] || { echo 'refuse : le releve des plongements est absent ; lance d abord le tool indexer' >&2; exit 1; }
+      # LE SELECTEUR. Une demande + LA LISTE FINIE DES CANDIDATS -> un score par candidat.
+      # Les candidats sont LE PERIMETRE DU TOUR : la palette du skill actif (la PRESELECTION),
+      # PLUS la categorie permanente. Palette vide = toute la table (meme regle que la boucle).
+      # On ne rend pas un nombre fixe de tools mais une PART de la liste : 30% au premier
+      # appel, 60% au deuxieme, 100% au troisieme -- le rattrapage est garanti.
+      S="{{share}}"
+      case "$S" in ''|*[!0-9]*) S=30 ;; esac
+      [ "$S" -ge 1 ] || S=30
+      [ "$S" -le 100 ] || S=100
+      A=$(sed -n '1p' "$ROOT/skills/.active" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+      case "$A" in ''|*/*|*..*) A=la ;; esac
+      K="$ROOT/skills/$A/skill.yaml"
+      [ -f "$K" ] || { echo "refuse : le skill actif est introuvable ($K)" >&2; exit 1; }
+      T="$ROOT/config/la_tools.yaml"
+      W="$ROOT/work/rank_candidates.$$"
+      SK=$(sed -n '/^TOOLS:/,/^[^[:space:]]/p' "$K" | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' | sed -e 's/^"//' -e 's/"$//' | grep -v '^$' | sort -u)
+      PN=$(sed -n '/^permanent:/,/^[^[:space:]]/p' "$ROOT/config/la_config.yaml" | sed -n 's/^[[:space:]]*-[[:space:]]*//p' | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | sed 's/:.*$//' | grep -v '^$')
+      if [ -n "$SK" ]; then
+        printf '%s\n%s\n' "$SK" "$PN" | grep -v '^$' | sort -u > "$W.names"
+      else
+        awk '/^  - id: /{i=$3} /^    tool: /{t=$2} /^    description:/{d=$0; sub(/^    description: */,"",d); gsub(/"/,"",d); printf "%s|%s|%s\n", i, t, d}' "$T" | awk -F'|' '{print $2}' | sort -u > "$W.names"
+      fi
+      awk -v NAMES="$W.names" '
+        BEGIN { while ((getline n < NAMES) > 0) keep[n] = 1 }
+        /^  - id: /{ i = $3 }
+        /^    tool: /{ t = $2 }
+        /^    description:/{
+          d = $0; sub(/^    description: */, "", d); gsub(/"/, "", d);
+          if (keep[t]) printf "%s|%s|%s\n", i, t, d
+        }' "$T" > "$W"
+      [ -s "$W" ] || { rm -f "$W" "$W.names"; echo 'refuse : le perimetre du tour ne rend aucun tool a classer' >&2; exit 1; }
       Q=$(cat)
-      [ -n "$Q" ] || { echo 'refuse : rien a chercher ; la demande entre par l entree standard' >&2; exit 1; }
-      V=$("$B" -m "$M" -c 512 --embd-normalize 2 -p "query: $Q" 2>/dev/null | sed -n 's/^embedding 0:  *//p')
-      [ -n "$V" ] || { echo 'refuse : le plongement de la demande a echoue' >&2; exit 1; }
-      awk -v q="$V" -F'|' '
-        BEGIN { n = split(q, a, " ") }
-        {
-          d = split($1, b, " ")
-          if (d != n) next
-          s = 0
-          for (i = 1; i <= n; i++) s += a[i] * b[i]
-          printf "%.3f|%s\n", s, substr($0, index($0, "|") + 1)
-        }' "$R" | LC_ALL=C sort -rn | head -5 | awk -F'|' '{ printf "%s  %s\n", $1, $2 }'
+      [ -n "$Q" ] || { rm -f "$W" "$W.names"; echo 'refuse : rien a classer ; la demande entre par l entree standard' >&2; exit 1; }
+      printf '%s\n' "$Q" | python3 "$ROOT/config/py/rank_tools.py" --share "$S" --candidates "$W"
+      RC=$?
+      rm -f "$W" "$W.names"
+      exit $RC
   - id: 137
     tool: load_doc
     family: READ
