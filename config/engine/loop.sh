@@ -396,14 +396,27 @@ count_non_stdin() {  # $1 = bloc
   printf '%s' "$((NA - NS))"
 }
 
-args_text() {  # $1 = bloc ; rend les noms, stdin marque
+args_text() {  # $1 = bloc ; rend les noms, leur FORME, et ce que la ligne FERME
+  # LA LOI : le modele recoit ce que la ligne FERME, pas un nom nu. Un enum rend sa liste
+  # ENTIERE, dans le MEME rendu que le refus du engine (join " | ", engine.sh:359) ; un
+  # argument ouvert rend son TYPE. La borne n'a plus a s'apprendre par un refus.
   args_section "$1" | sed -n 's/^      - {\(.*\)}[[:space:]]*$/\1/p' | while IFS= read -r SPEC; do
     NM=$(printf '%s' "$SPEC" | sed -n 's/.*name:[[:space:]]*\([A-Za-z0-9_]*\).*/\1/p')
     [ -n "$NM" ] || continue
+    TY=$(printf '%s' "$SPEC" | sed -n 's/.*type:[[:space:]]*\([a-z]*\).*/\1/p')
+    FO="$TY"
     case "$SPEC" in
-      *'stdin: true'*) printf '%s(stdin) ' "$NM" ;;
-      *) printf '%s ' "$NM" ;;
+      *'values:'*)
+        LIST=$(printf '%s' "$SPEC" | sed -n 's/.*values:[[:space:]]*\[\([^]]*\)\].*/\1/p' \
+          | tr ',' '\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' \
+          | jq -R . | jq -cs . | jq -r 'join(" | ")')
+        [ -n "$LIST" ] && FO="$TY : $LIST"
+        ;;
     esac
+    case "$SPEC" in
+      *'stdin: true'*) FO="$FO,stdin" ;;
+    esac
+    printf '%s(%s) ' "$NM" "$FO"
   done
 }
 
