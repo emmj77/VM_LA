@@ -658,9 +658,10 @@ refuse_loop() {  # $1 = le texte du refus
 }
 
 plan_open() {   # la COUCHE DE L ETAT rend-il un plan ouvert ? (sinon : termine, ou rien)
-  # LES MARQUEURS REELS SONT CEUX QUE LES BRIQUES DISENT : 'no open plan' (plan.sh:117) et
-  # 'AUCUN PLAN OUVERT' (second.sh absent). Sans -i, les deux etaient rates : plan_open
-  # disait toujours OUVERT, et `answer` ne fermait plus jamais un tour (verdict B2b du banc).
+  # LES MARQUEURS REELS SONT CEUX QUE LES BRIQUES DISENT : 'no open plan' (celui de plan.sh quand
+  # aucun plan n'est ouvert) et 'AUCUN PLAN OUVERT' (celui que la boucle pose quand second.sh est
+  # absent). Sans -i, les deux etaient rates : plan_open disait toujours OUVERT, et `answer` ne
+  # fermait plus jamais un tour (verdict B2b du banc).
   printf '%s' "$PLAN_TXT" | grep -qi 'aucun plan ouvert' && return 1
   printf '%s' "$PLAN_TXT" | grep -qi 'no open plan' && return 1
   printf '%s' "$PLAN_TXT" | grep -qi 'pas pu etre obtenu' && return 1
