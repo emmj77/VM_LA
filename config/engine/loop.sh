@@ -152,6 +152,27 @@ map(coupe($cap))
 JQ
 }
 
+# LA MARGE DU TOUR (loi 606) : ce qui RESTE du budget une fois pose tout ce qui ne se coupe pas --
+# les tetes systeme, les echanges, et le travail en cours (le PLUS RECENT retour d outil). C est
+# elle qui decide la coupe ; le sens ne fait que la repartir. Elle est calculee ICI, une fois.
+marge_vieux() {   # $1 = un fichier d historique -> octets disponibles pour les VIEUX retours
+  jq -r --argjson bud "$MSG_BUDGET" '
+    (map((.content // "") | if type == "string" then utf8bytelength else 0 end) | add // 0) as $tot
+    | ([ .[] | select(.role == "tool")
+         | ((.content // "") | if type == "string" then utf8bytelength else 0 end) ]
+       | (.[0:(length - 1)] | add // 0)) as $vieux
+    | ($bud - ($tot - $vieux)) | if . < 0 then 0 else . end' "$1" 2>/dev/null || printf '0'
+}
+
+# LES FORMES AVANT LE PLAFOND (lois 604-606) : la marge d abord, le sens ensuite, et le plafond
+# mecanique de trim_prog reste en garde -- il n est pas double, il est PRECEDE. La brique REFUSE en
+# nommant si la marge manque, et rend l historique inchange : ici, on le dit sur la sortie d erreur.
+trim_formes() {   # $1 = un fichier d historique -> le meme, formes choisies par le resident
+  _m=$(marge_vieux "$1")
+  case "${_m:-}" in ''|*[!0-9]*) cat "$1" ; return 0 ;; esac
+  "$PROCS/trim_forms.sh" "$1" "${REQUEST:-}" "$_m" || cat "$1"
+}
+
 db_add() {    # $1 role, $2 content, $3 tool_calls, $4 tool_call_id, $5 name
   [ -f "$DB" ] || return 0
   _r=$(printf '%s' "$1" | sed "s/'/''/g"); _c=$(printf '%s' "$2" | sed "s/'/''/g")
@@ -187,8 +208,7 @@ hist_window() {  # LA ZONE 3 : les vingt derniers echanges, BRUTS, identifiants 
    | jq -c '[.[] | {role, content}
              + (if (.tool_calls // "") == "" then {} else {tool_calls: (.tool_calls | fromjson)} end)
              + (if (.tool_call_id // "") == "" then {} else {tool_call_id: .tool_call_id} end)
-             + (if (.name // "") == "" then {} else {name: .name} end)]' 2>/dev/null \
-   | jq -c --argjson cap "$MSG_MAX" --argjson bud "$MSG_BUDGET" "$(trim_prog)" 2>/dev/null || printf '[]'
+             + (if (.name // "") == "" then {} else {name: .name} end)]' 2>/dev/null || printf '[]'
 }
 
 TURNS_MAX=${LA_MAX_TURNS:-400}  # une BORNE de securite, jamais un frein : le PLAN, answer
@@ -230,8 +250,18 @@ log_to_stderr() {  # $1 = une ligne deja plate
 # L HISTORIQUE DU TOUR S ECRIT TOUJOURS PAREIL : un filtre jq rend le nouveau tableau, on le
 # pose, et le remplacement est ATOMIQUE (jamais un hist.json tronque). $@ = options + filtre jq.
 hist_apply() {
-  jq -c "$@" "$T/hist.json" > "$T/hist.next" \
-    && jq -c --argjson cap "$MSG_MAX" --argjson bud "$MSG_BUDGET" "$(trim_prog)" "$T/hist.next" > "$T/hist.trim" \
+  jq -c "$@" "$T/hist.json" > "$T/hist.next" || return 1
+  _src="$T/hist.next"
+  # LES FORMES SEULEMENT QUAND LA BORNE PEUT MORDRE. Un fichier plus PETIT que le budget ne sera pas
+  # coupe (le JSON pese plus lourd que ses contenus), et reveiller le resident a chaque mutation
+  # d historique couterait cher pour rien : hist_apply est appele des dizaines de fois par tour.
+  # C est la loi 826 : la RAM se rembourse en tokens, et une question deja repondue ne se repose pas.
+  _o=$(wc -c < "$T/hist.next" 2>/dev/null || printf '0')
+  case "${_o:-}" in ''|*[!0-9]*) _o=0 ;; esac
+  if [ "$_o" -gt "$MSG_BUDGET" ]; then
+    trim_formes "$T/hist.next" > "$T/hist.forms" && _src="$T/hist.forms"
+  fi
+  jq -c --argjson cap "$MSG_MAX" --argjson bud "$MSG_BUDGET" "$(trim_prog)" "$_src" > "$T/hist.trim" \
     && mv "$T/hist.trim" "$T/hist.json"
 }
 
@@ -590,6 +620,16 @@ fi
 REQUEST=$(cat)
 [ -n "$REQUEST" ] || die "no request on the input : a turn starts from a request."
 db_add "user" "$REQUEST" "" "" ""     # la demande entre dans le corps, horodatee
+
+# LA FENETRE PASSE AUX FORMES ICI, PAS PLUS TOT : la coupe se juge CONTRE LA DEMANDE (lois 604-606),
+# et la demande ne se lit que quelques lignes au-dessus -- avant, la fenetre etait rognee sans savoir
+# quoi garder. Les formes d abord (la marge decide, le sens repartit), le plafond mecanique ensuite :
+# il n est pas double, il est PRECEDE. C est la meme porte que le verdict B14 mesure.
+printf '%s' "$WINDOW_JSON" > "$T/window.raw"
+if [ -s "$T/window.raw" ]; then
+  WINDOW_JSON=$(trim_formes "$T/window.raw" \
+    | jq -c --argjson cap "$MSG_MAX" --argjson bud "$MSG_BUDGET" "$(trim_prog)" 2>/dev/null || printf '[]')
+fi
 
 # --- [9] LA BOUCLE ------------------------------------------------------------
 FACTS() { printf 'FACTS  date %s  time %s  locale UTC' "$(date -u +%Y-%m-%d)" "$(date -u +%H:%M)"; }

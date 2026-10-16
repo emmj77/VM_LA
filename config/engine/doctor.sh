@@ -108,6 +108,12 @@ RPORT=${LA_RERANK_PORT:-8095}
 RS=$(curl -s --max-time 3 "http://127.0.0.1:$RPORT/health" 2>/dev/null || true)
 [ -n "$RS" ] && ok "the reranker answers on $RPORT" || note "the reranker does not answer on $RPORT (down ?)"
 
+title "THE RETURN FORMS"
+TRF="$ROOT/config/engine/trim_forms.sh"
+[ -x "$TRF" ] && ok "the form selector is present and executable" || fail "no form selector ($TRF)"
+grep -q 'trim_formes' "$ROOT/config/engine/loop.sh" && ok "the loop goes through the forms BEFORE the cap" \
+  || fail "the loop does not go through the forms"
+
 title "THE BRIDGE"
 if command -v curl >/dev/null 2>&1; then
   R=$(curl -s --max-time 2 "http://127.0.0.1:8765/ping" 2>/dev/null || true)

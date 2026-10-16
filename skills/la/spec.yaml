@@ -333,6 +333,7 @@ SECTION : LE_RETOUR_DES_OUTILS
   615: "LE RETOUR NE PORTE PAS D'INSTRUCTION : il dit ce qui est, pas ce qu'il faut faire."
   616: "LE TOOL TRAVAILLE EN ARRIERE-PLAN : la boucle le surveille, et PARLE toutes les 15 s."
   617: "UN LONG RUN N'EST PAS COUPE : le delai du engine est une MARGE, jamais un budget."
+  618: "DANS LA MARGE, LE SENS ORDONNE : les plus utiles gardent le plus de place."
 
 SECTION : LE_FILTRE
   700: "LE FILTRE EST LE skill.yaml : sa liste tools EST le perimetre."
