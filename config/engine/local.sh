@@ -1,28 +1,28 @@
 #!/bin/sh
-# local.sh - LE MODELE LOCAL. Le petit modele qui RESUME (la compaction), charge une seule fois.
+# local.sh - THE LOCAL MODEL. The small model that SUMMARIZES (compaction), loaded once.
 #
-# POURQUOI CE NOM. summary.sh et session_note.sh demandent un RESUME a un modele local, sur le
-# CPU. Sans lui, pas de resume de session. Ici le modele du projet reste DEBOUT sur
-# 127.0.0.1:8088 -- un service, pas un appel.
+# WHY THIS NAME. summary.sh and session_note.sh ask a local model for a SUMMARY, on the CPU.
+# Without it, no session summary. Here the project's model stays UP on 127.0.0.1:8088 -- a
+# service, not a call.
 #
-# LE MODELE : UN SEUL endroit le nomme -- LA_LOCAL_MODEL (defaut le LFM2.5-1.2B, pose dans
-# ~/LLM_GGUF). Changer de modele = un mot. Le GPU appartient au lourd : ici JAMAIS de -ngl.
+# THE MODEL : a SINGLE place names it -- LA_LOCAL_MODEL (default the LFM2.5-1.2B, kept in
+# ~/LLM_GGUF). Changing model = one word. The GPU belongs to the heavy one : here NEVER -ngl.
 #
 # MODES : start | stop | status | run | help
-#   run     au premier plan, pour systemd. Ne rend jamais la main.
-#   start   detache, ecrit sa marque (work/local.pid) et son journal (work/local.log).
-#   stop    arrete le pid de sa marque. JAMAIS par motif : on ne tue que ce qu'on a pose.
-#   status  interroge /health et dit si le modele repond, et sur quel port.
+#   run     in the foreground, for systemd. Never returns.
+#   start   detached, writes its mark (work/local.pid) and its log (work/local.log).
+#   stop    kills the pid of its mark. NEVER by pattern: only what we placed is killed.
+#   status  probes /health and says whether the model answers, and on which port.
 #
-# ENTREE (env)
-#   LA_LOCAL_PORT     defaut 8088
-#   LA_LOCAL_MODEL    defaut LFM2.5-1.2B-Instruct-Q4_K_M.gguf
-#   LA_LOCAL_GGUF     defaut /home/moussa/LLM_GGUF   le dossier des modeles
-#   LA_LOCAL_THREADS  defaut 8
-#   LA_LOCAL_CTX      defaut 12288
-#   LA_LOCAL_NGL      defaut 0    le petit modele tourne sur le CPU
+# INPUT (env)
+#   LA_LOCAL_PORT     default 8088
+#   LA_LOCAL_MODEL    default LFM2.5-1.2B-Instruct-Q4_K_M.gguf
+#   LA_LOCAL_GGUF     default /home/moussa/LLM_GGUF   the models folder
+#   LA_LOCAL_THREADS  default 8
+#   LA_LOCAL_CTX      default 12288
+#   LA_LOCAL_NGL      default 0    the small model runs on the CPU
 #
-# SORTIE : work/local.log, work/local.pid
+# OUTPUT : work/local.log, work/local.pid
 
 set -u
 
@@ -41,8 +41,8 @@ PID_FILE="$W/local.pid"
 LOGF="$W/local.log"
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-$(dirname -- "$BIN")}
 
-[ -x "$BIN" ] || { echo "refuse : llama-server est introuvable ($BIN)" >&2 ; exit 1 ; }
-[ -f "$GGUF/$MODEL" ] || { echo "refuse : le modele local est introuvable ($GGUF/$MODEL)" >&2 ; exit 1 ; }
+[ -x "$BIN" ] || { echo "refused: llama-server is missing ($BIN)" >&2 ; exit 1 ; }
+[ -f "$GGUF/$MODEL" ] || { echo "refused: the local model is missing ($GGUF/$MODEL)" >&2 ; exit 1 ; }
 
 . "$HERE/lib.sh"
 LABEL="local" ; HEALTH=health ; WD=.

@@ -1,27 +1,27 @@
 #!/bin/sh
-# asr.sh - L OREILLE. Le moteur qui ENTEND, charge une seule fois.
+# asr.sh - THE EAR. The engine that HEARS, loaded once.
 #
-# POURQUOI CE NOM. Le tool `transcribe` transcrivait un fichier avec le binaire one-shot : chaque
-# appel relisait 681 Mo de modele. Ici le modele reste DEBOUT derriere la route HTTP du projet
-# nemo-speech (`serve`), et une transcription coute le seul calcul : mesure faite, 809 ms au lieu
-# de 1 254 a 1 567 ms, et le modele n'est plus jamais relu.
+# WHY THIS NAME. The `transcribe` tool transcribed a file with the one-shot binary : every call
+# re-read 681 MB of model. Here the model stays UP behind the project's HTTP route nemo-speech
+# (`serve`), and a transcription costs only the compute : measured, 809 ms instead of 1 254 to
+# 1 567 ms, and the model is never re-read.
 #
-# CE QUE CA CHANGE POUR LES AUTRES : rien. Le service expose la route du PROJET, pas une route a
-# nous (`POST /v1/audio/transcriptions`, sous-ensemble OpenAI documente) : le tool y va par curl,
-# et c'est tout. Le pont et l'appli ne connaissent que le tool.
+# WHAT IT CHANGES FOR OTHERS : nothing. The service exposes the PROJECT's route, not a route of
+# ours (`POST /v1/audio/transcriptions`, documented OpenAI subset) : the tool goes there by curl,
+# and that is all. The bridge and the app know only the tool.
 #
 # MODES : start | stop | status | run | help
-#   run     au premier plan, pour systemd. Ne rend jamais la main.
-#   start   detache, ecrit sa marque (work/asr.pid) et son journal (work/asr.log).
-#   stop    arrete le pid de sa marque. JAMAIS par motif : on ne tue que ce qu'on a pose.
-#   status  interroge /ready et dit si l'oreille repond, et sur quel port.
+#   run     in the foreground, for systemd. Never returns.
+#   start   detached, writes its mark (work/asr.pid) and its log (work/asr.log).
+#   stop    kills the pid of its mark. NEVER by pattern: only what we placed is killed.
+#   status  probes /ready and says whether the ear answers, and on which port.
 #
-# ENTREE (env)
-#   LA_ASR_PORT     defaut 8080
-#   LA_ASR_THREADS  defaut 4      le pool de requetes du serveur
-#   LA_ASR_MODEL    defaut le parakeet du projet
+# INPUT (env)
+#   LA_ASR_PORT     default 8080
+#   LA_ASR_THREADS  default 4      the server's request pool
+#   LA_ASR_MODEL    default the project's parakeet
 #
-# SORTIE : work/asr.log, work/asr.pid
+# OUTPUT : work/asr.log, work/asr.pid
 
 set -u
 
@@ -37,8 +37,8 @@ HOST=${LA_ASR_HOST:-127.0.0.1}
 PID_FILE="$W/asr.pid"
 LOGF="$W/asr.log"
 
-[ -x "$CLI" ] || { echo "refuse : le moteur nemo-speech est introuvable ($CLI)" >&2 ; exit 1 ; }
-[ -f "$ROOT_MODELS/$MODEL" ] || { echo "refuse : le modele de l oreille est introuvable ($MODEL)" >&2 ; exit 1 ; }
+[ -x "$CLI" ] || { echo "refused: the nemo-speech engine is missing ($CLI)" >&2 ; exit 1 ; }
+[ -f "$ROOT_MODELS/$MODEL" ] || { echo "refused: the ear's model is missing ($MODEL)" >&2 ; exit 1 ; }
 
 . "$HERE/lib.sh"
 LABEL="asr" ; HEALTH=ready ; WD="$ROOT_MODELS"

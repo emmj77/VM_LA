@@ -1,28 +1,27 @@
 #!/bin/sh
-# tts.sh - LA VOIX. Le moteur qui DIT, charge une seule fois.
+# tts.sh - THE VOICE. The engine that SAYS, loaded once.
 #
-# POURQUOI CE NOM. Le tool `speak` disait une phrase et rendait un fichier : c'etait un APPEL,
-# et il rechargeait magpie a chaque phrase -- huit secondes pour trois secondes de son, et trois
-# minutes pour une reply longue. Ici c'est l'inverse : un moteur qui reste DEBOUT, garde sa voix
-# en memoire, et repond en quelques dixiemes de seconde quand le modele est charge. Un service,
-# pas un appel.
+# WHY THIS NAME. The `speak` tool said a sentence and returned a file: it was a CALL, and it
+# reloaded magpie on every sentence -- eight seconds for three seconds of sound, and three
+# minutes for a long reply. Here it is the reverse: an engine that stays UP, keeps its voice in
+# memory, and answers in a few tenths of a second once the model is loaded. A service, not a call.
 #
-# CE QUE CA CHANGE POUR LES AUTRES : rien, volontairement. Le service imprime EXACTEMENT la ligne
-# que l'appel rendait avant (`speech : work/....wav (N Ko, T s)`) et ecrit dans work/ : le pont,
-# l'appli et la table des tools n'ont pas a savoir que la voix est devenue permanente.
+# WHAT IT CHANGES FOR OTHERS : nothing, on purpose. The service prints EXACTLY the line the call
+# used to return (`speech : work/....wav (N Ko, T s)`) and writes into work/ : the bridge, the
+# app and the tool table do not have to know the voice became permanent.
 #
 # MODES : start | stop | status | run | help
-#   run     au premier plan, pour systemd. Ne rend jamais la main.
-#   start   detache, ecrit sa marque (work/tts.pid) et son journal (work/tts.log).
-#   stop    arrete le pid de sa marque. JAMAIS par motif : on ne tue que ce qu'on a pose.
-#   status  interroge /health et dit si la voix repond, et sur quel port.
+#   run     in the foreground, for systemd. Never returns.
+#   start   detached, writes its mark (work/tts.pid) and its log (work/tts.log).
+#   stop    kills the pid of its mark. NEVER by pattern: only what we placed is killed.
+#   status  probes /health and says whether the voice answers, and on which port.
 #
-# ENTREE (env)
-#   LA_TTS_PORT     defaut 8090
-#   LA_TTS_SID      defaut 1      la voix dans le modele (0 = jessica, 1 = pierre)
-#   LA_TTS_THREADS  defaut 8
+# INPUT (env)
+#   LA_TTS_PORT     default 8090
+#   LA_TTS_SID      default 1      the voice in the model (0 = jessica, 1 = pierre)
+#   LA_TTS_THREADS  default 8
 #
-# SORTIE : work/tts.log, work/tts.pid
+# OUTPUT : work/tts.log, work/tts.pid
 
 set -u
 
@@ -42,8 +41,8 @@ PORT="$LA_TTS_PORT"
 PID_FILE="$W/tts.pid"
 LOGF="$W/tts.log"
 
-[ -f "$PROG" ] || { echo "refuse : la voix est introuvable ($PROG)" >&2 ; exit 1 ; }
-[ -x "$UV" ] || { echo "refuse : uv est introuvable ($UV) ; la voix ne peut pas charger son module" >&2 ; exit 1 ; }
+[ -f "$PROG" ] || { echo "refused: the voice is missing ($PROG)" >&2 ; exit 1 ; }
+[ -x "$UV" ] || { echo "refused: uv is missing ($UV) ; the voice cannot load its module" >&2 ; exit 1 ; }
 
 . "$HERE/lib.sh"
 LABEL="tts" ; HEALTH=health ; WD=.
