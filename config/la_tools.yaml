@@ -862,58 +862,6 @@ tools:
       done
       [ "$VIVANT" = 0 ] || { echo "refuse : le pid $P est encore vivant apres le signal $S" >&2; exit 1; }
       printf 'pid %s tue (signal %s)\n' "$P" "$S"
-  - id: 130
-    tool: add_cron
-    family: MANAGE
-    description: "adds an hourly cron line to the project, by approval"
-    args:
-      - {name: name, type: text}
-      - {name: tool, type: text}
-    command: |
-      N="{{name}}"; G="{{tool}}"
-      case "$N" in ''|*[!a-zA-Z0-9_-]*) echo "refuse : name hors form ($N) ; minuscules, chiffres, tiret, souligne" >&2; exit 1 ;; esac
-      case "$G" in ''|*[!a-z0-9_]*) echo "refuse : tool hors form ($G) ; minuscules, chiffres, souligne" >&2; exit 1 ;; esac
-      [ -n "$LA_CONFIG" ] && [ -f "$LA_CONFIG" ] || { echo "refuse : la table est introuvable (${LA_CONFIG:-inconnue})" >&2; exit 1; }
-      grep -q "^    tool: $G[[:space:]]*$" "$LA_CONFIG" || { echo "refuse : le tool n existe pas dans la table ($G)" >&2; exit 1; }
-      D="$ROOT/config"
-      [ -d "$D" ] || { echo "refuse : config introuvable ($D)" >&2; exit 1; }
-      F="$D/cron.yaml"
-      if [ -f "$F" ] && grep -q " # $N$" "$F"; then echo "refuse : une ligne de cron porte deja le name $N ($F)" >&2; exit 1; fi
-      L="0 * * * * $G # $N"
-      if [ "${LA_APPROVED:-0}" != 1 ]; then
-        printf 'approbation requise : ajouter une ligne de cron horaire au projet\n'
-        printf 'la ligne : %s\n' "$L"
-        printf 'rien n est ecrit avant votre accord\n'
-        exit 3
-      fi
-      printf '%s\n' "$L" >> "$F" || { echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
-      grep -q " # $N$" "$F" || { echo "refuse : la ligne n a pas ete ecrite ($F)" >&2; exit 1; }
-      printf '%s\n' "$L"
-  - id: 131
-    tool: remove_cron
-    family: MANAGE
-    description: "removes a cron line by its name, by approval"
-    args:
-      - {name: name, type: text}
-    command: |
-      N="{{name}}"
-      case "$N" in ''|*[!a-zA-Z0-9_-]*) echo "refuse : name hors form ($N)" >&2; exit 1 ;; esac
-      D="$ROOT/config"; F="$D/cron.yaml"
-      [ -f "$F" ] || { echo "refuse : aucune ligne de cron ($F est absent)" >&2; exit 1; }
-      grep -q " # $N$" "$F" || { echo "refuse : aucune ligne de cron ne porte le name $N" >&2; exit 1; }
-      L=$(grep " # $N$" "$F" | head -n 1)
-      if [ "${LA_APPROVED:-0}" != 1 ]; then
-        printf 'approbation requise : retirer la ligne de cron %s du projet\n' "$N"
-        printf 'la ligne : %s\n' "$L"
-        printf 'rien n est retire avant votre accord\n'
-        exit 3
-      fi
-      T="$D/.cron.$$.tmp"
-      grep -v " # $N$" "$F" > "$T"
-      grep -q " # $N$" "$T" && { rm -f "$T"; echo "refuse : la ligne n a pas ete retiree ($F)" >&2; exit 1; }
-      mv -f "$T" "$F" || { rm -f "$T"; echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
-      grep -q " # $N$" "$F" && { echo "refuse : la ligne est restee ($F)" >&2; exit 1; }
-      printf 'cron : %s retire\n' "$N"
   - id: 132
     tool: search_memory
     family: READ

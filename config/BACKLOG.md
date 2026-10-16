@@ -39,19 +39,6 @@ cas d'usage NOMME.
                      et la protection serait devenue une formalite recitee. Le remplacement se declare
                      par le MODE de write_file (matiere LA_LOI_D_ECRITURE)
 
-## LE DECLENCHEUR DE CRON
-
-    ce qui existe deja     les DEUX TOOLS (add_cron, remove_cron : 130 et 131) : ils tiennent la
-                           section (matiere LES_MANAGERS)
-    ce qui manque          LE DECLENCHEUR : QUI les fait tourner
-    la condition           une tache doit vraiment s'eveiller a date fixe
-    pourquoi ce n'est pas  la boucle est un tour de PAROLE, et rien dans le projet ne s'eveille tout
-      actif                seul. Le declencheur est un PROC de la VM, jamais un cron de la station : la
-                           station ne decide rien, et un crond cote station ferait entrer une decision
-                           dans la machine qui n'en prend aucune
-    le jour ou il entre    il entre ENTIER — les deux tools ET le declencheur, le meme jour — NOMME
-                           dans la matiere LES_MANAGERS, sa ligne sur le canal de l'humain
-
 ## L'APPROBATION SCOPEE
 
     ce que c'est                un objet SCOPE : acteur, tool, arguments, duree UNE FOIS, issue

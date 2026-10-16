@@ -1,20 +1,16 @@
 skill: "monitor"
 source: "agent"
 date: "2026-10-14"
-tags: ["monitor", "watch", "cron", "alert"]
+tags: ["monitor", "watch", "alert"]
 
 SUMMARY:
-  101: "Veiller : surveiller une source et poser une tache horaire."
-  102: "add_cron pose une ligne de cron horaire, par approbation ; remove_cron la retire."
-  103: "Une tache que rien ne declenche n'est pas une tache."
+  101: "Veiller : surveiller une source."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section: 5
   max_section_lines: 100
 TOOLS:
-  200: "add_cron"
-  201: "remove_cron"
   202: "shell_run"
   203: "read_file"
   204: "write_file"

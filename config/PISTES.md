@@ -54,10 +54,6 @@ attendre sa CONDITION vit dans `BACKLOG.md`.
 - Un quatrieme mode qui poserait un bloc entre deux ancres : ECARTE. La table porte `new`, `append`,
   `replace`, et rien de plus. Le mode n'a jamais servi.
 
-### Theme G - Le CRON   [matiere LES_MANAGERS]
-- Les DEUX TOOLS EXISTENT dans la table (add_cron, remove_cron : 130 et 131) : ils tiennent la section.
-- Ce qui manque : LE DECLENCHEUR — un PROC de la VM, jamais un cron de la station, qui ne decide rien.
-
 ### Theme H - L'APPROBATION SCOPEE (objet scope)
 - Un objet scope (acteur, tool, arguments, duree, issue) : aujourd'hui l'approbation existe seulement
   par la variable LA_APPROVED.
