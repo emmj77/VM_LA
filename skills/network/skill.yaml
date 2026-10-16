@@ -5,7 +5,7 @@ tags: ["network", "port", "curl", "dns"]
 
 SUMMARY:
   101: "Regarder le reseau : ports, interfaces, services locaux."
-  102: "Tout passe par shell_run ; le reseau SORTANT est coupe sous landrun."
+  102: "Tout passe par shell_run ; landrun borne le SYSTEME DE FICHIERS, pas le reseau."
 RULES:
   create_subfolder: true
   execute_code: false

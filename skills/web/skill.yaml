@@ -5,17 +5,18 @@ tags: ["web", "recherche", "search", "curl", "page"]
 
 SUMMARY:
   101: "Chercher et ramener une page du dehors dans le projet."
-  102: "Le seul tool de sortie est shell_run ; le reseau est COUPE sous landrun."
-  103: "TROU NOMME : sans tool de fetch, le web ne sort pas du projet."
+  102: "web_search (ddgr) TROUVE : il rend des liens. web_extract (lightpanda) LIT : il rend la page en markdown."
+  103: "landrun borne le SYSTEME DE FICHIERS, pas le reseau : le net sort."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section: 5
   max_section_lines: 100
 TOOLS:
-  200: "shell_run"
-  201: "read_file"
-  202: "write_file"
+  200: "web_search"
+  201: "web_extract"
+  202: "read_file"
+  203: "write_file"
 DOCS:
   300: "load_doc"
 PLAN:
