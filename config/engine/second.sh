@@ -2,7 +2,7 @@
 # second.sh - THE SECONDARY HEAD (config/engine/second.sh).
 # It returns on its STANDARD OUTPUT FIXED, bounded SECTIONS, in THIS ORDER :
 #   == THE TASK ==                    the turn's request, short
-#   == THE LOADED SKILL PLAN ==       the OPEN plan, obtained by config/engine/engine.sh 122
+#   == THE LOADED SKILL PLAN ==       the OPEN plan, read by config/engine/plan.sh status
 #   == THE LOCAL MODEL SUMMARY ==     a marked PLACE, AND ITS BOUND ; nothing inside
 #   == THE TOOLS STATE ==             which family is open (the ACTIVE SKILL), and the
 #                                     ALWAYS-visible tools (the permanent category read in
@@ -49,20 +49,19 @@ printf '%s\n' "$TASK" | bound "$CAP_TASK_L" "$CAP_TASK_C"
 
 # ---- THE LOADED SKILL PLAN : there is ALWAYS a plan in progress ---------------
 printf '== THE LOADED SKILL PLAN ==\n'
+# THE PLAN comes from the plan BRICK, read DIRECTLY (config/engine/plan.sh status) : the plan lives
+# in the PLAN: section of the ACTIVE skill, not behind a tool of the table. `status` WRITES NOTHING.
+# No jq here : the brick returns the plan as TEXT, or the words `no open plan` when there is none.
 PLAN=
-if ! command -v jq >/dev/null 2>&1; then
-  PLAN="the plan could not be obtained : jq is missing"
-elif [ ! -x "$ENGINE" ]; then
-  PLAN="the plan could not be obtained : the engine is missing ($ENGINE)"
+PLAN_SH="$HERE/plan.sh"
+if [ ! -x "$PLAN_SH" ]; then
+  PLAN="the plan could not be obtained : the plan brick is missing ($PLAN_SH)"
 else
-  PJ=$(printf '' | "$ENGINE" 122 2>/dev/null)
-  case "$(printf '%s' "$PJ" | jq -r '.status // ""' 2>/dev/null)" in
-    ok)    PLAN=$(printf '%s' "$PJ" | jq -r '.result // ""' 2>/dev/null) ;;
-    refused) PLAN=$(printf '%s' "$PJ" | jq -r '.line // ""' 2>/dev/null) ;;
-    *)     PLAN="the plan could not be obtained : engine 122 returned nothing" ;;
-  esac
+  # THE ACTIVE SKILL is the one the STATE FILE names (active_skill, above) : we hand its path to the
+  # brick through PLAN_FILE, so the brick never has to GUESS where the plan lives.
+  PLAN=$(PLAN_FILE="$SKILL" "$PLAN_SH" status 2>/dev/null) || PLAN=
+  [ -n "$PLAN" ] || PLAN="the plan could not be obtained : the plan brick returned nothing"
 fi
-[ -n "$PLAN" ] || PLAN="no open plan : the active skill carries no plan in its PLAN section"
 printf '%s\n' "$PLAN" | bound "$CAP_PLAN_L" "$CAP_PLAN_C"
 
 # ---- THE TIMESTAMP : the date, the time, the locale --------------------------

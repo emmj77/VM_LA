@@ -434,7 +434,7 @@ args_text() {  # $1 = bloc ; rend les noms, leur FORME, et ce que la ligne FERME
 DOC_READ=0
 PLAN_DONE=0
 TOOLSET_ARMED=0
-PLAN_FAMILY='start_plan load_plan advance_plan revise_plan close_plan abort_plan'
+PLAN_FAMILY='todo progress'
 SHARE_NAMES=''
 
 # LE SKILL ACTIF, RELU A CHAQUE TOUR (load_skill reecrit skills/.active) : le champ TOOLS: du
@@ -645,7 +645,7 @@ scope_build() {
     SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA DOC N EST PAS ENCORE LUE : la famille PLAN est FERMEE. Lis la doc (load_doc) pour ouvrir le plan. Les permanents, par leur NUMERO :
 "
   elif [ "$PLAN_DONE" != 1 ]; then
-    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA DOC EST LUE, LE PLAN N EST PAS FAIT : les tools du SKILL sont FERMES. Fais le plan (start_plan / load_plan / advance_plan) pour ouvrir le toolset. Par leur NUMERO :
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA DOC EST LUE, LE PLAN N EST PAS FAIT : les tools du SKILL sont FERMES. Fais le plan (todo) pour ouvrir le toolset. Par leur NUMERO :
 "
   elif [ "$TOOLSET_ARMED" = 1 ]; then
     SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE TOOLSET EST OUVERT EN ENTIER (toolset vient d etre nomme) : le tour COMPLET du skill actif, EXTRA les permanents. toolset est ABSENT de ce tour. Par leur NUMERO :
@@ -829,7 +829,7 @@ plan_open() {   # la COUCHE DE L ETAT rend-il un plan ouvert ? (sinon : termine,
   # LES MARQUEURS REELS SONT CEUX QUE LES BRIQUES DISENT : 'no open plan' (celui que la couche du
   # plan rend quand il n'y a pas de plan), 'AUCUN PLAN OUVERT' (celui que la boucle pose quand
   # second.sh est absent) et 'the plan could not be obtained' (ce que second.sh DIT quand la
-  # couche casse : jq absent, engine absent, engine 122 muet). Ce dernier etait cherche en
+  # couche casse : jq absent, engine absent, plan.sh muet). Ce dernier etait cherche en
   # francais ('pas pu etre obtenu'), que PERSONNE n'emet : la garde etait morte. Les trois sont
   # exerces par les verdicts B2b/B2c/B2d du banc, sur les mots REELS des briques.
   printf '%s' "$PLAN_TXT" | grep -qi 'aucun plan ouvert' && return 1
@@ -1003,7 +1003,7 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
     case "$TOOL_NAME" in
       load_doc)                                                            DOC_READ=1 ;;
       toolset)                                                             TOOLSET_ARMED=1 ;;
-      start_plan|load_plan|advance_plan|revise_plan|close_plan|abort_plan) PLAN_DONE=1 ;;
+      todo|progress)                                                       PLAN_DONE=1 ;;
     esac
     MSG_LINE=$(printf '%s' "$LINE_" | jq -r '.line // .result // ""' 2>/dev/null || true)
     log_to_stderr "${MSG_TS:-$(ts)}  turn $TURN  la(g=$G, a=$AJ)  ->  $MSG_LINE"
@@ -1047,7 +1047,7 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
         printf '%s\n' "$REPLY" >&2
         log_to_stderr "$(ts)  turn $TURN  answer PASSE et le plan n est pas termine : la reponse part au canal humain, le turn continue"
         SAID=$(printf '%s' "$REPLY" | tr '\n\t' '  ' | cut -c1-200)
-        hist_apply --arg d "$SAID" '. + [{role:"system",content:("Ta reponse est passee a l humain, et le turn CONTINUE : le plan n est pas termine. Nomme le tool qui finit l etape en cours, ou close_plan si les etapes sont faites. (tu as dit : "+$d+")")}]'
+        hist_apply --arg d "$SAID" '. + [{role:"system",content:("Ta reponse est passee a l humain, et le turn CONTINUE : le plan n est pas termine. Nomme le tool qui finit l etape en cours (progress complete), sinon l etape reste ouverte. (tu as dit : "+$d+")")}]'
       else
         ANSWERED=1
         break

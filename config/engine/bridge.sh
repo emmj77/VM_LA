@@ -10,7 +10,7 @@
 #
 # THE ROUTES
 #   GET  /ping           it is alive, and it says what it serves.
-#   GET  /plan           the plan state, through the `load_plan` tool of the table. NO model.
+#   GET  /plan           the plan state, read by config/engine/plan.sh status. NO model.
 #   GET  /audio/<name>   returns a wav of config/audio/.
 #   GET  /        AND /widget   THE WIDGET : a single view (the listening, the photo, the text,
 #                        the plan, the active address). A PAGE, not a channel : it calls only the
@@ -271,12 +271,20 @@ request() {
       ;;
 
     /plan*)
-      ID=$(id_of load_plan)
-      if [ -z "$ID" ]; then
-        printf '{"error":"the table does not carry load_plan"}\n' > "$T/out"
+      # THE PLAN comes from the plan BRICK (config/engine/plan.sh status), read DIRECTLY : no tool,
+      # no model. The brick returns the plan as TEXT, or `no open plan` when there is none.
+      PLANB="$HERE/plan.sh"
+      if [ ! -x "$PLANB" ]; then
+        printf '{"error":"the plan brick is missing (%s)"}\n' "$PLANB" > "$T/out"
         answer 500 application/json "$T/out"
       else
-        "$SH" "$ENGINE" "$ID" < /dev/null > "$T/out" 2>>"$LOGF"
+        ACT=$(sed -n '1p' "$ROOT/skills/.active" 2>/dev/null | tr -d '\r')
+        PLANTXT=$(PLAN_FILE="$ROOT/skills/${ACT:-la}/skill.yaml" "$SH" "$PLANB" status < /dev/null 2>>"$LOGF") || PLANTXT=
+        if command -v jq >/dev/null 2>&1; then
+          printf '%s' "$PLANTXT" | jq -Rs '{status:"ok",plan:.,result:.}' > "$T/out"
+        else
+          printf '{"status":"ok","plan":"%s"}\n' "$(printf '%s' "$PLANTXT" | tr '\n' ' ')" > "$T/out"
+        fi
         answer 200 application/json "$T/out"
       fi
       ;;
@@ -590,8 +598,8 @@ status() {
   fi
   printf 'bridge: loop served = %s\n' "$LOOP"
   printf 'bridge: log_line = %s line(s)\n' "$(wc -l < "$LOGF" 2>/dev/null | tr -d ' ' || printf 0)"
-  printf 'bridge: the ids read in the table : load_plan=%s transcribe=%s\n' \
-    "$(id_of load_plan)" "$(id_of transcribe)"
+  printf 'bridge: the ids read in the table : transcribe=%s ; the plan is read by %s status\n' \
+    "$(id_of transcribe)" "$HERE/plan.sh"
 }
 
 help() {

@@ -62,15 +62,11 @@ permanent:
   - talk
   - kill
   - tools_list
-  - start_plan
-  - advance_plan
-  - revise_plan
-  - close_plan
-  - load_plan
-  - abort_plan
+  - todo
+  - progress
   - skill_manage:view_skill
   - skill_manage:load_skill
-  # LE SOMMEIL EST UN TOOL DU TOUR (loi 474) : il est PERMANENT, comme les six tools du plan --
+  # LE SOMMEIL EST UN TOOL DU TOUR (loi 474) : il est PERMANENT, comme les deux tools du plan --
   # meme famille MANAGE, et un tour qui ne peut pas s'endormir ne peut pas attendre. Sans cette
   # ligne, la ligne 177 de la table existe mais AUCUN chemin ne l'ouvre (verdict B20 du banc).
   - sleep

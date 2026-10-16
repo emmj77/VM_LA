@@ -21,7 +21,7 @@ PERMANENTS:
   101: "Les tools permanents sont INJECTES a chaque tour par la boucle, dans le message PERIMETER."
   102: "Ils tombent SANS etre charges : le head les NOMME, la boucle les ajoute."
   103: "answer, ask, talk, kill : les quatre garde-fous, TOUJOURS la, meme sous un verrou."
-  104: "tools_list, start_plan, advance_plan, revise_plan, close_plan."
+  104: "tools_list, todo, progress."
   105: "skill_manage:view_skill et skill_manage:load_skill : ces DEUX actions-la, pas la ligne."
 
 MECHANISM:

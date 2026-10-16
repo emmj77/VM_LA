@@ -276,55 +276,28 @@ tools:
       L=${LA_LANDRUN:-/home/moussa/.local/bin/landrun}; T="{{timeout}}"; [ -n "$T" ] || T=30; [ -x "$L" ] || { echo "refuse : landrun introuvable ($L)" >&2; exit 1; }
       cd "$ROOT" || exit 1; timeout "$T" "$L" --ro / --rox /usr --rox /bin --rox /lib --rox /lib64 --rw "$W" -- /bin/sh -c "$C"
   - id: 121
-    tool: start_plan
+    tool: todo
     family: MANAGE
-    description: "opens a plan in the active skill's PLAN: section, the cleanup point last"
+    description: "opens the plan in the active skill's PLAN: section ; the points arrive one per line"
     args:
       - {name: name, type: text}
       - {name: goal, type: text}
-      - {name: steps, type: text, stdin: true}
+      - {name: points, type: text, stdin: true}
     command: |
-      [ -n "{{name}}" ] || { echo 'refuse : name vide ; start_plan veut le nom du plan' >&2; exit 1; }
-      [ -n "{{goal}}" ] || { echo 'refuse : goal vide ; start_plan veut ce que la tache doit produire' >&2; exit 1; }
+      [ -n "{{name}}" ] || { echo 'refuse : name vide ; todo veut le nom du plan' >&2; exit 1; }
+      [ -n "{{goal}}" ] || { echo 'refuse : goal vide ; todo veut ce que la tache doit produire' >&2; exit 1; }
       [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
-      "$PROCS/plan.sh" start "{{name}}" "{{goal}}"
+      "$PROCS/plan.sh" todo "{{name}}" "{{goal}}"
   - id: 122
-    tool: load_plan
-    family: READ
-    description: "returns the active skill's open plan, writing nothing"
-    args: []
-    command: |
-      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
-      "$PROCS/plan.sh" load
-  - id: 123
-    tool: advance_plan
+    tool: progress
     family: MANAGE
-    description: "advances the active skill's plan current point by one state, never two"
-    args: []
-    command: |
-      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
-      "$PROCS/plan.sh" advance
-  - id: 124
-    tool: revise_plan
-    family: MANAGE
-    description: "rewrites the active skill's plan unpassed points and keeps the reason"
+    description: "marks the CURRENT point of the plan : progress (still going) or complete (done)"
     args:
-      - {name: steps, type: text, stdin: true}
-      - {name: reason, type: text}
+      - {name: state, type: text}
     command: |
-      R="{{reason}}"; [ -n "$R" ] || { echo 'refuse : reason vide ; une revision sans motif ne se relit pas' >&2; exit 1; }
+      [ -n "{{state}}" ] || { echo 'refuse : state vide ; progress veut son etat : progress ou complete' >&2; exit 1; }
       [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
-      "$PROCS/plan.sh" revise "$R"
-  - id: 125
-    tool: close_plan
-    family: MANAGE
-    description: "closes the active skill's plan if its last point is cleanup, otherwise refuses"
-    args:
-      - {name: reason, type: text}
-    command: |
-      R="{{reason}}"; [ -n "$R" ] || { echo 'refuse : reason vide ; un plan ferme sans motif ne se relit pas' >&2; exit 1; }
-      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
-      "$PROCS/plan.sh" close "$R"
+      "$PROCS/plan.sh" progress "{{state}}"
   - id: 126
     tool: skill_manage
     family: MANAGE
@@ -609,10 +582,10 @@ tools:
       load_skill)
         if [ -L "$SK/$SLUG" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2; exit 1; fi
         [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2; exit 1; }
-        OUV=$(printf '' | "${PROCS:-$ROOT/config/engine}/plan.sh" load 2>/dev/null) || OUV=
+        OUV=$(printf '' | "${PROCS:-$ROOT/config/engine}/plan.sh" status 2>/dev/null) || OUV=
         case "$OUV" in
-          ''|'aucun plan ouvert'*) : ;;
-          *) { echo "refuse : un plan est ouvert dans le skill actif ; load_skill n est PAS cumulatif (une tache = une skill = un plan), fermer le plan (close_plan) avant de charger une AUTRE skill" >&2; exit 1; } ;;
+          ''|'no open plan'*|'aucun plan ouvert'*) : ;;
+          *) { echo "refuse : un plan est ouvert dans le skill actif ; load_skill n est PAS cumulatif (une tache = une skill = un plan), termine le plan (progress complete jusqu a la derniere etape) avant de charger une AUTRE skill" >&2; exit 1; } ;;
         esac
         # LE POINTEUR DE SKILL ACTIVE : load_skill ECRIT le nom dans le fichier d etat
         # skills/.active. C est CE fichier que lisent engine.sh, second.sh et loop.sh
@@ -748,7 +721,7 @@ tools:
       fi
       if [ "$A" = delete_tool ]; then
         case "$NM" in
-          skill_manage|table_manage|load_skill|start_plan|advance_plan|revise_plan|close_plan)
+          skill_manage|table_manage|load_skill|todo|progress)
             echo "refuse : la ligne $ID ($NM) porte un MANAGER ; on ne se coupe pas la main, ce retrait est refuse en le nommant, et il ne passe JAMAIS par une approbation" >&2
             exit 1 ;;
         esac
@@ -874,16 +847,6 @@ tools:
       [ -d "$D" ] || { echo "refuse : memory introuvable ; la portee du tool n existe pas ($D)" >&2; exit 1; }
       cd "$D" || { echo "refuse : memory introuvable ($D)" >&2; exit 1; }
       LC_ALL=C grep -rlF -- "$T" . 2>/dev/null | LC_ALL=C sort | cut -c3-
-  - id: 133
-    tool: abort_plan
-    family: MANAGE
-    description: "closes the active skill's plan marking it interrupted, refuses without a plan"
-    args:
-      - {name: reason, type: text}
-    command: |
-      R="{{reason}}"; [ -n "$R" ] || R="(interrompu)"
-      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
-      "$PROCS/plan.sh" abort "$R"
   - id: 134
     tool: write_spec
     family: MANAGE
