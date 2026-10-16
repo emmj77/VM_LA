@@ -342,6 +342,7 @@ SECTION : LE_FILTRE
   704: "ENSUITE load_doc ; ALORS les tools de la skill se debloquent."
   705: "LE PERIMETRE EST UN ENUM : hors liste, un tool n'est pas interdit, IL N'EST PAS ENVOYE."
   706: "UN TOOL HORS PERIMETRE EST REFUSE PAR LA BOUCLE, et le tour est laisse pour corriger."
+  707: "LE PERIMETRE EST CLOS : hors palette, un tool n est pas un candidat, il n est pas CLASSE."
 
 SECTION : L_ECONOMIE
   800: "LA CONVERSATION N'EST PAS L'ETAT."
@@ -369,6 +370,10 @@ SECTION : L_ECONOMIE
   822: "LE PLAN EST UN ETAT, PAS UNE INTENTION."
   823: "L'ETAT MECANIQUE ET LA SYNTHESE SE PARTAGENT LE RESUME."
   824: "LA COMPACTION EST LE RISQUE QUE TOUT CECI EXISTE POUR EVITER."
+  825: "LA VIT EN RAM : ce qui coute cher a charger ne se recharge pas a chaque tour."
+  826: "LA RAM SE REMBOURSE EN TOKENS : un resident qui dort est une faute."
+  827: "UN RESIDENT DOIT SERVIR PLUSIEURS FOIS PAR TOUR, sinon sa RAM est payee pour rien."
+  828: "VOULU : le moteur resident AUSSI, a condition que la table editee prenne effet aussitot."
 
 SECTION : LE_PLAN
   900: "LE PLAN EST LA TACHE ECRITE."
