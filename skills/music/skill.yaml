@@ -1,0 +1,26 @@
+skill: "music"
+source: "agent"
+date: "2026-10-14"
+tags: [music, audio, sound, transcription, parakeet]
+
+SUMMARY:
+  101: "Traiter le son : transcrire un audio, generer ou couper une piste."
+  102: "transcribe lit un audio de PERIMETER.workspace avec parakeet ; le reste par shell_run."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "transcribe"
+  201: "shell_run"
+  202: "read_file"
+  203: "write_file"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

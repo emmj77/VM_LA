@@ -1,0 +1,32 @@
+skill: "core"
+source: "agent"
+date: "2026-10-14"
+tags: ["core", "base", "read", "write", "corpus"]
+
+SUMMARY:
+  101: "Le socle : lire, lister, chercher et ecrire dans le projet."
+  102: "Je lis un fichier, un dossier, une recherche ; j'ecris dans PERIMETER.workspace."
+  103: "trash_file DEPLACE vers la corbeille : je n'efface rien."
+  104: "load_doc me rend la doc du skill actif avant un tool sensible."
+  105: "session transcrit le tour dans sessions/ ; c'est la boucle qui l'appelle."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "read_file"
+  201: "list_dir"
+  202: "search"
+  203: "write_file"
+  204: "trash_file"
+  205: "load_doc"
+  206: "session"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

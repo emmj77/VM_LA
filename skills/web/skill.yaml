@@ -1,0 +1,26 @@
+skill: "web"
+source: "agent"
+date: "2026-10-14"
+tags: ["web", "recherche", "search", "curl", "page"]
+
+SUMMARY:
+  101: "Chercher et ramener une page du dehors dans le projet."
+  102: "Le seul tool de sortie est shell_run ; le reseau est COUPE sous landrun."
+  103: "TROU NOMME : sans tool de fetch, le web ne sort pas du projet."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "shell_run"
+  201: "read_file"
+  202: "write_file"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

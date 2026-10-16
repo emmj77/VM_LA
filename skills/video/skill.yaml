@@ -1,0 +1,25 @@
+skill: "video"
+source: "agent"
+date: "2026-10-14"
+tags: ["video", "film", "montage", "ffmpeg"]
+
+SUMMARY:
+  101: "Traiter une video : extraire, decouper, convertir."
+  102: "Tout passe par shell_run (ffmpeg et compagnie), en ecriture dans PERIMETER.workspace."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "shell_run"
+  201: "read_file"
+  202: "write_file"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

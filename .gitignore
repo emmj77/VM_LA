@@ -1,0 +1,18 @@
+# --- SECRETS ET PRIVE : JAMAIS publies (ce depot est PUBLIC) ---
+memory/
+config/.env
+config/certs/
+config/sessions.yaml
+config/sessions.db
+config/sessions.db-journal
+
+# --- EXECUTION ET ETAT LOCAL (pas du source) ---
+work/
+config/audio/
+config/backups/
+*.pid
+*.log
+
+# --- DIVERS ---
+.DS_Store
+*.swp

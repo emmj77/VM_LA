@@ -1,0 +1,32 @@
+skill: "system"
+source: "agent"
+date: "2026-10-14"
+tags: ["system", "process", "disk", "model", "machine"]
+
+SUMMARY:
+  101: "Regarder la machine : processus, disque, et le modele local."
+  102: "process_list liste les processus ; models_status dit si le modele repond."
+  103: "models_ask pose une question au modele local (llama.cpp, :8088)."
+  104: "shell_run tourne sous landrun : lecture seule, ecriture dans PERIMETER.workspace."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "process_list"
+  201: "shell_run"
+  202: "models_status"
+  203: "models_ask"
+  204: "read_file"
+  205: "write_file"
+DOCS:
+  300: "load_doc"
+  301: "LE PONT sert le telephone : widget, photo, voix, plan, adresses (bridge.sh)."
+  302: "L APK du client natif (widget + bulle) se prend sur le pont, a /la.apk."
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

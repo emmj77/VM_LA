@@ -1,0 +1,33 @@
+skill: "{{name}}"            # le nom de la skill
+source: humain               # qui a le DROIT d'ecrire ce fichier
+date: "{{date}}"             # la date de pose
+tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE la skill, et ouvre ses tools
+
+SUMMARY:                      # pour le head secondaire, tant que la skill est chargee
+  101: "..."                 # une loi de resume, 100 octets au plus
+  102: "..."
+  110: "..."
+RULES:                       # sous SUMMARY : les lois que le HARNESS applique
+  create_subfolder: true          # il est autorisé de créer des sous dossiers
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:                       # les tools que ce skill ouvre, et eux seuls (200 a 299)
+  200: "..."              # une ligne, un nom de tool
+  201: "..."
+DOCS:                        # le moyen d'appeler la source : un TOOL, par son nom
+  300: "load_doc"            # le chemin, c'est le moteur qui le resout
+PLAN:                        # 20 lignes au plus, DEUX par tache (400 a 419)
+  400: "tache : ..."         # une tache par pas de deux
+  401: "etat : todo | in_progress | done"
+PERIMETER:                   # deux choses, et deux seulement
+  workspace: "work/"        # les dossiers de travail
+  type-file: ".md .yaml .sh .json .txt"   # les types de fichier acceptes
+ERROR:                       # ce que la skill dit quand un tool refuse
+  600: "..."
+SECTIONS:                    # les sections libres, A LA FIN, 5 au maximum
+  SECTION:REF:               # la 1re : 1000, 1001, 1002...
+    1000: "une reference"
+    1001: "une autre"
+  SECTION:REF2:              # la 2e : 2001, 2002, 2003...
+    2001: "une reference"

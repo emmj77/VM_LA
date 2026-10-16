@@ -1,0 +1,27 @@
+skill: "blender"
+source: "agent"
+date: "2026-10-14"
+tags: ["blender", "3d", "assets", "texture", "tx"]
+
+SUMMARY:
+  101: "Travailler les assets 3D par le CLI blender."
+  102: "blender_asset_listing indexe une bibliotheque ; blender_maketx cuit un cache .tx."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "blender_asset_listing"
+  201: "blender_maketx"
+  202: "shell_run"
+  203: "read_file"
+  204: "write_file"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

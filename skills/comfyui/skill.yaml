@@ -1,0 +1,41 @@
+skill: "comfyui"
+source: "agent"
+date: "2026-10-14"
+tags: ["comfyui", "dessin", "kra", "colorier", "calque"]
+
+SUMMARY:
+  101: "Le poste de dessin : colorier un trait, poser un decor, juger un regard."
+  102: "comfyui_generate poste une image ; les autres tools menent la chaine : rendu d'un .kra,"
+  103: "calques, nettoyage du trait, style, coherence, agrandir, variantes."
+  104: "Le modele local (models_ask, models_status) sert la generation sur la station."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "comfyui_generate"
+  201: "comfyui_status"
+  202: "comfyui_colorize"
+  203: "comfyui_colorize_under_lines"
+  204: "comfyui_render_drawing"
+  205: "comfyui_variants"
+  206: "comfyui_colorize_batch"
+  207: "comfyui_clean_lines"
+  208: "comfyui_style"
+  209: "comfyui_coherence"
+  210: "comfyui_enlarge"
+  211: "comfyui_find_layers"
+  212: "comfyui_animate_background"
+  213: "models_ask"
+  214: "models_status"
+  215: "read_file"
+  216: "write_file"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

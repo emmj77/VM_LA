@@ -1,0 +1,31 @@
+skill: "image"
+source: "agent"
+date: "2026-10-14"
+tags: ["image", "photo", "dessin", "generation", "png"]
+
+SUMMARY:
+  101: "Produire et retoucher une image."
+  102: "comfyui_generate poste une image et la range dans PERIMETER.workspace."
+  103: "Le reste (recadrer, convertir) passe par shell_run, ecriture dans PERIMETER.workspace."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "comfyui_generate"
+  201: "comfyui_status"
+  202: "shell_run"
+  203: "read_file"
+  204: "write_file"
+  205: "see_image"
+  206: "vision_analyze"
+DOCS:
+  300: "load_doc"
+  301: "see_image small = CPU, big = cartes ; big se demarre seul, refuse sans la place."
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

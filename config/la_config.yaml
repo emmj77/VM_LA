@@ -1,0 +1,72 @@
+# LA — LA CONFIG. Les adresses des engines, et les NOMS des secrets. Rien d'autre.
+#
+# CONVENTION ANGLAISE OBLIGATOIRE : toute CLE, tout IDENTIFIANT et tout NOM de ressource
+# s'ecrit en ANGLAIS. La PROSE (ces commentaires) reste en francais. Une cle francaise nait
+# une derive : elle finit recopiee dans le code, les tables et les sorties.
+#
+# La table des tools vit dans config/la_tools.yaml. Ici on ne parle que de ce qui CONNECTE :
+# ou est le modele, et sous quel NOM une cle est attendue.
+#
+# JAMAIS UNE VALEUR DE SECRET ICI : une cle vit dans la variable du lanceur.
+# UNE SEULE adresse porte active: "true".
+
+engines:
+  - provider: ollama-cloud
+    alias: cloud
+    post: https://ollama.com/v1/chat/completions
+    header: Authorization
+    variable: OLLAMA_API_KEY
+    model: deepseek-v4.1-flash
+    active: "true"
+    max_tokens: 4096
+    tool_choice: required
+  - provider: deepseek
+    alias: pro
+    post: https://api.deepseek.com/chat/completions
+    header: Authorization
+    variable: DEEPSEEK_API_KEY
+    model: deepseek-v4-pro
+    active: "false"
+  - provider: xiaomi-mimo
+    alias: mimo
+    post: https://api.xiaomimimo.com/v1/chat/completions
+    header: api-key
+    variable: MIMO_API_KEY
+    model: mimo-v2.6-flash
+    active: "false"
+
+# UNE SEULE adresse porte active: "true". Changer d'adresse = un mot dans ce fichier.
+# Ce qui distingue les adresses : l'identifiant des `tool_calls` (Ollama Cloud ne le pose
+# pas, le pont le pose) et ce que `tool_choice` accepte (MiMo n'accepte que `auto`).
+
+secrets:
+  - OLLAMA_API_KEY
+  - DEEPSEEK_API_KEY
+  - MIMO_API_KEY
+  - TELEGRAM_BOT_TOKEN
+  - TELEGRAM_CHAT_ID
+  - GITHUB_TOKEN
+
+# LA CATEGORIE PERMANENTE - les tools TOUJOURS apparents, par NOM de tool (stable).
+# La boucle lit cette section et l'ajoute au perimetre de CHAQUE tour normal, a cote
+# de la palette du skill actif (config/engine/loop.sh). Sous un VERROU, seuls le tool
+# impose et les quatre garde-fous (answer, ask, kill, talk) tiennent : sans eux un verrou ne
+# se leve plus, un agent parti en boucle n'a aucun bouton d'arret, et le modele ne peut plus
+# parler.
+# UNE ENTREE `tool:action` (ex. skill_manage:view_skill) ne rend permanent QUE cette
+# action-la - jamais toute la ligne : skill_manage porte treize actions, et les marquer
+# toutes du meme coup rendrait create_skill et remove_skill permanents, ce qu'on refuse.
+permanent:
+  - answer
+  - ask
+  - talk
+  - kill
+  - tools_list
+  - start_plan
+  - advance_plan
+  - revise_plan
+  - close_plan
+  - load_plan
+  - abort_plan
+  - skill_manage:view_skill
+  - skill_manage:load_skill

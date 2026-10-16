@@ -1,0 +1,26 @@
+skill: "documents"
+source: "agent"
+date: "2026-10-14"
+tags: ["documents", "pdf", "docx", "xlsx", "tableur"]
+
+SUMMARY:
+  101: "Lire et ecrire des documents : pdf, docx, xlsx, csv."
+  102: "Je passe par shell_run (les CLI de documents) et j'ecris dans PERIMETER.workspace."
+  103: "Le document lu vient du projet, le produit y reste : rien ne sort."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "shell_run"
+  201: "read_file"
+  202: "write_file"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

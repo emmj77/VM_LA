@@ -1,0 +1,25 @@
+skill: "mail"
+source: "agent"
+date: "2026-10-14"
+tags: ["mail", "courriel", "email", "imap", "smtp"]
+
+SUMMARY:
+  101: "Lire et preparer le courrier."
+  102: "Le tool est shell_run (un CLI de mail) ; l'envoi reste sous approbation."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "shell_run"
+  201: "read_file"
+  202: "write_file"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

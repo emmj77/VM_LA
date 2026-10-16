@@ -1,0 +1,24 @@
+skill: "agent"
+source: "agent"
+date: "2026-10-14"
+tags: ["agent", "delegation", "sous-agent", "tache"]
+
+SUMMARY:
+  101: "Confier une tache courte a un agent en dessous."
+  102: "delegate_task ouvre sa propre fenetre, sur le meme projet et les memes tools."
+  103: "La PROFONDEUR le borne : a LA_DEPTH >= 1 il refuse."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "delegate_task"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

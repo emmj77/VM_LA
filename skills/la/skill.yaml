@@ -1,0 +1,77 @@
+skill: "LA"
+source: "agent"
+date: "2026-10-15"
+tags: ["LA", "harness", "engine", "table", "spec"]
+
+SUMMARY:
+  101: "LA est un harness : le modele NOMME un tool, le engine le valide et l'execute."
+  102: "La racine est le projet lui-meme."
+  103: "LE ENGINE lit une ligne de la table config/la_tools.yaml, valide, puis execute."
+  104: "LE SKILL ACTIF porte la portee et ouvre la palette de ses tools."
+  105: "Le contexte a trois zones : TETE immuable, etat rebatie, fenetre bornee."
+  106: "LE CANON EST spec.yaml : L'ARCHITECTURE."
+  107: "config/engine/*.sh EST LE ENGINE."
+  108: "LA BOUCLE PORTE CINQ BORNES D'ARRET : CONTEXTE, ANTI-BOUCLE, JETONS, APPELS, TEMPS."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "answer"
+  201: "ask"
+  202: "read_file"
+  203: "list_dir"
+  204: "search"
+  205: "tools_list"
+  206: "write_file"
+  207: "trash_file"
+  208: "note"
+  209: "start_plan"
+  210: "load_plan"
+  211: "advance_plan"
+  212: "revise_plan"
+  213: "close_plan"
+  214: "skill_manage"
+  215: "index_build"
+  216: "search_semantic"
+  217: "abort_plan"
+DOCS:
+  300: "load_doc"
+  301: "Le modele local (LFM2.5-1.2B) compacte l echange en fin de tour ; journal sessions.yaml."
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:
+  SECTION:PIEGES:
+    1000: "UN ACCENT GRAVE, MEME DANS UN COMMENTAIRE, CASSE dash."
+    1001: "UNE APOSTROPHE FRANCAISE DANS UNE CHAINE A QUOTES SIMPLES FERME LA CHAINE."
+    1002: "Dans un filtre jq on ecrit n a, jamais n'a : l'erreur sort TRENTE LIGNES PLUS LOIN."
+    1003: "UNE FONCTION SE DEFINE AVANT TOUT APPEL."
+    1004: "LES SCRIPTS SONT EN dash : pas de tableaux, pas de [[ ]], pas de local hors fonction."
+    1005: "LE MODELE NE DEVINE AUCUN NUMERO : g vient de la TABLE DONNEE DANS LE PROMPT."
+    1006: "LE MODELE REPOND AVANT DE LIRE : il rend un answer devine dans le MEME tour."
+    1007: "UN RESULTAT ENTIER FAIT TOMBER LE TOUR : bound_result decide entier, resume, ou rien."
+    1008: "UN REFUS N'EST JAMAIS MESURE."
+    1009: "UNE SEULE BASE DE CHEMIN : LA RACINE ; la portee est la CLOTURE."
+    1010: "UN REFUS DIT LA FORME ATTENDUE, jamais un 'interdit' sec."
+    1011: "UNE COMMANDE QUI NE REND QUE SON AIDE N'EST PAS UN TOOL."
+    1012: "UN SERVICE ETEINT DOIT REFUSER VITE."
+    1013: "UN CHAMP REQUIS VIDE ECRIT QUAND MEME : la borne est sur le champ, pas sur l'intention."
+    1014: "LE BANC ENTRE PAR UN FICHIER (sh loop.sh < in.json), jamais par un tube."
+    1015: "LE BANC SE FAIT SUR UNE COPIE, dans le scratch : les commandes ecrivent pour de vrai."
+    1017: "yq LIT L'ENVIRONNEMENT ET LE DISQUE : un outil qui l'evalue se ferme avant."
+  SECTION:LECTURE:
+    2001: "yq '.tools|length' config/la_tools.yaml"
+    2002: "yq -r '.tools[] | [.id, .family, .tool] | @tsv' config/la_tools.yaml"
+    2003: "yq '.engines[] | select(.active)' config/la_config.yaml"
+    2004: "yq '.permanente' config/la_config.yaml"
+    2005: "dash -n config/engine/*.sh"
+    2006: "grep -c '^SECTION :' skills/la/spec.yaml"
+  SECTION:CORPUS:
+    3001: "L'AGENT NE CHOISIT JAMAIS UN EMPLACEMENT : quand le lieu n'est pas nomme, on DEMANDE."
+    3002: "UNE PASSE QUI AJOUTE DOIT RETIRER, et elle sait QUOI avant d'ajouter."
+    3003: "UNE REDITE EST UNE CONTRADICTION EN ATTENTE."
+    3005: "UNE QUESTION OUVERTE VIT DANS config/BACKLOG.md, AVEC SA CONDITION D'ACTIVATION."

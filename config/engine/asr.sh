@@ -1,0 +1,69 @@
+#!/bin/sh
+# asr.sh - L OREILLE. Le moteur qui ENTEND, charge une seule fois.
+#
+# POURQUOI CE NOM. Le tool `transcribe` transcrivait un fichier avec le binaire one-shot : chaque
+# appel relisait 681 Mo de modele. Ici le modele reste DEBOUT derriere la route HTTP du projet
+# nemo-speech (`serve`), et une transcription coute le seul calcul : mesure faite, 809 ms au lieu
+# de 1 254 a 1 567 ms, et le modele n'est plus jamais relu.
+#
+# CE QUE CA CHANGE POUR LES AUTRES : rien. Le service expose la route du PROJET, pas une route a
+# nous (`POST /v1/audio/transcriptions`, sous-ensemble OpenAI documente) : le tool y va par curl,
+# et c'est tout. Le pont et l'appli ne connaissent que le tool.
+#
+# MODES : start | stop | status | run | help
+#   run     au premier plan, pour systemd. Ne rend jamais la main.
+#   start   detache, ecrit sa marque (work/asr.pid) et son journal (work/asr.log).
+#   stop    arrete le pid de sa marque. JAMAIS par motif : on ne tue que ce qu'on a pose.
+#   status  interroge /ready et dit si l'oreille repond, et sur quel port.
+#
+# ENTREE (env)
+#   LA_ASR_PORT     defaut 8080
+#   LA_ASR_THREADS  defaut 4      le pool de requetes du serveur
+#   LA_ASR_MODEL    defaut le parakeet du projet
+#
+# SORTIE : work/asr.log, work/asr.pid
+
+set -u
+
+HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ROOT=$(CDPATH= cd -- "$HERE/../.." && pwd)
+W="$ROOT/work"
+ROOT_MODELES=${LA_MODELES:-/home/moussa/Applications/NeMo-Speech.cpp}
+CLI=${LA_ASR_CLI:-$ROOT_MODELES/build/cpu-server/bin/nemo-speech}
+MODEL=${LA_ASR_MODEL:-models/parakeet-tdt-0.6b-v3.q8_0.gguf}
+PORT=${LA_ASR_PORT:-8080}
+THREADS=${LA_ASR_THREADS:-4}
+HOST=${LA_ASR_HOST:-127.0.0.1}
+PID_FILE="$W/asr.pid"
+LOGF="$W/asr.log"
+
+[ -x "$CLI" ] || { echo "refuse : le moteur nemo-speech est introuvable ($CLI)" >&2 ; exit 1 ; }
+[ -f "$ROOT_MODELES/$MODEL" ] || { echo "refuse : le modele de l oreille est introuvable ($MODEL)" >&2 ; exit 1 ; }
+
+case "${1:-help}" in
+  run)
+    cd "$ROOT_MODELES" || exit 1
+    exec "$CLI" serve --asr-model "$MODEL" --host "$HOST" --port "$PORT" --no-ui --threads "$THREADS"
+    ;;
+  start)
+    if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+      echo "l oreille tourne deja (pid $(cat "$PID_FILE"), port $PORT)"
+      exit 0
+    fi
+    ( cd "$ROOT_MODELES" && nohup "$CLI" serve --asr-model "$MODEL" --host "$HOST" --port "$PORT" --no-ui --threads "$THREADS" >> "$LOGF" 2>&1 & echo $! > "$PID_FILE" )
+    echo "oreille lancee (pid $(cat "$PID_FILE"), port $PORT, journal $LOGF)"
+    ;;
+  stop)
+    if [ ! -f "$PID_FILE" ]; then echo "l oreille ne tourne pas : aucune marque" ; exit 0 ; fi
+    P=$(cat "$PID_FILE")
+    if kill "$P" 2>/dev/null; then echo "oreille arretee (pid $P)" ; else echo "l oreille ne repondait plus (pid $P)" ; fi
+    rm -f "$PID_FILE"
+    ;;
+  status)
+    R=$(curl -s --max-time 3 "http://127.0.0.1:$PORT/ready" 2>/dev/null)
+    if [ -n "$R" ]; then echo "oreille debout sur 127.0.0.1:$PORT : $R" ; else echo "oreille muette sur 127.0.0.1:$PORT" ; exit 1 ; fi
+    ;;
+  *)
+    echo "modes : start | stop | status | run | help"
+    ;;
+esac

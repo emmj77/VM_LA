@@ -1,0 +1,29 @@
+skill: "code"
+source: "agent"
+date: "2026-10-14"
+tags: ["code", "ast-grep", "yaml", "grep", "refactor"]
+
+SUMMARY:
+  101: "Chercher et lire du code : une forme (ast-grep), un yaml/json, un motif."
+  102: "ast_grep_search cherche une FORME ; search cherche un TEXTE fixe."
+  103: "yq_query lit un yaml, un json ou l'EN-TETE d'un .md ; le corps reste a read_file."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "ast_grep_search"
+  201: "yq_query"
+  202: "shell_run"
+  203: "read_file"
+  204: "write_file"
+  205: "search"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

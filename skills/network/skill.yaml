@@ -1,0 +1,26 @@
+skill: "network"
+source: "agent"
+date: "2026-10-14"
+tags: ["network", "port", "curl", "dns"]
+
+SUMMARY:
+  101: "Regarder le reseau : ports, interfaces, services locaux."
+  102: "Tout passe par shell_run ; le reseau SORTANT est coupe sous landrun."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "shell_run"
+  201: "process_list"
+  202: "read_file"
+  203: "write_file"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

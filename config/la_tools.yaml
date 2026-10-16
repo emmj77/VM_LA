@@ -1,0 +1,1571 @@
+# LA — LA TABLE DES TOOLS. Un fichier, une section : les tools. Rien d'autre.
+#
+# La config proprement dite (les adresses des engines, les noms des secrets) vit dans
+# config/la_config.yaml. Ici, il n'y a QUE des tools.
+#
+# Ce que le catalogue du 02 - LES OUTILS ecrit pour l'oeil, ce fichier l'ecrit pour la MACHINE.
+#
+# NUL NE MODIFIE CETTE TABLE A LA MAIN, SAUF L'HUMAIN.
+#
+#    UN TOOL, C'EST UNE LIGNE
+#      id · tool · family (READ | WRITE | MANAGE | REPLY) · description · args · command
+#      args     name · type (path | enum | int | bool | text) · values (enum seulement) · stdin
+#
+#    DEUX LOIS QUI NE SE VOIENT PAS DANS LES COLONNES
+#      L'ID N'EST PAS UNE POSITION : un tool porte son id, l'ajouter ne renumerote RIEN.
+#      LE TEXTE LIBRE RENTRE PAR L'ENTREE STANDARD (stdin: true), JAMAIS dans la commande.
+#
+#    LE ENGINE lit la ligne, valide les arguments, execute la commande.
+#    Ajouter un tool = ajouter une ligne — le schema de la(g, a) dans le head ne bouge pas.
+
+tools:
+  - id: 101
+    tool: answer
+    guardrail: true
+    family: REPLY
+    description: "returns the reply to the human and closes the turn"
+    args:
+      - {name: form, type: enum, values: [text, list, table, code]}
+      - {name: text, type: text, stdin: true}
+    command: cat
+
+  - id: 102
+    tool: ask
+    guardrail: true
+    family: REPLY
+    description: "asks the human a question, the turn waits for the answer"
+    args:
+      - {name: question, type: text, stdin: true}
+    command: cat
+
+  - id: 103
+    tool: read_file
+    family: READ
+    description: "returns a project file, as is, without modifying it"
+    args:
+      - {name: path, type: path}
+    command: 'cat "$ROOT/{{path}}"'
+
+  - id: 104
+    tool: list_dir
+    family: READ
+    description: "lists a project directory, one entry per line, directories marked with a slash"
+    args:
+      - {name: path, type: path}
+    command: 'LC_ALL=C ls -1p -- "$ROOT/{{path}}"'
+
+  - id: 105
+    tool: write_file
+    family: WRITE
+    description: "writes a file into the skill workspace, in three modes"
+    args:
+      - {name: path, type: path}
+      - {name: mode, type: enum, values: [new, append, replace]}
+      - {name: text, type: text, stdin: true}
+    command: 'case "{{mode}}" in new) [ -e "$W/{{path}}" ] && { echo "refuse: existe deja" >&2; exit 1; }; cat > "$W/{{path}}" ;; append) [ -f "$W/{{path}}" ] || { echo "refuse: absent" >&2; exit 1; }; cat >> "$W/{{path}}" ;; replace) [ -f "$W/{{path}}" ] || { echo "refuse: absent" >&2; exit 1; }; cat > "$W/{{path}}" ;; esac'
+
+  - id: 106
+    tool: search
+    family: READ
+    description: "searches a fixed text across the project, returns the files that carry it"
+    args:
+      - {name: text, type: text, stdin: true}
+    command: 'T=$(cat); [ ${#T} -ge 3 ] || { echo "refuse: texte de moins de 3 caracteres" >&2; exit 1; }; cd "$ROOT" && LC_ALL=C grep -rlF -- "$T" . | LC_ALL=C sort | cut -c3-'
+
+  - id: 107
+    tool: trash_file
+    family: WRITE
+    description: "moves a file from work to the system trash, without erasing"
+    args:
+      - {name: path, type: path}
+    command: '[ -f "$W/{{path}}" ] || { echo "refuse: cible absente" >&2; exit 1; }; gio trash -- "$W/{{path}}"'
+  - id: 108
+    tool: note
+    family: MANAGE
+    description: "appends a dated entry into memory/, replacing nothing"
+    args:
+      - {name: subject, type: text}
+      - {name: text, type: text, stdin: true}
+    command: |
+      D=$(date -u +%Y-%m-%d)
+      S=$(printf '%s' "{{subject}}" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//')
+      E=$(printf '%s' "{{subject}}" | sed -e 's/[\\&@]/\\&/g')
+      O='{{'; C='}}'; PAT="${O}subject${C}"
+      M="$ROOT/config/templates/memory-entry.md"; T=$(cat)
+      { [ -n "$S" ] && [ -n "$T" ] && [ -r "$M" ]; } || { echo "refuse : subject vide, text vide, ou template_file memory-entry.md introuvable ($M)" >&2; exit 1; }
+      F="$ROOT/memory/${D}_${S}.md"
+      printf '%s\n' "$T" | { sed -n -e "s@{{date}}@$D@g" -e "s@$PAT@$E@g" -e '/{{text}}/q' -e p "$M"; cat; sed -n '1,/{{text}}/d;p' "$M"; } >> "$F" || { echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
+      printf '%s\n' "memory/${D}_${S}.md"
+  - id: 109
+    tool: tools_list
+    family: READ
+    description: "lists the table's tools and each one's arguments, by family"
+    args:
+      - {name: family, type: enum, values: [READ, MANAGE, WRITE, REPLY, ""]}
+    command: |
+      # LA TABLE EST UN YAML : pas de jq dessus. On la parcourt comme le engine la
+      # parcourt lui-meme — une entree a la fois, de la ligne `- id:` a la suivante,
+      # au grep et au sed. sh + jq + coreutils, et rien d autre.
+      TBL="$LA_CONFIG"
+      [ -n "$TBL" ] || { echo 'refuse : LA_CONFIG est vide ; la table est inconnue' >&2; exit 1; }
+      [ -f "$TBL" ] || { echo "refuse : la table est introuvable ($TBL)" >&2; exit 1; }
+      [ -r "$TBL" ] || { echo "refuse : la table est illisible ($TBL)" >&2; exit 1; }
+      F="{{family}}"
+      DEBS=$(grep -n '^  - id: ' "$TBL" | cut -d: -f1)
+      N=$(printf '%s\n' "$DEBS" | grep -c .)
+      [ "$N" -ge 1 ] || { echo "refuse : la table ne porte aucune entree ($TBL)" >&2; exit 1; }
+      TOTAL=$(wc -l < "$TBL")
+      VU=0
+      i=0
+      while [ "$i" -lt "$N" ]; do
+        i=$((i + 1))
+        DEB=$(printf '%s\n' "$DEBS" | sed -n "${i}p")
+        END=$(printf '%s\n' "$DEBS" | sed -n "$((i + 1))p")
+        END=${END:-$((TOTAL + 1))}
+        B=$(sed -n "${DEB},$((END - 1))p" "$TBL")
+        G=$(printf '%s\n' "$B" | sed -n 's/^  - id:[[:space:]]*//p' | head -n 1)
+        T=$(printf '%s\n' "$B" | sed -n 's/^    tool:[[:space:]]*//p' | head -n 1)
+        FA=$(printf '%s\n' "$B" | sed -n 's/^    family:[[:space:]]*//p' | head -n 1)
+        A=$(printf '%s\n' "$B" | sed -n 's/^      - {name:[[:space:]]*\([A-Za-z0-9_]*\).*/\1/p' | paste -sd',' - | sed 's/,/, /g')
+        [ -n "$A" ] && A=" $A"
+        if [ -z "$F" ] || [ "$FA" = "$F" ]; then
+          printf '%s %s [%s]%s\n' "$G" "$T" "$FA" "$A"
+          VU=$((VU + 1))
+        fi
+      done
+      [ "$VU" -ge 1 ] || { echo "refuse : aucun tool dans la famille ${F:-toutes}" >&2; exit 1; }
+  - id: 110
+    tool: delegate_task
+    family: MANAGE
+    description: "hands a short task to an agent below, and returns its reply"
+    args:
+      - {name: goal, type: text, stdin: true}
+      - {name: turns, type: int}
+    command: |
+      case "{{turns}}" in ''|*[!0-9]*) T=3 ;; *) T={{turns}} ;; esac
+      { [ "$T" -ge 1 ] && [ "$T" -le 6 ]; } || { echo "refuse : turns hors bornes 1..6 ({{turns}})" >&2; exit 1; }
+      [ "${LA_DEPTH:-0}" = 0 ] || { echo "refuse : la profondeur est deja ${LA_DEPTH} ; un agent en dessous ne descend jamais plus bas que 1" >&2; exit 1; }
+      B="${LA_LOOP:-$(dirname "${LA_CONFIG:?la table est inconnue}")/engine/loop.sh}"
+      [ -f "$B" ] || { echo "refuse : la boucle est absente ($B)" >&2; exit 1; }
+      cat | LA_ROOT="${LA_ROOT:?}" LA_TABLE="$LA_CONFIG" LA_DEPTH=1 LA_MAX_TURNS="$T" timeout 120 sh "$B"
+  - id: 111
+    tool: comfyui_generate
+    family: MANAGE
+    description: "posts an image to ComfyUI and files it in the workspace, returns its path"
+    args:
+      - {name: prompt, type: text, stdin: true}
+      - {name: width, type: int}
+      - {name: height, type: int}
+      - {name: steps, type: int}
+    command: |
+      P=$(cat); [ -n "$P" ] || { echo 'refuse : prompt vide ou absent' >&2; exit 1; }; N() { case "$1" in ''|*[!0-9]*) echo "$2" ;; *) echo "$1" ;; esac; }; W=$(N "{{width}}" 512); H=$(N "{{height}}" 512); S=$(N "{{steps}}" 25)
+      { [ "$W" -ge 64 ] && [ "$W" -le 2048 ] && [ "$H" -ge 64 ] && [ "$H" -le 2048 ] && [ "$S" -ge 1 ] && [ "$S" -le 100 ]; } || { echo "refuse : width/height hors 64..2048, steps hors 1..100" >&2; exit 1; }
+      A=http://127.0.0.1:8188; curl -sS -m 5 "$A/system_stats" >/dev/null 2>&1 || { echo "refuse : le service ComfyUI ne repond pas sur $A" >&2; exit 1; }
+      Q=$(jq -cn --arg pr "$P" --argjson w "$W" --argjson h "$H" --argjson s "$S" --argjson sd "$(date +%s)" '{prompt:{"4":{class_type:"CheckpointLoaderSimple",inputs:{ckpt_name:"dreamshaper_8.safetensors"}},"5":{class_type:"EmptyLatentImage",inputs:{width:$w,height:$h,batch_size:1}},"6":{class_type:"CLIPTextEncode",inputs:{text:$pr,clip:["4",1]}},"7":{class_type:"CLIPTextEncode",inputs:{text:"",clip:["4",1]}},"3":{class_type:"KSampler",inputs:{seed:$sd,steps:$s,cfg:7,sampler_name:"euler",scheduler:"normal",denoise:1,model:["4",0],positive:["6",0],negative:["7",0],latent_image:["5",0]}},"8":{class_type:"VAEDecode",inputs:{samples:["3",0],vae:["4",2]}},"9":{class_type:"SaveImage",inputs:{filename_prefix:"la",images:["8",0]}}},client_id:"la"}')
+      ID=$(curl -sS -m 30 -H 'Content-Type: application/json' -d "$Q" "$A/prompt" | jq -r '.prompt_id // empty'); [ -n "$ID" ] || { echo "refuse : le service a refuse le workflow" >&2; exit 1; }
+      i=0; while [ "$i" -lt 300 ] && ! curl -sS -m 5 "$A/history/$ID" | jq -e --arg p "$ID" 'has($p)' >/dev/null 2>&1; do sleep 1; i=$((i+1)); done
+      IM=$(curl -sS -m 5 "$A/history/$ID" | jq -r --arg p "$ID" '.[$p].outputs|to_entries[]|select(.value.images)|.value.images[0]|[.filename,.subfolder,(.type//"output")]|@tsv' 2>/dev/null | head -1); [ -n "$IM" ] || { echo "refuse : aucune image produite (prompt_id $ID)" >&2; exit 1; }
+      D="$W/images/comfyui_$(date -u +%Y%m%d_%H%M%S).png"; [ -e "$D" ] && { echo "refuse : la cible existe deja ($D)" >&2; exit 1; }
+      curl -sS -m 60 -G "$A/view" --data-urlencode "filename=$(printf '%s' "$IM" | cut -f1)" --data-urlencode "subfolder=$(printf '%s' "$IM" | cut -f2)" --data-urlencode "type=$(printf '%s' "$IM" | cut -f3)" -o "$D" || { echo "refuse : la recuperation de l image a echoue ($D)" >&2; exit 1; }
+      [ "$(head -c 4 "$D" | od -An -tx1 | tr -d ' \n')" = 89504e47 ] || { echo "refuse : les bytes recuperes ne sont pas un PNG ($D)" >&2; exit 1; }
+      printf '%s\n' "$D"
+  - id: 112
+    tool: comfyui_status
+    family: READ
+    description: "says whether the service answers on 127.0.0.1:8188 and its queue"
+    args: []
+    command: |
+      A=http://127.0.0.1:8188
+      S=$(curl -sS -m 5 "$A/system_stats" 2>/dev/null || true)
+      [ -n "$S" ] || { echo "joignable: non ; le service ComfyUI ne repond pas sur $A"; exit 0; }
+      Q=$(curl -sS -m 5 "$A/queue" 2>/dev/null || true)
+      R=$(printf '%s' "$Q" | jq -r '.queue_running|length' 2>/dev/null); P=$(printf '%s' "$Q" | jq -r '.queue_pending|length' 2>/dev/null)
+      case "$R" in ''|*[!0-9]*) R=0 ;; esac; case "$P" in ''|*[!0-9]*) P=0 ;; esac
+      printf 'joignable: oui ; file d attente : %s en cours, %s en attente\n' "$R" "$P"
+  - id: 113
+    tool: models_ask
+    family: READ
+    description: "asks the local model (127.0.0.1:8088) a question and returns its answer"
+    args:
+      - {name: prompt, type: text, stdin: true}
+      - {name: system, type: text}
+    command: |
+      P=$(cat); [ -n "$P" ] || { echo 'refuse : prompt vide ou absent' >&2; exit 1; }
+      C=$(printf '%s' "$P" | jq -Rs --arg s "{{system}}" '{model:"local",stream:false,max_tokens:1024,messages:((if $s=="" then [] else [{role:"system",content:$s}] end)+[{role:"user",content:.}])}') || { echo 'refuse : la demande n a pas pu etre montee (jq)' >&2; exit 1; }
+      R=$(curl -s -m 60 -H 'Content-Type: application/json' -d "$C" -w '\n%{http_code}' http://127.0.0.1:8088/v1/chat/completions)
+      K=$(printf '%s' "$R" | tail -n 1); B=$(printf '%s' "$R" | sed '$d')
+      case "$K" in ''|000) echo 'refuse : le modele local est injoignable (127.0.0.1:8088)' >&2; exit 1 ;; esac
+      [ "$K" = 200 ] || { echo "refuse : le service local a render HTTP $K" >&2; exit 1; }
+      T=$(printf '%s' "$B" | jq -r '.choices[0].message.content // empty' 2>/dev/null); [ -n "$T" ] || { echo 'refuse : le modele local n a render aucun texte' >&2; exit 1; }
+      printf '%s\n' "$T"
+  - id: 114
+    tool: models_status
+    family: READ
+    description: "says whether the local model answers on 127.0.0.1:8088 and which one it serves"
+    args: []
+    command: |
+      A=http://127.0.0.1:8088
+      H=$(curl -s -m 5 -w '\n%{http_code}' "$A/health"); M=$(curl -s -m 5 -w '\n%{http_code}' "$A/v1/models")
+      HC=$(printf '%s' "$H" | tail -n 1); MC=$(printf '%s' "$M" | tail -n 1)
+      J=non; case "$HC" in ''|000) ;; *) J=oui ;; esac; case "$MC" in ''|000) ;; *) J=oui ;; esac
+      [ "$J" = oui ] || { echo "joignable: non ; le service llama.cpp ne repond pas sur $A (est-il demarre ?)"; exit 0; }
+      MO=$(printf '%s' "$M" | sed '$d' | jq -r '.data[0].id // .models[0].name // empty' 2>/dev/null | sed 's@.*/@@'); [ -n "$MO" ] || MO=inconnu
+      HS=$(printf '%s' "$H" | sed '$d' | jq -r '.status // empty' 2>/dev/null); [ -n "$HS" ] || HS="HTTP $HC"
+      printf 'joignable: oui ; health: %s ; modele servi: %s\n' "$HS" "$MO"
+  - id: 115
+    tool: unity_status
+    family: READ
+    doc: unity
+    description: "says which Unity editors answer, and on which project"
+    command: |
+      CLI=$(command -v unity) || { echo 'refuse : le CLI unity est introuvable' >&2; exit 1; }
+      OUT=$(timeout 30 "$CLI" --no-banner --no-pager --non-interactive --format json status </dev/null) || { echo 'refuse : le CLI unity n a pas repondu en 30 s' >&2; exit 1; }
+      [ "$(printf '%s' "$OUT" | jq -r '.data.count // 0')" -gt 0 ] || { echo 'refuse : aucun editeur Unity ne repond' >&2; exit 1; }
+      printf '%s' "$OUT" | jq -r '.data.instances[] | "\(.project) \(.state) port \(.port)"'
+  - id: 116
+    tool: unity_run
+    family: MANAGE
+    description: "runs a unity CLI command ; verbs outside the machine are refused"
+    args:
+      - {name: command, type: text, stdin: true}
+    command: |
+      CMD=$(cat); [ -n "$CMD" ] || { echo 'refuse : command vide ou absente' >&2; exit 1; }
+      set -f; set -- $CMD; set +f; case "$CMD" in *--allow-install*) echo 'refuse : --allow-install installe depuis le dehors' >&2; exit 1 ;; esac
+      case "${1:-}" in unity|*/unity) shift ;; auth|a|cloud|bug|install|i|install-modules|im|uninstall|u|self-update|upgrade|self-uninstall|releases|hub|plugin|analytics|docs|cache|templates|t|vcs|collab|collaboration) echo "refuse : le verbe '${1}' sort de la machine ou installe sur la station" >&2; exit 1 ;; esac
+      exec unity --no-banner --no-pager --non-interactive "$@"
+  - id: 117
+    tool: ast_grep_search
+    family: READ
+    description: "searches a code shape (ast-grep pattern) in the project"
+    args:
+      - {name: pattern, type: text, stdin: true}
+      - {name: path, type: path}
+    command: |
+      PAT=$(cat); [ -n "$PAT" ] || { echo 'refuse : pattern vide ou absent' >&2; exit 1; }
+      cd "$ROOT" || { echo 'refuse : racine du projet introuvable' >&2; exit 1; }
+      R="{{path}}"; [ -n "$R" ] || R=.; ast-grep run --pattern "$PAT" --json=compact -- "$R" | jq -r '.[] | "\(.file):\(.range.start.line+1):\(.text)"'
+  - id: 118
+    tool: yq_query
+    family: READ
+    description: "reads a yaml, a json or a md's yaml header, with yq"
+    args:
+      - {name: query, type: text, stdin: true}
+      - {name: path, type: path}
+    command: |
+      Q=$(cat); [ -n "$Q" ] || { echo 'refuse : query vide ou absente' >&2; exit 1; }
+      F="$ROOT/{{path}}"; case "$F" in *.md) E="-f extract" ;; *) E="" ;; esac
+      yq eval -M $E --security-disable-env-ops --security-disable-file-ops --expression "$Q" "$F"
+  - id: 119
+    tool: process_list
+    family: READ
+    description: "lists the machine's processes, filtered by a pattern"
+    args:
+      - {name: pattern, type: text, stdin: true}
+    command: |
+      PAT=$(cat)
+      if [ -n "$PAT" ]; then hx proc -n 40 -- "$PAT"; else hx proc -n 40; fi
+  - id: 120
+    tool: shell_run
+    family: MANAGE
+    description: "runs a shell command under landrun : read-only, writes into the workspace"
+    args:
+      - {name: command, type: text, stdin: true}
+      - {name: timeout, type: int}
+    command: |
+      C=$(cat); [ -n "$C" ] || { echo 'refuse : command vide ou absente' >&2; exit 1; }
+      L=${LA_LANDRUN:-/home/moussa/.local/bin/landrun}; T="{{timeout}}"; [ -n "$T" ] || T=30; [ -x "$L" ] || { echo "refuse : landrun introuvable ($L)" >&2; exit 1; }
+      cd "$ROOT" || exit 1; timeout "$T" "$L" --ro / --rox /usr --rox /bin --rox /lib --rox /lib64 --rw "$W" -- /bin/sh -c "$C"
+  - id: 121
+    tool: start_plan
+    family: MANAGE
+    description: "opens a plan in the active skill's PLAN: section, the cleanup point last"
+    args:
+      - {name: name, type: text}
+      - {name: goal, type: text}
+      - {name: steps, type: text, stdin: true}
+    command: |
+      [ -n "{{name}}" ] || { echo 'refuse : name vide ; start_plan veut le nom du plan' >&2; exit 1; }
+      [ -n "{{goal}}" ] || { echo 'refuse : goal vide ; start_plan veut ce que la tache doit produire' >&2; exit 1; }
+      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
+      "$PROCS/plan.sh" start "{{name}}" "{{goal}}"
+  - id: 122
+    tool: load_plan
+    family: READ
+    description: "returns the active skill's open plan, writing nothing"
+    args: []
+    command: |
+      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
+      "$PROCS/plan.sh" load
+  - id: 123
+    tool: advance_plan
+    family: MANAGE
+    description: "advances the active skill's plan current point by one state, never two"
+    args: []
+    command: |
+      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
+      "$PROCS/plan.sh" advance
+  - id: 124
+    tool: revise_plan
+    family: MANAGE
+    description: "rewrites the active skill's plan unpassed points and keeps the reason"
+    args:
+      - {name: steps, type: text, stdin: true}
+      - {name: reason, type: text}
+    command: |
+      R="{{reason}}"; [ -n "$R" ] || { echo 'refuse : reason vide ; une revision sans motif ne se relit pas' >&2; exit 1; }
+      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
+      "$PROCS/plan.sh" revise "$R"
+  - id: 125
+    tool: close_plan
+    family: MANAGE
+    description: "closes the active skill's plan if its last point is cleanup, otherwise refuses"
+    args:
+      - {name: reason, type: text}
+    command: |
+      R="{{reason}}"; [ -n "$R" ] || { echo 'refuse : reason vide ; un plan ferme sans motif ne se relit pas' >&2; exit 1; }
+      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
+      "$PROCS/plan.sh" close "$R"
+  - id: 126
+    tool: skill_manage
+    family: MANAGE
+    description: "manages a skill : creation, one tool per field, load, remove, list"
+    args:
+      - {name: action, type: enum, values: [create_skill, set_line, set_tags, set_tools, set_steps, set_plan, set_dirs, set_error, set_paths, set_resume, view_skill, load_skill, skill_list, remove_skill]}
+      - {name: name, type: text}
+      - {name: value, type: text, stdin: true}
+      - {name: id, type: int}
+    command: |
+      LC_ALL=C; export LC_ALL
+      A="{{action}}"
+      NAME="{{name}}"
+      SK="$ROOT/skills"
+      SM="$ROOT/config/templates/skill_template.yaml"
+      [ -d "$SK" ] || { echo "refuse : skills/ introuvable ; la portee du tool n existe pas ($SK)" >&2; exit 1; }
+      SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//')
+      if [ -z "$SLUG" ] && [ "$A" != skill_list ]; then echo "refuse : name hors form (${NAME:-absent}) ; il ne donne aucun slug utilisable" >&2; exit 1; fi
+      CH=$(sed -n 's/^[[:space:]]*chars:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' -- "$SM" | head -n 1)
+      case "$CH" in ''|*[!0-9]*) CH=100 ;; esac
+      CL=$(sed -n 's/^[[:space:]]*lines:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' -- "$SM" | head -n 1)
+      case "$CL" in ''|*[!0-9]*) CL=50 ;; esac
+      # LA MARQUE : un skill ECRIT PAR L AGENT porte source: agent. Le source du moule, lui,
+      # dit a QUI le moule appartient (humain) -- ce n'est pas ce qu un skill doit porter.
+      MARK=agent
+      D="$SK/$SLUG"
+      C="$D/skill.yaml"
+      bytes() { printf '%s' "$1" | wc -c | tr -d ' '; }
+      foldv() {
+        set -f
+        L="$1"; P=non
+        for W in $3; do
+          if [ "$P" = non ]; then L="$L$W"; P=oui; continue; fi
+          if [ $(( ${#L} + 1 + ${#W} )) -le "$CH" ]; then L="$L $W"; continue; fi
+          printf '%s\n' "$L"; L="$2$W"
+        done
+        printf '%s\n' "$L"
+        set +f
+      }
+      pose() {
+        I=0
+        printf '%s\n' "$1" | while IFS= read -r V; do
+          V=$(printf '%s' "$V" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+          [ -n "$V" ] || continue
+          I=$((I+1))
+          foldv "  $((100+I)): " "    " "$V"
+        done
+      }
+      relit() {
+        FL=; NO=0
+        while IFS= read -r L; do
+          NO=$((NO+1))
+          if [ "$(bytes "$L")" -gt "$CH" ]; then FL=$NO; break; fi
+        done < "$1"
+        printf '%s' "$FL"
+      }
+      block() {
+        F="$1"; K="$2"; R="$3"
+        DEB=; END=; NO=0; VU=non
+        while IFS= read -r L; do
+          NO=$((NO+1))
+          if [ "$VU" = non ]; then
+            case "$L" in "$K":*) DEB=$NO; VU=oui ;; esac
+            continue
+          fi
+          case "$L" in ' '*) ;; *) END=$NO; break ;; esac
+        done < "$F"
+        [ -n "$DEB" ] || return 1
+        [ -n "$END" ] || END=$((NO+1))
+        T="$F.$$.tmp"
+        { head -n "$((DEB-1))" -- "$F"; printf '%s\n' "$R"; tail -n "+$END" -- "$F"; } > "$T" || return 1
+        [ -s "$T" ] || { rm -f "$T"; return 1; }
+        FL=$(relit "$T")
+        [ -z "$FL" ] || { rm -f "$T"; echo "refuse : la ligne $FL depasse $CH bytes (LC_ALL=C) ; rien n est ecrit" >&2; exit 1; }
+        mv -f "$T" "$F" || { rm -f "$T"; return 1; }
+        return 0
+      }
+      place() {
+        if [ -L "$D" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2; exit 1; fi
+        [ -d "$D" ] || { echo "refuse : LE SKILL N EXISTS PAS (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        if [ -L "$C" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG/skill.yaml)" >&2; exit 1; fi
+        [ -f "$C" ] || { echo "refuse : LE SKILL N EXISTS PAS (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        [ -n "$MARK" ] || { echo "refuse : le template_file ne porte pas la marque d un skill (source: ...) : $SM" >&2; exit 1; }
+        SRC_OWNER=$(sed -n 's/^source: *//p' -- "$C" | head -n 1 | tr -d '"' | sed -e 's/[[:space:]]*$//')
+        if [ -z "$SRC_OWNER" ] || [ "$SRC_OWNER" != "$MARK" ]; then echo "refuse : un skill de l humain est en lecture seule ; il ne porte pas la marque du template_file (source: $MARK)" >&2; exit 1; fi
+      }
+      approve() {
+        if [ "${LA_APPROVED:-0}" != 1 ]; then printf '%s\n' "approbation requise : $1"; exit 3; fi
+      }
+      mots() { printf '%s' "$1" | tr ',' '\n' | tr -s '[:space:]' '\n' | sed -e '/^[[:space:]]*$/d'; }
+      a_tool() {
+        [ -f "$LA_CONFIG" ] || return 1
+        if jq -e . "$LA_CONFIG" >/dev/null 2>&1; then
+          jq -e --arg g "$1" 'any(.tools[]?; ((.tool // .name) == $g))' "$LA_CONFIG" >/dev/null 2>&1
+        else
+          PAT="^[[:space:]]*tool:[[:space:]]*${1}[[:space:]]*\$"
+          grep -q -- "$PAT" "$LA_CONFIG"
+        fi
+      }
+      line_write() {   # $1 fichier  $2 id  $3 la ligne montee : ecrit UNE ligne, par son id
+        F="$1"; ID="$2"; R="$3"
+        case "$ID" in
+          1[0-9][0-9])      SEC=SUMMARY ; SUB=0 ;;
+          2[0-9][0-9])      SEC=TOOLS  ; SUB=0 ;;
+          3[0-9][0-9])      SEC=DOCS   ; SUB=0 ;;
+          4[0-9][0-9])      SEC=PLAN   ; SUB=0 ;;
+          6[0-9][0-9])      SEC=ERROR  ; SUB=0 ;;
+          1[0-9][0-9][0-9]) SEC=SECTIONS ; SUB=1 ;;
+          2[0-9][0-9][0-9]) SEC=SECTIONS ; SUB=2 ;;
+          *) echo "refuse : l id $ID n entre dans aucune section (101 SUMMARY, 200 TOOLS, 300 DOCS, 400 PLAN, 600 ERROR, 1000+ SECTIONS)" >&2 ; exit 1 ;;
+        esac
+        T="$F.$$.tmp"
+        awk -v id="$ID" -v new="$R" -v sec="$SEC" -v nth="$SUB" '
+          function idof(s,  a) { if (match(s, /[0-9]+/)) return substr(s, RSTART, RLENGTH) + 0; return -1 }
+          BEGIN { placed = 0 ; insec = 0 ; nsub = 0 }
+          $0 ~ "^" sec ":" { if (insec && !placed) { print new ; placed = 1 } insec = 1 ; nsub = 0 ; print ; next }
+          /^[A-Za-z_]+:/ { if (insec && !placed) { print new ; placed = 1 } insec = 0 ; print ; next }
+          insec && nth > 0 && $0 ~ /^  SECTION:/ { nsub++ ; print ; next }
+          insec && $0 ~ /^[[:space:]]*[0-9]+:/ {
+            cur = idof($0)
+            if (cur == id) { print new ; placed = 1 ; next }
+            if (!placed && (nth == 0 || nsub == nth) && cur > id) { print new ; placed = 1 }
+            print ; next
+          }
+          { print }
+          END { if (!placed) print new }
+        ' "$F" > "$T" || return 1
+        [ -s "$T" ] || { rm -f "$T" ; return 1 ; }
+        FL=$(relit "$T")
+        [ -z "$FL" ] || { rm -f "$T" ; echo "refuse : la ligne $FL depasse $CH bytes (LC_ALL=C) ; rien n est ecrit" >&2 ; exit 1 ; }
+        mv -f "$T" "$F" || { rm -f "$T" ; return 1 ; }
+        return 0
+      }
+      case "$A" in
+      set_line)   # UNE ligne, par son ID. Jamais le fichier, jamais deux lignes.
+        place
+        LINE_ID="{{id}}"
+        case "$LINE_ID" in ''|*[!0-9]*) echo "refuse : l id est absent ou hors form (${LINE_ID:-rien}) ; une ligne s ecrit par son id" >&2 ; exit 1 ;; esac
+        VALUE=$(cat)
+        VALUE=$(printf '%s' "$VALUE" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        [ -n "$VALUE" ] || { echo "refuse : value vide ; un id sans contenu ne s ecrit pas" >&2 ; exit 1 ; }
+        R="  $LINE_ID: \"$VALUE\""
+        [ "$(bytes "$R")" -le "$CH" ] || { echo "refuse : la ligne $LINE_ID depasse $CH bytes ($(bytes "$R"))" >&2 ; exit 1 ; }
+        line_write "$C" "$LINE_ID" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2 ; exit 1 ; }
+        echo "skills/$SLUG/skill.yaml : ligne $LINE_ID posee ($(bytes "$R") bytes)"
+        ;;
+      create_skill)
+        approve "creer le skill $SLUG ; skills/$SLUG/ nait du moule, ses champs restent vides"
+        [ -f "$SM" ] || { echo "refuse : le template_file est introuvable ($SM)" >&2; exit 1; }
+        [ -n "$MARK" ] || { echo "refuse : le template_file ne porte pas la marque d un skill (source: ...) : $SM" >&2; exit 1; }
+        if [ -e "$D" ] || [ -L "$D" ]; then echo "refuse : le skill existe deja (skills/$SLUG) ; le template_file n ecrase jamais un skill" >&2; exit 1; fi
+        mkdir "$D" || { echo "refuse : creation impossible (skills/$SLUG/)" >&2; exit 1; }
+        DATE=$(date -u +%Y-%m-%d)
+        OB=$(printf '\173\173'); CB=$(printf '\175\175')
+        HN="${OB}name${CB}"; HD="${OB}date${CB}"
+        sed -e "s|$HN|$SLUG|g" -e "s|$HD|$DATE|g" -- "$SM" > "$C" || { rm -f "$C"; rmdir "$D"; echo "refuse : le montage n a rien ecrit (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        [ -s "$C" ] || { rm -f "$C"; rmdir "$D"; echo "refuse : le montage n a rien ecrit (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        FL=$(relit "$C")
+        [ -z "$FL" ] || { rm -f "$C"; rmdir "$D"; echo "refuse : la ligne $FL depasse $CH bytes (LC_ALL=C) ; ce qui venait d etre ecrit est retire" >&2; exit 1; }
+        echo "skills/$SLUG/skill.yaml cree ; chaque champ se pose ensuite par son tool"
+        ;;
+      set_tags)
+        place
+        VALUE=$(cat)
+        TAGS=$(mots "$VALUE")
+        [ -n "$TAGS" ] || { echo 'refuse : value vide ; la ligne tags demande au moins un tag' >&2; exit 1; }
+        NL=$(printf '%s\n' "$TAGS" | wc -l | tr -d ' ')
+        [ "$NL" -le "$CL" ] || { echo "refuse : trop de tags ($NL ; la bound cap.lines est $CL)" >&2; exit 1; }
+        JOIN=; BAD=
+        for T in $TAGS; do
+          case "$T" in *[!A-Za-z0-9_.-]*) BAD=$T; break ;; esac
+          if [ -z "$JOIN" ]; then JOIN="$T"; else JOIN="$JOIN, $T"; fi
+        done
+        [ -z "$BAD" ] || { echo "refuse : un tag hors form ($BAD) ; lettre, chiffre, tiret, point, souligne" >&2; exit 1; }
+        R="tags: [$JOIN]"
+        [ "$(bytes "$R")" -le "$CH" ] || { echo "refuse : la ligne tags depasse $CH bytes ($(bytes "$R"))" >&2; exit 1; }
+        block "$C" "tags" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        echo "skills/$SLUG/skill.yaml : tags posees ($JOIN)"
+        ;;
+      set_tools)
+        place
+        approve "changer les tools du skill $SLUG ; cela ouvre ou ferme des tools"
+        VALUE=$(cat)
+        TO=$(mots "$VALUE")
+        [ -n "$TO" ] || { echo 'refuse : value vide ; la section tools demande au moins un tool' >&2; exit 1; }
+        [ -n "${LA_CONFIG:-}" ] && [ -f "$LA_CONFIG" ] || { echo "refuse : la table des tools est introuvable (${LA_CONFIG:-inconnue})" >&2; exit 1; }
+        for G in $TO; do
+          case "$G" in *[!a-z0-9_]*) echo "refuse : le tool n a pas la form d un name ($G)" >&2; exit 1 ;; esac
+          a_tool "$G" || { echo "refuse : le tool n existe pas dans la table ($G)" >&2; exit 1; }
+        done
+        NL=$(printf '%s\n' "$TO" | wc -l | tr -d ' ')
+        [ "$NL" -le "$CL" ] || { echo "refuse : trop de tools ($NL ; la bound cap.lines est $CL)" >&2; exit 1; }
+        R=$(printf 'tools:\n%s' "$(pose "$(printf '%s\n' $TO)")")
+        block "$C" "tools" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        M=$(printf '%s ' $TO); M=$(printf '%s' "$M" | sed -e 's/[[:space:]]*$//')
+        echo "skills/$SLUG/skill.yaml : tools poses ($M)"
+        ;;
+      set_steps)
+        place
+        VALUE=$(cat)
+        NL=$(printf '%s\n' "$VALUE" | sed -e '/^[[:space:]]*$/d' | wc -l | tr -d ' ')
+        [ "$NL" -ge 1 ] || { echo 'refuse : value vide ; le mode operatoire est obligatoire' >&2; exit 1; }
+        [ "$NL" -le 8 ] || { echo "refuse : trop d etapes ($NL ; la bound est 8)" >&2; exit 1; }
+        LONG=$(printf '%s\n' "$VALUE" | awk 'length($0) > 200 { print NR; exit }')
+        [ -z "$LONG" ] || { echo "refuse : une etape depasse 200 caracteres (ligne $LONG)" >&2; exit 1; }
+        R=$(printf 'steps:\n%s' "$(pose "$VALUE")")
+        block "$C" "steps" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        echo "skills/$SLUG/skill.yaml : $NL etape(s) posee(s)"
+        ;;
+      set_plan)
+        place
+        VALUE=$(cat)
+        V=$(printf '%s\n' "$VALUE" | sed -e '/^[[:space:]]*$/d')
+        NL=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+        [ "$NL" -ge 1 ] || { echo 'refuse : value vide ; la section plan demande au moins une ligne' >&2; exit 1; }
+        [ "$NL" -le "$CL" ] || { echo "refuse : trop de lignes ($NL ; la bound cap.lines est $CL)" >&2; exit 1; }
+        R=$(printf 'plan:\n%s' "$(pose "$V")")
+        block "$C" "plan" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        echo "skills/$SLUG/skill.yaml : $NL ligne(s) posee(s) dans plan"
+        ;;
+      set_dirs)
+        place
+        VALUE=$(cat)
+        V=$(printf '%s\n' "$VALUE" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
+        NL=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+        [ "$NL" -ge 1 ] || { echo 'refuse : value vide ; la section dirs demande au moins un dossier' >&2; exit 1; }
+        [ "$NL" -le "$CL" ] || { echo "refuse : trop de dossiers ($NL ; la bound cap.lines est $CL)" >&2; exit 1; }
+        BAD=$(printf '%s\n' "$V" | grep -vE '^[^ :]+/ : [^ :]+( [^ :]+)*$' | head -n 1)
+        [ -z "$BAD" ] || { echo "refuse : un dossier hors form ($BAD) ; la shape est '<chemin>/ : <ext> <ext>'" >&2; exit 1; }
+        R=$(printf 'dirs:\n%s' "$(pose "$V")")
+        block "$C" "dirs" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        echo "skills/$SLUG/skill.yaml : $NL dossier(s) pose(s)"
+        ;;
+      set_error)
+        place
+        VALUE=$(cat)
+        V=$(printf '%s\n' "$VALUE" | sed -e '/^[[:space:]]*$/d')
+        NL=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+        [ "$NL" -ge 1 ] || { echo 'refuse : value vide ; la section error demande au moins une ligne' >&2; exit 1; }
+        [ "$NL" -le "$CL" ] || { echo "refuse : trop de lignes ($NL ; la bound cap.lines est $CL)" >&2; exit 1; }
+        R=$(printf 'error:\n%s' "$(pose "$V")")
+        block "$C" "error" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        echo "skills/$SLUG/skill.yaml : $NL ligne(s) posee(s) dans error"
+        ;;
+      set_paths)
+        place
+        approve "changer les chemins du skill $SLUG ; paths EST la portee lue par le engine"
+        VALUE=$(cat)
+        ROT=$(printf '%s\n' "$VALUE" | sed -n 's/^[[:space:]]*root[[:space:]]*:[[:space:]]*//p' | head -n 1)
+        WOK=$(printf '%s\n' "$VALUE" | sed -n 's/^[[:space:]]*work[[:space:]]*:[[:space:]]*//p' | head -n 1)
+        SPK=$(printf '%s\n' "$VALUE" | sed -n 's/^[[:space:]]*specs[[:space:]]*:[[:space:]]*//p' | head -n 1)
+        if [ -z "$ROT" ] || [ -z "$WOK" ] || [ -z "$SPK" ]; then echo 'refuse : paths demande trois lignes : root: ... work: ... specs: ...' >&2; exit 1; fi
+        for P in "$ROT" "$WOK" "$SPK"; do
+          case "$P" in /*) echo "refuse : un chemin de paths est ABSOLU ($P)" >&2; exit 1 ;; esac
+          case "$P" in *..*) echo "refuse : un chemin de paths remonte ($P)" >&2; exit 1 ;; esac
+          case "$P" in *'$'*) echo "refuse : un chemin de paths porte un dollar ($P)" >&2; exit 1 ;; esac
+          case "$P" in *'"'*) echo "refuse : un chemin de paths porte un guillemet ($P)" >&2; exit 1 ;; esac
+          case "$P" in *\\*) echo "refuse : un chemin de paths porte un antislash ($P)" >&2; exit 1 ;; esac
+        done
+        R=$(printf 'paths:\n  root: %s\n  work: %s\n  specs: %s' "$ROT" "$WOK" "$SPK")
+        block "$C" "paths" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        echo "skills/$SLUG/skill.yaml : paths pose (root=$ROT work=$WOK specs=$SPK)"
+        ;;
+      set_resume)
+        place
+        VALUE=$(cat)
+        V=$(printf '%s\n' "$VALUE" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
+        NL=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+        [ "$NL" -ge 1 ] || { echo 'refuse : value vide ; la section resume demande au moins une ligne' >&2; exit 1; }
+        [ "$NL" -le "$CL" ] || { echo "refuse : trop de lignes ($NL ; la bound cap.lines est $CL)" >&2; exit 1; }
+        LONG=$(printf '%s\n' "$V" | awk -v ch="$CH" '{ if (length("  " (100+NR) ": " $0) > ch) { print NR; exit } }')
+        [ -z "$LONG" ] || { echo "refuse : la ligne $LONG du resume depasse $CH bytes (la bound cap.chars) ; rien n est ecrit" >&2; exit 1; }
+        R=$(printf 'resume:\n%s' "$(pose "$V")")
+        block "$C" "resume" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        echo "skills/$SLUG/skill.yaml : $NL ligne(s) posee(s) dans resume"
+        ;;
+      view_skill)
+        if [ -L "$SK/$SLUG" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2; exit 1; fi
+        [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        cat "$C"
+        ;;
+      load_skill)
+        if [ -L "$SK/$SLUG" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2; exit 1; fi
+        [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        OUV=$(printf '' | "${PROCS:-$ROOT/config/engine}/plan.sh" load 2>/dev/null) || OUV=
+        case "$OUV" in
+          ''|'aucun plan ouvert'*) : ;;
+          *) { echo "refuse : un plan est ouvert dans le skill actif ; load_skill n est PAS cumulatif (une tache = une skill = un plan), fermer le plan (close_plan) avant de charger une AUTRE skill" >&2; exit 1; } ;;
+        esac
+        # LE POINTEUR DE SKILL ACTIVE : load_skill ECRIT le nom dans le fichier d etat
+        # skills/.active. C est CE fichier que lisent engine.sh, second.sh et loop.sh
+        # (le resume, les paths, la palette suivent). Un FICHIER ordinaire, jamais un lien.
+        STATE="$SK/.active"
+        if [ -L "$STATE" ]; then echo "refuse : le pointeur de skill active est un lien ($STATE) ; un fichier d etat n est jamais un lien" >&2; exit 1; fi
+        printf '%s\n' "$SLUG" > "$STATE" || { echo "refuse : le pointeur de skill active n a pas pu etre ecrit ($STATE)" >&2; exit 1; }
+        [ "$(sed -n '1p' "$STATE" 2>/dev/null)" = "$SLUG" ] || { echo "refuse : le pointeur de skill active n a pas ete ecrit ($STATE)" >&2; exit 1; }
+        cat "$C"
+        ;;
+      skill_list)
+        N=0
+        for F in "$SK"/*/skill.yaml; do
+          [ -f "$F" ] || continue
+          [ -L "$F" ] && continue
+          N=$((N+1))
+          NM=$(sed -n 's/^skill: *//p' -- "$F" | head -n 1)
+          [ -n "$NM" ] || NM=$(basename "$(dirname "$F")")
+          TG=$(sed -n 's/^tags: *//p' -- "$F" | head -n 1)
+          [ -n "$TG" ] || TG="[]"
+          printf '%s %s\n' "$NM" "$TG"
+        done
+        [ "$N" -ge 1 ] || { echo "refuse : aucun skill sous $SK" >&2; exit 1; }
+        ;;
+      remove_skill)
+        if [ -L "$D" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG) ; on ne retire pas au travers" >&2; exit 1; fi
+        [ -d "$D" ] || { echo "refuse : le skill n existe pas (skills/$SLUG)" >&2; exit 1; }
+        if [ -L "$C" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG/skill.yaml)" >&2; exit 1; fi
+        if [ -d "$C" ]; then echo "refuse : la cible est un dossier (skills/$SLUG/skill.yaml) ; on ne retire qu un fichier de skill" >&2; exit 1; fi
+        [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+        [ -n "$MARK" ] || { echo "refuse : le template_file ne porte pas la marque d un skill (source: ...) : $SM" >&2; exit 1; }
+        SRC_OWNER=$(sed -n 's/^source: *//p' -- "$C" | head -n 1 | tr -d '"' | sed -e 's/[[:space:]]*$//')
+        if [ -z "$SRC_OWNER" ] || [ "$SRC_OWNER" != "$MARK" ]; then echo "refuse : ce skill n a pas ete ecrit par l agent ; il ne porte pas la marque du template_file (source: $MARK)" >&2; exit 1; fi
+        approve "retirer le skill $SLUG ; skills/$SLUG/ part vers la corbeille du systeme, jamais efface"
+        gio trash -- "$D" >/dev/null 2>&1 || { echo "refuse : la corbeille du systeme a refuse le deplacement (skills/$SLUG)" >&2; exit 1; }
+        if [ -e "$C" ]; then echo "refuse : le skill est reste a sa place (skills/$SLUG)" >&2; exit 1; fi
+        echo "skills/$SLUG retire : deplace vers la corbeille du systeme, jamais efface"
+        ;;
+      *)
+        echo "refuse : action inconnue ($A)" >&2; exit 1 ;;
+      esac
+  - id: 127
+    tool: table_manage
+    family: MANAGE
+    description: "manages the table itself : adds, removes, enables or disables a line"
+    args:
+      - {name: action, type: enum, values: [add_tool, delete_tool, enable_tool, disable_tool]}
+      - {name: id, type: int}
+      - {name: tool, type: text}
+      - {name: family, type: enum, values: [READ, WRITE, MANAGE, REPLY, ""]}
+      - {name: description, type: text}
+      - {name: entry, type: text, stdin: true}
+    command: |
+      LC_ALL=C; export LC_ALL
+      A="{{action}}"
+      ID="{{id}}"
+      T="{{tool}}"
+      FAM="{{family}}"
+      DES="{{description}}"
+      TBL="$LA_CONFIG"
+      [ -n "$TBL" ] || { echo 'refuse : LA_CONFIG est vide ; la table est inconnue' >&2; exit 1; }
+      [ -f "$TBL" ] || { echo "refuse : la table est introuvable ($TBL)" >&2; exit 1; }
+      [ -r "$TBL" ] || { echo "refuse : la table est illisible ($TBL)" >&2; exit 1; }
+      [ -w "$TBL" ] || { echo "refuse : la table n est pas inscriptible ($TBL)" >&2; exit 1; }
+      case "$A" in
+        add_tool|delete_tool|enable_tool|disable_tool) ;;
+        *) echo "refuse : action inconnue (${A:-absente}) ; add_tool, delete_tool, enable_tool, disable_tool" >&2; exit 1 ;;
+      esac
+      case "$ID" in ''|*[!0-9]*) echo "refuse : id hors form (${ID:-absent}) ; un id est un nombre, chiffres seulement" >&2; exit 1 ;; esac
+      AV=$(wc -c < "$TBL"); NL=$(wc -l < "$TBL")
+      TD=$(mktemp -d "${TMPDIR:-/tmp}/table_manage.XXXXXX") || { echo 'refuse : aucun espace temporaire (TMPDIR)' >&2; exit 1; }
+      fin() { [ -n "$TD" ] || return 0; rm -f "$TD/a" "$TD/b" "$TD/c" "$TD/d" "$TD/bloc" "$TD/entry" "$TD/tbl" 2>/dev/null; rmdir "$TD" 2>/dev/null; }
+      trap fin EXIT INT TERM HUP
+      ligne() {
+        DEB=$(grep -n "^  - id: $1[[:space:]]*\$" "$TBL" | head -n 1 | cut -d: -f1)
+        [ -n "$DEB" ] || return 1
+        END=$(grep -n '^  - id: ' "$TBL" | cut -d: -f1 | while IFS= read -r n; do [ "$n" -gt "$DEB" ] && { printf '%s\n' "$n"; break; }; done)
+        TOTAL=$(wc -l < "$TBL")
+        END=${END:-$((TOTAL + 1))}
+        return 0
+      }
+      block() { sed -n "${DEB},$((END - 1))p" "$TBL"; }
+      if [ "$A" = add_tool ]; then
+        case "$T" in ''|*[!a-z0-9_]*) echo "refuse : tool hors form (${T:-absent}) ; minuscules, chiffres et soulignes" >&2; exit 1 ;; esac
+        [ ${#T} -le 40 ] || { echo "refuse : tool trop long (${#T} bytes ; la bound est 40)" >&2; exit 1; }
+        grep -q "^    tool: $T[[:space:]]*\$" "$TBL" && { echo "refuse : la table porte deja le tool $T" >&2; exit 1; }
+        grep -q "^  - id: $ID[[:space:]]*\$" "$TBL" && { echo "refuse : l id $ID est deja dans la table" >&2; exit 1; }
+        case "$FAM" in READ|WRITE|MANAGE|REPLY) ;; *) echo "refuse : family hors form (${FAM:-absente}) ; READ, WRITE, MANAGE ou REPLY" >&2; exit 1 ;; esac
+        [ -n "$DES" ] || { echo 'refuse : description vide ; add_tool veut une phrase sur ce que le tool couvre' >&2; exit 1; }
+        [ ${#DES} -le 80 ] || { echo "refuse : description trop longue (${#DES} bytes ; la bound est 80)" >&2; exit 1; }
+        cat > "$TD/entry" || { echo 'refuse : le corps de la ligne n a pas pu etre lu' >&2; exit 1; }
+        [ -s "$TD/entry" ] || { echo 'refuse : corps vide ; add_tool attend args et command sur l entree standard' >&2; exit 1; }
+        TB=$(printf '\t')
+        grep -q "$TB" "$TD/entry" && { echo 'refuse : le corps porte une tabulation ; la table s indente a l espace' >&2; exit 1; }
+        BAD=$(grep -nvE '^(    [^ ]|     |$)' "$TD/entry" | head -n 1)
+        [ -z "$BAD" ] || { echo "refuse : corps hors form, $BAD ; une ligne du corps porte quatre espaces puis un champ, ou au moins cinq" >&2; exit 1; }
+        BAD=$(grep -nE '^    (id|tool|family|scope|description|enabled):' "$TD/entry" | head -n 1)
+        [ -z "$BAD" ] || { echo "refuse : corps hors form, $BAD ; les en-tetes viennent des arguments, jamais du corps" >&2; exit 1; }
+        grep -qE '^  - ' "$TD/entry" && { echo 'refuse : le corps porte une ligne d entree ; add_tool ajoute UNE ligne, et il l assemble lui-meme' >&2; exit 1; }
+        NA=$(grep -cE '^    args:' "$TD/entry")
+        [ "$NA" = 1 ] || { echo "refuse : le corps doit porter un args, et un seul (trouve $NA)" >&2; exit 1; }
+        NC=$(grep -cE '^    command:' "$TD/entry")
+        [ "$NC" = 1 ] || { echo "refuse : le corps doit porter une command, et une seule (trouve $NC)" >&2; exit 1; }
+        CL=$(grep -nE '^    command:' "$TD/entry" | head -n 1 | cut -d: -f1)
+        CLINE=$(sed -n "${CL}p" "$TD/entry")
+        Q=$(printf '%s' "$CLINE" | tr -cd "'" | wc -c | tr -d ' ')
+        [ $((Q % 2)) -eq 0 ] || { echo 'refuse : la command porte un quote non ferme' >&2; exit 1; }
+        {
+          printf '\n  - id: %s\n    tool: %s\n    family: %s\n    description: "%s"\n' "$ID" "$T" "$FAM" "$DES"
+          printf '%s\n' "$(cat "$TD/entry")"
+        } > "$TD/bloc"
+        [ "$(grep -c "^  - id: $ID\$" "$TD/bloc")" = 1 ] || { echo 'refuse : le montage de la ligne a echoue' >&2; exit 1; }
+        if [ "${LA_APPROVED:-0}" != 1 ]; then
+          printf 'approbation requise : ajouter la ligne id %s (%s) a la table %s\n' "$ID" "$T" "$TBL"
+          printf 'la ligne assemblee ; rien n est ecrit avant votre accord :\n'
+          cat "$TD/bloc"
+          exit 3
+        fi
+        cp "$TBL" "$TD/a" || { echo 'refuse : la table n a pas pu etre relue avant ecriture' >&2; exit 1; }
+        cat "$TD/bloc" >> "$TBL" || { echo "refuse : ecriture impossible ($TBL)" >&2; exit 1; }
+        head -c "$AV" "$TBL" > "$TD/b"
+        cmp -s "$TD/a" "$TD/b" || { cp "$TD/a" "$TBL"; echo 'refuse : la table a bouge hors de la ligne ajoutee ; la table est rendue' >&2; exit 1; }
+        grep -q "^  - id: $ID\$" "$TBL" || { cp "$TD/a" "$TBL"; echo "refuse : la ligne $ID n a pas ete ecrite ($TBL)" >&2; exit 1; }
+        AP=$(wc -c < "$TBL"); LP=$(wc -l < "$TBL")
+        echo "table : id $ID ($T, $FAM) ajoute ; $((AP - AV)) octet(s) et $((LP - NL)) ligne(s) posees en fin de table, aucune autre ligne touchee"
+        exit 0
+      fi
+      ligne "$ID" || { echo "refuse : l id $ID n est pas dans la table ($TBL)" >&2; exit 1; }
+      NM=$(block | sed -n 's/^    tool:[[:space:]]*//p' | head -n 1)
+      [ -n "$NM" ] || { echo "refuse : la ligne $ID est illisible : elle ne porte pas de champ tool" >&2; exit 1; }
+      if [ -n "$T" ]; then
+        [ "$T" = "$NM" ] || { echo "refuse : la ligne $ID porte le tool $NM, pas $T" >&2; exit 1; }
+      fi
+      if [ "$A" = delete_tool ]; then
+        case "$NM" in
+          skill_manage|table_manage|load_skill|start_plan|advance_plan|revise_plan|close_plan)
+            echo "refuse : la ligne $ID ($NM) porte un MANAGER ; on ne se coupe pas la main, ce retrait est refuse en le nommant, et il ne passe JAMAIS par une approbation" >&2
+            exit 1 ;;
+        esac
+        CUT=0; DP=0
+        if [ "$END" -gt "$TOTAL" ]; then
+          [ -z "$(sed -n "$((DEB - 1))p" "$TBL")" ] && DP=1
+        else
+          [ -z "$(sed -n "$((DEB - 1))p" "$TBL")" ] && [ -z "$(sed -n "${END}p" "$TBL")" ] && CUT=1
+        fi
+        RT=$((END - DEB + CUT + DP))
+        if [ "${LA_APPROVED:-0}" != 1 ]; then
+          printf 'approbation requise : retirer la ligne id %s (%s) de la table %s\n' "$ID" "$NM" "$TBL"
+          printf '%s ligne(s) sortent de la table ; aucune autre ne bouge :\n' "$RT"
+          block
+          exit 3
+        fi
+        H=$((DEB - 1 - DP)); T2=$((END + CUT))
+        { head -n "$H" "$TBL"; tail -n "+$T2" "$TBL"; } > "$TD/tbl"
+        grep -q "^  - id: $ID[[:space:]]*\$" "$TD/tbl" && { echo "refuse : la ligne $ID est restee ($TBL)" >&2; exit 1; }
+        head -n "$H" "$TBL" > "$TD/a"; head -n "$H" "$TD/tbl" > "$TD/b"
+        cmp -s "$TD/a" "$TD/b" || { echo 'refuse : la tete de la table a bouge ; rien n est ecrit' >&2; exit 1; }
+        tail -n "+$T2" "$TBL" > "$TD/c"; tail -n "+$((H + 1))" "$TD/tbl" > "$TD/d"
+        cmp -s "$TD/c" "$TD/d" || { echo 'refuse : la queue de la table a bouge ; rien n est ecrit' >&2; exit 1; }
+        mv -f "$TD/tbl" "$TBL" || { echo "refuse : ecriture impossible ($TBL)" >&2; exit 1; }
+        grep -q "^  - id: $ID[[:space:]]*\$" "$TBL" && { echo "refuse : la ligne $ID est revenue ($TBL)" >&2; exit 1; }
+        echo "table : id $ID ($NM) retire ; $RT ligne(s) sorties, aucune autre ligne touchee"
+        exit 0
+      fi
+      REL=$(block | grep -n '^    enabled:' | head -n 1 | cut -d: -f1)
+      ABS=
+      [ -z "$REL" ] || ABS=$((DEB + REL - 1))
+      if [ "$A" = enable_tool ]; then EMPTY=true; NEUF='    enabled: true'; else EMPTY=false; NEUF='    enabled: false'; fi
+      if [ -n "$ABS" ]; then
+        CUR=$(sed -n "${ABS}p" "$TBL" | sed -e 's/^    enabled:[[:space:]]*//' -e 's/[[:space:]]*$//')
+        case "$CUR" in true|false) ;; *) echo "refuse : le champ enabled de l id $ID est hors form (${CUR}) ; il porte true ou false" >&2; exit 1 ;; esac
+      else
+        CUR=true
+      fi
+      if [ "$CUR" = "$EMPTY" ]; then
+        echo "table : id $ID ($NM) est deja $EMPTY ; 0 octet change, $TBL intact"
+        exit 0
+      fi
+      if [ "$A" = enable_tool ] && [ "${LA_APPROVED:-0}" != 1 ]; then
+        printf 'approbation requise : reactiver le tool %s (id %s) ; sa ligne enabled passe de false a true, ligne %s de %s\n' "$NM" "$ID" "$ABS" "$TBL"
+        printf 'aucune autre ligne ne bouge ; rien n est ecrit avant votre accord\n'
+        exit 3
+      fi
+      DEC=1
+      if [ -n "$ABS" ]; then
+        { head -n "$((ABS - 1))" "$TBL"; printf '%s\n' "$NEUF"; tail -n "+$((ABS + 1))" "$TBL"; } > "$TD/tbl"
+      else
+        SCL=$(block | grep -n '^    family:' | head -n 1 | cut -d: -f1)
+        [ -n "$SCL" ] || SCL=$(block | grep -n '^    tool:' | head -n 1 | cut -d: -f1)
+        [ -n "$SCL" ] || { echo "refuse : la ligne $ID ($NM) ne porte ni family ni tool ; enabled ne se pose pas" >&2; exit 1; }
+        ABS=$((DEB + SCL - 1))
+        DEC=2
+        { head -n "$ABS" "$TBL"; printf '%s\n' "$NEUF"; tail -n "+$((ABS + 1))" "$TBL"; } > "$TD/tbl"
+      fi
+      head -n "$((ABS - 1))" "$TBL" > "$TD/a"; head -n "$((ABS - 1))" "$TD/tbl" > "$TD/b"
+      cmp -s "$TD/a" "$TD/b" || { echo 'refuse : la table a bouge avant la ligne touchee ; rien n est ecrit' >&2; exit 1; }
+      tail -n "+$((ABS + 1))" "$TBL" > "$TD/c"; tail -n "+$((ABS + DEC))" "$TD/tbl" > "$TD/d"
+      cmp -s "$TD/c" "$TD/d" || { echo 'refuse : la table a bouge apres la ligne touchee ; rien n est ecrit' >&2; exit 1; }
+      cmp -s "$TBL" "$TD/tbl" && { echo "refuse : rien n a change (id $ID)" >&2; exit 1; }
+      mv -f "$TD/tbl" "$TBL" || { echo "refuse : ecriture impossible ($TBL)" >&2; exit 1; }
+      AP=$(wc -c < "$TBL"); LP=$(wc -l < "$TBL")
+      echo "table : id $ID ($NM) enabled $CUR -> $EMPTY ; ligne $ABS, $((AP - AV)) octet(s) et $((LP - NL)) ligne(s) ; aucune autre ligne ne bouge"
+
+  - id: 138
+    tool: kill
+    guardrail: true
+    family: MANAGE
+    description: "kills a process by its pid, refuses its own pid and its ancestors"
+    args:
+      - {name: pid, type: int}
+      - {name: signal, type: enum, values: [TERM, KILL, ""]}
+    command: |
+      P="{{pid}}"
+      S="{{signal}}"
+      case "$S" in "") S=TERM ;; TERM|KILL) ;; *) echo "refuse : signal hors form (${S:-absent}) ; les signaux sont TERM et KILL" >&2; exit 1 ;; esac
+      [ -n "$P" ] || { echo 'refuse : pid vide ; kill tue PAR PID, jamais par motif, et il faut un pid' >&2; exit 1; }
+      case "$P" in *[!0-9]*) echo "refuse : pid hors form ($P) ; un pid est un nombre, chiffres seulement" >&2; exit 1 ;; esac
+      [ "$P" = 0 ] && { echo 'refuse : pid 0 ; kill ne porte jamais au groupe de processus, et 0 n est pas un pid' >&2; exit 1; }
+      [ "$P" = 1 ] && { echo 'refuse : pid 1 ; le tuer arrete la machine' >&2; exit 1; }
+      # LIRE /proc/self DANS CE SHELL : le shell ouvre lui-meme le fichier, donc /proc/self
+      # est bien CE processus (un helper sed, ls ou readlink viserait le sien, pas le notre).
+      HERE=
+      while IFS= read -r L; do
+        case "$L" in "Pid:"*) [ -n "$HERE" ] || HERE=$(printf '%s' "${L#*:}" | tr -d '[:space:]') ;; esac
+      done < /proc/self/status
+      case "$HERE" in ""|*[!0-9]*) HERE=$$ ;; esac
+      # LA CHAINE DES PPID : moi-meme, mon pere, et tous mes ancetres. Aucun n est tuable.
+      A=$HERE
+      GARDE=
+      while [ -n "$A" ]; do
+        [ "$A" = "$P" ] && { GARDE=$A; break; }
+        [ "$A" = 1 ] && break
+        A=$(sed -n 's/^PPid:[[:space:]]*//p' "/proc/$A/status" 2>/dev/null | head -n 1)
+        case "$A" in ""|*[!0-9]*) break ;; esac
+      done
+      [ -z "$GARDE" ] || { echo "refuse : le pid $P est dans ma propre chaine (moi-meme a $HERE, ou un de mes ancetres) ; l agent ne se coupe pas la main, et il ne tue pas le harnais" >&2; exit 1; }
+      [ -d "/proc/$P" ] || { echo "refuse : le pid $P n existe pas ; il n y a aucun processus a tuer" >&2; exit 1; }
+      kill -s "$S" "$P" 2>/dev/null || { echo "refuse : le signal $S n a pas pu etre porte au pid $P" >&2; exit 1; }
+      VIVANT=1
+      i=0
+      while [ "$i" -lt 20 ]; do
+        if [ ! -d "/proc/$P" ]; then VIVANT=0; break; fi
+        E=$(sed -n 's/^State:[[:space:]]*//p' "/proc/$P/status" 2>/dev/null | head -n 1)
+        case "$E" in Z*) VIVANT=0; break ;; esac
+        sleep 0.1
+        i=$((i + 1))
+      done
+      [ "$VIVANT" = 0 ] || { echo "refuse : le pid $P est encore vivant apres le signal $S" >&2; exit 1; }
+      printf 'pid %s tue (signal %s)\n' "$P" "$S"
+  - id: 128
+    tool: session
+    family: MANAGE
+    description: "opens a dated and named session in sessions/, returns the path"
+    args:
+      - {name: name, type: text}
+    command: |
+      SLUG=$(printf '%s' "{{name}}" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//')
+      [ -n "$SLUG" ] || { echo 'refuse : name hors form ; il ne donne aucun slug (minuscules et tirets, 40 au plus)' >&2; exit 1; }
+      [ ${#SLUG} -le 40 ] || { echo "refuse : name hors form ; le slug fait ${#SLUG} caracteres, 40 au plus" >&2; exit 1; }
+      D="$ROOT/sessions"
+      [ -d "$D" ] || { echo "refuse : sessions introuvable ; la portee du tool n existe pas ($D)" >&2; exit 1; }
+      M="$D/_template.md"
+      [ -f "$M" ] || { echo "refuse : le template_file est introuvable ($M)" >&2; exit 1; }
+      S=$(date -u +%Y-%m-%d_%H%M%S)
+      F="sessions/${S}_${SLUG}.md"
+      C="$D/${S}_${SLUG}.md"
+      if [ -e "$C" ] || [ -L "$C" ]; then echo "refuse : la session du meme STAMP existe deja ($F)" >&2; exit 1; fi
+      J=$(date -u +%Y-%m-%d)
+      sed -e "s|^date: \"\"|date: \"$J\"|" "$M" > "$C" || { echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
+      [ -s "$C" ] || { echo "refuse : la session n a rien ecrit ($F)" >&2; exit 1; }
+      printf '%s\n' "$F"
+  - id: 129
+    tool: signal_task
+    family: MANAGE
+    description: "the end-of-task signal, outside the turn : one dated line, returned"
+    args: []
+    command: |
+      D="$ROOT/sessions"
+      [ -d "$D" ] || { echo "refuse : sessions introuvable ; la portee du tool n existe pas ($D)" >&2; exit 1; }
+      N=0
+      for E in "$D"/*.md; do
+        [ -f "$E" ] || continue
+        case "$E" in */_template.md) continue ;; esac
+        N=$((N + 1))
+      done
+      TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+      L="$TS  signal_task  sessions/  ->  fin de tache, $N session(s)"
+      printf '%s\n' "$L" >> "$D/signal.log" || { echo "refuse : ecriture impossible (sessions/signal.log)" >&2; exit 1; }
+      tail -n 1 "$D/signal.log" | grep -qxF -- "$L" || { echo "refuse : le signal n a pas ete ecrit (sessions/signal.log)" >&2; exit 1; }
+      printf '%s\n' "$L"
+  - id: 130
+    tool: add_cron
+    family: MANAGE
+    description: "adds an hourly cron line to the project, by approval"
+    args:
+      - {name: name, type: text}
+      - {name: tool, type: text}
+    command: |
+      N="{{name}}"; G="{{tool}}"
+      case "$N" in ''|*[!a-zA-Z0-9_-]*) echo "refuse : name hors form ($N) ; minuscules, chiffres, tiret, souligne" >&2; exit 1 ;; esac
+      case "$G" in ''|*[!a-z0-9_]*) echo "refuse : tool hors form ($G) ; minuscules, chiffres, souligne" >&2; exit 1 ;; esac
+      [ -n "$LA_CONFIG" ] && [ -f "$LA_CONFIG" ] || { echo "refuse : la table est introuvable (${LA_CONFIG:-inconnue})" >&2; exit 1; }
+      grep -q "^    tool: $G[[:space:]]*$" "$LA_CONFIG" || { echo "refuse : le tool n existe pas dans la table ($G)" >&2; exit 1; }
+      D="$ROOT/cron"
+      [ -d "$D" ] || { echo "refuse : cron introuvable ; la portee du tool n existe pas ($D)" >&2; exit 1; }
+      F="$D/crontab"
+      if [ -f "$F" ] && grep -q " # $N$" "$F"; then echo "refuse : une ligne de cron porte deja le name $N ($F)" >&2; exit 1; fi
+      L="0 * * * * $G # $N"
+      if [ "${LA_APPROVED:-0}" != 1 ]; then
+        printf 'approbation requise : ajouter une ligne de cron horaire au projet\n'
+        printf 'la ligne : %s\n' "$L"
+        printf 'rien n est ecrit avant votre accord\n'
+        exit 3
+      fi
+      printf '%s\n' "$L" >> "$F" || { echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
+      grep -q " # $N$" "$F" || { echo "refuse : la ligne n a pas ete ecrite ($F)" >&2; exit 1; }
+      printf '%s\n' "$L"
+  - id: 131
+    tool: remove_cron
+    family: MANAGE
+    description: "removes a cron line by its name, by approval"
+    args:
+      - {name: name, type: text}
+    command: |
+      N="{{name}}"
+      case "$N" in ''|*[!a-zA-Z0-9_-]*) echo "refuse : name hors form ($N)" >&2; exit 1 ;; esac
+      D="$ROOT/cron"; F="$D/crontab"
+      [ -f "$F" ] || { echo "refuse : aucune ligne de cron ($F est absent)" >&2; exit 1; }
+      grep -q " # $N$" "$F" || { echo "refuse : aucune ligne de cron ne porte le name $N" >&2; exit 1; }
+      L=$(grep " # $N$" "$F" | head -n 1)
+      if [ "${LA_APPROVED:-0}" != 1 ]; then
+        printf 'approbation requise : retirer la ligne de cron %s du projet\n' "$N"
+        printf 'la ligne : %s\n' "$L"
+        printf 'rien n est retire avant votre accord\n'
+        exit 3
+      fi
+      T="$D/.crontab.$$.tmp"
+      grep -v " # $N$" "$F" > "$T"
+      grep -q " # $N$" "$T" && { rm -f "$T"; echo "refuse : la ligne n a pas ete retiree ($F)" >&2; exit 1; }
+      mv -f "$T" "$F" || { rm -f "$T"; echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
+      grep -q " # $N$" "$F" && { echo "refuse : la ligne est restee ($F)" >&2; exit 1; }
+      printf 'cron : %s retire\n' "$N"
+  - id: 132
+    tool: search_memory
+    family: READ
+    description: "searches a pattern in memory/ and returns the notes that carry it"
+    args:
+      - {name: text, type: text, stdin: true}
+    command: |
+      T=$(cat); [ ${#T} -ge 3 ] || { echo "refuse : motif de moins de 3 caracteres" >&2; exit 1; }
+      D="$ROOT/memory"
+      [ -d "$D" ] || { echo "refuse : memory introuvable ; la portee du tool n existe pas ($D)" >&2; exit 1; }
+      cd "$D" || { echo "refuse : memory introuvable ($D)" >&2; exit 1; }
+      LC_ALL=C grep -rlF -- "$T" . 2>/dev/null | LC_ALL=C sort | cut -c3-
+  - id: 133
+    tool: abort_plan
+    family: MANAGE
+    description: "closes the active skill's plan marking it interrupted, refuses without a plan"
+    args:
+      - {name: reason, type: text}
+    command: |
+      R="{{reason}}"; [ -n "$R" ] || R="(interrompu)"
+      [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
+      "$PROCS/plan.sh" abort "$R"
+  - id: 134
+    tool: write_spec
+    family: MANAGE
+    description: "writes a section of the active skill's spec, bounded by cap"
+    args:
+      - {name: section, type: text}
+      - {name: lines, type: text, stdin: true}
+      - {name: law, type: int}
+    command: |
+      SEC="{{section}}"
+      law_write() {   # $1 fichier  $2 numero  $3 la loi montee : UNE loi, dans SA section
+        F="$1"; ID="$2"; R="$3"
+        T="$F.$$.tmp"
+        awk -v id="$ID" -v new="$R" '
+          function num(s,  a) { if (match(s, /[0-9]+/)) return substr(s, RSTART, RLENGTH) + 0; return -1 }
+          BEGIN { placed = 0 ; band = int(id / 100) * 100 ; inband = 0 ; seen = 0 }
+          /^SECTION : / { if (inband && !placed) { print new ; placed = 1 } inband = 0 ; print ; next }
+          /^  [0-9]+:/ {
+            cur = num($0)
+            if (int(cur / 100) * 100 == band) {
+              if (!inband) { inband = 1 ; seen = 1 }
+              if (cur == id) { print new ; placed = 1 ; next }
+              if (!placed && cur > id) { print new ; placed = 1 }
+            } else if (inband && !placed) { print new ; placed = 1 ; inband = 0 }
+            print ; next
+          }
+          { print }
+          END { if (!placed && !seen) { print "refuse : aucune section du spec ne porte la centaine " band > "/dev/stderr" ; exit 9 } if (!placed) print new }
+        ' "$F" > "$T" || { rm -f "$T" ; return 1 ; }
+        [ -s "$T" ] || { rm -f "$T" ; return 1 ; }
+        # LE CAP JUGE LA LOI QU ON ECRIT, PAS L HERITAGE : le spec porte des lignes trop
+        # longues d avant cette regle, et set_law n a pas a refuser d ecrire a cause d elles.
+        mv -f "$T" "$F" || { rm -f "$T" ; return 1 ; }
+        return 0
+      }
+      LAW="{{law}}"
+      if [ -n "$LAW" ]; then   # UNE loi, par son numero. Jamais le fichier, jamais deux lois.
+        case "$LAW" in *[!0-9]*) echo "refuse : la loi hors form ($LAW) ; une loi est un nombre" >&2 ; exit 1 ;; esac
+        [ -n "$SEC" ] || SEC=free
+        F="$SPEC_FILE"
+        [ -f "$F" ] || { echo "refuse : le spec du skill actif est introuvable ($F)" >&2 ; exit 1; }
+        SK="$SKILL"
+        CH=$(sed -n 's/^[[:space:]]*chars:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' "$SK" | head -n 1)
+        case "$CH" in ''|*[!0-9]*) CH=100 ;; esac
+        BODY=$(cat)
+        V=$(printf '%s\n' "$BODY" | sed -e '/^[[:space:]]*$/d')
+        [ "$(printf '%s\n' "$V" | wc -l | tr -d ' ')" = 1 ] || { echo "refuse : set_law ecrit UNE loi ; j en ai recu plusieurs" >&2 ; exit 1; }
+        V=$(printf '%s' "$V" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+        R="  $LAW: \"$V\""
+        [ "$(printf '%s' "$R" | wc -c | tr -d ' ')" -le "$CH" ] || { echo "refuse : la loi $LAW depasse $CH bytes" >&2 ; exit 1; }
+        law_write "$F" "$LAW" "$R" || { echo "refuse : ecriture impossible ($F)" >&2 ; exit 1; }
+        echo "$F : loi $LAW posee ($(printf '%s' "$R" | wc -c | tr -d ' ') bytes)"
+        exit 0
+      fi
+      case "$SEC" in ''|*[!a-zA-Z0-9_]*) echo "refuse : section hors form ($SEC) ; une section est un id de spec" >&2; exit 1 ;; esac
+      F="$SPEC_FILE"
+      [ -f "$F" ] || { echo "refuse : le spec du skill actif est introuvable ($F)" >&2; exit 1; }
+      SK="$SKILL"
+      [ -f "$SK" ] || { echo "refuse : le skill actif est introuvable ($SK)" >&2; exit 1; }
+      CH=$(sed -n 's/^[[:space:]]*chars:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' "$SK" | head -n 1)
+      case "$CH" in ''|*[!0-9]*) CH=100 ;; esac
+      CL=$(sed -n 's/^[[:space:]]*lines:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' "$SK" | head -n 1)
+      case "$CL" in ''|*[!0-9]*) CL=20 ;; esac
+      # LE NOM DE SECTION EST UNE VARIABLE : on n ancre QUE sur le token constant "SECTION : ".
+      grep -q "^SECTION : ${SEC}\$" "$F" || { echo "refuse : la section n existe pas dans le spec ($SEC) ; write_spec remplit, il ne cree pas" >&2; exit 1; }
+      BODY=$(cat)
+      V=$(printf '%s\n' "$BODY" | sed -e '/^[[:space:]]*$/d')
+      N=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+      [ "$N" -ge 1 ] || { echo 'refuse : section vide ; write_spec veut au moins une ligne' >&2; exit 1; }
+      [ "$N" -le "$CL" ] || { echo "refuse : trop de lignes ($N ; la bound cap.lines est $CL)" >&2; exit 1; }
+      LONG=$(printf '%s\n' "$V" | awk -v n="$CH" 'length($0) > n { print NR; exit }')
+      [ -z "$LONG" ] || { echo "refuse : une ligne depasse $CH bytes (ligne $LONG) ; rien n est ecrit" >&2; exit 1; }
+      BAD=$(printf '%s\n' "$V" | grep -vE '^[0-9]+: ' | head -n 1)
+      [ -z "$BAD" ] || { echo "refuse : une ligne hors form ($BAD) ; la shape est '<id>: <texte>'" >&2; exit 1; }
+      TMP="$F.$$.tmp"
+      {
+        sed -n "1,/^${SEC}:/p" "$F" | sed '$d'
+        printf '%s:\n' "$SEC"
+        printf '%s\n' "$V" | sed -e 's/^/  /'
+        sed -n "/^${SEC}:/,\$p" "$F" | sed -e '1d' | sed -n '/^[A-Za-z0-9_]/,$p'
+      } > "$TMP" || { rm -f "$TMP"; echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
+      [ -s "$TMP" ] || { rm -f "$TMP"; echo 'refuse : le montage n a rien ecrit' >&2; exit 1; }
+      grep -q "^${SEC}:" "$TMP" || { rm -f "$TMP"; echo "refuse : la section n a pas ete posee ($SEC)" >&2; exit 1; }
+      AV=$( { sed -n "1,/^${SEC}:/p" "$F" | sed '$d'; sed -n "/^${SEC}:/,\$p" "$F" | sed -e '1d' | sed -n '/^[A-Za-z0-9_]/,$p'; } )
+      AP=$( { sed -n "1,/^${SEC}:/p" "$TMP" | sed '$d'; sed -n "/^${SEC}:/,\$p" "$TMP" | sed -e '1d' | sed -n '/^[A-Za-z0-9_]/,$p'; } )
+      [ "$AV" = "$AP" ] || { rm -f "$TMP"; echo "refuse : une autre section a bouge ; rien n est ecrit ($SEC)" >&2; exit 1; }
+      mv -f "$TMP" "$F" || { rm -f "$TMP"; echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
+      echo "$F : section $SEC posee ($N ligne(s) ; bornes cap.lines=$CL cap.chars=$CH)"
+  - id: 136
+    tool: transcribe
+    family: READ
+    description: "transcribes an audio file from config/audio/ with the parakeet engine"
+    args:
+      - {name: path, type: path}
+    command: |
+      SRV=127.0.0.1:${LA_ASR_PORT:-8080}
+      curl -s --max-time 5 -f "http://$SRV/ready" >/dev/null 2>&1 \
+        || { echo 'refuse : l oreille residente ne repond pas (127.0.0.1:8080) ; rien n a demarre' >&2; exit 1; }
+      CONF=$(CDPATH= cd -- "$W/.." && pwd)
+      AUDIO="$CONF/config/audio"
+      F="$AUDIO/{{path}}"
+      [ -f "$F" ] || F="$W/{{path}}"
+      [ -f "$F" ] || { echo "refuse : le fichier audio est introuvable ({{path}})" >&2; exit 1; }
+      case "$F" in
+        *.wav|*.flac|*.mp3|*.ogg) A="$F" ;;
+        *.webm|*.mp4|*.m4a)
+          # CE QUE LE TELEPHONE PRODUIT N EST PAS CE QUE LE MOTEUR LIT : le navigateur rend du
+          # webm/opus ou du mp4/aac. On ramene au wav que parakeet attend, 16 kHz mono, dans un
+          # temporaire : l original n est jamais touche.
+          command -v ffmpeg >/dev/null 2>&1 || { echo 'refuse : ffmpeg est absent de la station' >&2 ; exit 1 ; }
+          TD=$(mktemp -d "${TMPDIR:-/tmp}/transcribe.XXXXXX") || { echo 'refuse : aucun espace temporaire' >&2 ; exit 1 ; }
+          trap 'rm -f "$TD/a.wav" ; rmdir "$TD" 2>/dev/null' EXIT INT TERM HUP
+          A="$TD/a.wav"
+          ffmpeg -y -loglevel error -i "$F" -ar 16000 -ac 1 "$A" >/dev/null 2>&1 || { echo "refuse : la conversion audio a echoue ({{path}})" >&2 ; exit 1 ; }
+          ;;
+        *) echo "refuse : format audio hors flac, mp3, ogg, wav, webm, mp4 ({{path}})" >&2 ; exit 1 ;;
+      esac
+      OUT=$(curl -s --max-time 300 -X POST "http://$SRV/v1/audio/transcriptions" \
+        -F "file=@$A" -F "response_format=json" \
+        | python3 -c 'import json,sys; d=json.load(sys.stdin); print((d.get("text") or "").strip())')
+      [ -n "$OUT" ] || { echo "refuse : la transcription n a rien rendu ({{path}})" >&2; exit 1; }
+      printf '%s\n' "$OUT"
+  - id: 173
+    tool: speak
+    family: WRITE
+    description: "says a text aloud, and writes the wav into config/audio/"
+    args:
+      - {name: text, type: text, stdin: true}
+    command: |
+      SRV=127.0.0.1:${LA_TTS_PORT:-8090}
+      curl -s --max-time 5 -f "http://$SRV/health" >/dev/null 2>&1 \
+        || { echo 'refuse : la voix residente ne repond pas (127.0.0.1:8090) ; rien n a demarre' >&2; exit 1; }
+      T=$(cat)
+      [ -n "$T" ] || { echo 'refuse : rien a say ; le texte entre par l entree standard' >&2; exit 1; }
+      Q=$(mktemp "${TMPDIR:-/tmp}/say.XXXXXX") || { echo 'refuse : aucun espace temporaire' >&2 ; exit 1 ; }
+      trap 'rm -f "$Q"' EXIT INT TERM HUP
+      printf '%s' "$T" | python3 -c 'import json,sys; sys.stdout.write(json.dumps({"text": sys.stdin.read()}))' > "$Q" \
+        || { echo 'refuse : la requete de voix n a pas pu etre construite' >&2; exit 1; }
+      OUT=$(curl -s --max-time 300 -X POST "http://$SRV/say" -H 'Content-Type: application/json' --data-binary @"$Q")
+      case "$OUT" in
+        "speech :"*) printf '%s\n' "$OUT" ;;
+        *) echo "refuse : la voix a repondu : ${OUT:-rien}" >&2 ; exit 1 ;;
+      esac
+  - id: 174
+    tool: index_build
+    family: WRITE
+    description: "embeds each table tool in e5-small and writes the survey under tools/"
+    command: |
+      B=/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-embedding
+      M=/home/moussa/LLM_GGUF/multilingual-e5-small-Q8_0.gguf
+      { [ -x "$B" ] && [ -f "$M" ]; } || { echo 'refuse : le plongeur e5 est introuvable' >&2; exit 1; }
+      T="$ROOT/config/la_tools.yaml"
+      R="$ROOT/tools/embeddings-e5.txt"
+      C="$R.corpus"
+      awk '/^  - id: /{i=$3} /^    tool: /{t=$2} /^    description:/{d=$0; sub(/^    description: */,"",d); gsub(/"/,"",d); printf "%s|%s|%s\n", i, t, d}' "$T" > "$C"
+      N=$(wc -l < "$C")
+      [ "$N" -ge 1 ] || { rm -f "$C"; echo 'refuse : la table ne rend aucun tool a plonger' >&2; exit 1; }
+      : > "$R.tmp"
+      while IFS= read -r l; do
+        V=$("$B" -m "$M" -c 512 --embd-normalize 2 -p "passage: $l" 2>/dev/null | sed -n 's/^embedding 0:  *//p')
+        [ -n "$V" ] && printf '%s|%s\n' "$V" "$l" >> "$R.tmp"
+      done < "$C"
+      [ -s "$R.tmp" ] || { rm -f "$R.tmp" "$C"; echo 'refuse : aucun plongement render' >&2; exit 1; }
+      mv -f "$R.tmp" "$R"
+      rm -f "$C"
+      printf 'releve des plongements : %s (%s tools, %s Ko)\n' "${R#$ROOT/}" "$(wc -l < "$R")" "$(du -k "$R" | cut -f1)"
+  - id: 175
+    tool: search_semantic
+    family: READ
+    description: "finds the tools that answer a request, by meaning, with e5-small"
+    args:
+      - {name: text, type: text, stdin: true}
+    command: |
+      B=/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-embedding
+      M=/home/moussa/LLM_GGUF/multilingual-e5-small-Q8_0.gguf
+      R="$ROOT/tools/embeddings-e5.txt"
+      { [ -x "$B" ] && [ -f "$M" ]; } || { echo 'refuse : le plongeur e5 est introuvable' >&2; exit 1; }
+      [ -f "$R" ] || { echo 'refuse : le releve des plongements est absent ; lance d abord le tool indexer' >&2; exit 1; }
+      Q=$(cat)
+      [ -n "$Q" ] || { echo 'refuse : rien a chercher ; la demande entre par l entree standard' >&2; exit 1; }
+      V=$("$B" -m "$M" -c 512 --embd-normalize 2 -p "query: $Q" 2>/dev/null | sed -n 's/^embedding 0:  *//p')
+      [ -n "$V" ] || { echo 'refuse : le plongement de la demande a echoue' >&2; exit 1; }
+      awk -v q="$V" -F'|' '
+        BEGIN { n = split(q, a, " ") }
+        {
+          d = split($1, b, " ")
+          if (d != n) next
+          s = 0
+          for (i = 1; i <= n; i++) s += a[i] * b[i]
+          printf "%.3f|%s\n", s, substr($0, index($0, "|") + 1)
+        }' "$R" | LC_ALL=C sort -rn | head -5 | awk -F'|' '{ printf "%s  %s\n", $1, $2 }'
+  - id: 137
+    tool: load_doc
+    family: READ
+    description: "reads a doc of the active skill by its name, before a sensitive tool"
+    args:
+      - {name: topic, type: text}
+    command: |
+      T="{{topic}}"
+      case "$T" in ''|*[!a-zA-Z0-9_.-]*) echo "refuse : topic hors form ($T) ; une doc se nomme par un slug" >&2; exit 1 ;; esac
+      D="$ROOT/docs"
+      [ -d "$D" ] || { echo 'refuse : le dossier des docs est introuvable (docs/ a la racine du projet)' >&2; exit 1; }
+      F="$D/$T.md"
+      [ -f "$F" ] || { echo "refuse : la doc est introuvable (docs/$T.md)" >&2; exit 1; }
+      LC_ALL=C sed -n '1,400p' "$F"
+# ---------------------------------------------------------------------------
+# la famille unity_* : les verbes retenus (le reste est exclu plus bas)
+# doc : unity
+# decouverte (NON INTERACTIVE, sans fenetre, avec timeout) :
+#   /home/moussa/.local/bin/unity --no-banner --no-pager --non-interactive --format json commands </dev/null
+# commandes brutes : 51 | retenues : 20 | exclues : 31
+#
+# REGLE D EXCLUSION : un verbe qui INSTALLE, S AUTHENTIFIE, SORT DE LA MACHINE,
+# TELEMETRISE ou OUVRE UNE INTERFACE (hub, editeur, navigateur, fenetre) est EXCLU.
+# Exclus ici :
+#  - analytics : telemetrise
+#  - auth : s authentifie, sort de la machine, ou telecharge
+#  - bug : s authentifie, sort de la machine, ou telecharge
+#  - build : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - cache : s authentifie, sort de la machine, ou telecharge
+#  - cloud : s authentifie, sort de la machine, ou telecharge
+#  - collaboration : s authentifie, sort de la machine, ou telecharge
+#  - docs : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - editor : installe, retire ou modifie une installation sur la station
+#  - editors : installe, retire ou modifie une installation sur la station
+#  - hub : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - install : installe, retire ou modifie une installation sur la station
+#  - install-modules : installe, retire ou modifie une installation sur la station
+#  - mcp : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - modules : installe, retire ou modifie une installation sur la station
+#  - plugin : installe, retire ou modifie une installation sur la station
+#  - command : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - templates : s authentifie, sort de la machine, ou telecharge
+#  - test : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - recompile : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - open : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - close : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - run : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - releases : s authentifie, sort de la machine, ou telecharge
+#  - self-uninstall : installe, retire ou modifie une installation sur la station
+#  - shell : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#  - skill : s authentifie, sort de la machine, ou telecharge
+#  - uninstall : installe, retire ou modifie une installation sur la station
+#  - self-update : installe, retire ou modifie une installation sur la station
+#  - vcs : s authentifie, sort de la machine, ou telecharge
+#  - watch : ouvre une interface, un hub, un editeur ou un navigateur, ou est interactif
+#
+# Une ligne par commande ; le verbe est FIGE dans la commande ; timeout + </dev/null.
+# Aucune colonne scope : l endroit vient du SKILL.
+# ---------------------------------------------------------------------------
+  - id: 139
+    tool: unity_assets
+    family: MANAGE
+    doc: unity
+    description: "work with unity asset packages"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json assets </dev/null'
+  - id: 140
+    tool: unity_changelog
+    family: READ
+    doc: unity
+    description: "show release notes for the installed cli"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json changelog </dev/null'
+  - id: 141
+    tool: unity_ci
+    family: WRITE
+    doc: unity
+    description: "scaffold ci pipelines that drive the unity cli"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json ci </dev/null'
+  - id: 142
+    tool: unity_completion
+    family: READ
+    doc: unity
+    description: "print a shell completion script"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json completion </dev/null'
+  - id: 143
+    tool: unity_config
+    family: MANAGE
+    doc: unity
+    description: "view or change persistent cli configuration"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json config </dev/null'
+  - id: 144
+    tool: unity_context
+    family: MANAGE
+    doc: unity
+    description: "save and switch between named sets of account, organization, project, editor"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json context </dev/null'
+  - id: 145
+    tool: unity_diagnose
+    family: READ
+    doc: unity
+    description: "one-shot diagnostic commands for support paste-safe, redacted output"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json diagnose </dev/null'
+  - id: 146
+    tool: unity_doctor
+    family: READ
+    doc: unity
+    description: "print diagnostic info about your unity cli environment"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json doctor </dev/null'
+  - id: 147
+    tool: unity_env
+    family: READ
+    doc: unity
+    description: "print unity hub environment paths and version"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json env </dev/null'
+  - id: 148
+    tool: unity_job
+    family: MANAGE
+    doc: unity
+    description: "manage detached editor command jobs"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json job </dev/null'
+  - id: 149
+    tool: unity_install_path
+    family: MANAGE
+    doc: unity
+    description: "set or get the editor install path"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json install-path </dev/null'
+  - id: 150
+    tool: unity_language
+    family: MANAGE
+    doc: unity
+    description: "show or change the cli display language"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json language </dev/null'
+  - id: 151
+    tool: unity_license
+    family: READ
+    doc: unity
+    description: "list the unity licenses active on this machine"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json license </dev/null'
+  - id: 152
+    tool: unity_list
+    family: READ
+    doc: unity
+    description: "list tools available on the connected unity editor (commands registered by the"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json list </dev/null'
+  - id: 153
+    tool: unity_logs
+    family: READ
+    doc: unity
+    description: "read and tail the hub log file"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json logs </dev/null'
+  - id: 154
+    tool: unity_pipeline
+    family: READ
+    doc: unity
+    description: "unity editor pipeline package, plus build automation and pipeline automation"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json pipeline </dev/null'
+  - id: 155
+    tool: unity_projects
+    family: MANAGE
+    doc: unity
+    description: "manage unity projects in the hub registry"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json projects </dev/null'
+  - id: 156
+    tool: unity_commands
+    family: READ
+    doc: unity
+    description: "list every command and subcommand as a machine-readable manifest"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json commands </dev/null'
+  - id: 158
+    tool: unity_version
+    family: READ
+    doc: unity
+    description: "print the unity cli version and build information"
+    command: 'timeout 40 unity --no-banner --no-pager --non-interactive --format json version </dev/null'
+# ---------------------------------------------------------------------------
+# la famille blender_* : les verbes retenus (le reste est exclu plus bas)
+# doc : blender
+# decouverte (NON INTERACTIVE, sans fenetre, avec timeout) :
+#   /home/moussa/Applications/blender-5.2.2-linux-x64/blender --background --factory-startup --command help </dev/null
+# commandes brutes : 3 | retenues : 2 | exclues : 1
+#
+# REGLE D EXCLUSION : un verbe qui INSTALLE, S AUTHENTIFIE, SORT DE LA MACHINE,
+# TELEMETRISE ou OUVRE UNE INTERFACE (hub, editeur, navigateur, fenetre) est EXCLU.
+# Exclus ici :
+#  - extension : installe, retire ou modifie une installation sur la station
+#
+# Une ligne par commande ; le verbe est FIGE dans la commande ; timeout + </dev/null.
+# Aucune colonne scope : l endroit vient du SKILL.
+# ---------------------------------------------------------------------------
+  - id: 159
+    tool: blender_asset_listing
+    family: MANAGE
+    doc: blender
+    description: "manage asset library index files."
+    command: 'env -u DISPLAY timeout 120 "$HOME/Applications/blender-5.2.2-linux-x64/blender" --background --factory-startup --command asset_listing </dev/null'
+  - id: 160
+    tool: blender_maketx
+    family: WRITE
+    doc: blender
+    description: "generate cycles texture cache (.tx) files."
+    command: 'env -u DISPLAY timeout 120 "$HOME/Applications/blender-5.2.2-linux-x64/blender" --background --factory-startup --command maketx </dev/null'
+# ---------------------------------------------------------------------------
+# la famille comfyui_* : les verbes retenus (le reste est exclu plus bas)
+# doc : comfyui
+# decouverte (NON INTERACTIVE, sans fenetre, avec timeout) :
+#   /home/moussa/Applications/ComfyUI/venv/bin/python3 /home/moussa/Applications/ComfyUI/TOOLS/comfy_tool.py --list </dev/null
+# commandes brutes : 11 | retenues : 11 | exclues : 0
+#
+# REGLE D EXCLUSION : un verbe qui INSTALLE, S AUTHENTIFIE, SORT DE LA MACHINE,
+# TELEMETRISE ou OUVRE UNE INTERFACE (hub, editeur, navigateur, fenetre) est EXCLU.
+# Aucun verbe exclu par la regle.
+#
+# Une ligne par commande ; le verbe est FIGE dans la commande ; timeout + </dev/null.
+# Aucune colonne scope : l endroit vient du SKILL.
+# ---------------------------------------------------------------------------
+  - id: 161
+    tool: comfyui_colorize
+    family: WRITE
+    doc: comfyui
+    description: "colorizes a line drawing (controlnet lineart + lcm)"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" colorier </dev/null'
+  - id: 162
+    tool: comfyui_colorize_under_lines
+    family: WRITE
+    doc: comfyui
+    description: "drains the color under the line (color layer under the inking)"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" couleur_sous_traits </dev/null'
+  - id: 163
+    tool: comfyui_render_drawing
+    family: WRITE
+    doc: comfyui
+    description: "flattens a .kra to png/jpg, resizable"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" rendu_dessin </dev/null'
+  - id: 164
+    tool: comfyui_variants
+    family: WRITE
+    doc: comfyui
+    description: "n draws + contact sheet to judge a look"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" variantes </dev/null'
+  - id: 165
+    tool: comfyui_colorize_batch
+    family: WRITE
+    doc: comfyui
+    description: "several .kra in a row (cap 10)"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" colorier_lot </dev/null'
+  - id: 166
+    tool: comfyui_clean_lines
+    family: WRITE
+    doc: comfyui
+    description: "closes the line's holes before colorization"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" nettoyer_trait </dev/null'
+  - id: 167
+    tool: comfyui_style
+    family: WRITE
+    doc: comfyui
+    description: "palette transfer from a reference (ipadapter)"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" style </dev/null'
+  - id: 168
+    tool: comfyui_coherence
+    family: WRITE
+    doc: comfyui
+    description: "coherent character : ipadapter + optional lora + optional openpose pose"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" coherence </dev/null'
+  - id: 169
+    tool: comfyui_enlarge
+    family: WRITE
+    doc: comfyui
+    description: "enlarges 2x/4x (esrgan) and can lay back into a layer"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" agrandir </dev/null'
+  - id: 170
+    tool: comfyui_find_layers
+    family: READ
+    doc: comfyui
+    description: "lists a directory's layers and guesses their role"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" reperer_calques </dev/null'
+  - id: 171
+    tool: comfyui_animate_background
+    family: WRITE
+    doc: comfyui
+    description: "background by anima + lllite inpainting : the decor is built around the"
+    command: 'timeout 300 "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" anima_fond </dev/null'
+# ---------------------------------------------------------------------------
+# LA PAROLE. L'agent PARLE par appel d'outil : talk dit ce qui se passe et
+# NE FERME PAS le tour - c'est answer qui le ferme. Meme forme que answer : la forme
+# (text, list, table, code) et le texte libre par l'ENTREE STANDARD.
+# ---------------------------------------------------------------------------
+  - id: 172
+    tool: talk
+    guardrail: true
+    family: REPLY
+    description: "tells the human what is happening, without closing the turn"
+    args:
+      - {name: form, type: enum, values: [text, list, table, code]}
+      - {name: text, type: text, stdin: true}
+    command: cat
+
+  - id: 157
+    tool: vision_analyze
+    family: READ
+    description: "reads a workspace image with the API's multimodal model"
+    args:
+      - {name: path, type: path}
+      - {name: question, type: text, stdin: true}
+    command: |
+      LC_ALL=C; export LC_ALL
+      # LA CLE : ce service-la la reclame, lui seul. Elle vit dans config/.env du projet
+      # (deja a 600). On la charge si l environnement ne la porte pas ; on ne l imprime
+      # JAMAIS, on ne la met ni sur la sortie ni dans un journal.
+      if [ -z "${OLLAMA_API_KEY:-}" ] && [ -r "$ROOT/config/.env" ]; then
+        set -a
+        . "$ROOT/config/.env" 2>/dev/null || true
+        set +a
+      fi
+      KEY=${OLLAMA_API_KEY:-}
+      [ -n "$KEY" ] || { echo 'refuse : aucune cle d API (OLLAMA_API_KEY) ; le service de l API ne peut pas etre appele' >&2 ; exit 1 ; }
+      API=${LA_API_URL:-https://ollama.com/v1}
+      MODELE=${LA_API_MODEL:-deepseek-v4.1-flash}
+      F="$W/{{path}}"
+      [ -f "$F" ] || { echo "refuse : l image est introuvable ({{path}})" >&2 ; exit 1 ; }
+      case "$F" in
+        *.png) M=image/png ;;
+        *.jpg|*.jpeg) M=image/jpeg ;;
+        *.webp) M=image/webp ;;
+        *.gif) M=image/gif ;;
+        *.bmp) M=image/bmp ;;
+        *) echo "refuse : ce type d image n est pas lu ({{path}}) ; png, jpg, webp, gif ou bmp" >&2 ; exit 1 ;;
+      esac
+      Q=$(cat); [ -n "$Q" ] || Q="Decris cette image en detail, en francais."
+      command -v jq >/dev/null 2>&1 || { echo 'refuse : jq est introuvable sur la machine' >&2 ; exit 1 ; }
+      TD=$(mktemp -d "${TMPDIR:-/tmp}/vision_analyze.XXXXXX") || { echo 'refuse : aucun espace temporaire (TMPDIR)' >&2 ; exit 1 ; }
+      trap 'rm -f "$TD/b" "$TD/q"' EXIT INT TERM HUP
+      base64 -w 0 -- "$F" > "$TD/b" || { echo "refuse : l image n a pas pu etre lue ($F)" >&2 ; exit 1 ; }
+      jq -cn --arg m "$M" --rawfile b "$TD/b" --arg q "$Q" --arg mo "$MODELE" '{model:$mo,stream:false,temperature:0.1,max_tokens:2048,messages:[{role:"user",content:[{type:"text",text:$q},{type:"image_url",image_url:{url:("data:"+$m+";base64,"+$b)}}]}]}' > "$TD/q" || { echo 'refuse : la demande n a pas pu etre montee (jq)' >&2 ; exit 1 ; }
+      R=$(curl -sS -m 180 -H 'Content-Type: application/json' -H "Authorization: Bearer $KEY" --data-binary @"$TD/q" "$API/chat/completions") || { echo "refuse : l API n a pas repondu ($API)" >&2 ; exit 1 ; }
+      # UN MODELE A RAISONNEMENT MET SA REPONSE DANS reasoning ET LAISSE content VIDE :
+      # mesure faite sur ce service (200, content vide, tout dans reasoning). On lit
+      # content d abord, reasoning ensuite ; jamais les deux melanges.
+      T=$(printf '%s' "$R" | jq -r 'if ((.choices[0].message.content // "") != "") then .choices[0].message.content else (.choices[0].message.reasoning // "") end' 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
+      [ -n "$T" ] || { echo "refuse : l API n a rien rendu ($(printf '%s' "$R" | tr '\n' ' ' | cut -c1-200))" >&2 ; exit 1 ; }
+      printf '%s\n' "$T"
+
+  - id: 176
+    tool: see_image
+    family: READ
+    description: "reads a workspace image with the small or the big model"
+    args:
+      - {name: path, type: path}
+      - {name: vision_model, type: text}
+      - {name: question, type: text, stdin: true}
+    command: |
+      LC_ALL=C; export LC_ALL
+      # DEUX MODELES, UN SEUL OUTIL. Le PETIT (small) tourne sur le CPU, il est leger et
+      # rapide : c est le defaut. Le GROS (big) voit mieux mais il lui faut les cartes :
+      # on le demarre s il ne repond pas, et s il ne tient pas dans la VRAM on le dit.
+      MODELE="${LA_VISION_MODELE:-{{vision_model}}}"
+      [ -n "$MODELE" ] || MODELE=small
+      F="$W/{{path}}"
+      [ -f "$F" ] || { echo "refuse : l image est introuvable ({{path}})" >&2 ; exit 1 ; }
+      case "$F" in
+        *.png) M=image/png ;;
+        *.jpg|*.jpeg) M=image/jpeg ;;
+        *.webp) M=image/webp ;;
+        *.gif) M=image/gif ;;
+        *.bmp) M=image/bmp ;;
+        *) echo "refuse : ce type d image n est pas lu ({{path}}) ; png, jpg, webp, gif ou bmp" >&2 ; exit 1 ;;
+      esac
+      Q=$(cat); [ -n "$Q" ] || Q="Describe this image in one sentence."
+      case "$MODELE" in
+        small)
+          A=http://127.0.0.1:8091
+          NOM=smolvlm
+          ;;
+        big)
+          A=http://127.0.0.1:8092
+          NOM=qwen3-vl-8b-instruct
+          if ! curl -sS -m 2 "$A/health" >/dev/null 2>&1; then
+            BIN=${LA_LLAMA_BIN:-/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-server}
+            GD=${LA_GGUF_DIR:-/home/moussa/LLM_GGUF}
+            [ -x "$BIN" ] || { echo "refuse : le gros modele est arrete et son binaire est introuvable ($BIN)" >&2 ; exit 1 ; }
+            [ -f "$GD/Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf" ] || { echo "refuse : le gros modele n est pas sur la machine ($GD)" >&2 ; exit 1 ; }
+            setsid "$BIN" -m "$GD/Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf" --mmproj "$GD/mmproj-Qwen3VL-8B-Instruct-Q8_0.gguf" --host 127.0.0.1 --port 8092 -ngl 99 --tensor-split 5,4 -c 4096 >/dev/null 2>&1 < /dev/null &
+            VU=0
+            while [ "$VU" -lt 60 ]; do
+              curl -sS -m 2 "$A/health" >/dev/null 2>&1 && { VU=99; break; }
+              VU=$((VU + 1))
+              sleep 2
+            done
+            [ "$VU" = 99 ] || { echo "refuse : le gros modele n a pas demarre en 120 s (la VRAM des cartes est peut-etre prise ; le PETIT modele, lui, reste disponible sur le CPU)" >&2 ; exit 1 ; }
+          fi
+          ;;
+        *) echo "refuse : modele de vision inconnu (${MODELE:-absent}) ; small ou big" >&2 ; exit 1 ;;
+      esac
+      command -v jq >/dev/null 2>&1 || { echo 'refuse : jq est introuvable sur la machine' >&2 ; exit 1 ; }
+      curl -sS -m 2 "$A/health" >/dev/null 2>&1 || { echo "refuse : le service de vision ne repond pas ($A ; modele $MODELE) ; l a-t-on demarre ?" >&2 ; exit 1 ; }
+      TD=$(mktemp -d "${TMPDIR:-/tmp}/see_image.XXXXXX") || { echo 'refuse : aucun espace temporaire' >&2 ; exit 1 ; }
+      trap 'rm -f "$TD/b" "$TD/q"' EXIT INT TERM HUP
+      base64 -w 0 -- "$F" > "$TD/b" || { echo "refuse : l image n a pas pu etre lue ($F)" >&2 ; exit 1 ; }
+      jq -cn --arg m "$M" --rawfile b "$TD/b" --arg q "$Q" --arg n "$NOM" '{model:$n,temperature:0.1,max_tokens:1024,messages:[{role:"user",content:[{type:"image_url",image_url:{url:("data:"+$m+";base64,"+$b)}},{type:"text",text:$q}]}]}' > "$TD/q" || { echo 'refuse : la demande n a pas pu etre montee' >&2 ; exit 1 ; }
+      R=$(curl -sS -m 180 -H 'Content-Type: application/json' --data-binary @"$TD/q" "$A/v1/chat/completions") || { echo "refuse : le service de vision n a pas repondu ($A)" >&2 ; exit 1 ; }
+      T=$(printf '%s' "$R" | jq -r '.choices[0].message.content // empty' 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
+      [ -n "$T" ] || { echo "refuse : le service de vision n a rien rendu (modele $MODELE)" >&2 ; exit 1 ; }
+      printf '%s\n' "$T"

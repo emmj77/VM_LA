@@ -1,0 +1,44 @@
+skill: "unity"
+source: "agent"
+date: "2026-10-14"
+tags: ["unity", "unity3d", "editeur", "projet", "machine"]
+
+SUMMARY:
+  101: "Piloter l'editeur Unity de la station par le CLI unity."
+  102: "unity_status dit quels editeurs repondent ; unity_run execute une commande locale."
+  103: "Les verbes qui SORTENT de la machine (auth, install, cloud, upgrade) sont refuses."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "unity_status"
+  201: "unity_run"
+  202: "unity_assets"
+  203: "unity_changelog"
+  204: "unity_ci"
+  205: "unity_completion"
+  206: "unity_config"
+  207: "unity_context"
+  208: "unity_diagnose"
+  209: "unity_doctor"
+  210: "unity_env"
+  211: "unity_job"
+  212: "unity_install_path"
+  213: "unity_language"
+  214: "unity_license"
+  215: "unity_list"
+  216: "unity_logs"
+  217: "unity_pipeline"
+  218: "unity_projects"
+  219: "unity_commands"
+  220: "unity_version"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

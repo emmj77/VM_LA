@@ -1,0 +1,28 @@
+skill: "report"
+source: "agent"
+date: "2026-10-14"
+tags: ["report", "write", "summary", "signal"]
+
+SUMMARY:
+  101: "Rediger un rapport a partir de ce que la tache a produit."
+  102: "Je relis le travail puis j'ecris le rapport dans PERIMETER.workspace."
+  103: "signal_task rend un signal de fin de tache a l'humain, hors du tour."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "signal_task"
+  201: "read_file"
+  202: "write_file"
+  203: "search"
+  204: "yq_query"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

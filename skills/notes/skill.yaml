@@ -1,0 +1,28 @@
+skill: "notes"
+source: "agent"
+date: "2026-10-14"
+tags: ["notes", "memoire", "memory", "noter", "souvenir"]
+
+SUMMARY:
+  101: "Tenir la memoire : ajouter une note datee, la relire, la chercher."
+  102: "note AJOUTE une entree datee dans memory/ ; il ne remplace jamais rien."
+  103: "search_memory retrouve une note par un motif."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+TOOLS:
+  200: "note"
+  201: "search_memory"
+  202: "read_file"
+  203: "write_file"
+  204: "search"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:
