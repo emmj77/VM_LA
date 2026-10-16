@@ -50,6 +50,11 @@ ROOT=$(CDPATH= cd -- "$HERE/../.." && pwd)
 . "$HERE/lib.sh"
 TABLE="$ROOT/config/la_tools.yaml"
 W="$ROOT/work"
+# LE MOT DE L'ARRET (loi 476). Le pont ARME le sommeil du tour : ce fichier n'existe pas tant que
+# l'humain n'a rien dit. La route /stop le TOUCHE ; le tool `sleep` le voit a la seconde suivante
+# et rend un fait NOMME (jamais une mort muette). Un seul fichier pour la machine : deux tours
+# paralleles s'arretent ensemble -- c'est la marque par tour qui viendra avec le veilleur.
+STOP="$W/stop"
 # ALL THE AUDIO LIVES HERE, AND NOWHERE ELSE : what GOES OUT (the turn's voice) as what COMES IN
 # (the phone's audio). A separate folder, purged by audio_purge.sh, so the disk does not fill up in
 # silence. The NAME of the files does not change : only their folder changed.
@@ -149,6 +154,9 @@ turn() {  # $1 = the demand ; $2 = the file where to place the JSON body ; $3 = 
   # turn. The app re-reads it AS IT GOES : it hears each word as soon as it is ready, instead of
   # waiting for the turn to finish and receiving the last wav in one go.
   : > "$ROOT/work/spoken.jsonl" 2>/dev/null || true
+  # LE TOUR PART SANS MOT D'ARRET : on retire celui du tour precedent, sinon la premiere seconde
+  # du sommeil tomberait sur le mot d'hier. Le fichier est CREE par /stop, jamais par le tour.
+  rm -f "$STOP" 2>/dev/null || true
 
   # THE TURN IS SHORT, AND ITS VOICE IS WATCHED. The loop runs in the background : its standard
   # output carries the reply, its error output carries the JOURNAL and THE HUMAN CHANNEL - that is
@@ -160,9 +168,9 @@ turn() {  # $1 = the demand ; $2 = the file where to place the JSON body ; $3 = 
   FIFO="$T/pipe"
   if mkfifo "$FIFO" 2>/dev/null; then
     if [ "${3:-}" = voice ]; then
-      printf '%s\n' "$1" | LA_VOICE=1 LA_LOG_FILE="$JOURNAL" "$SH" "$LOOP" > "$T/reply" 2> "$FIFO" &
+      printf '%s\n' "$1" | LA_VOICE=1 LA_LOG_FILE="$JOURNAL" LA_STOP_FILE="$STOP" "$SH" "$LOOP" > "$T/reply" 2> "$FIFO" &
     else
-      printf '%s\n' "$1" | LA_LOG_FILE="$JOURNAL" "$SH" "$LOOP" > "$T/reply" 2> "$FIFO" &
+      printf '%s\n' "$1" | LA_LOG_FILE="$JOURNAL" LA_STOP_FILE="$STOP" "$SH" "$LOOP" > "$T/reply" 2> "$FIFO" &
     fi
     LPID=$!
     while IFS= read -r L; do
@@ -179,7 +187,7 @@ turn() {  # $1 = the demand ; $2 = the file where to place the JSON body ; $3 = 
   else
     # FALLBACK : without a fifo (exotic filesystem), we fall back on the old path -
     # the whole turn, then the reply, once.
-    printf '%s\n' "$1" | LA_LOG_FILE="$JOURNAL" "$SH" "$LOOP" > "$T/reply" 2>>"$LOGF"
+    printf '%s\n' "$1" | LA_LOG_FILE="$JOURNAL" LA_STOP_FILE="$STOP" "$SH" "$LOOP" > "$T/reply" 2>>"$LOGF"
     RC=$?
   fi
   # THE LAST WAV IS READ IN THE TURN'S LIST, NOT IN THE FOLDER : `find`'s order is not time's
@@ -270,6 +278,20 @@ request() {
       else
         "$SH" "$ENGINE" "$ID" < /dev/null > "$T/out" 2>>"$LOGF"
         answer 200 application/json "$T/out"
+      fi
+      ;;
+
+    /stop*)
+      # LE MOT DE L'HUMAIN (loi 476). On ne tue RIEN ici : on POSE le mot. Le sommeil du tour en
+      # cours le voit a la seconde suivante et rend un fait nomme (« sommeil : interrompu a N s
+      # sur M, mot de l humain »). Un tour qui ne dort pas n'est pas touche : il finit son travail
+      # (couper un tour reste un INT/TERM, un autre geste, loi 339).
+      if printf '%s\n' "$(ts)" > "$STOP" 2>/dev/null; then
+        printf '{"state":"word placed","file":"%s","ts":"%s"}\n' "$STOP" "$(ts)" > "$T/out"
+        answer 200 application/json "$T/out"
+      else
+        printf '{"error":"the word could not be placed","file":"%s"}\n' "$STOP" > "$T/out"
+        answer 500 application/json "$T/out"
       fi
       ;;
 
@@ -495,7 +517,7 @@ Reponds a ce que j en attends : dis-moi ce que cette image montre, et ce qu il y
       ;;
 
     *)
-      printf '{"error":"unknown route","routes":["GET /","GET /widget","GET /LA-app.apk","GET /manifest.webmanifest","GET /icon.svg","GET /sw.js","GET /ping","GET /plan","GET /journal","GET /spoken","GET /engine","POST /engine","GET /audio/<name>","POST /say","POST /voice","POST /image"]}\n' > "$T/out"
+      printf '{"error":"unknown route","routes":["GET /","GET /widget","GET /LA-app.apk","GET /manifest.webmanifest","GET /icon.svg","GET /sw.js","GET /ping","GET /plan","GET /journal","GET /spoken","GET /engine","POST /engine","GET /audio/<name>","POST /say","POST /voice","POST /image","POST /stop"]}\n' > "$T/out"
       answer 404 application/json "$T/out"
       ;;
   esac
