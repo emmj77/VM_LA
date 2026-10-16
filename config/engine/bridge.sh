@@ -70,7 +70,7 @@ KEY="$ROOT/config/certs/bridge-key.pem"
 PID_FILE="$W/bridge.pid"
 PID_TLS="$W/bridge-tls.pid"
 # L APK DU TELEPHONE. Le poste le SERT, le telephone le prend : pas de cable, pas d adb.
-APKFILE=${LA_APK:-/home/moussa/Applications/LA-widget/app/build/outputs/apk/debug/app-debug.apk}
+APKFILE=${LA_APK:-/home/moussa/Applications/LA-widget/app/build/outputs/apk/debug/LA-app.apk}
 LOGF="$W/bridge.log"
 
 log_to_file() { printf '%s  %s\n' "$(ts)" "$1" >> "$LOGF" 2>/dev/null || true; }
@@ -458,9 +458,9 @@ Reponds a ce que j en attends : dis-moi ce que cette image montre, et ce qu il y
       fi
       ;;
 
-    /apk|/la.apk)
+    /apk|/LA-app.apk)
       if [ -f "$APKFILE" ]; then
-        answer 200 "application/vnd.android.package-archive" "$APKFILE" "LA.apk"
+        answer 200 "application/vnd.android.package-archive" "$APKFILE" "LA-app.apk"
       else
         printf '{"error":"l APK n est pas bati sur la station (%s)"}\n' "$APKFILE" > "$T/out"
         answer 404 application/json "$T/out"
@@ -495,7 +495,7 @@ Reponds a ce que j en attends : dis-moi ce que cette image montre, et ce qu il y
       ;;
 
     *)
-      printf '{"error":"route inconnue","routes":["GET /","GET /widget","GET /la.apk","GET /manifest.webmanifest","GET /icon.svg","GET /sw.js","GET /ping","GET /plan","GET /journal","GET /spoken","GET /engine","POST /engine","GET /audio/<nom>","POST /say","POST /voice","POST /image"]}\n' > "$T/out"
+      printf '{"error":"route inconnue","routes":["GET /","GET /widget","GET /LA-app.apk","GET /manifest.webmanifest","GET /icon.svg","GET /sw.js","GET /ping","GET /plan","GET /journal","GET /spoken","GET /engine","POST /engine","GET /audio/<nom>","POST /say","POST /voice","POST /image"]}\n' > "$T/out"
       answer 404 application/json "$T/out"
       ;;
   esac
