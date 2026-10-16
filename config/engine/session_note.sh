@@ -3,14 +3,15 @@
 #
 # WHAT IT DOES
 #   it takes ONE EXCHANGE (the human's request, the agent's reply), it asks the LOCAL MODEL
-#   to compact both sides, and it PLACES a timestamped entry in config/sessions.yaml. It
-#   returns nothing on its standard output : the turn's reply has already gone to the human,
-#   and this script does not speak in its place.
+#   to compact both sides, and it PLACES a timestamped entry in config/memory.db (the TABLE :
+#   the summary of the exchanges). It returns nothing on its standard output : the turn's reply
+#   has already gone to the human, and this script does not speak in its place.
 #
 # THE ARGUMENTS
 #   $1  the turn's REQUEST     $2  the turn's REPLY
 #
-# THE SHAPE IT HOLDS (declared in sessions.yaml, held here)
+# THE SHAPE IT HOLDS (declared in memory.db, held here)
+#   exchange the NUMBER of the exchange it covers : the LINK with the BODY (sessions.db)
 #   stamp   the UTC timestamp, placed by THIS SCRIPT (never by the model)
 #   human   at most TWO lines : what the human asked, and what he got
 #   agent   at most TWO lines : what the agent did, and where it stands
@@ -31,14 +32,15 @@ HERE=$(dirname "$(readlink -f -- "$0" 2>/dev/null || printf '%s' "$0")")
 [ -n "$HERE" ] || HERE=$(dirname "$0")
 CONF_DIR=$(dirname "$HERE")
 BRICK="$HERE/summary.sh"
-FILE=${LA_SESSIONS:-$CONF_DIR/sessions.yaml}
+MEM=${LA_MEMORY_DB:-$CONF_DIR/memory.db}
+DB=${LA_SESSIONS_DB:-$CONF_DIR/sessions.db}
 
 REQUEST=${1:-}
 REPLY=${2:-}
 
 [ -f "$BRICK" ] || { echo "refused: the compacting brick is missing ($BRICK)" >&2 ; exit 1 ; }
-[ -f "$FILE" ] || { echo "refused: the sessions file is missing ($FILE)" >&2 ; exit 1 ; }
-[ -w "$FILE" ] || { echo "refused: the sessions file is not writable ($FILE)" >&2 ; exit 1 ; }
+[ -f "$MEM" ] || { echo "refused: the memory base is missing ($MEM)" >&2 ; exit 1 ; }
+[ -w "$MEM" ] || { echo "refused: the memory base is not writable ($MEM)" >&2 ; exit 1 ; }
 [ -n "$REQUEST" ] || { echo 'refused: no request to compact' >&2 ; exit 1 ; }
 [ -n "$REPLY" ] || { echo 'refused: no reply to compact' >&2 ; exit 1 ; }
 
@@ -71,15 +73,19 @@ AGENT_SIDE=$(compact agent | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -
 
 STAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-{
-  printf '  - stamp: "%s"\n' "$STAMP"
-  printf '    human: |-\n'
-  printf '%s\n' "$HUMAN_SIDE" | sed -e 's/^/      /'
-  printf '    agent: |-\n'
-  printf '%s\n' "$AGENT_SIDE" | sed -e 's/^/      /'
-} >> "$FILE" || { echo "refused: the entry could not be placed ($FILE)" >&2 ; exit 1 ; }
+# THE ENTRY GOES INTO THE BASE (memory.db), NEVER INTO A FILE. The model does not hold a format,
+# so the SCRIPT holds it. THE LINK WITH THE BODY (sessions.db) IS THE EXCHANGE : the summary
+# names the exchange it covers, and the body carries that number -- that is what makes the
+# summary usable (choose here, read there). Same hand as db_add in loop.sh : one quote becomes
+# two, then an INSERT. Nothing is invented : without the model's two sides, no entry.
+EX=$(sqlite3 "$DB" 'SELECT COALESCE(MAX(exchange),0) FROM messages;' 2>/dev/null || printf '')
+case "${EX:-}" in ''|*[!0-9]*) EX=0 ;; esac
+_H=$(printf '%s' "$HUMAN_SIDE" | sed "s/'/''/g")
+_A=$(printf '%s' "$AGENT_SIDE" | sed "s/'/''/g")
+sqlite3 "$MEM" "INSERT INTO memory(exchange, stamp, human, agent) VALUES($EX, '$STAMP', '$_H', '$_A');" 2>/dev/null \
+  || { echo "refused: the entry could not be placed ($MEM)" >&2 ; exit 1 ; }
 
-echo "session_note : exchange compacted and placed at $STAMP"
+echo "session_note : exchange compacted and placed at $STAMP (exchange $EX, $MEM)"
 
 # --- THE MICRO-SUMMARY OF THE SECONDARY HEAD (laws 110, 810, 1716, 1915) ------------------
 # THE EXCHANGES THAT LEFT THE WINDOW are summarized by the local model, and the place of the
@@ -87,7 +93,6 @@ echo "session_note : exchange compacted and placed at $STAMP"
 # The SOURCE is the BODY (sessions.db), never the window : what left the context is precisely
 # what the window no longer carries.
 #   THE WINDOW keeps TWENTY exchanges (law 1915) ; the summary covers the LAST TEN that left (810).
-DB=${LA_SESSIONS_DB:-$CONF_DIR/sessions.db}
 RESF=${LA_SUMMARY_FILE:-$CONF_DIR/second.yaml}
 WINDOW=${LA_WINDOW:-20}
 KEPT=${LA_SUMMARY_EXCHANGES:-10}

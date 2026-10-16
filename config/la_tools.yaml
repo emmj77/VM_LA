@@ -838,15 +838,18 @@ tools:
   - id: 132
     tool: search_memory
     family: READ
-    description: "searches a pattern in memory/ and returns the notes that carry it"
+    description: "searches the memory base and returns the entries that carry the words"
     args:
       - {name: text, type: text, stdin: true}
     command: |
-      T=$(cat); [ ${#T} -ge 3 ] || { echo "refuse : motif de moins de 3 caracteres" >&2; exit 1; }
-      D="$ROOT/memory"
-      [ -d "$D" ] || { echo "refuse : memory introuvable ; la portee du tool n existe pas ($D)" >&2; exit 1; }
-      cd "$D" || { echo "refuse : memory introuvable ($D)" >&2; exit 1; }
-      LC_ALL=C grep -rlF -- "$T" . 2>/dev/null | LC_ALL=C sort | cut -c3-
+      # LA TABLE (memory.db) : le sommaire des echanges, ecrit par le compacteur. On cherche par
+      # MOT ici, en attendant le modele d'embedding qui cherchera par SENS. La sortie nomme
+      # l'ECHANGE : c'est le lien vers le corps (sessions.db), ou load_memory va lire le detail.
+      T=$(cat); [ -n "$T" ] || { echo "refuse : question vide" >&2; exit 1; }
+      M=${LA_MEMORY_DB:-$ROOT/config/memory.db}
+      [ -f "$M" ] || { echo "refuse : la base de memoire est introuvable ($M)" >&2; exit 1; }
+      _Q=$(printf '%s' "$T" | sed "s/'/''/g")
+      sqlite3 "$M" "SELECT exchange || ' | ' || stamp || ' | ' || replace(human, char(10), ' ') || ' | ' || replace(agent, char(10), ' ') FROM memory WHERE human LIKE '%$_Q%' OR agent LIKE '%$_Q%' ORDER BY id DESC LIMIT 20;" 2>/dev/null
   - id: 134
     tool: write_spec
     family: MANAGE
@@ -1446,3 +1449,51 @@ tools:
         i=$((i + 1))
       done
       printf 'sommeil : %s s, echeance atteinte\n' "$S"
+  - id: 178
+    tool: search_sessions
+    family: READ
+    description: "searches the sessions body and returns the exchanges that carry the words"
+    args:
+      - {name: text, type: text, stdin: true}
+    command: |
+      # LE CORPS (sessions.db) : chaque tour y laisse ses lignes, brutes. On cherche dans le TEXTE
+      # des messages et on nomme l'ECHANGE : c'est ce que search_memory rend aussi, donc les deux
+      # lectures se repondent.
+      T=$(cat); [ -n "$T" ] || { echo "refuse : question vide" >&2; exit 1; }
+      D=${LA_SESSIONS_DB:-$ROOT/config/sessions.db}
+      [ -f "$D" ] || { echo "refuse : le corps des sessions est introuvable ($D)" >&2; exit 1; }
+      _Q=$(printf '%s' "$T" | sed "s/'/''/g")
+      sqlite3 "$D" "SELECT exchange || ' | ' || ts || ' | ' || role || ' | ' || substr(replace(content, char(10), ' '), 1, 200) FROM messages WHERE content LIKE '%$_Q%' ORDER BY id DESC LIMIT 20;" 2>/dev/null
+  - id: 179
+    tool: load_memory
+    family: READ
+    description: "loads a chosen part of the memory or of the sessions, by exchange number"
+    args:
+      - {name: source, type: text}
+      - {name: key, type: int}
+    command: |
+      # LOAD_MEMORY CHARGE LA PARTIE DEMANDEE, de l'une ou l'autre : jamais les deux.
+      #   memory   -> la TABLE (le sommaire de l'echange)
+      #   sessions -> le CORPS (les lignes brutes de l'echange)
+      # La CLE est l'ECHANGE : c'est le lien entre les deux bases, et le seul nombre qui aille
+      # des deux cotes. Rien trouve se DIT : jamais un silence.
+      S="{{source}}"; K={{key}}
+      case "$S" in
+        memory)
+          M=${LA_MEMORY_DB:-$ROOT/config/memory.db}
+          [ -f "$M" ] || { echo "refuse : la base de memoire est introuvable ($M)" >&2; exit 1; }
+          N=$(sqlite3 "$M" "SELECT count(*) FROM memory WHERE exchange = $K;" 2>/dev/null || printf '')
+          case "${N:-}" in ''|*[!0-9]*) N=0 ;; esac
+          [ "$N" -gt 0 ] || { echo "refuse : aucun echange $K dans la table de memoire" >&2; exit 1; }
+          sqlite3 -line "$M" "SELECT id, exchange, stamp, human, agent FROM memory WHERE exchange = $K ORDER BY id;" 2>/dev/null
+          ;;
+        sessions)
+          D=${LA_SESSIONS_DB:-$ROOT/config/sessions.db}
+          [ -f "$D" ] || { echo "refuse : le corps des sessions est introuvable ($D)" >&2; exit 1; }
+          N=$(sqlite3 "$D" "SELECT count(*) FROM messages WHERE exchange = $K;" 2>/dev/null || printf '')
+          case "${N:-}" in ''|*[!0-9]*) N=0 ;; esac
+          [ "$N" -gt 0 ] || { echo "refuse : aucun echange $K dans le corps des sessions" >&2; exit 1; }
+          sqlite3 -line "$D" "SELECT id, exchange, ts, role, substr(content, 1, 4000) AS content FROM messages WHERE exchange = $K ORDER BY id;" 2>/dev/null
+          ;;
+        *) echo "refuse : source hors liste ($S) ; memory ou sessions" >&2; exit 1 ;;
+      esac

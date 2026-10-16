@@ -32,7 +32,7 @@ TOOLS:
   214: "skill_manage"
 DOCS:
   300: "load_doc"
-  301: "Le modele local (LFM2.5-1.2B) compacte l echange en fin de tour ; journal sessions.yaml."
+  301: "Le modele local (LFM2.5-1.2B) compacte l echange en fin de tour ; journal memory.db."
 PLAN:
 PERIMETER:
   workspace: "work/"

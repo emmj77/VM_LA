@@ -49,7 +49,7 @@ ADDRESS=${LA_LOCAL_URL:-http://127.0.0.1:8088}
 
 # --- THE BRIEF MODE : when LA_SUMMARY_BRIEF is 1, the brick does not return an ordinary
 #     summary but TWO BLOCKS of two lines - one for the human, the other for the agent. This
-#     is what config/sessions.yaml carries. The bounds of this mode are DECLARED HERE, like the
+#     is what config/memory.db carries. The bounds of this mode are DECLARED HERE, like the
 #     others : six lines (the two marks, plus two lines on each side) and four hundred bytes.
 BRIEF=${LA_SUMMARY_BRIEF:-0}
 case "$BRIEF" in

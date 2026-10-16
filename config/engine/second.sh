@@ -75,7 +75,7 @@ printf 'date %s  time %s  locale UTC\n' "$(date -u +%Y-%m-%d)" "$(date -u +%H:%M
 
 # ---- THE LOCAL MODEL SUMMARY : written by the local model, in config/second.yaml ------------
 # LAW 110 : summary.sh WRITES THE SUMMARY ; LAW 1716 : the micro-model writes BOTH summaries
-# (sessions.yaml AND the secondary head). LAW 1915 : the exchanges that LEFT the window go to
+# (memory.db AND the secondary head). LAW 1915 : the exchanges that LEFT the window go to
 # the summary. LAW 813 : a summary comes from the MODEL, or there is NO summary - here, we
 # fabricate nothing, we return what the model placed. LAW 808/812 : the place is bounded, and
 # the bound is the one declared above (CAP_RESUME_L / CAP_RESUME_C).

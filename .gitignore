@@ -5,6 +5,10 @@ config/certs/
 config/sessions.yaml
 config/sessions.db
 config/sessions.db-journal
+# la memoire porte des faits PRIVES (comme memory/, deja ignore plus haut) : meme main que la
+# base des sessions, jamais dans un depot public.
+config/memory.db
+config/memory.db-journal
 
 # --- EXECUTION ET ETAT LOCAL (pas du source) ---
 work/
