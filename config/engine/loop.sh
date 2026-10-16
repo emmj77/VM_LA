@@ -177,7 +177,15 @@ LA_DEPTH=${LA_DEPTH:-0}
 LA_VOICE=${LA_VOICE:-0}
 export LA_DEPTH LA_ROOT="$ROOT" LA_CONFIG="$TABLE"
 
-die() { printf 'loop: %s\n' "$1" >&2; exit 2; }
+die() {
+  printf 'loop: %s\n' "$1" >&2
+  # LA MORT PARLE AUSSI A L'HUMAIN (B8) : le journal de la boucle va sur la sortie d'erreur, que
+  # le pont SAUTE ; mais UNE phrase courte part sur la sortie standard. C'est elle que le pont
+  # prononce quand le tour vient par la voix (bridge.sh, 'reply said'), et c'est elle que l'appli
+  # affiche. Sans elle, un tour mort rendait une reply VIDE : le travail fait, puis le silence.
+  printf 'Le tour s est arrete sans reponse : %s\n' "$(printf '%s' "$1" | cut -c1-160)"
+  exit 2
+}
 
 # le journal : UNE ligne, horodatee, vers l humain (stderr). Le FICHIER $LA_LOG_FILE, lui,
 # ne recoit QUE du JSONL (une entree par tool) : les deux canaux ne se melangent jamais.
