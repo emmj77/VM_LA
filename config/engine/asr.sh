@@ -28,8 +28,8 @@ set -u
 HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ROOT=$(CDPATH= cd -- "$HERE/../.." && pwd)
 W="$ROOT/work"
-ROOT_MODELES=${LA_MODELES:-/home/moussa/Applications/NeMo-Speech.cpp}
-CLI=${LA_ASR_CLI:-$ROOT_MODELES/build/cpu-server/bin/nemo-speech}
+ROOT_MODELS=${LA_MODELS:-/home/moussa/Applications/NeMo-Speech.cpp}
+CLI=${LA_ASR_CLI:-$ROOT_MODELS/build/cpu-server/bin/nemo-speech}
 MODEL=${LA_ASR_MODEL:-models/parakeet-tdt-0.6b-v3.q8_0.gguf}
 PORT=${LA_ASR_PORT:-8080}
 THREADS=${LA_ASR_THREADS:-4}
@@ -38,11 +38,11 @@ PID_FILE="$W/asr.pid"
 LOGF="$W/asr.log"
 
 [ -x "$CLI" ] || { echo "refuse : le moteur nemo-speech est introuvable ($CLI)" >&2 ; exit 1 ; }
-[ -f "$ROOT_MODELES/$MODEL" ] || { echo "refuse : le modele de l oreille est introuvable ($MODEL)" >&2 ; exit 1 ; }
+[ -f "$ROOT_MODELS/$MODEL" ] || { echo "refuse : le modele de l oreille est introuvable ($MODEL)" >&2 ; exit 1 ; }
 
 case "${1:-help}" in
   run)
-    cd "$ROOT_MODELES" || exit 1
+    cd "$ROOT_MODELS" || exit 1
     exec "$CLI" serve --asr-model "$MODEL" --host "$HOST" --port "$PORT" --no-ui --threads "$THREADS"
     ;;
   start)
@@ -50,7 +50,7 @@ case "${1:-help}" in
       echo "l oreille tourne deja (pid $(cat "$PID_FILE"), port $PORT)"
       exit 0
     fi
-    ( cd "$ROOT_MODELES" && nohup "$CLI" serve --asr-model "$MODEL" --host "$HOST" --port "$PORT" --no-ui --threads "$THREADS" >> "$LOGF" 2>&1 & echo $! > "$PID_FILE" )
+    ( cd "$ROOT_MODELS" && nohup "$CLI" serve --asr-model "$MODEL" --host "$HOST" --port "$PORT" --no-ui --threads "$THREADS" >> "$LOGF" 2>&1 & echo $! > "$PID_FILE" )
     echo "oreille lancee (pid $(cat "$PID_FILE"), port $PORT, journal $LOGF)"
     ;;
   stop)

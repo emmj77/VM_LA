@@ -75,10 +75,10 @@ clear() {
 }
 
 # combien de lignes de plan, et combien de points non complete
-N_LIGNES=$(lines | wc -l | tr -d ' ')
-N_OUVERT=$(lines | grep -c '\[todo\]\|\[doing\]' | tr -d ' ')
+N_LINES=$(lines | wc -l | tr -d ' ')
+N_OPEN=$(lines | grep -c '\[todo\]\|\[doing\]' | tr -d ' ')
 PLAN_OPEN=0
-[ "$N_OUVERT" -gt 0 ] && PLAN_OPEN=1
+[ "$N_OPEN" -gt 0 ] && PLAN_OPEN=1
 
 point_status() { printf '%s' "$1" | sed -e 's/^\[[a-z]*\][[:space:]]*//'; }
 
@@ -113,7 +113,7 @@ case "$mode" in
     lines | while IFS= read -r L; do printf '  %s\n' "$(text "$L")"; done
     ;;
   load)
-    if [ "$N_LIGNES" = 0 ]; then
+    if [ "$N_LINES" = 0 ]; then
       echo 'aucun plan ouvert : le skill actif ne porte aucun plan dans sa section PLAN:'
       exit 0
     fi
@@ -167,7 +167,7 @@ case "$mode" in
     ;;
   close)
     PATTERN=${2:-}
-    [ "$N_LIGNES" -gt 0 ] || { echo 'refuse : aucun plan ouvert a fermer' >&2 ; exit 1 ; }
+    [ "$N_LINES" -gt 0 ] || { echo 'refuse : aucun plan ouvert a fermer' >&2 ; exit 1 ; }
     LAST=$(lines | tail -n 1 | sed -e 's/^  [0-9][0-9][0-9]: "//' -e 's/"$//')
     case "$(point_status "$LAST")" in
       NETTOYAGE*) ;;
@@ -178,7 +178,7 @@ case "$mode" in
     ;;
   abort)
     PATTERN=${2:-}
-    [ "$N_LIGNES" -gt 0 ] || { echo 'refuse : aucun plan ouvert a interrompre' >&2 ; exit 1 ; }
+    [ "$N_LINES" -gt 0 ] || { echo 'refuse : aucun plan ouvert a interrompre' >&2 ; exit 1 ; }
     clear
     echo "plan interrompu${PATTERN:+ ($PATTERN)} ; la section PLAN: du skill est vide"
     ;;
