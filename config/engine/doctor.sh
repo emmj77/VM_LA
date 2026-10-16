@@ -99,11 +99,9 @@ M=$(grep -c 'coffre' "$SPEC" 2>/dev/null)
 [ "$M" = 0 ] && ok "no residual \"coffre\" in the canon" \
   || note "$M line(s) still say \"coffre\" (the disk image)"
 
-title "THE TOOL SELECTOR"
-SELP="$ROOT/config/py/rank_tools.py"
-[ -f "$SELP" ] && ok "the selector script is present" || fail "no selector script ($SELP)"
-grep -q '^    tool: rank_tools$' "$TABLE" && ok "the table carries rank_tools" \
-  || fail "the table carries no rank_tools"
+title "THE TOOLSET (the escape hatch that opens the full list)"
+grep -q '^    tool: toolset$' "$TABLE" && ok "the table carries toolset" \
+  || fail "the table carries no toolset"
 RPORT=${LA_RERANK_PORT:-8095}
 RS=$(curl -s --max-time 3 "http://127.0.0.1:$RPORT/health" 2>/dev/null || true)
 [ -n "$RS" ] && ok "the reranker answers on $RPORT" || note "the reranker does not answer on $RPORT (down ?)"

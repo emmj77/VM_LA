@@ -422,27 +422,47 @@ args_text() {  # $1 = bloc ; rend les noms, leur FORME, et ce que la ligne FERME
 
 # --- [6] LE SKILL ACTIF : la portee -------------------------------------------
 [ -f "$SKILL" ] || die "the ACTIVE SKILL is not found ($SKILL) : the scope is unknown"
+
+# --- [6bis] L ETAT DE L ENTREE : les verrous en cascade ----------------------
+# LE SKILL, LA DOC ET LE PLAN OUVRENT LE TOOLSET DANS CET ORDRE (lois 1000, 1002) :
+#   load_skill -> load_doc (LA DOC) -> manage_plan (LE PLAN) -> LES TOOLS DU SKILL.
+# Trois drapeaux, tenus par la BOUCLE (aucun fichier d etat), armes au tour ou le modele
+# APPELLE le tool (le perimetre garantit deja qu il etait atteignable) :
+#   DOC_READ      : load_doc a ete appele -> la famille PLAN s ouvre.
+#   PLAN_DONE     : un outil de plan a ete appele -> le TOOLSET du skill s ouvre.
+#   TOOLSET_ARMED : `toolset` a ete appele -> 100% pour le tour SUIVANT, puis retour a 30%.
+DOC_READ=0
+PLAN_DONE=0
+TOOLSET_ARMED=0
+PLAN_FAMILY='start_plan load_plan advance_plan revise_plan close_plan abort_plan'
+SHARE_NAMES=''
+
+# LE SKILL ACTIF, RELU A CHAQUE TOUR (load_skill reecrit skills/.active) : le champ TOOLS: du
+# skill, une liste sous la cle, ou une liste en ligne. Un skill SANS tool (SK_TOOLS vide) est
+# un etat VALIDE : le perimetre large, comme la boucle le faisait deja.
 SK_TOOLS_EMPTY=1
 SK_TOOLS=''
-# le champ TOOLS: du skill - une liste sous la cle, ou une liste en ligne.
-LINE_TOOLS=$(sed -n 's/^TOOLS:[[:space:]]*//p' "$SKILL" | head -n 1)
-if [ -n "$LINE_TOOLS" ]; then
-  case "$LINE_TOOLS" in
-    \[*\])
-      SK_TOOLS=$(printf '%s' "$LINE_TOOLS" | sed -e 's/^\[//' -e 's/\]$//' | tr ',' '\n' \
-        | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | grep -v '^$')
-      ;;
-  esac
-fi
-if [ -z "$SK_TOOLS" ]; then
-  # Deux formes sous la cle TOOLS: - la forme `- name`, ET la forme `ID: name` (l ID n est
-  # pas une position : chaque ligne de la section porte son ID). Dans les deux cas, on ne
-  # retient que le NOM du tool.
-  SK_TOOLS=$(sed -n '/^TOOLS:/,/^[^[:space:]]/p' "$SKILL" \
-    | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
-    | sed -e 's/^"//' -e 's/"$//' | grep -v '^$')
-fi
-[ -n "$SK_TOOLS" ] && SK_TOOLS_EMPTY=0
+read_skill_tools() {
+  SK_TOOLS_EMPTY=1; SK_TOOLS=''
+  LINE_TOOLS=$(sed -n 's/^TOOLS:[[:space:]]*//p' "$SKILL" | head -n 1)
+  if [ -n "$LINE_TOOLS" ]; then
+    case "$LINE_TOOLS" in
+      \[*\])
+        SK_TOOLS=$(printf '%s' "$LINE_TOOLS" | sed -e 's/^\[//' -e 's/\]$//' | tr ',' '\n' \
+          | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | grep -v '^$')
+        ;;
+    esac
+  fi
+  if [ -z "$SK_TOOLS" ]; then
+    # Deux formes sous la cle TOOLS: - la forme `- name`, ET la forme `ID: name` (l ID n est
+    # pas une position : chaque ligne de la section porte son ID). Dans les deux cas, on ne
+    # retient que le NOM du tool.
+    SK_TOOLS=$(sed -n '/^TOOLS:/,/^[^[:space:]]/p' "$SKILL" \
+      | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
+      | sed -e 's/^"//' -e 's/"$//' | grep -v '^$')
+  fi
+  [ -n "$SK_TOOLS" ] && SK_TOOLS_EMPTY=0
+}
 
 # LES GARDE-FOUS : les tools qui ne tombent JAMAIS, meme sous un verrou. Sans eux, un
 # verrou ne se leve plus (answer, ask), un agent parti en boucle n a aucun bouton d arret
@@ -509,16 +529,63 @@ in_skill() {  # $1 = nom
   done | grep -q yes
 }
 
+# LES PALIERS DE LA CH AINE DE L ENTREE : trois verrous en cascade (lois 1000, 1002-1003).
+#   palier 1 : la doc n est pas lue      -> la famille PLAN est FERMEE (load_doc reste ouvert).
+#   palier 2 : la doc est lue, plan non fait -> les tools du SKILL sont FERMES.
+#   palier 3 : le plan est fait          -> le TOOLSET du skill (les 30% de tete) + les permanents.
+#   palier 3bis : `toolset` vient d etre appele -> le TOOLSET EN ENTIER (100%), sans `toolset`.
+in_share() {  # $1 = nom : est-il dans la part de tete (le 30%) ?
+  printf '%s\n' "$SHARE_NAMES" | grep -qxF -- "$1"
+}
+in_plan_family() { case " $PLAN_FAMILY " in *" $1 "*) return 0 ;; esac; return 1; }
+
+# LE RERANKER : le resident sur 127.0.0.1:$LA_RERANK_PORT. Il NOTE chaque candidat du skill.
+# IL POSE $SHARE_NAMES, ET REND 1 S'IL MANQUE. Il ne die PAS ici : appele dans un $(...), un die
+# n'y tuerait que le SOUS-SHELL, et la boucle continuerait avec un perimetre VIDE, en silence --
+# c'est le bug que le verdict B19 a attrape. C'est l'APPELANT (scope_build, hors subshell) qui die.
+rank_share() {   # $1 = fichier candidats (id|nom|description) ; $2 = la demande ; pose SHARE_NAMES
+  _cand=$1; _q=$2
+  SHARE_NAMES=''
+  [ -s "$_cand" ] || return 0
+  [ -n "$_q" ] || _q=' '
+  _port=${LA_RERANK_PORT:-8095}
+  _k=$(wc -l < "$_cand" | tr -d ' ')
+  _part=$(( (_k * 30 + 99) / 100 )); [ "$_part" -ge 1 ] || _part=1
+  _req=$(jq -cn --arg q "$_q" --rawfile docs "$_cand" --argjson n "$_k" \
+    '{query:$q, documents:($docs|split("\n")|map(select(length>0))), top_n:$n}')
+  _rep=$(printf '%s' "$_req" | curl -sS --max-time 15 -X POST \
+    "http://127.0.0.1:$_port/v1/rerank" -H 'Content-Type: application/json' -d @- 2>/dev/null) || _rep=''
+  [ -n "$_rep" ] || return 1
+  _names=$(jq -R 'split("|")[1]' "$_cand" | jq -s '.')
+  SHARE_NAMES=$(printf '%s' "$_rep" | jq -r --argjson names "$_names" --argjson k "$_part" \
+    '(.results // .) | sort_by(-.relevance_score) | .[0:$k] | .[] | $names[.index]' 2>/dev/null)
+  [ -n "$SHARE_NAMES" ]
+}
+
 # CE TOOL EST-IL DANS LE PERIMETRE DU TOUR ? (pour BATIR la liste ; l action viendra apres)
 reachable() {  # $1 = nom
   if [ -n "$LOCK" ]; then
     case " $GUARDRAILS $LOCK " in *" $1 "*) return 0 ;; esac
     return 1
   fi
+  # load_doc : le lecteur de doc, TOUJOURS la (sans lui, la chaine ne demarre jamais)
+  [ "$1" = load_doc ] && return 0
+  # la famille PLAN : fermee tant que la doc n est pas lue
+  if in_plan_family "$1"; then [ "$DOC_READ" = 1 ] && return 0 || return 1; fi
+  # toolset : ferme avant le plan ; ABSENT au tour arme (100%) ; ouvert sinon
+  if [ "$1" = toolset ]; then
+    if [ "$PLAN_DONE" = 1 ] && [ "$TOOLSET_ARMED" != 1 ]; then return 0; else return 1; fi
+  fi
+  # les permanents (hors plan/toolset, deja traites)
   tool_is_permanent "$1" && return 0
   [ -n "$(permanent_actions "$1")" ] && return 0
+  # les tools du SKILL : fermes tant que le plan n est pas fait
+  [ "$PLAN_DONE" = 1 ] || return 1
   [ "$SK_TOOLS_EMPTY" = 1 ] && return 0
-  in_skill "$1"
+  in_skill "$1" || return 1
+  # in_skill : le tour arme ouvre TOUT ; sinon, la part de tete (le 30%)
+  [ "$TOOLSET_ARMED" = 1 ] && return 0
+  in_share "$1"
 }
 
 # LE TOOL PASSE-T-IL, ICI ET MAINTENANT ? ($3 = l action demandee, pour `nom:action`)
@@ -527,45 +594,93 @@ in_scope() {  # $1 = nom, $2 = family, $3 = l action (ou vide)
     case " $GUARDRAILS $LOCK " in *" $1 "*) return 0 ;; esac
     return 1
   fi
+  [ "$1" = load_doc ] && return 0
+  if in_plan_family "$1"; then [ "$DOC_READ" = 1 ] && return 0 || return 1; fi
+  if [ "$1" = toolset ]; then
+    if [ "$PLAN_DONE" = 1 ] && [ "$TOOLSET_ARMED" != 1 ]; then return 0; else return 1; fi
+  fi
   is_permanent "$1" "$3" && return 0
+  [ "$PLAN_DONE" = 1 ] || return 1
   [ "$SK_TOOLS_EMPTY" = 1 ] && return 0
-  in_skill "$1"
+  in_skill "$1" || return 1
+  [ "$TOOLSET_ARMED" = 1 ] && return 0
+  in_share "$1"
 }
 
-SCOPE_IDS=' '
-if [ -n "$LOCK" ]; then
-  SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - UN LOCK EST ARME (tool impose : $LOCK) : le perimetre est REDUIT a ce seul tool, EXTRA les garde-fous answer, ask, kill, talk. Par leur NUMERO :
+# ---- LA PORTEE, REBATIE A CHAQUE TOUR : le skill peut changer, et les paliers bougent --------
+# Elle relit le skill ACTIF frais, ses TOOLS:, le verrou, puis BATIT la liste. Appelee UNE FOIS
+# PAR TOUR, en tete de boucle (apres la demande et le plan), JAMAIS une fois pour toutes.
+scope_build() {
+  active_skill
+  SKILL="$SKILLS_DIR/$NAME/skill.yaml"
+  [ -f "$SKILL" ] || die "the ACTIVE SKILL is not found ($SKILL) : the scope is unknown"
+  read_skill_tools
+  LOCK=$(read_lock)
+  SHARE_NAMES=''
+  # la part de tete : seulement quand la chaine est OUVERTE (doc lue + plan fait) et NON armee
+  if [ -z "$LOCK" ] && [ "$DOC_READ" = 1 ] && [ "$PLAN_DONE" = 1 ] && [ "$TOOLSET_ARMED" != 1 ]; then
+    _cand="$T/share.cand"; : > "$_cand"
+    for ID in $(all_ids); do
+      B=$(block_of_id "$ID") || continue
+      TN=$(FIELD "$B" tool)
+      in_skill "$TN" || continue
+      # on ne CLASSE pas ce qui est TOUJOURS la (les permanents, load_doc, toolset) : classer un
+      # tool deja present gaspille un rang de la part. Le reranker ne choisit QUE parmi les tools
+      # MOUVANTS du skill ceux qui entrent dans la part ; les permanents sont ajoutes APRÈS.
+      tool_is_permanent "$TN" && continue
+      [ -n "$(permanent_actions "$TN")" ] && continue
+      [ "$TN" = load_doc ] && continue
+      [ "$TN" = toolset ] && continue
+      printf '%s|%s|%s\n' "$ID" "$TN" "$(FIELD "$B" description)" >> "$_cand"
+    done
+    rank_share "$_cand" "${REQUEST:-} ${PLAN_TXT:-}" \
+      || die "the reranker is silent on 127.0.0.1:${LA_RERANK_PORT:-8095} : the resident must be in RAM (rerank.sh start). This is an ENGINE bug, not a turn."
+  fi
+  # LA TETE DE LA PORTEE : elle DIT le palier de la chaine de l entree (lois 1000, 1002)
+  SCOPE_IDS=' '
+  if [ -n "$LOCK" ]; then
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - UN LOCK EST ARME (tool impose : $LOCK) : le perimetre est REDUIT a ce seul tool, EXTRA les garde-fous answer, ask, kill, talk. Par leur NUMERO :
 "
-else
-  SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR (le SKILL ACTIF, EXTRA la categorie permanente), par leur NUMERO :
+  elif [ "$DOC_READ" != 1 ]; then
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA DOC N EST PAS ENCORE LUE : la famille PLAN est FERMEE. Lis la doc (load_doc) pour ouvrir le plan. Les permanents, par leur NUMERO :
 "
-fi
-for ID in $(all_ids); do
-  B=$(block_of_id "$ID") || continue
-  TN=$(FIELD "$B" tool)
-  FA=$(FIELD "$B" family)
-  DE=$(FIELD "$B" description)
-  if reachable "$TN"; then
-    ARGS=$(args_text "$B")
-    AP=$(permanent_actions "$TN")
-    SCOPE_IDS="$SCOPE_IDS$ID "
-    SCOPE_TXT="$SCOPE_TXT  $ID  $TN  [$FA]  $DE
-         args : ${ARGS:-aucun}
+  elif [ "$PLAN_DONE" != 1 ]; then
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA DOC EST LUE, LE PLAN N EST PAS FAIT : les tools du SKILL sont FERMES. Fais le plan (start_plan / load_plan / advance_plan) pour ouvrir le toolset. Par leur NUMERO :
 "
-    [ -z "$AP" ] || SCOPE_TXT="$SCOPE_TXT         PERMANENT SEULEMENT pour ces actions : $AP
+  elif [ "$TOOLSET_ARMED" = 1 ]; then
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE TOOLSET EST OUVERT EN ENTIER (toolset vient d etre nomme) : le tour COMPLET du skill actif, EXTRA les permanents. toolset est ABSENT de ce tour. Par leur NUMERO :
+"
+  else
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE TOOLSET DU SKILL (les 30% les plus probables pour cette tache), EXTRA les permanents. Si un tool te manque, nomme toolset : la liste complete t est rendue. Par leur NUMERO :
 "
   fi
-done
-[ "$SCOPE_IDS" != ' ' ] || die "the scope is empty : no reachable tool"
-SCOPE_TXT="$SCOPE_TXT Un numero HORS de cette liste est refuse par le harnais : il te le dira, et tu auras un turn pour te corriger."
-
-# LA TRACE DU CALCUL : avec LA_SCOPE_TRACE=1, le perimetre se MONTRE (verrou arme ou non,
-# garde-fous, section permanente lue, ids retenus). C est ce qui rend le calcul verifiable.
-if [ "${LA_SCOPE_TRACE:-0}" = 1 ]; then
-  printf 'loop: SCOPE  lock=[%s]  guardrails=[%s]\n' "${LOCK:-aucun}" "$GUARDRAILS" >&2
-  printf 'loop: SCOPE  permanent (read in %s)=[%s]\n' "$CONF" "$(printf '%s' "$PERMANENTS" | tr '\n' ' ')" >&2
-  printf 'loop: SCOPE  ids kept=%s\n' "$SCOPE_IDS" >&2
-fi
+  for ID in $(all_ids); do
+    B=$(block_of_id "$ID") || continue
+    TN=$(FIELD "$B" tool)
+    FA=$(FIELD "$B" family)
+    DE=$(FIELD "$B" description)
+    if reachable "$TN"; then
+      ARGS=$(args_text "$B")
+      AP=$(permanent_actions "$TN")
+      SCOPE_IDS="$SCOPE_IDS$ID "
+      SCOPE_TXT="$SCOPE_TXT  $ID  $TN  [$FA]  $DE
+         args : ${ARGS:-aucun}
+"
+      [ -z "$AP" ] || SCOPE_TXT="$SCOPE_TXT         PERMANENT SEULEMENT pour ces actions : $AP
+"
+    fi
+  done
+  [ "$SCOPE_IDS" != ' ' ] || die "the scope is empty : no reachable tool"
+  SCOPE_TXT="$SCOPE_TXT Un numero HORS de cette liste est refuse par le harnais : il te le dira, et tu auras un turn pour te corriger."
+  # LA TRACE DU CALCUL : avec LA_SCOPE_TRACE=1, le perimetre se MONTRE (palier, verrou, ids).
+  if [ "${LA_SCOPE_TRACE:-0}" = 1 ]; then
+    printf 'loop: SCOPE  lock=[%s]  doc_read=%s  plan_done=%s  toolset_armed=%s\n' \
+      "${LOCK:-aucun}" "$DOC_READ" "$PLAN_DONE" "$TOOLSET_ARMED" >&2
+    printf 'loop: SCOPE  ids kept=%s\n' "$SCOPE_IDS" >&2
+  fi
+  # TOOLSET ARME : consomme ICI, APRES le calcul (le 100% vaut pour CE tour ; retour a 30% ensuite)
+  [ "$TOOLSET_ARMED" = 1 ] && TOOLSET_ARMED=0
+}
 
 # --- [7] LE HEAD, ET LE HEAD SECONDAIRE ---------------------------------------
 # config/head.yaml, GELE : il porte des SECTIONS en MAJUSCULES (cle:) et des LIGNES numerotees
@@ -744,6 +859,9 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
   tools : $((TURN - 1))"
   FACTS=$(FACTS)
   PLAN_TXT=$(read_second)
+  # LA PORTEE DE CE TOUR, REBATIE ICI : le skill actif, ses tools, le verrou, le palier courant,
+  # et la part classee (le reranker). Elle est FRAICHE a chaque tour, jamais figee au lancement.
+  scope_build
   # LE TOUR VENU DE LA VOIX S OUVRE PAR UN MOT. La consigne n est posee QUE sur ces tours-la :
   # un tour venu du texte reste muet, et ne paie pas un appel de modele de plus.
   VOICE_TXT=''
@@ -878,6 +996,15 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
     MSG_TS=$(printf '%s' "$LINE_" | jq -r '.ts // empty' 2>/dev/null || true)
     TOOL_NAME=$(printf '%s' "$LINE_" | jq -r '.tool // "?"' 2>/dev/null || true)
     MSG_STATUS=$(printf '%s' "$LINE_" | jq -r '.status // "?"' 2>/dev/null || true)
+    # L ETAT DE L ENTREE S ARME ICI, SUR LE TOOL APPELE. Le perimetre a deja garanti qu il etait
+    # atteignable : hors perimetre, le nom rendu est `la`, jamais celui du tool. Peu importe le
+    # SUCCES : c est le GESTE qui compte (un load_doc qui refuse faute de doc arme quand meme
+    # DOC_READ - c est le geste, provisoire, qui fait foi ; on precisera la doc plus tard).
+    case "$TOOL_NAME" in
+      load_doc)                                                            DOC_READ=1 ;;
+      toolset)                                                             TOOLSET_ARMED=1 ;;
+      start_plan|load_plan|advance_plan|revise_plan|close_plan|abort_plan) PLAN_DONE=1 ;;
+    esac
     MSG_LINE=$(printf '%s' "$LINE_" | jq -r '.line // .result // ""' 2>/dev/null || true)
     log_to_stderr "${MSG_TS:-$(ts)}  turn $TURN  la(g=$G, a=$AJ)  ->  $MSG_LINE"
     if [ -n "$JOURNAL" ]; then

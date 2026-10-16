@@ -1028,28 +1028,19 @@ tools:
         *) echo "refuse : la voix a repondu : ${OUT:-rien}" >&2 ; exit 1 ;;
       esac
   - id: 174
-    tool: rank_tools
+    tool: toolset
     family: READ
-    description: "ranks the tour's tools for a request and returns the best share"
-    args:
-      - {name: text, type: text, stdin: true}
-      - {name: share, type: int}
+    description: "shows the COMPLETE list of the tour's tools (the active skill's palette, plus the permanent tools)"
     command: |
-      # LE SELECTEUR. Une demande + LA LISTE FINIE DES CANDIDATS -> un score par candidat.
-      # Les candidats sont LE PERIMETRE DU TOUR : la palette du skill actif (la PRESELECTION),
-      # PLUS la categorie permanente. Palette vide = toute la table (meme regle que la boucle).
-      # On ne rend pas un nombre fixe de tools mais une PART de la liste : 30% au premier
-      # appel, 60% au deuxieme, 100% au troisieme -- le rattrapage est garanti.
-      S="{{share}}"
-      case "$S" in ''|*[!0-9]*) S=30 ;; esac
-      [ "$S" -ge 1 ] || S=30
-      [ "$S" -le 100 ] || S=100
+      # TOOLSET. Le modele le nomme quand un tool lui MANQUE dans le perimetre qu'il a recu :
+      # la boucle ouvre alors le tour EN ENTIER (100%) au tour suivant. Ici, il rend TOUT DE SUITE
+      # la liste entiere (la palette du skill actif PLUS les permanents), pour qu'il voie ce qui existe.
       A=$(sed -n '1p' "$ROOT/skills/.active" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
       case "$A" in ''|*/*|*..*) A=la ;; esac
       K="$ROOT/skills/$A/skill.yaml"
       [ -f "$K" ] || { echo "refuse : le skill actif est introuvable ($K)" >&2; exit 1; }
       T="$ROOT/config/la_tools.yaml"
-      W="$ROOT/work/rank_candidates.$$"
+      W="$ROOT/work/toolset.$$"
       SK=$(sed -n '/^TOOLS:/,/^[^[:space:]]/p' "$K" | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' | sed -e 's/^"//' -e 's/"$//' | grep -v '^$' | sort -u)
       PN=$(sed -n '/^permanent:/,/^[^[:space:]]/p' "$ROOT/config/la_config.yaml" | sed -n 's/^[[:space:]]*-[[:space:]]*//p' | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | sed 's/:.*$//' | grep -v '^$')
       if [ -n "$SK" ]; then
@@ -1063,13 +1054,10 @@ tools:
         /^    tool: /{ t = $2 }
         /^    description:/{
           d = $0; sub(/^    description: */, "", d); gsub(/"/, "", d);
-          if (keep[t]) printf "%s|%s|%s\n", i, t, d
+          if (keep[t]) printf "%s  %s  %s\n", i, t, d
         }' "$T" > "$W"
-      [ -s "$W" ] || { rm -f "$W" "$W.names"; echo 'refuse : le perimetre du tour ne rend aucun tool a classer' >&2; exit 1; }
-      Q=$(cat)
-      [ -n "$Q" ] || { rm -f "$W" "$W.names"; echo 'refuse : rien a classer ; la demande entre par l entree standard' >&2; exit 1; }
-      printf '%s\n' "$Q" | python3 "$ROOT/config/py/rank_tools.py" --share "$S" --candidates "$W"
-      RC=$?
+      RC=0
+      if [ -s "$W" ]; then cat "$W"; else echo 'refuse : le perimetre du tour ne rend aucun tool' >&2; RC=1; fi
       rm -f "$W" "$W.names"
       exit $RC
   - id: 137

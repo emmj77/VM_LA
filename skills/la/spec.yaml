@@ -279,9 +279,9 @@ SECTION : LES_OUTILS
   467: "answer ferme le tour ; talk et answer partagent la forme, la famille REPLY, le texte libre."
   468: "LE TOOL PREALABLE EST load_doc, ET LA TABLE LE PORTE."
   469: "UN SEUL MECANISME, VERIFIE UNE FOIS : un tool, un canal, une borne, un lock."
-  470: "rank_tools CLASSE LES TOOLS DU PERIMETRE : une demande, une liste finie, un score."
-  471: "LE SELECTEUR EST UN RERANKER : il NOTE chaque candidat, il ne cherche pas."
-  472: "ON GARDE UNE PART DE LA LISTE : 30% au 1er appel, 60% au 2e, 100% au 3e."
+  470: "toolset MONTRE TOUS LES TOOLS DU TOUR : le recours quand un tool manque au perimetre."
+  471: "A CHAQUE TOUR, LA BOUCLE CLASSE les tools MOUVANTS du skill ; un reranker local les NOTE."
+  472: "LA PART EST DE 30% A CHAQUE TOUR ; toolset ouvre le tour ENTIER un seul tour."
 
   473: "UN OUTIL APPELE PAR LE PONT LIT UNE ENTREE VIDE, jamais la socket du client."
 
@@ -346,8 +346,8 @@ SECTION : LE_FILTRE
   700: "LE FILTRE EST LE skill.yaml : sa liste tools EST le perimetre."
   701: "LE PERIMETRE : le skill ACTIF ouvre ses tools, la PERMANENTE ajoute les siens."
   702: "UN DOUTE OUVRE, IL NE FERME PAS."
-  703: "LA SUITE : load_skill, puis load_plan - vide, il appelle start_plan."
-  704: "ENSUITE load_doc ; ALORS les tools de la skill se debloquent."
+  703: "LA SUITE : load_skill, puis load_doc - la DOC LUE ouvre la famille PLAN."
+  704: "PUIS LE PLAN (start_plan / load_plan) ; ALORS les tools du skill se debloquent."
   705: "LE PERIMETRE EST UN ENUM : hors liste, un tool n'est pas interdit, IL N'EST PAS ENVOYE."
   706: "UN TOOL HORS PERIMETRE EST REFUSE PAR LA BOUCLE, et le tour est laisse pour corriger."
   707: "LE PERIMETRE EST CLOS : hors palette, un tool n est pas un candidat, il n est pas CLASSE."
@@ -403,10 +403,10 @@ SECTION : LE_PLAN
   916: "LE PLAFOND DE TOURS SE POSE (400) : une borne de surete, jamais un frein."
 
 SECTION : LE_SKILL
-  1000: "L'ORDRE NE S'INVERSE PAS : load_skill ; start_plan ; load_doc ; PUIS LES TOOLS S'OUVRENT."
+  1000: "L'ORDRE NE S'INVERSE PAS : load_skill ; load_doc ; PUIS LE PLAN ; PUIS LES TOOLS."
   1001: "UNE SEULE SKILL ACTIVE : son nom vit dans la CONFIG des skills, jamais dans un lien."
-  1002: "L'ORDRE NE S'INVERSE PAS : [1] load_skill ; [2] start_plan ; [3] load_doc ; [4] LES TOOLS."
-  1003: "Tant que la doc n'est pas passee, la palette reste FERMEE."
+  1002: "L'ORDRE NE S'INVERSE PAS : [1] load_skill ; [2] load_doc ; [3] le plan ; [4] LES TOOLS."
+  1003: "Tant que la DOC n'est pas passee, la famille PLAN reste FERMEE."
   1004: "LA DOC OBLIGATOIRE SE LIT AVANT LE TOOL SENSIBLE : requires_tool NOMME le tool prealable."
   1005: "Le HARNAIS REDUIT le perimetre A CE SEUL TOOL ; l'appel fait, il redevient celui du skill."
   1006: "Ce n'est pas une consigne, c'est un LOCK : un enum se refuse la ou une phrase se recopie."
@@ -437,6 +437,11 @@ SECTION : LE_SKILL
 
   1032: "UNE LIGNE S'ECRIT PAR SON ID : set_line pose UNE ligne de skill.yaml, et remplace."
   1033: "L'ID PORTE SA SECTION : 1xx SUMMARY, 2xx TOOLS, 3xx DOCS, 4xx PLAN, 6xx ERROR, 1000+."
+  1034: "LE PLAN FAIT OUVRE LA PALETTE : sans un outil de plan, les tools du skill restent FERMES."
+  1035: "LA BOUCLE PORTE L'ETAT DE L'ENTREE : doc lue, plan fait, toolset arme ; AUCUN fichier."
+  1036: "toolset OUVRE LE TOUR ENTIER, UN SEUL TOUR : la part des 30% revient des le tour suivant."
+  1037: "SANS RERANKER, LA BOUCLE S'ARRETE EN LE NOMMANT : un BUG DU MOTEUR, jamais un silence."
+  1038: "LE CLASSEMENT PORTE SUR LES TOOLS MOUVANTS DU SKILL, jamais les permanents."
 SECTION : LES_MANAGERS
   1100: "UN MANAGER N'EST PAS UN PROC : le proc VALIDE, MONTE, EXECUTE et FORME."
   1101: "Le manager TIENT une SECTION de la racine : il en est le seul ecrivain."
