@@ -100,7 +100,7 @@ SECOND_HEAD="$PROCS/second.sh"
 
 # --- LE CORPS DE LA SESSION, ET LA FENETRE (lois 1712, 1715, 1910, 1915, 809) -----
 # sessions.db EST LE CORPS : chaque tour y laisse ses lignes, brutes, horodatees. La TABLE
-# (config/sessions.yaml) reste tenue par le micro-modele, pour la recherche rapide et a bas prix.
+# (config/memory.db) reste tenue par le micro-modele, pour la recherche rapide et a bas prix.
 DB=${LA_SESSIONS_DB:-$CONFD/sessions.db}
 WINDOW=${LA_WINDOW:-20}          # LA FENETRE GARDE VINGT ECHANGES
 MSG_MAX=${LA_MSG_MAX:-8000}      # AUCUN message plus gros que ca : tete ET queue gardees
@@ -434,7 +434,11 @@ args_text() {  # $1 = bloc ; rend les noms, leur FORME, et ce que la ligne FERME
 DOC_READ=0
 PLAN_DONE=0
 TOOLSET_ARMED=0
+PLAN_DUE=0                                    # le PLAN EST IMPOSE : il se leve tous les PLAN_EVERY tours,
+                                             # et RESTE leve jusqu'a ce que le modele marque son point
 PLAN_FAMILY='todo progress'
+PLAN_EVERY=${LA_PLAN_EVERY:-5}               # l intervalle de l imposition du plan (declarable) : la
+                                             # boucle force `progress` a ce rythme tant qu un plan est ouvert
 SHARE_NAMES=''
 
 # LE SKILL ACTIF, RELU A CHAQUE TOUR (load_skill reecrit skills/.active) : le champ TOOLS: du
@@ -568,6 +572,12 @@ reachable() {  # $1 = nom
     case " $GUARDRAILS $LOCK " in *" $1 "*) return 0 ;; esac
     return 1
   fi
+  # LE PLAN EST IMPOSE : le perimetre se RETRECIT a `progress` (+ les garde-fous). Le modele DOIT
+  # marquer son point courant pour passer le tour.
+  if [ "$PLAN_DUE" = 1 ]; then
+    case " $GUARDRAILS progress " in *" $1 "*) return 0 ;; esac
+    return 1
+  fi
   # load_doc : le lecteur de doc, TOUJOURS la (sans lui, la chaine ne demarre jamais)
   [ "$1" = load_doc ] && return 0
   # la famille PLAN : fermee tant que la doc n est pas lue
@@ -594,6 +604,10 @@ in_scope() {  # $1 = nom, $2 = family, $3 = l action (ou vide)
     case " $GUARDRAILS $LOCK " in *" $1 "*) return 0 ;; esac
     return 1
   fi
+  if [ "$PLAN_DUE" = 1 ]; then
+    case " $GUARDRAILS progress " in *" $1 "*) return 0 ;; esac
+    return 1
+  fi
   [ "$1" = load_doc ] && return 0
   if in_plan_family "$1"; then [ "$DOC_READ" = 1 ] && return 0 || return 1; fi
   if [ "$1" = toolset ]; then
@@ -617,8 +631,17 @@ scope_build() {
   read_skill_tools
   LOCK=$(read_lock)
   SHARE_NAMES=''
-  # la part de tete : seulement quand la chaine est OUVERTE (doc lue + plan fait) et NON armee
-  if [ -z "$LOCK" ] && [ "$DOC_READ" = 1 ] && [ "$PLAN_DONE" = 1 ] && [ "$TOOLSET_ARMED" != 1 ]; then
+  # L IMPOSITION DU PLAN : tous les PLAN_EVERY tours, si un plan est OUVERT, le drapeau se leve (et
+  # RESTE leve jusqu a `progress`). Un plan termine (la couche ne rend plus rien) l efface.
+  if [ "$PLAN_DONE" != 1 ] || ! plan_open; then
+    PLAN_DUE=0
+  elif [ "$PLAN_DUE" != 1 ] && [ "$(( TURN % PLAN_EVERY ))" -eq 0 ]; then
+    PLAN_DUE=1
+  fi
+  # la part de tete : seulement quand la chaine est OUVERTE (doc lue + plan fait), NON armee, et
+  # JAMAIS au tour impose (le perimetre est deja reduit a un seul tool : classer ne sert a rien)
+  if [ -z "$LOCK" ] && [ "$DOC_READ" = 1 ] && [ "$PLAN_DONE" = 1 ] && [ "$TOOLSET_ARMED" != 1 ] \
+     && [ "$PLAN_DUE" != 1 ]; then
     _cand="$T/share.cand"; : > "$_cand"
     for ID in $(all_ids); do
       B=$(block_of_id "$ID") || continue
@@ -640,6 +663,9 @@ scope_build() {
   SCOPE_IDS=' '
   if [ -n "$LOCK" ]; then
     SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - UN LOCK EST ARME (tool impose : $LOCK) : le perimetre est REDUIT a ce seul tool, EXTRA les garde-fous answer, ask, kill, talk. Par leur NUMERO :
+"
+  elif [ "$PLAN_DUE" = 1 ]; then
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE PLAN EST IMPOSE (tous les $PLAN_EVERY tours) : marque TON POINT COURANT (progress : 'progress' pour le reecrire, 'complete' pour le cocher) et le tour passe. Le toolset du skill ne revient qu une fois le point marque. Par leur NUMERO :
 "
   elif [ "$DOC_READ" != 1 ]; then
     SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA DOC N EST PAS ENCORE LUE : la famille PLAN est FERMEE. Lis la doc (load_doc) pour ouvrir le plan. Les permanents, par leur NUMERO :
@@ -674,8 +700,8 @@ scope_build() {
   SCOPE_TXT="$SCOPE_TXT Un numero HORS de cette liste est refuse par le harnais : il te le dira, et tu auras un turn pour te corriger."
   # LA TRACE DU CALCUL : avec LA_SCOPE_TRACE=1, le perimetre se MONTRE (palier, verrou, ids).
   if [ "${LA_SCOPE_TRACE:-0}" = 1 ]; then
-    printf 'loop: SCOPE  lock=[%s]  doc_read=%s  plan_done=%s  toolset_armed=%s\n' \
-      "${LOCK:-aucun}" "$DOC_READ" "$PLAN_DONE" "$TOOLSET_ARMED" >&2
+    printf 'loop: SCOPE  lock=[%s]  doc_read=%s  plan_done=%s  toolset_armed=%s  plan_due=%s\n' \
+      "${LOCK:-aucun}" "$DOC_READ" "$PLAN_DONE" "$TOOLSET_ARMED" "$PLAN_DUE" >&2
     printf 'loop: SCOPE  ids kept=%s\n' "$SCOPE_IDS" >&2
   fi
   # TOOLSET ARME : consomme ICI, APRES le calcul (le 100% vaut pour CE tour ; retour a 30% ensuite)
@@ -1003,7 +1029,8 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
     case "$TOOL_NAME" in
       load_doc)                                                            DOC_READ=1 ;;
       toolset)                                                             TOOLSET_ARMED=1 ;;
-      todo|progress)                                                       PLAN_DONE=1 ;;
+      todo)                                                                PLAN_DONE=1 ;;
+      progress)                                                            PLAN_DONE=1; PLAN_DUE=0 ;;
     esac
     MSG_LINE=$(printf '%s' "$LINE_" | jq -r '.line // .result // ""' 2>/dev/null || true)
     log_to_stderr "${MSG_TS:-$(ts)}  turn $TURN  la(g=$G, a=$AJ)  ->  $MSG_LINE"
@@ -1134,7 +1161,7 @@ fi
 
 # [12] LE COMPACTAGE DE L ECHANGE, EN ARRIERE-PLAN, UNE FOIS LA REPLY RENDUE.
 # Pose DEVANT le tour, il ajouterait sa latence a chaque tour : ici il court APRES la reply,
-# et il pose l entree horodatee de config/sessions.yaml (le modele local, sur le CPU). Le tour
+# et il pose l entree horodatee de config/memory.db (le modele local, sur le CPU). Le tour
 # ne l attend JAMAIS ; son journal va dans work/session_note.log, jamais dans le JSONL des tools.
 if [ -n "$REPLY" ] && [ -x "$PROCS/session_note.sh" ]; then
   ( nohup "$PROCS/session_note.sh" "$REQUEST" "$REPLY" >>"$ROOT/work/session_note.log" 2>&1 & ) >/dev/null 2>&1
