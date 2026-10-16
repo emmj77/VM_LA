@@ -916,9 +916,9 @@ tools:
       case "$G" in ''|*[!a-z0-9_]*) echo "refuse : tool hors form ($G) ; minuscules, chiffres, souligne" >&2; exit 1 ;; esac
       [ -n "$LA_CONFIG" ] && [ -f "$LA_CONFIG" ] || { echo "refuse : la table est introuvable (${LA_CONFIG:-inconnue})" >&2; exit 1; }
       grep -q "^    tool: $G[[:space:]]*$" "$LA_CONFIG" || { echo "refuse : le tool n existe pas dans la table ($G)" >&2; exit 1; }
-      D="$ROOT/cron"
-      [ -d "$D" ] || { echo "refuse : cron introuvable ; la portee du tool n existe pas ($D)" >&2; exit 1; }
-      F="$D/crontab"
+      D="$ROOT/config"
+      [ -d "$D" ] || { echo "refuse : config introuvable ($D)" >&2; exit 1; }
+      F="$D/cron.yaml"
       if [ -f "$F" ] && grep -q " # $N$" "$F"; then echo "refuse : une ligne de cron porte deja le name $N ($F)" >&2; exit 1; fi
       L="0 * * * * $G # $N"
       if [ "${LA_APPROVED:-0}" != 1 ]; then
@@ -939,7 +939,7 @@ tools:
     command: |
       N="{{name}}"
       case "$N" in ''|*[!a-zA-Z0-9_-]*) echo "refuse : name hors form ($N)" >&2; exit 1 ;; esac
-      D="$ROOT/cron"; F="$D/crontab"
+      D="$ROOT/config"; F="$D/cron.yaml"
       [ -f "$F" ] || { echo "refuse : aucune ligne de cron ($F est absent)" >&2; exit 1; }
       grep -q " # $N$" "$F" || { echo "refuse : aucune ligne de cron ne porte le name $N" >&2; exit 1; }
       L=$(grep " # $N$" "$F" | head -n 1)
@@ -949,7 +949,7 @@ tools:
         printf 'rien n est retire avant votre accord\n'
         exit 3
       fi
-      T="$D/.crontab.$$.tmp"
+      T="$D/.cron.$$.tmp"
       grep -v " # $N$" "$F" > "$T"
       grep -q " # $N$" "$T" && { rm -f "$T"; echo "refuse : la ligne n a pas ete retiree ($F)" >&2; exit 1; }
       mv -f "$T" "$F" || { rm -f "$T"; echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
@@ -1177,10 +1177,12 @@ tools:
     command: |
       T="{{topic}}"
       case "$T" in ''|*[!a-zA-Z0-9_.-]*) echo "refuse : topic hors form ($T) ; une doc se nomme par un slug" >&2; exit 1 ;; esac
-      D="$ROOT/docs"
-      [ -d "$D" ] || { echo 'refuse : le dossier des docs est introuvable (docs/ a la racine du projet)' >&2; exit 1; }
+      A=$(sed -n '1p' "$ROOT/skills/.active" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+      case "$A" in ''|*/*|*..*) A=la ;; esac
+      D="$ROOT/skills/$A/docs"
+      [ -d "$D" ] || { echo "refuse : le dossier des docs du skill actif est introuvable ($D)" >&2; exit 1; }
       F="$D/$T.md"
-      [ -f "$F" ] || { echo "refuse : la doc est introuvable (docs/$T.md)" >&2; exit 1; }
+      [ -f "$F" ] || { echo "refuse : la doc est introuvable ($F)" >&2; exit 1; }
       LC_ALL=C sed -n '1,400p' "$F"
 # ---------------------------------------------------------------------------
 # la famille unity_* : les verbes retenus (le reste est exclu plus bas)
