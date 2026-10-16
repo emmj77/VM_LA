@@ -70,3 +70,4 @@ permanent:
   - abort_plan
   - skill_manage:view_skill
   - skill_manage:load_skill
+  - rank_tools

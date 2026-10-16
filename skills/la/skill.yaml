@@ -33,8 +33,6 @@ TOOLS:
   212: "revise_plan"
   213: "close_plan"
   214: "skill_manage"
-  215: "index_build"
-  216: "search_semantic"
   217: "abort_plan"
 DOCS:
   300: "load_doc"
