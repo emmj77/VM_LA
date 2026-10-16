@@ -279,9 +279,9 @@ SECTION : LES_OUTILS
   467: "answer ferme le tour ; talk et answer partagent la forme, la famille REPLY, le texte libre."
   468: "LE TOOL PREALABLE EST load_doc, ET LA TABLE LE PORTE."
   469: "UN SEUL MECANISME, VERIFIE UNE FOIS : un tool, un canal, une borne, un lock."
-  470: "index_build PLONGE CHAQUE LIGNE DE LA TABLE (e5-small) et ecrit le releve sous tools/."
-  471: "search_semantic REND LES TOOLS LES PLUS PROCHES D'UNE DEMANDE, par le sens."
-  472: "UN RELEVE EST UNE MESURE : il se REBAT quand la table bouge ; plus vieux = FAUTE."
+  470: "rank_tools CLASSE LES TOOLS DU PERIMETRE : une demande, une liste finie, un score."
+  471: "LE SELECTEUR EST UN RERANKER : il NOTE chaque candidat, il ne cherche pas."
+  472: "ON GARDE UNE PART DE LA LISTE : 30% au 1er appel, 60% au 2e, 100% au 3e."
 
   473: "UN OUTIL APPELE PAR LE PONT LIT UNE ENTREE VIDE, jamais la socket du client."
 SECTION : LES_PROCS

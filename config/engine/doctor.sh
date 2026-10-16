@@ -16,7 +16,6 @@ SKILLS="$ROOT/skills"
 ACTIVE_SKILL=$(sed -n '1p' "$SKILLS/.active" 2>/dev/null | tr -d '\r' | tr -d '[:space:]')
 [ -n "$ACTIVE_SKILL" ] && [ -f "$SKILLS/$ACTIVE_SKILL/spec.yaml" ] || ACTIVE_SKILL=la
 SPEC="$SKILLS/$ACTIVE_SKILL/spec.yaml"
-SURVEY="$ROOT/tools/embeddings-e5.txt"
 SHORT=0
 [ "${1:-}" = "--short" ] && SHORT=1
 FAULTS=0
@@ -100,16 +99,14 @@ M=$(grep -c 'coffre' "$SPEC" 2>/dev/null)
 [ "$M" = 0 ] && ok "no residual \"coffre\" in the canon" \
   || note "$M line(s) still say \"coffre\" (the disk image)"
 
-title "THE EMBEDDING SURVEY"
-if [ -f "$SURVEY" ]; then
-  if [ "$SURVEY" -nt "$TABLE" ]; then
-    ok "the survey is more recent than the table"
-  else
-    fail "the survey is OLDER than the table : it must be rebuilt (index_build)"
-  fi
-else
-  fail "no survey : index_build never ran"
-fi
+title "THE TOOL SELECTOR"
+SELP="$ROOT/config/py/rank_tools.py"
+[ -f "$SELP" ] && ok "the selector script is present" || fail "no selector script ($SELP)"
+grep -q '^    tool: rank_tools$' "$TABLE" && ok "the table carries rank_tools" \
+  || fail "the table carries no rank_tools"
+RPORT=${LA_RERANK_PORT:-8095}
+RS=$(curl -s --max-time 3 "http://127.0.0.1:$RPORT/health" 2>/dev/null || true)
+[ -n "$RS" ] && ok "the reranker answers on $RPORT" || note "the reranker does not answer on $RPORT (down ?)"
 
 title "THE BRIDGE"
 if command -v curl >/dev/null 2>&1; then
