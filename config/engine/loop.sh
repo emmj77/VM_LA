@@ -657,7 +657,17 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
     '{model:$model, tools:$tools, tool_choice:$choix, max_tokens:$max, stream:false, messages:$messages}') \
     || die "the call could not be built"
 
-  REP=$(call "$PAYLOAD") || die "the engine did not answer : network, or timeout"
+  REP=$(call "$PAYLOAD")
+  CRC=$?
+  if [ "$CRC" -ne 0 ]; then
+    # LA PANNE DIT POURQUOI, ET ELLE LAISSE SA RAISON (B7, B10) : le code de curl et la
+    # premiere ligne de sa raison entrent dans la phrase, et le fichier de curl est
+    # RECOPIE dans work/ avant que le dossier temporaire ne parte. Un echec de transport
+    # n'est plus interchangeable avec un autre : le journal porte de quoi le prouver.
+    CURL_WHY=$(head -n 1 "$T/curl.err" 2>/dev/null | tr '\n\t' '  ' | cut -c1-200)
+    cp "$T/curl.err" "$ROOT/work/curl.err" 2>/dev/null || :
+    die "the engine did not answer (curl $CRC : $CURL_WHY) : network, or timeout"
+  fi
 
   ERR=$(printf '%s' "$REP" | jq -r '.error.message // empty' 2>/dev/null || true)
   [ -z "$ERR" ] || die "the engine refused : $ERR"
