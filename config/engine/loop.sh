@@ -382,10 +382,7 @@ GUARDRAILS=$(read_guardrails)
 # la LIGNE skill_manage porte treize actions, et la marquer rendrait create_skill et
 # remove_skill permanents du meme coup, ce qu on refuse.
 read_permanent() {  # la section permanente, une entree par ligne
-  [ -f "$CONF" ] || return 0
-  sed -n '/^permanent:/,/^[^[:space:]]/p' "$CONF" \
-    | sed -n 's/^[[:space:]]*-[[:space:]]*//p' \
-    | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | grep -v '^$'
+  permanent_section "$CONF"
 }
 PERMANENTS=$(read_permanent)
 if [ -z "$PERMANENTS" ]; then

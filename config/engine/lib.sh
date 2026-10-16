@@ -6,8 +6,9 @@
 #
 # Chaque brique la charge en tete, APRES avoir pose $ROOT :
 #   . "$HERE/lib.sh"
-# Elle porte ce que les briques repetent, UNE fois : l horodatage (ts) et la resolution
-# unique du SKILL ACTIF (active_skill). Une definition, pas trois copies qui divergent.
+# Elle porte ce que les briques repetent, UNE fois : l horodatage (ts), la resolution
+# unique du SKILL ACTIF (active_skill) et la lecture de la categorie PERMANENTE
+# (permanent_section). Une definition, pas trois copies qui divergent.
 
 # --- L HORODATAGE --------------------------------------------------------------
 ts() { date -u +%Y-%m-%dT%H:%M:%SZ; }
@@ -35,4 +36,16 @@ active_skill() {
   fi
   [ -n "$NAME" ] || NAME=la
   SKILL="$SKILLS_DIR/$NAME/skill.yaml"
+}
+
+# --- LA CATEGORIE PERMANENTE : lecture UNIQUE ----------------------------------
+# Lit la section `permanent:` de la CONFIG ($1), une entree par ligne, l indentation et les
+# guillemets retires. loop.sh la consomme telle quelle ; second.sh la JOINT par des espaces
+# quand elle la pose dans un texte. Une seule lecture, donc : deux lectures ne divergent pas.
+permanent_section() {
+  CONF=${1:-}
+  [ -n "$CONF" ] && [ -f "$CONF" ] || return 0
+  sed -n '/^permanent:/,/^[^[:space:]]/p' "$CONF" \
+    | sed -n 's/^[[:space:]]*-[[:space:]]*//p' \
+    | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | grep -v '^$'
 }

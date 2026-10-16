@@ -126,9 +126,7 @@ fi
 # Une entree `tool:action` ne vaut que pour cette action-la.
 PERM=
 if [ -f "$CONF" ]; then
-  PERM=$(sed -n '/^permanent:/,/^[^[:space:]]/p' "$CONF" \
-         | sed -n 's/^[[:space:]]*-[[:space:]]*//p' \
-         | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | grep -v '^$' | tr '\n' ' ')
+  PERM=$(permanent_section "$CONF" | tr '\n' ' ')
 fi
 if [ -n "$PERM" ]; then
   printf 'toujours apparents : %s\n' "$PERM" | bound "$CAP_TOOLS_L" "$CAP_TOOLS_C"
