@@ -13,18 +13,18 @@
   body { margin: 0; padding: 12px; background: #111; color: #e8e8e8;
          font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   h1 { font-size: 17px; margin: 0 0 2px; letter-spacing: .18em; font-weight: 600; }
-  #etat { font-size: 12px; color: #8a8a8a; min-height: 1.2em; }
+  #state { font-size: 12px; color: #8a8a8a; min-height: 1.2em; }
   .bloc { border: 1px solid #2c2c2c; border-radius: 10px; padding: 10px; margin: 10px 0; }
   .titre { font-size: 11px; letter-spacing: .14em; color: #7a7a7a; text-transform: uppercase; }
-  #demande { font-size: 12.5px; color: #9a9a9a; white-space: pre-wrap; word-wrap: break-word; }
-  #reponse { white-space: pre-wrap; word-wrap: break-word; margin-top: 6px; min-height: 3em; }
+  #asked { font-size: 12.5px; color: #9a9a9a; white-space: pre-wrap; word-wrap: break-word; }
+  #reply { white-space: pre-wrap; word-wrap: break-word; margin-top: 6px; min-height: 3em; }
   button { font: inherit; color: #111; background: #ddd; border: 0; border-radius: 999px;
            padding: 12px 18px; min-height: 46px; }
   button:disabled { background: #3a3a3a; color: #777; }
-  #parler { flex: 1; background: #d8d8d8; font-weight: 600; }
-  #parler.ecoute { background: #e05252; color: #fff; }
+  #talk { flex: 1; background: #d8d8d8; font-weight: 600; }
+  #talk.ecoute { background: #e05252; color: #fff; }
   .rangee { display: flex; gap: 8px; align-items: center; }
-  #texte { flex: 1; font: inherit; padding: 11px; border-radius: 8px; border: 1px solid #333;
+  #text { flex: 1; font: inherit; padding: 11px; border-radius: 8px; border: 1px solid #333;
            background: #1b1b1b; color: inherit; min-width: 0; }
   label.fichier { display: inline-block; }
   label.fichier input { display: none; }
@@ -41,13 +41,13 @@
 <body>
 
 <h1>LA</h1>
-<div id="etat">…</div>
+<div id="state">…</div>
 
 <div class="bloc">
   <div class="titre">ce que la machine a compris</div>
-  <div id="demande">—</div>
+  <div id="asked">—</div>
   <div class="titre" style="margin-top:8px">reponse</div>
-  <div id="reponse">—</div>
+  <div id="reply">—</div>
   <audio id="audio" controls style="display:none"></audio>
   <div id="note"></div>
 </div>
@@ -55,17 +55,17 @@
 <div class="bloc">
   <div class="titre">la parole (maintenir pour parler)</div>
   <div class="rangee" style="margin-top:8px">
-    <button id="parler" disabled>parler</button>
-    <button id="arreter" disabled>stop</button>
+    <button id="talk" disabled>parler</button>
+    <button id="stop" disabled>stop</button>
   </div>
-  <div id="voixnote" class="titre" style="margin-top:6px; text-transform:none; letter-spacing:0"></div>
+  <div id="voicenote" class="titre" style="margin-top:6px; text-transform:none; letter-spacing:0"></div>
 </div>
 
 <div class="bloc">
   <div class="titre">l image (appareil photo)</div>
   <div class="rangee" style="margin-top:8px">
-    <label class="fichier"><input id="photo" type="file" accept="image/*" capture="environment"><span>prendre une photo</span></label>
-    <button id="envoyerphoto" disabled>voir</button>
+    <label class="fichier"><input id="photo" type="queue" accept="image/*" capture="environment"><span>prendre une photo</span></label>
+    <button id="sendphoto" disabled>voir</button>
   </div>
   <img id="img" alt="">
 </div>
@@ -73,15 +73,15 @@
 <div class="bloc">
   <div class="titre">le texte</div>
   <div class="rangee" style="margin-top:8px">
-    <input id="texte" placeholder="ecrire a LA" autocomplete="off">
-    <button id="dire">dire</button>
+    <input id="text" placeholder="ecrire a LA" autocomplete="off">
+    <button id="say">say</button>
   </div>
 </div>
 
 <div class="bloc">
   <div class="titre">le plan</div>
   <div class="rangee" style="margin-top:6px">
-    <button id="rafraichir">rafraichir</button>
+    <button id="refresh">rafraichir</button>
   </div>
   <div id="plan" style="margin-top:8px">—</div>
 </div>
@@ -94,25 +94,25 @@
 <div class="bloc">
   <div class="titre">l adresse active</div>
   <div class="rangee" style="margin-top:8px">
-    <select id="engin"></select>
-    <button id="prendre">prendre</button>
+    <select id="engine"></select>
+    <button id="take">prendre</button>
   </div>
-  <div id="enginnote" class="titre" style="margin-top:6px; text-transform:none; letter-spacing:0"></div>
+  <div id="enginenote" class="titre" style="margin-top:6px; text-transform:none; letter-spacing:0"></div>
 </div>
 
 <script>
 'use strict';
 const $ = (id) => document.getElementById(id);
 const note = (texte) => { $('note').textContent = texte || ''; };
-const etat = (texte) => { $('etat').textContent = texte || ''; };
+const setState = (texte) => { $('state').textContent = texte || ''; };
 
-// --- l etat de la machine : GET /ping et GET /plan. Rien n est decide ici.
+// --- l setState de la machine : GET /ping et GET /plan. Rien n est decide ici.
 async function ping() {
   try {
     const r = await fetch('/ping', { cache: 'no-store' });
     const j = await r.json();
-    etat('vivant sur ' + j.address + ':' + j.port + ' — boucle ' + j.loop);
-  } catch (e) { etat('injoignable'); }
+    setState('vivant sur ' + j.address + ':' + j.port + ' — boucle ' + j.loop);
+  } catch (e) { setState('injoignable'); }
 }
 async function plan() {
   try {
@@ -137,37 +137,37 @@ async function journal() {
 // tombe dans config/audio/) et publie la liste sous /spoken : ici on la relit pendant le tour et on
 // JOUE chaque nouveau wav des qu il est pret, l un apres l autre. Sans ca, l appli n attendait
 // qu UN wav, a la fin du tour : un tour long faisait un long silence.
-let dejaVus = new Set(), file = [], enLecture = null, tourOuvert = false;
-function jouerSuivant() {
-  if (enLecture || !file.length) return;
-  const nom = file.shift();
-  enLecture = nom;
-  $('audio').src = '/audio/' + nom;
+let heard = new Set(), queue = [], nowPlaying = null, turnOpen = false;
+function playNext() {
+  if (nowPlaying || !queue.length) return;
+  const name = queue.shift();
+  nowPlaying = name;
+  $('audio').src = '/audio/' + name;
   $('audio').style.display = 'block';
   $('audio').play().catch(() => {});
 }
-$('audio').addEventListener('ended', () => { enLecture = null; jouerSuivant(); });
-$('audio').addEventListener('error', () => { enLecture = null; jouerSuivant(); });
+$('audio').addEventListener('ended', () => { nowPlaying = null; playNext(); });
+$('audio').addEventListener('error', () => { nowPlaying = null; playNext(); });
 async function spoken() {
-  if (!tourOuvert) return;
+  if (!turnOpen) return;
   try {
     const r = await fetch('/spoken', { cache: 'no-store' });
     const j = await r.json();
     const l = Array.isArray(j) ? j : (j.spoken || []);
     l.forEach((n) => {
-      if (typeof n === 'string' && n && !dejaVus.has(n)) { dejaVus.add(n); file.push(n); }
+      if (typeof n === 'string' && n && !heard.has(n)) { heard.add(n); queue.push(n); }
     });
-    jouerSuivant();
+    playNext();
   } catch (e) { /* le pont n a pas repondu : on retentera au tour suivant */ }
 }
 
 // --- LA REPONSE D UN TOUR : {response, audio, code} (+ request quand il y en a une)
-function poserReponse(j) {
+function showReply(j) {
   if (!j) { note('reponse illisible'); return; }
-  if (j.request) { $('demande').textContent = j.request; }
+  if (j.request) { $('asked').textContent = j.request; }
   if (j.error) { note(j.error); return; }
-  $('reponse').textContent = (j.response !== undefined ? j.response : JSON.stringify(j));
-  if (j.audio && !dejaVus.has(j.audio)) {
+  $('reply').textContent = (j.response !== undefined ? j.response : JSON.stringify(j));
+  if (j.audio && !heard.has(j.audio)) {
     $('audio').src = '/audio/' + j.audio;
     $('audio').style.display = 'block';
     $('audio').play().catch(() => {});
@@ -180,36 +180,36 @@ function poserReponse(j) {
 }
 
 async function turnFetch(url, options) {
-  $('reponse').textContent = '…';
+  $('reply').textContent = '…';
   note('');
   // LE TOUR S OUVRE : la liste des wav repart a zero cote pont, et on se met a l ecouter.
-  dejaVus = new Set(); file = []; enLecture = null; tourOuvert = true;
+  heard = new Set(); queue = []; nowPlaying = null; turnOpen = true;
   try {
     const r = await fetch(url, options);
     const j = await r.json().catch(() => null);
-    poserReponse(j);
-  } catch (e) { note('le pont n a pas repondu : ' + e); $('reponse').textContent = '—'; }
-  finally { tourOuvert = false; }
+    showReply(j);
+  } catch (e) { note('le pont n a pas repondu : ' + e); $('reply').textContent = '—'; }
+  finally { turnOpen = false; }
 }
 
 // --- LE TEXTE : POST /say, le corps EST la demande
-async function dire() {
-  const t = $('texte').value.trim();
+async function say() {
+  const t = $('text').value.trim();
   if (!t) return;
-  $('texte').value = '';
+  $('text').value = '';
   await turnFetch('/say', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: t });
 }
 
 // --- LA PHOTO : la base conseille <input accept="image/*" capture="environment">.
 // L image est REDUITE sur le telephone avant de partir (canvas) : le modele de vision
 // n a pas besoin de 12 megapixels.
-let photoFichier = null, photoBlob = null;
+let photoFile = null, photoBlob = null;
 $('photo').addEventListener('change', async (e) => {
   const f = e.target.files && e.target.files[0];
   if (!f) return;
-  photoFichier = f;
+  photoFile = f;
   const bitmap = await createImageBitmap(f).catch(() => null);
-  if (!bitmap) { photoBlob = f; $('img').style.display = 'none'; $('envoyerphoto').disabled = false; return; }
+  if (!bitmap) { photoBlob = f; $('img').style.display = 'none'; $('sendphoto').disabled = false; return; }
   const max = 1024;
   const k = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
   const c = document.createElement('canvas');
@@ -218,73 +218,73 @@ $('photo').addEventListener('change', async (e) => {
   photoBlob = await new Promise((res) => c.toBlob(res, 'image/jpeg', 0.8)) || f;
   $('img').src = URL.createObjectURL(photoBlob);
   $('img').style.display = 'block';
-  $('envoyerphoto').disabled = false;
+  $('sendphoto').disabled = false;
   note('photo prete (' + Math.round(photoBlob.size / 1024) + ' Ko, ' + c.width + 'x' + c.height + ')');
 });
-$('envoyerphoto').addEventListener('click', async () => {
+$('sendphoto').addEventListener('click', async () => {
   if (!photoBlob) return;
-  $('envoyerphoto').disabled = true;
+  $('sendphoto').disabled = true;
   await turnFetch('/image', {
     method: 'POST',
     headers: { 'Content-Type': photoBlob.type || 'image/jpeg' },
     body: photoBlob
   });
-  $('envoyerphoto').disabled = false;
+  $('sendphoto').disabled = false;
 });
 
 // --- LA PAROLE : le motif documente (getUserMedia -> MediaRecorder -> Blob -> POST).
 // getUserMedia N EXISTE PAS hors contexte securise : on le dit au lieu de le subir.
-let recorder = null, morceaux = [], flux = null;
+let recorder = null, chunks = [], stream = null;
 const formats = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
-function formatChoisi() {
+function pickFormat() {
   if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
   for (const t of formats) { if (MediaRecorder.isTypeSupported(t)) return t; }
   return '';
 }
-async function parlerDebut() {
+async function startTalking() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    $('voixnote').textContent = 'la voix demande un contexte securise (HTTPS) : ici le micro est invisible. Le texte et la photo marchent.';
+    $('voicenote').textContent = 'la voix demande un contexte securise (HTTPS) : ici le micro est invisible. Le texte et la photo marchent.';
     return;
   }
   try {
-    flux = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
+    stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
   } catch (e) {
-    $('voixnote').textContent = 'micro refuse ou absent : ' + e.name;
+    $('voicenote').textContent = 'micro refuse ou absent : ' + e.name;
     return;
   }
-  morceaux = [];
-  const mt = formatChoisi();
-  recorder = mt ? new MediaRecorder(flux, { mimeType: mt }) : new MediaRecorder(flux);
-  recorder.addEventListener('dataavailable', (e) => { if (e.data && e.data.size) morceaux.push(e.data); });
+  chunks = [];
+  const mt = pickFormat();
+  recorder = mt ? new MediaRecorder(stream, { mimeType: mt }) : new MediaRecorder(stream);
+  recorder.addEventListener('dataavailable', (e) => { if (e.data && e.data.size) chunks.push(e.data); });
   recorder.addEventListener('stop', async () => {
-    const type = recorder.mimeType || morceaux[0] && morceaux[0].type || 'application/octet-stream';
-    const blob = new Blob(morceaux, { type: type });
-    if (flux) { flux.getTracks().forEach((t) => t.stop()); flux = null; }
-    $('parler').classList.remove('ecoute');
-    $('parler').disabled = false; $('arreter').disabled = true;
+    const type = recorder.mimeType || chunks[0] && chunks[0].type || 'application/octet-stream';
+    const blob = new Blob(chunks, { type: type });
+    if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
+    $('talk').classList.remove('ecoute');
+    $('talk').disabled = false; $('stop').disabled = true;
     if (!blob.size) { note('rien enregistre'); return; }
-    $('voixnote').textContent = Math.round(blob.size / 1024) + ' Ko enregistres, envoi…';
+    $('voicenote').textContent = Math.round(blob.size / 1024) + ' Ko enregistres, envoi…';
     await turnFetch('/voice', { method: 'POST', headers: { 'Content-Type': blob.type }, body: blob });
-    $('voixnote').textContent = 'envoye (' + (blob.type || '?') + ')';
+    $('voicenote').textContent = 'envoye (' + (blob.type || '?') + ')';
   });
   recorder.start();
-  $('parler').classList.add('ecoute');
-  $('parler').disabled = true; $('arreter').disabled = false;
-  $('voixnote').textContent = 'la machine ecoute…';
+  $('talk').classList.add('ecoute');
+  $('talk').disabled = true; $('stop').disabled = false;
+  $('voicenote').textContent = 'la machine ecoute…';
 }
-function parlerFin() { if (recorder && recorder.state !== 'inactive') recorder.stop(); }
-$('parler').addEventListener('pointerdown', (e) => { e.preventDefault(); parlerDebut(); });
-$('parler').addEventListener('pointerup', (e) => { e.preventDefault(); parlerFin(); });
-$('parler').addEventListener('pointercancel', parlerFin);
-$('parler').addEventListener('pointerleave', parlerFin);
-$('arreter').addEventListener('click', parlerFin);
+function stopTalking() { if (recorder && recorder.state !== 'inactive') recorder.stop(); }
+$('talk').addEventListener('pointerdown', (e) => { e.preventDefault(); startTalking(); });
+$('talk').addEventListener('pointerup', (e) => { e.preventDefault(); stopTalking(); });
+$('talk').addEventListener('pointercancel', stopTalking);
+$('talk').addEventListener('pointerleave', stopTalking);
+$('stop').addEventListener('click', stopTalking);
 
 // --- L ADRESSE ACTIVE : on LIT les adresses declarees, et on en PREND une.
-async function engins() {
+async function engines() {
   try {
     const r = await fetch('/engine', { cache: 'no-store' });
     const j = await r.json();
-    const s = $('engin');
+    const s = $('engine');
     s.innerHTML = '';
     (j.engines || []).forEach((e) => {
       const o = document.createElement('option');
@@ -293,40 +293,40 @@ async function engins() {
       o.selected = !!e.active;
       s.appendChild(o);
     });
-    $('enginnote').textContent = (j.engines || []).length + ' adresse(s) declaree(s)';
-  } catch (e) { $('enginnote').textContent = 'la config n a pas repondu'; }
+    $('enginenote').textContent = (j.engines || []).length + ' adresse(s) declaree(s)';
+  } catch (e) { $('enginenote').textContent = 'la config n a pas repondu'; }
 }
-$('prendre').addEventListener('click', async () => {
-  const alias = $('engin').value;
+$('take').addEventListener('click', async () => {
+  const alias = $('engine').value;
   if (!alias) return;
-  $('enginnote').textContent = 'je prends ' + alias + '…';
+  $('enginenote').textContent = 'je prends ' + alias + '…';
   try {
     const r = await fetch('/engine', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ alias: alias })
     });
     const j = await r.json();
-    $('enginnote').textContent = j.line || j.error || JSON.stringify(j);
-  } catch (e) { $('enginnote').textContent = 'echec : ' + e; }
-  await engins();
+    $('enginenote').textContent = j.line || j.error || JSON.stringify(j);
+  } catch (e) { $('enginenote').textContent = 'echec : ' + e; }
+  await engines();
 });
 
-$('dire').addEventListener('click', dire);
-$('texte').addEventListener('keydown', (e) => { if (e.key === 'Enter') dire(); });
-$('rafraichir').addEventListener('click', plan);
+$('say').addEventListener('click', say);
+$('text').addEventListener('keydown', (e) => { if (e.key === 'Enter') say(); });
+$('refresh').addEventListener('click', plan);
 
 // --- l amorcage
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { $('parler').disabled = false; }
-else { $('voixnote').textContent = 'la voix demande un contexte securise (HTTPS) : le micro est invisible ici.'; }
-$('dire').disabled = false;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { $('talk').disabled = false; }
+else { $('voicenote').textContent = 'la voix demande un contexte securise (HTTPS) : le micro est invisible ici.'; }
+$('say').disabled = false;
 // LE FILET D INSTALLATION : Chrome ne propose l ecran d accueil que s il voit un
 // gestionnaire de fetch. Il ne met rien en cache (voir /sw.js).
 if (navigator.serviceWorker) { navigator.serviceWorker.register('/sw.js').catch(() => {}); }
-ping(); plan(); engins(); journal();
+ping(); plan(); engines(); journal();
 setInterval(ping, 60000);
 setInterval(plan, 15000);
 setInterval(journal, 3000);
 setInterval(spoken, 1200);
-$('dire').disabled = false;
+$('say').disabled = false;
 </script>
 </body>
 </html>
