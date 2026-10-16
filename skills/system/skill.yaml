@@ -23,7 +23,7 @@ TOOLS:
 DOCS:
   300: "load_doc"
   301: "LE PONT sert le telephone : widget, photo, voix, plan, adresses (bridge.sh)."
-  302: "L APK du client natif (widget + bulle) se prend sur le pont, a /la.apk."
+  302: "L APK du client natif (widget + bulle) se prend sur le pont, a /LA-app.apk."
 PLAN:
 PERIMETER:
   workspace: "work/"
