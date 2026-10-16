@@ -45,5 +45,5 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-$(dirname -- "$BIN")}
 [ -f "$GGUF/$MODEL" ] || { echo "refuse : le modele local est introuvable ($GGUF/$MODEL)" >&2 ; exit 1 ; }
 
 . "$HERE/lib.sh"
-LABEL="le modele local" ; HEALTH=health ; WD=.
+LABEL="local" ; HEALTH=health ; WD=.
 service_ctl "${1:-help}" "$BIN" -m "$GGUF/$MODEL" --host "$HOST" --port "$PORT" -ngl "$NGL" -t "$THREADS" --no-warmup -c "$CTX" --parallel 1

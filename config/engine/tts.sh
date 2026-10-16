@@ -46,5 +46,5 @@ LOGF="$W/tts.log"
 [ -x "$UV" ] || { echo "refuse : uv est introuvable ($UV) ; la voix ne peut pas charger son module" >&2 ; exit 1 ; }
 
 . "$HERE/lib.sh"
-LABEL="la voix" ; HEALTH=health ; WD=.
+LABEL="tts" ; HEALTH=health ; WD=.
 service_ctl "${1:-help}" "$UV" run --no-project --with sherpa-onnx python3 "$PROG"

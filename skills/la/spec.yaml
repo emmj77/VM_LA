@@ -551,7 +551,7 @@ SECTION : LA_VOIX
   1444: "LE TUNNEL EST LE SEUL CHEMIN HORS RESEAU : 10.10.0.1, port 51820 ouvert sur la box."
   1445: "LA FACE TLS EST CELLE DU TELEPHONE ; le clair reste sur 127.0.0.1, rien n est ouvert."
   1446: "LE CABLE DE LA VOIX EST VERIFIE PAR LA REFERENCE : vits-model, vits-tokens, vits-data-dir, sid."
-  1447: "LA VOIX ET L OREILLE SONT DES SERVICES RESIDENTS : la-voix.service et la-oreille.service."
+  1447: "LA VOIX ET L OREILLE SONT DES SERVICES RESIDENTS : la-tts.service et la-asr.service."
   1448: "LE CONTRAT DE LA VOIX EST UNE LIGNE : speech : config/audio/<nom> (N Ko, T s) ; le pont et speak la lisent."
   1449: "LE NIVEAU SE REGLE A LA CRETE : -1,5 dBFS, gain borne a 4 -- hors de la doc, MESURE sur voix humaine."
   1450: "MESURE : Piper upmc dit 8,7 s de parole en moins d une seconde, apres chargement du modele."

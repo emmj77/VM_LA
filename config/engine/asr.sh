@@ -41,5 +41,5 @@ LOGF="$W/asr.log"
 [ -f "$ROOT_MODELS/$MODEL" ] || { echo "refuse : le modele de l oreille est introuvable ($MODEL)" >&2 ; exit 1 ; }
 
 . "$HERE/lib.sh"
-LABEL="l oreille" ; HEALTH=ready ; WD="$ROOT_MODELS"
+LABEL="asr" ; HEALTH=ready ; WD="$ROOT_MODELS"
 service_ctl "${1:-help}" "$CLI" serve --asr-model "$MODEL" --host "$HOST" --port "$PORT" --no-ui --threads "$THREADS"
