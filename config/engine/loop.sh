@@ -103,6 +103,8 @@ SECOND_HEAD="$PROCS/second.sh"
 # (config/sessions.yaml) reste tenue par le micro-modele, pour la recherche rapide et a bas prix.
 DB=${LA_SESSIONS_DB:-$CONFD/sessions.db}
 WINDOW=${LA_WINDOW:-20}          # LA FENETRE GARDE VINGT ECHANGES
+MSG_MAX=${LA_MSG_MAX:-8000}      # AUCUN message plus gros que ca : tete ET queue gardees
+MSG_BUDGET=${LA_MSG_BUDGET:-32000}   # LE BUDGET de tout ce que le modele LIT (les tetes systeme a part)
 
 db_init() {   # pose le schema si la base est neuve ; rend 1 si sqlite3 manque
   command -v sqlite3 >/dev/null 2>&1 || return 1
@@ -117,6 +119,37 @@ db_init() {   # pose le schema si la base est neuve ; rend 1 si sqlite3 manque
       name TEXT);' 2>/dev/null || return 1
   sqlite3 "$DB" 'CREATE INDEX IF NOT EXISTS messages_exchange ON messages(exchange, id);' 2>/dev/null || :
   return 0
+}
+
+# LA BORNE DE LA CHARGE (B14) ---- le noyau refuse tout argument au-dela de MAX_ARG_STRLEN
+# (131 072 octets) et l appel ne PART MEME PAS : c est la panne de 00:04, et elle ne se voit
+# qu au moment ou elle tue. Le remede n est pas de raccourcir la boucle : ce que le modele LIT
+# est borne (les gros dumps d outil sont tronques, tete ET queue gardees, et le plus RECENT
+# garde le plus de place), pendant que le poste GARDE tout (le registre, le journal du tour).
+trim_prog() {
+  cat <<'JQ'
+def coupe($n):
+  if (.content|type) != "string" then .
+  elif (.content|utf8bytelength) <= $n then .
+  else (.content|utf8bytelength) as $L
+       | .content = ((.content[0:(($n/4)|floor)])
+           + "\n[... TRONQUE : " + ($L|tostring) + " octets au total ; le texte entier est dans config/sessions.db et dans le journal du tour ...]\n"
+           + (.content[-(($n/4)|floor):]))
+  end;
+map(coupe($cap))
+| . as $m
+| ($m | length) as $nl
+| ($m | map(.content|length) | add // 0) as $tot
+| ($m | map(select(.role == "tool") | (.content|length)) | add // 0) as $tl
+| ($m | map(select(.role == "tool")) | length) as $nt
+| if $tot <= $bud or $nt == 0 then $m
+  else ((($bud - ($tot - $tl)) / $nt) | floor | if . < 60 then 60 else . end) as $al
+       | ($m | to_entries
+              | map(.value = (if (.value.role == "tool" and .key != ($nl - 1))
+                              then (.value | coupe($al)) else .value end))
+              | map(.value))
+  end
+JQ
 }
 
 db_add() {    # $1 role, $2 content, $3 tool_calls, $4 tool_call_id, $5 name
@@ -154,7 +187,8 @@ hist_window() {  # LA ZONE 3 : les vingt derniers echanges, BRUTS, identifiants 
    | jq -c '[.[] | {role, content}
              + (if (.tool_calls // "") == "" then {} else {tool_calls: (.tool_calls | fromjson)} end)
              + (if (.tool_call_id // "") == "" then {} else {tool_call_id: .tool_call_id} end)
-             + (if (.name // "") == "" then {} else {name: .name} end)]' 2>/dev/null || printf '[]'
+             + (if (.name // "") == "" then {} else {name: .name} end)]' 2>/dev/null \
+   | jq -c --argjson cap "$MSG_MAX" --argjson bud "$MSG_BUDGET" "$(trim_prog)" 2>/dev/null || printf '[]'
 }
 
 TURNS_MAX=${LA_MAX_TURNS:-400}  # une BORNE de securite, jamais un frein : le PLAN, answer
@@ -196,7 +230,9 @@ log_to_stderr() {  # $1 = une ligne deja plate
 # L HISTORIQUE DU TOUR S ECRIT TOUJOURS PAREIL : un filtre jq rend le nouveau tableau, on le
 # pose, et le remplacement est ATOMIQUE (jamais un hist.json tronque). $@ = options + filtre jq.
 hist_apply() {
-  jq -c "$@" "$T/hist.json" > "$T/hist.next" && mv "$T/hist.next" "$T/hist.json"
+  jq -c "$@" "$T/hist.json" > "$T/hist.next" \
+    && jq -c --argjson cap "$MSG_MAX" --argjson bud "$MSG_BUDGET" "$(trim_prog)" "$T/hist.next" > "$T/hist.trim" \
+    && mv "$T/hist.trim" "$T/hist.json"
 }
 
 # LA LIGNE DU MOTEUR PORTE SON RESULTAT SOUS .result ; $1 = la ligne, $2 = le defaut (vide).
