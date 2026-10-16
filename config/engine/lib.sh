@@ -93,18 +93,47 @@ service_ctl() {
       if port_busy "$PORT"; then
         echo "$LABEL refused: port $PORT is already busy, nothing was started" ; exit 1
       fi
-      ( cd "$WD" && nohup "$@" >> "$LOGF" 2>&1 & echo $! > "$PID_FILE" )
+      # UN RESIDENT EST UN ARBRE (uv -> python3 -> sa voix, ou la CLI -> son moteur), PAS UN
+      # PID : setsid en fait UN SEUL GROUPE, et stop tue le groupe. Sans lui, l arret ne tuait
+      # que la tete et les enfants s echappaient (banc des residents, verdict R4).
+      ( cd "$WD" && exec setsid nohup "$@" >> "$LOGF" 2>&1 & echo $! > "$PID_FILE" )
       echo "$LABEL started (pid $(cat "$PID_FILE"), port $PORT, log $LOGF)"
       ;;
-    stop)
-      if [ ! -f "$PID_FILE" ]; then echo "$LABEL is not running: no mark" ; exit 0 ; fi
+    stop)   # LE GROUPE D ABORD ; et jamais l illusion d avoir arrete ce qu on n a pas place.
+      if [ ! -f "$PID_FILE" ]; then
+        if port_busy "$PORT"; then
+          echo "$LABEL answers on port $PORT but carries NO mark: it was started outside this" >&2
+          echo "protocol, and I never kill what I did not place. Stop it by hand or by its service." >&2
+          exit 1
+        fi
+        echo "$LABEL is not running: no mark" ; exit 0
+      fi
       SC_P=$(cat "$PID_FILE")
-      if kill "$SC_P" 2>/dev/null; then echo "$LABEL stopped (pid $SC_P)" ; else echo "$LABEL no longer answered (pid $SC_P)" ; fi
+      # LE BUILTIN kill DE dash REFUSE `-- -PID` (« Illegal number: - ») : c est le kill
+      # EXTERNE qui tue le GROUPE. Sans lui, on ne tuait que la tete, et les enfants du
+      # resident restaient vivants (banc des residents, verdict R4 rouge).
+      SC_TUE=0
+      [ -x /bin/kill ] && /bin/kill -TERM -- "-$SC_P" 2>/dev/null && SC_TUE=1
+      [ "$SC_TUE" = 0 ] && [ -x /usr/bin/kill ] && /usr/bin/kill -TERM -- "-$SC_P" 2>/dev/null && SC_TUE=1
+      [ "$SC_TUE" = 0 ] && kill -TERM "$SC_P" 2>/dev/null
+      SC_I=0
+      while kill -0 "$SC_P" 2>/dev/null && [ "$SC_I" -lt 50 ]; do sleep 0.1; SC_I=$((SC_I + 1)); done
+      if kill -0 "$SC_P" 2>/dev/null; then
+        [ -x /bin/kill ] && /bin/kill -KILL -- "-$SC_P" 2>/dev/null
+        [ -x /usr/bin/kill ] && /usr/bin/kill -KILL -- "-$SC_P" 2>/dev/null
+        kill -KILL "$SC_P" 2>/dev/null || :
+        rm -f "$PID_FILE"
+        echo "$LABEL did not stop on TERM: KILLED (group $SC_P)" ; exit 0
+      fi
+      echo "$LABEL stopped (group $SC_P, children included)"
       rm -f "$PID_FILE"
       ;;
     status)
       SC_R=$(curl -s --max-time 3 "http://127.0.0.1:$PORT/$HEALTH" 2>/dev/null)
-      if [ -n "$SC_R" ]; then echo "$LABEL up on 127.0.0.1:$PORT : $SC_R" ; else echo "$LABEL silent on 127.0.0.1:$PORT" ; exit 1 ; fi
+      if [ -n "$SC_R" ]; then
+        if [ -f "$PID_FILE" ]; then echo "$LABEL up on 127.0.0.1:$PORT : $SC_R" ;
+        else echo "$LABEL up on 127.0.0.1:$PORT WITHOUT a mark: started outside this protocol" ; fi
+      else echo "$LABEL silent on 127.0.0.1:$PORT" ; exit 1 ; fi
       ;;
     *) echo "modes: start | stop | status | run | help" ;;
   esac

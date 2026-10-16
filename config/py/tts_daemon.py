@@ -163,6 +163,14 @@ class Service(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     os.makedirs(AUDIO_DIR, exist_ok=True)
+    # LE PORT D ABORD, LA PAROLE ENSUITE : se declarer prete avant d avoir pris son port, c est
+    # mentir a ceux qui lisent. Mesure du 00:04 : un second resident a annonce « voix prete »
+    # puis est mort sur « Address already in use ». Ici le bind rate : on le DIT et on sort.
+    try:
+        SERVEUR = ThreadingHTTPServer(("127.0.0.1", PORT), Service)
+    except OSError as e:
+        raise SystemExit("voix : le port %d est deja pris (%s) - aucune voix n a ete annoncee"
+                         % (PORT, e))
     print("voix prete : %s, voix %d, sur 127.0.0.1:%d, chargee en %d ms"
           % (MODEL, SID, PORT, LOAD_MS), flush=True)
-    ThreadingHTTPServer(("127.0.0.1", PORT), Service).serve_forever()
+    SERVEUR.serve_forever()
