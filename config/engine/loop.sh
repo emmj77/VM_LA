@@ -304,16 +304,10 @@ LE TOOL QUI REPOND : son PREMIER argument est la FORME (text, list, table, code)
 Ce que tu fais se passe TOUJOURS par un tool : un texte sans tool n est pas une reponse.'
 
 # --- [5] LA TABLE : lire une ligne, compter ses arguments hors stdin ----------
-all_ids() { grep -n '^  - id: ' "$TABLE" | sed 's/^[0-9]*:  - id:[[:space:]]*//' | tr -d ' ' ; }
+all_ids() { table_ids "$TABLE"; }
 
 block_of_id() {  # $1 = l id ; rend le bloc, ou echoue
-  D=$(grep -n "^  - id: $1[[:space:]]*\$" "$TABLE" 2>/dev/null | head -n 1 | cut -d: -f1)
-  [ -n "$D" ] || return 1
-  F=$(grep -n '^  - id: ' "$TABLE" | cut -d: -f1 | while IFS= read -r n; do
-        [ "$n" -gt "$D" ] && { printf '%s\n' "$n"; break; }
-      done)
-  [ -n "$F" ] || F=$(( $(wc -l < "$TABLE") + 1 ))
-  sed -n "${D},$((F - 1))p" "$TABLE"
+  table_block "$TABLE" "$1"
 }
 
 args_section() {  # $1 = bloc

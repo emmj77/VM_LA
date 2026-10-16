@@ -215,15 +215,8 @@ shift
 [ -f "$TABLE" ] || refuse_tool "la table n'est pas un fichier ($TABLE)"
 [ -r "$TABLE" ] || refuse_tool "la table est illisible ($TABLE)"
 
-START=$(grep -n "^  - id: $ID[[:space:]]*\$" "$TABLE" 2>/dev/null | head -n 1 | cut -d: -f1)
-[ -n "$START" ] || refuse_tool "l'id $ID n'est pas dans la table : aucune ligne ne porte cet id ($TABLE)"
-
-END=$(grep -n '^  - id: ' "$TABLE" | cut -d: -f1 | while IFS= read -r n; do
-        if [ "$n" -gt "$START" ]; then printf '%s\n' "$n"; break; fi
-      done)
-TOTAL=$(wc -l < "$TABLE")
-END=${END:-$((TOTAL + 1))}
-BLOCK=$(sed -n "${START},$((END - 1))p" "$TABLE")
+BLOCK=$(table_block "$TABLE" "$ID")
+[ -n "$BLOCK" ] || refuse_tool "l'id $ID n'est pas dans la table : aucune ligne ne porte cet id ($TABLE)"
 
 TOOL=$(printf '%s\n' "$BLOCK" | sed -n 's/^    tool:[[:space:]]*//p' | head -n 1)
 FAMILY=$(printf '%s\n' "$BLOCK" | sed -n 's/^    family:[[:space:]]*//p' | head -n 1)
