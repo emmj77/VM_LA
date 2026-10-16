@@ -1497,3 +1497,29 @@ tools:
           ;;
         *) echo "refuse : source hors liste ($S) ; memory ou sessions" >&2; exit 1 ;;
       esac
+  - id: 180
+    tool: web_search
+    family: READ
+    description: "searches the web and returns the links found : title then address, two lines per result"
+    args:
+      - {name: terms, type: text, stdin: true}
+    command: |
+      # WEB_SEARCH TROUVE, il ne LIT pas : il rend des LIENS (titre + adresse).
+      # Moteur sans cle : ddgr (DuckDuckGo en ligne de commande).
+      Q=$(cat); [ ${#Q} -ge 2 ] || { echo 'refuse : terms vide ou de moins de 2 caracteres' >&2; exit 1; }
+      D=${LA_DDGR:-/usr/bin/ddgr}; [ -x "$D" ] || { echo "refuse : ddgr introuvable ($D)" >&2; exit 1; }
+      timeout 25 "$D" --json -n 8 "$Q" 2>/dev/null | jq -r '.[] | .title + "\n" + .url + "\n"'
+  - id: 181
+    tool: web_extract
+    family: READ
+    description: "fetches a web page and returns its text as markdown : this is what READS a page"
+    args:
+      - {name: url, type: text, stdin: true}
+    command: |
+      # WEB_EXTRACT LIT : il ramene une page du dehors en TEXTE (markdown).
+      # Lightpanda (navigateur headless pour machines) : seul un navigateur voit une page
+      # dont le contenu est pose par du JavaScript. SSL_CERT_FILE est OBLIGATOIRE.
+      U=$(cat); case "$U" in http://*|https://*) ;; *) echo 'refuse : url attendue (http ou https)' >&2; exit 1 ;; esac
+      P=${LA_LIGHTPANDA:-$HOME/.local/bin/lightpanda}; [ -x "$P" ] || { echo "refuse : lightpanda introuvable ($P)" >&2; exit 1; }
+      C=${SSL_CERT_FILE:-/etc/ssl/certs/ca-certificates.crt}
+      SSL_CERT_FILE="$C" CURL_CA_BUNDLE="$C" timeout 60 "$P" fetch --dump markdown "$U" 2>/dev/null | head -c 20000
