@@ -1,25 +1,30 @@
 #!/usr/bin/env python3
-"""board.py — LE TABLEAU DE LA. Une colonne. La liste de controle, puis l'etat des morceaux.
+"""board.py — LE TABLEAU DE LA. Etroit, vivant, et il ne casse pas.
 
-    board.py            LA LISTE DE CONTROLE, ligne a ligne, PUIS le tableau vivant (Ctrl-C sort)
-    board.py --once     la meme chose en une passe et il sort : code de retour = NB DE DEFAUTS
-    board.py --watch 5  le tableau, redessine toutes les 5 secondes (defaut : 3)
+    board.py            LE CONTROLE ligne a ligne (le chargeur), PUIS le tableau vivant (Ctrl-C)
+    board.py --once     une passe, puis il sort : code de retour = LE NOMBRE DE DEFAUTS
+    board.py --line     UNE ligne pour un bouton de panneau (c'est ce qu'un widget lira)
+    board.py --watch 5  redessine toutes les 5 secondes (defaut : 3)
 
-CE QU'IL EST : un LECTEUR. Il ne repare rien, il n'ouvre rien, il n'ecrit nulle part. Chaque ligne
-est une VERIFICATION NOMMEE avec son verdict. Un tableau qui dirait « tout va bien » sans dire ce
-qu'il a regarde ne vaudrait rien.
+IL EST FAIT POUR UNE FENETRE ETROITE (un tiers d'ecran, ~78 colonnes). Chaque ligne est BATIE pour
+la largeur du moment et COUPEE si elle ne rentre pas : rien ne se replie, rien ne casse. rich relit
+la taille du terminal a chaque dessin, et un redimensionnement (SIGWINCH) fait redessiner TOUT DE
+SUITE -- le tableau est refait, jamais etire.
 
-CE QU'IL MONTRE : LE CONTROLE (une ligne par epreuve : engine, table, canon, git, doctor, erreurs,
-residents, ram DE LA, api, api status, last_activity, journal, pont) ; LES RESIDENTS ; LES MODELES
-DE LA -- ceux que NOS morceaux nomment, avec leur etat (charge ou a la demande) ; LA MACHINE.
+IL EST VIVANT : chaque tour il relit tout -- les unites systemd, les ports, la table, le canon, les
+journaux, la RAM, et LES DERNIERS APPELS DU JOURNAL DU TOUR. Ce n'est pas une photo : c'est ce qui
+se passe.
 
-CE QU'IL NE MONTRE PAS : les gros processus de la machine, et les modeles du disque qui ne servent a
-aucun de nos outils. Ce n'est pas l'inventaire de la machine, c'est l'etat de LA.
+IL EST UN LECTEUR : il ne repare rien, il n'ouvre rien, il n'ecrit rien. Il ne meurt pas non plus :
+une sonde qui echoue devient une ligne, jamais une trace de pile -- un tableau qui disparait ne vaut
+rien.
 """
 import argparse
 import glob
+import json
 import os
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -33,37 +38,27 @@ DOCTOR = os.path.join(CONF_DIR, "engine", "doctor.sh")
 ENGINE = os.path.join(CONF_DIR, "engine", "engine.sh")
 GGUF = os.environ.get("LA_GGUF_DIR", os.path.expanduser("~/LLM_GGUF"))
 DB = os.environ.get("LA_DB", os.path.join(CONF_DIR, "sessions.db"))
-# LE JOURNAL DU TOUR : LA_LOG_FILE quand une session le pose ; sinon celui que LE PONT tient et que
-# sa route /journal rend au widget. Ne pas lire le bon fichier, c'est dire « pas de journal » alors
-# qu'il y en a un : le tableau nomme donc TOUJOURS le fichier qu'il a lu.
 JOURNAL = os.environ.get("LA_LOG_FILE", "") or os.path.join(ROOT, "work", "journal.jsonl")
 FILTRE = os.path.join(CONF_DIR, "filtre", "famille.bin")
 SPECS = [os.path.join(ROOT, "projects", "la", "spec.yaml"),
          os.path.join(ROOT, "skills", "la", "spec.yaml")]
 VISION = os.path.join(ROOT, "work", "voir.log")
+LARGEUR_DEFAUT = 78
 
-# LES RESIDENTS : l'unite systemd, son port, le chemin de sante. Le nom de la brique porte le meme
-# radical que l'unite (embed.sh -> la-embed). La liste est un CONTRAT : un resident qui nait entre ici.
 RESIDENTS = [("embed", "la-embed.service", 8096, "health"),
              ("rerank", "la-rerank.service", 8095, "health"),
              ("local", "la-local.service", 8088, "health"),
              ("asr", "la-asr.service", 8080, "ready"),
              ("tts", "la-tts.service", 8090, "health")]
-# CE QUI N'EST PAS UN RESIDENT : regarde sans etre compte comme une faute (il nait a la demande).
 APPOINT = [("pont", 8765, "ping", "l'app est eteinte"),
            ("vision", 8091, "health", "il nait a la demande")]
-# LES EXTENSIONS QUI FONT UN MODELE. Un fichier de ces formes, nomme par un de NOS morceaux, est un
-# modele de LA ; le meme nom ailleurs sur le disque n'interesse personne.
 FORMES = r"[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)"
-# LES BRIQUES QUI PORTENT UN MODELE (les residents), et le port sur lequel elles repondent.
 BRIQUES = {"embed": 8096, "rerank": 8095, "local": 8088, "asr": 8080, "tts": 8090}
-# LES PORTEURS QUI PORTENT UN MODELE. board.py est EXCLU : il PARLE des modeles, il n'en charge aucun
-# (le nommer ferait entrer ses propres commentaires dans la liste).
 PORTEURS = ["micro_vision.py", "see_image.py"]
 
 
+# ----------------------------------------------------------------------------- LES OUTILS DE BASE
 def run(cmd, timeout=8):
-    """Rend (code, texte). Un appel qui n'aboutit pas rend (-1, '')."""
     try:
         p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                            timeout=timeout, text=True)
@@ -73,7 +68,6 @@ def run(cmd, timeout=8):
 
 
 def sonde(port, chemin):
-    """Le code HTTP du resident, ou 000 s'il ne repond pas."""
     code, out = run(["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "--max-time", "2",
                      "http://127.0.0.1:%d/%s" % (port, chemin)], timeout=6)
     out = out.strip()[:3]
@@ -81,7 +75,6 @@ def sonde(port, chemin):
 
 
 def vive(unite):
-    """(etat, Mo, pid) d'une unite systemd --user."""
     _, etat = run(["systemctl", "--user", "is-active", unite], timeout=5)
     _, pid = run(["systemctl", "--user", "show", "-p", "MainPID", "--value", unite], timeout=5)
     pid = pid.strip()
@@ -89,9 +82,9 @@ def vive(unite):
     if pid.isdigit() and pid != "0" and os.path.isfile("/proc/%s/status" % pid):
         try:
             with open("/proc/%s/status" % pid, "r") as f:
-                for ligne in f:
-                    if ligne.startswith("VmRSS:"):
-                        mo = int(ligne.split()[1]) // 1024
+                for l in f:
+                    if l.startswith("VmRSS:"):
+                        mo = int(l.split()[1]) // 1024
                         break
         except OSError:
             mo = None
@@ -108,15 +101,46 @@ def poids(o):
     return "%d Ko" % (o // 1024)
 
 
-# ---------------------------------------------------------------- LES VERIFICATIONS (lecture seule)
+# ------------------------------------------------------------------- LA MISE EN PAGE : UNE LIGNE
+def ligne(etiquette, verdict, note="", largeur=LARGEUR_DEFAUT):
+    """UNE LIGNE QUI NE DEPASSE JAMAIS `largeur`. Elle ne se replie pas : ce qui ne rentre pas est
+    retire dans l'ordre du moins utile -- la queue de la note, puis la note, puis l'etiquette. Le
+    VERDICT, lui, reste toujours entier : c'est ce qu'on est venu lire."""
+    def batir(et, ve, no, points=True):
+        if points:
+            reste = ve if not no else "%s   %s" % (ve, no)
+            tete = "  %s " % et
+            n = largeur - len(tete) - len(reste) - 1
+            if n >= 1:
+                return tete + "." * n + " " + reste
+        return "  %s %s%s" % (et, ve, ("   " + no) if no else "")
+
+    l = batir(etiquette, verdict, note)
+    if len(l) <= largeur:
+        return l
+    if note:                                    # 1. la note perd sa queue
+        place = largeur - len("  %s " % etiquette) - len(verdict) - 4
+        if place >= 6:
+            l = batir(etiquette, verdict, note[:place].rstrip() + "~")
+            if len(l) <= largeur:
+                return l
+        l = batir(etiquette, verdict, "", points=False)
+        if len(l) <= largeur:
+            return l
+    place = largeur - len(verdict) - 4          # 2. l'etiquette se coupe, le verdict reste entier
+    if place > 8:
+        return "  %s %s" % (etiquette[:place - 1].rstrip() + "~", verdict)
+    return ("%s %s" % (etiquette, verdict))[:largeur]
+
+
+# ---------------------------------------------------------------------------------- LES SONDES
 def lire_residents():
     out = []
     for nom, unite, port, chemin in RESIDENTS:
         etat, mo, _ = vive(unite)
         code = sonde(port, chemin) if etat == "active" else "000"
         faute = etat != "active" or code == "000"
-        motif = ("il ne tourne pas (%s)" % etat) if etat != "active" else (
-            "il tourne mais ne repond pas" if code == "000" else "")
+        motif = ("eteint (%s)" % etat) if etat != "active" else ("muet" if code == "000" else "")
         out.append((nom, port, etat, code, mo, faute, motif))
     return out
 
@@ -130,14 +154,13 @@ def lire_appoints():
 
 
 def lire_registre():
-    """{nom du tool: id} -- lu a la seule source, le registre."""
     m = {}
     if not os.path.isfile(TABLE):
         return m
     ident = None
     with open(TABLE, "r", errors="replace") as f:
-        for ligne in f:
-            s = ligne.strip()
+        for l in f:
+            s = l.strip()
             if s.startswith("- id:"):
                 ident = s[5:].strip()
             elif s.startswith("tool:") and ident:
@@ -146,8 +169,6 @@ def lire_registre():
 
 
 def _modeles_dans(chemin):
-    """Les noms de modeles nommes dans un fichier, NORMALISES : sans le tiret de l'option, sans
-    les points de tete, et SANS DOUBLON (la brique ecrit « MODEL=-X.gguf » et « -m X.gguf »)."""
     try:
         with open(chemin, "r", errors="replace") as f:
             trouves = re.findall(FORMES, f.read())
@@ -164,9 +185,6 @@ def _modeles_dans(chemin):
 
 
 def taille_de(nom, pid=None):
-    """La taille du modele, cherchee dans l'ordre : le dossier de travail du resident qui le porte
-    (son cwd + le nom, puis son cwd + models/), le dossier des modeles, le filtre du projet. Rien
-    d'autre : un modele qu'on ne trouve pas se DIT introuvable, il ne se devine pas."""
     pistes = []
     if pid and pid.isdigit() and os.path.isdir("/proc/%s" % pid):
         try:
@@ -184,48 +202,40 @@ def taille_de(nom, pid=None):
 
 
 def lire_modeles():
-    """Les modeles LIES A NOS MORCEAUX : (nom, taille, qui, charge). Rien d'autre du disque."""
-    trouve = {}   # nom -> (qui, charge, pid) -- le pid sert a retrouver le fichier par son cwd
+    trouve = {}
 
     def poser(nom, qui, charge, pid=None):
         if nom not in trouve or charge:
             trouve[nom] = (qui, charge, pid)
 
-    # 1. LES BRIQUES DES RESIDENTS : le modele est CHARGE tant que l'unite tourne (mesure, pas
-    #    declaration : c'est l'etat du service qui le dit).
     for radical, port in sorted(BRIQUES.items()):
         etat, _, pid = vive("la-%s.service" % radical)
         for nom in _modeles_dans(os.path.join(CONF_DIR, "engine", "%s.sh" % radical)):
-            poser(nom, "%s (%s)" % (radical, port), etat == "active", pid)
-    # 2. LES CORPS DES OUTILS : ils nomment le modele qu'ils chargent a l'appel.
+            poser(nom, "%s %s" % (radical, port), etat == "active", pid)
     ids = lire_registre()
     for f in sorted(glob.glob(os.path.join(ROOT, "config", "tools", "*", "tool_*.yaml"))):
         nom_tool = os.path.basename(f)[len("tool_"):-len(".yaml")]
         for nom in _modeles_dans(f):
-            poser(nom, "%s (%s)" % (nom_tool, ids.get(nom_tool, "?")), False)
-    # 3. LES PORTEURS : le modele vit dans le python qui le sert.
+            poser(nom, "%s %s" % (nom_tool, ids.get(nom_tool, "?")), False)
     for f in PORTEURS:
         for nom in _modeles_dans(os.path.join(ROOT, "config", "py", f)):
             poser(nom, f, False)
-    # 4. LE FILTRE DE FAMILLE : le modele qu'ON a appris, et qui se refait en 60 ms.
     if os.path.isfile(FILTRE):
-        poser("famille.bin", "filtre de famille (223/224)", False)
-
-    lignes = [(nom, taille_de(nom, pid), qui, charge) for nom, (qui, charge, pid) in trouve.items()]
-    # CE QUI EST CHARGE D'ABORD : c'est ce qui coute, et c'est ce qu'on vient regarder.
-    lignes.sort(key=lambda x: (not x[3], x[2], x[0]))
+        poser("famille.bin", "filtre 223/224", False)
+    lignes = [(nom, taille_de(nom, pid), qui, charge)
+              for nom, (qui, charge, pid) in trouve.items()]
+    lignes.sort(key=lambda x: (not x[3], x[2]))
     return lignes
 
 
 def lire_table():
-    """(ids, corps, manquants, doublons)"""
     ids, manquants, doublons = [], [], []
     if not os.path.isfile(TABLE):
         return None
     vus = set()
     with open(TABLE, "r", errors="replace") as f:
-        for ligne in f:
-            s = ligne.strip()
+        for l in f:
+            s = l.strip()
             if s.startswith("- id:"):
                 i = s[5:].strip()
                 if i in vus:
@@ -245,17 +255,17 @@ def lire_canon():
         return {"chemin": None}
     lois, sections, longs, numeros, doublons = 0, 0, 0, [], []
     with open(chemin, "r", errors="replace") as f:
-        for ligne in f:
-            if ligne.startswith("SECTION : "):
+        for l in f:
+            if l.startswith("SECTION : "):
                 sections += 1
-            elif ligne.startswith("  ") and ":" in ligne:
-                tete = ligne.split(":")[0].strip()
+            elif l.startswith("  ") and ":" in l:
+                tete = l.split(":")[0].strip()
                 if tete.isdigit():
                     lois += 1
                     if tete in numeros:
                         doublons.append(tete)
                     numeros.append(tete)
-            if len(ligne.rstrip("\n")) > 100:
+            if len(l.rstrip("\n")) > 100:
                 longs += 1
     suivi = run(["git", "-C", ROOT, "ls-files", "--error-unmatch", chemin], timeout=6)[0] == 0
     return {"chemin": chemin, "lois": lois, "sections": sections, "longs": longs,
@@ -269,22 +279,19 @@ def lire_doctor():
     verd = []
     for brut in out.splitlines():
         s = brut.strip()
-        if not s:
-            continue
-        mot = s.split()[0]
-        if mot in ("ok", "fail", "FAULT", "FAUTE", "note"):
-            verd.append((mot, s[len(mot):].strip()))
+        if s:
+            mot = s.split()[0]
+            if mot in ("ok", "fail", "FAULT", "FAUTE", "note"):
+                verd.append((mot, s[len(mot):].strip()))
     return verd
 
 
 def lire_engine():
-    """LE MOTEUR REPOND-IL ? On lui demande une chose vraie et pas chere : lire un dossier."""
+    """TOUJOURS DEUX VALEURS : un booleen nu ferait tomber l'appelant."""
     if not os.path.isfile(ENGINE):
-        return False, "engine.sh est absent"
+        return False, -1
     code, out = run(["sh", ENGINE, "104", "config"], timeout=30)
-    if '"status":"ok"' in out or '"status": "ok"' in out:
-        return True, "un tool a rendu sa forme (104 list_dir config)"
-    return False, " ".join(out.split())[:120] or "aucune forme rendue"
+    return ('"status":"ok"' in out or '"status": "ok"' in out), code
 
 
 def lire_git():
@@ -300,21 +307,21 @@ def lire_trafic():
     t = {}
     if os.path.isfile(CONF):
         prov = None
-        actif = False
         with open(CONF, "r", errors="replace") as f:
-            for ligne in f:
-                s = ligne.strip()
+            for l in f:
+                s = l.strip()
                 if s.startswith("- provider:"):
-                    prov, actif = s.split(":", 1)[1].strip(), False
+                    prov = s.split(":", 1)[1].strip()
                 elif s.startswith("alias:"):
-                    t["alias" if False else "alias_tmp"] = s.split(":", 1)[1].strip()
+                    t["alias_tmp"] = s.split(":", 1)[1].strip()
                 elif s.startswith("post:"):
                     t["post_tmp"] = s.split(":", 1)[1].strip()
                 elif s.startswith("model:"):
                     t["model_tmp"] = s.split(":", 1)[1].strip()
                 elif s.startswith("active:") and "true" in s and prov:
-                    t["adresse"] = (prov, t.pop("alias_tmp", "-"), t.get("model_tmp", "?"),
+                    t["adresse"] = (prov, t.get("alias_tmp", "-"), t.get("model_tmp", "?"),
                                     t.get("post_tmp", "?"))
+                    break
     if "adresse" in t:
         code, _ = run(["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "--max-time", "8",
                        "-X", "HEAD", t["adresse"][3]], timeout=12)
@@ -323,49 +330,86 @@ def lire_trafic():
         _, a = run(["sqlite3", DB, "SELECT COUNT(*) FROM messages;"], timeout=6)
         _, b = run(["sqlite3", DB, "SELECT COALESCE(MAX(exchange),0) FROM messages;"], timeout=6)
         _, c = run(["sqlite3", DB, "SELECT ts FROM messages ORDER BY id DESC LIMIT 1;"], timeout=6)
-        _, d = run(["sqlite3", DB, "SELECT role || ' : ' || substr(content,1,70) FROM messages "
-                                   "WHERE content <> '' ORDER BY id DESC LIMIT 1;"], timeout=6)
         t["sessions"] = (a.strip() or "?", b.strip() or "?")
         t["quand"] = c.strip()
-        t["dernier"] = " ".join(d.split())
-    if JOURNAL:
-        if os.path.isfile(JOURNAL):
-            _, echecs = run(["grep", "-c", "echec de transport", JOURNAL], timeout=6)
-            t["journal"] = (os.path.getsize(JOURNAL), echecs.strip() or "0")
-        else:
-            t["journal_absent"] = JOURNAL
+    if os.path.isfile(JOURNAL):
+        _, echecs = run(["grep", "-c", "echec de transport", JOURNAL], timeout=6)
+        t["journal"] = (os.path.getsize(JOURNAL), echecs.strip() or "0")
+    elif JOURNAL:
+        t["journal_absent"] = JOURNAL
     if os.path.isfile(VISION):
-        _, n = run(["grep", "-c", "", VISION], timeout=6)
-        t["vision_log"] = (os.path.getsize(VISION), n.strip() or "0")
+        t["vision_log"] = os.path.getsize(VISION)
     return t
 
 
+def lire_tour():
+    """CE QUI TRANSITE : les derniers appels du journal du tour (JSONL). C'est la partie VIVANTE --
+    ce que LA vient de demander, a la seconde."""
+    if not os.path.isfile(JOURNAL):
+        return []
+    code, out = run(["tail", "-n", "120", JOURNAL], timeout=6)
+    if code != 0:
+        return []
+    lus = []
+    for l in out.splitlines():
+        l = l.strip()
+        if not l.startswith("{"):
+            continue
+        try:
+            o = json.loads(l)
+        except ValueError:
+            continue
+        if not isinstance(o, dict):
+            continue
+        appel = o.get("tool_call") or {}
+        fonc = appel.get("function") or {}
+        nom = fonc.get("name") or appel.get("type") or "?"
+        args = fonc.get("arguments") or o.get("la") or ""
+        # « la » est le porteur : ce qui compte, c'est CE QU'IL DEMANDE (g = l'id du tool, a = ses
+        # arguments). Un journal qui ne dit que « la » ne dit rien.
+        detail = ""
+        if isinstance(args, str) and args.strip().startswith("{"):
+            try:
+                d = json.loads(args)
+                if isinstance(d, dict) and ("g" in d or "a" in d):
+                    detail = "g=%s a=%s" % (d.get("g", "?"), d.get("a", ""))
+            except ValueError:
+                detail = ""
+        elif isinstance(args, dict):
+            detail = "g=%s a=%s" % (args.get("g", "?"), args.get("a", ""))
+        lus.append((str(o.get("ts", ""))[11:19], "n°%s" % str(o.get("turn", "?")), str(nom),
+                    detail or str(args)[:60]))
+    return lus[-4:]
+
+
 def lire_machine():
-    """La machine, en trois lignes : la RAM, les cartes, le disque. PAS la liste des processus."""
     m = {}
     _, mo = run(["free", "-m"], timeout=6)
-    for ligne in mo.splitlines():
-        if ligne.startswith("Mem:"):
-            p = ligne.split()
+    for l in mo.splitlines():
+        if l.startswith("Mem:"):
+            p = l.split()
             if len(p) >= 7:
                 m["ram"] = (int(p[2]), int(p[1]), int(p[6]))
-        elif ligne.startswith(("Swap:", "Echange:")):
-            p = ligne.split()
+        elif l.startswith(("Swap:", "Echange:")):
+            p = l.split()
             if len(p) >= 3:
                 m["echange"] = int(p[2])
     _, gpu = run(["nvidia-smi", "--query-gpu=name,memory.used,memory.total,utilization.gpu",
                   "--format=csv,noheader"], timeout=8)
-    m["cartes"] = [l.strip() for l in gpu.splitlines() if l.strip()]
+    m["cartes"] = []
+    for l in gpu.splitlines():
+        p = [x.strip() for x in l.split(",")]
+        if len(p) == 4:
+            m["cartes"].append((" ".join(p[0].split()[-2:]), p[1], p[2], p[3]))
     _, df = run(["df", "-h", ROOT], timeout=6)
-    for ligne in df.splitlines()[1:2]:
-        p = ligne.split()
+    for l in df.splitlines()[1:2]:
+        p = l.split()
         if len(p) >= 5:
             m["disque"] = (p[5], p[2], p[1], p[3])
     return m
 
 
 def depuis(ts):
-    """« il y a 6 min » a partir d'un horodatage de la base."""
     if not ts:
         return ""
     try:
@@ -376,219 +420,221 @@ def depuis(ts):
     if d < 0:
         return ""
     if d < 90:
-        return "il y a %d s" % d
+        return "il y a %ds" % d
     if d < 5400:
-        return "il y a %d min" % (d // 60)
-    return "il y a %d h" % (d // 3600)
+        return "il y a %dmin" % (d // 60)
+    return "il y a %dh" % (d // 3600)
 
 
-# ------------------------------------------------------------------------------------ LA MISE EN PAGE
-def ligne_vue(x, largeur=22):
-    """UNE LIGNE DE CONTROLE : « etiquette ...... verdict »."""
-    etiquette, verdict, faute = x
-    return "  %s %s %s" % (etiquette, "." * max(2, largeur - len(etiquette)), verdict)
-
-
-def ligne_corps(label, verdict, largeur=22, note=""):
-    return "  %s %s %s%s" % (label, "." * max(2, largeur - len(label)), verdict,
-                             ("   " + note) if note else "")
-
-
+# --------------------------------------------------------------------------------- LE CONTROLE
 def controle():
-    """LA LISTE DE CONTROLE : la premiere chose qu'on lit. Rend tout ce dont la suite a besoin."""
     res = lire_residents()
     appoints = lire_appoints()
     table = lire_table()
     canon = lire_canon()
     docteur = lire_doctor()
     trafic = lire_trafic()
-    ok_engine, dit_engine = lire_engine()
+    ok_engine = lire_engine()[0]
     non_commite, rev = lire_git()
 
-    L = []
-    L.append(("engine", "ok" if ok_engine else "il ne repond pas", not ok_engine))
-    if table is None:
-        L.append(("table", "ABSENTE", True))
-    else:
-        L.append(("table", "%d ids / %d corps" % (table[0], table[1]), bool(table[2] or table[3])))
+    fautes = [r[6] for r in res if r[5]]
+    if table is not None:
+        fautes += ["sans corps : " + n for n in table[2]] + ["id double : " + n for n in table[3]]
+    if docteur:
+        fautes += [x[1] for x in docteur if x[0] in ("fail", "FAULT", "FAUTE")]
     if canon.get("chemin") is None:
-        L.append(("canon", "INTROUVABLE", True))
+        fautes.append("le canon est introuvable")
+
+    L = []
+    L.append(("LA status", "clear" if not fautes else "%d defaut(s)" % len(fautes), bool(fautes)))
+    L.append(("engine", "ok" if ok_engine else "ne repond pas", not ok_engine))
+    if table is None:
+        L.append(("table", "absente", True))
     else:
+        L.append(("table", "%d/%d" % (table[0], table[1]), bool(table[2] or table[3])))
+    if canon.get("chemin"):
         L.append(("canon", "%d lois / %d sections" % (canon["lois"], canon["sections"]),
                   bool(canon["doublons"] or canon["longs"])))
-    etat_git = ("suivi" if canon.get("suivi") else "HORS DEPOT")
-    if non_commite is not None:
-        etat_git += " / %d non commite(s)" % non_commite
+    etat_git = "suivi" if canon.get("suivi") else "hors depot"
+    if non_commite:
+        etat_git += " / %d non commite" % non_commite
     if rev:
         etat_git += " @%s" % rev
     L.append(("git", etat_git, canon.get("chemin") is not None and not canon["suivi"]))
     if docteur is None:
         L.append(("doctor", "absent", True))
-        nko = 0
     else:
         nko = len([x for x in docteur if x[0] in ("fail", "FAULT", "FAUTE")])
-        nok = len([x for x in docteur if x[0] == "ok"])
-        nno = len([x for x in docteur if x[0] == "note"])
-        L.append(("doctor", "%d ok / %d defaut / %d note" % (nok, nko, nno), nko > 0))
-    fautes = [r[6] for r in res if r[5]]
-    if table is not None:
-        fautes += ["corps manquant : " + n for n in table[2]]
-        fautes += ["id en double : " + n for n in table[3]]
-    if docteur:
-        fautes += [x[1] for x in docteur if x[0] in ("fail", "FAULT", "FAUTE")]
+        L.append(("doctor", "%d ok / %d defaut" % (len([x for x in docteur if x[0] == "ok"]), nko),
+                  nko > 0))
     L.append(("erreurs", str(len(fautes)), bool(fautes)))
     actifs = len([r for r in res if not r[5]])
-    L.append(("residents", "%d / %d actifs" % (actifs, len(res)), actifs != len(res)))
-    mo_la = sum(r[4] for r in res if r[4])
-    L.append(("ram de LA", "%d Mo" % mo_la, False))
+    L.append(("residents", "%d/%d actifs" % (actifs, len(res)), actifs != len(res)))
+    L.append(("ram de LA", "%d Mo" % sum(r[4] for r in res if r[4]), False))
     if "adresse" in trafic:
         prov, alias, mod, post = trafic["adresse"]
-        L.append(("api", "%s (%s) : %s" % (prov, alias or "-", mod), False))
+        L.append(("api", "%s : %s" % (prov, mod), False))
         L.append(("endpoint", post, False))
         muet = trafic.get("joignable") == "000"
-        L.append(("api status", "PAS DE REPONSE" if muet else "connected", muet))
-    else:
-        L.append(("api", "aucune adresse active dans la_config", True))
+        L.append(("api status", "pas de reponse" if muet else "connected", muet))
     if trafic.get("sessions"):
-        L.append(("sessions", "%s messages / dernier echange n° %s" % trafic["sessions"], False))
+        L.append(("sessions", "%s echanges / derniere n° %s" % (trafic["sessions"][1],
+                                                                trafic["sessions"][0]), False))
     if trafic.get("quand"):
-        L.append(("last_activity", "%s (%s)" % (trafic["quand"], depuis(trafic["quand"])), False))
+        L.append(("last_activity", "%s %s" % (trafic["quand"][:19], depuis(trafic["quand"])), False))
     if "journal" in trafic:
         taille, echecs = trafic["journal"]
-        L.append(("journal", "%s / %s echec(s) de transport" % (poids(taille), echecs),
-                  echecs not in ("0", "")))
+        L.append(("journal", "%s / %s echec" % (poids(taille), echecs), echecs not in ("0", "")))
     elif "journal_absent" in trafic:
-        L.append(("journal", "annonce mais absent (%s)" % trafic["journal_absent"], True))
-    else:
-        L.append(("journal", "LA_LOG_FILE n'est pas pose", False))
-    if "vision_log" in trafic:
-        L.append(("vision (journal)", "%s / %s ligne(s)" % (poids(trafic["vision_log"][0]),
-                                                            trafic["vision_log"][1]), False))
+        L.append(("journal", "annonce mais absent", True))
     for nom, port, code, mot, muet in appoints:
-        L.append((nom, ("muet (%s)" % mot) if muet else ("repond " + code), False))
-    return L, fautes, res, appoints, table, canon, docteur, trafic, lire_modeles(), lire_machine()
+        L.append((nom, "muet" if muet else "repond " + code, False))
+    return L, fautes, res, appoints, table, canon, docteur, trafic
 
 
-def sections(res, appoints, table, canon, docteur, trafic, modeles, machine):
-    """Le tableau d'apres : les residents, les modeles DE LA, la machine. UNE COLONNE."""
-    out = ["LES RESIDENTS"]
-    for nom, port, etat, code, mo, faute, motif in res:
-        out.append(ligne_corps("%s :%d" % (nom, port), "!!" if faute else "ok", 20,
-                               ("%d Mo" % mo) if mo else ("- " + motif if motif else "-")))
-    for nom, port, code, mot, muet in appoints:
-        out.append(ligne_corps("%s :%d" % (nom, port), "--" if muet else "ok", 20,
-                               mot if muet else code))
+# ------------------------------------------------------------------------------------ LE TABLEAU
+def sections(largeur):
+    L, fautes, res, appoints, table, canon, docteur, trafic = controle()
+    out = [ligne(x[0], x[1], "", largeur) for x in L]
+
+    out.append("")
+    out.append("CE QUI TRANSITE")
+    tour = lire_tour()
+    if not tour:
+        out.append("  le journal est muet (aucun appel enregistre)")
+    for ts, n, nom, detail in tour:
+        out.append(ligne("%s  %s" % (ts or "--:--:--", n), nom, detail, largeur))
+
     out.append("")
     out.append("LES MODELES DE LA")
+    modeles = lire_modeles()
     if not modeles:
-        out.append("  aucun : aucun de nos morceaux ne nomme de modele")
+        out.append("  aucun : nos morceaux n'en nomment aucun")
     for nom, taille, qui, charge in modeles:
-        out.append(ligne_corps(qui, "CHARGE" if charge else "a la demande", 34,
-                               "%s   %s" % (poids(taille), nom)))
+        out.append(ligne(nom, "CHARGE" if charge else "repos", "%s   %s" % (poids(taille), qui),
+                         largeur))
+    nch = len([m for m in modeles if m[3]])
+    out.append("  %d modeles : %d en memoire, %d a l'appel" % (len(modeles), nch, len(modeles) - nch))
+
+    machine = lire_machine()
     out.append("")
     out.append("LA MACHINE")
     if "ram" in machine:
         u, tot, lib = machine["ram"]
-        out.append(ligne_corps("ram", "%d / %d Mo" % (u, tot), 20,
-                               "(%d disponibles, echange %d Mo)" % (lib, machine.get("echange", 0))))
-    for c in machine.get("cartes", []):
-        p = [x.strip() for x in c.split(",")]
-        if len(p) == 4:
-            out.append(ligne_corps("carte", "%s : %s / %s (%s)" % (p[0], p[1], p[2], p[3]), 20))
+        out.append(ligne("ram", "%d/%d Mo" % (u, tot), "%d dispo" % lib, largeur))
+    for nom, use, tot, pc in machine.get("cartes", []):
+        out.append(ligne("carte", "%s %s/%s" % (nom, use.split()[0], tot.split()[0]), pc, largeur))
     if "disque" in machine:
         d = machine["disque"]
-        out.append(ligne_corps("disque", "%s : %s / %s" % (d[0], d[1], d[2]), 20,
-                               "(%s libres)" % d[3]))
-    return out
+        out.append(ligne("disque", "%s %s/%s" % (d[0], d[1], d[2]), "%s libres" % d[3], largeur))
+    return out, fautes
 
 
-def batir():
-    """Le tableau vivant. Rend (renderable, nombre de defauts)."""
-    L, fautes, res, appoints, table, canon, docteur, trafic, modeles, machine = controle()
-    corps = [ligne_vue(x) for x in L] + [""] + sections(res, appoints, table, canon, docteur,
-                                                       trafic, modeles, machine)
+def une_ligne():
+    """LE BOUTON : une seule ligne courte, pour un panneau ou un widget."""
+    L, fautes, *_ = controle()
+    d = dict((x[0], x[1]) for x in L)
+    return "LA %s | %s | table %s | api %s" % (d.get("LA status", "?"), d.get("residents", "?"),
+                                               d.get("table", "?"), d.get("api status", "?"))
+
+
+SIGNE = {"change": False}
+
+
+def _sigwinch(sig, cadre):
+    SIGNE["change"] = True
+
+
+def dessiner(largeur):
+    """Le tableau en rich. Rend (None, 0) si rich manque : l'appelant rend alors le texte plat."""
     try:
         from rich import box
         from rich.console import Console, Group
         from rich.panel import Panel
         from rich.text import Text
         Console()
-        riche = True
     except ImportError:
-        riche = False
-
-    if not riche:
-        from types import SimpleNamespace
-        return SimpleNamespace(texte="\n".join(corps)), len(fautes)
-
-    tete = Text("LA — LE TABLEAU", style="bold white")
-    sous = Text("%s UTC   ·   %s" % (time.strftime("%H:%M:%S", time.gmtime()), ROOT), style="dim")
-    verd = Text("TOUT EST EN PLACE" if not fautes else "%d DEFAUT%s" %
-                (len(fautes), "S" if len(fautes) > 1 else ""),
-                style="bold white on dark_green" if not fautes else "bold white on dark_red")
+        return None, 0
+    out, fautes = sections(largeur)
     rendu = []
-    for l in corps:
-        if l.startswith("LES ") or l.startswith("LA MACHINE"):
+    for l in out:
+        if l.startswith(("CE QUI", "LES ", "LA ")):
             rendu.append(Text(l, style="bold cyan"))
-        elif " !! " in l or l.rstrip().endswith("!!"):
-            rendu.append(Text(l, style="red"))
-        elif not l.strip():
-            rendu.append(Text(""))
+        elif l.rstrip().endswith("!!") or " !! " in l or "defaut(s)" in l:
+            rendu.append(Text(l, style="bold red"))
+        elif l.lstrip().startswith("LA status") and "clear" in l:
+            rendu.append(Text(l, style="green"))
         else:
-            rendu.append(Text(l, style=""))
-    pied = []
-    if fautes:
-        pied.append(Text("ce qu'il faut regarder :", style="bold red"))
-        for f in fautes:
-            pied.append(Text("  - " + str(f)[:110], style="red"))
-    return Group(Panel(Group(tete, sous, Text(""), verd), border_style="cyan", box=box.ROUNDED),
-                 Panel(Group(*rendu), border_style="blue", box=box.ROUNDED),
-                 Panel(Group(*pied), border_style="red", box=box.ROUNDED)
-                 if fautes else Text("")), len(fautes)
+            rendu.append(Text(l))
+    tete = Text("LA — LE TABLEAU", style="bold white")
+    sous = Text("%s UTC  ·  %d colonnes" % (time.strftime("%H:%M:%S", time.gmtime()), largeur),
+                style="dim")
+    return Group(Panel(Group(tete, sous), border_style="cyan", box=box.ROUNDED),
+                 Panel(Group(*rendu), border_style="blue", box=box.ROUNDED)), fautes
 
 
 def main():
-    ap = argparse.ArgumentParser(description="le tableau de LA : ce qui est charge, et ce qui ne va pas")
+    ap = argparse.ArgumentParser(description="le tableau de LA : ce qui est charge, et ce qui se passe")
     ap.add_argument("--once", action="store_true", help="une passe, puis il sort (code = defauts)")
+    ap.add_argument("--line", action="store_true", help="une ligne pour un bouton de panneau")
     ap.add_argument("--watch", type=float, default=3.0, help="secondes entre deux dessins")
+    ap.add_argument("--largeur", type=int, default=0, help="largeur forcee (defaut : le terminal)")
     a = ap.parse_args()
 
+    if a.line:
+        print(une_ligne())
+        return 0
+
     if a.once:
-        L, fautes, res, appoints, table, canon, docteur, trafic, modeles, machine = controle()
-        for x in L:
-            print(ligne_vue(x))
-        print("")
-        for l in sections(res, appoints, table, canon, docteur, trafic, modeles, machine):
-            print(l)
+        largeur = a.largeur or int(os.environ.get("COLUMNS") or 0) or LARGEUR_DEFAUT
+        out, fautes = sections(largeur)
+        print("\n".join(out))
         return 1 if fautes else 0
 
     try:
         from rich.console import Console
         from rich.live import Live
     except ImportError:
-        print("board: rich est absent : le tableau ne peut pas s'animer (--once rend encore le texte).")
+        print("board: rich est absent (--once et --line rendent encore le texte).")
         return 2
+    try:
+        signal.signal(signal.SIGWINCH, _sigwinch)
+    except (ValueError, AttributeError, OSError):
+        pass
     console = Console()
-    # LA LISTE DE CONTROLE D'ABORD, LIGNE A LIGNE : c'est le chargeur qu'on regarde ouvrir. Puis le
-    # tableau prend la place et se redessine tout seul. screen=False : il se redessine SUR PLACE et
-    # n'efface RIEN -- la liste de controle reste lisible dans le defile au-dessus.
-    L, fautes, *_ = controle()
-    for x in L:
-        console.print(ligne_vue(x)[:110], style="bold red" if x[2] else None)
-    console.print("")
-    with Live(console=console, refresh_per_second=4, screen=False) as vivant:
+    largeur = a.largeur or console.width or LARGEUR_DEFAUT
+    # LE CHARGEUR : la liste de controle s'imprime ligne a ligne, puis le tableau prend la place.
+    try:
+        L, *_ = controle()
+        for x in L:
+            console.print(ligne(x[0], x[1], "", largeur - 1)[:largeur],
+                          style="bold red" if x[2] else None)
+        console.print("")
+    except Exception as e:
+        console.print("  le controle a echoue : %s" % e, style="red")
+    with Live(console=console, refresh_per_second=4, screen=False,
+              vertical_overflow="crop") as vivant:
         while True:
             try:
-                panneau, _ = batir()
-                if hasattr(panneau, "texte"):
-                    console.print(panneau.texte)
+                largeur = a.largeur or console.width or LARGEUR_DEFAUT
+                panneau = dessiner(largeur - 1)
+                if panneau is None or panneau[0] is None:
+                    console.print("\n".join(sections(largeur - 1)[0]))
                 else:
-                    vivant.update(panneau)
-                time.sleep(a.watch)
-            except KeyboardInterrupt:
-                break
+                    vivant.update(panneau[0])
+            except Exception as e:
+                # UN TABLEAU QUI DISPARAIT NE VAUT RIEN : l'erreur devient une ligne, jamais une mort.
+                console.print("  le tableau a echoue : %s" % e, style="red")
+            SIGNE["change"] = False
+            t = 0.0
+            while t < a.watch and not SIGNE["change"]:
+                time.sleep(0.25)
+                t += 0.25
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(0)
