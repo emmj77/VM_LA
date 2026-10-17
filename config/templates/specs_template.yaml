@@ -5,7 +5,6 @@
 id: "{{name}}"
 created: "{{date}}"
 last_revision: "{{date}}"
-source: human
 version: "{{version}}"
 Rules:
   lines_per_section: 100   # LE MAXIMUM de lignes dans une section

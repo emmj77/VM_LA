@@ -1,5 +1,4 @@
 skill: "{{name}}"            # le nom de la skill
-source: humain               # qui a le DROIT d'ecrire ce fichier
 date: "{{date}}"             # la date de pose
 tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE la skill, et ouvre ses tools
 
@@ -14,8 +13,8 @@ RULES:                       # sous SUMMARY : les lois que le HARNESS applique
 TOOLS:                       # les tools que ce skill ouvre, et eux seuls (200 a 299)
   200: "..."              # une ligne, un nom de tool
   201: "..."
-DOCS:                        # le moyen d'appeler la source : un TOOL, par son nom
-  300: "load_doc"            # le chemin, c'est le moteur qui le resout
+DOCS:                        # la source : le NOM d un fichier, OU d un dossier (sans chemin)
+  300: "..."                 # le modele le cherche et lit le seul fichier utile ; sinon "web_search"
 PLAN:                        # 20 lignes au plus, DEUX par tache (400 a 419)
   400: "tache : ..."         # une tache par pas de deux
   401: "etat : todo | in_progress | done"
