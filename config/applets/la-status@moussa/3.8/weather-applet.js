@@ -18364,12 +18364,34 @@ const DOSSIER_ICONES = imports.gi.GLib.get_home_dir()
                      + "/.local/share/cinnamon/applets/la-status@moussa/icons/";
 
 function LireLesMesures() {
+    // LA LECTURE NE PASSE PLUS PAR Util.spawn_async. Ce lanceur ne rappelle QUE si la commande sort
+    // en 0 ; or le tableau sort en 1 des qu'une mesure est en faute, et c'est son role. Sa sortie
+    // n'arrivait donc jamais des qu'un service tombait : la promesse restait en attente, l'applet se
+    // figeait et le journal disait « Refreshing timed out, skipping this cycle ». Ici on lit la
+    // sortie meme quand le code de sortie est mauvais, et un garde-fou rend la main au bout de dix
+    // secondes pour que l'applet ne puisse plus jamais se figer.
     return new Promise((ok) => {
-        Util.spawn_async([CHEMIN_TABLEAU, "--menu"], (sortie) => {
+        let fini = false;
+        const rendre = (sortie) => {
+            if (fini) return;
+            fini = true;
             ok(String(sortie || "").split("\n").filter((l) => l.split("|").length === 4)
                  .map((l) => { const c = l.split("|");
                                return { etat: c[0], titre: c[1], nom: c[2], valeur: c[3] }; }));
-        });
+        };
+        try {
+            const Gio = imports.gi.Gio;
+            const proc = Gio.Subprocess.new([CHEMIN_TABLEAU, "--menu"],
+                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE);
+            proc.communicate_utf8_async(null, null, (source, res) => {
+                try { const [, sortie] = source.communicate_utf8_finish(res); rendre(sortie); }
+                catch (e) { rendre(""); }
+            });
+        } catch (e) { rendre(""); }
+        try {
+            imports.gi.GLib.timeout_add(imports.gi.GLib.PRIORITY_DEFAULT, 10000,
+                () => { rendre(""); return imports.gi.GLib.SOURCE_REMOVE; });
+        } catch (e) { }
     });
 }
 
@@ -18394,8 +18416,9 @@ class LA {
             const rien = mesures.length === 0;
             const icone = fautes > 0 ? "la-disabled"
                                      : (rien ? "la-inconnu" : "la-actif");
-            const etat = fautes > 0 ? fautes + (fautes > 1 ? " fautes" : " faute")
-                                    : (rien ? "?" : (fautes ? "disabled" : "actif"));
+            // LE MOT DE LA BARRE : « Actif » ou « Disabled », jamais un compte de fautes -- le
+            // detail est deja dans le menu, mot a mot.
+            const etat = fautes > 0 ? "Disabled" : (rien ? "Inconnu" : "Actif");
             return {
                 date: quand,
                 temperature: null,
@@ -18417,7 +18440,7 @@ class LA {
                         main: m.nom + " : " + m.valeur,
                         description: m.nom + " : " + m.valeur,
                         icons: [m.etat === "ko" ? "la-disabled" : "la-actif"],
-                        customIcon: "la-actif"
+                        customIcon: m.etat === "ko" ? "la-disabled" : "la-actif"
                     }
                 })),
                 hourlyForecasts: []
