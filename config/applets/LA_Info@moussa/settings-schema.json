@@ -1,0 +1,18 @@
+{
+  "tableau": {
+    "type": "entry",
+    "default": "/home/moussa/Documents/VM_LA/config/engine/board.sh",
+    "description": "Le tableau de LA",
+    "tooltip": "L'instrument unique : il rend etat|section|titre|verdict"
+  },
+  "secondes": {
+    "type": "spinbutton",
+    "default": 10,
+    "min": 3,
+    "max": 120,
+    "step": 1,
+    "units": "secondes",
+    "description": "Rafraichissement",
+    "tooltip": "Le tableau coute quelques secondes : dix est raisonnable"
+  }
+}

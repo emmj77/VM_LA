@@ -1,0 +1,6 @@
+/* LA_Info : le style de nos lignes. La pastille devant, le titre a gauche, le verdict a droite. */
+.la-info-titre   { padding-left: 6px; padding-right: 10px; }
+.la-info-verdict { color: #ffffff; font-weight: bold; padding-right: 4px; }
+.la-info-section { color: #9a9a9a; font-size: 0.85em; padding: 8px 4px 2px 4px; }
+.la-info-tete    { color: #ffffff; font-weight: bold; font-size: 1.15em; padding: 8px 4px 4px 4px; }
+.la-info-quand   { color: #9a9a9a; font-size: 0.85em; padding: 4px; }
