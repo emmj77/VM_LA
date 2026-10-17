@@ -21188,6 +21188,15 @@ class WeatherApplet extends TextIconApplet {
         this.SetAppletTooltip(weather, this.config, this.config._tooltipTextOverride);
         this.DisplayWeatherOnLabel(weather);
         this.SetAppletIcon(weather.condition.icons, weather.condition.customIcon);
+        // LA LISTE DU MENU : on la demande POUR NOS MESURES. Le compte de la meteo vient d'un
+        // reglage qui, ici, est vide -- sans cette ligne le menu s'ouvrait SANS AUCUNE LIGNE.
+        try {
+            this.ui.FutureWeather.Rebuild(this.config, this.config.textColorStyle,
+                                          weather.forecasts.length);
+            this.ui.FutureWeather.Display(weather, this.config);
+        } catch (e) {
+            // un menu sans lignes n'est pas une raison de tomber : la barre dit deja l'etat
+        }
         return true;
     }
     DisplayWeatherOnLabel(weather) {
