@@ -21222,9 +21222,10 @@ class WeatherApplet extends TextIconApplet {
                 // DEUX INFORMATIONS PAR LIGNE, A LA PLACE DU JOUR ET DE LA TEMPERATURE : l'etiquette
                 // dans l'emplacement du jour, la valeur dans celui de la temperature. C'est ce qui
                 // fait disparaitre « Aujourd'hui » et le « / °C » de la meteo.
-                // TROIS TEXTES PAR LIGNE : LE TITRE DE SECTION a la place du jour de la meteo
-                // (« Aujourd'hui »), puis notre etiquette, puis notre verdict. Un titre vide (celui
-                // d'une ligne qui suit la meme section) laisse l'emplacement sans texte.
+                // LE TITRE DE LA LIGNE A LA PLACE DU JOUR DE LA METEO (« Aujourd'hui ») : l'etiquette
+                // (Residents, Canon, Pont...), puis notre verdict dans l'emplacement de la
+                // temperature (fini le « / C »). Les titres de section se repetent ligne a ligne et
+                // ne disent rien de plus que la ligne elle-meme : ils ne sont plus affiches.
                 const prevue = weather.forecasts[i];
                 const morceaux = String(prevue.condition.main || "").split(" : ");
                 // LE JOUR DE LA METEO EST UN BOUTON (weather-forecast-day), PAS UN LABEL : poser
@@ -21243,9 +21244,9 @@ class WeatherApplet extends TextIconApplet {
                         for (let n = 0; n < enfants.length; n++) poser(enfants[n]);
                     };
                     try { poser(ligne.Summary.get_parent()); } catch (e) { }
-                })(bloc.forecasts[i], CapitalizeFirstLetter(String(prevue.titre || "")));
-                try { bloc.forecasts[i].Temperature.text = morceaux[0] || ""; } catch (e) { }
-                try { bloc.forecasts[i].Summary.text = morceaux.slice(1).join(" : ") || ""; } catch (e) { }
+                })(bloc.forecasts[i], CapitalizeFirstLetter(morceaux[0] || ""));
+                try { bloc.forecasts[i].Temperature.text = morceaux.slice(1).join(" : ") || ""; } catch (e) { }
+                try { bloc.forecasts[i].Summary.text = ""; } catch (e) { }
                 try {
                     bloc.forecasts[i].Icon.set_gicon(
                         imports.gi.Gio.icon_new_for_string(DOSSIER_ICONES + dessin + ".svg"));
