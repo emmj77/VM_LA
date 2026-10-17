@@ -1,20 +1,74 @@
-# QUI : flattens a .kra to png/jpg, resizable
-# ORIGINE : migre tel quel de la ligne 163 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
-# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+# QUI : aplatit un .kra en PNG (ou JPG), sur fond blanc ou transparent, et le redimensionne si on le
+#   demande. Un .kra est un zip : Krita y range l'image APLATIE de tout le document dans
+#   mergedimage.png, a la taille du document (le petit, c'est preview.png). Donc ni Krita ni python
+#   ne sont necessaires pour aplatir un dessin.
+# REFUSE : (1) la source absente ; (2) autre chose qu'un .kra ; (3) un .kra sans mergedimage.png ;
+#   (4) l'absence d'unzip, de ffprobe ou de ffmpeg quand l'option choisie les demande.
+# ORIGINE : reecrit en shell le 2026-10-17. Avant : "python3 comfy_tool.py rendu_dessin", qui recomposait
+#   les calques par ctypes + LZF, alors que le zip porte deja l'aplat.
 tool: "comfyui_render_drawing"
 date: "2026-10-17"
 tags: ["comfyui", "comfyui_render_drawing"]
 
-comfyui
 doc: comfyui
 
 RULES:
   enabled: true
   timeout: 300
 
-DESCRIPTION: "flattens a .kra to png/jpg, resizable"
+DESCRIPTION: "flattens a .kra into a png or a jpg, on white or transparent, and resizes it on demand"
 
 COMMAND: |
-  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" rendu_dessin </dev/null
+  SRC="$W/{{source}}"
+  [ -f "$SRC" ] || { printf "refuse : la source est absente (%s)\n" "$SRC" >&2; exit 1; }
+  case "$(printf '%s' "$SRC" | tr 'A-Z' 'a-z')" in
+    *.kra) ;;
+    *) printf "refuse : il faut un .kra (%s)\n" "$SRC" >&2; exit 1 ;;
+  esac
+  command -v unzip >/dev/null 2>&1 \
+    || { printf "refuse : unzip manque a la machine ; un .kra est un zip et je n'ai pas de quoi l'ouvrir\n" >&2; exit 1; }
+  STAMP=$(date +%Y%m%d-%H%M%S)
+  TMP="$W/.aplat-$STAMP.png"
+  unzip -p "$SRC" mergedimage.png > "$TMP" 2>/dev/null
+  if [ ! -s "$TMP" ]; then
+    rm -f "$TMP"
+    printf "refuse : ce .kra ne porte pas d'image aplatie (mergedimage.png) : %s\n" "$(basename "$SRC")" >&2
+    exit 1
+  fi
+  case "{{format}}" in
+    jpg|jpeg) EXT=jpg ;;
+    *)        EXT=png ;;
+  esac
+  OUT="$W/render-$STAMP.$EXT"
+  if [ "{{fond}}" = transparent ]; then
+    if [ "$EXT" = jpg ]; then
+      printf "refuse : un jpg n'a pas de transparence ; demande png ou fond blanc\n" >&2
+      rm -f "$TMP"; exit 1
+    fi
+    mv "$TMP" "$OUT"
+  else
+    command -v ffmpeg >/dev/null 2>&1 \
+      || { printf "refuse : ffmpeg manque a la machine ; je ne sais pas poser le fond blanc sans lui\n" >&2; rm -f "$TMP"; exit 1; }
+    DIM=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$TMP" 2>/dev/null | tr ',' 'x')
+    [ -n "$DIM" ] || { printf "refuse : je n'ai pas pu lire la taille de l'aplat (%s)\n" "$(basename "$SRC")" >&2; rm -f "$TMP"; exit 1; }
+    ffmpeg -y -loglevel error -f lavfi -i "color=c=white:s=$DIM" -i "$TMP" \
+      -filter_complex "[1:v]format=rgba[a];[0:v][a]overlay=format=auto" -frames:v 1 "$OUT" >/dev/null 2>&1
+    RC=$?
+    rm -f "$TMP"
+    [ "$RC" = 0 ] || { printf "refuse : ffmpeg n'a pas su aplatir %s sur le fond blanc\n" "$(basename "$SRC")" >&2; exit 1; }
+  fi
+  [ -s "$OUT" ] || { printf "refuse : l'image n'a pas ete ecrite (%s)\n" "$OUT" >&2; exit 1; }
+  if [ -n "{{max_side}}" ]; then
+    RE=$(printf '%s' "$OUT" | sed "s/\.$EXT$/-$EXT.{{max_side}}.$EXT/")
+    ffmpeg -y -loglevel error -i "$OUT" \
+      -vf "scale='if(gt(iw,ih),{{max_side}},-2)':'if(gt(iw,ih),-2,{{max_side}})'" "$RE" >/dev/null 2>&1
+    if [ -s "$RE" ]; then mv "$RE" "$OUT"; else rm -f "$RE"; printf "note : le redimensionnement a echoue, l'image reste en pleine taille\n"; fi
+  fi
+  TAILLE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$OUT" 2>/dev/null | tr ',' 'x')
+  printf "image : %s (%s, %s octets)\n" "$OUT" "${TAILLE:-?}" "$(wc -c < "$OUT")"
 
-ARGS: []                    # aucun argument : ce tool se nomme seul
+ARGS:
+  - {name: source, type: path}                              # le .kra, relatif a l'espace du skill
+  - {name: max_side, type: int}                             # le plus grand cote, en pixels (vide : taille du document)
+  - {name: format, type: enum, values: [png, jpg, ""]}      # le format (vide : png)
+  - {name: fond, type: enum, values: [white, transparent, ""]}   # le fond (vide : blanc)

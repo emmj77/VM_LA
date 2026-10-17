@@ -1,20 +1,59 @@
-# QUI : lists a directory's layers and guesses their role
-# ORIGINE : migre tel quel de la ligne 170 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
-# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+# QUI : lit un dossier de dessins (.kra) SANS Kritra ni python : un .kra est un zip, et maindoc.xml
+#   porte la taille du document et la pile des calques (nom, visibilite, decalage). Le role est devine
+#   du nom, comme avant.
+# REFUSE : (1) le dossier absent ; (2) aucun .kra dessous ; (3) un .kra sans maindoc.xml -- dit, nomme,
+#   et on passe au suivant (un fichier malade n'emporte pas la liste).
+# ORIGINE : reecrit en shell le 2026-10-17. Avant : "python3 comfy_tool.py reperer_calques", qui lisait
+#   le .kra par ctypes + LZF pour ne lire, en fin de compte, que des NOMS et des decalages : le zip les
+#   porte en clair.
 tool: "comfyui_find_layers"
 date: "2026-10-17"
 tags: ["comfyui", "comfyui_find_layers"]
 
-comfyui
 doc: comfyui
 
 RULES:
   enabled: true
-  timeout: 300
+  timeout: 120
 
-DESCRIPTION: "lists a directory's layers and guesses their role"
+DESCRIPTION: "lists the .kra files of a folder and each one's layers (name, visibility, offset) with a guessed role"
 
 COMMAND: |
-  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" reperer_calques </dev/null
+  FOLDER="$ROOT/{{folder}}"
+  [ -d "$FOLDER" ] || { printf "refuse : le dossier est absent (%s)\n" "$FOLDER" >&2; exit 1; }
+  command -v unzip >/dev/null 2>&1 \
+    || { printf "refuse : unzip manque a la machine ; un .kra est un zip et je n'ai pas de quoi l'ouvrir\n" >&2; exit 1; }
+  FILES=$(find "$FOLDER" -maxdepth 6 -name '*.kra' -not -name '*~' | sort | head -n 10)
+  [ -n "$FILES" ] || { printf "refuse : aucun .kra sous %s\n" "$FOLDER" >&2; exit 1; }
+  printf "%s fichier(s) sous %s\n\n" "$(printf '%s\n' "$FILES" | grep -c .)" "$FOLDER"
+  printf '%s\n' "$FILES" | while IFS= read -r F; do
+    DOC=$(unzip -p "$F" maindoc.xml 2>/dev/null)
+    if [ -z "$DOC" ]; then
+      printf "%s\n    refuse de se lire : pas de maindoc.xml dans l'archive\n" "$(basename "$F")"
+      continue
+    fi
+    LW=$(printf '%s' "$DOC" | grep -o 'width="[0-9]*"' | head -n 1 | tr -dc '0-9')
+    LH=$(printf '%s' "$DOC" | grep -o 'height="[0-9]*"' | head -n 1 | tr -dc '0-9')
+    if [ -n "$LW" ] && [ -n "$LH" ]; then TAILLE="${LW}x${LH}"; else TAILLE="taille inconnue"; fi
+    printf "%s  %s\n" "$(basename "$F")" "$TAILLE"
+    printf '%s' "$DOC" | tr '>' '\n' | grep '<layer ' | while IFS= read -r L; do
+      IND=$(printf '%s' "$L" | sed -n 's/^\( *\)<layer .*/\1/p' | tr -d '\n' | wc -c)
+      IND=$(printf '%.*s' "$((IND - 1))" "            ")
+      CLEAN=$(printf '%s' "$L" | sed -e 's/colorspacename="[^"]*"//g' -e 's/filename="[^"]*"//g')
+      NM=$(printf '%s' "$CLEAN" | sed -n 's/.* name="\([^"]*\)".*/\1/p')
+      VI=$(printf '%s' "$L" | sed -n 's/.*visible="\([0-9]*\)".*/\1/p')
+      XX=$(printf '%s' "$L" | sed -n 's/.*[ ]x="\([-0-9]*\)".*/\1/p')
+      YY=$(printf '%s' "$L" | sed -n 's/.*[ ]y="\([-0-9]*\)".*/\1/p')
+      case "$(printf '%s' "$NM" | tr 'A-Z' 'a-z')" in
+        *encrage*|*trait*|*line*|*dessin*|*ink*)  ROLE=trait ;;
+        *couleur*|*couleurs*|*color*)             ROLE=couleur ;;
+        *decor*|*fond*|*back*|*arriere*)          ROLE=decor/fond ;;
+        *masque*|*mask*)                          ROLE=masque ;;
+        *)                                        ROLE=? ;;
+      esac
+      printf "    %-26s visible=%s  offset=%s,%s  role~ %s\n" "$NM" "${VI:-?}" "${XX:-0}" "${YY:-0}" "$ROLE"
+    done
+  done
 
-ARGS: []                    # aucun argument : ce tool se nomme seul
+ARGS:
+  - {name: folder, type: path}                 # le dossier des dessins, relatif a la racine du projet
