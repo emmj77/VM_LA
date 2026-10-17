@@ -19740,13 +19740,11 @@ class CurrentWeather {
             style_class: STYLE_LOCATION
         });
         this.location = this.locationButton.actor;
+        // Chez la meteo, ce bouton ouvre le site du fournisseur -- et il ne faisait RIEN quand il n'y
+        // en avait pas (notre cas). Ici il rafraichit : immediate veut dire « maintenant », et sans
+        // reconstruction il ne perturbe pas la mise en page puisqu'il en fait partie.
         this.location.connect(SIGNAL_CLICKED, () => {
-            if (this.app.encounteredError)
-                void this.app.Refresh({ rebuild: true });
-            else if (this.locationButton.url == null)
-                return;
-            else
-                OpenUrl(this.locationButton);
+            void this.app.Refresh({ immediate: true, rebuild: true });
         });
         this.nextLocationButton = new WeatherButton({
             reactive: true,
@@ -19876,10 +19874,17 @@ class CurrentWeather {
     }
     SetLocation(locationString, url) {
         this.location.label = locationString;
-        if (!url)
-            this.locationButton.disable();
-        else
-            this.locationButton.url = url;
+        // CE BOUTON EST CELUI DE LA METEO, DESSINE PAR L'APPLET ELLE-MEME ET RECONSTRUIT AVEC LE MENU.
+        // Elle y ecrit le nom de la ville et le DESACTIVE faute de site fournisseur : chez nous c'etait
+        // donc un « LA » gris qui ne faisait rien. Il reste actif, et il porte son vrai nom -- sinon
+        // personne ne peut deviner qu'il rafraichit.
+        this.location.label = "Mise a jour";
+        // La meteo le dessine a la taille de son texte : 74 x 17 px. On lui rend une taille de bouton.
+        this.location.set_style(
+            "padding: 5px 14px; margin: 3px 6px; border: 1px solid rgba(255, 255, 255, 0.45);" +
+            "border-radius: 4px; font-weight: bold;");
+        this.locationButton.enable();
+        this.locationButton.url = null;
     }
     SetUVIndex(uvIndex, show) {
         if (uvIndex == null || !show) {
@@ -21294,38 +21299,6 @@ class WeatherApplet extends TextIconApplet {
         return true;
     }
     DisplayWeatherOnLabel(weather) {
-        // UNE VRAIE LIGNE « Mise a jour » DANS LE MENU, en pleine largeur, avec son icone : une
-        // cible qu'on ne peut pas manquer. Chez la meteo ce bouton n'existe que dans le menu du
-        // CLIC DROIT sur l'applet du panneau ; il n'y avait rien dans le menu qu'on ouvre.
-        try {
-            const menu = this.ui.menu;
-            const deja = menu._getMenuItems().some((it) => {
-                try { return it.label && it.label.text === "Mise a jour"; } catch (e) { return false; }
-            });
-            if (!deja) {
-                const ligne = new MenuItem("Mise a jour", REFRESH_ICON, () => { });
-                // DEUX DEFAUTS CORRIGES ICI.
-                //  1. Un element de menu se ferme tout seul quand on l'active : le widget
-                //     disparaissait donc a chaque mise a jour. On AVALE le clic (rendre true
-                //     l'arrete) : on rafraichit, et le menu reste ouvert sous les yeux.
-                //  2. On rafraichissait en RECONSTRUISANT le menu : il se refaisait alors sans
-                //     cette ligne et mincissait de quelques millimetres avant de la revoir.
-                //     Sans reconstruction, les valeurs se mettent a jour en place.
-                const cible = ligne.actor || ligne;
-                // TROISIEME DEFAUT, ET C'EST CELUI QUI FAISAIT DIRE « le bouton ne marche pas ».
-                // Refresh() n'agit que si la donnee est deja perimee :
-                //     needToUpdate = errorCount > 0 || NextUpdate() < now
-                //     if (!needToUpdate && !immediate) return;   <- "No need to update yet, skipping."
-                // Un clic sur des mesures fraiches ne faisait donc RIEN, sans rien dire. Un clic,
-                // c'est « je veux maintenant » : immediate a vrai. Et sans reconstruction, pour que
-                // le menu garde sa forme et ses valeurs se mettent a jour en place.
-                cible.connect("button-release-event", () => {
-                    void this.loop.Refresh({ immediate: true, rebuild: false });
-                    return true;
-                });
-                menu.addMenuItem(ligne);
-            }
-        } catch (e) { }
         // NOTRE ETIQUETTE : LE MOT DE LA, la ou la meteo pose sa temperature. C'est le seul texte
         // que nous ecrivons dans la barre ; tout le reste -- l'icone, le menu, les lignes de
         // prevision -- est la meteo, copiee telle quelle.
