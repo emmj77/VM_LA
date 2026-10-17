@@ -63,10 +63,29 @@ permanent:
   - kill
   - tools_list
   - todo
-  - progress
+  - update_todo
+  # LE GRAND PLAN AUSSI EST PERMANENT : il vit dans le PROJET, pas dans une skill. Un projet
+  # charge IMPOSE d ecrire ou de reviser son chantier (big_todo, update_big_todo), et le
+  # changer (change_big_todo) demande une validation. Ces trois gestes ne peuvent donc pas
+  # dependre d une skill : ils sont apparents des qu un projet est charge.
+  - big_todo
+  - update_big_todo
+  - change_big_todo
   - skill_manage:view_skill
   - skill_manage:load_skill
   # LE SOMMEIL EST UN TOOL DU TOUR (loi 474) : il est PERMANENT, comme les deux tools du plan --
   # meme famille MANAGE, et un tour qui ne peut pas s'endormir ne peut pas attendre. Sans cette
   # ligne, la ligne 177 de la table existe mais AUCUN chemin ne l'ouvre (verdict B20 du banc).
   - sleep
+  # LE PROJECT MANAGER EST PERMANENT : charger/decharger/lister un projet est l'ENTREE du
+  # systeme a deux etages. Un projet restreint les skills ; si le chargeur vivait DANS une
+  # skill, on ne pourrait plus rouvrir le chargeur (poule/oeuf). Et sans unload_project, un
+  # projet charge restreindrait le skillset jusqu'au redemarrage : aucune porte de sortie.
+  - load_project
+  - unload_project
+  - project_list
+  # LA MEMOIRE EST PERMANENTE (pas une skill) : fouiller la memoire et les sessions est un
+  # GESTE DE TOUR, pas une tache. Une skill dediee ajouterait une etape pour rien.
+  - search_memory
+  - load_memory
+  - search_sessions

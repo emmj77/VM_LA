@@ -94,7 +94,7 @@ COMMAND: |
   fi
   if [ "$A" = delete_tool ]; then
     case "$NM" in
-      skill_manage|table_manage|load_skill|todo|progress)
+      skill_manage|table_manage|load_skill|todo|update_todo|big_todo|update_big_todo|change_big_todo)
         echo "refuse : la ligne $ID ($NM) porte un MANAGER ; on ne se coupe pas la main, ce retrait est refuse en le nommant, et il ne passe JAMAIS par une approbation" >&2
         exit 1 ;;
     esac

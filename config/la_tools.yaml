@@ -78,8 +78,23 @@ tools:
     tool: todo
     family: MANAGE
   - id: 122
-    tool: progress
+    tool: update_todo
     family: MANAGE
+  # --- LE GRAND PLAN (17/10/2026) : le meme MANAGER, l autre niveau. Le grand plan vit dans le
+  #     PROJET (section PROJECT_PLAN) et non dans une skill : c est ce qui lui permet de durer
+  #     plus d une session. change_big_todo REMPLACE les points, et ce geste exige une validation.
+  - id: 228
+    tool: big_todo
+    family: MANAGE
+    doc: project
+  - id: 229
+    tool: update_big_todo
+    family: MANAGE
+    doc: project
+  - id: 230
+    tool: change_big_todo
+    family: MANAGE
+    doc: project
   - id: 126
     tool: skill_manage
     family: MANAGE

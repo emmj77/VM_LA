@@ -1,0 +1,27 @@
+# QUI : advances the BIG plan of the active project : the CURRENT point is done (an imposed call may pass its state)
+# ORIGINE : ecrit le 17/10/2026 pour LE MANAGER PLAN, apres sa refonte en deux niveaux (le petit
+#          plan dans la skill, le GRAND plan dans le projet).
+# REFUSE : un etat qui n est ni progress ni complete ; aucun projet actif ; aucun grand plan ouvert
+tool: "update_big_todo"
+date: "2026-10-17"
+tags: ["update_big_todo", "plan", "project"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "advances the BIG plan of the active project : the CURRENT point is done (an imposed call may pass its state)"
+
+COMMAND: |
+  ST="{{state}}"
+  [ -n "$ST" ] || ST=complete
+  case "$ST" in
+    progress|complete) ;;
+    *) echo "refuse : state inconnu ($ST) ; progress ou complete" >&2 ; exit 1 ;;
+  esac
+  [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2 ; exit 1 ; }
+  "$PROCS/plan.sh" big progress "$ST"
+
+ARGS:
+  - {name: state, type: text}
+

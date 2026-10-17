@@ -1,0 +1,25 @@
+# QUI : opens the BIG plan in the active project's PROJECT_PLAN section (the points arrive one per line)
+# ORIGINE : ecrit le 17/10/2026 pour LE MANAGER PLAN, apres sa refonte en deux niveaux (le petit
+#          plan dans la skill, le GRAND plan dans le projet).
+# REFUSE : un nom ou un but vide ; aucun projet actif ; un grand plan deja ouvert
+tool: "big_todo"
+date: "2026-10-17"
+tags: ["big_todo", "plan", "project"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "opens the BIG plan in the active project's PROJECT_PLAN section (the points arrive one per line)"
+
+COMMAND: |
+  [ -n "{{name}}" ] || { echo 'refuse : name vide ; big_todo veut le nom du chantier' >&2 ; exit 1 ; }
+  [ -n "{{goal}}" ] || { echo 'refuse : goal vide ; big_todo veut ce que le chantier doit produire' >&2 ; exit 1 ; }
+  [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2 ; exit 1 ; }
+  "$PROCS/plan.sh" big todo "{{name}}" "{{goal}}"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: goal, type: text}
+  - {name: points, type: text, stdin: true}
+

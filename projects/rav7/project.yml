@@ -23,3 +23,5 @@ SKILLS:
   5: "manage-processes"
   6: "computer-debug"
   7: "report-web-search"
+
+PROJECT_PLAN:                # LE GRAND PLAN (le chantier) ; vide : il s ecrit au chargement

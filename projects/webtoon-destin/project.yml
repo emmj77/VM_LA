@@ -19,3 +19,5 @@ SKILLS:
   3: "blender"
   4: "manipulation-3d"
   5: "analyze-image"
+
+PROJECT_PLAN:                # LE GRAND PLAN (le chantier) ; vide : il s ecrit au chargement

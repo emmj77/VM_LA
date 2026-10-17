@@ -1,0 +1,29 @@
+# QUI : advances the plan of the skill : the CURRENT point is done (a call imposed by the engine may pass its state)
+# ORIGINE : ecrit le 17/10/2026 pour LE MANAGER PLAN, apres sa refonte en deux niveaux (le petit
+#          plan dans la skill, le GRAND plan dans le projet).
+# REFUSE : un etat qui n est ni progress ni complete ; aucun plan ouvert a marquer
+tool: "update_todo"
+date: "2026-10-17"
+tags: ["update_todo", "plan"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "advances the plan of the skill : the CURRENT point is done (a call imposed by the engine may pass its state)"
+
+COMMAND: |
+  # UPDATE_TODO : appele par l AGENT, il marque le point courant COMPLETE — rien a choisir. C est
+  # le moteur (une imposition) qui peut passer son etat : progress (il continue) ou complete.
+  ST="{{state}}"
+  [ -n "$ST" ] || ST=complete
+  case "$ST" in
+    progress|complete) ;;
+    *) echo "refuse : state inconnu ($ST) ; progress ou complete" >&2 ; exit 1 ;;
+  esac
+  [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2 ; exit 1 ; }
+  "$PROCS/plan.sh" progress "$ST"
+
+ARGS:
+  - {name: state, type: text}
+

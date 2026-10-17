@@ -33,19 +33,39 @@ export LC_ALL
 # l ordre des appels refuse seule, et pour de mauvaises raisons). SKROOT reste prioritaire quand la
 # boucle l a pose ; sinon on le resout par la bibliotheque commune, au meme endroit que le canon.
 HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ROOT=${ROOT:-${LA_ROOT:-$(CDPATH= cd -- "$HERE/../.." && pwd)}}
 if [ -z "${SKROOT:-}" ] && [ -z "${PLAN_FILE:-}" ]; then
   [ -f "$HERE/lib.sh" ] || { echo "refused: the common library is missing ($HERE/lib.sh)" >&2 ; exit 2 ; }
   ROOT=${LA_ROOT:-$(CDPATH= cd -- "$HERE/../.." && pwd)}
   . "$HERE/lib.sh"
   active_skill ; SKROOT=$(dirname "$SKILL")   # elle POSE NAME et SKILL : jamais par $(...)
 fi
-TARGET=${PLAN_FILE:-${SKROOT:+$SKROOT/skill.yaml}}
+# LE NIVEAU : le PETIT plan vit dans la skill active (PLAN:), le GRAND plan vit dans le PROJET
+# actif (PROJECT_PLAN:). Deux niveaux, une seule brique : `big` change la cible et la section ;
+# tout le reste (la forme des lignes, les etats, l ecriture atomique) est commun.
+IFS=' \t' ; LEVEL=${1:-} ; SECTION=PLAN ; WHAT=skill
+if [ "$LEVEL" = big ]; then
+  shift
+  SECTION=PROJECT_PLAN ; WHAT=project
+  # LE PROJET ACTIF SE RESOUT COMME PARTOUT (lib.sh) : une seule resolution dans tout le depot.
+  [ -f "$HERE/lib.sh" ] || { echo "refused: the common library is missing ($HERE/lib.sh)" >&2 ; exit 2 ; }
+  . "$HERE/lib.sh"
+  active_project          # elle POSE PNAME (vide si aucun) et PROJECT (le chemin du project.yml)
+  [ -n "$PNAME" ] || { echo 'refused: no project is active ; the big plan lives in a project (PROJECT_PLAN), and a project is loaded with load_project' >&2 ; exit 1 ; }
+  TARGET=$PROJECT
+  [ -f "$TARGET" ] || { echo "refused: the active project has no project.yml ($TARGET)" >&2 ; exit 1 ; }
+else
+  TARGET=${PLAN_FILE:-${SKROOT:+$SKROOT/skill.yaml}}
+fi
 [ -n "$TARGET" ] || { echo 'refused: the active skill is unknown (SKROOT is empty) ; the plan does not know where to live' >&2 ; exit 1 ; }
-[ -f "$TARGET" ] || { echo "refused: the active skill is missing ($TARGET)" >&2 ; exit 1 ; }
+[ -f "$TARGET" ] || { echo "refused: the active $WHAT is missing ($TARGET)" >&2 ; exit 1 ; }
 
-START=$(grep -n '^PLAN:[[:space:]]*$' "$TARGET" | head -n 1 | cut -d: -f1)
-[ -n "$START" ] || START=$(grep -n '^PLAN:' "$TARGET" | head -n 1 | cut -d: -f1)
-[ -n "$START" ] || { echo 'refused: the active skill carries no PLAN: section' >&2 ; exit 1 ; }
+START=$(grep -n "^$SECTION:[[:space:]]*$" "$TARGET" | head -n 1 | cut -d: -f1)
+[ -n "$START" ] || START=$(grep -n "^$SECTION:" "$TARGET" | head -n 1 | cut -d: -f1)
+if [ -z "$START" ] && [ "$SECTION" = PLAN ]; then
+  echo 'refused: the active skill carries no PLAN: section' >&2 ; exit 1
+fi
+[ -n "$START" ] || { echo "refused: the active project carries no $SECTION: section ($TARGET)" >&2 ; exit 1 ; }
 END_POS=$(awk -v d="$START" 'NR > d && /^[^[:space:]]/ { print NR; exit }' "$TARGET")
 TOTAL=$(wc -l < "$TARGET")
 END_POS=${END_POS:-$((TOTAL + 1))}
@@ -77,6 +97,8 @@ clear() {
 N_LINES=$(lines | wc -l | tr -d ' ')
 
 mode=${1:-}
+CHG=
+[ "$mode" = change ] && { CHG=1 ; mode=todo ; }
 case "$mode" in
   todo)
     NAME=${2:-}
@@ -85,8 +107,8 @@ case "$mode" in
     [ -n "$GOAL" ] || { echo 'refused: todo wants a goal (what the task must produce)' >&2 ; exit 1 ; }
     SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | sed -e 's/[^a-z0-9][^a-z0-9]*/-/g' -e 's/^-//' -e 's/-$//')
     [ -n "$SLUG" ] || { echo 'refused: the name yields no slug (lowercase, digits, dashes)' >&2 ; exit 1 ; }
-    [ "$N_LINES" = 0 ] || { echo "refused: a plan is already open in $TARGET ; a single plan is active at a time" >&2 ; exit 1 ; }
-    [ -w "$TARGET" ] || { echo "refused: the active skill is not writable ($TARGET)" >&2 ; exit 1 ; }
+    [ "$N_LINES" = 0 ] || [ -n "$CHG" ] || { echo "refused: a plan is already open in $TARGET ; a single plan is active at a time" >&2 ; exit 1 ; }
+    [ -w "$TARGET" ] || { echo "refused: the active $WHAT is not writable ($TARGET)" >&2 ; exit 1 ; }
     N=400
     TMPL=$(mktemp "${TMPDIR:-/tmp}/plant.XXXXXX") || { echo 'refused: no temporary space' >&2 ; exit 1 ; }
     trap 'rm -f "$TMPL"' EXIT INT TERM HUP
@@ -105,8 +127,13 @@ case "$mode" in
       fi
     done
     [ "$N" -gt 400 ] || { echo 'refused: todo wants at least one point, one per line on the standard input' >&2 ; exit 1 ; }
+    [ -z "$CHG" ] || clear        # change REMPLACE : la section se vide AVANT que les points arrivent
     rewrite < "$TMPL"
-    echo "plan open in $TARGET ($((N - 400)) point(s))"
+    if [ -n "$CHG" ]; then
+      echo "big plan REWRITTEN in $TARGET ($((N - 400)) point(s))"
+    else
+      echo "plan open in $TARGET ($((N - 400)) point(s))"
+    fi
     lines | while IFS= read -r L; do printf '  %s\n' "$(text "$L")"; done
     ;;
   progress)
@@ -116,7 +143,7 @@ case "$mode" in
       *) { echo 'refused: progress wants its state : progress or complete' >&2 ; exit 1 ; } ;;
     esac
     [ "$N_LINES" -gt 0 ] || { echo 'refused: no open plan to mark' >&2 ; exit 1 ; }
-    [ -w "$TARGET" ] || { echo "refused: the active skill is not writable ($TARGET)" >&2 ; exit 1 ; }
+    [ -w "$TARGET" ] || { echo "refused: the active $WHAT is not writable ($TARGET)" >&2 ; exit 1 ; }
     TMPL=$(mktemp "${TMPDIR:-/tmp}/planp.XXXXXX") || { echo 'refused: no temporary space' >&2 ; exit 1 ; }
     trap 'rm -f "$TMPL"' EXIT INT TERM HUP
     NEXT=0
@@ -137,21 +164,26 @@ case "$mode" in
     rewrite < "$TMPL"
     LEFT=$(lines | grep -c '\[todo\]\|\[progress\]' | tr -d ' ')
     if [ "$LEFT" = 0 ]; then
-      clear
-      echo 'plan complete ; the PLAN: section of the skill is empty'
+      if [ "$SECTION" = PLAN ]; then
+        clear
+        echo "plan complete ; the $SECTION: section of the $WHAT is empty"
+      else
+        echo "big plan complete ; $TARGET KEEPS its points -- a long plan keeps its trace, and"
+        echo 'change_big_todo is what rewrites it (and that one needs your validation)'
+      fi
       exit 0
     fi
     lines | while IFS= read -r L; do printf '  %s\n' "$(text "$L")"; done
     ;;
   status|load)
     if [ "$N_LINES" = 0 ]; then
-      echo 'no open plan : the active skill carries no plan in its PLAN section'
+      echo "no open plan : the active $WHAT carries no plan in its $SECTION section"
       exit 0
     fi
     lines | while IFS= read -r L; do printf '  %s\n' "$(text "$L")"; done
     ;;
   *)
-    echo 'refused: unknown subcommand ; todo, progress or status' >&2
+    echo 'refused: unknown subcommand ; todo, progress, status or change (a `big` prefix targets the project plan)' >&2
     exit 1
     ;;
 esac

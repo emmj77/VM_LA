@@ -38,3 +38,5 @@ SKILLS:
   18: "manage-processes"
   20: "edit-table"
   21: "write-spec"
+
+PROJECT_PLAN:                # LE GRAND PLAN (le chantier) ; vide : il s ecrit au chargement

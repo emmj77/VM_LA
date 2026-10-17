@@ -485,7 +485,7 @@ PLAN_DONE=0
 TOOLSET_ARMED=0
 PLAN_DUE=0                                    # le PLAN EST IMPOSE : il se leve tous les PLAN_EVERY tours,
                                              # et RESTE leve jusqu'a ce que le modele marque son point
-PLAN_FAMILY='todo progress'
+PLAN_FAMILY='todo update_todo'
 PLAN_EVERY=${LA_PLAN_EVERY:-5}               # l intervalle de l imposition du plan (declarable) : la
                                              # boucle force `progress` a ce rythme tant qu un plan est ouvert
 SHARE_NAMES=''

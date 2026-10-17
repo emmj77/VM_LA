@@ -1,0 +1,27 @@
+# QUI : REWRITES the big plan of the project (it REPLACES every point) ; this one needs the user's validation
+# ORIGINE : ecrit le 17/10/2026 pour LE MANAGER PLAN, apres sa refonte en deux niveaux (le petit
+#          plan dans la skill, le GRAND plan dans le projet).
+# REFUSE : un nom ou un but vide ; aucun projet actif ; aucun grand plan a changer
+tool: "change_big_todo"
+date: "2026-10-17"
+tags: ["change_big_todo", "plan", "project"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "REWRITES the big plan of the project (it REPLACES every point) ; this one needs the user's validation"
+
+COMMAND: |
+  # CHANGE_BIG_TODO : le grand plan ne s efface jamais tout seul. Il se CHANGE, et ce geste
+  # REMPLACE tous ses points. L approbation de MOUSSA viendra se brancher ICI (pas encore posee).
+  [ -n "{{name}}" ] || { echo 'refuse : name vide ; change_big_todo veut le nom du chantier' >&2 ; exit 1 ; }
+  [ -n "{{goal}}" ] || { echo 'refuse : goal vide ; change_big_todo veut ce que le chantier doit produire' >&2 ; exit 1 ; }
+  [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2 ; exit 1 ; }
+  "$PROCS/plan.sh" big change "{{name}}" "{{goal}}"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: goal, type: text}
+  - {name: points, type: text, stdin: true}
+

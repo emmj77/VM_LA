@@ -21,3 +21,5 @@ SKILLS:
   4: "git"
   5: "edit-file"
   6: "comfyui"
+
+PROJECT_PLAN:                # LE GRAND PLAN (le chantier) ; vide : il s ecrit au chargement
