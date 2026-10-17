@@ -17,7 +17,7 @@ config/backups/
 *.pid
 *.log
 
-# --- LE FILTRE : le CORPUS est du source, le MODELE est un produit (il se refait en 134 ms) ---
+# --- LE FILTRE : le CORPUS est du source, le MODELE est un produit (il se refait en 60 ms) ---
 config/filtre/*.bin
 config/filtre/*.vec
 config/filtre/propre.txt

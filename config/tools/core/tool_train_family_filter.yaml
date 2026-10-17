@@ -6,6 +6,9 @@
 #           130 ms de chargement a CHAQUE appel ; a 10 000 seaux et dim 10 il pese 0,4 Mo et repond en
 #           5 ms, avec la MEME justesse. Donc le filtre est un CLI, jamais un resident (lois 825-827).
 # REFUSE : corpus absent ou trop court ; fasttext absent ; apprentissage qui echoue.
+# UN SEUL FIL (-thread 1) : a deux fils, fastText ordonne les mises a jour a sa guise et la MEME
+# mesure rend 6 OU 7 justes sur 13 selon le tirage -- paye au banc. Une mesure qui ne se refait
+# pas a l'identique ne mesure rien.
 tool: "train_family_filter"
 date: "2026-10-17"
 tags: ["train_family_filter", "fasttext", "filtre", "famille", "classifieur"]
@@ -43,16 +46,17 @@ COMMAND: |
   sed -e 's/^\(__label__[A-Za-z]*\).*/\1/' "$D/essai_brut.txt" > "$D/essai_attendu.txt"
   T0=$(date +%s%N)
   fasttext supervised -input "$D/appris.txt" -output "$D/famille_essai" -dim 10 -bucket 10000 \
-    -epoch 50 -lr 0.5 -wordNgrams 2 -minCount 1 -thread 2 -verbose 0 \
+    -epoch 50 -lr 0.5 -wordNgrams 2 -minCount 1 -thread 1 -verbose 0 \
     || { echo "refuse : fasttext n a pas appris sur le corpus ($? ; le corpus est-il lisible ?)" >&2 ; exit 1 ; }
   T1=$(date +%s%N)
   fasttext predict "$D/famille_essai.bin" "$D/essai.txt" 1 > "$D/essai_vu.txt" \
     || { echo "refuse : fasttext n a pas su juger les lignes mises de cote" >&2 ; exit 1 ; }
   T=$(wc -l < "$D/essai.txt" | tr -d ' ')
   J=$(paste -d' ' "$D/essai_attendu.txt" "$D/essai_vu.txt" | awk '$1 == $2' | wc -l | tr -d ' ')
-  FAUX=$(paste -d'|' "$D/essai.txt" "$D/essai_attendu.txt" "$D/essai_vu.txt" | awk -F'|' '$2 != $3 { printf " ; %s juge %s : %s", substr($2, 10), $3, $1 }')
+  FAUX=$(paste -d'|' "$D/essai.txt" "$D/essai_attendu.txt" "$D/essai_vu.txt" \
+    | awk -F'|' '$2 != $3 { a=$2 ; s=$3 ; sub(/^__label__/, "", a) ; sub(/^__label__/, "", s) ; printf " ; %s juge %s : %s", a, s, $1 }')
   fasttext supervised -input "$P" -output "$D/famille" -dim 10 -bucket 10000 \
-    -epoch 50 -lr 0.5 -wordNgrams 2 -minCount 1 -thread 2 -verbose 0 \
+    -epoch 50 -lr 0.5 -wordNgrams 2 -minCount 1 -thread 1 -verbose 0 \
     || { echo "refuse : fasttext n a pas su reapprendre sur le corpus entier ($?)" >&2 ; exit 1 ; }
   T2=$(date +%s%N)
   POIDS=$(wc -c < "$D/famille.bin" | tr -d ' ')
