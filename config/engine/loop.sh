@@ -396,6 +396,23 @@ count_non_stdin() {  # $1 = bloc
   printf '%s' "$((NA - NS))"
 }
 
+# LA MEME SOURCE QUE L AFFICHAGE (loi 503 : le registre nomme, le FICHIER porte). Depuis que les
+# arguments ont demenage dans config/tools/<machine>/tool_<nom>.yaml, compter dans le registre rend
+# ZERO -- et un tool a argument partait au engine SANS argument : le enum vide se refuse, donc
+# `answer` ne fermait plus AUCUN tour (6 tours, borne de securite, pas de reply). Le fichier
+# d'abord, la ligne ensuite (ancienne forme).
+count_non_stdin_of_tool() {  # $1 = le nom du tool ; $2 = le bloc de sa ligne
+  TF=$(tool_file_of "$1" 2>/dev/null)
+  if [ -n "$TF" ]; then
+    A=$(awk '/^ARGS:/{f=1;next} f&&/^[^ ]/{exit} f{sub(/^  /,"      ");print}' "$TF")
+    NA=$(printf '%s\n' "$A" | grep -c '^[[:space:]]*- {')
+    NS=$(printf '%s\n' "$A" | sed -n 's/^[[:space:]]*- {\(.*\)}[[:space:]]*$/\1/p' | grep -c 'stdin:[[:space:]]*true')
+    printf '%s' "$((NA - NS))"
+  else
+    count_non_stdin "$2"
+  fi
+}
+
 args_text() {  # $1 = bloc ; rend les noms, leur FORME, et ce que la ligne FERME
   # LA LOI : le modele recoit ce que la ligne FERME, pas un nom nu. Un enum rend sa liste
   # ENTIERE, dans le MEME rendu que le refus du engine (join " | ", engine.sh:359) ; un
@@ -579,14 +596,16 @@ in_plan_family() { case " $PLAN_FAMILY " in *" $1 "*) return 0 ;; esac; return 1
 # IL POSE $SHARE_NAMES, ET REND 1 S'IL MANQUE. Il ne die PAS ici : appele dans un $(...), un die
 # n'y tuerait que le SOUS-SHELL, et la boucle continuerait avec un perimetre VIDE, en silence --
 # c'est le bug que le verdict B19 a attrape. C'est l'APPELANT (scope_build, hors subshell) qui die.
-rank_share() {   # $1 = fichier candidats (id|nom|description) ; $2 = la demande ; pose SHARE_NAMES
-  _cand=$1; _q=$2
+rank_share() {   # $1 = candidats (id|nom|description) ; $2 = la demande ; $3 = la PART ; pose SHARE_NAMES
+  _cand=$1; _q=$2; _part_in=${3:-30}
+  case "$_part_in" in ''|*[!0-9]*) _part_in=30 ;; esac
   SHARE_NAMES=''
   [ -s "$_cand" ] || return 0
   [ -n "$_q" ] || _q=' '
   _port=${LA_RERANK_PORT:-8095}
   _k=$(wc -l < "$_cand" | tr -d ' ')
-  _part=$(( (_k * 30 + 99) / 100 )); [ "$_part" -ge 1 ] || _part=1
+  _part=$(( (_k * _part_in + 99) / 100 )); [ "$_part" -ge 1 ] || _part=1
+  [ "$_part" -le "$_k" ] || _part=$_k
   _req=$(jq -cn --arg q "$_q" --rawfile docs "$_cand" --argjson n "$_k" \
     '{query:$q, documents:($docs|split("\n")|map(select(length>0))), top_n:$n}')
   _rep=$(printf '%s' "$_req" | curl -sS --max-time 15 -X POST \
@@ -688,7 +707,14 @@ scope_build() {
       [ "$TN" = toolset ] && continue
       printf '%s|%s|%s\n' "$ID" "$TN" "$(tool_desc "$TN" "$B")" >> "$_cand"
     done
-    rank_share "$_cand" "${REQUEST:-} ${PLAN_TXT:-}" \
+    # L ECHELLE DEGRESSIVE : 30% au PREMIER appel, 60% au deuxieme, 100% au troisieme. On ne garde
+    # pas un NOMBRE de tools, on garde une PART de la liste : au troisieme appel la liste ENTIERE
+    # est ouverte, donc le rattrapage est garanti. La part etait ecrite 30 EN DUR dans rank_share :
+    # le palier n existait pas, et les tools du skill restaient fermes jusqu a la fin du tour.
+    _share=30
+    [ "${CALLS_TOTAL:-0}" -ge 1 ] && _share=60
+    [ "${CALLS_TOTAL:-0}" -ge 2 ] && _share=100
+    rank_share "$_cand" "${REQUEST:-} ${PLAN_TXT:-}" "$_share" \
       || die "the reranker is silent on 127.0.0.1:${LA_RERANK_PORT:-8095} : the resident must be in RAM (rerank.sh start). This is an ENGINE bug, not a turn."
   fi
   # LA TETE DE LA PORTEE : elle DIT le palier de la chaine de l entree (lois 1000, 1002)
@@ -1040,7 +1066,7 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
     else
       # LA LOI DU DECOUPAGE : autant d arguments que la ligne en declare HORS stdin
       if [ -n "$BLOCK" ]; then
-        ARGC=$(count_non_stdin "$BLOCK")
+        ARGC=$(count_non_stdin_of_tool "$TN" "$BLOCK")
         [ "$ARGC" -gt "$NA" ] && ARGC=$NA
       else
         ARGC=0
