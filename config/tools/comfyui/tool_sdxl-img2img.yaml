@@ -1,0 +1,25 @@
+# QUI : image-to-image (SDXL) via ComfyUI
+# ORIGINE : lance le workflow sdxl_img2img.json (skill comfyui de la cage).
+# REFUSE : image absente ; serveur ComfyUI injoignable.
+tool: "sdxl-img2img"
+date: "2026-10-17"
+tags: ["comfyui", "sdxl-img2img", "img2img", "image"]
+doc: comfyui
+
+RULES:
+  enabled: true
+  timeout: 1200
+
+DESCRIPTION: "image-to-image (SDXL) via ComfyUI"
+
+COMMAND: |
+  I=$(cat); [ -n "$I" ] || { echo 'refuse : image absente' >&2; exit 1; }; [ -f "$I" ] || { echo "refuse : image introuvable ($I)" >&2; exit 1; }
+  S=http://127.0.0.1:8188; curl -sS -m 5 "$S/system_stats" >/dev/null 2>&1 || { echo "refuse : ComfyUI ne repond pas sur $S" >&2; exit 1; }
+  D=/mnt/hermes_workspace/hermes/skills/software-development/comfyui
+  O="{{out}}"; [ -n "$O" ] || O="$ROOT/work/GEN"
+  python3 "$D/scripts/run_workflow.py" --workflow "$D/workflows/sdxl_img2img.json" --input-image "image=$I" --args "{\"prompt\": \"{{prompt}}\"}" --output-dir "$O"
+
+ARGS:
+  - {name: image, type: path, stdin: true}
+  - {name: prompt, type: text, required: false}
+  - {name: out, type: path, required: false}

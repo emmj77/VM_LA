@@ -1,0 +1,24 @@
+# QUI : agrandit une image x4 (ESRGAN) via ComfyUI
+# ORIGINE : lance le workflow upscale_4x.json (skill comfyui de la cage).
+# REFUSE : image absente ; serveur ComfyUI injoignable.
+tool: "upscale-4x"
+date: "2026-10-17"
+tags: ["comfyui", "upscale-4x", "upscale", "image"]
+doc: comfyui
+
+RULES:
+  enabled: true
+  timeout: 900
+
+DESCRIPTION: "upscales an image x4 (ESRGAN) via ComfyUI"
+
+COMMAND: |
+  I=$(cat); [ -n "$I" ] || { echo 'refuse : image absente' >&2; exit 1; }; [ -f "$I" ] || { echo "refuse : image introuvable ($I)" >&2; exit 1; }
+  S=http://127.0.0.1:8188; curl -sS -m 5 "$S/system_stats" >/dev/null 2>&1 || { echo "refuse : ComfyUI ne repond pas sur $S" >&2; exit 1; }
+  D=/mnt/hermes_workspace/hermes/skills/software-development/comfyui
+  O="{{out}}"; [ -n "$O" ] || O="$ROOT/work/GEN"
+  python3 "$D/scripts/run_workflow.py" --workflow "$D/workflows/upscale_4x.json" --input-image "image=$I" --output-dir "$O"
+
+ARGS:
+  - {name: image, type: path, stdin: true}
+  - {name: out, type: path, required: false}

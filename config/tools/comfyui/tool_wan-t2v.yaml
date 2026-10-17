@@ -1,0 +1,24 @@
+# QUI : text-to-video (Wan 2.x, ~33 frames) via ComfyUI
+# ORIGINE : lance le workflow wan_video_t2v.json (skill comfyui de la cage).
+# REFUSE : prompt vide ; serveur ComfyUI injoignable.
+tool: "wan-t2v"
+date: "2026-10-17"
+tags: ["comfyui", "wan-t2v", "video", "t2v"]
+doc: comfyui
+
+RULES:
+  enabled: true
+  timeout: 3600
+
+DESCRIPTION: "text-to-video (Wan 2.x, ~33 frames) via ComfyUI"
+
+COMMAND: |
+  P=$(cat); [ -n "$P" ] || { echo 'refuse : prompt vide' >&2; exit 1; }
+  S=http://127.0.0.1:8188; curl -sS -m 5 "$S/system_stats" >/dev/null 2>&1 || { echo "refuse : ComfyUI ne repond pas sur $S" >&2; exit 1; }
+  D=/mnt/hermes_workspace/hermes/skills/software-development/comfyui
+  O="{{out}}"; [ -n "$O" ] || O="$ROOT/work/GEN"
+  python3 "$D/scripts/run_workflow.py" --workflow "$D/workflows/wan_video_t2v.json" --args "{\"prompt\": \"$P\"}" --output-dir "$O" --ws
+
+ARGS:
+  - {name: prompt, type: text, stdin: true}
+  - {name: out, type: path, required: false}
