@@ -142,7 +142,13 @@ LaStatusApplet.prototype = {
             section.addMenuItem(new PopupMenu.PopupMenuItem("... la liste arrive"));
         }
         for (let i = 0; i < this.controle.length; i++) {
-            section.addMenuItem(new PopupMenu.PopupMenuItem(this.controle[i]));
+            let ligne = new PopupMenu.PopupMenuItem(this.controle[i]);
+            // LA LISTE EST UNE TABLE A CHASSE FIXE : ses points de conduite sont calcules sur des
+            // colonnes, pour une police monospace. Dans la police proportionnelle du menu, ces
+            // points partent en brouillard et RIEN ne s'aligne -- c'etait le vrai defaut. On donne
+            // donc a ces lignes-la (et a elles seules) la police qui va avec leur forme.
+            ligne.label.add_style_class_name("la-mono");
+            section.addMenuItem(ligne);
         }
         this.menu.addMenuItem(section);
 

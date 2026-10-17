@@ -6,3 +6,8 @@
 .la-vert  { color: #2ec27e; }
 .la-rouge { color: #e01b24; }
 .la-gris  { color: #9a9996; }   /* il ne sait pas : il le dit */
+
+/* LA LISTE DE CONTROLE EST UNE TABLE : des points de conduite calcules sur des colonnes. Elle n'est
+   alignee que si la police a une chasse fixe -- c'est la police qui va avec sa forme, pas l'inverse.
+   Seules ces lignes-la la recoivent ; le reste du menu garde la police du theme. */
+.la-mono  { font-family: "DejaVu Sans Mono", "Liberation Mono", monospace; }
