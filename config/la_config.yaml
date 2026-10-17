@@ -74,6 +74,10 @@ permanent:
   # LES PORTES DES SKILLS SONT PERMANENTES : regarder un skill, les lister et en charger un sont
   # l ENTREE du systeme a deux etages (le choix pour load_project). Si elles vivaient dans une
   # skill, on ne pourrait plus rouvrir la porte (poule/oeuf).
+  # LA MISE A JOUR DU CANON EST PERMANENTE : elle est IMPOSEE (a la sortie d un projet, et tous
+  # les dix tours). Un geste impose ne peut pas dependre d une skill -- sinon il ne serait pas
+  # imposable.
+  - update_spec
   - skill_list
   - skill_view
   - load_skill

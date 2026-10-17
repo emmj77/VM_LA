@@ -85,6 +85,13 @@ tools:
   #     plus d une session. change_big_todo REMPLACE les points, et ce geste exige une validation.
   # --- LES PORTES DES SKILLS (17/10/2026) : lire, lister et charger sont trois GESTES, pas trois
   #     actions d un manager. Un outil, une chose : rien a choisir, aucun argument a inventer.
+  # --- LA MISE A JOUR DU CANON (17/10/2026) : write_spec CREER (une spec neuve, une loi neuve,
+  #     une section) ; update_spec MET A JOUR une loi qui existe deja. Deux gestes, une mecanique
+  #     (config/engine/spec.sh), et c est update_spec que le moteur impose a la sortie d un projet.
+  - id: 235
+    tool: update_spec
+    family: MANAGE
+    doc: spec
   - id: 231
     tool: skill_list
     family: READ
