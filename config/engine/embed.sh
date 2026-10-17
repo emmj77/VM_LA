@@ -76,6 +76,12 @@ POOLING=${LA_EMBED_POOLING:-last}
 PID_FILE="$W/embed.pid"
 LOGF="$W/embed.log"
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-$(dirname -- "$BIN")}
+# 100 % CPU, et PAS SEULEMENT pour le calcul : aucune carte ne doit meme etre VISIBLE.
+# Sans cette ligne, ce binaire (compile CUDA) ouvre un contexte de calcul sur les DEUX cartes
+# et y retient de la VRAM pour un modele qui calcule sur le processeur. Mesure du 17/10 :
+# 788 Mo sur la P2200 par le seul embedder, 912 Mo au total sur la P2200 et 856 Mo sur la 3060
+# -- pour les trois residents reunis. Un contexte de calcul vide ne sert a rien ici.
+export CUDA_VISIBLE_DEVICES=""
 
 [ -x "$BIN" ] || { echo "refused: llama-server is missing ($BIN)" >&2 ; exit 1 ; }
 [ -f "$GGUF/$MODEL" ] || { echo "refused: the embedding model is missing ($GGUF/$MODEL)" >&2 ; exit 1 ; }
