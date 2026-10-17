@@ -1,0 +1,35 @@
+skill: "computer-debug"
+source: "agent"
+date: "2026-10-17"
+tags: ["computer-debug", "debug", "systeme", "pc"]
+
+SUMMARY:
+  101: "Quand la machine ne va pas bien : lire les traces, poser le diagnostic, proposer le correctif."
+  102: "On regarde d'abord la charge, puis les erreurs recentes : jamais l'inverse."
+  103: "Un diagnostic sans la trace qui le fonde n'est pas un diagnostic."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "answer"
+  201: "ask"
+  202: "shell_run"
+  203: "process_list"
+  204: "read_file"
+  205: "search"
+  206: "note"
+  207: "progress"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "shell_run ne rend rien : lire le message d'erreur et le NOMMER, ne pas relancer la meme commande."
+STEPS:
+  1: {tool: "process_list", args: "ce qui tourne, cpu, ram", note: "voir l'etat de la machine"}
+  2: {tool: "shell_run", args: "les erreurs recentes : journal / dmesg", note: "lire les traces"}
+  3: {tool: "answer", args: "le diagnostic et sa cause", note: "poser le diagnostic"}
+  4: {tool: "ask", args: "le correctif a appliquer", note: "proposer, ne pas appliquer seul"}

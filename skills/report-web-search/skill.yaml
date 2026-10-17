@@ -1,0 +1,33 @@
+skill: "report-web-search"
+source: "agent"
+date: "2026-10-17"
+tags: ["report-web-search", "rapport", "web", "recherche"]
+
+SUMMARY:
+  101: "Chercher sur le web, puis rendre un RAPPORT ecrit, source."
+  102: "C'est web-search + rapport : on cherche, on lit, et on redige un document."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "web_search"
+  201: "web_extract"
+  202: "write_file"
+  203: "read_file"
+  204: "answer"
+  205: "note"
+  206: "progress"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Pas de source trouvee : le rapport dit ce qui manque, il n'invente pas."
+STEPS:
+  1: {tool: "web_search",  args: "la question, en mots distinctifs", note: "trouver les pages"}
+  2: {tool: "web_extract", args: "les meilleures URLs",              note: "lire en propre"}
+  3: {tool: "write_file",  args: "work/rapport-<sujet>.md",          note: "rediger le rapport"}
+  4: {tool: "answer",      args: "le rapport et ses sources",        note: "rendre"}

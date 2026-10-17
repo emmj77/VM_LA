@@ -1,0 +1,34 @@
+skill: "web-search"
+source: "agent"
+date: "2026-10-17"
+tags: ["web-search", "web", "recherche"]
+
+SUMMARY:
+  101: "Faire une recherche sur le web et ramener la reponse, sourcee."
+  102: "web_search trouve les pages ; web_extract lit UNE page en propre."
+  103: "On cherche, on LIT la meilleure page, et on repond en citant l'URL."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "answer"
+  201: "ask"
+  202: "web_search"
+  203: "web_extract"
+  204: "read_file"
+  205: "write_file"
+  206: "note"
+  207: "progress"
+DOCS:
+  300: "load_doc"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Si web_search ne rend rien : reformuler la requete avec des mots DISTINCTIFS, jamais la repeter telle quelle."
+STEPS:
+  1: {tool: "web_search", args: "la question, en mots distinctifs", note: "trouver les pages"}
+  2: {tool: "web_extract", args: "les une ou deux meilleures URLs", note: "lire la page en propre"}
+  3: {tool: "answer", args: "la reponse + les URLs citees", note: "rendre la reponse sourcee"}
