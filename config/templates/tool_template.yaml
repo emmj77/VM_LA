@@ -1,4 +1,4 @@
-# LE MOULE D'UN TOOL. Un tool = UN FICHIER : tools/<machine>/tool_<nom>.yaml
+# LE MOULE D'UN TOOL. Un tool = UN FICHIER : config/tools/<machine>/tool_<nom>.yaml
 # Le moteur le lit, remplace les trous {{...}}, et ENVOIE LES COMMANDES AU SHELL. Un seul
 # executant : le moteur. Ni .sh a part, ni python (lois 516/517).
 # LE REGISTRE config/la_tools.yaml ne porte QUE : id . tool . family . [doc] . [guardrail] .

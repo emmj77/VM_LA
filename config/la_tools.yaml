@@ -1,7 +1,7 @@
 # LA -- LE REGISTRE DES TOOLS. Un fichier, une entree par tool. Rien d'autre.
 #
 # Le CORPS de chaque tool, sa DESCRIPTION et ses ARGUMENTS vivent dans SON fichier :
-# tools/<machine>/tool_<nom>.yaml (ARGS, COMMAND). Ici, il n'y a QUE la liste.
+# config/tools/<machine>/tool_<nom>.yaml (ARGS, COMMAND). Ici, il n'y a QUE la liste.
 #
 # Ce que le catalogue du 02 - LES OUTILS ecrit pour l'oeil, ce fichier l'ecrit pour la MACHINE.
 #

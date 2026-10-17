@@ -422,9 +422,9 @@ args_text() {  # $1 = bloc ; rend les noms, leur FORME, et ce que la ligne FERME
 
 # --- [5bis] LE FICHIER D'UN TOOL : le corps, la description et les arguments y vivent --------
 # Le REGISTRE (config/la_tools.yaml) ne porte que l'id, le nom, la famille et les garde-fous. Le
-# fichier se DERIVE du nom : tools/<machine>/tool_<nom>.yaml, ou tools/tool_<nom>.yaml a la racine.
+# fichier se DERIVE du nom : config/tools/<machine>/tool_<nom>.yaml, ou config/tools/tool_<nom>.yaml.
 tool_file_of() {  # $1 = le nom du tool ; rend le chemin, ou echoue
-  for D in "$ROOT"/tools/*/ "$ROOT"/tools/; do
+  for D in "$ROOT"/config/tools/*/ "$ROOT"/config/tools/; do
     [ -f "$D/tool_$1.yaml" ] && { printf '%s\n' "$D/tool_$1.yaml"; return 0; }
   done
   return 1

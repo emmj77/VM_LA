@@ -226,11 +226,11 @@ case "$FAMILY" in
 esac
 # --- LE FICHIER DU TOOL : le corps, les arguments et le plafond de temps y vivent -------------
 # Le REGISTRE (config/la_tools.yaml) ne porte plus que l'id, le nom, la famille et les garde-fous.
-# Le corps vit dans tools/<machine>/tool_<nom>.yaml, sous la cle COMMAND ; les arguments sous
+# Le corps vit dans config/tools/<machine>/tool_<nom>.yaml, sous la cle COMMAND ; les arguments sous
 # ARGS ; le plafond de temps du tool sous RULES.timeout. Une ligne qui porte encore son
 # command: est l'ANCIENNE FORME : elle est lue comme avant, le temps de la migration.
 TOOLFILE=
-for TDIR in "$ROOT"/tools/*/ "$ROOT"/tools/; do
+for TDIR in "$ROOT"/config/tools/*/ "$ROOT"/config/tools/; do
   [ -f "$TDIR/tool_$TOOL.yaml" ] && { TOOLFILE="$TDIR/tool_$TOOL.yaml"; break; }
 done
 FABLOC=
@@ -277,7 +277,7 @@ if [ -n "$TOOLFILE" ]; then
   [ "$CMD_COUNT" = 0 ] || refuse_tool "the line $ID ($TOOL) carries a command AND the tool's file carries one : a tool has ONE body, not two ($TOOLFILE)"
 else
   CMD_COUNT=$(printf '%s\n' "$BLOCK" | grep -c '^    command:')
-  [ "$CMD_COUNT" = 1 ] || refuse_tool "the tool $TOOL has no body : the line $ID of the register carries no command, and no tool's file carries one ($ROOT/tools/*/tool_$TOOL.yaml)"
+  [ "$CMD_COUNT" = 1 ] || refuse_tool "the tool $TOOL has no body : the line $ID of the register carries no command, and no tool's file carries one ($ROOT/config/tools/*/tool_$TOOL.yaml)"
   CMD_LINE=$(printf '%s\n' "$BLOCK" | grep '^    command:' | head -n 1)
   case "$CMD_LINE" in
     '    command: |')

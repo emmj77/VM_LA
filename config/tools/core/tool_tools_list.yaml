@@ -13,7 +13,7 @@ DESCRIPTION: "lists the table's tools and each one's arguments, by family"
 
 COMMAND: |
   # LE REGISTRE, ET LES FICHIERS. Les arguments ne vivent plus dans le registre (config/la_tools.yaml)
-  # mais dans le fichier du tool (tools/<machine>/tool_<nom>.yaml, sous la cle ARGS). On parcourt donc
+  # mais dans le fichier du tool (config/tools/<machine>/tool_<nom>.yaml, sous la cle ARGS). On parcourt donc
   # les deux : une entree du registre a la fois, au grep et au sed, comme le moteur le fait lui-meme.
   TBL="$LA_CONFIG"
   [ -n "$TBL" ] || { echo 'refuse : LA_CONFIG est vide ; le registre est inconnu' >&2; exit 1; }
@@ -37,7 +37,7 @@ COMMAND: |
     FA=$(printf '%s\n' "$B" | sed -n 's/^    family:[[:space:]]*//p' | head -n 1)
     if [ -z "$F" ] || [ "$FA" = "$F" ]; then
       FF=
-      for D in "$ROOT"/tools/*/ "$ROOT"/tools/; do
+      for D in "$ROOT"/config/tools/*/ "$ROOT"/config/tools/; do
         [ -f "$D/tool_$T.yaml" ] && { FF="$D/tool_$T.yaml"; break; }
       done
       A=
