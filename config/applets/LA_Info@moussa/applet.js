@@ -25,6 +25,31 @@ const PASTILLE = { ok: "la-actif.svg", ko: "la-disabled.svg" };
 // Ce que la barre montre en permanence : les mesures qui bougent vraiment.
 const EN_BARRE = ["residents", "ram de LA"];
 
+// Un emoticone par mesure : il dit le sujet, la pastille dit l'etat.
+const EMOTICONE = {
+    "LA status": "\u{1F7E2}",
+    "residents": "\u{1F465}",
+    "ram de LA": "\u{1F9E0}",
+    "sessions": "\u{1F4AC}",
+    "last_activity": "\u{23F1}",
+    "engine": "\u{2699}",
+    "table": "\u{1F4CB}",
+    "canon": "\u{1F4D6}",
+    "git": "\u{1F33F}",
+    "doctor": "\u{1FA7A}",
+    "erreurs": "\u{1F41E}",
+    "journal": "\u{1F4D3}",
+    "api": "\u{1F50C}",
+    "endpoint": "\u{1F310}",
+    "api status": "\u{1F4E1}",
+    "pont": "\u{1F309}",
+    "vision": "\u{1F441}",
+};
+
+function emoticoneDe(titre) {
+    return EMOTICONE[titre] || "\u2022";
+}
+
 class LAInfoApplet extends Applet.TextIconApplet {
     constructor(metadata, orientation, panelHeight, instanceId) {
         super(orientation, panelHeight, instanceId);
@@ -119,9 +144,9 @@ class LAInfoApplet extends Applet.TextIconApplet {
 
         const courts = [];
         this._lignes.forEach((l) => {
-            if (EN_BARRE.indexOf(l.titre) > -1) { courts.push(l.verdict); }
+            if (EN_BARRE.indexOf(l.titre) > -1) { courts.push(emoticoneDe(l.titre) + " " + l.verdict); }
         });
-        this.set_applet_label(courts.join(" \u00b7 "));
+        this.set_applet_label(courts.join("  "));
 
         const heure = this._quand ? this._quand.toLocaleTimeString() : "";
         this.set_applet_tooltip(this._lignes.map((l) => l.titre + " : " + l.verdict).join("\n")
@@ -137,9 +162,10 @@ class LAInfoApplet extends Applet.TextIconApplet {
             gicon: Gio.icon_new_for_string(DOSSIER_ICONES + "/" + (PASTILLE[ligne.etat] || PASTILLE.ko)),
             icon_size: 12,
         }), { span: 0 });
+        item.addActor(new St.Label({ text: emoticoneDe(ligne.titre), style_class: "la-info-emoticone" }), { span: 0 });
         item.addActor(new St.Label({ text: ligne.titre, style_class: "la-info-titre" }));
-        item.addActor(new St.Label({ text: ligne.verdict, style_class: "la-info-verdict" }),
-            { span: -1, expand: true, align: St.Align.END });
+        // TOUT A GAUCHE : le verdict suit le titre, il n'est plus pousse contre le bord droit.
+        item.addActor(new St.Label({ text: ligne.verdict, style_class: "la-info-verdict" }));
         return item;
     }
 
