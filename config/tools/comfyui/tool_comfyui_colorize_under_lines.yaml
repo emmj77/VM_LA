@@ -1,6 +1,8 @@
-# QUI : drains the color under the line (color layer under the inking)
-# ORIGINE : migre tel quel de la ligne 162 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
-# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+# QUI : vide la COULEUR la ou passe le trait, pour que l'encrage reste net par-dessus -- ce que faisait le
+#   python, mais en shell. Le trait vient du .kra (rendu par Krita), le creusage est fait par ffmpeg, et
+#   la couleur creusee rentre dans un calque NEUF du .kra, qui est ECRIT.
+# REFUSE : (1) le dessin ou la couleur absents ; (2) le calque du trait absent ; (3) la machine muette.
+# ORIGINE : ecrit le 2026-10-17. Remplace « python3 comfy_tool.py couleur_sous_traits » (PIL).
 tool: "comfyui_colorize_under_lines"
 date: "2026-10-17"
 tags: ["comfyui", "comfyui_colorize_under_lines"]
@@ -9,11 +11,69 @@ doc: comfyui
 
 RULES:
   enabled: true
-  timeout: 300
+  timeout: 600
 
-DESCRIPTION: "drains the color under the line (color layer under the inking)"
+DESCRIPTION: "hollows the colour where the ink line passes, so the line stays clean on top, and writes it back into a new layer"
 
 COMMAND: |
-  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" couleur_sous_traits </dev/null
+  NOM="{{layer}}"; [ -n "$NOM" ] || NOM="encrage"
+  COUL="$W/{{colour}}"
+  [ -f "$COUL" ] || { printf "refuse : la couleur est absente (%s)\n" "$COUL" >&2; exit 1; }
+  EPAIS="{{thicken}}"; case "$EPAIS" in ''|*[!0-9]*) EPAIS=1 ;; esac
+  SERVICE=http://127.0.0.1:5678
+  K() { curl -sS --max-time "$2" -H 'Content-Type: application/json' -d "$1" "$SERVICE/"; }
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1 || { printf "refuse : ffmpeg/ffprobe manquent a la machine\n" >&2; exit 1; }
+  SRC="$W/{{source}}"
+  [ -f "$SRC" ] || { printf "refuse : le dessin est absent (%s)\n" "$SRC" >&2; exit 1; }
+  case "$SRC" in *.kra|*.krz) ;; *) printf "refuse : il faut un .kra (%s)\n" "$SRC" >&2; exit 1 ;; esac
+  K "$(jq -cn --arg p "$SRC" '{action:"open_file",params:{path:$p}}')" 180 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf "refuse : %s ne s'ouvre pas dans Krita\n" "$SRC" >&2; exit 1; }
+  ENC="$NOM"
+  LISTE=$(K '{"action":"list_layers","params":{}}' 60)
+  NOMS=$(printf '%s' "$LISTE" | jq -r '.layers[].name')
+  printf '%s\n' "$NOMS" | grep -Fxq "$ENC" || { printf "refuse : ce dessin n'a pas de calque « %s » (il a : %s)\n" "$ENC" "$(printf '%s' "$NOMS" | tr '\n' ' ')" >&2; exit 1; }
+  VIS=$(printf '%s' "$LISTE" | jq -r '.layers[] | select(.visible) | .name')
+  CACHES=$(printf '%s' "$LISTE" | jq -r '.layers[] | select(.visible|not) | .name')
+  printf '%s\n' "$NOMS" | while IFS= read -r N; do
+    if [ "$N" = "$ENC" ]; then V=true; else V=false; fi
+    K "$(jq -cn --arg n "$N" --argjson v "$V" '{action:"set_layer_visibility",params:{name:$n,visible:$v}}')" 30 >/dev/null
+  done
+  K "$(jq -cn --arg n "$ENC" '{action:"select_layer",params:{name:$n}}')" 30 >/dev/null
+  T="${TMPDIR:-/tmp}"
+  TRAIT="$T/la_trait.png"
+  K "$(jq -cn --arg p "$TRAIT" '{action:"save",params:{path:$p}}')" 300 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf "refuse : la machine n'a pas su rendre le calque %s\n" "$ENC" >&2; exit 1; }
+  [ -s "$TRAIT" ] || { printf "refuse : le calque %s est vide\n" "$ENC" >&2; exit 1; }
+  if printf '%s' "$VIS" | grep -q . ; then printf '%s\n' "$VIS" | while IFS= read -r N; do K "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:true}}')" 30 >/dev/null; done; fi
+  if printf '%s' "$CACHES" | grep -q . ; then printf '%s\n' "$CACHES" | while IFS= read -r N; do K "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:false}}')" 30 >/dev/null; done; fi
+  TAILLE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$TRAIT" 2>/dev/null | tr ',' 'x')
+  L=${TAILLE%x*}; H=${TAILLE#*x}
+  [ -n "$L" ] && [ -n "$H" ] || { printf "refuse : la machine a rendu un calque illisible\n" >&2; exit 1; }
+  printf 'le trait, seul : %s (%sx%s, %s calque(s) au total)\n' "$TRAIT" "$L" "$H" "$(printf '%s' "$NOMS" | grep -c .)"
+  G=""
+  i=0
+  while [ "$i" -lt "$EPAIS" ]; do G="$G,dilation"; i=$((i + 1)); done
+  G="${G#,}"
+  MASQUE="$T/la_masque_trait.png"
+  ffmpeg -y -loglevel error -i "$TRAIT" -vf "alphaextract,lut=y='if(gt(val,60),255,0)'${G:+,$G},format=gray" "$MASQUE" || { printf "refuse : ffmpeg n'a pas su lire le trait\n" >&2; exit 1; }
+  SORTIE="$W/{{output}}"
+  [ -n "{{output}}" ] || SORTIE="$W/couleur_sous_trait.png"
+  ffmpeg -y -loglevel error -i "$COUL" -i "$MASQUE" -filter_complex "[0:v]scale=${L}:${H},format=rgba,split[col][al];[al]alphaextract,format=gray[a];[1:v]format=gray,scale=${L}:${H}[mk];[a][mk]blend=all_mode=subtract,format=gray[m];[col][m]alphamerge[out]" -map "[out]" -frames:v 1 "$SORTIE" || { printf "refuse : ffmpeg n'a pas su creuser la couleur sous le trait\n" >&2; exit 1; }
+  printf "couleur creusee : %s (%s octets)\n" "$SORTIE" "$(wc -c < "$SORTIE")"
+  case "{{keep}}" in
+    file) ;;
+    *)
+      NOM="{{output_layer}}"; [ -n "$NOM" ] || NOM="couleur_sous_trait"
+      K "$(jq -cn --arg p "$SORTIE" --arg n "$NOM" '{action:"import_image",params:{path:$p,name:$n}}')" 300 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf "refuse : la machine n'a pas su poser le calque neuf\n" >&2; exit 1; }
+      K "$(jq -cn --arg p "$SRC" '{action:"save_document",params:{path:$p}}')" 300 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf "refuse : le calque est pose mais %s n'a pas pu etre ecrit\n" "$SRC" >&2; exit 1; }
+      printf "calque %s ecrit dans %s (%s octets)\n" "$NOM" "$SRC" "$(wc -c < "$SRC")"
+      ;;
+  esac
 
-ARGS: []                    # aucun argument : ce tool se nomme seul
+ARGS:
+  - {name: source, type: path}                # le dessin, relatif a l'espace du skill
+  - {name: layer, type: text}                 # le calque du trait (vide : encrage)
+  - {name: colour, type: path}                # l'image de couleur, relative a l'espace du skill
+  - {name: thicken, type: int}                # l'epaississement du trait, en pixels (vide : 1)
+  - {name: output, type: path}                # le PNG de sortie, dans l'espace du skill
+  - {name: output_layer, type: text}          # le nom du calque neuf (vide : couleur_sous_trait)
+  - {name: keep, type: enum, values: [kra, file, ""]}   # kra : rentre dans le .kra ; file : PNG seul
