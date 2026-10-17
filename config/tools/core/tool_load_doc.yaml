@@ -1,6 +1,6 @@
 # QUI : reads a doc of the active skill by its name, before a sensitive tool
-# ORIGINE : migre tel quel de la ligne 137 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
-# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+# ORIGINE : ligne 137 du registre ; corps REECRIT le 2026-10-17 -- il lit la ressource nommee par DOCS.
+# REFUSE : aucun skill actif, ou manifeste du skill introuvable. Une doc absente, elle, ne refuse pas.
 tool: "load_doc"
 date: "2026-10-17"
 tags: ["load_doc"]
@@ -9,18 +9,68 @@ RULES:
   enabled: true
   timeout: 600
 
-DESCRIPTION: "reads a doc of the active skill by its name, before a sensitive tool"
+DESCRIPTION: "reads the doc NAMED by the active skill (DOCS): a file, a folder, or the web"
 
 COMMAND: |
+  # LA DOC DE LA SKILL ACTIVE : elle est NOMMEE par sa section DOCS (loi 1033 : l id 3xx porte la
+  # doc), jamais par un slug libre. La ressource se cherche DANS LE DOSSIER DE LA SKILL, puis a la
+  # racine du depot, puis dans les machines (config/tools/) : un fichier se LIT, un dossier donne son
+  # SEUL fichier utile ou son inventaire, et une ressource absente DIT son absence et renvoie au web.
+  # LA PORTE S OUVRE QUAND MEME : le harnais ne juge pas le contenu lu (loi 1007), et une doc absente
+  # ne doit pas garder le PLAN ferme (loi 702).
   T="{{topic}}"
-  case "$T" in ''|*[!a-zA-Z0-9_.-]*) echo "refuse : topic hors form ($T) ; une doc se nomme par un slug" >&2; exit 1 ;; esac
+  case "$T" in
+    ''|*[!a-zA-Z0-9_.-]*) [ -n "$T" ] && echo "topic hors form ($T) : ignore, la ressource du skill est servie" >&2 ; T= ;;
+  esac
   A=$(sed -n '1p' "$ROOT/skills/.active" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-  case "$A" in ''|*/*|*..*) A=la ;; esac
-  D="$ROOT/skills/$A/docs"
-  [ -d "$D" ] || { echo "refuse : le dossier des docs du skill actif est introuvable ($D)" >&2; exit 1; }
-  F="$D/$T.md"
-  [ -f "$F" ] || { echo "refuse : la doc est introuvable ($F)" >&2; exit 1; }
-  LC_ALL=C sed -n '1,400p' "$F"
+  case "$A" in ''|*/*|*..*) A= ;; esac
+  [ -n "$A" ] || { echo "refuse : aucun skill actif (skills/.active est vide)" >&2; exit 1; }
+  S="$ROOT/skills/$A/skill.yaml"
+  [ -f "$S" ] || { echo "refuse : le manifeste du skill actif est introuvable ($S)" >&2; exit 1; }
+  RES=$(sed -n '/^DOCS:/,/^[^[:space:]]/p' "$S" \
+        | sed -n 's/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
+        | sed -e 's/^"//' -e 's/"$//' | grep -v '^$' | head -n 1)
+  [ -n "$T" ] && RES="$T"
+  if [ -z "$RES" ]; then
+    printf 'la skill %s ne declare aucune ressource de doc (section DOCS vide) : rien a lire.\n' "$A"
+    exit 0
+  fi
+  P=
+  case "$RES" in
+    web_search|web|none) ;;
+    *) for C in "$ROOT/skills/$A/$RES" "$ROOT/$RES" "$ROOT/config/tools/$RES"; do
+         case "$C" in *..*) continue ;; esac
+         [ -e "$C" ] || continue
+         P="$C" ; break
+       done ;;
+  esac
+  if [ -z "$P" ]; then
+    if [ "$RES" = web_search ]; then
+      printf 'LA DOC DE LA SKILL %s vit sur le WEB : cherche-la, lis la bonne source, cite-la.\n' "$A"
+    else
+      printf 'LA DOC DE LA SKILL %s n est pas locale (ressource nommee : %s).\n' "$A" "$RES"
+      printf 'Cherche-la sur le WEB avant de conclure, et cite ce que tu lis.\n'
+    fi
+    exit 0
+  fi
+  if [ -f "$P" ]; then
+    printf 'LA DOC DE LA SKILL %s : %s\n\n' "$A" "$P"
+    LC_ALL=C sed -n '1,400p' "$P"
+    exit 0
+  fi
+  NF=$(find "$P" -maxdepth 1 -type f 2>/dev/null | wc -l)
+  if [ "$NF" -eq 1 ]; then
+    F=$(find "$P" -maxdepth 1 -type f 2>/dev/null)
+    printf 'LA DOC DE LA SKILL %s (le seul fichier de %s) :\n\n' "$A" "$P"
+    LC_ALL=C sed -n '1,400p' "$F"
+    exit 0
+  fi
+  printf 'LA DOC DE LA SKILL %s : le dossier %s (%s fichier(s))\n\n' "$A" "$P" "$NF"
+  find "$P" -maxdepth 1 -type f 2>/dev/null | LC_ALL=C sort | head -n 60 | sed "s|^$P/|  |"
+  SUJ=$(grep -h '^doc:' "$P"/tool_*.yaml 2>/dev/null | sed -e 's/^doc:[[:space:]]*//' -e 's/[[:space:]]*$//' | LC_ALL=C sort -u | grep -v '^$' | tr '\n' ' ')
+  [ -n "$SUJ" ] && printf '\nLE SUJET DE DOCUMENTATION PORTE PAR CE DOSSIER : %s\n' "$SUJ"
+  exit 0
+
 
 ARGS:
   - {name: topic, type: text}

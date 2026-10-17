@@ -9,7 +9,7 @@ RULES:
   enabled: true
   timeout: 600
 
-DESCRIPTION: "writes a section of the active skill's spec, bounded by cap"
+DESCRIPTION: "writes ONE law of the CANON (projects/<active>/spec.yaml), bounded by cap"
 
 COMMAND: |
   SEC="{{section}}"

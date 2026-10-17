@@ -324,3 +324,108 @@ tools:
     tool: krita_save_document
     family: WRITE
     doc: krita
+  - id: 197
+    tool: image2glb
+    family: WRITE
+    doc: 3d
+  - id: 198
+    tool: mesh-convert2fbx
+    family: WRITE
+    doc: 3d
+  - id: 199
+    tool: mesh-render2png
+    family: WRITE
+    doc: 3d
+  - id: 200
+    tool: mesh-measure
+    family: READ
+    doc: 3d
+  - id: 201
+    tool: mesh-inspect
+    family: READ
+    doc: 3d
+  - id: 202
+    tool: sd15-txt2img
+    family: WRITE
+    doc: comfyui
+  - id: 203
+    tool: sdxl-txt2img
+    family: WRITE
+    doc: comfyui
+  - id: 204
+    tool: flux-txt2img
+    family: WRITE
+    doc: comfyui
+  - id: 205
+    tool: sdxl-img2img
+    family: WRITE
+    doc: comfyui
+  - id: 206
+    tool: sdxl-inpaint
+    family: WRITE
+    doc: comfyui
+  - id: 207
+    tool: upscale-4x
+    family: WRITE
+    doc: comfyui
+  - id: 208
+    tool: animatediff-video
+    family: WRITE
+    doc: comfyui
+  - id: 209
+    tool: wan-t2v
+    family: WRITE
+    doc: comfyui
+  - id: 210
+    tool: pixal3d-optimise
+    family: WRITE
+    doc: 3d
+  - id: 211
+    tool: pixal3d-memesgraines
+    family: WRITE
+    doc: 3d
+  - id: 212
+    tool: pixal3d-ref-froid
+    family: WRITE
+    doc: 3d
+  - id: 213
+    tool: pixal3d-texture2048
+    family: WRITE
+    doc: 3d
+  - id: 221
+    tool: unload_project
+    family: WRITE
+    doc: project
+  # --- LES GESTES DU RELEVE DES MICRO-MODELES (17/10/2026) : poses parce qu'ils ont passe le banc.
+  #     Chacun fait UNE chose, il ne joint rien, et sur un modele absent il REFUSE en le nommant.
+  - id: 214
+    tool: read_text_in_img
+    family: READ
+  - id: 215
+    tool: count_lines_of_code
+    family: READ
+  - id: 216
+    tool: find_objects_in_img
+    family: READ
+  - id: 217
+    tool: cut_subject_from_img
+    family: WRITE
+  - id: 218
+    tool: read_depth_of_img
+    family: WRITE
+  - id: 219
+    tool: repair_zone_in_img
+    family: WRITE
+  - id: 220
+    tool: read_language_of_text
+    family: READ
+  # --- LE PREMIER ETAGE (loi 1505) : le filtre de famille, appris sur le corpus du projet.
+  #     train_family_filter APPREND et MESURE (un tour sur quatre de cote) ; guess_family_of_text JUGE.
+  #     223 et 224, PAS 221 : un autre chantier a pris 221 pendant que celui-ci s'ecrivait, et un id
+  #     en double ne fait pas de bruit -- le moteur prend le PREMIER et execute le mauvais outil.
+  - id: 223
+    tool: train_family_filter
+    family: MANAGE
+  - id: 224
+    tool: guess_family_of_text
+    family: READ

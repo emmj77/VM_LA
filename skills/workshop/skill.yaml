@@ -1,5 +1,4 @@
 skill: "workshop"
-source: "agent"
 date: "2026-10-14"
 tags: ["workshop", "skill", "table", "spec"]
 
@@ -18,8 +17,11 @@ TOOLS:
   201: "table_manage"
   202: "write_spec"
   203: "load_doc"
+  204: "list_dir"
+  205: "train_family_filter"
+  206: "guess_family_of_text"
 DOCS:
-  300: "load_doc"
+  300: "web_search"
 PLAN:
 PERIMETER:
   workspace: "work/"

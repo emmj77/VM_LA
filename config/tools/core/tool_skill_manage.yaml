@@ -27,6 +27,27 @@ COMMAND: |
   case "$CH" in ''|*[!0-9]*) CH=100 ;; esac
   CL=$(sed -n 's/^[[:space:]]*lines:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' -- "$SM" | head -n 1)
   case "$CL" in ''|*[!0-9]*) CL=50 ;; esac
+  # L ENVELOPPE DU PROJET : la MEME resolution pour CHARGER et pour LISTER (le miroir : une skill
+  # restreint les TOOLS, un projet restreint les SKILLS). DEUX gestes, jamais un seul : env_name POSE
+  # la variable, envelope REND la liste -- l appeler par PSK=$(envelope) le ferait tourner dans un
+  # sous-shell, et ENV_NAME ne remonterait PAS (paye une fois).
+  env_name() {   # pose ENV_NAME : le projet actif, vide quand il n y en a pas (ou pas de manifeste)
+    PAF="$ROOT/projects/.active"
+    ENV_NAME=
+    if [ -f "$PAF" ] && [ ! -L "$PAF" ]; then
+      ENV_NAME=$(sed -n '1p' "$PAF" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+      case "$ENV_NAME" in ''|*/*|*..*) ENV_NAME= ;; esac
+    fi
+    [ -n "$ENV_NAME" ] || return 0
+    [ -f "$ROOT/projects/$ENV_NAME/project.yml" ] || ENV_NAME=
+    return 0
+  }
+  envelope() {   # rend les skills que le projet ENV_NAME ouvre, une par ligne ; vide = large
+    [ -n "$ENV_NAME" ] || return 0
+    sed -n '/^SKILLS:/,/^[^[:space:]]/p' "$ROOT/projects/$ENV_NAME/project.yml" \
+      | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
+      | sed -e 's/^"//' -e 's/"$//' | grep -v '^$'
+  }
   # LA MARQUE : un skill ECRIT PAR L AGENT porte source: agent. Le source du moule, lui,
   # dit a QUI le moule appartient (humain) -- ce n'est pas ce qu un skill doit porter.
   MARK=agent
@@ -289,20 +310,12 @@ COMMAND: |
   load_skill)
     if [ -L "$SK/$SLUG" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2; exit 1; fi
     [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2; exit 1; }
-    # L ENVELOPPE DU PROJET (le miroir : une skill restreint les TOOLS, un projet restreint les
-    # SKILLS). Quand un projet est actif ET qu il declare une liste SKILLS, la skill doit y etre.
-    # Un projet SANS liste SKILLS laisse le perimetre large.
-    PAF="$ROOT/projects/.active"
-    if [ -f "$PAF" ] && [ ! -L "$PAF" ]; then
-      PN=$(sed -n '1p' "$PAF" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-      case "$PN" in ''|*/*|*..*) PN= ;; esac
-      PJ="$ROOT/projects/$PN/project.yml"
-      if [ -n "$PN" ] && [ -f "$PJ" ]; then
-        PSK=$(sed -n '/^SKILLS:/,/^[^[:space:]]/p' "$PJ" | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' | sed -e 's/^"//' -e 's/"$//' | grep -v '^$')
-        if [ -n "$PSK" ]; then
-          printf '%s\n' "$PSK" | grep -qxF -- "$SLUG" || { echo "refuse : le projet $PN n ouvre pas la skill $SLUG (ses skills : $(printf '%s ' $PSK))" >&2; exit 1; }
-        fi
-      fi
+    # L ENVELOPPE DU PROJET : quand un projet est charge ET qu il declare une liste SKILLS, la
+    # skill demandee doit y etre. Un projet sans liste, ou aucun projet : le perimetre reste large.
+    env_name ; PSK=$(envelope)
+    if [ -n "$ENV_NAME" ] && [ -n "$PSK" ]; then
+      printf '%s\n' "$PSK" | grep -qxF -- "$SLUG" \
+        || { echo "refuse : le projet $ENV_NAME n ouvre pas la skill $SLUG (ses skills : $(printf '%s ' $PSK))" >&2; exit 1; }
     fi
     OUV=$(printf '' | "${PROCS:-$ROOT/config/engine}/plan.sh" status 2>/dev/null) || OUV=
     case "$OUV" in
@@ -319,10 +332,17 @@ COMMAND: |
     cat "$C"
     ;;
   skill_list)
-    N=0
+    # LA LISTE MONTREE EST CELLE QUE LE PROJET OUVRE (loi 705 : hors liste, ce n est pas interdit,
+    # ce n est pas ENVOYE). Le projet est dit EN CLAIR : le modele voit son enveloppe, pas un refus.
+    env_name ; PSK=$(envelope)
+    N=0 ; NT=0
     for F in "$SK"/*/skill.yaml; do
       [ -f "$F" ] || continue
       [ -L "$F" ] && continue
+      NT=$((NT+1))
+      if [ -n "$ENV_NAME" ] && [ -n "$PSK" ]; then
+        printf '%s\n' "$PSK" | grep -qxF -- "$(basename "$(dirname "$F")")" || continue
+      fi
       N=$((N+1))
       NM=$(sed -n 's/^skill: *//p' -- "$F" | head -n 1)
       [ -n "$NM" ] || NM=$(basename "$(dirname "$F")")
@@ -330,7 +350,8 @@ COMMAND: |
       [ -n "$TG" ] || TG="[]"
       printf '%s %s\n' "$NM" "$TG"
     done
-    [ "$N" -ge 1 ] || { echo "refuse : aucun skill sous $SK" >&2; exit 1; }
+    [ -n "$ENV_NAME" ] && printf 'le projet %s ouvre %s skill(s) sur %s\n' "$ENV_NAME" "$N" "$NT"
+    [ "$N" -ge 1 ] || { echo "refuse : aucun skill a montrer (${ENV_NAME:+le projet $ENV_NAME n ouvre aucune skill presente sous }$SK)" >&2; exit 1; }
     ;;
   remove_skill)
     if [ -L "$D" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG) ; on ne retire pas au travers" >&2; exit 1; fi

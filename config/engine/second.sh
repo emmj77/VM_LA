@@ -50,37 +50,18 @@ printf '== THE TASK ==\n'
 printf '%s\n' "$TASK" | bound "$CAP_TASK_L" "$CAP_TASK_C"
 
 # ---- OFFSET 2 : COMMENT LA DEMANDE SE LIT -----------------------------------------------
-# LE PREMIER ETAGE (loi 1505), pose ICI, sur la demande, une fois par tour, et declare : deux faits
-# BORNES, chacun sur UNE ligne, qui ne bougent pas d'un tour a l'autre.
-#   1. `user_emotional_status` : l'humeur de la demande, par config/py/read_emotion.py (GoEmotions
-#      int8, 28 etiquettes, trois plus fortes). L'INSTRUMENT N A APPRIS QUE L ANGLAIS : sur une
-#      demande francaise il se TAIT au lieu de deviner (lois 1557-1558 ; mesure du 17/10 : reproche francais ->
-#      `neutral` 0,90-0,96, le meme reproche en anglais -> `annoyance` 0,79). La porte s'appelle
-#      AVANT de charger le modele : une demande francaise coute la mesure de langue (18 ms), pas
-#      les 340 ms et 307 Mo du chargement.
-#   2. `judged_family` : la famille du perimetre jugee par le filtre fastText (0,4 Mo, 5 ms) que
-#      `train_family_filter` a pose. Le moteur ne s'en sert pas encore comme d'un VERROU : il le
-#      dit. Un verrou demande une justesse MESUREE et declaree (loi 709).
+# LE PREMIER ETAGE (loi 1505), pose ICI, sur la demande, une fois par tour : UN fait BORNE, sur UNE
+# ligne, qui ne bouge pas d'un tour a l'autre.
+#   `judged_family` : la famille du perimetre, jugee par le filtre fastText (0,4 Mo, 5 ms) que
+#   `train_family_filter` a pose. Le moteur ne s'en sert pas encore comme d'un VERROU : il le dit,
+#   et un verrou demande une justesse MESUREE et declaree (loi 709).
+# L'OFFSET 2 RESTE RESERVE : c'est la place de l'humeur de la demande (loi 1555), le jour ou un
+# instrument QUI LIT LE FRANCAIS sera pose. Celui d'anglais a ete debranche et mis au rebut le
+# 17/10 : sur une demande francaise il rendait `neutral` 0,90 et plus (lois 1557-1558).
 # LE MODELE N ECRIT RIEN ICI : ce sont des faits, pas un texte. Un fait qui manque se DIT.
 CAP_READS_L=3; CAP_READS_C=240
 printf '== HOW THE DEMAND READS ==\n'
 {
-  EMO_PY="$CONF_DIR/py/read_emotion.py"
-  if [ -f "$EMO_PY" ] && [ -r "$EMO_PY" ]; then
-    EMO=$(printf '%s\n' "$TASK" | /usr/bin/python3 "$EMO_PY" 2>&1)
-    case "$EMO" in
-      refuse*)
-        printf 'user_emotional_status : non lu -- %s\n' \
-          "$(printf '%s' "$EMO" | sed -e 's/^refuse : //' | head -n 1 | head -c 100)" ;;
-      '')
-        printf 'user_emotional_status : non lu -- le porteur n a rien rendu (%s)\n' "$EMO_PY" ;;
-      *)
-        printf 'user_emotional_status : %s\n' \
-          "$(printf '%s' "$EMO" | head -n 1 | head -c 60)" ;;
-    esac
-  else
-    printf 'user_emotional_status : non lu -- le porteur de l humeur est absent (%s)\n' "$EMO_PY"
-  fi
   FAMF=${LA_FILTER_MODEL:-$CONF_DIR/filtre/famille.bin}
   FAM=
   if [ -f "$FAMF" ] && command -v fasttext >/dev/null 2>&1; then
