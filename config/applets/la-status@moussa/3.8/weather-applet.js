@@ -20687,7 +20687,15 @@ class UIBar {
             icon_type: uiBar_IconType.SYMBOLIC,
             icon_size: 24,
         });
-        this.refreshIcon.hide();
+        // NOTRE BOUTON DE MISE A JOUR. L'icone existe dans la barre de la meteo, mais elle n'avait
+        // AUCUN clic branche et restait cachee : c'etait un voyant d'attente, pas un bouton. Ici
+        // elle est visible, reactive, et elle rafraichit tout de suite.
+        this.refreshIcon.show();
+        this.refreshIcon.reactive = true;
+        this.refreshIcon.connect("button-release-event", () => {
+            void this.app.loop.Refresh();
+            return true;
+        });
         this.actor.add(this.providerCreditButton.actor, {
             x_fill: false,
             x_align: uiBar_Align.END,
@@ -20695,6 +20703,15 @@ class UIBar {
             y_fill: false,
             expand: true
         });
+        if (this._timestamp) {
+            try {
+                this._timestamp.reactive = true;
+                this._timestamp.connect("button-release-event", () => {
+                    void this.app.loop.Refresh();
+                    return true;
+                });
+            } catch (e) { }
+        }
         this.actor.add(this.refreshIcon, {
             x_fill: false,
             x_align: uiBar_Align.END,
@@ -20712,8 +20729,8 @@ class UIBar {
         (_a = this.refreshIcon) === null || _a === void 0 ? void 0 : _a.show();
     }
     HideRefreshIcon() {
-        var _a;
-        (_a = this.refreshIcon) === null || _a === void 0 ? void 0 : _a.hide();
+        // NOTRE BOUTON RESTE VISIBLE. Chez la meteo l'icone ne s'allume que PENDANT la requete :
+        // il n'y avait donc rien a cliquer entre deux mises a jour. Ici c'est un bouton.
     }
     HideHourlyToggle() {
         var _a;
