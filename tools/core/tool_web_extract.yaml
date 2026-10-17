@@ -1,0 +1,24 @@
+# QUI : fetches a web page and returns its text as markdown : this is what READS a page
+# ORIGINE : migre tel quel de la ligne 181 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "web_extract"
+date: "2026-10-17"
+tags: ["web_extract"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "fetches a web page and returns its text as markdown : this is what READS a page"
+
+COMMAND: |
+  # WEB_EXTRACT LIT : il ramene une page du dehors en TEXTE (markdown).
+  # Lightpanda (navigateur headless pour machines) : seul un navigateur voit une page
+  # dont le contenu est pose par du JavaScript. SSL_CERT_FILE est OBLIGATOIRE.
+  U=$(cat); case "$U" in http://*|https://*) ;; *) echo 'refuse : url attendue (http ou https)' >&2; exit 1 ;; esac
+  P=${LA_LIGHTPANDA:-$HOME/.local/bin/lightpanda}; [ -x "$P" ] || { echo "refuse : lightpanda introuvable ($P)" >&2; exit 1; }
+  C=${SSL_CERT_FILE:-/etc/ssl/certs/ca-certificates.crt}
+  SSL_CERT_FILE="$C" CURL_CA_BUNDLE="$C" timeout 60 "$P" fetch --dump markdown "$U" 2>/dev/null | head -c 20000
+
+ARGS:
+  - {name: url, type: text, stdin: true}

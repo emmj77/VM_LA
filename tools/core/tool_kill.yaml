@@ -1,0 +1,55 @@
+# QUI : kills a process by its pid, refuses its own pid and its ancestors
+# ORIGINE : migre tel quel de la ligne 138 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "kill"
+date: "2026-10-17"
+tags: ["kill"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "kills a process by its pid, refuses its own pid and its ancestors"
+
+COMMAND: |
+  P="{{pid}}"
+  S="{{signal}}"
+  case "$S" in "") S=TERM ;; TERM|KILL) ;; *) echo "refuse : signal hors form (${S:-absent}) ; les signaux sont TERM et KILL" >&2; exit 1 ;; esac
+  [ -n "$P" ] || { echo 'refuse : pid vide ; kill tue PAR PID, jamais par motif, et il faut un pid' >&2; exit 1; }
+  case "$P" in *[!0-9]*) echo "refuse : pid hors form ($P) ; un pid est un nombre, chiffres seulement" >&2; exit 1 ;; esac
+  [ "$P" = 0 ] && { echo 'refuse : pid 0 ; kill ne porte jamais au groupe de processus, et 0 n est pas un pid' >&2; exit 1; }
+  [ "$P" = 1 ] && { echo 'refuse : pid 1 ; le tuer arrete la machine' >&2; exit 1; }
+  # LIRE /proc/self DANS CE SHELL : le shell ouvre lui-meme le fichier, donc /proc/self
+  # est bien CE processus (un helper sed, ls ou readlink viserait le sien, pas le notre).
+  HERE=
+  while IFS= read -r L; do
+    case "$L" in "Pid:"*) [ -n "$HERE" ] || HERE=$(printf '%s' "${L#*:}" | tr -d '[:space:]') ;; esac
+  done < /proc/self/status
+  case "$HERE" in ""|*[!0-9]*) HERE=$$ ;; esac
+  # LA CHAINE DES PPID : moi-meme, mon pere, et tous mes ancetres. Aucun n est tuable.
+  A=$HERE
+  GARDE=
+  while [ -n "$A" ]; do
+    [ "$A" = "$P" ] && { GARDE=$A; break; }
+    [ "$A" = 1 ] && break
+    A=$(sed -n 's/^PPid:[[:space:]]*//p' "/proc/$A/status" 2>/dev/null | head -n 1)
+    case "$A" in ""|*[!0-9]*) break ;; esac
+  done
+  [ -z "$GARDE" ] || { echo "refuse : le pid $P est dans ma propre chaine (moi-meme a $HERE, ou un de mes ancetres) ; l agent ne se coupe pas la main, et il ne tue pas le harnais" >&2; exit 1; }
+  [ -d "/proc/$P" ] || { echo "refuse : le pid $P n existe pas ; il n y a aucun processus a tuer" >&2; exit 1; }
+  kill -s "$S" "$P" 2>/dev/null || { echo "refuse : le signal $S n a pas pu etre porte au pid $P" >&2; exit 1; }
+  VIVANT=1
+  i=0
+  while [ "$i" -lt 20 ]; do
+    if [ ! -d "/proc/$P" ]; then VIVANT=0; break; fi
+    E=$(sed -n 's/^State:[[:space:]]*//p' "/proc/$P/status" 2>/dev/null | head -n 1)
+    case "$E" in Z*) VIVANT=0; break ;; esac
+    sleep 0.1
+    i=$((i + 1))
+  done
+  [ "$VIVANT" = 0 ] || { echo "refuse : le pid $P est encore vivant apres le signal $S" >&2; exit 1; }
+  printf 'pid %s tue (signal %s)\n' "$P" "$S"
+
+ARGS:
+  - {name: pid, type: int}
+  - {name: signal, type: enum, values: [TERM, KILL, ""]}

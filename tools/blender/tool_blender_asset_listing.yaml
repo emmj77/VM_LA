@@ -1,0 +1,20 @@
+# QUI : manage asset library index files.
+# ORIGINE : migre tel quel de la ligne 159 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "blender_asset_listing"
+date: "2026-10-17"
+tags: ["blender", "blender_asset_listing"]
+
+blender
+doc: blender
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "manage asset library index files."
+
+COMMAND: |
+  env -u DISPLAY timeout 120 "$HOME/Applications/blender-5.2.2-linux-x64/blender" --background --factory-startup --command asset_listing </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

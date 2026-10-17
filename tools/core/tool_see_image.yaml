@@ -1,0 +1,71 @@
+# QUI : reads a workspace image with the small or the big model
+# ORIGINE : migre tel quel de la ligne 176 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "see_image"
+date: "2026-10-17"
+tags: ["see_image"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "reads a workspace image with the small or the big model"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # DEUX MODELES, UN SEUL OUTIL. Le PETIT (small) tourne sur le CPU, il est leger et
+  # rapide : c est le defaut. Le GROS (big) voit mieux mais il lui faut les cartes :
+  # on le demarre s il ne repond pas, et s il ne tient pas dans la VRAM on le dit.
+  MODELE="${LA_VISION_MODELE:-{{vision_model}}}"
+  [ -n "$MODELE" ] || MODELE=small
+  F="$W/{{path}}"
+  [ -f "$F" ] || { echo "refuse : l image est introuvable ({{path}})" >&2 ; exit 1 ; }
+  case "$F" in
+    *.png) M=image/png ;;
+    *.jpg|*.jpeg) M=image/jpeg ;;
+    *.webp) M=image/webp ;;
+    *.gif) M=image/gif ;;
+    *.bmp) M=image/bmp ;;
+    *) echo "refuse : ce type d image n est pas lu ({{path}}) ; png, jpg, webp, gif ou bmp" >&2 ; exit 1 ;;
+  esac
+  Q=$(cat); [ -n "$Q" ] || Q="Describe this image in one sentence."
+  case "$MODELE" in
+    small)
+      A=http://127.0.0.1:8091
+      NOM=smolvlm
+      ;;
+    big)
+      A=http://127.0.0.1:8092
+      NOM=qwen3-vl-8b-instruct
+      if ! curl -sS -m 2 "$A/health" >/dev/null 2>&1; then
+        BIN=${LA_LLAMA_BIN:-/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-server}
+        GD=${LA_GGUF_DIR:-/home/moussa/LLM_GGUF}
+        [ -x "$BIN" ] || { echo "refuse : le gros modele est arrete et son binaire est introuvable ($BIN)" >&2 ; exit 1 ; }
+        [ -f "$GD/Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf" ] || { echo "refuse : le gros modele n est pas sur la machine ($GD)" >&2 ; exit 1 ; }
+        setsid "$BIN" -m "$GD/Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf" --mmproj "$GD/mmproj-Qwen3VL-8B-Instruct-Q8_0.gguf" --host 127.0.0.1 --port 8092 -ngl 99 --tensor-split 5,4 -c 4096 >/dev/null 2>&1 < /dev/null &
+        VU=0
+        while [ "$VU" -lt 60 ]; do
+          curl -sS -m 2 "$A/health" >/dev/null 2>&1 && { VU=99; break; }
+          VU=$((VU + 1))
+          sleep 2
+        done
+        [ "$VU" = 99 ] || { echo "refuse : le gros modele n a pas demarre en 120 s (la VRAM des cartes est peut-etre prise ; le PETIT modele, lui, reste disponible sur le CPU)" >&2 ; exit 1 ; }
+      fi
+      ;;
+    *) echo "refuse : modele de vision inconnu (${MODELE:-absent}) ; small ou big" >&2 ; exit 1 ;;
+  esac
+  command -v jq >/dev/null 2>&1 || { echo 'refuse : jq est introuvable sur la machine' >&2 ; exit 1 ; }
+  curl -sS -m 2 "$A/health" >/dev/null 2>&1 || { echo "refuse : le service de vision ne repond pas ($A ; modele $MODELE) ; l a-t-on demarre ?" >&2 ; exit 1 ; }
+  TD=$(mktemp -d "${TMPDIR:-/tmp}/see_image.XXXXXX") || { echo 'refuse : aucun espace temporaire' >&2 ; exit 1 ; }
+  trap 'rm -f "$TD/b" "$TD/q"' EXIT INT TERM HUP
+  base64 -w 0 -- "$F" > "$TD/b" || { echo "refuse : l image n a pas pu etre lue ($F)" >&2 ; exit 1 ; }
+  jq -cn --arg m "$M" --rawfile b "$TD/b" --arg q "$Q" --arg n "$NOM" '{model:$n,temperature:0.1,max_tokens:1024,messages:[{role:"user",content:[{type:"image_url",image_url:{url:("data:"+$m+";base64,"+$b)}},{type:"text",text:$q}]}]}' > "$TD/q" || { echo 'refuse : la demande n a pas pu etre montee' >&2 ; exit 1 ; }
+  R=$(curl -sS -m 180 -H 'Content-Type: application/json' --data-binary @"$TD/q" "$A/v1/chat/completions") || { echo "refuse : le service de vision n a pas repondu ($A)" >&2 ; exit 1 ; }
+  T=$(printf '%s' "$R" | jq -r '.choices[0].message.content // empty' 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
+  [ -n "$T" ] || { echo "refuse : le service de vision n a rien rendu (modele $MODELE)" >&2 ; exit 1 ; }
+  printf '%s\n' "$T"
+
+ARGS:
+  - {name: path, type: path}
+  - {name: vision_model, type: text}
+  - {name: question, type: text, stdin: true}

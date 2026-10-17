@@ -1,0 +1,18 @@
+# QUI : lists a project directory, one entry per line, directories marked with a slash
+# ORIGINE : migre tel quel de la ligne 104 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "list_dir"
+date: "2026-10-17"
+tags: ["list_dir"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "lists a project directory, one entry per line, directories marked with a slash"
+
+COMMAND: |
+  LC_ALL=C ls -1p -- "$ROOT/{{path}}"
+
+ARGS:
+  - {name: path, type: path}

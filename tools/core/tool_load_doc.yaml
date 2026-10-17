@@ -1,0 +1,26 @@
+# QUI : reads a doc of the active skill by its name, before a sensitive tool
+# ORIGINE : migre tel quel de la ligne 137 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "load_doc"
+date: "2026-10-17"
+tags: ["load_doc"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "reads a doc of the active skill by its name, before a sensitive tool"
+
+COMMAND: |
+  T="{{topic}}"
+  case "$T" in ''|*[!a-zA-Z0-9_.-]*) echo "refuse : topic hors form ($T) ; une doc se nomme par un slug" >&2; exit 1 ;; esac
+  A=$(sed -n '1p' "$ROOT/skills/.active" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  case "$A" in ''|*/*|*..*) A=la ;; esac
+  D="$ROOT/skills/$A/docs"
+  [ -d "$D" ] || { echo "refuse : le dossier des docs du skill actif est introuvable ($D)" >&2; exit 1; }
+  F="$D/$T.md"
+  [ -f "$F" ] || { echo "refuse : la doc est introuvable ($F)" >&2; exit 1; }
+  LC_ALL=C sed -n '1,400p' "$F"
+
+ARGS:
+  - {name: topic, type: text}

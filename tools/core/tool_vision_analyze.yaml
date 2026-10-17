@@ -1,0 +1,54 @@
+# QUI : reads a workspace image with the API's multimodal model
+# ORIGINE : migre tel quel de la ligne 157 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "vision_analyze"
+date: "2026-10-17"
+tags: ["vision_analyze"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "reads a workspace image with the API's multimodal model"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # LA CLE : ce service-la la reclame, lui seul. Elle vit dans config/.env du projet
+  # (deja a 600). On la charge si l environnement ne la porte pas ; on ne l imprime
+  # JAMAIS, on ne la met ni sur la sortie ni dans un journal.
+  if [ -z "${OLLAMA_API_KEY:-}" ] && [ -r "$ROOT/config/.env" ]; then
+    set -a
+    . "$ROOT/config/.env" 2>/dev/null || true
+    set +a
+  fi
+  KEY=${OLLAMA_API_KEY:-}
+  [ -n "$KEY" ] || { echo 'refuse : aucune cle d API (OLLAMA_API_KEY) ; le service de l API ne peut pas etre appele' >&2 ; exit 1 ; }
+  API=${LA_API_URL:-https://ollama.com/v1}
+  MODELE=${LA_API_MODEL:-deepseek-v4.1-flash}
+  F="$W/{{path}}"
+  [ -f "$F" ] || { echo "refuse : l image est introuvable ({{path}})" >&2 ; exit 1 ; }
+  case "$F" in
+    *.png) M=image/png ;;
+    *.jpg|*.jpeg) M=image/jpeg ;;
+    *.webp) M=image/webp ;;
+    *.gif) M=image/gif ;;
+    *.bmp) M=image/bmp ;;
+    *) echo "refuse : ce type d image n est pas lu ({{path}}) ; png, jpg, webp, gif ou bmp" >&2 ; exit 1 ;;
+  esac
+  Q=$(cat); [ -n "$Q" ] || Q="Decris cette image en detail, en francais."
+  command -v jq >/dev/null 2>&1 || { echo 'refuse : jq est introuvable sur la machine' >&2 ; exit 1 ; }
+  TD=$(mktemp -d "${TMPDIR:-/tmp}/vision_analyze.XXXXXX") || { echo 'refuse : aucun espace temporaire (TMPDIR)' >&2 ; exit 1 ; }
+  trap 'rm -f "$TD/b" "$TD/q"' EXIT INT TERM HUP
+  base64 -w 0 -- "$F" > "$TD/b" || { echo "refuse : l image n a pas pu etre lue ($F)" >&2 ; exit 1 ; }
+  jq -cn --arg m "$M" --rawfile b "$TD/b" --arg q "$Q" --arg mo "$MODELE" '{model:$mo,stream:false,temperature:0.1,max_tokens:2048,messages:[{role:"user",content:[{type:"text",text:$q},{type:"image_url",image_url:{url:("data:"+$m+";base64,"+$b)}}]}]}' > "$TD/q" || { echo 'refuse : la demande n a pas pu etre montee (jq)' >&2 ; exit 1 ; }
+  R=$(curl -sS -m 180 -H 'Content-Type: application/json' -H "Authorization: Bearer $KEY" --data-binary @"$TD/q" "$API/chat/completions") || { echo "refuse : l API n a pas repondu ($API)" >&2 ; exit 1 ; }
+  # UN MODELE A RAISONNEMENT MET SA REPONSE DANS reasoning ET LAISSE content VIDE :
+  # mesure faite sur ce service (200, content vide, tout dans reasoning). On lit
+  # content d abord, reasoning ensuite ; jamais les deux melanges.
+  T=$(printf '%s' "$R" | jq -r 'if ((.choices[0].message.content // "") != "") then .choices[0].message.content else (.choices[0].message.reasoning // "") end' 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
+  [ -n "$T" ] || { echo "refuse : l API n a rien rendu ($(printf '%s' "$R" | tr '\n' ' ' | cut -c1-200))" >&2 ; exit 1 ; }
+  printf '%s\n' "$T"
+
+ARGS:
+  - {name: path, type: path}
+  - {name: question, type: text, stdin: true}

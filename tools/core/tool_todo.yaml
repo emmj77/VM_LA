@@ -1,0 +1,23 @@
+# QUI : opens the plan in the active skill's PLAN: section ; the points arrive one per line
+# ORIGINE : migre tel quel de la ligne 121 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "todo"
+date: "2026-10-17"
+tags: ["todo"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "opens the plan in the active skill's PLAN: section ; the points arrive one per line"
+
+COMMAND: |
+  [ -n "{{name}}" ] || { echo 'refuse : name vide ; todo veut le nom du plan' >&2; exit 1; }
+  [ -n "{{goal}}" ] || { echo 'refuse : goal vide ; todo veut ce que la tache doit produire' >&2; exit 1; }
+  [ -x "$PROCS/plan.sh" ] || { echo "refuse : la brique du plan est introuvable ($PROCS/plan.sh)" >&2; exit 1; }
+  "$PROCS/plan.sh" todo "{{name}}" "{{goal}}"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: goal, type: text}
+  - {name: points, type: text, stdin: true}

@@ -1,0 +1,26 @@
+# QUI : asks the local model (127.0.0.1:8088) a question and returns its answer
+# ORIGINE : migre tel quel de la ligne 113 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "models_ask"
+date: "2026-10-17"
+tags: ["models_ask"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "asks the local model (127.0.0.1:8088) a question and returns its answer"
+
+COMMAND: |
+  P=$(cat); [ -n "$P" ] || { echo 'refuse : prompt vide ou absent' >&2; exit 1; }
+  C=$(printf '%s' "$P" | jq -Rs --arg s "{{system}}" '{model:"local",stream:false,max_tokens:1024,messages:((if $s=="" then [] else [{role:"system",content:$s}] end)+[{role:"user",content:.}])}') || { echo 'refuse : la demande n a pas pu etre montee (jq)' >&2; exit 1; }
+  R=$(curl -s -m 60 -H 'Content-Type: application/json' -d "$C" -w '\n%{http_code}' http://127.0.0.1:8088/v1/chat/completions)
+  K=$(printf '%s' "$R" | tail -n 1); B=$(printf '%s' "$R" | sed '$d')
+  case "$K" in ''|000) echo 'refuse : le modele local est injoignable (127.0.0.1:8088)' >&2; exit 1 ;; esac
+  [ "$K" = 200 ] || { echo "refuse : le service local a render HTTP $K" >&2; exit 1; }
+  T=$(printf '%s' "$B" | jq -r '.choices[0].message.content // empty' 2>/dev/null); [ -n "$T" ] || { echo 'refuse : le modele local n a render aucun texte' >&2; exit 1; }
+  printf '%s\n' "$T"
+
+ARGS:
+  - {name: prompt, type: text, stdin: true}
+  - {name: system, type: text}

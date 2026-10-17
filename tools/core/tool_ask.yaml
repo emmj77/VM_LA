@@ -1,0 +1,18 @@
+# QUI : asks the human a question, the turn waits for the answer
+# ORIGINE : migre tel quel de la ligne 102 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "ask"
+date: "2026-10-17"
+tags: ["ask"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "asks the human a question, the turn waits for the answer"
+
+COMMAND: |
+  cat
+
+ARGS:
+  - {name: question, type: text, stdin: true}

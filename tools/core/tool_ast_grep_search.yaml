@@ -1,0 +1,21 @@
+# QUI : searches a code shape (ast-grep pattern) in the project
+# ORIGINE : migre tel quel de la ligne 117 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "ast_grep_search"
+date: "2026-10-17"
+tags: ["ast_grep_search"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "searches a code shape (ast-grep pattern) in the project"
+
+COMMAND: |
+  PAT=$(cat); [ -n "$PAT" ] || { echo 'refuse : pattern vide ou absent' >&2; exit 1; }
+  cd "$ROOT" || { echo 'refuse : racine du projet introuvable' >&2; exit 1; }
+  R="{{path}}"; [ -n "$R" ] || R=.; ast-grep run --pattern "$PAT" --json=compact -- "$R" | jq -r '.[] | "\(.file):\(.range.start.line+1):\(.text)"'
+
+ARGS:
+  - {name: pattern, type: text, stdin: true}
+  - {name: path, type: path}

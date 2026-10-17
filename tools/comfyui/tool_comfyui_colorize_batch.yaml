@@ -1,0 +1,20 @@
+# QUI : several .kra in a row (cap 10)
+# ORIGINE : migre tel quel de la ligne 165 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "comfyui_colorize_batch"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_colorize_batch"]
+
+comfyui
+doc: comfyui
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "several .kra in a row (cap 10)"
+
+COMMAND: |
+  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" colorier_lot </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

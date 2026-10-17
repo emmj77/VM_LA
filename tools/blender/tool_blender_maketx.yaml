@@ -1,0 +1,20 @@
+# QUI : generate cycles texture cache (.tx) files.
+# ORIGINE : migre tel quel de la ligne 160 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "blender_maketx"
+date: "2026-10-17"
+tags: ["blender", "blender_maketx"]
+
+blender
+doc: blender
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "generate cycles texture cache (.tx) files."
+
+COMMAND: |
+  env -u DISPLAY timeout 120 "$HOME/Applications/blender-5.2.2-linux-x64/blender" --background --factory-startup --command maketx </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

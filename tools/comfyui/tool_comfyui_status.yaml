@@ -1,0 +1,23 @@
+# QUI : says whether the service answers on 127.0.0.1:8188 and its queue
+# ORIGINE : migre tel quel de la ligne 112 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "comfyui_status"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_status"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "says whether the service answers on 127.0.0.1:8188 and its queue"
+
+COMMAND: |
+  A=http://127.0.0.1:8188
+  S=$(curl -sS -m 5 "$A/system_stats" 2>/dev/null || true)
+  [ -n "$S" ] || { echo "joignable: non ; le service ComfyUI ne repond pas sur $A"; exit 0; }
+  Q=$(curl -sS -m 5 "$A/queue" 2>/dev/null || true)
+  R=$(printf '%s' "$Q" | jq -r '.queue_running|length' 2>/dev/null); P=$(printf '%s' "$Q" | jq -r '.queue_pending|length' 2>/dev/null)
+  case "$R" in ''|*[!0-9]*) R=0 ;; esac; case "$P" in ''|*[!0-9]*) P=0 ;; esac
+  printf 'joignable: oui ; file d attente : %s en cours, %s en attente\n' "$R" "$P"
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

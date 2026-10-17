@@ -1,0 +1,20 @@
+# QUI : scaffold ci pipelines that drive the unity cli
+# ORIGINE : migre tel quel de la ligne 141 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "unity_ci"
+date: "2026-10-17"
+tags: ["unity", "unity_ci"]
+
+unity
+doc: unity
+
+RULES:
+  enabled: true
+  timeout: 40
+
+DESCRIPTION: "scaffold ci pipelines that drive the unity cli"
+
+COMMAND: |
+  unity --no-banner --no-pager --non-interactive --format json ci </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

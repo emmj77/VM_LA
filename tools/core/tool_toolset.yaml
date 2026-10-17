@@ -1,0 +1,44 @@
+# QUI : shows the COMPLETE list of the tour's tools (the active skill's palette, plus the permanent tools)
+# ORIGINE : migre tel quel de la ligne 174 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "toolset"
+date: "2026-10-17"
+tags: ["toolset"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "shows the COMPLETE list of the tour's tools (the active skill's palette, plus the permanent tools)"
+
+COMMAND: |
+  # TOOLSET. Le modele le nomme quand un tool lui MANQUE dans le perimetre qu'il a recu :
+  # la boucle ouvre alors le tour EN ENTIER (100%) au tour suivant. Ici, il rend TOUT DE SUITE
+  # la liste entiere (la palette du skill actif PLUS les permanents), pour qu'il voie ce qui existe.
+  A=$(sed -n '1p' "$ROOT/skills/.active" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  case "$A" in ''|*/*|*..*) A=la ;; esac
+  K="$ROOT/skills/$A/skill.yaml"
+  [ -f "$K" ] || { echo "refuse : le skill actif est introuvable ($K)" >&2; exit 1; }
+  T="$ROOT/config/la_tools.yaml"
+  W="$ROOT/work/toolset.$$"
+  SK=$(sed -n '/^TOOLS:/,/^[^[:space:]]/p' "$K" | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' | sed -e 's/^"//' -e 's/"$//' | grep -v '^$' | sort -u)
+  PN=$(sed -n '/^permanent:/,/^[^[:space:]]/p' "$ROOT/config/la_config.yaml" | sed -n 's/^[[:space:]]*-[[:space:]]*//p' | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | sed 's/:.*$//' | grep -v '^$')
+  if [ -n "$SK" ]; then
+    printf '%s\n%s\n' "$SK" "$PN" | grep -v '^$' | sort -u > "$W.names"
+  else
+    awk '/^  - id: /{i=$3} /^    tool: /{t=$2} /^    description:/{d=$0; sub(/^    description: */,"",d); gsub(/"/,"",d); printf "%s|%s|%s\n", i, t, d}' "$T" | awk -F'|' '{print $2}' | sort -u > "$W.names"
+  fi
+  awk -v NAMES="$W.names" '
+    BEGIN { while ((getline n < NAMES) > 0) keep[n] = 1 }
+    /^  - id: /{ i = $3 }
+    /^    tool: /{ t = $2 }
+    /^    description:/{
+      d = $0; sub(/^    description: */, "", d); gsub(/"/, "", d);
+      if (keep[t]) printf "%s  %s  %s\n", i, t, d
+    }' "$T" > "$W"
+  RC=0
+  if [ -s "$W" ]; then cat "$W"; else echo 'refuse : le perimetre du tour ne rend aucun tool' >&2; RC=1; fi
+  rm -f "$W" "$W.names"
+  exit $RC
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

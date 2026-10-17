@@ -1,0 +1,20 @@
+# QUI : colorizes a line drawing (controlnet lineart + lcm)
+# ORIGINE : migre tel quel de la ligne 161 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "comfyui_colorize"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_colorize"]
+
+comfyui
+doc: comfyui
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "colorizes a line drawing (controlnet lineart + lcm)"
+
+COMMAND: |
+  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" colorier </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

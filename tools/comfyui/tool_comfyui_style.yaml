@@ -1,0 +1,20 @@
+# QUI : palette transfer from a reference (ipadapter)
+# ORIGINE : migre tel quel de la ligne 167 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "comfyui_style"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_style"]
+
+comfyui
+doc: comfyui
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "palette transfer from a reference (ipadapter)"
+
+COMMAND: |
+  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" style </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

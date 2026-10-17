@@ -1,0 +1,31 @@
+# QUI : says a text aloud, and writes the wav into config/audio/
+# ORIGINE : migre tel quel de la ligne 173 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "speak"
+date: "2026-10-17"
+tags: ["speak"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "says a text aloud, and writes the wav into config/audio/"
+
+COMMAND: |
+  SRV=127.0.0.1:${LA_TTS_PORT:-8090}
+  curl -s --max-time 5 -f "http://$SRV/health" >/dev/null 2>&1 \
+    || { echo 'refuse : la voix residente ne repond pas (127.0.0.1:8090) ; rien n a demarre' >&2; exit 1; }
+  T=$(cat)
+  [ -n "$T" ] || { echo 'refuse : rien a say ; le texte entre par l entree standard' >&2; exit 1; }
+  Q=$(mktemp "${TMPDIR:-/tmp}/say.XXXXXX") || { echo 'refuse : aucun espace temporaire' >&2 ; exit 1 ; }
+  trap 'rm -f "$Q"' EXIT INT TERM HUP
+  printf '%s' "$T" | python3 -c 'import json,sys; sys.stdout.write(json.dumps({"text": sys.stdin.read()}))' > "$Q" \
+    || { echo 'refuse : la requete de voix n a pas pu etre construite' >&2; exit 1; }
+  OUT=$(curl -s --max-time 300 -X POST "http://$SRV/say" -H 'Content-Type: application/json' --data-binary @"$Q")
+  case "$OUT" in
+    "speech :"*) printf '%s\n' "$OUT" ;;
+    *) echo "refuse : la voix a repondu : ${OUT:-rien}" >&2 ; exit 1 ;;
+  esac
+
+ARGS:
+  - {name: text, type: text, stdin: true}

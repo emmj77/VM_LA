@@ -1,0 +1,21 @@
+# QUI : runs a unity CLI command ; verbs outside the machine are refused
+# ORIGINE : migre tel quel de la ligne 116 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "unity_run"
+date: "2026-10-17"
+tags: ["unity", "unity_run"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "runs a unity CLI command ; verbs outside the machine are refused"
+
+COMMAND: |
+  CMD=$(cat); [ -n "$CMD" ] || { echo 'refuse : command vide ou absente' >&2; exit 1; }
+  set -f; set -- $CMD; set +f; case "$CMD" in *--allow-install*) echo 'refuse : --allow-install installe depuis le dehors' >&2; exit 1 ;; esac
+  case "${1:-}" in unity|*/unity) shift ;; auth|a|cloud|bug|install|i|install-modules|im|uninstall|u|self-update|upgrade|self-uninstall|releases|hub|plugin|analytics|docs|cache|templates|t|vcs|collab|collaboration) echo "refuse : le verbe '${1}' sort de la machine ou installe sur la station" >&2; exit 1 ;; esac
+  exec unity --no-banner --no-pager --non-interactive "$@"
+
+ARGS:
+  - {name: command, type: text, stdin: true}

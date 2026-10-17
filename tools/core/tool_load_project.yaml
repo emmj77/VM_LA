@@ -1,0 +1,25 @@
+# QUI : loads a project : writes projects/.active, then its SKILLS become the perimeter
+# ORIGINE : ecrit pour le PROJECT MANAGER (2026-10-17).
+# REFUSE : un nom vide ; un nom qui sort de projects/ (un / ou un ..) ; un projet absent
+tool: "load_project"
+date: "2026-10-17"
+tags: ["load_project", "project"]
+
+RULES:
+  enabled: true
+  timeout: 60
+
+DESCRIPTION: "loads a project : writes projects/.active, then its SKILLS become the perimeter"
+
+COMMAND: |
+  # LOAD_PROJECT : ecrit projects/.active (le nom, valide sous projects/). Un nom ne sort
+  # jamais de projects/ (refuse / et ..). Jamais un lien.
+  N=$(cat | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  D="$ROOT/projects"
+  case "$N" in ''|*/*|*..*) echo "refuse : nom de projet attendu (sans / ni ..)" >&2; exit 1;; esac
+  [ -f "$D/$N/project.yml" ] || { echo "refuse : $D/$N/project.yml introuvable" >&2; exit 1; }
+  printf '%s\n' "$N" > "$D/.active" || { echo "refuse : ecriture impossible ($D/.active)" >&2; exit 1; }
+  printf 'projet charge : %s\n' "$N"
+
+ARGS:
+  - {name: name, type: text, stdin: true}

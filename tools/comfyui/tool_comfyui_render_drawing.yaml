@@ -1,0 +1,20 @@
+# QUI : flattens a .kra to png/jpg, resizable
+# ORIGINE : migre tel quel de la ligne 163 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "comfyui_render_drawing"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_render_drawing"]
+
+comfyui
+doc: comfyui
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "flattens a .kra to png/jpg, resizable"
+
+COMMAND: |
+  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" rendu_dessin </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

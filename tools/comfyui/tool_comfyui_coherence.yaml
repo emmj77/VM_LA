@@ -1,0 +1,20 @@
+# QUI : coherent character : ipadapter + optional lora + optional openpose pose
+# ORIGINE : migre tel quel de la ligne 168 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "comfyui_coherence"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_coherence"]
+
+comfyui
+doc: comfyui
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "coherent character : ipadapter + optional lora + optional openpose pose"
+
+COMMAND: |
+  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" coherence </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

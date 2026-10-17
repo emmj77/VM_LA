@@ -420,6 +420,38 @@ args_text() {  # $1 = bloc ; rend les noms, leur FORME, et ce que la ligne FERME
   done
 }
 
+# --- [5bis] LE FICHIER D'UN TOOL : le corps, la description et les arguments y vivent --------
+# Le REGISTRE (config/la_tools.yaml) ne porte que l'id, le nom, la famille et les garde-fous. Le
+# fichier se DERIVE du nom : tools/<machine>/tool_<nom>.yaml, ou tools/tool_<nom>.yaml a la racine.
+tool_file_of() {  # $1 = le nom du tool ; rend le chemin, ou echoue
+  for D in "$ROOT"/tools/*/ "$ROOT"/tools/; do
+    [ -f "$D/tool_$1.yaml" ] && { printf '%s\n' "$D/tool_$1.yaml"; return 0; }
+  done
+  return 1
+}
+
+# LA DESCRIPTION : celle du fichier ; a defaut, celle de la ligne (ancienne forme).
+tool_desc() {  # $1 = le nom du tool ; $2 = le bloc de sa ligne
+  TF=$(tool_file_of "$1" 2>/dev/null)
+  if [ -n "$TF" ]; then
+    sed -n 's/^DESCRIPTION:[[:space:]]*//p' "$TF" | head -n 1 | sed -e 's/^"//' -e 's/"$//'
+  else
+    FIELD "$2" description
+  fi
+}
+
+# LES ARGUMENTS : ceux du fichier (sous ARGS), remis a l aplomb d une ligne de table, et donnes au
+# MEME lecteur que les autres — un seul rendu, une seule loi d affichage.
+tool_args_text() {  # $1 = le nom du tool ; $2 = le bloc de sa ligne
+  TF=$(tool_file_of "$1" 2>/dev/null)
+  if [ -n "$TF" ]; then
+    A=$(awk '/^ARGS:/{f=1;next} f&&/^[^ ]/{exit} f{sub(/^  /,"      ");print}' "$TF")
+    args_text "$(printf '    args:\n%s\n    fin\n' "$A")"
+  else
+    args_text "$2"
+  fi
+}
+
 # --- [6] LE SKILL ACTIF : la portee -------------------------------------------
 [ -f "$SKILL" ] || die "the ACTIVE SKILL is not found ($SKILL) : the scope is unknown"
 
@@ -654,7 +686,7 @@ scope_build() {
       [ -n "$(permanent_actions "$TN")" ] && continue
       [ "$TN" = load_doc ] && continue
       [ "$TN" = toolset ] && continue
-      printf '%s|%s|%s\n' "$ID" "$TN" "$(FIELD "$B" description)" >> "$_cand"
+      printf '%s|%s|%s\n' "$ID" "$TN" "$(tool_desc "$TN" "$B")" >> "$_cand"
     done
     rank_share "$_cand" "${REQUEST:-} ${PLAN_TXT:-}" \
       || die "the reranker is silent on 127.0.0.1:${LA_RERANK_PORT:-8095} : the resident must be in RAM (rerank.sh start). This is an ENGINE bug, not a turn."
@@ -684,9 +716,9 @@ scope_build() {
     B=$(block_of_id "$ID") || continue
     TN=$(FIELD "$B" tool)
     FA=$(FIELD "$B" family)
-    DE=$(FIELD "$B" description)
+    DE=$(tool_desc "$TN" "$B")
     if reachable "$TN"; then
-      ARGS=$(args_text "$B")
+      ARGS=$(tool_args_text "$TN" "$B")
       AP=$(permanent_actions "$TN")
       SCOPE_IDS="$SCOPE_IDS$ID "
       SCOPE_TXT="$SCOPE_TXT  $ID  $TN  [$FA]  $DE

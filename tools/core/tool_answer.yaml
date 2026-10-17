@@ -1,0 +1,19 @@
+# QUI : returns the reply to the human and closes the turn
+# ORIGINE : migre tel quel de la ligne 101 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "answer"
+date: "2026-10-17"
+tags: ["answer"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "returns the reply to the human and closes the turn"
+
+COMMAND: |
+  cat
+
+ARGS:
+  - {name: form, type: enum, values: [text, list, table, code]}
+  - {name: text, type: text, stdin: true}

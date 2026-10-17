@@ -1,0 +1,18 @@
+# QUI : returns a project file, as is, without modifying it
+# ORIGINE : migre tel quel de la ligne 103 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "read_file"
+date: "2026-10-17"
+tags: ["read_file"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "returns a project file, as is, without modifying it"
+
+COMMAND: |
+  cat "$ROOT/{{path}}"
+
+ARGS:
+  - {name: path, type: path}

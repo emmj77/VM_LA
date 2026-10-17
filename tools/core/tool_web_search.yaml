@@ -1,0 +1,22 @@
+# QUI : searches the web and returns the links found : title then address, two lines per result
+# ORIGINE : migre tel quel de la ligne 180 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "web_search"
+date: "2026-10-17"
+tags: ["web_search"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "searches the web and returns the links found : title then address, two lines per result"
+
+COMMAND: |
+  # WEB_SEARCH TROUVE, il ne LIT pas : il rend des LIENS (titre + adresse).
+  # Moteur sans cle : ddgr (DuckDuckGo en ligne de commande).
+  Q=$(cat); [ ${#Q} -ge 2 ] || { echo 'refuse : terms vide ou de moins de 2 caracteres' >&2; exit 1; }
+  D=${LA_DDGR:-/usr/bin/ddgr}; [ -x "$D" ] || { echo "refuse : ddgr introuvable ($D)" >&2; exit 1; }
+  timeout 25 "$D" --json -n 8 "$Q" 2>/dev/null | jq -r '.[] | .title + "\n" + .url + "\n"'
+
+ARGS:
+  - {name: terms, type: text, stdin: true}

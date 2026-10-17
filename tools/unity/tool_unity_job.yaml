@@ -1,0 +1,20 @@
+# QUI : manage detached editor command jobs
+# ORIGINE : migre tel quel de la ligne 148 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "unity_job"
+date: "2026-10-17"
+tags: ["unity", "unity_job"]
+
+unity
+doc: unity
+
+RULES:
+  enabled: true
+  timeout: 40
+
+DESCRIPTION: "manage detached editor command jobs"
+
+COMMAND: |
+  unity --no-banner --no-pager --non-interactive --format json job </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

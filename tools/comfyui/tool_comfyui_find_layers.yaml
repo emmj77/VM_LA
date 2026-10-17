@@ -1,0 +1,20 @@
+# QUI : lists a directory's layers and guesses their role
+# ORIGINE : migre tel quel de la ligne 170 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "comfyui_find_layers"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_find_layers"]
+
+comfyui
+doc: comfyui
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "lists a directory's layers and guesses their role"
+
+COMMAND: |
+  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" reperer_calques </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

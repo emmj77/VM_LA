@@ -1,0 +1,20 @@
+# QUI : one-shot diagnostic commands for support paste-safe, redacted output
+# ORIGINE : migre tel quel de la ligne 145 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "unity_diagnose"
+date: "2026-10-17"
+tags: ["unity", "unity_diagnose"]
+
+unity
+doc: unity
+
+RULES:
+  enabled: true
+  timeout: 40
+
+DESCRIPTION: "one-shot diagnostic commands for support paste-safe, redacted output"
+
+COMMAND: |
+  unity --no-banner --no-pager --non-interactive --format json diagnose </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

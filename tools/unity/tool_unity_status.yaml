@@ -1,0 +1,23 @@
+# QUI : says which Unity editors answer, and on which project
+# ORIGINE : migre tel quel de la ligne 115 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "unity_status"
+date: "2026-10-17"
+tags: ["unity", "unity_status"]
+
+unity
+doc: unity
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "says which Unity editors answer, and on which project"
+
+COMMAND: |
+  CLI=$(command -v unity) || { echo 'refuse : le CLI unity est introuvable' >&2; exit 1; }
+  OUT=$(timeout 30 "$CLI" --no-banner --no-pager --non-interactive --format json status </dev/null) || { echo 'refuse : le CLI unity n a pas repondu en 30 s' >&2; exit 1; }
+  [ "$(printf '%s' "$OUT" | jq -r '.data.count // 0')" -gt 0 ] || { echo 'refuse : aucun editeur Unity ne repond' >&2; exit 1; }
+  printf '%s' "$OUT" | jq -r '.data.instances[] | "\(.project) \(.state) port \(.port)"'
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

@@ -1,0 +1,19 @@
+# QUI : tells the human what is happening, without closing the turn
+# ORIGINE : migre tel quel de la ligne 172 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "talk"
+date: "2026-10-17"
+tags: ["talk"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "tells the human what is happening, without closing the turn"
+
+COMMAND: |
+  cat
+
+ARGS:
+  - {name: form, type: enum, values: [text, list, table, code]}
+  - {name: text, type: text, stdin: true}

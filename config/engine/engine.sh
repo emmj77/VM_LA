@@ -224,34 +224,75 @@ case "$FAMILY" in
   READ|WRITE|MANAGE|REPLY) ;;
   *) refuse_tool "the line $ID ($TOOL) carries an off-form family (${FAMILY:-absent}) ; the families are READ, WRITE, MANAGE, REPLY" ;;
 esac
-CMD_COUNT=$(printf '%s\n' "$BLOCK" | grep -c '^    command:')
-[ "$CMD_COUNT" = 1 ] || refuse_tool "the line $ID ($TOOL) is unreadable : it carries $CMD_COUNT command field(s)"
+# --- LE FICHIER DU TOOL : le corps, les arguments et le plafond de temps y vivent -------------
+# Le REGISTRE (config/la_tools.yaml) ne porte plus que l'id, le nom, la famille et les garde-fous.
+# Le corps vit dans tools/<machine>/tool_<nom>.yaml, sous la cle COMMAND ; les arguments sous
+# ARGS ; le plafond de temps du tool sous RULES.timeout. Une ligne qui porte encore son
+# command: est l'ANCIENNE FORME : elle est lue comme avant, le temps de la migration.
+TOOLFILE=
+for TDIR in "$ROOT"/tools/*/ "$ROOT"/tools/; do
+  [ -f "$TDIR/tool_$TOOL.yaml" ] && { TOOLFILE="$TDIR/tool_$TOOL.yaml"; break; }
+done
+FABLOC=
+FTMO=
+FENB=
+if [ -n "$TOOLFILE" ]; then
+  [ -r "$TOOLFILE" ] || refuse_tool "the file of the tool $TOOL is unreadable ($TOOLFILE)"
+  # LE BLOC D'UNE CLE : les lignes indentees qui suivent la cle, jusqu'a la PREMIERE ligne qui ne
+  # l'est pas (la cle suivante), et rien apres. Les lignes vides du corps sont GARDEES telles
+  # quelles : un corps est repris mot pour mot, jamais reflowe.
+  FCMD=$(awk '/^COMMAND: \|$/{f=1;next} f&&/^[^ ]/{exit} f{sub(/^  /,"");print}' "$TOOLFILE")
+  FABLOC=$(awk '/^ARGS:/{f=1;next} f&&/^[^ ]/{exit} f{sub(/^  /,"      ");print}' "$TOOLFILE")
+  FTMO=$(sed -n 's/^  timeout:[[:space:]]*//p' "$TOOLFILE" | head -n 1)
+  FENB=$(sed -n 's/^  enabled:[[:space:]]*//p' "$TOOLFILE" | head -n 1)
+  FVER=$(sed -n 's/^tool:[[:space:]]*//p' "$TOOLFILE" | head -n 1 | sed -e 's/^"//' -e 's/"$//')
+  [ "$FVER" = "$TOOL" ] || refuse_tool "the file of the tool $TOOL names another tool (${FVER:-rien}) : the file and the register must say the same name ($TOOLFILE)"
+  case "$FTMO" in
+    '') ;;
+    *[!0-9]*) refuse_tool "the file of the tool $TOOL carries an off-form timeout (${FTMO}) ; it carries seconds, and digits only" ;;
+    *) TIMEOUT=$FTMO ;;
+  esac
+fi
 
-# --- THE enabled FIELD OF THE LINE : a line WITHOUT enabled is ACTIVE -----------
-# disable_tool writes `enabled: false` on the line ; it is HERE, and only here, that this field
-# becomes an effect. A line that does NOT carry enabled is active.
-EBL=$(printf '%s\n' "$BLOCK" | sed -n 's/^    enabled:[[:space:]]*//p' | head -n 1)
+# --- THE enabled FIELD : a tool WITHOUT enabled is ACTIVE ----------------------
+# Le champ vit dans le fichier du tool (RULES) ; une ligne du registre peut encore le porter
+# (ancienne forme). C'est ICI, et seulement ici, que ce champ devient un effet.
+if [ -n "$TOOLFILE" ]; then
+  EBL=$FENB
+else
+  EBL=$(printf '%s\n' "$BLOCK" | sed -n 's/^    enabled:[[:space:]]*//p' | head -n 1)
+fi
 case "$EBL" in
   ''|true) ;;
-  false) refuse_tool "the tool $TOOL (line $ID) is disabled : its line carries enabled: false, and the engine does not execute it ; reactivate the line (table_manage, enable_tool) before calling it" ;;
-  *)     refuse_tool "the enabled field of the line $ID ($TOOL) is off-form (${EBL}) ; it carries true or false" ;;
+  false) refuse_tool "the tool $TOOL is disabled : its file carries enabled: false, and the engine does not execute it ; reactivate it before calling it (${TOOLFILE:-line $ID})" ;;
+  *)     refuse_tool "the enabled field of the tool $ID ($TOOL) is off-form (${EBL}) ; it carries true or false" ;;
 esac
 
-# --- THE COMMAND OF THE LINE : bare, in single quotes, or as a block | ----------
-CMD_LINE=$(printf '%s\n' "$BLOCK" | grep '^    command:' | head -n 1)
-case "$CMD_LINE" in
-  '    command: |')
-    CMD=$(printf '%s\n' "$BLOCK" | sed -n '/^    command: |$/,$p' | sed '1d' | sed -e 's/^      //')
-    ;;
-  '    command:'*)
-    CMD=$(printf '%s\n' "$CMD_LINE" | sed -e 's/^    command:[[:space:]]*//')
-    case "$CMD" in
-      \'*\') CMD=$(printf '%s' "$CMD" | sed -e "s/^'//" -e "s/'\$//") ;;
-    esac
-    ;;
-  *)
-    refuse_tool "the line $ID ($TOOL) is unreadable : the command field could not be read" ;;
-esac
+# --- THE COMMAND : in the tool's file, or on the line (ancienne forme) ---------
+CMD=
+if [ -n "$TOOLFILE" ]; then
+  CMD=$FCMD
+  [ -n "$CMD" ] || refuse_tool "the file of the tool $TOOL carries no command ($TOOLFILE)"
+  CMD_COUNT=$(printf '%s\n' "$BLOCK" | grep -c '^    command:')
+  [ "$CMD_COUNT" = 0 ] || refuse_tool "the line $ID ($TOOL) carries a command AND the tool's file carries one : a tool has ONE body, not two ($TOOLFILE)"
+else
+  CMD_COUNT=$(printf '%s\n' "$BLOCK" | grep -c '^    command:')
+  [ "$CMD_COUNT" = 1 ] || refuse_tool "the tool $TOOL has no body : the line $ID of the register carries no command, and no tool's file carries one ($ROOT/tools/*/tool_$TOOL.yaml)"
+  CMD_LINE=$(printf '%s\n' "$BLOCK" | grep '^    command:' | head -n 1)
+  case "$CMD_LINE" in
+    '    command: |')
+      CMD=$(printf '%s\n' "$BLOCK" | sed -n '/^    command: |$/,$p' | sed '1d' | sed -e 's/^      //')
+      ;;
+    '    command:'*)
+      CMD=$(printf '%s\n' "$CMD_LINE" | sed -e 's/^    command:[[:space:]]*//')
+      case "$CMD" in
+        \'*\') CMD=$(printf '%s' "$CMD" | sed -e "s/^'//" -e "s/'\$//") ;;
+      esac
+      ;;
+    *)
+      refuse_tool "the line $ID ($TOOL) is unreadable : the command field could not be read" ;;
+  esac
+fi
 [ -n "$CMD" ] || refuse_tool "the line $ID ($TOOL) is unreadable : its command is empty"
 
 # --- THE ACTIVE SKILL : it is there, and nowhere else, that a file is written ---
@@ -295,7 +336,11 @@ case "$FAMILY" in
 esac
 
 # --- [2] AND [3] THE ARGUMENTS : the arity, the type, the path -----------------
-ABLOC=$(printf '%s\n' "$BLOCK" | sed -n '/^    args:/,/^    [a-z]/p' | sed '$d')
+if [ -n "$TOOLFILE" ]; then
+  ABLOC=$FABLOC
+else
+  ABLOC=$(printf '%s\n' "$BLOCK" | sed -n '/^    args:/,/^    [a-z]/p' | sed '$d')
+fi
 NA=$(printf '%s\n' "$ABLOC" | grep -c '^      - {')
 NOT_STDIN=$(printf '%s\n' "$ABLOC" | sed -n 's/^      - {\(.*\)}[[:space:]]*$/\1/p' | grep -c 'stdin:[[:space:]]*true')
 DECLARES=$((NA - NOT_STDIN))

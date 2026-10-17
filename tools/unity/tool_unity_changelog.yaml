@@ -1,0 +1,20 @@
+# QUI : show release notes for the installed cli
+# ORIGINE : migre tel quel de la ligne 140 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "unity_changelog"
+date: "2026-10-17"
+tags: ["unity", "unity_changelog"]
+
+unity
+doc: unity
+
+RULES:
+  enabled: true
+  timeout: 40
+
+DESCRIPTION: "show release notes for the installed cli"
+
+COMMAND: |
+  unity --no-banner --no-pager --non-interactive --format json changelog </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

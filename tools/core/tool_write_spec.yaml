@@ -1,0 +1,98 @@
+# QUI : writes a section of the active skill's spec, bounded by cap
+# ORIGINE : migre tel quel de la ligne 134 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "write_spec"
+date: "2026-10-17"
+tags: ["write_spec"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "writes a section of the active skill's spec, bounded by cap"
+
+COMMAND: |
+  SEC="{{section}}"
+  law_write() {   # $1 fichier  $2 numero  $3 la loi montee : UNE loi, dans SA section
+    F="$1"; ID="$2"; R="$3"
+    T="$F.$$.tmp"
+    awk -v id="$ID" -v new="$R" '
+      function num(s,  a) { if (match(s, /[0-9]+/)) return substr(s, RSTART, RLENGTH) + 0; return -1 }
+      BEGIN { placed = 0 ; band = int(id / 100) * 100 ; inband = 0 ; seen = 0 }
+      /^SECTION : / { if (inband && !placed) { print new ; placed = 1 } inband = 0 ; print ; next }
+      /^  [0-9]+:/ {
+        cur = num($0)
+        if (int(cur / 100) * 100 == band) {
+          if (!inband) { inband = 1 ; seen = 1 }
+          if (cur == id) { print new ; placed = 1 ; next }
+          if (!placed && cur > id) { print new ; placed = 1 }
+        } else if (inband && !placed) { print new ; placed = 1 ; inband = 0 }
+        print ; next
+      }
+      { print }
+      END { if (!placed && !seen) { print "refuse : aucune section du spec ne porte la centaine " band > "/dev/stderr" ; exit 9 } if (!placed) print new }
+    ' "$F" > "$T" || { rm -f "$T" ; return 1 ; }
+    [ -s "$T" ] || { rm -f "$T" ; return 1 ; }
+    # LE CAP JUGE LA LOI QU ON ECRIT, PAS L HERITAGE : le spec porte des lignes trop
+    # longues d avant cette regle, et set_law n a pas a refuser d ecrire a cause d elles.
+    mv -f "$T" "$F" || { rm -f "$T" ; return 1 ; }
+    return 0
+  }
+  LAW="{{law}}"
+  if [ -n "$LAW" ]; then   # UNE loi, par son numero. Jamais le fichier, jamais deux lois.
+    case "$LAW" in *[!0-9]*) echo "refuse : la loi hors form ($LAW) ; une loi est un nombre" >&2 ; exit 1 ;; esac
+    [ -n "$SEC" ] || SEC=free
+    F="$SPEC_FILE"
+    [ -f "$F" ] || { echo "refuse : le spec du skill actif est introuvable ($F)" >&2 ; exit 1; }
+    SK="$SKILL"
+    CH=$(sed -n 's/^[[:space:]]*chars:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' "$SK" | head -n 1)
+    case "$CH" in ''|*[!0-9]*) CH=100 ;; esac
+    BODY=$(cat)
+    V=$(printf '%s\n' "$BODY" | sed -e '/^[[:space:]]*$/d')
+    [ "$(printf '%s\n' "$V" | wc -l | tr -d ' ')" = 1 ] || { echo "refuse : set_law ecrit UNE loi ; j en ai recu plusieurs" >&2 ; exit 1; }
+    V=$(printf '%s' "$V" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    R="  $LAW: \"$V\""
+    [ "$(printf '%s' "$R" | wc -c | tr -d ' ')" -le "$CH" ] || { echo "refuse : la loi $LAW depasse $CH bytes" >&2 ; exit 1; }
+    law_write "$F" "$LAW" "$R" || { echo "refuse : ecriture impossible ($F)" >&2 ; exit 1; }
+    echo "$F : loi $LAW posee ($(printf '%s' "$R" | wc -c | tr -d ' ') bytes)"
+    exit 0
+  fi
+  case "$SEC" in ''|*[!a-zA-Z0-9_]*) echo "refuse : section hors form ($SEC) ; une section est un id de spec" >&2; exit 1 ;; esac
+  F="$SPEC_FILE"
+  [ -f "$F" ] || { echo "refuse : le spec du skill actif est introuvable ($F)" >&2; exit 1; }
+  SK="$SKILL"
+  [ -f "$SK" ] || { echo "refuse : le skill actif est introuvable ($SK)" >&2; exit 1; }
+  CH=$(sed -n 's/^[[:space:]]*chars:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' "$SK" | head -n 1)
+  case "$CH" in ''|*[!0-9]*) CH=100 ;; esac
+  CL=$(sed -n 's/^[[:space:]]*lines:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' "$SK" | head -n 1)
+  case "$CL" in ''|*[!0-9]*) CL=20 ;; esac
+  # LE NOM DE SECTION EST UNE VARIABLE : on n ancre QUE sur le token constant "SECTION : ".
+  grep -q "^SECTION : ${SEC}\$" "$F" || { echo "refuse : la section n existe pas dans le spec ($SEC) ; write_spec remplit, il ne cree pas" >&2; exit 1; }
+  BODY=$(cat)
+  V=$(printf '%s\n' "$BODY" | sed -e '/^[[:space:]]*$/d')
+  N=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+  [ "$N" -ge 1 ] || { echo 'refuse : section vide ; write_spec veut au moins une ligne' >&2; exit 1; }
+  [ "$N" -le "$CL" ] || { echo "refuse : trop de lignes ($N ; la bound cap.lines est $CL)" >&2; exit 1; }
+  LONG=$(printf '%s\n' "$V" | awk -v n="$CH" 'length($0) > n { print NR; exit }')
+  [ -z "$LONG" ] || { echo "refuse : une ligne depasse $CH bytes (ligne $LONG) ; rien n est ecrit" >&2; exit 1; }
+  BAD=$(printf '%s\n' "$V" | grep -vE '^[0-9]+: ' | head -n 1)
+  [ -z "$BAD" ] || { echo "refuse : une ligne hors form ($BAD) ; la shape est '<id>: <texte>'" >&2; exit 1; }
+  TMP="$F.$$.tmp"
+  {
+    sed -n "1,/^${SEC}:/p" "$F" | sed '$d'
+    printf '%s:\n' "$SEC"
+    printf '%s\n' "$V" | sed -e 's/^/  /'
+    sed -n "/^${SEC}:/,\$p" "$F" | sed -e '1d' | sed -n '/^[A-Za-z0-9_]/,$p'
+  } > "$TMP" || { rm -f "$TMP"; echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
+  [ -s "$TMP" ] || { rm -f "$TMP"; echo 'refuse : le montage n a rien ecrit' >&2; exit 1; }
+  grep -q "^${SEC}:" "$TMP" || { rm -f "$TMP"; echo "refuse : la section n a pas ete posee ($SEC)" >&2; exit 1; }
+  AV=$( { sed -n "1,/^${SEC}:/p" "$F" | sed '$d'; sed -n "/^${SEC}:/,\$p" "$F" | sed -e '1d' | sed -n '/^[A-Za-z0-9_]/,$p'; } )
+  AP=$( { sed -n "1,/^${SEC}:/p" "$TMP" | sed '$d'; sed -n "/^${SEC}:/,\$p" "$TMP" | sed -e '1d' | sed -n '/^[A-Za-z0-9_]/,$p'; } )
+  [ "$AV" = "$AP" ] || { rm -f "$TMP"; echo "refuse : une autre section a bouge ; rien n est ecrit ($SEC)" >&2; exit 1; }
+  mv -f "$TMP" "$F" || { rm -f "$TMP"; echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
+  echo "$F : section $SEC posee ($N ligne(s) ; bornes cap.lines=$CL cap.chars=$CH)"
+
+ARGS:
+  - {name: section, type: text}
+  - {name: lines, type: text, stdin: true}
+  - {name: law, type: int}

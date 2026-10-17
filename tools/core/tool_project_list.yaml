@@ -1,0 +1,23 @@
+# QUI : lists the projects : one name per line
+# ORIGINE : ecrit pour le PROJECT MANAGER (2026-10-17).
+# REFUSE : un repertoire projects/ absent (il rend une liste vide, il ne devine pas)
+tool: "project_list"
+date: "2026-10-17"
+tags: ["project_list", "project"]
+
+RULES:
+  enabled: true
+  timeout: 60
+
+DESCRIPTION: "lists the projects : one name per line"
+
+COMMAND: |
+  # PROJECT_LIST LISTE : un nom de projet par ligne.
+  D="$ROOT/projects"
+  [ -d "$D" ] || { echo "aucun projet : $D est absent"; exit 0; }
+  for f in "$D"/*/project.yml; do
+    [ -f "$f" ] || continue
+    sed -n 's/^project:[[:space:]]*//p' "$f" | head -n 1 | tr -d '"'
+  done
+
+ARGS: []

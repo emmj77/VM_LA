@@ -1,0 +1,27 @@
+# QUI : appends a dated entry into memory/, replacing nothing
+# ORIGINE : migre tel quel de la ligne 108 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "note"
+date: "2026-10-17"
+tags: ["note"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "appends a dated entry into memory/, replacing nothing"
+
+COMMAND: |
+  D=$(date -u +%Y-%m-%d)
+  S=$(printf '%s' "{{subject}}" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//')
+  E=$(printf '%s' "{{subject}}" | sed -e 's/[\\&@]/\\&/g')
+  O='{{'; C='}}'; PAT="${O}subject${C}"
+  M="$ROOT/config/templates/memory-entry.md"; T=$(cat)
+  { [ -n "$S" ] && [ -n "$T" ] && [ -r "$M" ]; } || { echo "refuse : subject vide, text vide, ou template_file memory-entry.md introuvable ($M)" >&2; exit 1; }
+  F="$ROOT/memory/${D}_${S}.md"
+  printf '%s\n' "$T" | { sed -n -e "s@{{date}}@$D@g" -e "s@$PAT@$E@g" -e '/{{text}}/q' -e p "$M"; cat; sed -n '1,/{{text}}/d;p' "$M"; } >> "$F" || { echo "refuse : ecriture impossible ($F)" >&2; exit 1; }
+  printf '%s\n' "memory/${D}_${S}.md"
+
+ARGS:
+  - {name: subject, type: text}
+  - {name: text, type: text, stdin: true}

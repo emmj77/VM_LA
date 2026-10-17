@@ -1,0 +1,20 @@
+# QUI : writes a file into the skill workspace, in three modes
+# ORIGINE : migre tel quel de la ligne 105 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "write_file"
+date: "2026-10-17"
+tags: ["write_file"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "writes a file into the skill workspace, in three modes"
+
+COMMAND: |
+  case "{{mode}}" in new) [ -e "$W/{{path}}" ] && { echo "refuse: existe deja" >&2; exit 1; }; cat > "$W/{{path}}" ;; append) [ -f "$W/{{path}}" ] || { echo "refuse: absent" >&2; exit 1; }; cat >> "$W/{{path}}" ;; replace) [ -f "$W/{{path}}" ] || { echo "refuse: absent" >&2; exit 1; }; cat > "$W/{{path}}" ;; esac
+
+ARGS:
+  - {name: path, type: path}
+  - {name: mode, type: enum, values: [new, append, replace]}
+  - {name: text, type: text, stdin: true}

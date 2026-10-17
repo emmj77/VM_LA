@@ -1,0 +1,171 @@
+# QUI : manages the table itself : adds, removes, enables or disables a line
+# ORIGINE : migre tel quel de la ligne 127 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "table_manage"
+date: "2026-10-17"
+tags: ["table_manage"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "manages the table itself : adds, removes, enables or disables a line"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  A="{{action}}"
+  ID="{{id}}"
+  T="{{tool}}"
+  FAM="{{family}}"
+  DES="{{description}}"
+  TBL="$LA_CONFIG"
+  [ -n "$TBL" ] || { echo 'refuse : LA_CONFIG est vide ; la table est inconnue' >&2; exit 1; }
+  [ -f "$TBL" ] || { echo "refuse : la table est introuvable ($TBL)" >&2; exit 1; }
+  [ -r "$TBL" ] || { echo "refuse : la table est illisible ($TBL)" >&2; exit 1; }
+  [ -w "$TBL" ] || { echo "refuse : la table n est pas inscriptible ($TBL)" >&2; exit 1; }
+  case "$A" in
+    add_tool|delete_tool|enable_tool|disable_tool) ;;
+    *) echo "refuse : action inconnue (${A:-absente}) ; add_tool, delete_tool, enable_tool, disable_tool" >&2; exit 1 ;;
+  esac
+  case "$ID" in ''|*[!0-9]*) echo "refuse : id hors form (${ID:-absent}) ; un id est un nombre, chiffres seulement" >&2; exit 1 ;; esac
+  AV=$(wc -c < "$TBL"); NL=$(wc -l < "$TBL")
+  TD=$(mktemp -d "${TMPDIR:-/tmp}/table_manage.XXXXXX") || { echo 'refuse : aucun espace temporaire (TMPDIR)' >&2; exit 1; }
+  fin() { [ -n "$TD" ] || return 0; rm -f "$TD/a" "$TD/b" "$TD/c" "$TD/d" "$TD/bloc" "$TD/entry" "$TD/tbl" 2>/dev/null; rmdir "$TD" 2>/dev/null; }
+  trap fin EXIT INT TERM HUP
+  ligne() {
+    DEB=$(grep -n "^  - id: $1[[:space:]]*\$" "$TBL" | head -n 1 | cut -d: -f1)
+    [ -n "$DEB" ] || return 1
+    END=$(grep -n '^  - id: ' "$TBL" | cut -d: -f1 | while IFS= read -r n; do [ "$n" -gt "$DEB" ] && { printf '%s\n' "$n"; break; }; done)
+    TOTAL=$(wc -l < "$TBL")
+    END=${END:-$((TOTAL + 1))}
+    return 0
+  }
+  block() { sed -n "${DEB},$((END - 1))p" "$TBL"; }
+  if [ "$A" = add_tool ]; then
+    case "$T" in ''|*[!a-z0-9_]*) echo "refuse : tool hors form (${T:-absent}) ; minuscules, chiffres et soulignes" >&2; exit 1 ;; esac
+    [ ${#T} -le 40 ] || { echo "refuse : tool trop long (${#T} bytes ; la bound est 40)" >&2; exit 1; }
+    grep -q "^    tool: $T[[:space:]]*\$" "$TBL" && { echo "refuse : la table porte deja le tool $T" >&2; exit 1; }
+    grep -q "^  - id: $ID[[:space:]]*\$" "$TBL" && { echo "refuse : l id $ID est deja dans la table" >&2; exit 1; }
+    case "$FAM" in READ|WRITE|MANAGE|REPLY) ;; *) echo "refuse : family hors form (${FAM:-absente}) ; READ, WRITE, MANAGE ou REPLY" >&2; exit 1 ;; esac
+    [ -n "$DES" ] || { echo 'refuse : description vide ; add_tool veut une phrase sur ce que le tool couvre' >&2; exit 1; }
+    [ ${#DES} -le 80 ] || { echo "refuse : description trop longue (${#DES} bytes ; la bound est 80)" >&2; exit 1; }
+    cat > "$TD/entry" || { echo 'refuse : le corps de la ligne n a pas pu etre lu' >&2; exit 1; }
+    [ -s "$TD/entry" ] || { echo 'refuse : corps vide ; add_tool attend args et command sur l entree standard' >&2; exit 1; }
+    TB=$(printf '\t')
+    grep -q "$TB" "$TD/entry" && { echo 'refuse : le corps porte une tabulation ; la table s indente a l espace' >&2; exit 1; }
+    BAD=$(grep -nvE '^(    [^ ]|     |$)' "$TD/entry" | head -n 1)
+    [ -z "$BAD" ] || { echo "refuse : corps hors form, $BAD ; une ligne du corps porte quatre espaces puis un champ, ou au moins cinq" >&2; exit 1; }
+    BAD=$(grep -nE '^    (id|tool|family|scope|description|enabled):' "$TD/entry" | head -n 1)
+    [ -z "$BAD" ] || { echo "refuse : corps hors form, $BAD ; les en-tetes viennent des arguments, jamais du corps" >&2; exit 1; }
+    grep -qE '^  - ' "$TD/entry" && { echo 'refuse : le corps porte une ligne d entree ; add_tool ajoute UNE ligne, et il l assemble lui-meme' >&2; exit 1; }
+    NA=$(grep -cE '^    args:' "$TD/entry")
+    [ "$NA" = 1 ] || { echo "refuse : le corps doit porter un args, et un seul (trouve $NA)" >&2; exit 1; }
+    NC=$(grep -cE '^    command:' "$TD/entry")
+    [ "$NC" = 1 ] || { echo "refuse : le corps doit porter une command, et une seule (trouve $NC)" >&2; exit 1; }
+    CL=$(grep -nE '^    command:' "$TD/entry" | head -n 1 | cut -d: -f1)
+    CLINE=$(sed -n "${CL}p" "$TD/entry")
+    Q=$(printf '%s' "$CLINE" | tr -cd "'" | wc -c | tr -d ' ')
+    [ $((Q % 2)) -eq 0 ] || { echo 'refuse : la command porte un quote non ferme' >&2; exit 1; }
+    {
+      printf '\n  - id: %s\n    tool: %s\n    family: %s\n    description: "%s"\n' "$ID" "$T" "$FAM" "$DES"
+      printf '%s\n' "$(cat "$TD/entry")"
+    } > "$TD/bloc"
+    [ "$(grep -c "^  - id: $ID\$" "$TD/bloc")" = 1 ] || { echo 'refuse : le montage de la ligne a echoue' >&2; exit 1; }
+    if [ "${LA_APPROVED:-0}" != 1 ]; then
+      printf 'approbation requise : ajouter la ligne id %s (%s) a la table %s\n' "$ID" "$T" "$TBL"
+      printf 'la ligne assemblee ; rien n est ecrit avant votre accord :\n'
+      cat "$TD/bloc"
+      exit 3
+    fi
+    cp "$TBL" "$TD/a" || { echo 'refuse : la table n a pas pu etre relue avant ecriture' >&2; exit 1; }
+    cat "$TD/bloc" >> "$TBL" || { echo "refuse : ecriture impossible ($TBL)" >&2; exit 1; }
+    head -c "$AV" "$TBL" > "$TD/b"
+    cmp -s "$TD/a" "$TD/b" || { cp "$TD/a" "$TBL"; echo 'refuse : la table a bouge hors de la ligne ajoutee ; la table est rendue' >&2; exit 1; }
+    grep -q "^  - id: $ID\$" "$TBL" || { cp "$TD/a" "$TBL"; echo "refuse : la ligne $ID n a pas ete ecrite ($TBL)" >&2; exit 1; }
+    AP=$(wc -c < "$TBL"); LP=$(wc -l < "$TBL")
+    echo "table : id $ID ($T, $FAM) ajoute ; $((AP - AV)) octet(s) et $((LP - NL)) ligne(s) posees en fin de table, aucune autre ligne touchee"
+    exit 0
+  fi
+  ligne "$ID" || { echo "refuse : l id $ID n est pas dans la table ($TBL)" >&2; exit 1; }
+  NM=$(block | sed -n 's/^    tool:[[:space:]]*//p' | head -n 1)
+  [ -n "$NM" ] || { echo "refuse : la ligne $ID est illisible : elle ne porte pas de champ tool" >&2; exit 1; }
+  if [ -n "$T" ]; then
+    [ "$T" = "$NM" ] || { echo "refuse : la ligne $ID porte le tool $NM, pas $T" >&2; exit 1; }
+  fi
+  if [ "$A" = delete_tool ]; then
+    case "$NM" in
+      skill_manage|table_manage|load_skill|todo|progress)
+        echo "refuse : la ligne $ID ($NM) porte un MANAGER ; on ne se coupe pas la main, ce retrait est refuse en le nommant, et il ne passe JAMAIS par une approbation" >&2
+        exit 1 ;;
+    esac
+    CUT=0; DP=0
+    if [ "$END" -gt "$TOTAL" ]; then
+      [ -z "$(sed -n "$((DEB - 1))p" "$TBL")" ] && DP=1
+    else
+      [ -z "$(sed -n "$((DEB - 1))p" "$TBL")" ] && [ -z "$(sed -n "${END}p" "$TBL")" ] && CUT=1
+    fi
+    RT=$((END - DEB + CUT + DP))
+    if [ "${LA_APPROVED:-0}" != 1 ]; then
+      printf 'approbation requise : retirer la ligne id %s (%s) de la table %s\n' "$ID" "$NM" "$TBL"
+      printf '%s ligne(s) sortent de la table ; aucune autre ne bouge :\n' "$RT"
+      block
+      exit 3
+    fi
+    H=$((DEB - 1 - DP)); T2=$((END + CUT))
+    { head -n "$H" "$TBL"; tail -n "+$T2" "$TBL"; } > "$TD/tbl"
+    grep -q "^  - id: $ID[[:space:]]*\$" "$TD/tbl" && { echo "refuse : la ligne $ID est restee ($TBL)" >&2; exit 1; }
+    head -n "$H" "$TBL" > "$TD/a"; head -n "$H" "$TD/tbl" > "$TD/b"
+    cmp -s "$TD/a" "$TD/b" || { echo 'refuse : la tete de la table a bouge ; rien n est ecrit' >&2; exit 1; }
+    tail -n "+$T2" "$TBL" > "$TD/c"; tail -n "+$((H + 1))" "$TD/tbl" > "$TD/d"
+    cmp -s "$TD/c" "$TD/d" || { echo 'refuse : la queue de la table a bouge ; rien n est ecrit' >&2; exit 1; }
+    mv -f "$TD/tbl" "$TBL" || { echo "refuse : ecriture impossible ($TBL)" >&2; exit 1; }
+    grep -q "^  - id: $ID[[:space:]]*\$" "$TBL" && { echo "refuse : la ligne $ID est revenue ($TBL)" >&2; exit 1; }
+    echo "table : id $ID ($NM) retire ; $RT ligne(s) sorties, aucune autre ligne touchee"
+    exit 0
+  fi
+  REL=$(block | grep -n '^    enabled:' | head -n 1 | cut -d: -f1)
+  ABS=
+  [ -z "$REL" ] || ABS=$((DEB + REL - 1))
+  if [ "$A" = enable_tool ]; then EMPTY=true; NEUF='    enabled: true'; else EMPTY=false; NEUF='    enabled: false'; fi
+  if [ -n "$ABS" ]; then
+    CUR=$(sed -n "${ABS}p" "$TBL" | sed -e 's/^    enabled:[[:space:]]*//' -e 's/[[:space:]]*$//')
+    case "$CUR" in true|false) ;; *) echo "refuse : le champ enabled de l id $ID est hors form (${CUR}) ; il porte true ou false" >&2; exit 1 ;; esac
+  else
+    CUR=true
+  fi
+  if [ "$CUR" = "$EMPTY" ]; then
+    echo "table : id $ID ($NM) est deja $EMPTY ; 0 octet change, $TBL intact"
+    exit 0
+  fi
+  if [ "$A" = enable_tool ] && [ "${LA_APPROVED:-0}" != 1 ]; then
+    printf 'approbation requise : reactiver le tool %s (id %s) ; sa ligne enabled passe de false a true, ligne %s de %s\n' "$NM" "$ID" "$ABS" "$TBL"
+    printf 'aucune autre ligne ne bouge ; rien n est ecrit avant votre accord\n'
+    exit 3
+  fi
+  DEC=1
+  if [ -n "$ABS" ]; then
+    { head -n "$((ABS - 1))" "$TBL"; printf '%s\n' "$NEUF"; tail -n "+$((ABS + 1))" "$TBL"; } > "$TD/tbl"
+  else
+    SCL=$(block | grep -n '^    family:' | head -n 1 | cut -d: -f1)
+    [ -n "$SCL" ] || SCL=$(block | grep -n '^    tool:' | head -n 1 | cut -d: -f1)
+    [ -n "$SCL" ] || { echo "refuse : la ligne $ID ($NM) ne porte ni family ni tool ; enabled ne se pose pas" >&2; exit 1; }
+    ABS=$((DEB + SCL - 1))
+    DEC=2
+    { head -n "$ABS" "$TBL"; printf '%s\n' "$NEUF"; tail -n "+$((ABS + 1))" "$TBL"; } > "$TD/tbl"
+  fi
+  head -n "$((ABS - 1))" "$TBL" > "$TD/a"; head -n "$((ABS - 1))" "$TD/tbl" > "$TD/b"
+  cmp -s "$TD/a" "$TD/b" || { echo 'refuse : la table a bouge avant la ligne touchee ; rien n est ecrit' >&2; exit 1; }
+  tail -n "+$((ABS + 1))" "$TBL" > "$TD/c"; tail -n "+$((ABS + DEC))" "$TD/tbl" > "$TD/d"
+  cmp -s "$TD/c" "$TD/d" || { echo 'refuse : la table a bouge apres la ligne touchee ; rien n est ecrit' >&2; exit 1; }
+  cmp -s "$TBL" "$TD/tbl" && { echo "refuse : rien n a change (id $ID)" >&2; exit 1; }
+  mv -f "$TD/tbl" "$TBL" || { echo "refuse : ecriture impossible ($TBL)" >&2; exit 1; }
+  AP=$(wc -c < "$TBL"); LP=$(wc -l < "$TBL")
+  echo "table : id $ID ($NM) enabled $CUR -> $EMPTY ; ligne $ABS, $((AP - AV)) octet(s) et $((LP - NL)) ligne(s) ; aucune autre ligne ne bouge"
+
+ARGS:
+  - {name: action, type: enum, values: [add_tool, delete_tool, enable_tool, disable_tool]}
+  - {name: id, type: int}
+  - {name: tool, type: text}
+  - {name: family, type: enum, values: [READ, WRITE, MANAGE, REPLY, ""]}
+  - {name: description, type: text}
+  - {name: entry, type: text, stdin: true}

@@ -1,0 +1,20 @@
+# QUI : show or change the cli display language
+# ORIGINE : migre tel quel de la ligne 150 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "unity_language"
+date: "2026-10-17"
+tags: ["unity", "unity_language"]
+
+unity
+doc: unity
+
+RULES:
+  enabled: true
+  timeout: 40
+
+DESCRIPTION: "show or change the cli display language"
+
+COMMAND: |
+  unity --no-banner --no-pager --non-interactive --format json language </dev/null
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

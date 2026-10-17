@@ -1,0 +1,18 @@
+# QUI : searches a fixed text across the project, returns the files that carry it
+# ORIGINE : migre tel quel de la ligne 106 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "search"
+date: "2026-10-17"
+tags: ["search"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "searches a fixed text across the project, returns the files that carry it"
+
+COMMAND: |
+  T=$(cat); [ ${#T} -ge 3 ] || { echo "refuse: texte de moins de 3 caracteres" >&2; exit 1; }; cd "$ROOT" && LC_ALL=C grep -rlF -- "$T" . | LC_ALL=C sort | cut -c3-
+
+ARGS:
+  - {name: text, type: text, stdin: true}

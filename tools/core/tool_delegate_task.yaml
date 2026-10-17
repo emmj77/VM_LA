@@ -1,0 +1,24 @@
+# QUI : hands a short task to an agent below, and returns its reply
+# ORIGINE : migre tel quel de la ligne 110 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "delegate_task"
+date: "2026-10-17"
+tags: ["delegate_task"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "hands a short task to an agent below, and returns its reply"
+
+COMMAND: |
+  case "{{turns}}" in ''|*[!0-9]*) T=3 ;; *) T={{turns}} ;; esac
+  { [ "$T" -ge 1 ] && [ "$T" -le 6 ]; } || { echo "refuse : turns hors bornes 1..6 ({{turns}})" >&2; exit 1; }
+  [ "${LA_DEPTH:-0}" = 0 ] || { echo "refuse : la profondeur est deja ${LA_DEPTH} ; un agent en dessous ne descend jamais plus bas que 1" >&2; exit 1; }
+  B="${LA_LOOP:-$(dirname "${LA_CONFIG:?la table est inconnue}")/engine/loop.sh}"
+  [ -f "$B" ] || { echo "refuse : la boucle est absente ($B)" >&2; exit 1; }
+  cat | LA_ROOT="${LA_ROOT:?}" LA_TABLE="$LA_CONFIG" LA_DEPTH=1 LA_MAX_TURNS="$T" timeout 120 sh "$B"
+
+ARGS:
+  - {name: goal, type: text, stdin: true}
+  - {name: turns, type: int}

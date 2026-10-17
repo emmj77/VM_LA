@@ -1,0 +1,24 @@
+# QUI : says whether the local model answers on 127.0.0.1:8088 and which one it serves
+# ORIGINE : migre tel quel de la ligne 114 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
+# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+tool: "models_status"
+date: "2026-10-17"
+tags: ["models_status"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "says whether the local model answers on 127.0.0.1:8088 and which one it serves"
+
+COMMAND: |
+  A=http://127.0.0.1:8088
+  H=$(curl -s -m 5 -w '\n%{http_code}' "$A/health"); M=$(curl -s -m 5 -w '\n%{http_code}' "$A/v1/models")
+  HC=$(printf '%s' "$H" | tail -n 1); MC=$(printf '%s' "$M" | tail -n 1)
+  J=non; case "$HC" in ''|000) ;; *) J=oui ;; esac; case "$MC" in ''|000) ;; *) J=oui ;; esac
+  [ "$J" = oui ] || { echo "joignable: non ; le service llama.cpp ne repond pas sur $A (est-il demarre ?)"; exit 0; }
+  MO=$(printf '%s' "$M" | sed '$d' | jq -r '.data[0].id // .models[0].name // empty' 2>/dev/null | sed 's@.*/@@'); [ -n "$MO" ] || MO=inconnu
+  HS=$(printf '%s' "$H" | sed '$d' | jq -r '.status // empty' 2>/dev/null); [ -n "$HS" ] || HS="HTTP $HC"
+  printf 'joignable: oui ; health: %s ; modele servi: %s\n' "$HS" "$MO"
+
+ARGS: []                    # aucun argument : ce tool se nomme seul
