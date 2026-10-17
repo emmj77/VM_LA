@@ -11044,7 +11044,7 @@ function OWMIconToCustomIcon(icon) {
         case "13n":
             return "night-alt-snow-symbolic";
         case "50d":
-            return "day-fog-symbolic";
+            return "la-inconnu";
         case "50n":
             return "night-fog-symbolic";
         case "04d":
@@ -12656,7 +12656,7 @@ class Weatherbit {
             case "a04d":
             case "a05d":
             case "a06d":
-                return "day-fog-symbolic";
+                return "la-inconnu";
             case "a01n":
             case "a02n":
             case "a03n":
@@ -12916,7 +12916,7 @@ class ClimacellV4 {
                 return {
                     main: _("Fog"),
                     description: _("Light fog"),
-                    customIcon: isNight ? "night-fog-symbolic" : "day-fog-symbolic",
+                    customIcon: isNight ? "night-fog-symbolic" : "la-inconnu",
                     icons: ["weather-fog"]
                 };
             case 3000:
@@ -14777,7 +14777,7 @@ class AccuWeather {
                 };
             case 5:
                 return {
-                    customIcon: day ? "day-fog-symbolic" : "night-fog-symbolic",
+                    customIcon: day ? "la-inconnu" : "night-fog-symbolic",
                     icons: [day ? "weather-clear" : "weather-clear-night"]
                 };
             case 6:
@@ -18360,6 +18360,8 @@ var LocationProvider;
 // fournisseur de cette applet rend. Tout le reste -- l'applet, sa barre, son menu, ses icones --
 // est la meteo, copiee telle quelle.
 const CHEMIN_TABLEAU = imports.gi.GLib.get_home_dir() + "/Documents/VM_LA/config/engine/board.sh";
+const DOSSIER_ICONES = imports.gi.GLib.get_home_dir()
+                     + "/.local/share/cinnamon/applets/la-status@moussa/icons/";
 
 function LireLesMesures() {
     return new Promise((ok) => {
@@ -18388,10 +18390,10 @@ class LA {
             const fautes = mesures.filter((m) => m.etat === "ko").length;
             const quand = DateTime.local();
             const rien = mesures.length === 0;
-            const icone = fautes > 0 ? "day-lightning-symbolic"
-                                     : (rien ? "day-fog-symbolic" : "day-clear-symbolic");
+            const icone = fautes > 0 ? "la-disabled"
+                                     : (rien ? "la-inconnu" : "la-actif");
             const etat = fautes > 0 ? fautes + (fautes > 1 ? " fautes" : " faute")
-                                    : (rien ? "?" : "tient");
+                                    : (rien ? "?" : (fautes ? "disabled" : "actif"));
             return {
                 date: quand,
                 temperature: null,
@@ -18411,8 +18413,8 @@ class LA {
                     condition: {
                         main: m.nom + " : " + m.valeur,
                         description: m.nom + " : " + m.valeur,
-                        icons: [m.etat === "ko" ? "day-lightning-symbolic" : "day-clear-symbolic"],
-                        customIcon: "day-clear-symbolic"
+                        icons: [m.etat === "ko" ? "la-disabled" : "la-actif"],
+                        customIcon: "la-actif"
                     }
                 })),
                 hourlyForecasts: []
@@ -18592,11 +18594,9 @@ class Config {
         return this._distanceUnit;
     }
     get IconType() {
-        if (this._useCustomMenuIcons)
-            return config_IconType.SYMBOLIC;
-        return this._useSymbolicIcons ?
-            config_IconType.SYMBOLIC :
-            config_IconType.FULLCOLOR;
+        // NOS ICONES SONT DES IMAGES : si on les declare symboliques, l'applet les recolorerait et
+        // chercherait un glyphe qui n'existe pas -- c'est ce qui mettait un point d'alerte partout.
+        return config_IconType.FULLCOLOR;
     }
     ;
     get AppletIconType() {
@@ -21191,9 +21191,26 @@ class WeatherApplet extends TextIconApplet {
         // LA LISTE DU MENU : on la demande POUR NOS MESURES. Le compte de la meteo vient d'un
         // reglage qui, ici, est vide -- sans cette ligne le menu s'ouvrait SANS AUCUNE LIGNE.
         try {
+            // LE HAUT DU MENU AUSSI PORTE NOTRE DESSIN : sans ca il gardait le nuage de la meteo.
+            try {
+                this.ui.CurrentWeather.weatherIcon.set_gicon(imports.gi.Gio.icon_new_for_string(
+                    DOSSIER_ICONES + weather.condition.customIcon + ".svg"));
+            } catch (e) { }
+            // NOTRE DESSIN, PAR SON CHEMIN : la barre montre l'etat de LA, pas un glyphe du theme.
+            this.set_applet_icon_path(DOSSIER_ICONES + weather.condition.customIcon + ".svg");
+        } catch (e) { }
+        try {
             this.ui.FutureWeather.Rebuild(this.config, this.config.textColorStyle,
                                           weather.forecasts.length);
             this.ui.FutureWeather.Display(weather, this.config);
+            const bloc = this.ui.FutureWeather;
+            for (let i = 0; i < bloc.forecasts.length && i < weather.forecasts.length; i++) {
+                const dessin = String(weather.forecasts[i].condition.customIcon || "la-inconnu");
+                try {
+                    bloc.forecasts[i].Icon.set_gicon(
+                        imports.gi.Gio.icon_new_for_string(DOSSIER_ICONES + dessin + ".svg"));
+                } catch (e) { }        // une icone qui manque n'est pas une raison de tomber
+            }
         } catch (e) {
             // un menu sans lignes n'est pas une raison de tomber : la barre dit deja l'etat
         }

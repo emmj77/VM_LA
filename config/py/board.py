@@ -449,7 +449,7 @@ def controle(leger=False):
         fautes.append("le canon est introuvable")
 
     L = []
-    L.append(("LA status", "clear" if not fautes else "%d defaut(s)" % len(fautes), bool(fautes)))
+    L.append(("LA status", "actif" if not fautes else "disabled", bool(fautes)))
     if leger:
         L.append(("residents", "%d/%d actifs" % (len([r for r in res if not r[5]]), len(res)),
                   len([r for r in res if not r[5]]) != len(res)))
@@ -582,7 +582,7 @@ def teinte(l):
         return "\033[36m" + l + "\033[0m"          # cyan : les titres
     if l.rstrip().endswith("!!") or " !! " in l or "defaut(s)" in l:
         return "\033[31m" + l + "\033[0m"          # rouge : ce qui ne va pas
-    if l.lstrip().startswith("LA status") and "clear" in l:
+    if l.lstrip().startswith("LA status") and "actif" in l:
         return "\033[32m" + l + "\033[0m"          # vert : LA tient
     return l
 
