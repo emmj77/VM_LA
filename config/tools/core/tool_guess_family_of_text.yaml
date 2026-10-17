@@ -22,7 +22,7 @@ COMMAND: |
   command -v fasttext >/dev/null 2>&1 || { echo 'refuse : fasttext est absent de la machine' >&2 ; exit 1 ; }
   T=$(cat)
   [ -n "$(printf '%s' "$T" | tr -d '[:space:]')" ] || { echo 'refuse : il n y a pas de demande a juger' >&2 ; exit 1 ; }
-  printf '%s\n' "$T" | fasttext predict-prob "$M" - 1 | sed -e 's/^__label__//'
+  printf '%s\n' "$T" | fasttext predict-prob "$M" - 1 | sed -e 's/^__label__//' -e 's/\([0-9]\.[0-9][0-9]\).*/\1/'
 
 ARGS:
   - {name: text, type: text, stdin: true}
