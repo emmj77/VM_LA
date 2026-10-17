@@ -14,7 +14,7 @@ DESCRIPTION: "reads a workspace image with the small or the big model"
 COMMAND: |
   LC_ALL=C; export LC_ALL
   # DEUX MODELES, UN SEUL OUTIL. Le PETIT (small) tourne sur le CPU, il est leger et
-  # rapide : c est le defaut. Le GROS (big) voit mieux mais il lui faut les cartes :
+  # rapide : c est le defaut. Le GROS (big) voit mieux mais il lui faut UNE carte :
   # on le demarre s il ne repond pas, et s il ne tient pas dans la VRAM on le dit.
   MODELE="${LA_VISION_MODELE:-{{vision_model}}}"
   [ -n "$MODELE" ] || MODELE=small
@@ -42,7 +42,10 @@ COMMAND: |
         GD=${LA_GGUF_DIR:-/home/moussa/LLM_GGUF}
         [ -x "$BIN" ] || { echo "refuse : le gros modele est arrete et son binaire est introuvable ($BIN)" >&2 ; exit 1 ; }
         [ -f "$GD/Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf" ] || { echo "refuse : le gros modele n est pas sur la machine ($GD)" >&2 ; exit 1 ; }
-        setsid "$BIN" -m "$GD/Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf" --mmproj "$GD/mmproj-Qwen3VL-8B-Instruct-Q8_0.gguf" --host 127.0.0.1 --port 8092 -ngl 99 --tensor-split 5,4 -c 4096 >/dev/null 2>&1 < /dev/null &
+        # UNE SEULE CARTE, JAMAIS DEUX. Le partage du modele entre la 3060 et la P2200 est
+        # interdit ici : un modele tient sur une carte ou il ne tourne pas. --tensor-split 5,4
+        # etait justement le partage a bannir. La 3060 seule (12 Go), la ou le modele tient.
+        CUDA_VISIBLE_DEVICES=0 setsid "$BIN" -m "$GD/Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf" --mmproj "$GD/mmproj-Qwen3VL-8B-Instruct-Q8_0.gguf" --host 127.0.0.1 --port 8092 -ngl 99 -sm none -c 4096 >/dev/null 2>&1 < /dev/null &
         VU=0
         while [ "$VU" -lt 60 ]; do
           curl -sS -m 2 "$A/health" >/dev/null 2>&1 && { VU=99; break; }
