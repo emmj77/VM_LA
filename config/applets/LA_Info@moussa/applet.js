@@ -4,6 +4,8 @@ const Soup = imports.gi.Soup;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Settings = imports.ui.settings;
+// L INSTRUMENT DE LA, celui dont toutes les mesures viennent, et un seul.
+const BOARD = GLib.get_home_dir() + "/Documents/VM_LA/config/engine/board.sh";
 
 class Utils {
     static extractCounter(text, name) {
@@ -499,28 +501,37 @@ class UIHelper {
         }
     }
 
-    _pollMetrics() {        let msg = Soup.Message.new("GET", this._metricsUrl);
-
-        this._httpSession.send_and_read_async(msg, global.PRIORITY_DEFAULT, null, (session, result) => {
-            try {
-                let bytes = session.send_and_read_finish(result);
-                let body = bytes.get_data().toString();
-
-                if (!body) {
-                    this.set_applet_label("llama: empty");
-                    return;
-                }
-
-                let { currentPromptRate, currentGenRate } = this._calculateRates(body);
-
-                // Use cached hardware data from the other loop
-                this._updateUI(currentPromptRate, currentGenRate, this._lastDedicatedGpuData, this._lastIntegratedGpuData, this._lastCpuData);
-
-            } catch (e) {
-                global.logError("Error fetching metrics: " + e.message);
-                this.set_applet_tooltip("Failed to fetch or parse llama.cpp metrics from: " + this._metricsUrl);
-            }
-        });
+    _pollMetrics() {
+        // LA_Info LIT LE TABLEAU, PAS LLAMA.CPP. Le tableau est l'instrument de LA ; Gio.Subprocess rend
+        // sa sortie meme quand le code de sortie est mauvais -- et il l'est des qu'une mesure est en
+        // faute, c'est son role. On ne depend donc jamais du code de sortie, et on ne bloque pas : dix
+        // secondes, puis on coupe.
+        try {
+            const proc = Gio.Subprocess.new([BOARD, "--menu"],
+                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE);
+            let fini = false;
+            const minuterie = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 10, () => {
+                if (!fini) { try { proc.force_exit(); } catch (e) { } }
+                return GLib.SOURCE_REMOVE;
+            });
+            proc.communicate_utf8_async(null, null, (p, res) => {
+                fini = true;
+                try { GLib.source_remove(minuterie); } catch (e) { }
+                let lignes = [];
+                try {
+                    const texte = p.communicate_utf8_finish(res)[1] || "";
+                    texte.split("\n").forEach((l) => {
+                        if (l.indexOf("|") === -1) { return; }
+                        const c = l.split("|");
+                        lignes.push({ etat: c[0], section: c[1], titre: c[2], verdict: c.slice(3).join("|") });
+                    });
+                } catch (e) { }
+                this._laLignes = lignes;
+                this._updateUI(0, 0, this._lastDedicatedGpuData, this._lastIntegratedGpuData, this._lastCpuData);
+            });
+        } catch (e) {
+            global.logError("LA_Info : le tableau n'a pas pu etre lance : " + e.message);
+        }
     }
 
     _calculateRates(body) {
@@ -584,8 +595,20 @@ class UIHelper {
     }
 
     _updateUI(promptRate, predRate, dedicatedGpuDataList, integratedGpuDataList, cpuData) {
-        this.set_applet_label(UIHelper.buildLabel(promptRate, predRate, dedicatedGpuDataList, integratedGpuDataList, cpuData));
-        this.set_applet_tooltip(UIHelper.buildTooltip(promptRate, predRate, dedicatedGpuDataList, integratedGpuDataList, cpuData));
+        // LES INFORMATIONS DE LA, DANS LA BARRE ET EN INFOBULLE. C'est le nom de l'applet : LA_Info.
+        // Dans la barre, les deux chiffres qui bougent vraiment ; le reste attend dans l'infobulle.
+        const lignes = this._laLignes || [];
+        if (lignes.length === 0) {
+            this.set_applet_label("LA ?");
+            this.set_applet_tooltip("le tableau n'a rien rendu");
+            return;
+        }
+        const courts = [];
+        lignes.forEach((l) => {
+            if (l.titre === "residents" || l.titre === "ram de LA") { courts.push(l.verdict); }
+        });
+        this.set_applet_label(courts.join(" · ") || "LA");
+        this.set_applet_tooltip(lignes.map((l) => l.titre + " : " + l.verdict).join("\n"));
     }
 }
 
