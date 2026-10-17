@@ -10,8 +10,7 @@ SUMMARY:                      # pour le head secondaire, tant que la skill est c
 RULES:                       # sous SUMMARY : les lois que le HARNESS applique
   create_subfolder: true          # il est autorisé de créer des sous dossiers
   execute_code: false
-  max_section: 5
-  max_section_lines: 100
+  max_section_lines: 100   # STEPS : plus de plafond de nombre (le "max_section: 5" est retire)
 TOOLS:                       # les tools que ce skill ouvre, et eux seuls (200 a 299)
   200: "..."              # une ligne, un nom de tool
   201: "..."
