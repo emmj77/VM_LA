@@ -28,8 +28,9 @@
 #   ROOT       the project root                      LA_CONFIG  the path of the TABLE
 #   SKROOT     the folder of the ACTIVE SKILL        W          the skill's workspace
 #   (the plan lives in the PLAN: section of the ACTIVE SKILL, no longer in a folder)
-# THE ACTIVE SKILL is read at a SINGLE place : <project>/skills/la/skill.yaml, section
-# PERIMETER:. IT IS THERE, and never elsewhere, that the engine reads WHERE a file is written. The
+# THE ACTIVE SKILL is read at a SINGLE place : skills/<name>/skill.yaml, named by skills/.active
+# (active_skill, in lib.sh). IT IS THERE, and never elsewhere, that the engine reads WHERE a file
+# is written -- its PERIMETER:. The
 # model NEVER gives an absolute path : it gives a RELATIVE path, and the engine resolves it. The
 # hole substituted in the command carries that RELATIVE, already validated.
 #
@@ -311,9 +312,12 @@ value() {   # $1 = the skill value ; cleans it, and refuses what leaves the proj
 }
 SKROOT=$(dirname "$SKILL")
 W=$(value "$SKW" workspace)
-SPEC="$SKROOT/spec.yaml"
-# SPEC serves as a working variable for reading the arguments : the spec PATH travels under another
-# name, otherwise the first argument of write_spec overwrites it.
+# LE CANON : sa resolution vit dans la bibliotheque commune (canon_path), la MEME que celle du
+# docteur. Deux resolutions du meme chemin divergent en silence : le canon d un projet est
+# projects/<projet>/spec.yaml, et le modele n a pas a le savoir.
+canon_path
+# SPEC stays a working variable for the argument reading : the canon PATH travels under SPEC_FILE,
+# otherwise the first argument of write_spec overwrites it.
 SPEC_FILE="$SPEC"
 # PROCS : the BRICKS folder (the engine scripts). A tool whose body lives in a brick names it
 # through it : the table line carries ONLY the command (law 506).

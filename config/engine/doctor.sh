@@ -13,9 +13,12 @@ ROOT=${LA_ROOT:-$(dirname "$(dirname "$HERE")")}
 TABLE=${LA_CONFIG:-$ROOT/config/la_tools.yaml}
 # THE SPEC OF THE ACTIVE SKILL, not a fixed path: the name lives in skills/.active (fallback: la).
 SKILLS="$ROOT/skills"
-ACTIVE_SKILL=$(sed -n '1p' "$SKILLS/.active" 2>/dev/null | tr -d '\r' | tr -d '[:space:]')
-[ -n "$ACTIVE_SKILL" ] && [ -f "$SKILLS/$ACTIVE_SKILL/spec.yaml" ] || ACTIVE_SKILL=la
-SPEC="$SKILLS/$ACTIVE_SKILL/spec.yaml"
+# --- LA SKILL ACTIVE ET LE CANON : les DEUX resolutions vivent dans la bibliotheque commune
+# (config/engine/lib.sh) : le moteur, la boucle et le docteur passent par les memes.
+[ -f "$HERE/lib.sh" ] || { printf 'doctor: the common library is missing (%s)\n' "$HERE/lib.sh" >&2 ; exit 2 ; }
+. "$HERE/lib.sh"
+active_skill
+canon_path
 SHORT=0
 [ "${1:-}" = "--short" ] && SHORT=1
 FAULTS=0
@@ -43,21 +46,57 @@ title "THE TABLE"
 IDS=$(grep -c '^  - id: ' "$TABLE")
 TOOLS=$(grep -c '^    tool: ' "$TABLE")
 FAM=$(grep -c '^    family: ' "$TABLE")
-CMD=$(grep -c '^    command:' "$TABLE")
 ok "$IDS tools declared"
 [ "$IDS" = "$TOOLS" ] && ok "every id carries a tool" || fail "$IDS ids for $TOOLS tools"
 [ "$IDS" = "$FAM" ]   && ok "every id carries a family" || fail "$IDS ids for $FAM families"
-[ "$IDS" = "$CMD" ]   && ok "every id carries a command" || fail "$IDS ids for $CMD commands"
+# LA TABLE A DEUX FICHIERS : le registre porte l id, le nom et la famille ; le CORPS vit dans
+# config/tools/<machine>/tool_<nom>.yaml (ARGS + COMMAND + RULES.timeout), et l ancienne forme
+# (un `command:` sur la ligne) est lue le temps de la migration. On compte donc les CORPS la ou
+# ils sont, et on NOMME chaque id qui n en a aucun : un id sans corps est un id mort.
+NFILE=0 ; NLINE=0 ; NOBODY= ; ORPH=
+while IFS=' ' read -r ID TN; do
+  [ -n "$TN" ] || continue
+  F=
+  for TDIR in "$ROOT"/config/tools/*/ "$ROOT"/config/tools/; do
+    [ -f "$TDIR/tool_$TN.yaml" ] && { F="$TDIR/tool_$TN.yaml" ; break ; }
+  done
+  if [ -n "$F" ]; then
+    grep -q '^COMMAND:' "$F" && NFILE=$((NFILE+1)) || NOBODY="$NOBODY $TN"
+  else
+    BL=$(table_block "$TABLE" "$ID") || { NOBODY="$NOBODY $TN" ; continue ; }
+    printf '%s\n' "$BL" | grep -q '^    command:' && NLINE=$((NLINE+1)) || NOBODY="$NOBODY $TN"
+  fi
+done <<EOF
+$(awk '/^  - id: /{id=$3} /^    tool: /{print id" "$2}' "$TABLE")
+EOF
+[ -z "$NOBODY" ] && ok "$IDS ids carry a body ($NFILE in config/tools/, $NLINE on the line)" \
+  || fail "no body at all, neither in config/tools/ nor on the line :$NOBODY"
+# LE CHEMIN INVERSE : un fichier de corps que le registre ne nomme pas est INATTEIGNABLE (le moteur
+# et la boucle ne lisent que le registre). C est un NOTE : ca ne casse rien, ca dort.
+for F in "$ROOT"/config/tools/*/tool_*.yaml "$ROOT"/config/tools/tool_*.yaml; do
+  [ -f "$F" ] || continue
+  TN=$(sed -n 's/^tool:[[:space:]]*//p' "$F" | head -n 1 | tr -d '"')
+  grep -q "^    tool: $TN\$" "$TABLE" || ORPH="$ORPH $TN"
+done
+[ -z "$ORPH" ] && ok "every body file carries its registry line" \
+  || note "a body with NO line in the registry (unreachable):$ORPH"
 DUP=$(grep -oE '^  - id: [0-9]+' "$TABLE" | sort | uniq -d)
 [ -z "$DUP" ] && ok "no duplicate id" || fail "duplicate ids : $(printf '%s' "$DUP" | tr '\n' ' ')"
 
 title "THE FILES THE TABLE CALLS"
 N=0
-for p in $(grep -oE '/home/moussa[A-Za-z0-9_./+-]*\.(gguf|onnx|bin|py|sh|json)' "$TABLE" | sort -u); do
+# LES CHEMINS DES CORPS : ils s ecrivent en clair (/home/...) OU par $HOME. Le $HOME se resout
+# ici une fois pour toutes, sinon un corps qui appelle un binaire absent passe pour vivant.
+CORPS="$ROOT"/config/tools/*/tool_*.yaml
+for p in $(grep -ohE '/home/moussa[A-Za-z0-9_./+-]*\.(gguf|onnx|bin|py|sh|json)' "$TABLE" $CORPS 2>/dev/null | sort -u); do
   N=$((N+1))
   [ -e "$p" ] || fail "called by the table and MISSING: $p"
 done
-ok "$N absolute paths checked, all present"
+for p in $(grep -ohE '\$HOME/[A-Za-z0-9_./+-]*' "$TABLE" $CORPS 2>/dev/null | sed "s|^\$HOME|$HOME|" | sort -u); do
+  N=$((N+1))
+  [ -e "$p" ] || fail "called by a tool body and MISSING: $p"
+done
+ok "$N file(s) called by the table and the bodies, all present"
 
 title "THE SKILLS"
 for d in "$SKILLS"/*/; do
@@ -77,27 +116,34 @@ EOF
 done
 ok "$(ls -1d "$SKILLS"/*/ | wc -l) skills examined"
 
-title "THE ACTIVE SKILL"
-A=$(sed -n '1p' "$SKILLS/.active" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-if [ -n "$A" ] && [ -f "$SKILLS/$A/skill.yaml" ]; then
-  ok "the .active says $A, and $A exists"
+title "THE ACTIVE PROJECT AND SKILL"
+active_project
+[ -n "$PNAME" ] && ok "the active project is $PNAME ($PROJECT)" \
+  || ok "no project is loaded : the whole skillset is open (projects/.active is absent)"
+if [ -n "$NAME" ] && [ -f "$SKILLS/$NAME/skill.yaml" ]; then
+  ok "the .active says $NAME, and $NAME exists"
 else
-  fail "the .active says \"$A\" and that folder does not exist"
+  fail "the .active names no skill that exists (skills/.active)"
 fi
 
 title "THE CANON"
-[ -f "$SPEC" ] && ok "spec.yaml found" || fail "spec.yaml missing ($SPEC)"
-DUP=$(grep -oE '^  [0-9]+:' "$SPEC" | sort | uniq -d)
-[ -z "$DUP" ] && ok "no duplicate law number" \
-  || fail "duplicate laws : $(printf '%s' "$DUP" | tr '\n' ' ' | cut -c1-80)"
-S=$(grep -c '^SECTION : ' "$SPEC")
-ok "$S sections"
-L=$(awk 'length($0) > 100' "$SPEC" | wc -l)
-[ "$L" = 0 ] && ok "no line above 100 bytes" \
-  || fail "$L line(s) above 100 bytes in the spec"
-M=$(grep -c 'coffre' "$SPEC" 2>/dev/null)
-[ "$M" = 0 ] && ok "no residual \"coffre\" in the canon" \
-  || note "$M line(s) still say \"coffre\" (the disk image)"
+ok "the canon is $CANON_WHY"
+if [ -n "$SPEC" ] && [ -f "$SPEC" ]; then
+  ok "canon found ($SPEC)"
+  DUP=$(grep -oE '^  [0-9]+:' "$SPEC" | sort | uniq -d)
+  [ -z "$DUP" ] && ok "no duplicate law number" \
+    || fail "duplicate laws : $(printf '%s' "$DUP" | tr '\n' ' ' | cut -c1-80)"
+  S=$(grep -c '^SECTION : ' "$SPEC")
+  ok "$S sections"
+  L=$(awk 'length($0) > 100' "$SPEC" | wc -l)
+  [ "$L" = 0 ] && ok "no line above 100 bytes" \
+    || fail "$L line(s) above 100 bytes in the spec"
+  M=$(grep -c 'coffre' "$SPEC" 2>/dev/null)
+  [ "$M" = 0 ] && ok "no residual \"coffre\" in the canon" \
+    || note "$M line(s) still say \"coffre\" (the disk image)"
+else
+  fail "NO canon to read : $CANON_WHY"
+fi
 
 title "THE TOOLSET (the escape hatch that opens the full list)"
 grep -q '^    tool: toolset$' "$TABLE" && ok "the table carries toolset" \

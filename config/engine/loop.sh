@@ -1055,11 +1055,11 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
     TOOL_NAME=$(printf '%s' "$LINE_" | jq -r '.tool // "?"' 2>/dev/null || true)
     MSG_STATUS=$(printf '%s' "$LINE_" | jq -r '.status // "?"' 2>/dev/null || true)
     # L ETAT DE L ENTREE S ARME ICI, SUR LE TOOL APPELE. Le perimetre a deja garanti qu il etait
-    # atteignable : hors perimetre, le nom rendu est `la`, jamais celui du tool. Peu importe le
-    # SUCCES : c est le GESTE qui compte (un load_doc qui refuse faute de doc arme quand meme
-    # DOC_READ - c est le geste, provisoire, qui fait foi ; on precisera la doc plus tard).
+    # atteignable : hors perimetre, le nom rendu est `la`, jamais celui du tool. LA DOC S ARME SUR UNE
+    # LECTURE REUSSIE, pas sur le geste : un load_doc qui refuse n a rien lu, et le PLAN reste ferme
+    # (loi 1003). Le refus est deja dit au modele dans la meme forme que les autres.
     case "$TOOL_NAME" in
-      load_doc)                                                            DOC_READ=1 ;;
+      load_doc) [ "$MSG_STATUS" = ok ] &&                                  DOC_READ=1 ;;
       toolset)                                                             TOOLSET_ARMED=1 ;;
       todo)                                                                PLAN_DONE=1 ;;
       progress)                                                            PLAN_DONE=1; PLAN_DUE=0 ;;

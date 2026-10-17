@@ -24,19 +24,94 @@ active_skill() {
   ACTIVE_FILE="$SKILLS_DIR/.active"
   NAME=
   if [ -L "$ACTIVE_FILE" ]; then
-    printf 'skills: the state file is a LINK (%s) ; links are forbidden ; falling back to la\n' "$ACTIVE_FILE" >&2
+    printf 'skills: the state file is a LINK (%s) ; links are forbidden ; NO skill is active\n' "$ACTIVE_FILE" >&2
   elif [ ! -f "$ACTIVE_FILE" ]; then
-    printf 'skills: the state file is MISSING (%s) ; falling back to la\n' "$ACTIVE_FILE" >&2
+    printf 'skills: the state file is MISSING (%s) ; NO skill is active\n' "$ACTIVE_FILE" >&2
   else
     NAME=$(sed -n '1p' "$ACTIVE_FILE" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
     case "$NAME" in
-      '') printf 'skills: the state file is EMPTY (%s) ; falling back to la\n' "$ACTIVE_FILE" >&2 ; NAME= ;;
-      */*|*..*) printf 'skills: skill NAME REFUSED (%s) ; a name carries no / nor .. and never leaves skills/ ; falling back to la\n' "$NAME" >&2 ; NAME= ;;
-      *) [ -d "$SKILLS_DIR/$NAME" ] && [ -f "$SKILLS_DIR/$NAME/skill.yaml" ] || { printf 'skills: skill %s has NO DIR under skills/ ; falling back to la\n' "$NAME" >&2 ; NAME= ; } ;;
+      '') printf 'skills: the state file is EMPTY (%s) ; NO skill is active\n' "$ACTIVE_FILE" >&2 ; NAME= ;;
+      */*|*..*) printf 'skills: skill NAME REFUSED (%s) ; a name carries no / nor .. and never leaves skills/ ; NO skill is active\n' "$NAME" >&2 ; NAME= ;;
+      *) [ -d "$SKILLS_DIR/$NAME" ] && [ -f "$SKILLS_DIR/$NAME/skill.yaml" ] || { printf 'skills: skill %s has NO DIR under skills/ ; NO skill is active\n' "$NAME" >&2 ; NAME= ; } ;;
     esac
   fi
-  [ -n "$NAME" ] || NAME=la
-  SKILL="$SKILLS_DIR/$NAME/skill.yaml"
+  # NO PHANTOM FALLBACK : the old fallback named `la`, a skill that no longer exists (the canon
+  # moved under projects/, 17/10) : it made every brick read a skill that is not there, and the
+  # doctor then hunted a spec under a folder that does not exist. A missing .active is SAID, NAME
+  # stays EMPTY, and the CALLER refuses by naming it (engine.sh, loop.sh scope_build, doctor.sh).
+  SKILL=
+  [ -n "$NAME" ] && SKILL="$SKILLS_DIR/$NAME/skill.yaml"
+}
+
+# --- THE CANON : SINGLE resolution ---------------------------------------------
+# THE CANON IS THE SPEC OF THE ACTIVE PROJECT (the law : `LE CANON EST spec.yaml`). ONE place
+# resolves it, and the engine, the doctor and write_spec all go through it : two resolutions of
+# the same thing diverge in silence.
+#   1. the ACTIVE PROJECT carries a spec.yaml        -> projects/<name>/spec.yaml
+#   2. no project, the ACTIVE SKILL carries one      -> skills/<name>/spec.yaml
+#   3. otherwise                                    -> projects/la/spec.yaml, LA itself
+# Sets: SPEC (the path, EMPTY when nothing carries a canon) and CANON_WHY (which of the three, so
+# a refusal NAMES the reason). Call it AFTER active_skill : it reads $SKILL.
+canon_path() {
+  SPEC=
+  CANON_WHY=
+  active_project
+  PD="$ROOT/projects"
+  if [ -n "$PNAME" ]; then
+    # A LOADED PROJECT CARRIES ITS OWN CANON : we never lend it the canon of LA (a project that
+    # reads another project's architecture is a project without law). Missing -> NAMED.
+    if [ -f "$PD/$PNAME/spec.yaml" ]; then
+      SPEC="$PD/$PNAME/spec.yaml" ; CANON_WHY="the SPEC of the active project ($PNAME)"
+    else
+      CANON_WHY="the active project ($PNAME) carries NO spec.yaml ($PD/$PNAME/spec.yaml is absent)"
+    fi
+  else
+    SD=
+    [ -n "${SKILL:-}" ] && SD=$(dirname "$SKILL")
+    if [ -n "$SD" ] && [ -f "$SD/spec.yaml" ]; then
+      SPEC="$SD/spec.yaml" ; CANON_WHY="the SPEC of the active skill (${NAME:-?})"
+    elif [ -f "$PD/la/spec.yaml" ]; then
+      SPEC="$PD/la/spec.yaml" ; CANON_WHY="the SPEC of LA itself (no project, no skill spec)"
+    fi
+  fi
+  [ -n "$CANON_WHY" ] || CANON_WHY="nothing carries a canon : no project, no skill spec, and $PD/la/spec.yaml is absent"
+  return 0
+}
+
+# --- THE ACTIVE PROJECT : SINGLE resolution ------------------------------------
+# Reads $ROOT/projects/.active (first line = the active project's folder name),
+# checks that a REAL folder carries it under projects/ (with a project.yml),
+# otherwise falls back to NO project and stays quiet: a project is OPTIONAL
+# (unlike the skill, which always resolves to one). A name never leaves
+# projects/ (refuses / and ..). Never a link.
+# Sets: PNAME (the name, empty when none) and PROJECT (the path of its project.yml).
+active_project() {
+  PROJECTS_DIR="$ROOT/projects"
+  PACTIVE_FILE="$PROJECTS_DIR/.active"
+  PNAME=
+  if [ -L "$PACTIVE_FILE" ]; then
+    printf 'projects: the state file is a LINK (%s) ; links are forbidden\n' "$PACTIVE_FILE" >&2
+  elif [ ! -f "$PACTIVE_FILE" ]; then
+    :
+  else
+    PNAME=$(sed -n '1p' "$PACTIVE_FILE" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    case "$PNAME" in
+      '') PNAME= ;;
+      */*|*..*) printf 'projects: project NAME REFUSED (%s) ; a name carries no / nor .. and never leaves projects/\n' "$PNAME" >&2 ; PNAME= ;;
+      *) [ -d "$PROJECTS_DIR/$PNAME" ] && [ -f "$PROJECTS_DIR/$PNAME/project.yml" ] || { printf 'projects: project %s has NO DIR under projects/ ; ignored\n' "$PNAME" >&2 ; PNAME= ; } ;;
+    esac
+  fi
+  PROJECT=
+  [ -n "$PNAME" ] && PROJECT="$PROJECTS_DIR/$PNAME/project.yml"
+}
+
+# project_skills — the SKILLS of a project file ($1), one name per line ; empty = wide.
+# The project ENVELOPES the skills: this list is the set the model may LOAD.
+project_skills() {
+  [ -f "${1:-}" ] || return 0
+  sed -n '/^SKILLS:/,/^[^[:space:]]/p' "$1" \
+    | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
+    | sed -e 's/^"//' -e 's/"$//' | grep -v '^$'
 }
 
 # --- THE PERMANENT CATEGORY ----------------------------------------------------
