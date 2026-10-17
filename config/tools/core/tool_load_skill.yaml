@@ -1,0 +1,49 @@
+# QUI : loads a skill : writes skills/.active ; its TOOLS become the perimeter (the skill must be in the project's list)
+# ORIGINE : sorti de skill_manage le 17/10/2026 (la surface se nomme comme le geste : un
+#          outil, une chose -- rien a choisir, aucun argument a inventer).
+# REFUSE : un nom hors form ; un skill absent ; un skill hors de la liste SKILLS du projet actif ; un plan deja ouvert (une tache = une skill = un plan)
+tool: "load_skill"
+date: "2026-10-17"
+tags: ["load_skill", "skill"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "loads a skill : writes skills/.active ; its TOOLS become the perimeter (the skill must be in the project's list)"
+
+COMMAND: |
+  NAME="{{name}}"
+  SK="$ROOT/skills"
+  [ -d "$SK" ] || { echo "refuse : skills/ introuvable ; la portee du tool n existe pas ($SK)" >&2 ; exit 1 ; }
+  SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//')
+  [ -n "$SLUG" ] || { echo "refuse : name hors form (${NAME:-absent}) ; il ne donne aucun slug utilisable" >&2 ; exit 1 ; }
+  C="$SK/$SLUG/skill.yaml"
+  if [ -L "$SK/$SLUG" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2 ; exit 1 ; fi
+  [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2 ; exit 1 ; }
+  [ -f "$PROCS/lib.sh" ] || { echo "refuse : la bibliotheque commune est introuvable ($PROCS/lib.sh)" >&2 ; exit 1 ; }
+  . "$PROCS/lib.sh"
+  # L ENVELOPPE DU PROJET : quand un projet est charge ET qu il declare une liste SKILLS, la
+  # skill demandee doit y etre. Un projet sans liste, ou aucun projet : le perimetre reste large.
+  active_project ; PSK=
+  [ -n "$PNAME" ] && PSK=$(project_skills "$PROJECT")
+  if [ -n "$PNAME" ] && [ -n "$PSK" ]; then
+    printf '%s\n' "$PSK" | grep -qxF -- "$SLUG" \
+      || { echo "refuse : le projet $PNAME n ouvre pas la skill $SLUG (ses skills : $(printf '%s ' $PSK))" >&2 ; exit 1 ; }
+  fi
+  OUV=$(printf '' | "${PROCS:-$ROOT/config/engine}/plan.sh" status 2>/dev/null) || OUV=
+  case "$OUV" in
+    ''|'no open plan'*|'aucun plan ouvert'*) : ;;
+    *) { echo "refuse : un plan est ouvert dans le skill actif ; load_skill n est PAS cumulatif (une tache = une skill = un plan), termine le plan (update_todo jusqu a la derniere etape) avant de charger une AUTRE skill" >&2; exit 1; } ;;
+  esac
+  # LE POINTEUR DE SKILL ACTIVE : load_skill ECRIT le nom dans le fichier d etat skills/.active.
+  # C est CE fichier que lisent engine.sh, second.sh et loop.sh (le resume, les paths, la
+  # palette suivent). Un FICHIER ordinaire, jamais un lien.
+  STATE="$SK/.active"
+  if [ -L "$STATE" ]; then echo "refuse : le pointeur de skill active est un lien ($STATE) ; un fichier d etat n est jamais un lien" >&2; exit 1; fi
+  printf '%s\n' "$SLUG" > "$STATE" || { echo "refuse : le pointeur de skill active n a pas pu etre ecrit ($STATE)" >&2; exit 1; }
+  [ "$(sed -n '1p' "$STATE" 2>/dev/null)" = "$SLUG" ] || { echo "refuse : le pointeur de skill active n a pas ete ecrit ($STATE)" >&2; exit 1; }
+  cat "$C"
+ARGS:
+ARGS:
+  - {name: name, type: text}

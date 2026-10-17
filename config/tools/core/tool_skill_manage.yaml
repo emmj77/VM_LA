@@ -1,9 +1,9 @@
-# QUI : manages a skill : creation, one tool per field, load, remove, list
+# QUI : manages a skill : creation, one tool per field, remove. (LIRE, LISTER et CHARGER une skill
+#       sont des GESTES A PART : skill_view, skill_list et load_skill, un outil chacun.)
 # ORIGINE : migre tel quel de la ligne 126 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
 # REFUSE : un nom hors form (aucun slug) ; un skill de l humain (pas la marque source: agent) ; retirer
 #          un skill sans approbation ; charger une skill hors de la liste SKILLS du PROJET actif
-#          (quand un projet est actif et declare une liste) ; charger une AUTRE skill quand un plan
-#          est ouvert ; un nom, un chemin ou une ligne hors form.
+#          un nom, un chemin ou une ligne hors form.
 tool: "skill_manage"
 date: "2026-10-17"
 tags: ["skill_manage"]
@@ -12,7 +12,7 @@ RULES:
   enabled: true
   timeout: 600
 
-DESCRIPTION: "manages a skill : creation, one tool per field, load, remove, list"
+DESCRIPTION: "manages a skill : creation, one tool per field, remove"
 
 COMMAND: |
   LC_ALL=C; export LC_ALL
@@ -22,7 +22,7 @@ COMMAND: |
   SM="$ROOT/config/templates/skill_template.yaml"
   [ -d "$SK" ] || { echo "refuse : skills/ introuvable ; la portee du tool n existe pas ($SK)" >&2; exit 1; }
   SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//')
-  if [ -z "$SLUG" ] && [ "$A" != skill_list ]; then echo "refuse : name hors form (${NAME:-absent}) ; il ne donne aucun slug utilisable" >&2; exit 1; fi
+  if [ -z "$SLUG" ]; then echo "refuse : name hors form (${NAME:-absent}) ; il ne donne aucun slug utilisable" >&2; exit 1; fi
   CH=$(sed -n 's/^[[:space:]]*chars:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' -- "$SM" | head -n 1)
   case "$CH" in ''|*[!0-9]*) CH=100 ;; esac
   CL=$(sed -n 's/^[[:space:]]*lines:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' -- "$SM" | head -n 1)
@@ -302,57 +302,6 @@ COMMAND: |
     block "$C" "resume" "$R" || { echo "refuse : ecriture impossible (skills/$SLUG/skill.yaml)" >&2; exit 1; }
     echo "skills/$SLUG/skill.yaml : $NL ligne(s) posee(s) dans resume"
     ;;
-  view_skill)
-    if [ -L "$SK/$SLUG" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2; exit 1; fi
-    [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2; exit 1; }
-    cat "$C"
-    ;;
-  load_skill)
-    if [ -L "$SK/$SLUG" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2; exit 1; fi
-    [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2; exit 1; }
-    # L ENVELOPPE DU PROJET : quand un projet est charge ET qu il declare une liste SKILLS, la
-    # skill demandee doit y etre. Un projet sans liste, ou aucun projet : le perimetre reste large.
-    env_name ; PSK=$(envelope)
-    if [ -n "$ENV_NAME" ] && [ -n "$PSK" ]; then
-      printf '%s\n' "$PSK" | grep -qxF -- "$SLUG" \
-        || { echo "refuse : le projet $ENV_NAME n ouvre pas la skill $SLUG (ses skills : $(printf '%s ' $PSK))" >&2; exit 1; }
-    fi
-    OUV=$(printf '' | "${PROCS:-$ROOT/config/engine}/plan.sh" status 2>/dev/null) || OUV=
-    case "$OUV" in
-      ''|'no open plan'*|'aucun plan ouvert'*) : ;;
-      *) { echo "refuse : un plan est ouvert dans le skill actif ; load_skill n est PAS cumulatif (une tache = une skill = un plan), termine le plan (progress complete jusqu a la derniere etape) avant de charger une AUTRE skill" >&2; exit 1; } ;;
-    esac
-    # LE POINTEUR DE SKILL ACTIVE : load_skill ECRIT le nom dans le fichier d etat
-    # skills/.active. C est CE fichier que lisent engine.sh, second.sh et loop.sh
-    # (le resume, les paths, la palette suivent). Un FICHIER ordinaire, jamais un lien.
-    STATE="$SK/.active"
-    if [ -L "$STATE" ]; then echo "refuse : le pointeur de skill active est un lien ($STATE) ; un fichier d etat n est jamais un lien" >&2; exit 1; fi
-    printf '%s\n' "$SLUG" > "$STATE" || { echo "refuse : le pointeur de skill active n a pas pu etre ecrit ($STATE)" >&2; exit 1; }
-    [ "$(sed -n '1p' "$STATE" 2>/dev/null)" = "$SLUG" ] || { echo "refuse : le pointeur de skill active n a pas ete ecrit ($STATE)" >&2; exit 1; }
-    cat "$C"
-    ;;
-  skill_list)
-    # LA LISTE MONTREE EST CELLE QUE LE PROJET OUVRE (loi 705 : hors liste, ce n est pas interdit,
-    # ce n est pas ENVOYE). Le projet est dit EN CLAIR : le modele voit son enveloppe, pas un refus.
-    env_name ; PSK=$(envelope)
-    N=0 ; NT=0
-    for F in "$SK"/*/skill.yaml; do
-      [ -f "$F" ] || continue
-      [ -L "$F" ] && continue
-      NT=$((NT+1))
-      if [ -n "$ENV_NAME" ] && [ -n "$PSK" ]; then
-        printf '%s\n' "$PSK" | grep -qxF -- "$(basename "$(dirname "$F")")" || continue
-      fi
-      N=$((N+1))
-      NM=$(sed -n 's/^skill: *//p' -- "$F" | head -n 1)
-      [ -n "$NM" ] || NM=$(basename "$(dirname "$F")")
-      TG=$(sed -n 's/^tags: *//p' -- "$F" | head -n 1)
-      [ -n "$TG" ] || TG="[]"
-      printf '%s %s\n' "$NM" "$TG"
-    done
-    [ -n "$ENV_NAME" ] && printf 'le projet %s ouvre %s skill(s) sur %s\n' "$ENV_NAME" "$N" "$NT"
-    [ "$N" -ge 1 ] || { echo "refuse : aucun skill a montrer (${ENV_NAME:+le projet $ENV_NAME n ouvre aucune skill presente sous }$SK)" >&2; exit 1; }
-    ;;
   remove_skill)
     if [ -L "$D" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG) ; on ne retire pas au travers" >&2; exit 1; fi
     [ -d "$D" ] || { echo "refuse : le skill n existe pas (skills/$SLUG)" >&2; exit 1; }
@@ -372,7 +321,7 @@ COMMAND: |
   esac
 
 ARGS:
-  - {name: action, type: enum, values: [create_skill, set_line, set_tags, set_tools, set_steps, set_plan, set_dirs, set_error, set_paths, set_resume, view_skill, load_skill, skill_list, remove_skill]}
+  - {name: action, type: enum, values: [create_skill, set_line, set_tags, set_tools, set_steps, set_plan, set_dirs, set_error, set_paths, set_resume, remove_skill]}
   - {name: name, type: text}
   - {name: value, type: text, stdin: true}
   - {name: id, type: int}

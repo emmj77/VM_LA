@@ -83,6 +83,24 @@ tools:
   # --- LE GRAND PLAN (17/10/2026) : le meme MANAGER, l autre niveau. Le grand plan vit dans le
   #     PROJET (section PROJECT_PLAN) et non dans une skill : c est ce qui lui permet de durer
   #     plus d une session. change_big_todo REMPLACE les points, et ce geste exige une validation.
+  # --- LES PORTES DES SKILLS (17/10/2026) : lire, lister et charger sont trois GESTES, pas trois
+  #     actions d un manager. Un outil, une chose : rien a choisir, aucun argument a inventer.
+  - id: 231
+    tool: skill_list
+    family: READ
+    doc: skill
+  - id: 232
+    tool: skill_view
+    family: READ
+    doc: skill
+  - id: 233
+    tool: load_skill
+    family: MANAGE
+    doc: skill
+  - id: 234
+    tool: project_view
+    family: READ
+    doc: project
   - id: 228
     tool: big_todo
     family: MANAGE

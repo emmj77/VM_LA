@@ -1,0 +1,27 @@
+# QUI : shows a skill as it is written, WITHOUT loading it : the plan stays closed, the palette never moves
+# ORIGINE : sorti de skill_manage le 17/10/2026 (la surface se nomme comme le geste : un
+#          outil, une chose -- rien a choisir, aucun argument a inventer).
+# REFUSE : un nom hors form ; un skill absent ; un skill qui est un lien
+tool: "skill_view"
+date: "2026-10-17"
+tags: ["skill_view", "skill"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "shows a skill as it is written, WITHOUT loading it : the plan stays closed, the palette never moves"
+
+COMMAND: |
+  NAME="{{name}}"
+  SK="$ROOT/skills"
+  [ -d "$SK" ] || { echo "refuse : skills/ introuvable ; la portee du tool n existe pas ($SK)" >&2 ; exit 1 ; }
+  SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//')
+  [ -n "$SLUG" ] || { echo "refuse : name hors form (${NAME:-absent}) ; il ne donne aucun slug utilisable" >&2 ; exit 1 ; }
+  C="$SK/$SLUG/skill.yaml"
+  if [ -L "$SK/$SLUG" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2 ; exit 1 ; fi
+  [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2 ; exit 1 ; }
+  cat "$C"
+ARGS:
+ARGS:
+  - {name: name, type: text}

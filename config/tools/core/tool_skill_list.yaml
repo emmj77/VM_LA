@@ -1,0 +1,43 @@
+# QUI : lists the skills : one per line with its tags (the ones the ACTIVE PROJECT opens, when one is loaded)
+# ORIGINE : sorti de skill_manage le 17/10/2026 (la surface se nomme comme le geste : un
+#          outil, une chose -- rien a choisir, aucun argument a inventer).
+# REFUSE : un dossier skills/ absent ; aucun skill a montrer dans l enveloppe du projet
+tool: "skill_list"
+date: "2026-10-17"
+tags: ["skill_list", "skill"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "lists the skills : one per line with its tags (the ones the ACTIVE PROJECT opens, when one is loaded)"
+
+COMMAND: |
+  # SKILL_LIST : la liste MONTREE est celle que le projet ouvre (loi 705 : hors liste, ce n est
+  # pas interdit, ce n est pas ENVOYE). Le projet est dit EN CLAIR : le modele voit son
+  # enveloppe, pas un refus. REGARDER NE CHARGE RIEN : rien n est ecrit ici.
+  SK="$ROOT/skills"
+  [ -d "$SK" ] || { echo "refuse : skills/ introuvable ; la portee du tool n existe pas ($SK)" >&2 ; exit 1 ; }
+  [ -f "$PROCS/lib.sh" ] || { echo "refuse : la bibliotheque commune est introuvable ($PROCS/lib.sh)" >&2 ; exit 1 ; }
+  . "$PROCS/lib.sh"
+  active_project ; PSK=
+  [ -n "$PNAME" ] && PSK=$(project_skills "$PROJECT")
+  N=0 ; NT=0
+  for F in "$SK"/*/skill.yaml; do
+    [ -f "$F" ] || continue
+    [ -L "$F" ] && continue
+    NT=$((NT+1))
+    if [ -n "$PNAME" ] && [ -n "$PSK" ]; then
+      printf '%s\n' "$PSK" | grep -qxF -- "$(basename "$(dirname "$F")")" || continue
+    fi
+    N=$((N+1))
+    NM=$(sed -n 's/^skill: *//p' -- "$F" | head -n 1)
+    [ -n "$NM" ] || NM=$(basename "$(dirname "$F")")
+    TG=$(sed -n 's/^tags: *//p' -- "$F" | head -n 1)
+    [ -n "$TG" ] || TG="[]"
+    printf '%s %s\n' "$NM" "$TG"
+  done
+  [ -n "$PNAME" ] && printf 'le projet %s ouvre %s skill(s) sur %s\n' "$PNAME" "$N" "$NT"
+  [ "$N" -ge 1 ] || { echo "refuse : aucun skill a montrer (${PNAME:+le projet $PNAME n ouvre aucune skill presente sous }$SK)" >&2 ; exit 1 ; }
+ARGS:
+ARGS: []

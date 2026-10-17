@@ -71,8 +71,13 @@ permanent:
   - big_todo
   - update_big_todo
   - change_big_todo
-  - skill_manage:view_skill
-  - skill_manage:load_skill
+  # LES PORTES DES SKILLS SONT PERMANENTES : regarder un skill, les lister et en charger un sont
+  # l ENTREE du systeme a deux etages (le choix pour load_project). Si elles vivaient dans une
+  # skill, on ne pourrait plus rouvrir la porte (poule/oeuf).
+  - skill_list
+  - skill_view
+  - load_skill
+  - project_view
   # LE SOMMEIL EST UN TOOL DU TOUR (loi 474) : il est PERMANENT, comme les deux tools du plan --
   # meme famille MANAGE, et un tour qui ne peut pas s'endormir ne peut pas attendre. Sans cette
   # ligne, la ligne 177 de la table existe mais AUCUN chemin ne l'ouvre (verdict B20 du banc).

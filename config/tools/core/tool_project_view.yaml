@@ -1,0 +1,32 @@
+# QUI : shows a project as it is written (RULES, SUMMARY, PROJECT_PLAN, SKILLS) ; no name = the active project
+# ORIGINE : sorti de skill_manage le 17/10/2026 (la surface se nomme comme le geste : un
+#          outil, une chose -- rien a choisir, aucun argument a inventer).
+# REFUSE : aucun nom et aucun projet actif ; un nom hors form ; un projet absent
+tool: "project_view"
+date: "2026-10-17"
+tags: ["project_view", "project"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "shows a project as it is written (RULES, SUMMARY, PROJECT_PLAN, SKILLS) ; no name = the active project"
+
+COMMAND: |
+  # PROJECT_VIEW : il MONTRE le projet tel qu il est ecrit. La LECTURE EST LIBRE (le perimetre
+  # borne l ECRITURE, lois 1202-1204) : rien n est verrouille ici, et rien n est ecrit.
+  NAME="{{name}}"
+  D="$ROOT/projects"
+  [ -d "$D" ] || { echo "refuse : projects/ introuvable ($D)" >&2 ; exit 1 ; }
+  [ -f "$PROCS/lib.sh" ] || { echo "refuse : la bibliotheque commune est introuvable ($PROCS/lib.sh)" >&2 ; exit 1 ; }
+  . "$PROCS/lib.sh"
+  active_project
+  [ -n "$NAME" ] || NAME=$PNAME
+  [ -n "$NAME" ] || { echo "refuse : aucun projet actif et aucun nom donne ; project_view lit un projet precis (project_list les donne)" >&2 ; exit 1 ; }
+  case "$NAME" in */*|*..*) echo "refuse : nom de projet invalide (sans / ni ..)" >&2 ; exit 1 ;; esac
+  F="$D/$NAME/project.yml"
+  [ -f "$F" ] || { echo "refuse : $F introuvable (project_list donne les projets)" >&2 ; exit 1 ; }
+  cat "$F"
+ARGS:
+ARGS:
+  - {name: name, type: text}
