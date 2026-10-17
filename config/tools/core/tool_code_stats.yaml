@@ -1,0 +1,30 @@
+# QUI : compte lignes, commentaires et blancs d'un projet, par langage
+# ORIGINE : micro-outil du releve du 17/10 (tokei). Mesure : 11 ms, 8 458 lignes de code dans VM_LA.
+# REFUSE : un chemin absent ; un tokei absent de la machine.
+tool: "code_stats"
+date: "2026-10-17"
+tags: ["code_stats", "tokei", "mesure", "code"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "counts code, comments and blank lines of a project, by language"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # LA MESURE D UN PROJET. Le canon dit la qualite se mesure (1517) et le doctor ne compte que ses
+  # propres lois ; ce tool compte un ARBRE : lignes de code, commentaires, blancs, par langage.
+  # Il est DETERMINISTE : aucun modele, aucun reseau, rien qu'un parcours de fichiers.
+  P="{{path}}"; [ -n "$P" ] || P=.
+  D="$ROOT/$P"
+  [ -e "$D" ] || { echo "refuse : le chemin est introuvable ($P)" >&2 ; exit 1 ; }
+  command -v tokei >/dev/null 2>&1 || { echo 'refuse : tokei est absent de la machine' >&2 ; exit 1 ; }
+  command -v jq >/dev/null 2>&1 || { echo 'refuse : jq est introuvable sur la machine' >&2 ; exit 1 ; }
+  tokei "$D" -e .git -e backups -e node_modules --output json \
+    | jq -r '"\(.Total.code) lignes de code ; \(.Total.comments) commentaires ; \(.Total.blanks) blancs",
+             ([ to_entries[] | select(.key != "Total") | select(.value.code > 0)
+                | "\(.key) \(.value.code)" ] | sort | join(" | "))'
+
+ARGS:
+  - {name: path, type: path}

@@ -1,0 +1,30 @@
+# QUI : detoure le sujet d'une image et ecrit le masque alpha (PNG)
+# ORIGINE : micro-modele du releve du 17/10 (U2-Net-P). Pose : u2netp.onnx, 4,5 Mo, 220-241 ms.
+#           Ce que la chaine n'avait pas : un masque DOUX (le masque de Krita est binaire).
+# REFUSE : une source absente ; une sortie sans dossier ; un modele absent de la machine.
+tool: "cut_out"
+date: "2026-10-17"
+tags: ["cut_out", "matte", "detourage", "u2net"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "cuts the subject out of an image and writes its alpha mask (PNG)"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # LE DETOURAGE. Un masque doux, sur le CPU, en un quart de seconde : c'est l'etage qui manquait
+  # entre le dessin et la composition. Le tool DIT ou il a ecrit (loi 603 : qui ecrit un fichier
+  # rend le CHEMIN, jamais le contenu) et le pourcentage de premier plan, qui est un FAIT.
+  F="$W/{{source}}"; [ -f "$F" ] || F="$ROOT/{{source}}"
+  [ -f "$F" ] || { echo "refuse : l image est introuvable ({{source}})" >&2 ; exit 1 ; }
+  O="{{out}}"; [ -n "$O" ] || O="$(basename "$F" | sed 's/\.[^.]*$//')_masque.png"
+  PY=${LA_PYTHON:-/usr/bin/python3}
+  PORTEUR="${LA_MICRO_VISION:-$ROOT/config/py/micro_vision.py}"
+  [ -f "$PORTEUR" ] || { echo "refuse : le porteur des gestes est introuvable ($PORTEUR)" >&2 ; exit 1 ; }
+  LC_ALL=C "$PY" "$PORTEUR" matte "$F" "$W/$O"
+
+ARGS:
+  - {name: source, type: path}
+  - {name: out, type: path}

@@ -1,0 +1,32 @@
+# QUI : dit ou sont les objets d'une image, par leurs boites (personnages, objets, elements)
+# ORIGINE : micro-modele du releve du 17/10 (YOLOv8-Nano/YOLOv11-Nano). Pose : yolo11n.onnx, 10,7 Mo,
+#           mesure 60-71 ms. Sur une planche : 5 personnages trouves (0,76 a 0,93) ; les CASES, elles,
+#           ne sont pas rendues -- le modele a 80 classes d'OBJETS, pas de mise en page.
+# REFUSE : une image absente ; un modele absent de la machine.
+tool: "find_objects"
+date: "2026-10-17"
+tags: ["find_objects", "yolo", "boites", "disposition"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "gives the boxes of the objects an image carries, best first"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # LA DISPOSITION, VITE. Une passe de 640x640 : ce qui est pose sur l'image sort en boites, avec
+  # sa classe et sa confiance. C'est le geste qui precede un assemblage deterministe (grille,
+  # squelette, recadrage) : le modele DONNE LES BOITES, il ne compose RIEN.
+  F="$W/{{path}}"; [ -f "$F" ] || F="$ROOT/{{path}}"
+  [ -f "$F" ] || { echo "refuse : l image est introuvable ({{path}})" >&2 ; exit 1 ; }
+  PY=${LA_PYTHON:-/usr/bin/python3}
+  command -v "$PY" >/dev/null 2>&1 || { echo 'refuse : python3 est absent de la machine' >&2 ; exit 1 ; }
+  PORTEUR="${LA_MICRO_VISION:-$ROOT/config/py/micro_vision.py}"
+  [ -f "$PORTEUR" ] || { echo "refuse : le porteur des gestes est introuvable ($PORTEUR)" >&2 ; exit 1 ; }
+  SEUIL="{{seuil}}"; case "$SEUIL" in ''|*[!0-9.]*) SEUIL=0.25 ;; esac
+  LC_ALL=C "$PY" "$PORTEUR" boxes "$F" "$SEUIL"
+
+ARGS:
+  - {name: path, type: path}
+  - {name: seuil, type: text}

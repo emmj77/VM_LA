@@ -1,0 +1,31 @@
+# QUI : dit dans quelle LANGUE un texte est ecrit, et avec quelle confiance
+# ORIGINE : micro-modele du releve du 17/10 (fastText lid.176). Pose : 916 Ko, 6,8 ms par phrase
+#           apres demarrage. Mesure : fr 0,80 ; en 0,97 ; es 0,997 ; de 0,999.
+#           Ce qu'il ne fait PAS : les langUES HORS des 176 (le wolof part en cebuano, 0,85) sont
+#           MAL classees -- c'est une borne du modele, et le tool le dit.
+# REFUSE : un texte vide ; un modele absent de la machine ; un fasttext absent de la machine.
+tool: "read_language"
+date: "2026-10-17"
+tags: ["read_language", "langue", "fasttext", "filtre"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "tells the language of a text, with its confidence"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # LA LANGUE, AVANT LE RESTE. Un texte qui n'est pas en francais ne se traduit pas comme un texte
+  # francais, et il ne se lit pas avec le meme modele. Le classifieur de langue est le PREMIER
+  # barreau du filtre : 916 Ko, il ne coute rien et il repond en millisecondes.
+  command -v fasttext >/dev/null 2>&1 || { echo 'refuse : fasttext est absent de la machine' >&2 ; exit 1 ; }
+  MODELE="${LA_LID_MODEL:-${LA_GGUF_DIR:-$HOME/LLM_GGUF}/lid.176.ftz}"
+  [ -f "$MODELE" ] || { echo "refuse : le modele de langue est absent de la machine ($MODELE)" >&2 ; exit 1 ; }
+  T=$(cat)
+  [ -n "$(printf '%s' "$T" | tr -d '[:space:]')" ] || { echo 'refuse : il n y a pas de texte a lire' >&2 ; exit 1 ; }
+  printf '%s\n' "$T" | fasttext predict-prob "$MODELE" - 1 \
+    | sed -e 's/^__label__//'
+
+ARGS:
+  - {name: text, type: text, stdin: true}

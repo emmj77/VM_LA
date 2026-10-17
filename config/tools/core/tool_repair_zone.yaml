@@ -1,0 +1,40 @@
+# QUI : repare une ZONE d'une image (tache, texte parasite, element a effacer) et ecrit le resultat
+# ORIGINE : micro-modele du releve du 17/10 (LaMa, OpenCV Zoo). Pose : 90,4 Mo, 2 846 ms.
+#           C'est le geste du "U-Net Patch Inpainter" du releve, tenu par un modele qui remplit
+#           vraiment (le LaMa a ete entraine pour ca ; le modele est FIXE a 512x512).
+# REFUSE : une source absente ; des bornes qui ne sont pas des entiers positifs ; une zone hors
+#          de l'image (le refus DIT ou la zone tombait).
+tool: "repair_zone"
+date: "2026-10-17"
+tags: ["repair_zone", "inpainting", "lama", "reparation"]
+
+RULES:
+  enabled: true
+  timeout: 900
+
+DESCRIPTION: "repairs a zone of an image (blot, text, object) and writes the result"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # REPARER UNE ZONE. Quatre bornes suffisent : x y largeur hauteur. Le tool n'invente rien hors de
+  # la zone (l'entree est recopiee telle quelle) ; il remplit ce qu'on lui montre. Il rend le CHEMIN
+  # du PNG et sa taille, pas les pixels (loi 603).
+  F="$W/{{source}}"; [ -f "$F" ] || F="$ROOT/{{source}}"
+  [ -f "$F" ] || { echo "refuse : l image est introuvable ({{source}})" >&2 ; exit 1 ; }
+  case "{{x}}{{y}}{{largeur}}{{hauteur}}" in
+    ''|*[!0-9]*) echo "refuse : les bornes sont quatre entiers positifs (x y largeur hauteur)" >&2 ; exit 1 ;;
+  esac
+  [ "{{largeur}}" -gt 0 ] && [ "{{hauteur}}" -gt 0 ] || { echo 'refuse : la zone a une largeur et une hauteur positives' >&2 ; exit 1 ; }
+  O="{{out}}"; [ -n "$O" ] || O="$(basename "$F" | sed 's/\.[^.]*$//')_repare.png"
+  PY=${LA_PYTHON:-/usr/bin/python3}
+  PORTEUR="${LA_MICRO_VISION:-$ROOT/config/py/micro_vision.py}"
+  [ -f "$PORTEUR" ] || { echo "refuse : le porteur des gestes est introuvable ($PORTEUR)" >&2 ; exit 1 ; }
+  LC_ALL=C "$PY" "$PORTEUR" inpaint "$F" "{{x}}" "{{y}}" "{{largeur}}" "{{hauteur}}" "$W/$O"
+
+ARGS:
+  - {name: source, type: path}
+  - {name: out, type: path}
+  - {name: x, type: int}
+  - {name: y, type: int}
+  - {name: largeur, type: int}
+  - {name: hauteur, type: int}

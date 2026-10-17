@@ -1,0 +1,39 @@
+# QUI : lit le TEXTE d'une image (capture, planche, schema) au caractere pres
+# ORIGINE : micro-modele du releve du 17/10 (PP-OCRv4 vise ; le porteur pose est tesseract, mesure :
+#           174-285 ms sur nos planches, texte FRANCAIS exact rendu la ou la vision ne decrit que).
+# REFUSE : une image absente ou illisible ; un tesseract absent de la machine ; un texte vide
+#          (il le DIT : une image sans texte n'est pas une erreur, c'est un fait).
+tool: "read_text"
+date: "2026-10-17"
+tags: ["read_text", "ocr", "texte", "image"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "reads the TEXT of an image, character by character"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # CE QUE LA VISION NE FAIT PAS. see_image DECRIT ; ce tool LIT. Sur une capture de terminal, un
+  # message d'erreur, une planche lettree, la description est inutile : il faut les CARACTERES.
+  # Le petit modele de vision (SmolVLM-256M) lit l'anglais ; tesseract lit le francais tel quel.
+  F="$W/{{path}}"; [ -f "$F" ] || F="$ROOT/{{path}}"
+  [ -f "$F" ] || { echo "refuse : l image est introuvable ({{path}})" >&2 ; exit 1 ; }
+  case "$F" in
+    *.png|*.jpg|*.jpeg|*.webp|*.tif|*.tiff|*.bmp|*.pnm) ;;
+    *) echo "refuse : ce type d image n est pas lu ({{path}}) ; png, jpg, webp, tif, bmp ou pnm" >&2 ; exit 1 ;;
+  esac
+  command -v tesseract >/dev/null 2>&1 || { echo 'refuse : tesseract est absent de la machine' >&2 ; exit 1 ; }
+  # LA LANGUE SE DECLARE (LA_TESSERACT_LANG, defaut fra+eng) : un modele de langue manquant est
+  # un refus de tesseract lui-meme, et il le dit.
+  L=${LA_TESSERACT_LANG:-fra+eng}
+  T=$(tesseract "$F" stdout -l "$L" 2>/dev/null | sed -e 's/[[:space:]]*$//' -e '/^$/d')
+  if [ -z "$T" ]; then
+    echo "aucun texte trouve dans l image ({{path}}) ; la langue demandee est $L"
+    exit 0
+  fi
+  printf '%s\n' "$T"
+
+ARGS:
+  - {name: path, type: path}
