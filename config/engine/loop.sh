@@ -678,6 +678,14 @@ in_scope() {  # $1 = nom, $2 = family, $3 = l action (ou vide)
     case " $GUARDRAILS $LOCK " in *" $1 "*) return 0 ;; esac
     return 1
   fi
+  if [ "$MAJ_DUE" != 0 ]; then
+    case " $GUARDRAILS $([ "$MAJ_DUE" = 2 ] && echo update_spec || echo update_big_todo) " in *" $1 "*) return 0 ;; esac
+    return 1
+  fi
+  if [ "$BIG_DUE" = 1 ]; then
+    case " $GUARDRAILS ${BIG_GESTE:-big_todo} " in *" $1 "*) return 0 ;; esac
+    return 1
+  fi
   if [ "$PLAN_DUE" = 1 ]; then
     case " $GUARDRAILS update_todo " in *" $1 "*) return 0 ;; esac
     return 1
