@@ -25,6 +25,16 @@ const UUID = "la-status@moussa";
 const TABLEAU = GLib.get_home_dir() + "/Documents/VM_LA/config/engine/board.sh";
 const BOUTON = GLib.get_home_dir() + "/.local/bin/la";
 const SECONDES = 30;      // une demande coute ~1 s : on ne la fait pas toutes les secondes
+// LE LAYOUT EST CELUI DE L'APPLET METEO (le choix de Moussa) : une ICONE qui dit la condition,
+// puis la VALEUR. La meteo fait exactement ca -- TextIconApplet, set_applet_icon_symbolic_name --
+// et c'est ce qui la rend lisible dans une barre de 40 pixels. Les trois noms sont VERIFIES dans la
+// vraie chaine d'icones du poste (ils se resolvent vers Adwaita) : une icone manquante serait une
+// icone invisible, pas une erreur.
+const ICONE = {
+    vert: "computer-symbolic",            // la machine va bien
+    rouge: "computer-fail-symbolic",      // la machine a un probleme
+    gris: "dialog-question-symbolic"      // il ne sait pas : il le dit
+};
 const LARGEUR = "72";     // la largeur des lignes du menu, en colonnes
 
 function LaStatusApplet(metadata, orientation, instance_id) {
@@ -32,10 +42,10 @@ function LaStatusApplet(metadata, orientation, instance_id) {
 }
 
 LaStatusApplet.prototype = {
-    __proto__: Applet.TextApplet.prototype,
+    __proto__: Applet.TextIconApplet.prototype,
 
     _init: function(metadata, orientation, instance_id) {
-        Applet.TextApplet.prototype._init.call(this, orientation, instance_id);
+        Applet.TextIconApplet.prototype._init.call(this, orientation, instance_id);
         this.setAllowedLayout(Applet.AllowedLayout.BOTH);
 
         // LE MENU : construit par nous, montre par Cinnamon.
@@ -46,7 +56,9 @@ LaStatusApplet.prototype = {
         this.enCours = false;
         this.controle = [];                     // les lignes de la liste, telles que le tableau les rend
         this.ligne = "LA ...";
+        this.icone = "";
         this.set_applet_label(this.ligne);
+        this._poserIcone(ICONE.gris);           // avant la premiere reponse : la question
         this.set_applet_tooltip("LA — l'etat du harnais");
 
         this._demanderLigne();
@@ -62,7 +74,8 @@ LaStatusApplet.prototype = {
             return;                            // la demande precedente n'est pas revenue : je ne l'empile pas
         }
         if (!GLib.file_test(TABLEAU, GLib.FileTest.EXISTS)) {
-            this._rendreLigne("LA ? le tableau est introuvable");
+            // UNE BARRE DE 40 PIXELS N'EST PAS UN JOURNAL : la raison va dans l'infobulle.
+            this._poser("LA ?", "gris", "le tableau est introuvable : " + TABLEAU);
             return;
         }
         this.enCours = true;
@@ -71,7 +84,7 @@ LaStatusApplet.prototype = {
                              Lang.bind(this, this._rendreLigne));
         } catch (e) {
             this.enCours = false;
-            this._rendreLigne("LA ? la demande n'est pas partie");
+            this._poser("LA ?", "gris", "la demande n'est pas partie (spawn_async a jete)");
         }
     },
 
@@ -91,6 +104,20 @@ LaStatusApplet.prototype = {
     // LE TABLEAU N'A RIEN RENDU : on ne montre pas l'ancienne valeur comme si elle etait fraiche
     // (ce serait un mensonge), mais on ne la perd pas non plus -- elle passe dans l'infobulle, et
     // l'etiquette dit qu'elle ne sait pas. Un instrument qui ne mesure pas SE TAIT (loi 1557).
+    // L'ICONE, POSEE COMME L'ETIQUETTE : seulement quand elle change (une icone re-creee a chaque
+    // tour ferait clignoter la barre).
+    _poserIcone: function(nom) {
+        if (this.icone === nom) {
+            return;
+        }
+        try {
+            this.set_applet_icon_symbolic_name(nom);
+            this.icone = nom;
+        } catch (e) {
+            // une icone qui manque n'est pas une raison de tomber : l'etiquette dit deja l'etat
+        }
+    },
+
     _poser: function(court, couleur, infobulle) {
         if (this._applet_label.text !== court) {
             this.set_applet_label(court);
@@ -105,6 +132,7 @@ LaStatusApplet.prototype = {
         } catch (e) {
             // une couleur n'est pas une raison de tomber
         }
+        this._poserIcone(ICONE[couleur] || ICONE.gris);
         this.set_applet_tooltip(infobulle);
     },
 
