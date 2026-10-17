@@ -2,7 +2,12 @@ project: "{{name}}"          # le nom du projet
 date: "{{date}}"
 tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE le projet
 
-SUMMARY:                     # LE CONTEXTE : ce qu'est ce projet, en quelques lignes
+RULES:                       # l'etat du projet, et ce qui le borne
+  enabled: true              # le projet est-il actif ? (true | false)
+  writeable: true            # le fichier est-il editable ? (true | false)
+  # ... deux ou trois autres choses a decider (a completer)
+
+SUMMARY:                     # LE CONTEXTE : ce qu'est ce projet (20 LIGNES MAXIMUM)
   101: "..."
   102: "..."
 
@@ -10,8 +15,3 @@ SKILLS:                      # LE TOOLSET DU PROJET = une liste de SKILLS (pas d
   1: "skill-un"              # une ligne, un nom de skill que le projet ouvre
   2: "skill-deux"
   3: "skill-trois"
-
-RULES:                       # l'etat du projet, et ce qui le borne
-  enabled: true              # le projet est-il actif ? (true | false)
-  viable: true               # le projet tient-il debout ? (true | false)
-  # ... deux ou trois autres choses a decider (a completer)
