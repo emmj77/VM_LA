@@ -18366,9 +18366,9 @@ const DOSSIER_ICONES = imports.gi.GLib.get_home_dir()
 function LireLesMesures() {
     return new Promise((ok) => {
         Util.spawn_async([CHEMIN_TABLEAU, "--menu"], (sortie) => {
-            ok(String(sortie || "").split("\n").filter((l) => l.split("|").length === 3)
+            ok(String(sortie || "").split("\n").filter((l) => l.split("|").length === 4)
                  .map((l) => { const c = l.split("|");
-                               return { etat: c[0], nom: c[1], valeur: c[2] }; }));
+                               return { etat: c[0], titre: c[1], nom: c[2], valeur: c[3] }; }));
         });
     });
 }
@@ -18378,7 +18378,9 @@ class LA {
         this.needsApiKey = false;
         this.prettyName = _("LA");
         this.name = Services.LA;
-        this.maxForecastSupport = 8;
+        // LA GRILLE DU MENU FAIT maxJours x colonnes CASES (8 x 2 ici) : avec 8 annonces, la 17e
+        // mesure tombait hors de la grille et n'etait jamais dessinee.
+        this.maxForecastSupport = 9;
         this.maxHourlyForecastSupport = 0;
         this.website = "";
         this.remainingCalls = null;
@@ -18410,6 +18412,7 @@ class LA {
                     date: quand,
                     temp_min: null,
                     temp_max: null,
+                    titre: m.titre,
                     condition: {
                         main: m.nom + " : " + m.valeur,
                         description: m.nom + " : " + m.valeur,
@@ -21195,6 +21198,12 @@ class WeatherApplet extends TextIconApplet {
             try {
                 this.ui.CurrentWeather.weatherIcon.set_gicon(imports.gi.Gio.icon_new_for_string(
                     DOSSIER_ICONES + weather.condition.customIcon + ".svg"));
+                // LE HAUT PORTE NOTRE DESSIN ET NOTRE MOT, RIEN D'AUTRE : les lignes du dessous
+                // donnent toute l'information. Sans ca il restait cinq legendes vides a l'ecran.
+                ["temperature", "humidity", "pressure", "dewPoint", "apiUnique"].forEach(function (nom) {
+                    try { this.ui.CurrentWeather[nom + "Caption"].text = ""; } catch (e) { }
+                    try { this.ui.CurrentWeather[nom + "Label"].text = ""; } catch (e) { }
+                }, this);
             } catch (e) { }
             // NOTRE DESSIN, PAR SON CHEMIN : la barre montre l'etat de LA, pas un glyphe du theme.
             this.set_applet_icon_path(DOSSIER_ICONES + weather.condition.customIcon + ".svg");
@@ -21206,6 +21215,18 @@ class WeatherApplet extends TextIconApplet {
             const bloc = this.ui.FutureWeather;
             for (let i = 0; i < bloc.forecasts.length && i < weather.forecasts.length; i++) {
                 const dessin = String(weather.forecasts[i].condition.customIcon || "la-inconnu");
+                // DEUX INFORMATIONS PAR LIGNE, A LA PLACE DU JOUR ET DE LA TEMPERATURE : l'etiquette
+                // dans l'emplacement du jour, la valeur dans celui de la temperature. C'est ce qui
+                // fait disparaitre « Aujourd'hui » et le « / °C » de la meteo.
+                // TROIS TEXTES PAR LIGNE : LE TITRE DE SECTION a la place du jour de la meteo
+                // (« Aujourd'hui »), puis notre etiquette, puis notre verdict. Un titre vide (celui
+                // d'une ligne qui suit la meme section) laisse l'emplacement sans texte.
+                const prevue = weather.forecasts[i];
+                const morceaux = String(prevue.condition.main || "").split(" : ");
+                try { bloc.forecasts[i].Day.text = CapitalizeFirstLetter(String(prevue.titre || "")); }
+                catch (e) { }
+                try { bloc.forecasts[i].Temperature.text = morceaux[0] || ""; } catch (e) { }
+                try { bloc.forecasts[i].Summary.text = morceaux.slice(1).join(" : ") || ""; } catch (e) { }
                 try {
                     bloc.forecasts[i].Icon.set_gicon(
                         imports.gi.Gio.icon_new_for_string(DOSSIER_ICONES + dessin + ".svg"));

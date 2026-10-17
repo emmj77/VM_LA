@@ -620,16 +620,29 @@ def main():
         return 1 if fautes else 0
 
     if a.menu:
-        # LA LISTE POUR UN MENU. Un menu n'est pas un terminal : des colonnes de points de conduite
+        # LA LISTE POUR UN MENU, ENTIERE : le tableau dit seize choses, un menu qui n'en montre
+        # que huit en cache la moitie. Le menu n'est pas un terminal : des colonnes de points de conduite
         # y partent en brouillard des que la police n'est pas a chasse fixe, et dix-sept lignes de
         # soixante-douze caracteres font un pave gris. On rend donc des lignes COURTES, une par
         # mesure, precede d'un etat : « ko|table : 115/113 ». Le TABLEAU dit l'etat, l'applet decide
         # comment le montrer (une ligne de menu, et du rouge sur les fautes).
-        L, fautes, *_ = controle(leger=True)
+        L, fautes, *_ = controle()
         # TROIS CHAMPS SEPARES PAR UNE BARRE : etat, etiquette, verdict. L'applet n'a rien a
         # decouper elle-meme -- un verdict peut contenir « : » (« ollama-cloud : deepseek-v4.1-flash »)
         # et un decoupage devine casserait les deux colonnes.
-        print("\n".join("%s|%s|%s" % ("ko" if x[2] else "ok", x[0], x[1]) for x in L))
+        # QUATRE CHAMPS : l'etat, le TITRE DE SECTION, l'etiquette, le verdict. Le menu se lit par
+        # sections, rangees dans l'ordre des titres.
+        def titre(nom):
+            n = nom.lower()
+            if n in ("la status", "residents", "ram de la", "sessions", "last_activity"):
+                return "LA"
+            if n in ("api", "endpoint", "api status", "pont", "vision"):
+                return "RESEAU"
+            return "SYSTEME"
+
+        rang = {"LA": 0, "SYSTEME": 1, "RESEAU": 2}
+        print("\n".join("%s|%s|%s|%s" % ("ko" if x[2] else "ok", titre(x[0]), x[0], x[1])
+                        for x in sorted(L, key=lambda x: rang[titre(x[0])])))
         return 1 if fautes else 0
 
     if a.once:
