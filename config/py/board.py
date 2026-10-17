@@ -545,32 +545,34 @@ def _sigwinch(sig, cadre):
     SIGNE["change"] = True
 
 
-def dessiner(largeur):
-    """Le tableau en rich. Rend (None, 0) si rich manque : l'appelant rend alors le texte plat."""
-    try:
-        from rich import box
-        from rich.console import Console, Group
-        from rich.panel import Panel
-        from rich.text import Text
-        Console()
-    except ImportError:
-        return None, 0
+# ------------------------------------------------------------------- LE CADRE : DU TEXTE, RIEN D'AUTRE
+# PAS DE BIBLIOTHEQUE POUR DESSINER. Le 17/10 rich a paye une fois : son Live suivait le curseur en
+# comptant ses lignes, et des que le contenu demandait plus de lignes que la fenetre n'en avait, le
+# compte etait faux -- la fenetre defilait d'une ligne a chaque rafraichissement et le tableau
+# s'empilait sur lui-meme. Ce qu'il faut tenir tient en trois regles, et les trois se mesurent :
+#   1. CHAQUE LIGNE EST BATIE POUR LA LARGEUR DU MOMENT (`ligne()`) -- jamais de repli.
+#   2. ON N'ECRIT JAMAIS LA DERNIERE COLONNE (largeur - 1) : le terminal y declenche un retour.
+#   3. ON N'ECRIT JAMAIS LA DERNIERE LIGNE (hauteur - 1) : un retour a la ligne la ferait DEFILER.
+# Et l'ecran est un ECRAIN ALTERNATIF : on ne peint pas par-dessus la console de l'utilisateur, on
+# lui rend la sienne intacte en sortant.
+def teinte(l):
+    if l.startswith(("CE QUI", "LES ", "LA ")):
+        return "\033[36m" + l + "\033[0m"          # cyan : les titres
+    if l.rstrip().endswith("!!") or " !! " in l or "defaut(s)" in l:
+        return "\033[31m" + l + "\033[0m"          # rouge : ce qui ne va pas
+    if l.lstrip().startswith("LA status") and "clear" in l:
+        return "\033[32m" + l + "\033[0m"          # vert : LA tient
+    return l
+
+
+def cadre(largeur, hauteur):
+    """LES LIGNES DU TABLEAU, bornees a (largeur, hauteur). Le compte des defauts sort avec."""
     out, fautes = sections(largeur)
-    rendu = []
-    for l in out:
-        if l.startswith(("CE QUI", "LES ", "LA ")):
-            rendu.append(Text(l, style="bold cyan"))
-        elif l.rstrip().endswith("!!") or " !! " in l or "defaut(s)" in l:
-            rendu.append(Text(l, style="bold red"))
-        elif l.lstrip().startswith("LA status") and "clear" in l:
-            rendu.append(Text(l, style="green"))
-        else:
-            rendu.append(Text(l))
-    tete = Text("LA — LE TABLEAU", style="bold white")
-    sous = Text("%s UTC  ·  %d colonnes" % (time.strftime("%H:%M:%S", time.gmtime()), largeur),
-                style="dim")
-    return Group(Panel(Group(tete, sous), border_style="cyan", box=box.ROUNDED),
-                 Panel(Group(*rendu), border_style="blue", box=box.ROUNDED)), fautes
+    tete = ["LA — LE TABLEAU   %s UTC   %d colonnes" % (time.strftime("%H:%M:%S", time.gmtime()),
+                                                        largeur), ""]
+    # L'EN-TETE PASSE PAR LA MEME BORNE QUE LE RESTE : une seule ligne hors largeur suffit a faire
+    # replier la fenetre, et un repli decale TOUT ce qui suit.
+    return [(l if len(l) <= largeur else l[:largeur]) for l in tete + out][:hauteur], fautes
 
 
 def main():
@@ -592,44 +594,39 @@ def main():
         return 1 if fautes else 0
 
     try:
-        from rich.console import Console
-        from rich.live import Live
-    except ImportError:
-        print("board: rich est absent (--once et --line rendent encore le texte).")
-        return 2
-    try:
         signal.signal(signal.SIGWINCH, _sigwinch)
     except (ValueError, AttributeError, OSError):
         pass
-    console = Console()
-    largeur = a.largeur or console.width or LARGEUR_DEFAUT
-    # LE CHARGEUR : la liste de controle s'imprime ligne a ligne, puis le tableau prend la place.
+    # LE CADRE VIVANT : effacer, redessiner, rien d'autre. Aucun curseur a suivre, donc rien qui
+    # puisse se decaler ou s'empiler.
+    sortie = sys.stdout
+    alt = "[?1049h" if sortie.isatty() else ""
+    sortie.write(alt + "[?25l" + "[2J")
+    sortie.flush()
     try:
-        L, *_ = controle()
-        for x in L:
-            console.print(ligne(x[0], x[1], "", largeur - 1)[:largeur],
-                          style="bold red" if x[2] else None)
-        console.print("")
-    except Exception as e:
-        console.print("  le controle a echoue : %s" % e, style="red")
-    with Live(console=console, refresh_per_second=4, screen=False,
-              vertical_overflow="crop") as vivant:
         while True:
             try:
-                largeur = a.largeur or console.width or LARGEUR_DEFAUT
-                panneau = dessiner(largeur - 1)
-                if panneau is None or panneau[0] is None:
-                    console.print("\n".join(sections(largeur - 1)[0]))
-                else:
-                    vivant.update(panneau[0])
+                t = os.get_terminal_size(1)
+                largeur, hauteur = t.columns, t.lines
+            except OSError:
+                largeur, hauteur = (a.largeur or LARGEUR_DEFAUT), 46
+            largeur = a.largeur or largeur
+            try:
+                lignes, fautes = cadre(max(24, largeur - 1), max(6, hauteur - 1))
+                bloc = "\033[H" + "\n".join(teinte(l) + "\033[K" for l in lignes) + "\033[J"
             except Exception as e:
-                # UN TABLEAU QUI DISPARAIT NE VAUT RIEN : l'erreur devient une ligne, jamais une mort.
-                console.print("  le tableau a echoue : %s" % e, style="red")
+                # UN TABLEAU QUI DISPARAIT NE VAUT RIEN : la faute devient une ligne, pas une mort.
+                bloc = "\033[H  le tableau a echoue : %s\033[K\033[J" % e
+            sortie.write(bloc)
+            sortie.flush()
             SIGNE["change"] = False
             t = 0.0
             while t < a.watch and not SIGNE["change"]:
                 time.sleep(0.25)
                 t += 0.25
+    finally:
+        sortie.write("\033[?25h" + ("\033[?1049l" if alt else "") + "\033[J")
+        sortie.flush()
     return 0
 
 
