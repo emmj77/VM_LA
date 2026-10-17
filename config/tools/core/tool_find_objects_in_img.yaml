@@ -3,9 +3,9 @@
 #           mesure 60-71 ms. Sur une planche : 5 personnages trouves (0,76 a 0,93) ; les CASES, elles,
 #           ne sont pas rendues -- le modele a 80 classes d'OBJETS, pas de mise en page.
 # REFUSE : une image absente ; un modele absent de la machine.
-tool: "find_objects"
+tool: "find_objects_in_img"
 date: "2026-10-17"
-tags: ["find_objects", "yolo", "boites", "disposition"]
+tags: ["find_objects_in_img", "yolo", "boites", "disposition"]
 
 RULES:
   enabled: true

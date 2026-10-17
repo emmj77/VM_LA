@@ -17,6 +17,13 @@ config/backups/
 *.pid
 *.log
 
+# --- LE FILTRE : le CORPUS est du source, le MODELE est un produit (il se refait en 134 ms) ---
+config/filtre/*.bin
+config/filtre/*.vec
+config/filtre/propre.txt
+config/filtre/appris.txt
+config/filtre/essai*.txt
+
 # --- DIVERS ---
 .DS_Store
 *.swp

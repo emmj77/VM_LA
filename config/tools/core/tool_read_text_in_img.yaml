@@ -3,9 +3,9 @@
 #           174-285 ms sur nos planches, texte FRANCAIS exact rendu la ou la vision ne decrit que).
 # REFUSE : une image absente ou illisible ; un tesseract absent de la machine ; un texte vide
 #          (il le DIT : une image sans texte n'est pas une erreur, c'est un fait).
-tool: "read_text"
+tool: "read_text_in_img"
 date: "2026-10-17"
-tags: ["read_text", "ocr", "texte", "image"]
+tags: ["read_text_in_img", "ocr", "texte", "image"]
 
 RULES:
   enabled: true

@@ -1,0 +1,28 @@
+# QUI : dit a quelle FAMILLE du perimetre une demande appartient (READ, WRITE, MANAGE, REPLY)
+# ORIGINE : chantier fastText du 17/10 (loi 1532 + loi 1505, premier etage). Le modele est celui que
+#           `train_family_filter` vient de poser : 0,4 Mo, 5 ms, aucune RAM au repos.
+# REFUSE : modele absent (et il dit QUOI lancer) ; fasttext absent ; texte vide.
+tool: "guess_family_of_text"
+date: "2026-10-17"
+tags: ["guess_family_of_text", "fasttext", "filtre", "famille", "routage"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "reads the family of a demand : READ, WRITE, MANAGE or REPLY"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # LE PREMIER BARREAU. Avant le reranker (etage deux) et avant le modele principal (etage trois),
+  # une demande se range dans UNE des quatre familles du perimetre : lire, ecrire, mener, repondre.
+  # La table choisit ensuite l'outil, dans la famille ouverte.
+  M="$ROOT/config/filtre/famille.bin"
+  [ -f "$M" ] || { echo "refuse : le filtre n a pas encore appris ($M) ; lance train_family_filter" >&2 ; exit 1 ; }
+  command -v fasttext >/dev/null 2>&1 || { echo 'refuse : fasttext est absent de la machine' >&2 ; exit 1 ; }
+  T=$(cat)
+  [ -n "$(printf '%s' "$T" | tr -d '[:space:]')" ] || { echo 'refuse : il n y a pas de demande a juger' >&2 ; exit 1 ; }
+  printf '%s\n' "$T" | fasttext predict-prob "$M" - 1 | sed -e 's/^__label__//'
+
+ARGS:
+  - {name: text, type: text, stdin: true}

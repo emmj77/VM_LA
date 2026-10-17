@@ -1,0 +1,55 @@
+__label__READ montre moi le fichier de configuration
+__label__READ lis la ligne 470 du canon
+__label__READ que dit ce script
+__label__READ ou est defini le perimetre
+__label__READ trouve tous les appels a TOUR dans le projet
+__label__READ dans quel fichier vit la garde des commandes
+__label__READ decris moi cette image
+__label__READ lis le texte de cette capture d ecran
+__label__READ quel processus consomme le plus de memoire
+__label__READ est ce que le service de vision repond
+__label__READ combien de lignes de code fait ce projet
+__label__READ quelle est la langue de ce texte
+__label__READ liste les fichiers du dossier de travail
+__label__READ cherche le mot landrun dans les skills
+__label__WRITE ecris le resume dans le dossier de travail
+__label__WRITE remplace la ligne 12 du modele
+__label__WRITE note ce point dans la memoire
+__label__WRITE cree le fichier des idees
+__label__WRITE corrige la loi 470 du canon
+__label__WRITE pose une ligne de plus dans la table
+__label__WRITE ajoute une etape au plan
+__label__WRITE range ces images dans le dossier
+__label__WRITE efface cette ligne du registre
+__label__WRITE renomme le fichier des notes
+__label__WRITE mets la traduction dans work
+__label__WRITE ecris la legende sous la planche
+__label__WRITE enregistre cette reponse dans la session
+__label__WRITE marque le point du plan comme fait
+__label__MANAGE lance le service de transcription
+__label__MANAGE arrete le processus 4471
+__label__MANAGE redemarre le reranker
+__label__MANAGE monte le modele de vision sur les cartes
+__label__MANAGE change de skill
+__label__MANAGE charge la doc de cette skill
+__label__MANAGE fais tourner le banc des residents
+__label__MANAGE prepare un bac a sable pour l essai
+__label__MANAGE compile le projet et dis moi ce que ca donne
+__label__MANAGE installe le paquet tesseract
+__label__MANAGE range la table apres tes essais
+__label__MANAGE compte combien de temps prend un tour
+__label__MANAGE verifie que les sept outils repondent
+__label__MANAGE envoie un signal au processus de la voix
+__label__REPLY dis moi ou tu en es
+__label__REPLY explique moi ce que tu viens de faire
+__label__REPLY previens moi avant de lancer
+__label__REPLY reponds a moussa en une phrase
+__label__REPLY parle plus doucement
+__label__REPLY lis moi ce texte a voix haute
+__label__REPLY raconte moi la suite de l histoire
+__label__REPLY resume moi la session d hier
+__label__REPLY demande moi avant de toucher au canon
+__label__REPLY propose moi trois idees pour la planche
+__label__REPLY comment vas tu aujourd hui
+__label__REPLY dis moi ce que tu penses de ce dessin
+__label__REPLY repete moi la derniere consigne

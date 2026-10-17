@@ -2,9 +2,9 @@
 # ORIGINE : micro-modele du releve du 17/10 (U2-Net-P). Pose : u2netp.onnx, 4,5 Mo, 220-241 ms.
 #           Ce que la chaine n'avait pas : un masque DOUX (le masque de Krita est binaire).
 # REFUSE : une source absente ; une sortie sans dossier ; un modele absent de la machine.
-tool: "cut_out"
+tool: "cut_subject_from_img"
 date: "2026-10-17"
-tags: ["cut_out", "matte", "detourage", "u2net"]
+tags: ["cut_subject_from_img", "matte", "detourage", "u2net"]
 
 RULES:
   enabled: true

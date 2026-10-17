@@ -4,9 +4,9 @@
 #           vraiment (le LaMa a ete entraine pour ca ; le modele est FIXE a 512x512).
 # REFUSE : une source absente ; des bornes qui ne sont pas des entiers positifs ; une zone hors
 #          de l'image (le refus DIT ou la zone tombait).
-tool: "repair_zone"
+tool: "repair_zone_in_img"
 date: "2026-10-17"
-tags: ["repair_zone", "inpainting", "lama", "reparation"]
+tags: ["repair_zone_in_img", "inpainting", "lama", "reparation"]
 
 RULES:
   enabled: true

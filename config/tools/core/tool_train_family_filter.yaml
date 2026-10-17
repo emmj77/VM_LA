@@ -1,0 +1,64 @@
+# QUI : fait APPRENDRE le filtre de famille (fastText) sur le corpus du projet, et rend la mesure
+# ORIGINE : chantier fastText du 17/10 (loi 1532 : LE CLASSIFIEUR EST fastText ; loi 1505, premier
+#           etage). Les classes sont les QUATRE FAMILLES du perimetre : READ, WRITE, MANAGE, REPLY.
+#           Mesure qui a decide de la forme : le poids d'un modele fastText est SEAU x DIMENSION x 4
+#           octets, PAS la donnee. Au defaut (2 000 000 de seaux) le classeur pese 381,5 Mo et coute
+#           130 ms de chargement a CHAQUE appel ; a 10 000 seaux et dim 10 il pese 0,4 Mo et repond en
+#           5 ms, avec la MEME justesse. Donc le filtre est un CLI, jamais un resident (lois 825-827).
+# REFUSE : corpus absent ou trop court ; fasttext absent ; apprentissage qui echoue.
+tool: "train_family_filter"
+date: "2026-10-17"
+tags: ["train_family_filter", "fasttext", "filtre", "famille", "classifieur"]
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "trains the family filter (fastText) on the project corpus and reports the measure"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  # LA MESURE D'ABORD, LE MODELE ENSUITE. Un tour sur quatre est mis DE COTE (deterministe : la
+  # ligne dont le numero est multiple de 4) ; on apprend sur le reste, on juge sur les lignes mises
+  # de cote, et SEULEMENT ALORS on reapprend sur tout le corpus pour poser le modele de service.
+  # Sans ce quart de cote, annoncer « il apprend » ne prouverait rien (loi 1517).
+  F="$ROOT/config/filtre/familles.txt"
+  [ -f "$F" ] || { echo "refuse : le corpus du filtre est absent ($F)" >&2 ; exit 1 ; }
+  command -v fasttext >/dev/null 2>&1 || { echo 'refuse : fasttext est absent de la machine' >&2 ; exit 1 ; }
+  D="$ROOT/config/filtre"
+  # LE CORPUS SE NETTOIE AVANT D'ETRE APPRIS. fastText avale TOUTE ligne, commentaires compris : un
+  # commentaire appris comme exemple pollue le modele et fausse la mesure (paye au premier essai :
+  # 4 justes sur 15, les sept commentaires comptes comme des demandes). Le corpus est de la DONNEE :
+  # ce qui l'explique vit ici, dans cet en-tete, jamais dans le fichier.
+  P="$D/propre.txt"
+  grep -v '^[[:space:]]*#' "$F" | sed -e '/^[[:space:]]*$/d' > "$P" || { echo 'refuse : le corpus n a pas pu etre nettoye' >&2 ; exit 1 ; }
+  N=$(wc -l < "$P" | tr -d ' ')
+  [ "$N" -ge 40 ] || { echo "refuse : le corpus est trop court ($N lignes utiles ; sous 40, un classeur n apprend que du bruit)" >&2 ; exit 1 ; }
+  awk 'NR%4==0' "$P" > "$D/essai_brut.txt" || { echo 'refuse : le corpus n a pas pu etre coupe' >&2 ; exit 1 ; }
+  awk 'NR%4!=0' "$P" > "$D/appris.txt" || { echo 'refuse : le corpus n a pas pu etre coupe' >&2 ; exit 1 ; }
+  # LA MESURE SE JUGE SUR DES DEMANDES, PAS SUR DES LIGNES VIDEES DE LEUR ETIQUETTE : chaque ligne mise
+  # de cote est recopiee SANS son `__label__` (c'est la demande que le modele verra en service) et
+  # l'etiquette attendue voyage a cote, dans un second fichier.
+  sed -e 's/^__label__[A-Za-z]* //' "$D/essai_brut.txt" > "$D/essai.txt"
+  sed -e 's/^\(__label__[A-Za-z]*\).*/\1/' "$D/essai_brut.txt" > "$D/essai_attendu.txt"
+  T0=$(date +%s%N)
+  fasttext supervised -input "$D/appris.txt" -output "$D/famille_essai" -dim 10 -bucket 10000 \
+    -epoch 50 -lr 0.5 -wordNgrams 2 -minCount 1 -thread 2 -verbose 0 \
+    || { echo "refuse : fasttext n a pas appris sur le corpus ($? ; le corpus est-il lisible ?)" >&2 ; exit 1 ; }
+  T1=$(date +%s%N)
+  fasttext predict "$D/famille_essai.bin" "$D/essai.txt" 1 > "$D/essai_vu.txt" \
+    || { echo "refuse : fasttext n a pas su juger les lignes mises de cote" >&2 ; exit 1 ; }
+  T=$(wc -l < "$D/essai.txt" | tr -d ' ')
+  J=$(paste -d' ' "$D/essai_attendu.txt" "$D/essai_vu.txt" | awk '$1 == $2' | wc -l | tr -d ' ')
+  FAUX=$(paste -d'|' "$D/essai.txt" "$D/essai_attendu.txt" "$D/essai_vu.txt" | awk -F'|' '$2 != $3 { printf " ; %s juge %s : %s", substr($2, 10), $3, $1 }')
+  fasttext supervised -input "$P" -output "$D/famille" -dim 10 -bucket 10000 \
+    -epoch 50 -lr 0.5 -wordNgrams 2 -minCount 1 -thread 2 -verbose 0 \
+    || { echo "refuse : fasttext n a pas su reapprendre sur le corpus entier ($?)" >&2 ; exit 1 ; }
+  T2=$(date +%s%N)
+  POIDS=$(wc -c < "$D/famille.bin" | tr -d ' ')
+  CLASSES=$(sed -e 's/^\(__label__[A-Za-z]*\).*/\1/' "$P" | sort | uniq -c | awk '{ printf "%s %s | ", substr($2, 10), $1 }')
+  printf 'corpus %s lignes utiles ; %s mises de cote ; %s justes sur %s ; apprentissage %s ms ; modele %s octets ; %s\n' \
+    "$N" "$T" "$J" "$T" "$(((T1 - T0) / 1000000))" "$POIDS" "$CLASSES"
+  [ -z "$FAUX" ] || printf 'les jugements faux :%s\n' "$FAUX"
+
+ARGS: []

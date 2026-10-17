@@ -4,9 +4,9 @@
 #           Ce qu'il ne fait PAS : les langUES HORS des 176 (le wolof part en cebuano, 0,85) sont
 #           MAL classees -- c'est une borne du modele, et le tool le dit.
 # REFUSE : un texte vide ; un modele absent de la machine ; un fasttext absent de la machine.
-tool: "read_language"
+tool: "read_language_of_text"
 date: "2026-10-17"
-tags: ["read_language", "langue", "fasttext", "filtre"]
+tags: ["read_language_of_text", "langue", "fasttext", "filtre"]
 
 RULES:
   enabled: true

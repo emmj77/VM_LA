@@ -1,9 +1,9 @@
 # QUI : lit le RELIEF d'une image (ce qui est devant, ce qui est derriere) et ecrit la carte (PNG)
 # ORIGINE : micro-modele du releve du 17/10 (Depth Anything V2 Small). Pose : 96,7 Mo, 519-588 ms.
 # REFUSE : une source absente ; un modele absent de la machine.
-tool: "see_depth"
+tool: "read_depth_of_img"
 date: "2026-10-17"
-tags: ["see_depth", "relief", "profondeur", "depth-anything"]
+tags: ["read_depth_of_img", "relief", "profondeur", "depth-anything"]
 
 RULES:
   enabled: true
