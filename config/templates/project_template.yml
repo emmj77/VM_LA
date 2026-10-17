@@ -1,5 +1,4 @@
 project: "{{name}}"          # le nom du projet
-source: "agent"              # qui a le droit d'ecrire
 date: "{{date}}"
 tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE le projet
 
@@ -12,7 +11,7 @@ SKILLS:                      # LE TOOLSET DU PROJET = une liste de SKILLS (pas d
   2: "skill-deux"
   3: "skill-trois"
 
-STEPS:                       # la suite qui GUIDE le modele dans le projet (le moteur IMPOSE)
-  1: {skill: "skill-un",   note: "..."}   # pas 1 : quelle skill, et pourquoi
-  2: {skill: "skill-deux", note: "..."}   # pas 2
-  3: {skill: "skill-trois", note: "..."}  # pas 3
+RULES:                       # l'etat du projet, et ce qui le borne
+  enabled: true              # le projet est-il actif ? (true | false)
+  viable: true               # le projet tient-il debout ? (true | false)
+  # ... deux ou trois autres choses a decider (a completer)
