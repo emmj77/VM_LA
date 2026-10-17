@@ -1,0 +1,5 @@
+/* Le bouton du panneau. On AJOUTE une classe (on remplace jamais .applet-label, qui porte la
+   police et la couleur du theme) : c'est ce qui evite d'abimer le panneau de Moussa. */
+.la-vert  { color: #2ec27e; font-weight: bold; }
+.la-rouge { color: #e01b24; font-weight: bold; }
+.la-gris  { color: #9a9996; font-weight: bold; }   /* il ne sait pas : il le dit */

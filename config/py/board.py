@@ -427,26 +427,44 @@ def depuis(ts):
 
 
 # --------------------------------------------------------------------------------- LE CONTROLE
-def controle():
+def controle(leger=False):
+    """LE CONTROLE. `leger=True` : les mesures qui repondent en un souffle (les unites, les ports,
+    la table, le trafic). C'est ce qu'un BOUTON DE PANNEAU peut se permettre toutes les 30 s ; le
+    docteur, lui, coute des secondes, et il n'entre QUE dans la version complete."""
     res = lire_residents()
     appoints = lire_appoints()
     table = lire_table()
-    canon = lire_canon()
-    docteur = lire_doctor()
     trafic = lire_trafic()
-    ok_engine = lire_engine()[0]
-    non_commite, rev = lire_git()
+    canon = {"chemin": None} if leger else lire_canon()
+    docteur = None if leger else lire_doctor()
+    ok_engine = False if leger else lire_engine()[0]
+    non_commite, rev = (None, None) if leger else lire_git()
 
     fautes = [r[6] for r in res if r[5]]
     if table is not None:
         fautes += ["sans corps : " + n for n in table[2]] + ["id double : " + n for n in table[3]]
     if docteur:
         fautes += [x[1] for x in docteur if x[0] in ("fail", "FAULT", "FAUTE")]
-    if canon.get("chemin") is None:
+    if not leger and canon.get("chemin") is None:
         fautes.append("le canon est introuvable")
 
     L = []
     L.append(("LA status", "clear" if not fautes else "%d defaut(s)" % len(fautes), bool(fautes)))
+    if leger:
+        L.append(("residents", "%d/%d actifs" % (len([r for r in res if not r[5]]), len(res)),
+                  len([r for r in res if not r[5]]) != len(res)))
+        L.append(("table", "absente" if table is None else "%d/%d" % (table[0], table[1]),
+                  table is None or bool(table[2] or table[3])))
+        for nom, port, code, mot, muet in appoints:
+            L.append((nom, "muet" if muet else "repond " + code, False))
+        if "adresse" in trafic:
+            L.append(("api", "%s : %s" % (trafic["adresse"][0], trafic["adresse"][2]), False))
+            muet = trafic.get("joignable") == "000"
+            L.append(("api status", "pas de reponse" if muet else "connected", muet))
+        if "journal" in trafic:
+            taille, echecs = trafic["journal"]
+            L.append(("journal", "%s / %s echec" % (poids(taille), echecs), echecs not in ("0", "")))
+        return L, fautes, res, appoints, table, canon, docteur, trafic
     L.append(("engine", "ok" if ok_engine else "ne repond pas", not ok_engine))
     if table is None:
         L.append(("table", "absente", True))
@@ -531,8 +549,9 @@ def sections(largeur):
 
 
 def une_ligne():
-    """LE BOUTON : une seule ligne courte, pour un panneau ou un widget."""
-    L, fautes, *_ = controle()
+    """LE BOUTON : une seule ligne courte, pour un panneau ou un widget. MESURES LEGERES : cette
+    ligne se demande toutes les trente secondes, elle ne peut pas payer le docteur."""
+    L, fautes, *_ = controle(leger=True)
     d = dict((x[0], x[1]) for x in L)
     return "LA %s | %s | table %s | api %s" % (d.get("LA status", "?"), d.get("residents", "?"),
                                                d.get("table", "?"), d.get("api status", "?"))
@@ -578,7 +597,8 @@ def cadre(largeur, hauteur):
 def main():
     ap = argparse.ArgumentParser(description="le tableau de LA : ce qui est charge, et ce qui se passe")
     ap.add_argument("--once", action="store_true", help="une passe, puis il sort (code = defauts)")
-    ap.add_argument("--line", action="store_true", help="une ligne pour un bouton de panneau")
+    ap.add_argument("--line", action="store_true", help="une ligne pour un bouton de panneau (leger)")
+    ap.add_argument("--check", action="store_true", help="la liste de controle seule (pour un menu)")
     ap.add_argument("--watch", type=float, default=3.0, help="secondes entre deux dessins")
     ap.add_argument("--largeur", type=int, default=0, help="largeur forcee (defaut : le terminal)")
     a = ap.parse_args()
@@ -586,6 +606,12 @@ def main():
     if a.line:
         print(une_ligne())
         return 0
+
+    if a.check:
+        largeur = a.largeur or int(os.environ.get("COLUMNS") or 0) or 64
+        L, fautes, *_ = controle()
+        print("\n".join(ligne(x[0], x[1], "", largeur) for x in L))
+        return 1 if fautes else 0
 
     if a.once:
         largeur = a.largeur or int(os.environ.get("COLUMNS") or 0) or LARGEUR_DEFAUT
