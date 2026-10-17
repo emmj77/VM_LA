@@ -56,10 +56,30 @@ COMMAND: |
         printf 'cherche la source OFFICIELLE, lis-la, et cite ce que tu lis.\n'
         continue ;;
     esac
+    # LES PERIMETRES DE PROJET : un projet DECLARE ou vit son dossier (projects/<nom>/project.yml,
+    # champ path) -- et on CHERCHE le dossier, on n ecrit jamais un chemin en dur : un chemin pose,
+    # c est un chemin casse le jour ou le dossier se deplace. Le perimetre borne l ECRITURE (lois
+    # 1202-1204) ; LA LECTURE, ELLE, EST LIBRE : tout est lisible, seule l ecriture est limitee.
+    PERIM=
+    PAC=$(sed -n '1p' "$ROOT/projects/.active" 2>/dev/null | tr -d '\r')
+    PJL="$ROOT/projects/*/project.yml"
+    if [ -n "$PAC" ] && [ -f "$ROOT/projects/$PAC/project.yml" ]; then
+      PJL="$ROOT/projects/$PAC/project.yml $ROOT/projects/*/project.yml"
+    fi
+    for PJ in $PJL; do
+      [ -f "$PJ" ] || continue
+      PP=$(sed -n 's/^path:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' "$PJ" | head -n 1)
+      [ -n "$PP" ] || continue
+      for D in "$ROOT/$PP" "$HOME/$PP" "$ROOT/../$PP"; do
+        [ -d "$D/$R" ] && { PERIM="$D/$R" ; break; }
+      done
+      [ -n "$PERIM" ] && break
+    done
     P=
-    # L ORDRE : LA MACHINE D ABORD (le dossier des corps, qui CITENT leurs sujets de doc), puis un
-    # chemin de la racine, puis la skill elle-meme, puis le workspace declare (loi 1008).
-    for C in "$ROOT/config/tools/$R" "$ROOT/$R" "$ROOT/skills/$A/$R" "$ROOT/skills/$R" \
+    # L ORDRE : LA MACHINE D ABORD (le dossier des corps, qui CITENT leurs sujets de doc), puis le
+    # PERIMETRE d un projet, puis un chemin de la racine, puis la skill elle-meme, puis le
+    # workspace declare (loi 1008).
+    for C in "$ROOT/config/tools/$R" "$PERIM" "$ROOT/$R" "$ROOT/skills/$A/$R" "$ROOT/skills/$R" \
              ${WS:+"$ROOT/$WS/$R"}; do
       case "$C" in *..*) continue ;; esac
       [ -e "$C" ] || continue
@@ -71,20 +91,44 @@ COMMAND: |
       continue
     fi
     if [ -f "$P" ]; then
-      printf 'LA DOC %s DE LA SKILL %s : %s\n\n' "$R" "$A" "$P"
-      LC_ALL=C sed -n '1,400p' "$P"
+      # UN FICHIER SE LIT -- SIL EST DU TEXTE. Un binaire (base, image, archive) s ANNONCE : le
+      # dumper ne donne que du bruit dans la tete, et une tete pleine de bruit hallucine. La
+      # nature vient de `file`, jamais d une devinette sur l extension.
+      NAT=$(file -b --mime-type "$P" 2>/dev/null || echo '?')
+      case "$NAT" in
+        text/*|application/json|application/xml|application/yaml|application/csv)
+          printf 'LA DOC %s DE LA SKILL %s : %s\n\n' "$R" "$A" "$P"
+          LC_ALL=C sed -n '1,400p' "$P" ;;
+        *)
+          printf 'LA RESSOURCE %s DE LA SKILL %s EST UN FICHIER QUI N EST PAS DU TEXTE : %s\n' "$R" "$A" "$P"
+          printf 'nature : %s ; %s octet(s). Il ne se LIT pas ici : il se traite par son outil (une base\n' "$NAT" "$(wc -c < "$P" | tr -d ' ')"
+          printf 'par sqlite3, une image par son lecteur). Le nommer suffit a savoir qu il est la.\n' ;;
+      esac
       continue
     fi
+    # UN DOSSIER S OUVRE : son contenu, DOSSIERS ET FICHIERS -- et les sujets de doc que ses
+    # corps citent. On ouvre le dossier avant de lire le moindre fichier : c est lui, la doc.
+    # Les sous-dossiers portent un / : un dossier ouvert se VOIT d un coup d oeil.
     SUJ=$(grep -h '^doc:' "$P"/tool_*.yaml 2>/dev/null | sed -e 's/^doc:[[:space:]]*//' -e 's/[[:space:]]*$//' | LC_ALL=C sort -u | grep -v '^$' | tr '\n' ' ')
     NF=$(find "$P" -maxdepth 1 -type f 2>/dev/null | wc -l)
-    if [ "$NF" -eq 1 ] && [ -z "$SUJ" ]; then
+    ND=$(find "$P" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | wc -l)
+    if [ "$NF" -eq 1 ] && [ "$ND" -eq 0 ]; then
       F=$(find "$P" -maxdepth 1 -type f 2>/dev/null)
-      printf 'LA DOC %s DE LA SKILL %s (le seul fichier de %s) :\n\n' "$R" "$A" "$P"
-      LC_ALL=C sed -n '1,400p' "$F"
+      NAT=$(file -b --mime-type "$F" 2>/dev/null || echo '?')
+      case "$NAT" in
+        text/*|application/json|application/xml|application/yaml|application/csv)
+          printf 'LA DOC %s DE LA SKILL %s (le seul fichier de %s) :\n\n' "$R" "$A" "$P"
+          LC_ALL=C sed -n '1,400p' "$F" ; continue ;;
+      esac
+      printf 'LA RESSOURCE %s DE LA SKILL %s (le seul fichier de %s) EST UN FICHIER QUI N EST PAS DU TEXTE :\n' "$R" "$A" "$P"
+      printf 'nature : %s ; %s octet(s). Il ne se LIT pas ici : il se traite par son outil.\n' "$NAT" "$(wc -c < "$F" | tr -d ' ')"
       continue
     fi
-    printf 'LA RESSOURCE %s DE LA SKILL %s : le dossier %s (%s fichier(s))\n\n' "$R" "$A" "$P" "$NF"
-    find "$P" -maxdepth 1 -type f 2>/dev/null | LC_ALL=C sort | head -n 60 | sed "s|^$P/|  |"
+    printf 'LA RESSOURCE %s DE LA SKILL %s : le dossier %s (%s fichier(s), %s sous-dossier(s))\n\n' "$R" "$A" "$P" "$NF" "$ND"
+    for E in "$P"/*; do
+      [ -e "$E" ] || continue
+      [ -d "$E" ] && printf '  %s/\n' "$(basename "$E")" || printf '  %s\n' "$(basename "$E")"
+    done | LC_ALL=C sort | head -n 60
     if [ -n "$SUJ" ]; then
       printf '\nLES SUJETS DE DOC CITES PAR LES CORPS DE %s : %s\n' "$R" "$SUJ"
       printf 'Le texte se prend a la SOURCE (web_search), et il se cite.\n'
