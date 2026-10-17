@@ -1,5 +1,8 @@
-/* Le bouton du panneau. On AJOUTE une classe (on remplace jamais .applet-label, qui porte la
-   police et la couleur du theme) : c'est ce qui evite d'abimer le panneau de Moussa. */
-.la-vert  { color: #2ec27e; font-weight: bold; }
-.la-rouge { color: #e01b24; font-weight: bold; }
-.la-gris  { color: #9a9996; font-weight: bold; }   /* il ne sait pas : il le dit */
+/* Le bouton du panneau.
+   On AJOUTE une classe -- on ne remplace JAMAIS .applet-label, qui porte la police, la taille et
+   la couleur du theme : c'est ce qui evite d'abimer le panneau de Moussa.
+   PAS DE GRAS : dans une barre ou le reste est en gris discret (40.0 °, 27 °C, 05:50), un gras
+   colore fait une tache. La COULEUR suffit a dire l'etat, la police reste celle du theme. */
+.la-vert  { color: #2ec27e; }
+.la-rouge { color: #e01b24; }
+.la-gris  { color: #9a9996; }   /* il ne sait pas : il le dit */
