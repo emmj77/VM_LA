@@ -255,11 +255,18 @@ def lire_trafic():
 def lire_machine():
     m = {}
     _, mo = run(["free", "-m"], timeout=6)
+    # LES CHAMPS DE free : total, used, free, shared, buff/cache, available. LE TOTAL EST p[1] :
+    # lire p[3] (libre) en croyant lire le total annonce une machine huit fois plus petite qu'elle
+    # n'est -- l'erreur est muette, le chiffre reste plausible, et c'est tout ce qui la rend grave.
     for ligne in mo.splitlines():
         if ligne.startswith("Mem:"):
             p = ligne.split()
             if len(p) >= 7:
-                m["ram"] = (int(p[2]), int(p[3]), int(p[6]), int(p[4]))
+                m["ram"] = (int(p[2]), int(p[1]), int(p[6]))
+        elif ligne.startswith(("Swap:", "Echange:")):
+            p = ligne.split()
+            if len(p) >= 3:
+                m["echange"] = int(p[2])
     _, tops = run(["ps", "-eo", "rss=,comm="], timeout=8)
     total = {}
     for ligne in tops.splitlines()[1:]:
@@ -454,8 +461,9 @@ def batir():
     t5 = Table.grid(expand=True)
     t5.add_column(justify="left")
     if "ram" in machine:
-        u, tot, libre, ech = machine["ram"]
-        t5.add_row(Text("RAM %d Mo utilises sur %d (%d libres), echange %d" % (u, tot, libre, ech)))
+        u, tot, libre = machine["ram"]
+        t5.add_row(Text("RAM %d Mo utilises sur %d (%d disponibles), echange %d Mo"
+                        % (u, tot, libre, machine.get("echange", 0))))
         t5.add_row(Text("les plus gros : " + "  ".join("%s %d Mo" % (n, m) for n, m in machine["gros"]),
                         style="dim"))
     for c in machine.get("cartes", []):
