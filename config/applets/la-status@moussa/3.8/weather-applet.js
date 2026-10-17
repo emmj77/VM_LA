@@ -20718,14 +20718,10 @@ class UIBar {
         // pointeur n'arrivent pas a une icone posee dans la barre. On fait donc un VRAI bouton de
         // barre, sur le modele du bouton « donnees fournies par », avec un mot : Moussa sait ce
         // qu'il clique, et le mot est celui qu'il emploie lui-meme.
-        this.refreshButton = new WeatherButton({ label: "Mise a jour", reactive: true, can_focus: true });
-        // Un WeatherButton se serre tout seul a 25 x 17 px, sans bordure : personne ne reconnait un
-        // bouton la-dedans. On lui rend une taille et un contour.
-        this.refreshButton.actor.set_style(
-            "padding: 4px 12px; margin: 2px 4px; border: 1px solid rgba(255, 255, 255, 0.45);" +
-            "border-radius: 4px; font-weight: bold;");
-        this.refreshButtonTooltip = new uiBar_Tooltip(this.refreshButton.actor, "Mise a jour");
-        this.refreshButton.actor.connect(SIGNAL_CLICKED, () => { void this.app.loop.Refresh(); });
+        // UNE SEULE MISE A JOUR, ET ELLE EST DANS LE MENU. Deux boutons portant le meme mot, un
+        // dans la barre du bas et un en pleine largeur, ca ne se lit pas : on garde la ligne du
+        // menu (on ne peut pas la manquer) et on laisse l'icone d'attente de la meteo a sa place,
+        // cachee. Le clic du milieu sur le panneau et le menu du clic droit restent en secours.
         this.refreshIcon.hide();
         this.actor.add(this.providerCreditButton.actor, {
             x_fill: false,
@@ -20740,12 +20736,7 @@ class UIBar {
             try { this._timestamp.connect(SIGNAL_CLICKED, () => { void this.app.loop.Refresh(); }); }
             catch (e) { }
         }
-        this.actor.add(this.refreshButton.actor, {
-            x_fill: false,
-            x_align: uiBar_Align.END,
-            y_align: uiBar_Align.MIDDLE,
-            y_fill: false,
-        });
+
     }
     BigDistanceUnitFor(unit) {
         if (unit == "imperial")

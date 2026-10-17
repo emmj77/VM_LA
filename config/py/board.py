@@ -51,7 +51,7 @@ RESIDENTS = [("embed", "la-embed.service", 8096, "health"),
              ("asr", "la-asr.service", 8080, "ready"),
              ("tts", "la-tts.service", 8090, "health")]
 APPOINT = [("pont", 8765, "ping", "l'app est eteinte"),
-           ("vision", 8091, "health", "il nait a la demande")]
+           ("vision", 1234, "health", "il nait a la demande")]
 FORMES = r"[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)"
 BRIQUES = {"embed": 8096, "rerank": 8095, "local": 8088, "asr": 8080, "tts": 8090}
 PORTEURS = ["micro_vision.py", "see_image.py"]
