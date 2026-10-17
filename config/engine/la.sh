@@ -1,8 +1,8 @@
 #!/bin/sh
 # la.sh — OUVRIR LA (le corps). La porte est ~/.local/bin/la : un VRAI fichier qui exec celui-ci.
 #
-#   la.sh              reveille les cinq residents, BRANCHE le pont s'il est muet, ouvre LE TABLEAU
-#   la.sh --board      seulement le panneau, dans sa fenetre (aucun resident n'est touche)
+#   la.sh              reveille les cinq residents, BRANCHE le pont s'il est muet, et DIT l'etat
+#   la.sh --board      le tableau dans SA FENETRE, tel quel (aucun resident n'est touche)
 #   la.sh --once       le panneau UNE fois, ici, en texte (audit ou script) : code = nb de defauts
 #   la.sh --help       ce qu'il fait
 #
@@ -10,6 +10,10 @@
 # ce qui vit dans ~/.local/bin n'est suivi par AUCUN depot. Le travail seme hors de son dossier n'est
 # pas fini : le corps vit donc ici, dans le projet, et l'entree n'est qu'un chemin qui s'execute.
 # JAMAIS UN LIEN, ni d'un cote ni de l'autre (regle de Moussa).
+#
+# LE PANNEAU DE TOUS LES JOURS N'EST PAS CETTE FENETRE : c'est LE BOUTON DANS LA BARRE DE CINNAMON
+# (applet `la-status@moussa`, source dans config/applets/) -- il ne s'ouvre pas, donc il ne peut pas
+# mourir. La fenetre ne se justifie que pour LIRE le tableau en entier, et elle se demande.
 #
 # IL N'INSTALLE RIEN, IL NE SUPPRIME RIEN : il DEMARRE des unites declarees, il BRANCHE le pont,
 # il MONTRE, et il sort. Le pont n'ecoute que sur 127.0.0.1 (LA_BRIDGE_ADDRESS) : ouvrir cette porte
@@ -94,9 +98,8 @@ if [ "$MODE" = tout ]; then
   esac
 fi
 
-# 3. LE PANNEAU, DANS SA PROPRE FENETRE, ET IL Y RESTE. Une fenetre de 140 colonnes : c'est la
-# largeur a laquelle le panneau se met sur deux colonnes au lieu de s'empiler.
-if command -v kitty >/dev/null 2>&1; then
+# 3. LA FENETRE : SEULEMENT SI ON LA DEMANDE (`la --board`).
+if [ "$MODE" = board ] && command -v kitty >/dev/null 2>&1; then
   # remember_window_size=no : SANS LUI, kitty rouvre la taille de la DERNIERE fenetre et ignore
   # celle qu'on demande -- c'est la faute qui a fait une fenetre de 164 colonnes.
   setsid kitty --title "LA — le tableau" -o remember_window_size=no \
@@ -105,7 +108,10 @@ if command -v kitty >/dev/null 2>&1; then
     >>"$LA_ROOT/work/board.log" 2>&1 &
   printf '  le tableau s ouvre dans sa fenetre, %s x %s (Ctrl-C dedans pour le fermer)\n' "$LARGESSE" "$HAUTEUR"
   printf '  si jamais il tombait, sa trace est dans work/board.log\n'
+elif [ "$MODE" = board ]; then
+  printf '  kitty est absent : le tableau reste ici, en une passe\n'
+  exec /usr/bin/python3 "$PANNEAU" --once
 else
-  printf '  kitty est absent : le panneau reste ici\n'
-  exec /usr/bin/python3 "$PANNEAU"
+  printf '  le panneau de tous les jours : LE BOUTON « LA » dans la barre de Cinnamon.\n'
+  printf '  la fenetre, si tu la veux : la --board   ·   une passe ici : la --once\n'
 fi
