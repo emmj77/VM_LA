@@ -490,6 +490,12 @@ BIG_DUE=0                                     # LE GRAND PLAN EST IMPOSE AU CHAR
                                               # vide -> big_todo (il l ECRIT), existant -> update_big_todo
                                               # (il le REVISE). Le drapeau RESTE leve jusqu au geste.
 BIG_GESTE=''                                  # lequel des deux est impose pour ce chargement-la
+MAJ_DUE=0                                     # LA MAJ PERIODIQUE (loi 1612) : tous les MAJ_EVERY tours,
+                                              # le GRAND PLAN et la SPEC se mettent a jour. 1 = le
+                                              # chantier (update_big_todo), 2 = le canon (update_spec).
+                                              # C est un BLOCAGE, pas un rappel : le perimetre tombe au
+                                              # seul geste du palier, et le palier ne se leve qu au geste.
+MAJ_EVERY=${LA_MAJ_EVERY:-10}                 # l intervalle de la maj periodique (declarable)
 PLAN_EVERY=${LA_PLAN_EVERY:-5}               # l intervalle de l imposition du plan (declarable) : la
                                              # boucle force `update_todo` a ce rythme tant qu un plan est ouvert
 SHARE_NAMES=''
@@ -627,6 +633,12 @@ reachable() {  # $1 = nom
     case " $GUARDRAILS $LOCK " in *" $1 "*) return 0 ;; esac
     return 1
   fi
+  # LA MAJ PERIODIQUE EST IMPOSEE (loi 1612) : le perimetre se RETRECIT au SEUL geste du palier -- le
+  # chantier (update_big_todo) puis le canon (update_spec). Deux paliers, une porte a la fois.
+  if [ "$MAJ_DUE" != 0 ]; then
+    case " $GUARDRAILS $([ "$MAJ_DUE" = 2 ] && echo update_spec || echo update_big_todo) " in *" $1 "*) return 0 ;; esac
+    return 1
+  fi
   # LE GRAND PLAN EST IMPOSE : le perimetre se RETRECIT au SEUL geste du chantier (+ les garde-fous).
   # Un projet n est pas un decor : on n entre pas dedans sans ECRIRE (big_todo) ou REVISER
   # (update_big_todo) son plan -- et le geste du tour est dit, il n y a rien a choisir.
@@ -700,6 +712,16 @@ scope_build() {
   elif [ "$PLAN_DUE" != 1 ] && [ "$(( TURN % PLAN_EVERY ))" -eq 0 ]; then
     PLAN_DUE=1
   fi
+  # LA MAJ PERIODIQUE : tous les MAJ_EVERY tours, le grand plan ET la spec (loi 1612). Quand aucun
+  # projet n est charge, il n y a pas de chantier a mettre a jour : il reste le canon.
+  if [ "$MAJ_DUE" = 0 ] && [ "$TURN" -gt 0 ] && [ "$(( TURN % MAJ_EVERY ))" -eq 0 ]; then
+    PAF="$ROOT/projects/.active"
+    if [ -f "$PAF" ] && [ -n "$(sed -n '1p' "$PAF" 2>/dev/null | tr -d '\r')" ]; then
+      MAJ_DUE=1        # le chantier d abord (le projet est le cadre du travail)
+    else
+      MAJ_DUE=2        # aucun projet : il reste le canon
+    fi
+  fi
   # la part de tete : seulement quand la chaine est OUVERTE (doc lue + plan fait), NON armee, et
   # JAMAIS au tour impose (le perimetre est deja reduit a un seul tool : classer ne sert a rien)
   if [ -z "$LOCK" ] && [ "$DOC_READ" = 1 ] && [ "$PLAN_DONE" = 1 ] && [ "$TOOLSET_ARMED" != 1 ] \
@@ -732,6 +754,10 @@ scope_build() {
   SCOPE_IDS=' '
   if [ -n "$LOCK" ]; then
     SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - UN LOCK EST ARME (tool impose : $LOCK) : le perimetre est REDUIT a ce seul tool, EXTRA les garde-fous answer, ask, kill, talk. Par leur NUMERO :
+"
+  elif [ "$MAJ_DUE" != 0 ]; then
+    case "$MAJ_DUE" in 2) _maj='le CANON (update_spec)' ;; *) _maj='le GRAND PLAN (update_big_todo)' ;; esac
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA MAJ PERIODIQUE EST IMPOSEE (tous les $MAJ_EVERY tours, loi 1612) : $_maj se met a jour. Le perimetre est REDUIT a ce seul geste jusqu a ce qu il soit fait. Par leur NUMERO :
 "
   elif [ "$BIG_DUE" = 1 ]; then
     SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE GRAND PLAN DU PROJET EST IMPOSE : un projet charge porte un CHANTIER. Le geste de ce tour est ${BIG_GESTE:-big_todo} -- big_todo si le chantier n est pas encore ecrit, update_big_todo s il existe et qu il se revise. Ecris-le ou revise-le, et le tour passe. Par leur NUMERO :
@@ -1120,7 +1146,11 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
           log_to_stderr "$(ts)  turn $TURN  la(g=$G, a=$AJ)  ->  plan de skill FINI : la skill se decharge (les tools du skill se referment ; load_skill pour repartir)"
         fi ;;
       load_project) [ "$MSG_STATUS" = ok ] && { BIG_DUE=1 ; BIG_GESTE=$(big_geste) ; } ;;
-      big_todo|update_big_todo)                                            BIG_DUE=0 ;;
+      big_todo|update_big_todo)
+        BIG_DUE=0
+        # LE PALIER SUIVANT DE LA MAJ PERIODIQUE : le chantier est a jour, le canon ne l est pas.
+        [ "$MAJ_DUE" = 1 ] && MAJ_DUE=2 ;;
+      update_spec) [ "$MAJ_DUE" = 2 ] && MAJ_DUE=0 ;;
     esac
     MSG_LINE=$(printf '%s' "$LINE_" | jq -r '.line // .result // ""' 2>/dev/null || true)
     log_to_stderr "${MSG_TS:-$(ts)}  turn $TURN  la(g=$G, a=$AJ)  ->  $MSG_LINE"
