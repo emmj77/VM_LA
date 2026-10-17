@@ -1,4 +1,5 @@
 project: "{{name}}"          # le nom du projet
+path: "{{path}}"            # le chemin du projet : ou il vit
 date: "{{date}}"
 tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE le projet
 
