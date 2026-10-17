@@ -640,8 +640,26 @@ def main():
                 return "RESEAU"
             return "SYSTEME"
 
+        # LE MENU EST UN MENU : il doit tenir dans la largeur d'un ecran. Une URL entiere et un
+        # horodatage ISO font un menu de 1880 pixels. Le tableau (--once) garde les valeurs
+        # entieres -- c'est lui la source ; ici on ne rend que ce qui se lit d'un coup d'oeil.
+        def court(nom, valeur):
+            n = nom.lower()
+            if n == "endpoint":
+                return valeur.replace("https://", "").split("/")[0]
+            if n == "last_activity":
+                return valeur.split(" ", 1)[1] if " " in valeur else valeur
+            if n == "api":
+                return valeur.split(" : ")[-1]
+            if n == "sessions":
+                return valeur.replace("echanges", "ech.").replace(" / derniere ", " / ")
+            if n == "git":
+                return valeur.replace("suivi / ", "")
+            return valeur
+
         rang = {"LA": 0, "SYSTEME": 1, "RESEAU": 2}
-        print("\n".join("%s|%s|%s|%s" % ("ko" if x[2] else "ok", titre(x[0]), x[0], x[1])
+        print("\n".join("%s|%s|%s|%s" % ("ko" if x[2] else "ok", titre(x[0]), x[0],
+                                           court(x[0], x[1]))
                         for x in sorted(L, key=lambda x: rang[titre(x[0])])))
         return 1 if fautes else 0
 

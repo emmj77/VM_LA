@@ -21209,6 +21209,10 @@ class WeatherApplet extends TextIconApplet {
             this.set_applet_icon_path(DOSSIER_ICONES + weather.condition.customIcon + ".svg");
         } catch (e) { }
         try {
+            // LA GRILLE DU MENU : une colonne, et de la place pour TOUTES les mesures. L'applet
+            // garde ses propres valeurs (4 x 4), et une ligne de plus tombait hors de la grille.
+            this.config._forecastRows = 24;      // de la place pour toutes les mesures
+            this.config._forecastColumns = 2;    // deux colonnes : une seule ferait 1163 px de haut
             this.ui.FutureWeather.Rebuild(this.config, this.config.textColorStyle,
                                           weather.forecasts.length);
             this.ui.FutureWeather.Display(weather, this.config);
@@ -21223,8 +21227,23 @@ class WeatherApplet extends TextIconApplet {
                 // d'une ligne qui suit la meme section) laisse l'emplacement sans texte.
                 const prevue = weather.forecasts[i];
                 const morceaux = String(prevue.condition.main || "").split(" : ");
-                try { bloc.forecasts[i].Day.text = CapitalizeFirstLetter(String(prevue.titre || "")); }
-                catch (e) { }
+                // LE JOUR DE LA METEO EST UN BOUTON (weather-forecast-day), PAS UN LABEL : poser
+                // « .text » ne faisait rien et « Aujourd'hui » restait affiche sur chaque ligne.
+                (function (ligne, titre) {
+                    const poser = (acteur) => {
+                        let classe = "";
+                        try { classe = acteur.get_style_class_name() || ""; } catch (e) { }
+                        if (classe.indexOf("weather-forecast-day") > -1) {
+                            try { acteur.set_label(titre); } catch (e) { }
+                            try { acteur.label = titre; } catch (e) { }
+                            try { acteur.text = titre; } catch (e) { }
+                        }
+                        let enfants = [];
+                        try { enfants = acteur.get_children(); } catch (e) { }
+                        for (let n = 0; n < enfants.length; n++) poser(enfants[n]);
+                    };
+                    try { poser(ligne.Summary.get_parent()); } catch (e) { }
+                })(bloc.forecasts[i], CapitalizeFirstLetter(String(prevue.titre || "")));
                 try { bloc.forecasts[i].Temperature.text = morceaux[0] || ""; } catch (e) { }
                 try { bloc.forecasts[i].Summary.text = morceaux.slice(1).join(" : ") || ""; } catch (e) { }
                 try {
