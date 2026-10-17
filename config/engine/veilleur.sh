@@ -32,9 +32,9 @@
 # SORTIE D'ERREUR : un refus NOMME, code 1. Aucun verdict n'est rendu sans les deux scores : un
 # juge qui ne peut pas noter n'invente pas (loi 1547).
 #
-# LE CLIENT. Le service est appele en curl + jq, l'outillage de la maison. Le selecteur de tools
-# (config/py/rank_tools.py) garde une PART d'une longue liste : ce n'est pas le geste du juge, qui
-# note DEUX sorties fixes. Un seul service, deux gestes.
+# LE CLIENT. Le service est appele en curl + jq, l'outillage de la maison. Le SELECTEUR de tools
+# (la fonction rank_share de loop.sh) garde une PART d'une longue liste : ce n'est pas le geste du
+# juge, qui note DEUX sorties fixes. Un seul service, deux gestes.
 
 set -u
 

@@ -1,8 +1,8 @@
 #!/bin/sh
 # rerank.sh - THE TOOL SELECTOR'S ENGINE. The reranker that RANKS, loaded once.
 #
-# WHY. The tool selector (rank_tools) must choose among the tools the ACTIVE SKILL already
-# preselected -- never the whole table. It hands the request and the candidate list to a
+# WHY. The tool selector (rank_share, in loop.sh) must choose among the tools the ACTIVE SKILL
+# already preselected -- never the whole table. It hands the request and the candidate list to a
 # CROSS-ENCODER (a reranker), which scores each candidate on its own. A bi-encoder
 # (e5-small) put the right tool first only 11 times out of 20, in the first 30% of the list
 # 11 times out of 20 either. The reranker puts it in the first 30% 20 times out of 20.

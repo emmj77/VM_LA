@@ -1,6 +1,6 @@
-# QUI : reads a doc of the active skill by its name, before a sensitive tool
-# ORIGINE : ligne 137 du registre ; corps REECRIT le 2026-10-17 -- il lit la ressource nommee par DOCS.
-# REFUSE : aucun skill actif, ou manifeste du skill introuvable. Une doc absente, elle, ne refuse pas.
+# QUI : reads the doc NAMED by the active skill, before a sensitive tool
+# ORIGINE : ligne 137 du registre ; corps REECRIT le 2026-10-17 -- il lit les ressources NOMMEES.
+# REFUSE : aucun skill actif, ou manifeste de la skill introuvable. Une ressource absente ne refuse jamais.
 tool: "load_doc"
 date: "2026-10-17"
 tags: ["load_doc"]
@@ -9,66 +9,87 @@ RULES:
   enabled: true
   timeout: 600
 
-DESCRIPTION: "reads the doc NAMED by the active skill (DOCS): a file, a folder, or the web"
+DESCRIPTION: "reads the docs NAMED by the active skill (DOCS): the web, a machine, or a path"
 
 COMMAND: |
   # LA DOC DE LA SKILL ACTIVE : elle est NOMMEE par sa section DOCS (loi 1033 : l id 3xx porte la
-  # doc), jamais par un slug libre. La ressource se cherche DANS LE DOSSIER DE LA SKILL, puis a la
-  # racine du depot, puis dans les machines (config/tools/) : un fichier se LIT, un dossier donne son
-  # SEUL fichier utile ou son inventaire, et une ressource absente DIT son absence et renvoie au web.
-  # LA PORTE S OUVRE QUAND MEME : le harnais ne juge pas le contenu lu (loi 1007), et une doc absente
-  # ne doit pas garder le PLAN ferme (loi 702).
+  # doc), et elle SEULE. IL N Y A PAS DE DOSSIER docs/ : ce dossier n a jamais existe, et une
+  # doc ne vit pas dans une arborescence inventee. Ce que la skill NOMME est l une de ces trois
+  # choses, et le corps les sert TOUTES (la section entiere, pas la premiere ligne) :
+  #   - le WEB : la valeur web_search (24 skills sur 30). La doc se cherche, se lit, se CITE.
+  #   - une MACHINE (unity, blender, krita, 3d, comfyui) : le dossier des corps, son inventaire,
+  #     ET LES SUJETS DE DOC QUE LES CORPS CITENT (leur champ doc:) : c est la doc CITEe.
+  #   - un CHEMIN (Ressources, pour unity) : il se resout sous la racine, sous la skill, sous sa
+  #     machine, sous son PERIMETER.workspace (loi 1008 : l emplacement est declare par la skill).
+  # LA PORTE S OUVRE MEME QUAND RIEN N EST TROUVE : le verrou ne juge pas le contenu lu (loi 1007),
+  # et une ressource absente ne doit pas garder la famille PLAN fermee (loi 1003).
   T="{{topic}}"
   case "$T" in
-    ''|*[!a-zA-Z0-9_.-]*) [ -n "$T" ] && echo "topic hors form ($T) : ignore, la ressource du skill est servie" >&2 ; T= ;;
+    ''|*[!a-zA-Z0-9_.-]*) [ -n "$T" ] && printf 'topic hors form (%s) : les ressources nommees par la skill sont servies\n' "$T" >&2 ; T= ;;
   esac
   A=$(sed -n '1p' "$ROOT/skills/.active" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   case "$A" in ''|*/*|*..*) A= ;; esac
-  [ -n "$A" ] || { echo "refuse : aucun skill actif (skills/.active est vide)" >&2; exit 1; }
+  [ -n "$A" ] || { echo "refuse : aucun skill actif (skills/.active est vide)" >&2 ; exit 1; }
   S="$ROOT/skills/$A/skill.yaml"
-  [ -f "$S" ] || { echo "refuse : le manifeste du skill actif est introuvable ($S)" >&2; exit 1; }
+  [ -f "$S" ] || { echo "refuse : le manifeste de la skill active est introuvable ($S)" >&2 ; exit 1; }
   RES=$(sed -n '/^DOCS:/,/^[^[:space:]]/p' "$S" \
         | sed -n 's/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
-        | sed -e 's/^"//' -e 's/"$//' | grep -v '^$' | head -n 1)
-  [ -n "$T" ] && RES="$T"
+        | sed -e 's/^"//' -e 's/"[[:space:]]*$//' | grep -v '^$')
   if [ -z "$RES" ]; then
-    printf 'la skill %s ne declare aucune ressource de doc (section DOCS vide) : rien a lire.\n' "$A"
+    printf 'la skill %s ne nomme AUCUNE ressource de doc (section DOCS vide) : rien a lire.\n' "$A"
     exit 0
   fi
-  P=
-  case "$RES" in
-    web_search|web|none) ;;
-    *) for C in "$ROOT/skills/$A/$RES" "$ROOT/$RES" "$ROOT/config/tools/$RES" "$ROOT"/config/tools/*/tool_"$RES".yaml; do
-         case "$C" in *..*) continue ;; esac
-         [ -e "$C" ] || continue
-         P="$C" ; break
-       done ;;
-  esac
-  if [ -z "$P" ]; then
-    if [ "$RES" = web_search ]; then
-      printf 'LA DOC DE LA SKILL %s vit sur le WEB : cherche-la, lis la bonne source, cite-la.\n' "$A"
-    else
-      printf 'LA DOC DE LA SKILL %s n est pas locale (ressource nommee : %s).\n' "$A" "$RES"
-      printf 'Cherche-la sur le WEB avant de conclure, et cite ce que tu lis.\n'
+  WS=$(sed -n '/^PERIMETER:/,/^[^[:space:]]/p' "$S" | sed -n 's/^[[:space:]]*workspace:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' | head -n 1)
+  # LE SUJET DU MODELE NE REMPLACE PAS LA LISTE : un sujet hors liste est IGNORE, et DIT.
+  if [ -n "$T" ]; then
+    if printf '%s\n' "$RES" | grep -qxF -- "$T"; then LISTE="$T" ; else
+      printf 'le sujet demande (%s) n est pas nomme par la skill %s : les ressources nommees sont servies.\n\n' "$T" "$A"
+      LISTE="$RES"
     fi
-    exit 0
-  fi
-  if [ -f "$P" ]; then
-    printf 'LA DOC DE LA SKILL %s : %s\n\n' "$A" "$P"
-    LC_ALL=C sed -n '1,400p' "$P"
-    exit 0
-  fi
-  NF=$(find "$P" -maxdepth 1 -type f 2>/dev/null | wc -l)
-  if [ "$NF" -eq 1 ]; then
-    F=$(find "$P" -maxdepth 1 -type f 2>/dev/null)
-    printf 'LA DOC DE LA SKILL %s (le seul fichier de %s) :\n\n' "$A" "$P"
-    LC_ALL=C sed -n '1,400p' "$F"
-    exit 0
-  fi
-  printf 'LA DOC DE LA SKILL %s : le dossier %s (%s fichier(s))\n\n' "$A" "$P" "$NF"
-  find "$P" -maxdepth 1 -type f 2>/dev/null | LC_ALL=C sort | head -n 60 | sed "s|^$P/|  |"
-  SUJ=$(grep -h '^doc:' "$P"/tool_*.yaml 2>/dev/null | sed -e 's/^doc:[[:space:]]*//' -e 's/[[:space:]]*$//' | LC_ALL=C sort -u | grep -v '^$' | tr '\n' ' ')
-  [ -n "$SUJ" ] && printf '\nLE SUJET DE DOCUMENTATION PORTE PAR CE DOSSIER : %s\n' "$SUJ"
+  else LISTE="$RES"; fi
+
+  printf '%s\n' "$LISTE" | while IFS= read -r R; do
+    [ -n "$R" ] || continue
+    case "$R" in
+      web_search|web|none)
+        printf 'LA DOC DE LA SKILL %s VIT SUR LE WEB (ressource nommee : %s) :\n' "$A" "$R"
+        printf 'cherche la source OFFICIELLE, lis-la, et cite ce que tu lis.\n'
+        continue ;;
+    esac
+    P=
+    # L ORDRE : LA MACHINE D ABORD (le dossier des corps, qui CITENT leurs sujets de doc), puis un
+    # chemin de la racine, puis la skill elle-meme, puis le workspace declare (loi 1008).
+    for C in "$ROOT/config/tools/$R" "$ROOT/$R" "$ROOT/skills/$A/$R" "$ROOT/skills/$R" \
+             ${WS:+"$ROOT/$WS/$R"}; do
+      case "$C" in *..*) continue ;; esac
+      [ -e "$C" ] || continue
+      P="$C" ; break
+    done
+    if [ -z "$P" ]; then
+      printf 'LA SKILL %s NOMME UNE RESSOURCE DE DOC QUI N EST PAS SOUS LA RACINE : %s\n' "$A" "$R"
+      printf 'Cherche-la sur le WEB (web_search), lis la bonne source, cite-la.\n'
+      continue
+    fi
+    if [ -f "$P" ]; then
+      printf 'LA DOC %s DE LA SKILL %s : %s\n\n' "$R" "$A" "$P"
+      LC_ALL=C sed -n '1,400p' "$P"
+      continue
+    fi
+    SUJ=$(grep -h '^doc:' "$P"/tool_*.yaml 2>/dev/null | sed -e 's/^doc:[[:space:]]*//' -e 's/[[:space:]]*$//' | LC_ALL=C sort -u | grep -v '^$' | tr '\n' ' ')
+    NF=$(find "$P" -maxdepth 1 -type f 2>/dev/null | wc -l)
+    if [ "$NF" -eq 1 ] && [ -z "$SUJ" ]; then
+      F=$(find "$P" -maxdepth 1 -type f 2>/dev/null)
+      printf 'LA DOC %s DE LA SKILL %s (le seul fichier de %s) :\n\n' "$R" "$A" "$P"
+      LC_ALL=C sed -n '1,400p' "$F"
+      continue
+    fi
+    printf 'LA RESSOURCE %s DE LA SKILL %s : le dossier %s (%s fichier(s))\n\n' "$R" "$A" "$P" "$NF"
+    find "$P" -maxdepth 1 -type f 2>/dev/null | LC_ALL=C sort | head -n 60 | sed "s|^$P/|  |"
+    if [ -n "$SUJ" ]; then
+      printf '\nLES SUJETS DE DOC CITES PAR LES CORPS DE %s : %s\n' "$R" "$SUJ"
+      printf 'Le texte se prend a la SOURCE (web_search), et il se cite.\n'
+    fi
+  done
   exit 0
 
 
