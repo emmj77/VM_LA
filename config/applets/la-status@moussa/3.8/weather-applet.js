@@ -20705,6 +20705,9 @@ class UIBar {
         }
         this.providerCreditButton = new WeatherButton({ label: _(ELLIPSIS), reactive: true });
         this.providerCreditButton.actor.connect(SIGNAL_CLICKED, () => OpenUrl(this.providerCreditButton));
+        // Notre fournisseur n'a pas de site : ce bouton brillant ne menait nulle part. Le voisin
+        // cliquable qui ne fait rien, c'est exactement ce qui fait croire que rien ne marche.
+        this.providerCreditButton.disable();
         this.refreshIcon = new uiBar_Icon({
             icon_name: "refresh-symbolic",
             icon_type: uiBar_IconType.SYMBOLIC,
@@ -20715,7 +20718,12 @@ class UIBar {
         // pointeur n'arrivent pas a une icone posee dans la barre. On fait donc un VRAI bouton de
         // barre, sur le modele du bouton « donnees fournies par », avec un mot : Moussa sait ce
         // qu'il clique, et le mot est celui qu'il emploie lui-meme.
-        this.refreshButton = new WeatherButton({ label: "Maj", reactive: true, can_focus: true });
+        this.refreshButton = new WeatherButton({ label: "Mise a jour", reactive: true, can_focus: true });
+        // Un WeatherButton se serre tout seul a 25 x 17 px, sans bordure : personne ne reconnait un
+        // bouton la-dedans. On lui rend une taille et un contour.
+        this.refreshButton.actor.set_style(
+            "padding: 4px 12px; margin: 2px 4px; border: 1px solid rgba(255, 255, 255, 0.45);" +
+            "border-radius: 4px; font-weight: bold;");
         this.refreshButtonTooltip = new uiBar_Tooltip(this.refreshButton.actor, "Mise a jour");
         this.refreshButton.actor.connect(SIGNAL_CLICKED, () => { void this.app.loop.Refresh(); });
         this.refreshIcon.hide();
@@ -21295,6 +21303,18 @@ class WeatherApplet extends TextIconApplet {
         return true;
     }
     DisplayWeatherOnLabel(weather) {
+        // UNE VRAIE LIGNE « Mise a jour » DANS LE MENU, en pleine largeur, avec son icone : une
+        // cible qu'on ne peut pas manquer. Chez la meteo ce bouton n'existe que dans le menu du
+        // CLIC DROIT sur l'applet du panneau ; il n'y avait rien dans le menu qu'on ouvre.
+        try {
+            const menu = this.ui.menu;
+            const deja = menu._getMenuItems().some((it) => {
+                try { return it.label && it.label.text === "Mise a jour"; } catch (e) { return false; }
+            });
+            if (!deja)
+                menu.addMenuItem(new MenuItem("Mise a jour", REFRESH_ICON,
+                    () => { void this.loop.Refresh({ rebuild: true }); }));
+        } catch (e) { }
         // NOTRE ETIQUETTE : LE MOT DE LA, la ou la meteo pose sa temperature. C'est le seul texte
         // que nous ecrivons dans la barre ; tout le reste -- l'icone, le menu, les lignes de
         // prevision -- est la meteo, copiee telle quelle.
@@ -21421,6 +21441,9 @@ The contents of the file saved from the applet help page goes here
         return false;
     }
     on_applet_middle_clicked() {
+        // Chez la meteo le clic du milieu ne fait rien du tout. Ici il rafraichit : c'est la
+        // convention des applets de Cinnamon, et la cible est le panneau entier.
+        void this.loop.Refresh();
         return false;
     }
     on_panel_height_changed() {
