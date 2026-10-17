@@ -1,10 +1,26 @@
 {
     "uuid": "la-status@moussa",
-    "name": "LA — l'état",
-    "description": "LE BOUTON DE LA dans le panneau : vert quand le harnais tient, rouge sinon. Un clic : sa liste de contrôle.",
-    "author": "Moussa",
-    "version": "1.0.0",
-    "max-instances": "1",
-    "cinnamon-version": ["5.4", "5.6", "6.0", "6.2", "6.4"],
-    "icon": "icon.png"
+    "name": "LA",
+    "description": "L'etat de LA, dans le panneau",
+    "max-instances": 3,
+    "version": "3.6.9",
+    "multiversion": true,
+    "cinnamon-version": [
+        "2.2",
+        "2.4",
+        "2.6",
+        "2.8",
+        "3.0",
+        "3.2",
+        "3.4",
+        "3.6",
+        "3.8",
+        "4.0",
+        "4.2",
+        "4.4",
+        "4.6",
+        "4.8"
+    ],
+    "author": "none",
+    "last-edited": 1780421321
 }
