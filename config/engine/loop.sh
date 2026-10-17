@@ -486,8 +486,12 @@ TOOLSET_ARMED=0
 PLAN_DUE=0                                    # le PLAN EST IMPOSE : il se leve tous les PLAN_EVERY tours,
                                              # et RESTE leve jusqu'a ce que le modele marque son point
 PLAN_FAMILY='todo update_todo'
+BIG_DUE=0                                     # LE GRAND PLAN EST IMPOSE AU CHARGEMENT D UN PROJET :
+                                              # vide -> big_todo (il l ECRIT), existant -> update_big_todo
+                                              # (il le REVISE). Le drapeau RESTE leve jusqu au geste.
+BIG_GESTE=''                                  # lequel des deux est impose pour ce chargement-la
 PLAN_EVERY=${LA_PLAN_EVERY:-5}               # l intervalle de l imposition du plan (declarable) : la
-                                             # boucle force `progress` a ce rythme tant qu un plan est ouvert
+                                             # boucle force `update_todo` a ce rythme tant qu un plan est ouvert
 SHARE_NAMES=''
 
 # LE SKILL ACTIF, RELU A CHAQUE TOUR (load_skill reecrit skills/.active) : le champ TOOLS: du
@@ -623,10 +627,17 @@ reachable() {  # $1 = nom
     case " $GUARDRAILS $LOCK " in *" $1 "*) return 0 ;; esac
     return 1
   fi
-  # LE PLAN EST IMPOSE : le perimetre se RETRECIT a `progress` (+ les garde-fous). Le modele DOIT
-  # marquer son point courant pour passer le tour.
+  # LE GRAND PLAN EST IMPOSE : le perimetre se RETRECIT au SEUL geste du chantier (+ les garde-fous).
+  # Un projet n est pas un decor : on n entre pas dedans sans ECRIRE (big_todo) ou REVISER
+  # (update_big_todo) son plan -- et le geste du tour est dit, il n y a rien a choisir.
+  if [ "$BIG_DUE" = 1 ]; then
+    case " $GUARDRAILS ${BIG_GESTE:-big_todo} " in *" $1 "*) return 0 ;; esac
+    return 1
+  fi
+  # LE PETIT PLAN EST IMPOSE : le perimetre se RETRECIT a `update_todo` (+ les garde-fous). Le modele
+  # DOIT marquer son point courant pour passer le tour.
   if [ "$PLAN_DUE" = 1 ]; then
-    case " $GUARDRAILS progress " in *" $1 "*) return 0 ;; esac
+    case " $GUARDRAILS update_todo " in *" $1 "*) return 0 ;; esac
     return 1
   fi
   # load_doc : le lecteur de doc, TOUJOURS la (sans lui, la chaine ne demarre jamais)
@@ -656,7 +667,7 @@ in_scope() {  # $1 = nom, $2 = family, $3 = l action (ou vide)
     return 1
   fi
   if [ "$PLAN_DUE" = 1 ]; then
-    case " $GUARDRAILS progress " in *" $1 "*) return 0 ;; esac
+    case " $GUARDRAILS update_todo " in *" $1 "*) return 0 ;; esac
     return 1
   fi
   [ "$1" = load_doc ] && return 0
@@ -683,7 +694,7 @@ scope_build() {
   LOCK=$(read_lock)
   SHARE_NAMES=''
   # L IMPOSITION DU PLAN : tous les PLAN_EVERY tours, si un plan est OUVERT, le drapeau se leve (et
-  # RESTE leve jusqu a `progress`). Un plan termine (la couche ne rend plus rien) l efface.
+  # RESTE leve jusqu a `update_todo`). Un plan termine (la couche ne rend plus rien) l efface.
   if [ "$PLAN_DONE" != 1 ] || ! plan_open; then
     PLAN_DUE=0
   elif [ "$PLAN_DUE" != 1 ] && [ "$(( TURN % PLAN_EVERY ))" -eq 0 ]; then
@@ -722,8 +733,11 @@ scope_build() {
   if [ -n "$LOCK" ]; then
     SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - UN LOCK EST ARME (tool impose : $LOCK) : le perimetre est REDUIT a ce seul tool, EXTRA les garde-fous answer, ask, kill, talk. Par leur NUMERO :
 "
+  elif [ "$BIG_DUE" = 1 ]; then
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE GRAND PLAN DU PROJET EST IMPOSE : un projet charge porte un CHANTIER. Le geste de ce tour est ${BIG_GESTE:-big_todo} -- big_todo si le chantier n est pas encore ecrit, update_big_todo s il existe et qu il se revise. Ecris-le ou revise-le, et le tour passe. Par leur NUMERO :
+"
   elif [ "$PLAN_DUE" = 1 ]; then
-    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE PLAN EST IMPOSE (tous les $PLAN_EVERY tours) : marque TON POINT COURANT (progress : 'progress' pour le reecrire, 'complete' pour le cocher) et le tour passe. Le toolset du skill ne revient qu une fois le point marque. Par leur NUMERO :
+    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE PLAN EST IMPOSE (tous les $PLAN_EVERY tours) : marque TON POINT COURANT avec update_todo, et le tour passe. Le toolset du skill ne revient qu une fois le point marque. Par leur NUMERO :
 "
   elif [ "$DOC_READ" != 1 ]; then
     SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA DOC N EST PAS ENCORE LUE : la famille PLAN est FERMEE. Lis la doc (load_doc) pour ouvrir le plan. Les permanents, par leur NUMERO :
@@ -909,6 +923,13 @@ refuse_loop() {  # $1 = le texte du refus
     '{status:"refused",tool:"la",line:($t+"  "+$m),result:("refus : "+$m),ts:$t}'
 }
 
+big_plan_txt() {  # ce que la brique dit du GRAND plan du projet actif (vide, ou ses points)
+  "${PROCS}/plan.sh" big status 2>/dev/null || true
+}
+big_geste() {     # LE GESTE DU CHANTIER : big_todo quand il n est pas ecrit, update_big_todo sinon
+  printf '%s' "$(big_plan_txt)" | grep -qi 'no open plan' && { printf 'big_todo' ; return 0 ; }
+  printf 'update_big_todo'
+}
 plan_open() {   # la COUCHE DE L ETAT rend-il un plan ouvert ? (sinon : termine, ou rien)
   # LES MARQUEURS REELS SONT CEUX QUE LES BRIQUES DISENT : 'no open plan' (celui que la couche du
   # plan rend quand il n'y a pas de plan), 'AUCUN PLAN OUVERT' (celui que la boucle pose quand
@@ -1088,7 +1109,18 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
       load_doc) [ "$MSG_STATUS" = ok ] &&                                  DOC_READ=1 ;;
       toolset)                                                             TOOLSET_ARMED=1 ;;
       todo)                                                                PLAN_DONE=1 ;;
-      progress)                                                            PLAN_DONE=1; PLAN_DUE=0 ;;
+      update_todo)
+        PLAN_DONE=1; PLAN_DUE=0
+        # LA SKILL SE DECHARGE TOUTE SEULE : quand le plan est FINI, la couche du plan ne rend plus
+        # rien (la brique vide la section). La porte se referme alors d elle-meme -- on ne demande
+        # AUCUN geste a l agent : il a avance son plan, c est tout ce qu on lui a demande. Pour
+        # retravailler, il repasse par load_skill (et load_skill ne refuse que si un plan est OUVERT).
+        if [ "$MSG_STATUS" = ok ] && "${PROCS}/plan.sh" status 2>/dev/null | grep -qi 'no open plan'; then
+          PLAN_DONE=0 ; DOC_READ=0 ; TOOLSET_ARMED=0
+          log_to_stderr "$(ts)  turn $TURN  la(g=$G, a=$AJ)  ->  plan de skill FINI : la skill se decharge (les tools du skill se referment ; load_skill pour repartir)"
+        fi ;;
+      load_project) [ "$MSG_STATUS" = ok ] && { BIG_DUE=1 ; BIG_GESTE=$(big_geste) ; } ;;
+      big_todo|update_big_todo)                                            BIG_DUE=0 ;;
     esac
     MSG_LINE=$(printf '%s' "$LINE_" | jq -r '.line // .result // ""' 2>/dev/null || true)
     log_to_stderr "${MSG_TS:-$(ts)}  turn $TURN  la(g=$G, a=$AJ)  ->  $MSG_LINE"
@@ -1132,7 +1164,7 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
         printf '%s\n' "$REPLY" >&2
         log_to_stderr "$(ts)  turn $TURN  answer PASSE et le plan n est pas termine : la reponse part au canal humain, le turn continue"
         SAID=$(printf '%s' "$REPLY" | tr '\n\t' '  ' | cut -c1-200)
-        hist_apply --arg d "$SAID" '. + [{role:"system",content:("Ta reponse est passee a l humain, et le turn CONTINUE : le plan n est pas termine. Nomme le tool qui finit l etape en cours (progress complete), sinon l etape reste ouverte. (tu as dit : "+$d+")")}]'
+        hist_apply --arg d "$SAID" '. + [{role:"system",content:("Ta reponse est passee a l humain, et le turn CONTINUE : le plan n est pas termine. Nomme le tool qui finit l etape en cours (update_todo), sinon l etape reste ouverte. (tu as dit : "+$d+")")}]'
       else
         ANSWERED=1
         break

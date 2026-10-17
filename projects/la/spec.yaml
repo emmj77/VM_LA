@@ -404,8 +404,11 @@ SECTION : LE_PLAN
   915: "LE PLAN DE PLUS DE DIX ETAPES SE DECOUPE."
   916: "LE PLAFOND DE TOURS SE POSE (400) : une borne de surete, jamais un frein."
   917: "TOUS LES CINQ TOURS, LE PLAN OUVERT SE RAPPELLE : le perimetre se retrecit a progress."
-  918: "L'IMPOSITION TIENT : elle ne se leve qu'au point marque (progress complete)."
+  918: "L'IMPOSITION TIENT : elle ne se leve qu'au point marque (update_todo)."
 
+  919: "LE PLAN A DEUX NIVEAUX : LE PETIT DANS LA SKILL, LE GRAND DANS LE PROJET."
+  920: "LE GRAND PLAN NE S'EFFACE PAS : IL SE CHANGE (change_big_todo), AVEC VALIDATION."
+  921: "LE PETIT PLAN FINI DECHARGE LA SKILL TOUT SEUL ; L'AGENT N'A AUCUN GESTE A FAIRE."
 SECTION : LES_PROJETS
   2100: "UN PROJET ENVELOPPE DES SKILLS : son manifeste est projects/<nom>/project.yml."
   2101: "LE MANIFESTE PORTE TROIS CHOSES : son resume (SUMMARY), ses regles (RULES), ses SKILLS."
@@ -421,6 +424,8 @@ SECTION : LES_PROJETS
   2111: "canon_path RESOUT LE CANON EN UN SEUL LIEU : le moteur, le docteur et write_spec."
   2112: "UN PROJET SANS spec.yaml N'A PAS DE CANON : le refus le DIT, il n'emprunte rien."
 
+  2113: "LES PORTES IMPOSENT LA MAJ : load_project A L'ENTREE, unload_project A LA SORTIE."
+  2114: "UN PROJET CHARGE IMPOSE SON CHANTIER : big_todo S'IL EST VIDE, update_big_todo SINON."
 SECTION : LE_SKILL
   1000: "L'ORDRE NE S'INVERSE PAS : load_skill ; load_doc ; PUIS LE PLAN ; PUIS LES TOOLS."
   1001: "UNE SEULE SKILL ACTIVE : son nom vit dans la CONFIG des skills, jamais dans un lien."
@@ -492,6 +497,12 @@ SECTION : LES_MANAGERS
   1129: "LE CHEMIN DU SPEC VOYAGE SOUS SPEC_FILE : ecraser SPEC perd le fichier, pas le tour."
   1130: "LES ADRESSES SONT TENUES PAR engine_switch.sh : list, puis take <alias>."
   1131: "LA CHAINE ANDROID VIT SOUS ~/Applications ; gradle assembleDebug rend l APK."
+  1132: "TROIS MANAGERS : PLAN, PROJET, SKILL. CHACUN PORTE SES GESTES, PAS DES ACTIONS."
+  1133: "PLAN : todo, update_todo, big_todo, update_big_todo, change_big_todo."
+  1134: "PROJET : project_list, project_view, load_project, unload_project."
+  1135: "SKILL : skill_list, skill_view, load_skill ; skill_manage n'ECRIT que (create, set_*)."
+  1136: "WRITE_SPEC CREER ; UPDATE_SPEC MET A JOUR UNE LOI QUI EXISTE DEJA."
+  1137: "UN GESTE QUI S'IMPOSE EST PERMANENT : sinon il ne serait pas imposable."
 SECTION : LA_LOI_D_ECRITURE
   1200: "AUCUN TOOL N'EFFACE : le retrait passe par la CORBEILLE, un tool qui DEPLACE."
   1201: "Il n'y a pas de rm dans la table : pas de tool qui le porte."
@@ -671,6 +682,7 @@ SECTION : LE_TRAVAIL
   1610: "APRES UN CHANTIER, LE RANGEMENT EST OBLIGATOIRE : ce qui a ete seme se range."
   1611: "Un travail non range n'est pas un travail fini."
 
+  1612: "TOUS LES DIX TOURS, LE GRAND PLAN ET LA SPEC SE METTENT A JOUR : C'EST UN BLOCAGE."
 SECTION : LA_MEMOIRE
   1700: "LA MEMOIRE EST LA TABLE : le sommaire des echanges ; le corps est sessions.db."
   1701: "LE MODELE N ECRIT JAMAIS LA MEMOIRE : aucun tool ne la pose, aucun ne la retire."
