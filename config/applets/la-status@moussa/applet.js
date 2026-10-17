@@ -20,6 +20,8 @@ const Mainloop = imports.mainloop;
 const Util = imports.misc.util;
 const Lang = imports.lang;
 const GLib = imports.gi.GLib;
+const St = imports.gi.St;
+const Clutter = imports.gi.Clutter;
 
 const UUID = "la-status@moussa";
 const TABLEAU = GLib.get_home_dir() + "/Documents/VM_LA/config/engine/board.sh";
@@ -30,10 +32,14 @@ const SECONDES = 30;      // une demande coute ~1 s : on ne la fait pas toutes l
 // et c'est ce qui la rend lisible dans une barre de 40 pixels. Les trois noms sont VERIFIES dans la
 // vraie chaine d'icones du poste (ils se resolvent vers Adwaita) : une icone manquante serait une
 // icone invisible, pas une erreur.
+// L'ICONE EST UN DESSIN A NOUS, PAS UN GLYPHE DU THEME. La meteo de Moussa a des icones PLEINES et
+// colorees ; un symbole au trait d'Adwaita n'a pas la meme forme, et c'est exactement ce qu'il a vu
+// (« meme la forme est differente »). Trois pastilles plates, posees depuis le dossier de l'applet.
+// Le glyphe symbolique reste en SECOURS : si le fichier manque, l'icone ne disparait pas.
 const ICONE = {
-    vert: "computer-symbolic",            // la machine va bien
-    rouge: "computer-fail-symbolic",      // la machine a un probleme
-    gris: "dialog-question-symbolic"      // il ne sait pas : il le dit
+    vert: { fichier: "icone-vert.png", secours: "computer-symbolic" },
+    rouge: { fichier: "icone-rouge.png", secours: "computer-fail-symbolic" },
+    gris: { fichier: "icone-gris.png", secours: "dialog-question-symbolic" }
 };
 const LARGEUR = "72";     // la largeur des lignes du menu, en colonnes
 
@@ -57,8 +63,9 @@ LaStatusApplet.prototype = {
         this.controle = [];                     // les lignes de la liste, telles que le tableau les rend
         this.ligne = "LA ...";
         this.icone = "";
+        this.chemin = metadata.path;             // les dessins de l'applet vivent a cote d'elle
         this.set_applet_label(this.ligne);
-        this._poserIcone(ICONE.gris);           // avant la premiere reponse : la question
+        this._poserIcone("gris");                // avant la premiere reponse : la question
         this.set_applet_tooltip("LA — l'etat du harnais");
 
         this._demanderLigne();
@@ -90,8 +97,7 @@ LaStatusApplet.prototype = {
 
     _demanderControle: function() {
         try {
-            Util.spawn_async([TABLEAU, "--check", "--largeur", LARGEUR],
-                             Lang.bind(this, this._rendreControle));
+            Util.spawn_async([TABLEAU, "--menu"], Lang.bind(this, this._rendreControle));
         } catch (e) {
             this.controle = ["le tableau ne repond pas"];
             if (this.menu.isOpen) {
@@ -106,13 +112,20 @@ LaStatusApplet.prototype = {
     // l'etiquette dit qu'elle ne sait pas. Un instrument qui ne mesure pas SE TAIT (loi 1557).
     // L'ICONE, POSEE COMME L'ETIQUETTE : seulement quand elle change (une icone re-creee a chaque
     // tour ferait clignoter la barre).
-    _poserIcone: function(nom) {
-        if (this.icone === nom) {
-            return;
+    _poserIcone: function(couleur) {
+        let choix = ICONE[couleur] || ICONE.gris;
+        let chemin = (this.chemin || "") + "/" + choix.fichier;
+        let quoi = GLib.file_test(chemin, GLib.FileTest.EXISTS) ? chemin : choix.secours;
+        if (this.icone === quoi) {
+            return;                            // re-poser la meme icone ferait clignoter la barre
         }
         try {
-            this.set_applet_icon_symbolic_name(nom);
-            this.icone = nom;
+            if (quoi === choix.secours) {
+                this.set_applet_icon_symbolic_name(quoi);
+            } else {
+                this.set_applet_icon_path(quoi);
+            }
+            this.icone = quoi;
         } catch (e) {
             // une icone qui manque n'est pas une raison de tomber : l'etiquette dit deja l'etat
         }
@@ -132,7 +145,7 @@ LaStatusApplet.prototype = {
         } catch (e) {
             // une couleur n'est pas une raison de tomber
         }
-        this._poserIcone(ICONE[couleur] || ICONE.gris);
+        this._poserIcone(couleur);
         this.set_applet_tooltip(infobulle);
     },
 
@@ -169,15 +182,39 @@ LaStatusApplet.prototype = {
         if (this.controle.length === 0) {
             section.addMenuItem(new PopupMenu.PopupMenuItem("... la liste arrive"));
         }
+        let legendes = new St.BoxLayout({ vertical: true,
+                                          style_class: "weather-current-databox-captions" });
+        let valeurs = new St.BoxLayout({ vertical: true,
+                                         style_class: "weather-current-databox-values" });
         for (let i = 0; i < this.controle.length; i++) {
-            let ligne = new PopupMenu.PopupMenuItem(this.controle[i]);
-            // LA LISTE EST UNE TABLE A CHASSE FIXE : ses points de conduite sont calcules sur des
-            // colonnes, pour une police monospace. Dans la police proportionnelle du menu, ces
-            // points partent en brouillard et RIEN ne s'aligne -- c'etait le vrai defaut. On donne
-            // donc a ces lignes-la (et a elles seules) la police qui va avec leur forme.
-            ligne.label.add_style_class_name("la-mono");
-            section.addMenuItem(ligne);
+            // « etat|etiquette|verdict » : LE TABLEAU DIT CE QU'IL A MESURE, LE MENU LE POSE COMME
+            // CINNAMON POSE SES PROPRES MENUS -- la mesure a gauche, la valeur a DROITE, alignee
+            // (item.setStatus). C'est la mise en page de l'applet meteo, celle que Moussa designe :
+            // « la difference est le jour et la nuit ». Seules les FAUTES sont colorees.
+            let champs = this.controle[i].split("|");
+            if (champs.length < 3) {
+                continue;
+            }
+            // UNE COLONNE DE LEGENDES ET UNE COLONNE DE VALEURS, COMME LA METEO : ses legendes sont
+            // alignees a droite, grisees, et posees a 5 px des valeurs (weather-current-databox-
+            // captions). C'est ce couple qui fait la mise en page, et c'est son code, pas le mien.
+            let nom = new St.Label({ text: champs[1], x_align: Clutter.ActorAlign.END });
+            let val = new St.Label({ text: champs[2] });
+            if (champs[0] === "ko") {
+                nom.add_style_class_name("la-rouge");
+                val.add_style_class_name("la-rouge");
+            }
+            legendes.add(nom);
+            valeurs.add(val);
         }
+        let boite = new St.BoxLayout({ style_class: "weather-current-databox" });
+        boite.add(legendes);
+        boite.add(valeurs);
+        // UN BLOC, PAS HUIT LIGNES CLIQUABLES : la meteo pose tout son releve dans un seul item, et
+        // c'est pour ca que le survol ne clignote pas d'une ligne a l'autre.
+        let bloc = new PopupMenu.PopupBaseMenuItem({ reactive: false });
+        bloc.addActor(boite, { span: -1, expand: true });
+        section.addMenuItem(bloc);
         this.menu.addMenuItem(section);
 
         let actions = new PopupMenu.PopupMenuSection();

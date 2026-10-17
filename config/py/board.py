@@ -553,8 +553,11 @@ def une_ligne():
     ligne se demande toutes les trente secondes, elle ne peut pas payer le docteur."""
     L, fautes, *_ = controle(leger=True)
     d = dict((x[0], x[1]) for x in L)
-    return "LA %s | %s | table %s | api %s" % (d.get("LA status", "?"), d.get("residents", "?"),
-                                               d.get("table", "?"), d.get("api status", "?"))
+    # LA VALEUR SEULE, SANS PREFIXE : l'applet meteo affiche « 27 °C », pas « meteo 27 °C » -- c'est
+    # le dessin a cote qui dit de quoi il parle. Le « LA » en plus faisait 17 pixels de trop dans une
+    # barre, et la silhouette de l'applet n'etait plus celle de la meteo.
+    return "%s | %s | table %s | api %s" % (d.get("LA status", "?"), d.get("residents", "?"),
+                                            d.get("table", "?"), d.get("api status", "?"))
 
 
 SIGNE = {"change": False}
@@ -598,7 +601,10 @@ def main():
     ap = argparse.ArgumentParser(description="le tableau de LA : ce qui est charge, et ce qui se passe")
     ap.add_argument("--once", action="store_true", help="une passe, puis il sort (code = defauts)")
     ap.add_argument("--line", action="store_true", help="une ligne pour un bouton de panneau (leger)")
-    ap.add_argument("--check", action="store_true", help="la liste de controle seule (pour un menu)")
+    ap.add_argument("--check", action="store_true",
+                    help="la liste de controle seule, en colonnes (pour un terminal)")
+    ap.add_argument("--menu", action="store_true",
+                    help="la liste pour un menu : « etat|etiquette|verdict », une ligne par mesure")
     ap.add_argument("--watch", type=float, default=3.0, help="secondes entre deux dessins")
     ap.add_argument("--largeur", type=int, default=0, help="largeur forcee (defaut : le terminal)")
     a = ap.parse_args()
@@ -611,6 +617,19 @@ def main():
         largeur = a.largeur or int(os.environ.get("COLUMNS") or 0) or 64
         L, fautes, *_ = controle()
         print("\n".join(ligne(x[0], x[1], "", largeur) for x in L))
+        return 1 if fautes else 0
+
+    if a.menu:
+        # LA LISTE POUR UN MENU. Un menu n'est pas un terminal : des colonnes de points de conduite
+        # y partent en brouillard des que la police n'est pas a chasse fixe, et dix-sept lignes de
+        # soixante-douze caracteres font un pave gris. On rend donc des lignes COURTES, une par
+        # mesure, precede d'un etat : « ko|table : 115/113 ». Le TABLEAU dit l'etat, l'applet decide
+        # comment le montrer (une ligne de menu, et du rouge sur les fautes).
+        L, fautes, *_ = controle(leger=True)
+        # TROIS CHAMPS SEPARES PAR UNE BARRE : etat, etiquette, verdict. L'applet n'a rien a
+        # decouper elle-meme -- un verdict peut contenir « : » (« ollama-cloud : deepseek-v4.1-flash »)
+        # et un decoupage devine casserait les deux colonnes.
+        print("\n".join("%s|%s|%s" % ("ko" if x[2] else "ok", x[0], x[1]) for x in L))
         return 1 if fautes else 0
 
     if a.once:
