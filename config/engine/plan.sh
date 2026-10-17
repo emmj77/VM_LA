@@ -29,6 +29,16 @@
 LC_ALL=C
 export LC_ALL
 
+# LE PLAN SE RESOUT ICI, PAS DANS UN EXPORT (meme defaut que le docteur : une brique qui depend de
+# l ordre des appels refuse seule, et pour de mauvaises raisons). SKROOT reste prioritaire quand la
+# boucle l a pose ; sinon on le resout par la bibliotheque commune, au meme endroit que le canon.
+HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if [ -z "${SKROOT:-}" ] && [ -z "${PLAN_FILE:-}" ]; then
+  [ -f "$HERE/lib.sh" ] || { echo "refused: the common library is missing ($HERE/lib.sh)" >&2 ; exit 2 ; }
+  ROOT=${LA_ROOT:-$(CDPATH= cd -- "$HERE/../.." && pwd)}
+  . "$HERE/lib.sh"
+  active_skill ; SKROOT=$(dirname "$SKILL")   # elle POSE NAME et SKILL : jamais par $(...)
+fi
 TARGET=${PLAN_FILE:-${SKROOT:+$SKROOT/skill.yaml}}
 [ -n "$TARGET" ] || { echo 'refused: the active skill is unknown (SKROOT is empty) ; the plan does not know where to live' >&2 ; exit 1 ; }
 [ -f "$TARGET" ] || { echo "refused: the active skill is missing ($TARGET)" >&2 ; exit 1 ; }
