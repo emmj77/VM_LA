@@ -426,3 +426,17 @@ tools:
   - id: 224
     tool: guess_family_of_text
     family: READ
+  # --- GERER LES PROGRAMMES DE LA MACHINE (skill program-manage, 17/10). Un seul depot : apt.
+  #     install_program pose ; uninstall_program demande le nom DEUX fois (name et confirm) ; le
+  #     retrait dit AVANT l acte ce qui partirait avec le paquet (la simulation d apt). open_program
+  #     ouvre ce qui est deja la et ne touche a rien. Trois gestes MANAGE : aucun n ecrit sous la
+  #     racine, tous les trois changent la machine -- c est le depot qui rend l acte reversible.
+  - id: 225
+    tool: install_program
+    family: MANAGE
+  - id: 226
+    tool: uninstall_program
+    family: MANAGE
+  - id: 227
+    tool: open_program
+    family: MANAGE

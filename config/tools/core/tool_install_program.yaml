@@ -1,0 +1,53 @@
+# QUI : INSTALLE un programme du depot sur cette machine (paquet Debian, par apt)
+# ORIGINE : demande de Moussa (17/10) : installer, retirer et ouvrir un programme depuis LA.
+# REFUSE : un nom hors form (une seule forme admise : les lettres minuscules, les chiffres, + . -) ;
+#          un paquet que le depot ne connait pas, ou dont le nom n'est pas EXACTEMENT celui du
+#          depot ; sudo qui reclame un mot de passe (--non-interactive : il refuse au lieu d'attendre).
+# CE QU'IL NE FAIT PAS : telecharger un executable hors depot (pas de curl vers un binaire, pas de
+#          .deb a la main, pas de PPA). Le depot de la machine est la seule source : c'est ce qui
+#          rend l'acte reversible, et ce qui permet a uninstall_program de le defaire.
+tool: "install_program"
+date: "2026-10-17"
+tags: ["install_program", "installer", "apt", "paquet", "program-manage"]
+
+RULES:
+  enabled: true
+  timeout: 1800
+
+DESCRIPTION: "installs a program from the repository (apt) and says the version that landed"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  P="{{name}}"
+  # LA FORME D'ABORD : un nom de paquet Debian, et RIEN d'autre. Un espace, un point-virgule, un
+  # dollar, un tube n'entrent pas ici -- le nom part dans une ligne de commande, donc il est juge
+  # comme un nom, jamais comme du texte.
+  case "$P" in
+    '') echo 'refuse : il faut nommer le paquet a installer' >&2 ; exit 1 ;;
+    -*|.*|*..*) echo "refuse : « $P » n est pas un nom de paquet (il commence par - ou . , ou porte ..)" >&2 ; exit 1 ;;
+    *[!a-z0-9+.-]*) echo "refuse : « $P » porte un caractere qui n entre pas dans un nom de paquet (minuscules, chiffres, + . - seulement)" >&2 ; exit 1 ;;
+  esac
+  command -v apt-get >/dev/null 2>&1 || { echo 'refuse : apt-get est absent de la machine' >&2 ; exit 1 ; }
+  command -v apt-cache >/dev/null 2>&1 || { echo 'refuse : apt-cache est absent de la machine' >&2 ; exit 1 ; }
+  # DEJA LA : ce n'est pas une faute, et ca ne se reinstalle pas pour rien.
+  if dpkg -s "$P" >/dev/null 2>&1; then
+    printf 'deja installe : %s %s (rien a faire)\n' "$P" "$(dpkg-query -W -f='${Version}' "$P" 2>/dev/null)"
+    exit 0
+  fi
+  # LE DEPOT DOIT LE CONNAITRE, SOUS CE NOM EXACT.
+  apt-cache show "$P" >/dev/null 2>&1 || { echo "refuse : le depot de la machine ne connait aucun paquet « $P »" >&2 ; exit 1 ; }
+  C=$(apt-cache show "$P" 2>/dev/null | sed -n 's/^Package:[[:space:]]*//p' | head -n 1)
+  [ "$C" = "$P" ] || { echo "refuse : « $P » n est pas le nom exact d un paquet (le depot repond « ${C:-rien} »)" >&2 ; exit 1 ; }
+  # L'INSTALLATION. --non-interactive : sudo refuse au lieu d'attendre un mot de passe que personne
+  # ne tapera. La sortie peut etre longue : on n'en garde que la fin, bornee.
+  L=$(sudo -n apt-get -y install -- "$P" 2>&1) || {
+    echo "refuse : l installation de $P a echoue : $(printf '%s' "$L" | tail -n 3 | tr '\n' ' ' | cut -c1-240)" >&2
+    exit 1
+  }
+  V=$(dpkg-query -W -f='${Version}' "$P" 2>/dev/null)
+  N=$(printf '%s' "$L" | grep -c '^Setting up' 2>/dev/null || printf 0)
+  case "$N" in ''|*[!0-9]*) N=1 ;; esac
+  printf 'installe : %s %s ; %s paquet(s) pose(s) par apt\n' "$P" "${V:-?}" "$N"
+
+ARGS:
+  - {name: name, type: text}

@@ -1,0 +1,40 @@
+skill: "program-manage"
+date: "2026-10-17"
+tags: ["program-manage", "installer", "retirer", "ouvrir", "paquets"]
+
+SUMMARY:
+  101: "Gerer les programmes de la machine : installer, retirer, ouvrir."
+  102: "Un seul depot : apt. Ce qui n'y est pas ne s'installe pas par ici."
+  103: "Un retrait se nomme DEUX fois (name et confirm) : c'est la marque d'intention."
+  104: "Ouvrir ne touche a rien : c'est le geste qui ne peut pas abimer."
+
+RULES:
+  create_subfolder: false
+  execute_code: false
+  max_section_lines: 100
+
+TOOLS:
+  200: "install_program"
+  201: "uninstall_program"
+  202: "open_program"
+  203: "list_dir"
+  204: "load_doc"
+
+DOCS:
+  300: "web_search"
+
+PLAN:
+
+PERIMETER:
+  workspace: "work/"
+  type-file: ".log .txt .md"
+
+ERROR:
+  600: "Nom de paquet inconnu du depot : le dire, et proposer de chercher le nom exact."
+  601: "Retrait sans son double : ne rien retirer, redemander le nom."
+  602: "sudo qui reclame un mot de passe : refuser, ne pas attendre (l'appel est --non-interactive)."
+  603: "Programme introuvable : dire ou l'on a cherche, et ce qui est pose a cote."
+
+STEPS:
+  1: {tool: "install_program", args: "le nom exact du paquet", note: "poser ; apt dit la version posee"}
+  2: {tool: "open_program", args: "le programme", note: "ouvrir ; son PID et son journal sont rendus"}
