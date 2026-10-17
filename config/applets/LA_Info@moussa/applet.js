@@ -165,80 +165,77 @@ class LAInfoApplet extends Applet.TextIconApplet {
             + (heure ? "\n\nrelu a " + heure : ""));
     }
 
-    // ---- une ligne du menu, montee avec St. Le conteneur d'un PopupMenuItem n'est pas un
-    // St.BoxLayout : c'est un Cinnamon.GenericContainer, dont la mise en page se donne a addActor
-    // sous la forme {span, expand, align}. C'est l'idiome du code de Cinnamon lui-meme.
-    _ligneDeMenu(ligne) {
-        const item = new PopupMenu.PopupMenuItem("");
-        try { item.label.hide(); } catch (e) { }
-        // LA LIGNE PREND TOUTE LA LARGEUR DU MENU. Sans cela elle n'est large que de son contenu
-        // et, le menu ayant un min-width de 15em, elle se retrouve centree au milieu du vide.
-        item.actor.x_expand = true;
+    // ---- MES RANGEES, EN ST, SANS PASSER PAR PopupMenuItem
+    //
+    // PopupMenuItem fabrique des colonnes dont la largeur est partagee entre TOUTES les lignes
+    // du menu : le libelle de la ligne « Relire le tableau » imposait 184 px de vide au debut de
+    // chacune des miennes, d ou ce contenu tasse vers la droite. Ses rangees sont donc a moi.
+    _rangee(enfants, classe) {
+        const rangee = new St.BoxLayout({ style_class: classe || "la-info-rangee" });
+        rangee.x_expand = true;
+        enfants.forEach((e) => rangee.add_child(e));
+        return rangee;
+    }
 
-        item.addActor(new St.Icon({
+    _petitLabel(texte, classe) {
+        return new St.Label({ text: texte, style_class: classe, x_align: Clutter.ActorAlign.START });
+    }
+
+    _ligneDeMenu(ligne) {
+        const enfants = [];
+        enfants.push(new St.Icon({
             gicon: Gio.icon_new_for_string(DOSSIER_ICONES + "/" + (PASTILLE[ligne.etat] || PASTILLE.ko)),
             icon_size: 12,
-        }), { span: 0 });
-        item.addActor(new St.Label({
-            text: ligne.titre, style_class: "la-info-titre",
-            x_align: Clutter.ActorAlign.START, x_expand: true,
         }));
-        item.addActor(new St.Label({
-            text: emoticoneDe(ligne.titre), style_class: "la-info-emoticone",
-            x_align: Clutter.ActorAlign.START,
-        }), { span: 0 });
-        // La barre occupe toujours la meme colonne, meme quand la mesure n'en a pas :
-        // c'est ce qui fait que les verdicts commencent tous au meme endroit.
+        enfants.push(this._petitLabel(ligne.titre, "la-info-titre"));
+        enfants.push(this._petitLabel(emoticoneDe(ligne.titre), "la-info-emoticone"));
         const fraction = rapportDe(ligne.verdict);
-        item.addActor(fraction === null ? new St.Widget({ style_class: "la-info-slot" })
-                                        : this._barre(fraction), { span: 0 });
-        item.addActor(new St.Label({
-            text: ligne.verdict, style_class: "la-info-verdict",
-            x_align: Clutter.ActorAlign.START,
-        }), { span: -1, align: St.Align.START });
-        return item;
+        enfants.push(fraction === null ? new St.Widget({ style_class: "la-info-slot" }) : this._barre(fraction));
+        enfants.push(this._petitLabel(ligne.verdict, "la-info-verdict"));
+        return this._rangee(enfants);
     }
 
     // La barre : un rail de largeur fixe, et dedans la part pleine.
     _barre(fraction) {
         const rail = new St.Bin({ style_class: "la-info-rail" });
-        rail.set_width(LARGEUR_BARRE);
+        rail.set_width(72);
         rail.set_child(new St.Widget({
             style_class: fraction >= 1 ? "la-info-plein" : "la-info-partiel",
-            width: Math.max(2, Math.round(LARGEUR_BARRE * fraction)),
+            width: Math.max(2, Math.round(72 * fraction)),
         }));
         return rail;
-    }
-
-    _titreDeMenu(texte, classe) {
-        const item = new PopupMenu.PopupMenuItem("");
-        item.actor.reactive = false;
-        try { item.label.hide(); } catch (e) { }
-        item.actor.x_expand = true;
-        item.addActor(new St.Label({ text: texte, style_class: classe, x_align: Clutter.ActorAlign.START, x_expand: true }),
-            { span: -1, align: St.Align.START });
-        return item;
     }
 
     _dessinerLeMenu() {
         this._menu.removeAll();
 
+        // Mes rangees a moi : je les detruis moi-meme, removeAll ne connait que les items.
+        if (this._mesRangees) {
+            this._mesRangees.forEach((r) => { try { r.destroy(); } catch (e) { } });
+        }
+        this._mesRangees = [];
+
         const quand = this._quand ? this._quand.toLocaleTimeString() : "jamais";
-        this._menu.addMenuItem(this._titreDeMenu("LA_Info", "la-info-tete"));
-        this._menu.addMenuItem(this._titreDeMenu("mesures relues a " + quand, "la-info-quand"));
-        this._menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        const tete = this._rangee([this._petitLabel("LA_Info", "la-info-tete")]);
+        const heure = this._rangee([this._petitLabel("mesures relues a " + quand, "la-info-quand")]);
+        [tete, heure].forEach((r) => { this._menu.box.add_child(r); this._mesRangees.push(r); });
 
         let section = null;
         this._lignes.forEach((l) => {
             if (l.section !== section) {
                 section = l.section;
-                this._menu.addMenuItem(this._titreDeMenu(section, "la-info-section"));
+                const titre = this._rangee([this._petitLabel(section, "la-info-section")]);
+                this._menu.box.add_child(titre);
+                this._mesRangees.push(titre);
             }
-            this._menu.addMenuItem(this._ligneDeMenu(l));
+            const ligne = this._ligneDeMenu(l);
+            this._menu.box.add_child(ligne);
+            this._mesRangees.push(ligne);
         });
 
-        this._menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-        const rafraichir = new PopupMenu.PopupMenuItem("Relire le tableau, maintenant");
+        // Une seule vraie entree de menu, tout en bas : elle seule a le droit d etre cliquee,
+        // et tant qu il n y en a qu une, ses colonnes ne genent personne.
+        const rafraichir = new PopupMenu.PopupMenuItem("\u21bb  Relire le tableau, maintenant");
         rafraichir.connect("activate", () => { this._lire(); });
         this._menu.addMenuItem(rafraichir);
     }

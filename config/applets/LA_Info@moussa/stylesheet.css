@@ -1,15 +1,16 @@
-/* LA_Info : la pastille dit l'etat, le titre, son emoticone, la barre, le verdict.
-   Tout part de la gauche : la ligne s'etire sur la largeur du menu, donc rien ne flotte. */
-.la-info-titre     { min-width: 100px; padding-right: 4px; }
-.la-info-emoticone { padding-left: 2px; padding-right: 10px; font-size: 1.05em; }
+/* LA_Info : la rangee part du bord gauche, et rien ne s etire au milieu.
+   Le titre garde une largeur minimale, la barre une colonne fixe : les verdicts s alignent. */
+.la-info-rangee    { padding: 4px 12px; spacing: 6px; }
+.la-info-titre     { min-width: 100px; }
+.la-info-emoticone { font-size: 1.05em; }
 .la-info-verdict   { color: #ffffff; font-weight: bold; }
-.la-info-section   { color: #9a9a9a; font-size: 0.85em; padding: 8px 4px 2px 4px; }
-.la-info-tete      { color: #ffffff; font-weight: bold; font-size: 1.15em; padding: 8px 4px 4px 4px; }
-.la-info-quand     { color: #9a9a9a; font-size: 0.85em; padding: 4px; }
+.la-info-section   { color: #9a9a9a; font-size: 0.85em; padding-top: 4px; }
+.la-info-tete      { color: #ffffff; font-weight: bold; font-size: 1.15em; }
+.la-info-quand     { color: #9a9a9a; font-size: 0.85em; }
 
 /* Les barres : le rail creux, la part pleine en vert, la partielle en ambre.
-   Le slot garde la place quand il n'y a pas de barre, pour aligner les verdicts. */
-.la-info-slot    { min-width: 80px; }
+   Le slot garde la place quand il n y a pas de barre, pour aligner les verdicts. */
+.la-info-slot    { min-width: 72px; }
 .la-info-rail    { background-color: rgba(255, 255, 255, 0.16); border-radius: 3px; height: 7px; }
 .la-info-plein   { background-color: #4ec27a; border-radius: 3px; height: 7px; }
 .la-info-partiel { background-color: #e0a83c; border-radius: 3px; height: 7px; }
