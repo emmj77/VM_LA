@@ -1,0 +1,26 @@
+skill: "speak-text"
+date: "2026-10-17"
+tags: ["speak-text", "voix", "parler", "audio"]
+
+SUMMARY:
+  101: "Dire un texte a voix haute (le rendre en audio)."
+  102: "speak produit la voix ; on NOMME le fichier rendu."
+  103: "On dit ce qu'on a ECRIT, mot pour mot, sans le reecrire."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "speak"
+  201: "load_doc"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".mp3 .wav .ogg .txt"
+ERROR:
+  600: "Voix absente : le dire (config), ne pas rendre un texte a la place."
+STEPS:
+  1: {tool: "speak", args: "le texte a dire", note: "produire la voix"}
+  2: {tool: "answer", args: "le chemin de l'audio", note: "rendre"}

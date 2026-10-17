@@ -1,0 +1,30 @@
+skill: "read-log"
+date: "2026-10-17"
+tags: ["read-log", "journal", "log", "erreur"]
+
+SUMMARY:
+  101: "Lire un journal et en tirer les erreurs, dans l'ordre du temps."
+  102: "read_file lit le journal ; search isole les motifs d'erreur."
+  103: "On cite la ligne, horodatee ; on ne resume pas une erreur qu'on n'a pas lue."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "read_file"
+  201: "search"
+  202: "shell_run"
+  203: "load_doc"
+  204: "list_dir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Journal trop gros : lire la QUEUE d'abord, et le dire."
+STEPS:
+  1: {tool: "read_file", args: "le journal", note: "lire la fin d'abord"}
+  2: {tool: "search", args: "error|fail|warn, dans le journal", note: "isoler les erreurs"}
+  3: {tool: "answer", args: "les erreurs, horodatees et citees", note: "rendre"}

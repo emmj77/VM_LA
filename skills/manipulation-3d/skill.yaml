@@ -1,0 +1,41 @@
+skill: "manipulation-3d"
+date: "2026-10-17"
+tags: ["manipulation-3d", "3d", "mesh", "glb", "fbx"]
+
+SUMMARY:
+  101: "L'atelier 3D : image -> glb, mesh -> fbx, mesh -> png, mesurer, inspecter."
+  102: "image2glb produit ; mesh-convert2fbx et mesh-render2png exportent."
+  103: "On MESURE et on REGARDE avant de dire que le mesh tient."
+  104: "Variantes Pixal3D (meme pipeline, autres reglages) : pixal3d-optimise (rapide), -memesgraines (rapide, graines fixes), -ref-froid (graines neuves), -texture2048 (texture 2048)."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "image2glb"
+  201: "mesh-convert2fbx"
+  202: "mesh-render2png"
+  203: "mesh-measure"
+  204: "mesh-inspect"
+  205: "pixal3d-optimise"
+  206: "pixal3d-memesgraines"
+  207: "pixal3d-ref-froid"
+  208: "pixal3d-texture2048"
+  209: "see_image"
+  210: "list_dir"
+  211: "load_doc"
+DOCS:
+  300: "3d"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".glb .gltf .fbx .obj .png .jpg .webp"
+ERROR:
+  600: "Le mesh ou le serveur ne repond pas : le dire (mesh-inspect / comfyui), ne pas forcer."
+STEPS:
+  1: {tool: "image2glb", args: "l'image source", note: "image -> glb"}
+  2: {tool: "mesh-inspect", args: "le glb produit", note: "inspecter"}
+  3: {tool: "mesh-measure", args: "le glb produit", note: "mesurer"}
+  4: {tool: "mesh-convert2fbx", args: "le glb, sortie .fbx", note: "glb -> fbx"}
+  5: {tool: "mesh-render2png", args: "le fbx, sortie .png", note: "rendre une vue"}
+  6: {tool: "answer", args: "le glb, le fbx et la vue", note: "rendre"}

@@ -1,0 +1,28 @@
+skill: "trash-file"
+date: "2026-10-17"
+tags: ["trash-file", "corbeille", "supprimer", "ranger"]
+
+SUMMARY:
+  101: "Mettre un fichier a la corbeille (jamais supprimer)."
+  102: "trash_file deplace vers la corbeille ; rien n'est efface."
+  103: "On NOMME la cible, on ne devine pas un motif."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "trash_file"
+  201: "list_dir"
+  202: "load_doc"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Cible absente : le dire, ne rien forcer."
+STEPS:
+  1: {tool: "list_dir", args: "le dossier de la cible", note: "verifier la cible"}
+  2: {tool: "trash_file", args: "le chemin exact", note: "mettre a la corbeille"}
+  3: {tool: "answer", args: "ce qui est parti a la corbeille", note: "rendre"}

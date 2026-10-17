@@ -1,0 +1,50 @@
+skill: "unity"
+date: "2026-10-17"
+tags: ["unity", "build", "test", "assets", "jeu"]
+
+SUMMARY:
+  101: "L'atelier Unity : l'etat, les assets, builder, tester, les logs."
+  102: "unity_status dit si le projet repond ; les unity_* font le geste."
+  103: "On LIT la sortie avant de dire que ca passe."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "unity_status"
+  201: "unity_run"
+  202: "unity_assets"
+  203: "unity_list"
+  204: "unity_projects"
+  205: "unity_logs"
+  206: "unity_diagnose"
+  207: "unity_doctor"
+  208: "unity_version"
+  209: "unity_install_path"
+  210: "unity_config"
+  211: "unity_env"
+  212: "unity_context"
+  213: "unity_license"
+  214: "unity_language"
+  215: "unity_changelog"
+  216: "unity_ci"
+  217: "unity_pipeline"
+  218: "unity_job"
+  219: "unity_completion"
+  220: "unity_commands"
+  221: "read_file"
+  222: "list_dir"
+  223: "load_doc"
+DOCS:
+  300: "Ressources"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt .log"
+ERROR:
+  600: "Unity ne repond pas : le dire (unity_status), ne pas relancer a l'aveugle."
+STEPS:
+  1: {tool: "unity_status", args: "", note: "verifier que le projet repond"}
+  2: {tool: "unity_run", args: "la commande (build | test | ...)", note: "faire le geste"}
+  3: {tool: "read_file", args: "la sortie", note: "lire le verdict"}
+  4: {tool: "answer", args: "le resultat", note: "rendre"}

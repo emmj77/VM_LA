@@ -1,5 +1,4 @@
 skill: "report-web-search"
-source: "agent"
 date: "2026-10-17"
 tags: ["report-web-search", "rapport", "web", "recherche"]
 
@@ -15,11 +14,9 @@ TOOLS:
   201: "web_extract"
   202: "write_file"
   203: "read_file"
-  204: "answer"
-  205: "note"
-  206: "progress"
+  205: "load_doc"
 DOCS:
-  300: "load_doc"
+  300: "web_search"
 PLAN:
 PERIMETER:
   workspace: "work/"

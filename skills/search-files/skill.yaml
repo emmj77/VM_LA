@@ -1,0 +1,29 @@
+skill: "search-files"
+date: "2026-10-17"
+tags: ["search-files", "fichier", "chercher", "trouver"]
+
+SUMMARY:
+  101: "Chercher un fichier par son NOM ou par son CONTENU."
+  102: "search cherche le nom, puis l'interieur ; list_dir montre un dossier."
+  103: "On nomme le chemin TROUVE, jamais un chemin suppose."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "search"
+  201: "list_dir"
+  202: "read_file"
+  203: "load_doc"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Rien trouve : le dire, et proposer une racine plus large, jamais inventer un chemin."
+STEPS:
+  1: {tool: "search", args: "le motif, sous la racine", note: "chercher le nom"}
+  2: {tool: "search", args: "le motif DANS le contenu", note: "chercher l'interieur"}
+  3: {tool: "answer", args: "les chemins trouves", note: "rendre"}

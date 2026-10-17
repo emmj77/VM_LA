@@ -1,0 +1,41 @@
+skill: "krita"
+date: "2026-10-17"
+tags: ["krita", "dessin", "calque", "peinture", "kra"]
+
+SUMMARY:
+  101: "L'atelier Krita : ouvrir, poser des calques, masquer, remplir, exporter."
+  102: "krita_status dit si Krita repond ; les krita_* font le geste."
+  103: "On REGARDE le resultat (see_image) avant de le rendre."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "krita_status"
+  201: "krita_open"
+  202: "krita_layers"
+  203: "krita_layer_new"
+  204: "krita_layer_pick"
+  205: "krita_layer_set"
+  206: "krita_layer_export"
+  207: "krita_selection"
+  208: "krita_selection_mask"
+  209: "krita_fill"
+  210: "krita_export"
+  211: "see_image"
+  212: "list_dir"
+  213: "load_doc"
+DOCS:
+  300: "krita"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".kra .png .jpg .webp"
+ERROR:
+  600: "Krita ne repond pas : le dire (krita_status), ne pas forcer a l'aveugle."
+STEPS:
+  1: {tool: "krita_status", args: "", note: "verifier que Krita repond"}
+  2: {tool: "krita_open", args: "le document .kra", note: "ouvrir le document"}
+  3: {tool: "krita_<geste>", args: "le calque et ses options", note: "faire le geste"}
+  4: {tool: "krita_export", args: "le chemin de sortie", note: "exporter"}
+  5: {tool: "answer", args: "le chemin exporte", note: "rendre"}

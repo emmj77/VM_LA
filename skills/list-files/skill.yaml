@@ -1,0 +1,28 @@
+skill: "list-files"
+date: "2026-10-17"
+tags: ["list-files", "dossier", "lister", "fichier"]
+
+SUMMARY:
+  101: "Lister un dossier : ce qu'il contient, nommes."
+  102: "list_dir montre le dossier ; search affine par motif."
+  103: "On rend la liste TELLE QU'ON L'A LUE, pas de memoire."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "list_dir"
+  201: "search"
+  202: "read_file"
+  203: "load_doc"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Dossier absent : le dire et nommer le chemin, ne pas inventer un contenu."
+STEPS:
+  1: {tool: "list_dir", args: "le dossier", note: "lister le contenu"}
+  2: {tool: "answer", args: "la liste des entrees", note: "rendre"}

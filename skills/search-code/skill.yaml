@@ -1,0 +1,31 @@
+skill: "search-code"
+date: "2026-10-17"
+tags: ["search-code", "code", "chercher", "ast"]
+
+SUMMARY:
+  101: "Chercher dans le code par sa FORME (ast) ou son texte."
+  102: "ast_grep_search cherche par la forme ; search, par le texte."
+  103: "On cite le fichier ET la ligne, jamais un extrait de memoire."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "ast_grep_search"
+  201: "search"
+  202: "read_file"
+  203: "load_doc"
+  204: "list_dir"
+  205: "count_lines_of_code"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt .py .c .cs .js"
+ERROR:
+  600: "Aucun resultat : le dire, et proposer un motif plus large."
+STEPS:
+  1: {tool: "ast_grep_search", args: "la forme cherchee", note: "chercher par la forme"}
+  2: {tool: "read_file", args: "le fichier et ses lignes", note: "lire le contexte"}
+  3: {tool: "answer", args: "les occurrences, fichier et ligne", note: "rendre"}

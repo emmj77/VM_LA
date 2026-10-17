@@ -1,0 +1,31 @@
+skill: "git"
+date: "2026-10-17"
+tags: ["git", "commit", "diff", "revue", "review", "version"]
+
+SUMMARY:
+  101: "Manipuler Git : lire l'etat, relire un diff, committer."
+  102: "shell_run porte git ; read_file ouvre les fichiers touches."
+  103: "On ne commit que ce qui a ete LU et NOMME ; on NOMME la ligne qui casse."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "shell_run"
+  201: "read_file"
+  202: "search"
+  203: "load_doc"
+  204: "list_dir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Rien a committer, ou depot absent : le dire, ne pas forcer."
+STEPS:
+  1: {tool: "shell_run", args: "git status --short ; git diff [<ref>]", note: "lire l'etat et le diff"}
+  2: {tool: "read_file", args: "les fichiers touches", note: "lire le contexte complet"}
+  3: {tool: "shell_run", args: "git add <chemins lus> ; git commit -m '<message>'", note: "committer ce qui a ete lu"}
+  4: {tool: "answer", args: "le hash et le message, ou la revue", note: "rendre"}

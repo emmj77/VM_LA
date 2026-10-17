@@ -1,5 +1,4 @@
 skill: "web-search"
-source: "agent"
 date: "2026-10-17"
 tags: ["web-search", "web", "recherche"]
 
@@ -12,16 +11,13 @@ RULES:
   execute_code: false
   max_section_lines: 100
 TOOLS:
-  200: "answer"
-  201: "ask"
-  202: "web_search"
-  203: "web_extract"
-  204: "read_file"
-  205: "write_file"
-  206: "note"
-  207: "progress"
+  200: "web_search"
+  201: "web_extract"
+  202: "read_file"
+  203: "write_file"
+  205: "load_doc"
 DOCS:
-  300: "load_doc"
+  300: "web_search"
 PLAN:
 PERIMETER:
   workspace: "work/"

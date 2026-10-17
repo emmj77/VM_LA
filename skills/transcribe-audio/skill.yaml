@@ -1,0 +1,29 @@
+skill: "transcribe-audio"
+date: "2026-10-17"
+tags: ["transcribe-audio", "audio", "transcription", "voix"]
+
+SUMMARY:
+  101: "Transcrire un audio en Texte."
+  102: "transcribe ecrit la transcription ; write_file la pose dans un fichier."
+  103: "On transcrit ce qui est ENTENDU ; un passage doute se marque [inaudible]."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "transcribe"
+  201: "write_file"
+  202: "load_doc"
+  203: "list_dir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Audio illisible : le dire, ne pas inventer une phrase."
+STEPS:
+  1: {tool: "transcribe", args: "le fichier audio", note: "transcrire"}
+  2: {tool: "write_file", args: "work/transcription-<nom>.md", note: "poser le texte"}
+  3: {tool: "answer", args: "la transcription, et le chemin", note: "rendre"}

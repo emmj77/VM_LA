@@ -1,0 +1,29 @@
+skill: "disk-report"
+date: "2026-10-17"
+tags: ["disk-report", "disque", "espace", "systeme"]
+
+SUMMARY:
+  101: "Faire le point sur l'espace disque : ou est le gras."
+  102: "shell_run porte df et du ; on lit du PLUS GROS au plus petit."
+  103: "On NOMME ce qui occupe, avec son chiffre."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "shell_run"
+  201: "read_file"
+  202: "load_doc"
+  203: "list_dir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Un dossier illisible : le dire, continuer sur le reste, jamais bloquer."
+STEPS:
+  1: {tool: "shell_run", args: "df -h", note: "voir les montages pleins"}
+  2: {tool: "shell_run", args: "du -h -d1 <chemin> | sort -h", note: "trier du plus gros"}
+  3: {tool: "answer", args: "les plus gros occupants et leurs chiffres", note: "rendre"}

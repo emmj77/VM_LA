@@ -1,0 +1,29 @@
+skill: "edit-table"
+date: "2026-10-17"
+tags: ["edit-table", "table", "registre"]
+
+SUMMARY:
+  101: "Modifier la table : ajouter, retirer, activer ou desactiver une ligne."
+  102: "table_manage fait le geste ; read_file montre la ligne avant et apres."
+  103: "On ne renumérote JAMAIS les ids (lois 1019-1020)."
+RULES:
+  create_subfolder: false
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "table_manage"
+  201: "read_file"
+  202: "list_dir"
+  203: "load_doc"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".yaml"
+ERROR:
+  600: "La table ne repond pas, ou la ligne visee est absente : le dire."
+STEPS:
+  1: {tool: "read_file", args: "config/la_tools.yaml", note: "voir la table"}
+  2: {tool: "table_manage", args: "le geste et la ligne", note: "modifier"}
+  3: {tool: "answer", args: "la ligne changee", note: "rendre"}

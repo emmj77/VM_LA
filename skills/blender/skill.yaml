@@ -1,0 +1,31 @@
+skill: "blender"
+date: "2026-10-17"
+tags: ["blender", "3d", "rendu", "texture", "asset"]
+
+SUMMARY:
+  101: "L'atelier 3D : inventorier les assets, texturer, rendre."
+  102: "blender_asset_listing inventorie ; blender_maketx produit ; see_image montre."
+  103: "On REGARDE le rendu avant de dire qu'il tient."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "blender_asset_listing"
+  201: "blender_maketx"
+  202: "see_image"
+  203: "list_dir"
+  204: "load_doc"
+DOCS:
+  300: "blender"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".blend .fbx .png .jpg .webp"
+ERROR:
+  600: "Blender absent : le dire, ne pas relancer a l'aveugle."
+STEPS:
+  1: {tool: "blender_asset_listing", args: "le dossier d'assets", note: "inventorier"}
+  2: {tool: "blender_maketx", args: "l'asset et sa texture", note: "texturer"}
+  3: {tool: "see_image", args: "le rendu produit", note: "regarder le resultat"}
+  4: {tool: "answer", args: "le chemin du rendu", note: "rendre"}

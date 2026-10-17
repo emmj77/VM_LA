@@ -1,5 +1,4 @@
 skill: "computer-debug"
-source: "agent"
 date: "2026-10-17"
 tags: ["computer-debug", "debug", "systeme", "pc"]
 
@@ -12,16 +11,14 @@ RULES:
   execute_code: false
   max_section_lines: 100
 TOOLS:
-  200: "answer"
-  201: "ask"
-  202: "shell_run"
-  203: "process_list"
-  204: "read_file"
-  205: "search"
-  206: "note"
-  207: "progress"
+  200: "shell_run"
+  201: "process_list"
+  202: "read_file"
+  203: "search"
+  205: "load_doc"
+  206: "list_dir"
 DOCS:
-  300: "load_doc"
+  300: "web_search"
 PLAN:
 PERIMETER:
   workspace: "work/"

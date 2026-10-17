@@ -1,0 +1,50 @@
+skill: "comfyui"
+date: "2026-10-17"
+tags: ["comfyui", "image", "dessin", "generer", "krita"]
+
+SUMMARY:
+  101: "L'atelier image : generer (txt2img/video), colorier, nettoyer, styler, agrandir."
+  102: "comfyui_status dit si le serveur repond ; les comfyui_* et les workflows font le geste."
+  103: "On REGARDE le resultat (see_image) avant de le rendre."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "comfyui_status"
+  201: "comfyui_generate"
+  202: "comfyui_colorize"
+  203: "comfyui_colorize_under_lines"
+  204: "comfyui_colorize_batch"
+  205: "comfyui_render_drawing"
+  206: "comfyui_clean_lines"
+  207: "comfyui_style"
+  208: "comfyui_variants"
+  209: "comfyui_coherence"
+  210: "comfyui_enlarge"
+  211: "comfyui_find_layers"
+  212: "comfyui_animate_background"
+  213: "sd15-txt2img"
+  214: "sdxl-txt2img"
+  215: "flux-txt2img"
+  216: "sdxl-img2img"
+  217: "sdxl-inpaint"
+  218: "upscale-4x"
+  219: "animatediff-video"
+  220: "wan-t2v"
+  221: "see_image"
+  222: "list_dir"
+  223: "load_doc"
+DOCS:
+  300: "comfyui"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".png .jpg .webp .kra .mp4 .gif"
+ERROR:
+  600: "Le serveur ne repond pas : le dire (comfyui_status), ne pas lancer a l'aveugle."
+STEPS:
+  1: {tool: "comfyui_status", args: "", note: "verifier que le serveur repond"}
+  2: {tool: "comfyui_<geste>", args: "l'image et ses options", note: "faire le geste"}
+  3: {tool: "see_image", args: "le resultat", note: "regarder"}
+  4: {tool: "answer", args: "le chemin du resultat", note: "rendre"}

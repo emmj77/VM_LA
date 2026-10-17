@@ -1,0 +1,29 @@
+skill: "write-spec"
+date: "2026-10-17"
+tags: ["write-spec", "spec", "conception"]
+
+SUMMARY:
+  101: "Ecrire une section de la spec du skill actif, bornee par un plafond."
+  102: "write_spec ecrit ; read_file relit la section."
+  103: "La spec DECRIT l'architecture, elle ne l'annote pas."
+RULES:
+  create_subfolder: false
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "write_spec"
+  201: "read_file"
+  202: "list_dir"
+  203: "load_doc"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".yaml"
+ERROR:
+  600: "Le plafond de la section est depasse, ou le skill actif est absent : le dire."
+STEPS:
+  1: {tool: "read_file", args: "la spec du skill actif", note: "voir la spec"}
+  2: {tool: "write_spec", args: "le numero de section et le texte", note: "ecrire"}
+  3: {tool: "answer", args: "la section ecrite", note: "rendre"}

@@ -1,0 +1,30 @@
+skill: "edit-file"
+date: "2026-10-17"
+tags: ["edit-file", "corriger", "editer", "fichier"]
+
+SUMMARY:
+  101: "Corriger un fichier : lire, changer, reposer."
+  102: "read_file lit ; write_file repose le fichier corrige."
+  103: "On ne change QUE ce qu'on a LU ; le reste reste tel quel."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "read_file"
+  201: "write_file"
+  202: "search"
+  203: "load_doc"
+  204: "list_dir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Fichier absent : le dire et nommer le chemin, ne pas le creer d'office."
+STEPS:
+  1: {tool: "read_file", args: "le fichier", note: "lire le contenu entier"}
+  2: {tool: "write_file", args: "le meme chemin", note: "reposer le fichier corrige"}
+  3: {tool: "answer", args: "ce qui a change", note: "rendre"}

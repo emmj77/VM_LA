@@ -1,0 +1,29 @@
+skill: "search-memory"
+date: "2026-10-17"
+tags: ["search-memory", "memoire", "souvenir", "session"]
+
+SUMMARY:
+  101: "Chercher dans la memoire et les sessions passees."
+  102: "search_memory cherche la note ; search_sessions, la conversation ; load_memory charge."
+  103: "On cite ce qui a ETE trouve, avec sa source ; on ne reconstitue pas de memoire."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+TOOLS:
+  200: "search_memory"
+  201: "search_sessions"
+  202: "load_memory"
+  203: "load_doc"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .txt"
+ERROR:
+  600: "Rien trouve : le dire, et proposer un autre mot-cle."
+STEPS:
+  1: {tool: "search_memory", args: "le mot-cle", note: "chercher la note"}
+  2: {tool: "search_sessions", args: "le mot-cle", note: "chercher la session"}
+  3: {tool: "answer", args: "ce qui a ete trouve, et sa source", note: "rendre"}
