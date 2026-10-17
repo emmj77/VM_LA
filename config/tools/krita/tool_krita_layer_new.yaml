@@ -1,0 +1,29 @@
+# QUI : un calque neuf (paintlayer) dans le document ouvert. Le nom est obligatoire : un calque sans
+#   nom est introuvable pour l'outil suivant.
+# REFUSE : (1) le nom vide ; (2) aucun document ouvert ; (3) la machine muette.
+# ORIGINE : ecrit le 2026-10-17.
+tool: "krita_layer_new"
+date: "2026-10-17"
+tags: ["krita", "krita_layer_new"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 90
+
+DESCRIPTION: "creates a paint layer in the open document, with the given name"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 \
+    || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  NOM="{{name}}"
+  [ -n "$NOM" ] || { printf "refuse : il faut un nom de calque\n" >&2; exit 1; }
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$(jq -cn --arg n "$NOM" '{action:"create_layer",params:{name:$n}}')" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf 'calque : %s\n' "$NOM"
+
+ARGS:
+  - {name: name, type: text}                   # le nom du calque (obligatoire)

@@ -1,0 +1,41 @@
+# QUI : pose une SELECTION dans Krita a partir d'un masque PNG fabrique par un autre outil (le blanc
+#   est selectionne). C'est la porte du trait : le pixel se calcule en shell (ffmpeg), la selection se
+#   pose ici.
+# REFUSE : (1) le masque absent ou pas un PNG ; (2) la machine muette. LENT : un document de 6 M de
+#   pixels met une minute -- d'ou le delai de 400 s dans RULES.
+# ORIGINE : ecrit le 2026-10-17. Prouve sur un vrai dessin (1908x3072) : masque charge, selection
+#   posee (has_selection=true).
+# ORIGINE : ecrit le 2026-10-17.
+tool: "krita_selection_mask"
+date: "2026-10-17"
+tags: ["krita", "krita_selection_mask"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 400
+
+DESCRIPTION: "loads a png mask as the current selection (white = selected), and can thicken it"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 \
+    || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  MASQUE="$W/{{mask}}"
+  [ -f "$MASQUE" ] || { printf "refuse : le masque est absent (%s)\n" "$MASQUE" >&2; exit 1; }
+  case "$MASQUE" in *.png) ;; *) printf "refuse : le masque doit etre un PNG (%s)\n" "$MASQUE" >&2; exit 1 ;; esac
+  REP=$(curl -sS --max-time 240 -H 'Content-Type: application/json' -d "$(jq -cn --arg p "$MASQUE" '{action:"load_selection",params:{path:$p,format:"png"}}')" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  G="{{grow}}"
+  case "$G" in ''|*[!0-9]*) ;; *)
+    REP2=$(curl -sS --max-time 90 -H 'Content-Type: application/json' \
+      -d "$(jq -cn --argjson p "$G" '{action:"grow_selection",params:{pixels:$p}}')" "$SERVICE/")
+    printf 'epaissie de %s px : %s\n' "$G" "$(printf '%s' "$REP2" | jq -c .)" ;;
+  esac
+  printf 'selection posee depuis %s\n' "$MASQUE"
+
+ARGS:
+  - {name: mask, type: path}                   # le masque PNG, relatif a l'espace du skill
+  - {name: grow, type: int}                    # l'epaissir de N pixels (vide : tel quel)

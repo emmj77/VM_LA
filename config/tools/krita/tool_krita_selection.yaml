@@ -1,0 +1,37 @@
+# QUI : ce qui arrive a la selection courante -- grow/shrink/border prennent des pixels ; invert
+#   prend le reste ; none la retire.
+# REFUSE : (1) pas de selection -- la machine le dit ; (2) un nombre hors bornes.
+# ORIGINE : ecrit le 2026-10-17.
+tool: "krita_selection"
+date: "2026-10-17"
+tags: ["krita", "krita_selection"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 220
+
+DESCRIPTION: "acts on the current selection: grow, shrink, border, invert, or none"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 \
+    || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  QUOI="{{what}}"; PX="{{pixels}}"
+  case "$QUOI" in
+    none)   D='{"action":"deselect","params":{}}' ;;
+    invert) D='{"action":"invert_selection","params":{}}' ;;
+    grow|shrink|border)
+      case "$PX" in ''|*[!0-9]*) printf "refuse : il faut un nombre de pixels (%s)\n" "$PX" >&2; exit 1 ;; esac
+      D=$(jq -cn --argjson p "$PX" --arg q "$QUOI" '{action:($q + "_selection"),params:{pixels:$p}}') ;;
+    *) printf "refuse : quoi vaut grow, shrink, border, invert ou none (%s)\n" "$QUOI" >&2; exit 1 ;;
+  esac
+  REP=$(curl -sS --max-time 90 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf 'selection : %s\n' "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: what, type: enum, values: [grow, shrink, border, invert, none]}   # ce qu'on lui fait
+  - {name: pixels, type: int}                 # pour grow / shrink / border

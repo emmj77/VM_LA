@@ -1,0 +1,60 @@
+# QUI : le regard sur UN calque. On cache les autres, on exporte l'aplat (qui vaut alors ce seul
+#   calque), puis on remet EXACTEMENT les visibilites d'avant. C'est ce PNG que ffmpeg travaille --
+#   et c'est la porte du masque : le plugin, lui, ne sait plus lire les pixels (sa selection par
+#   alpha est cassee sur Krita 5.3.4).
+# REFUSE : (1) le calque absent -- et il nomme ceux qui existent ; (2) la machine muette ; (3) un
+#   PNG vide.
+# ORIGINE : ecrit le 2026-10-17.
+tool: "krita_layer_export"
+date: "2026-10-17"
+tags: ["krita", "krita_layer_export"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "exports one layer alone as a png (the mask source), then puts the document back"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 \
+    || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  COUCHE="{{layer}}"; SORTIE="$W/{{path}}"
+  REP=$(curl -sS --max-time 30 -H 'Content-Type: application/json' -d '{"action":"list_layers","params":{}}' "$SERVICE/")
+  NOMS=$(printf '%s' "$REP" | jq -r '.layers[].name')
+  printf '%s\n' "$NOMS" | grep -Fxq "$COUCHE" \
+    || { printf "refuse : ce calque n'existe pas (%s) ; la machine a : %s\n" "$COUCHE" "$(printf '%s' "$NOMS" | tr '\n' ' ')" >&2; exit 1; }
+  VIS=$(printf '%s' "$REP" | jq -r '.layers[] | select(.visible) | .name')
+  CACHES=$(printf '%s' "$REP" | jq -r '.layers[] | select(.visible|not) | .name')
+  printf '%s\n' "$NOMS" | while IFS= read -r N; do
+    if [ "$N" = "$COUCHE" ]; then V=true; else V=false; fi
+    curl -sS --max-time 20 -H 'Content-Type: application/json' \
+      -d "$(jq -cn --arg n "$N" --argjson v "$V" '{action:"set_layer_visibility",params:{name:$n,visible:$v}}')" "$SERVICE/" >/dev/null
+  done
+  curl -sS --max-time 20 -H 'Content-Type: application/json' \
+    -d "$(jq -cn --arg n "$COUCHE" '{action:"select_layer",params:{name:$n}}')" "$SERVICE/" >/dev/null
+  REP=$(curl -sS --max-time 240 -H 'Content-Type: application/json' \
+    -d "$(jq -cn --arg p "$SORTIE" '{action:"save",params:{path:$p}}')" "$SERVICE/")
+  if printf '%s' "$VIS" | grep -q . ; then
+    printf '%s\n' "$VIS" | while IFS= read -r N; do
+      curl -sS --max-time 20 -H 'Content-Type: application/json' \
+        -d "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:true}}')" "$SERVICE/" >/dev/null
+    done
+  fi
+  if printf '%s' "$CACHES" | grep -q . ; then
+    printf '%s\n' "$CACHES" | while IFS= read -r N; do
+      curl -sS --max-time 20 -H 'Content-Type: application/json' \
+        -d "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:false}}')" "$SERVICE/" >/dev/null
+    done
+  fi
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  [ -s "$SORTIE" ] || { printf "refuse : le calque %s n'a rien donne (%s est vide)\n" "$COUCHE" "$SORTIE" >&2; exit 1; }
+  TAILLE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$SORTIE" 2>/dev/null | tr ',' 'x')
+  printf 'calque %s exporte : %s (%s, %s octets)\n' "$COUCHE" "$SORTIE" "$TAILLE" "$(wc -c < "$SORTIE")"
+
+ARGS:
+  - {name: layer, type: text}                 # le nom du calque a regarder
+  - {name: path, type: path}                  # ou ecrire le PNG, dans l'espace du skill

@@ -1,0 +1,29 @@
+# QUI : l'aplat de tout le document, exporte ou on veut -- c'est l'OEIL de LA sur le dessin.
+# REFUSE : (1) aucun document ouvert ; (2) une ecriture vide.
+# ORIGINE : ecrit le 2026-10-17.
+tool: "krita_export"
+date: "2026-10-17"
+tags: ["krita", "krita_export"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "exports the whole canvas (all visible layers) to a png in the workspace"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 \
+    || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  SORTIE="$W/{{path}}"
+  REP=$(curl -sS --max-time 240 -H 'Content-Type: application/json' -d "$(jq -cn --arg p "$SORTIE" '{action:"save",params:{path:$p}}')" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  [ -s "$SORTIE" ] || { printf "refuse : rien n'a ete ecrit (%s)\n" "$SORTIE" >&2; exit 1; }
+  TAILLE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$SORTIE" 2>/dev/null | tr ',' 'x')
+  printf 'image : %s (%s, %s octets)\n' "$SORTIE" "$TAILLE" "$(wc -c < "$SORTIE")"
+
+ARGS:
+  - {name: path, type: path}                   # ou ecrire le PNG, dans l'espace du skill

@@ -1,0 +1,35 @@
+# QUI : remplit la selection courante du calque actif avec la couleur donnee (#rrggbb). C'est le geste
+#   final : le trait sert de masque, la couleur se pose.
+# REFUSE : (1) pas de selection -- la machine le dit ; (2) une couleur qui n'est pas #rrggbb.
+# ORIGINE : ecrit le 2026-10-17.
+tool: "krita_fill"
+date: "2026-10-17"
+tags: ["krita", "krita_fill"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "fills the current selection on the active layer with a colour"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 \
+    || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  COULEUR="{{color}}"
+  case "$COULEUR" in
+    '#'[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]) ;;
+    *) printf "refuse : une couleur s'ecrit #rrggbb (%s)\n" "$COULEUR" >&2; exit 1 ;;
+  esac
+  REP=$(curl -sS --max-time 40 -H 'Content-Type: application/json' -d "$(jq -cn --arg c "$COULEUR" '{action:"set_color",params:{color:$c}}')" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  REP=$(curl -sS --max-time 180 -H 'Content-Type: application/json' -d '{"action":"fill_selection","params":{}}' "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf 'rempli de %s\n' "$COULEUR"
+
+ARGS:
+  - {name: color, type: text}                  # la couleur, #rrggbb

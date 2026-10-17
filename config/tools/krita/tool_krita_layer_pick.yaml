@@ -1,0 +1,28 @@
+# QUI : choisit le calque actif -- celui sur lequel peignent, se selectionnent et se remplissent les
+#   outils suivants. Le nom doit exister : la machine nomme les calques qu'elle a quand elle refuse.
+# ORIGINE : ecrit le 2026-10-17.
+tool: "krita_layer_pick"
+date: "2026-10-17"
+tags: ["krita", "krita_layer_pick"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 40
+
+DESCRIPTION: "makes one layer the active one (the one the other tools act on)"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 \
+    || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  NOM="{{name}}"
+  [ -n "$NOM" ] || { printf "refuse : il faut un nom de calque\n" >&2; exit 1; }
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$(jq -cn --arg n "$NOM" '{action:"select_layer",params:{name:$n}}')" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf 'calque actif : %s\n' "$(printf '%s' "$REP" | jq -r .name)"
+
+ARGS:
+  - {name: name, type: text}                   # le nom du calque

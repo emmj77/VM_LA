@@ -272,3 +272,47 @@ tools:
     tool: load_project
     family: MANAGE
     doc: project
+  - id: 184
+    tool: krita_status
+    family: READ
+    doc: krita
+  - id: 185
+    tool: krita_open
+    family: WRITE
+    doc: krita
+  - id: 186
+    tool: krita_layers
+    family: READ
+    doc: krita
+  - id: 187
+    tool: krita_layer_new
+    family: WRITE
+    doc: krita
+  - id: 188
+    tool: krita_layer_pick
+    family: WRITE
+    doc: krita
+  - id: 189
+    tool: krita_layer_set
+    family: WRITE
+    doc: krita
+  - id: 190
+    tool: krita_layer_export
+    family: WRITE
+    doc: krita
+  - id: 191
+    tool: krita_selection_mask
+    family: WRITE
+    doc: krita
+  - id: 192
+    tool: krita_selection
+    family: WRITE
+    doc: krita
+  - id: 193
+    tool: krita_fill
+    family: WRITE
+    doc: krita
+  - id: 194
+    tool: krita_export
+    family: WRITE
+    doc: krita

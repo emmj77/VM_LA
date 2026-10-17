@@ -1,0 +1,25 @@
+# QUI : la machine Krita. Le plugin kritamcp, DANS Krita, ouvre un service HTTP sur 127.0.0.1:5678.
+#   Sans Krita ouverte, il n'y a pas de service : l'outil le dit et s'arrete.
+# REFUSE : la machine muette (Krita fermee) -- la porte est nommee.
+# ORIGINE : ecrit le 2026-10-17. Remplace le CLI kri (python) de la cage : LA parle au port, lui-meme.
+tool: "krita_status"
+date: "2026-10-17"
+tags: ["krita", "krita_status"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 40
+
+DESCRIPTION: "reports whether the Krita machine answers and what it says it can do"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  SANTE=$(curl -sS --max-time 10 "$SERVICE/health" 2>/dev/null)
+  [ -n "$SANTE" ] || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  printf "la machine : %s\n" "$SANTE"
+  CAP=$(curl -sS --max-time 20 -H 'Content-Type: application/json' -d '{"action":"get_capabilities","params":{}}' "$SERVICE/")
+  printf "ce qu'elle annonce : %s\n" "$(printf '%s' "$CAP" | jq -c .)"
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

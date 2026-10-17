@@ -1,0 +1,41 @@
+# QUI : trois reglages d'un calque -- visibility (true/false), opacity (0 a 1), rename (nouveau nom).
+# REFUSE : (1) une valeur hors bornes ; (2) le calque absent -- la machine repond, le refus est nomme.
+# ORIGINE : ecrit le 2026-10-17.
+tool: "krita_layer_set"
+date: "2026-10-17"
+tags: ["krita", "krita_layer_set"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 90
+
+DESCRIPTION: "sets a layer's visibility, opacity or name"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 \
+    || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  NOM="{{name}}"; QUOI="{{what}}"; VAL="{{value}}"
+  case "$QUOI" in
+    visibility)
+      case "$VAL" in true|false) ;; *) printf "refuse : visible attend true ou false (%s)\n" "$VAL" >&2; exit 1 ;; esac
+      D=$(jq -cn --arg n "$NOM" --argjson v "$VAL" '{action:"set_layer_visibility",params:{name:$n,visible:$v}}') ;;
+    opacity)
+      case "$VAL" in ''|*[!0-9.]*) printf "refuse : opacity attend un nombre de 0 a 1 (%s)\n" "$VAL" >&2; exit 1 ;; esac
+      D=$(jq -cn --arg n "$NOM" --argjson o "$VAL" '{action:"set_layer_opacity",params:{name:$n,opacity:$o}}') ;;
+    rename)
+      [ -n "$VAL" ] || { printf "refuse : il faut le nouveau nom\n" >&2; exit 1; }
+      D=$(jq -cn --arg o "$NOM" --arg n "$VAL" '{action:"rename_layer",params:{old_name:$o,new_name:$n}}') ;;
+    *) printf "refuse : quoi vaut visibility, opacity ou rename (%s)\n" "$QUOI" >&2; exit 1 ;;
+  esac
+  REP=$(curl -sS --max-time 40 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf '%s : %s\n' "$NOM" "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: name, type: text}                   # le calque
+  - {name: what, type: enum, values: [visibility, opacity, rename]}   # le reglage
+  - {name: value, type: text}                  # true/false . un nombre de 0 a 1 . le nouveau nom
