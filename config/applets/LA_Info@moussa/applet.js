@@ -46,6 +46,18 @@ const EMOTICONE = {
     "vision": "\u{1F441}",
 };
 
+// Une barre n'a de sens que sur une mesure qui porte un rapport. On le lit dans le verdict :
+// "5/5 actifs", "123/123", "25 ok / 0 defaut". Pas de rapport, pas de barre.
+function rapportDe(verdict) {
+    let m = verdict.match(/(\d+)\s*ok\s*\/\s*(\d+)\s*defaut/);
+    if (m) { const a = Number(m[1]), b = Number(m[2]); return (a + b) > 0 ? a / (a + b) : 0; }
+    m = verdict.match(/(\d+)\s*\/\s*(\d+)/);
+    if (m) { const a = Number(m[1]), b = Number(m[2]); return b > 0 ? Math.min(a / b, 1) : 0; }
+    return null;
+}
+
+const LARGEUR_BARRE = 72;
+
 function emoticoneDe(titre) {
     return EMOTICONE[titre] || "\u2022";
 }
@@ -158,21 +170,53 @@ class LAInfoApplet extends Applet.TextIconApplet {
     // sous la forme {span, expand, align}. C'est l'idiome du code de Cinnamon lui-meme.
     _ligneDeMenu(ligne) {
         const item = new PopupMenu.PopupMenuItem("");
+        try { item.label.hide(); } catch (e) { }
+        // LA LIGNE PREND TOUTE LA LARGEUR DU MENU. Sans cela elle n'est large que de son contenu
+        // et, le menu ayant un min-width de 15em, elle se retrouve centree au milieu du vide.
+        item.actor.x_expand = true;
+
         item.addActor(new St.Icon({
             gicon: Gio.icon_new_for_string(DOSSIER_ICONES + "/" + (PASTILLE[ligne.etat] || PASTILLE.ko)),
             icon_size: 12,
         }), { span: 0 });
-        item.addActor(new St.Label({ text: emoticoneDe(ligne.titre), style_class: "la-info-emoticone" }), { span: 0 });
-        item.addActor(new St.Label({ text: ligne.titre, style_class: "la-info-titre" }));
-        // TOUT A GAUCHE : le verdict suit le titre, il n'est plus pousse contre le bord droit.
-        item.addActor(new St.Label({ text: ligne.verdict, style_class: "la-info-verdict" }));
+        item.addActor(new St.Label({
+            text: ligne.titre, style_class: "la-info-titre",
+            x_align: Clutter.ActorAlign.START, x_expand: true,
+        }));
+        item.addActor(new St.Label({
+            text: emoticoneDe(ligne.titre), style_class: "la-info-emoticone",
+            x_align: Clutter.ActorAlign.START,
+        }), { span: 0 });
+        // La barre occupe toujours la meme colonne, meme quand la mesure n'en a pas :
+        // c'est ce qui fait que les verdicts commencent tous au meme endroit.
+        const fraction = rapportDe(ligne.verdict);
+        item.addActor(fraction === null ? new St.Widget({ style_class: "la-info-slot" })
+                                        : this._barre(fraction), { span: 0 });
+        item.addActor(new St.Label({
+            text: ligne.verdict, style_class: "la-info-verdict",
+            x_align: Clutter.ActorAlign.START,
+        }), { span: -1, align: St.Align.START });
         return item;
+    }
+
+    // La barre : un rail de largeur fixe, et dedans la part pleine.
+    _barre(fraction) {
+        const rail = new St.Bin({ style_class: "la-info-rail" });
+        rail.set_width(LARGEUR_BARRE);
+        rail.set_child(new St.Widget({
+            style_class: fraction >= 1 ? "la-info-plein" : "la-info-partiel",
+            width: Math.max(2, Math.round(LARGEUR_BARRE * fraction)),
+        }));
+        return rail;
     }
 
     _titreDeMenu(texte, classe) {
         const item = new PopupMenu.PopupMenuItem("");
         item.actor.reactive = false;
-        item.addActor(new St.Label({ text: texte, style_class: classe }), { span: -1, expand: true });
+        try { item.label.hide(); } catch (e) { }
+        item.actor.x_expand = true;
+        item.addActor(new St.Label({ text: texte, style_class: classe, x_align: Clutter.ActorAlign.START, x_expand: true }),
+            { span: -1, align: St.Align.START });
         return item;
     }
 
