@@ -316,3 +316,11 @@ tools:
     tool: krita_export
     family: WRITE
     doc: krita
+  - id: 195
+    tool: krita_image_in
+    family: WRITE
+    doc: krita
+  - id: 196
+    tool: krita_save_document
+    family: WRITE
+    doc: krita

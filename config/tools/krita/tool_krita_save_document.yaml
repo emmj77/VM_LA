@@ -1,0 +1,35 @@
+# QUI : ECRIT le document. Le verbe `save` du plugin n'est qu'un exportImage : sans celui-ci, tout
+#   ce que la machine faisait etait perdu a la fermeture du fichier. GRAFFE dans kritamcp le
+#   2026-10-17 (save_document) : elle tente saveAs, sinon save.
+# REFUSE : (1) aucun document ouvert ; (2) un chemin refuse par la machine ; (3) la machine muette.
+# ORIGINE : ecrit le 2026-10-17.
+# ATTENTION : ecrit vraiment le fichier -- verifier le chemin avant. La preuve se fait dehors, en
+#   shell : unzip -p <fichier>.kra maindoc.xml | grep le nom du calque.
+tool: "krita_save_document"
+date: "2026-10-17"
+tags: ["krita", "krita_save_document"]
+
+doc: krita
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "writes the open document to disk -- the .kra itself, not an export"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 \
+    || { printf "refuse : la machine Krita ne repond pas sur %s (le plugin kritamcp s'ouvre avec Krita ouverte)\n" "$SERVICE" >&2; exit 1; }
+  SORTIE="$W/{{path}}"
+  REP=$(curl -sS --max-time 240 -H 'Content-Type: application/json' \
+    -d "$(jq -cn --arg p "$SORTIE" '{action:"save_document",params:{path:$p}}')" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf "refuse : %s\n" "$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  [ -s "$SORTIE" ] || { printf "refuse : la machine dit avoir ecrit, mais %s est vide\n" "$SORTIE" >&2; exit 1; }
+  printf 'ecrit par %s : %s (%s octets)\n' "$(printf '%s' "$REP" | jq -r .how)" "$SORTIE" "$(wc -c < "$SORTIE")"
+  CALQUES=$(unzip -p "$SORTIE" maindoc.xml 2>/dev/null | tr '>' '\n' | grep -c '<layer ')
+  printf '   (le .kra porte %s calques)\n' "${CALQUES:-?}"
+
+ARGS:
+  - {name: path, type: path}                  # ou ecrire le .kra, dans l'espace du skill
