@@ -21228,6 +21228,7 @@ class WeatherApplet extends TextIconApplet {
         try {
             // LA GRILLE DU MENU : une colonne, et de la place pour TOUTES les mesures. L'applet
             // garde ses propres valeurs (4 x 4), et une ligne de plus tombait hors de la grille.
+            this.config._show24Hours = true;      // l'heure en 24 h, pas « 7:20 AM »
             this.config._forecastRows = 24;      // de la place pour toutes les mesures
             this.config._forecastColumns = 2;    // deux colonnes : une seule ferait 1163 px de haut
             this.ui.FutureWeather.Rebuild(this.config, this.config.textColorStyle,
