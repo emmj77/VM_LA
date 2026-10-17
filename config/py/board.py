@@ -488,6 +488,11 @@ def controle(leger=False):
     L.append(("erreurs", str(len(fautes)), bool(fautes)))
     actifs = len([r for r in res if not r[5]])
     L.append(("residents", "%d/%d actifs" % (actifs, len(res)), actifs != len(res)))
+    # CHAQUE RESIDENT SA LIGNE. L agregat reste au-dessus, pour la barre du panneau ; en dessous,
+    # chaque resident dit son etat, sa memoire et sa porte. Motif de faute s il y en a un.
+    for nom, port, etat, code, mo, faute, motif in res:
+        verdict = ("%s · :%d" % (motif, port)) if faute else ("%d Mo · :%d" % (mo, port))
+        L.append(("resident " + nom, verdict, faute))
     L.append(("ram de LA", "%d Mo" % sum(r[4] for r in res if r[4]), False))
     if "adresse" in trafic:
         prov, alias, mod, post = trafic["adresse"]
@@ -634,6 +639,8 @@ def main():
         # sections, rangees dans l'ordre des titres.
         def titre(nom):
             n = nom.lower()
+            if n.startswith("resident "):
+                return "LA"          # les residents sont a LA, pas au systeme
             if n in ("la status", "residents", "ram de la", "sessions", "last_activity"):
                 return "LA"
             if n in ("api", "endpoint", "api status", "pont", "vision"):

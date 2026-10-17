@@ -44,15 +44,40 @@ const EMOTICONE = {
     "api status": "\u{1F4E1}",
     "pont": "\u{1F309}",
     "vision": "\u{1F441}",
+    // les cinq residents, un par ligne maintenant
+    "resident embed": "\u{1F9E9}",
+    "resident rerank": "\u{1F3AF}",
+    "resident local": "\u{270D}",
+    "resident asr": "\u{1F442}",
+    "resident tts": "\u{1F5E3}",
 };
 
 // Une barre n'a de sens que sur une mesure qui porte un rapport. On le lit dans le verdict :
 // "5/5 actifs", "123/123", "25 ok / 0 defaut". Pas de rapport, pas de barre.
-function rapportDe(verdict) {
+// LA PART D UNE MESURE, ET SON GENRE.
+//
+// Deux genres, parce qu elles ne veulent pas dire la meme chose :
+//   * "sante" : une part qui doit valoir 100 pour cent. En dessous, c est une faute, et l ambre
+//     le dit. residents 5/5, table 123/123, doctor 25 ok / 0 defaut, journal 0 echec.
+//   * "part"  : une consommation. Zero n est pas un defaut et cent n en est pas un non plus. La
+//     couleur est alors une chaleur, pas une sanction : vert tranquille, ambre si le resident
+//     mange la moitie de la memoire de LA, rouge au dela.
+//
+// Un resident donne sa memoire en Mo (701 Mo) : sa part se lit contre la ligne "ram de LA", qui
+// donne le total. C est la seule facon honnete de faire une barre de memoire -- il faut un tout.
+function rapportDe(titre, verdict, ramDeLA) {
     let m = verdict.match(/(\d+)\s*ok\s*\/\s*(\d+)\s*defaut/);
-    if (m) { const a = Number(m[1]), b = Number(m[2]); return (a + b) > 0 ? a / (a + b) : 0; }
-    m = verdict.match(/(\d+)\s*\/\s*(\d+)/);
-    if (m) { const a = Number(m[1]), b = Number(m[2]); return b > 0 ? Math.min(a / b, 1) : 0; }
+    if (m) { const a = Number(m[1]), b = Number(m[2]); return { part: (a + b) > 0 ? a / (a + b) : 0, genre: "sante" }; }
+    if (titre.startsWith("resident ") && ramDeLA) {
+        m = verdict.match(/^(\d+)\s*Mo/);
+        if (m) return { part: Math.min(Number(m[1]) / ramDeLA, 1), genre: "part" };
+    }
+    m = verdict.match(/(\d+)\s*\/\s*(\d+)\b/);
+    if (m) { const a = Number(m[1]), b = Number(m[2]); return { part: b > 0 ? Math.min(a / b, 1) : 0, genre: "sante" }; }
+    if (titre === "journal") {
+        m = verdict.match(/(\d+)\s*echec/);
+        if (m) return { part: Number(m[1]) === 0 ? 1 : 0.25, genre: "sante" };
+    }
     return null;
 }
 
@@ -189,19 +214,27 @@ class LAInfoApplet extends Applet.TextIconApplet {
         }));
         enfants.push(this._petitLabel(ligne.titre, "la-info-titre"));
         enfants.push(this._petitLabel(emoticoneDe(ligne.titre), "la-info-emoticone"));
-        const fraction = rapportDe(ligne.verdict);
-        enfants.push(fraction === null ? new St.Widget({ style_class: "la-info-slot" }) : this._barre(fraction));
+        const r = rapportDe(ligne.titre, ligne.verdict, this._ramDeLA);
+        enfants.push(r === null ? new St.Widget({ style_class: "la-info-slot" }) : this._barre(r));
         enfants.push(this._petitLabel(ligne.verdict, "la-info-verdict"));
         return this._rangee(enfants);
     }
 
-    // La barre : un rail de largeur fixe, et dedans la part pleine.
-    _barre(fraction) {
+    // La couleur d une barre : la sante sanctionne (vert si parfait, ambre sinon), la
+    // consommation chauffe (vert sous la moitie, ambre a la moitie, rouge au dela).
+    _couleurDe(r) {
+        if (r.genre === "sante") return r.part >= 1 ? "la-info-plein" : "la-info-partiel";
+        if (r.part >= 0.8) return "la-info-chaud";
+        if (r.part >= 0.5) return "la-info-partiel";
+        return "la-info-plein";
+    }
+
+    _barre(r) {
         const rail = new St.Bin({ style_class: "la-info-rail" });
         rail.set_width(72);
         rail.set_child(new St.Widget({
-            style_class: fraction >= 1 ? "la-info-plein" : "la-info-partiel",
-            width: Math.max(2, Math.round(72 * fraction)),
+            style_class: this._couleurDe(r),
+            width: Math.max(2, Math.round(72 * r.part)),
         }));
         return rail;
     }
@@ -219,6 +252,16 @@ class LAInfoApplet extends Applet.TextIconApplet {
         const tete = this._rangee([this._petitLabel("LA_Info", "la-info-tete")]);
         const heure = this._rangee([this._petitLabel("mesures relues a " + quand, "la-info-quand")]);
         [tete, heure].forEach((r) => { this._menu.box.add_child(r); this._mesRangees.push(r); });
+
+        // LE TOUT, AVANT LES PARTIES : la ligne "ram de LA" donne la memoire totale des
+        // residents, et c est contre elle que chacun donne sa part. Sans elle, pas de barre.
+        this._ramDeLA = 0;
+        this._lignes.forEach((l) => {
+            if (l.titre === "ram de LA") {
+                const m = l.verdict.match(/(\d+)/);
+                if (m) this._ramDeLA = Number(m[1]);
+            }
+        });
 
         let section = null;
         this._lignes.forEach((l) => {
