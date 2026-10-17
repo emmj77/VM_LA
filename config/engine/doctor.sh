@@ -106,6 +106,20 @@ RPORT=${LA_RERANK_PORT:-8095}
 RS=$(curl -s --max-time 3 "http://127.0.0.1:$RPORT/health" 2>/dev/null || true)
 [ -n "$RS" ] && ok "the reranker answers on $RPORT" || note "the reranker does not answer on $RPORT (down ?)"
 
+title "THE EMBEDDER (the memory table is read under a question, never under a word)"
+EPORT=${LA_EMBED_PORT:-8096}
+ES=$(curl -s --max-time 3 "http://127.0.0.1:$EPORT/health" 2>/dev/null || true)
+[ -n "$ES" ] && ok "the embedder answers on $EPORT" || note "the embedder does not answer on $EPORT (down ? the entries then keep a NULL vector)"
+if command -v sqlite3 >/dev/null 2>&1 && [ -f "$ROOT/config/memory.db" ]; then
+  NT=$(sqlite3 "$ROOT/config/memory.db" 'SELECT count(*) FROM memory;' 2>/dev/null || printf '')
+  NV=$(sqlite3 "$ROOT/config/memory.db" 'SELECT count(vec) FROM memory;' 2>/dev/null || printf '')
+  ok "the table carries ${NT:-0} entry(ies), ${NV:-0} with a vector"
+  case "${NT:-0}" in
+    0) note "the table is empty : the first entry comes from the compacteur, at the end of a turn" ;;
+    *) [ "${NT:-0}" = "${NV:-0}" ] || note "$((NT - NV)) entry(ies) carry no vector (readable by words only)" ;;
+  esac
+fi
+
 title "THE RETURN FORMS"
 TRF="$ROOT/config/engine/trim_forms.sh"
 [ -x "$TRF" ] && ok "the form selector is present and executable" || fail "no form selector ($TRF)"

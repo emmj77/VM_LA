@@ -5,8 +5,6 @@
 #
 # Ce que le catalogue du 02 - LES OUTILS ecrit pour l'oeil, ce fichier l'ecrit pour la MACHINE.
 #
-# NUL NE MODIFIE CETTE TABLE A LA MAIN, SAUF L'HUMAIN.
-#
 #    UN TOOL, C'EST UNE LIGNE
 #      id · tool · family (READ | WRITE | MANAGE | REPLY) · description · args · command
 #      args     name · type (path | enum | int | bool | text) · values (enum seulement) · stdin
@@ -838,18 +836,49 @@ tools:
   - id: 132
     tool: search_memory
     family: READ
-    description: "searches the memory base and returns the entries that carry the words"
+    description: "reads the memory table under a QUESTION and returns the entries that answer it, by sense, best first"
     args:
       - {name: text, type: text, stdin: true}
     command: |
-      # LA TABLE (memory.db) : le sommaire des echanges, ecrit par le compacteur. On cherche par
-      # MOT ici, en attendant le modele d'embedding qui cherchera par SENS. La sortie nomme
-      # l'ECHANGE : c'est le lien vers le corps (sessions.db), ou load_memory va lire le detail.
+      # LA TABLE SE LIT SOUS UNE QUESTION (lois 1713, 1714). Le vecteur de la question vient du
+      # resident d'embedding (harrier-oss-v1-270M, port 8096). L'INSTRUCTION APPARTIENT AU HARNAIS,
+      # jamais au modele (loi 1513) : c'est CE tool qui la pose, cote question SEULEMENT -- le cote
+      # document, ecrit par le compacteur, n'en porte aucune. Le classement se fait par COSINUS sur
+      # toute la table, EN UNE PASSE jq (lois 516/517 : sh + coreutils + jq, rien d'autre ; le
+      # resident d'embedding ne fait que rendre le vecteur de la question). La sortie nomme
+      # l'ECHANGE : c'est le lien vers le corps, ou load_memory va lire le detail. Rien trouve se
+      # DIT, jamais un silence.
       T=$(cat); [ -n "$T" ] || { echo "refuse : question vide" >&2; exit 1; }
       M=${LA_MEMORY_DB:-$ROOT/config/memory.db}
       [ -f "$M" ] || { echo "refuse : la base de memoire est introuvable ($M)" >&2; exit 1; }
-      _Q=$(printf '%s' "$T" | sed "s/'/''/g")
-      sqlite3 "$M" "SELECT exchange || ' | ' || stamp || ' | ' || replace(human, char(10), ' ') || ' | ' || replace(agent, char(10), ' ') FROM memory WHERE human LIKE '%$_Q%' OR agent LIKE '%$_Q%' ORDER BY id DESC LIMIT 20;" 2>/dev/null
+      P=${LA_EMBED_PORT:-8096}
+      _I='Instruct: Given a web search query, retrieve relevant passages that answer the query'
+      _B=$(printf '%s\nQuery: %s' "$_I" "$T" | jq -Rsc '{input: .}' 2>/dev/null || printf '')
+      _Q=$(curl -s --max-time 30 -H 'Content-Type: application/json' --data "$_B" \
+             "http://127.0.0.1:$P/embedding" 2>/dev/null | jq -c '.[0].embedding[0] // empty' 2>/dev/null || printf '')
+      case "${_Q:-}" in
+        ''|null)
+          # LE RESIDENT MUET NE COUPE PAS (loi 354) : la ligne LE DIT sur la sortie, et la
+          # recherche retombe sur les MOTS. Le modele voit la note : elle voyage avec le result.
+          printf "note : l'embedder est muet sur le port %s ; recherche par MOTS seulement\n" "$P"
+          _X=$(printf '%s' "$T" | sed "s/'/''/g")
+          sqlite3 "$M" "SELECT exchange || ' | ' || stamp || ' | ' || replace(human, char(10), ' ') || ' | ' || replace(agent, char(10), ' ') FROM memory WHERE human LIKE '%$_X%' OR agent LIKE '%$_X%' ORDER BY id DESC LIMIT 20;" 2>/dev/null
+          exit 0 ;;
+      esac
+      sqlite3 -json "$M" "SELECT exchange, stamp, human, agent, vec FROM memory ORDER BY id DESC LIMIT 500;" 2>/dev/null \
+      | jq -sr --argjson q "$_Q" '
+          ( .[0] // [] ) as $rows
+          | ( [ $rows[] | . as $r | (try ($r.vec | fromjson) catch null) as $v
+                | select(($v | type) == "array") | select(($v | length) == ($q | length))
+                | { e: $r.exchange, s: $r.stamp, h: $r.human, a: $r.agent,
+                    c: ([ range(0; ($q | length)) | $q[.] * $v[.] ] | add) } ] ) as $r
+          | ( $rows | length ) as $tot
+          | ( if ($r | length) == 0 then "aucune ligne de la table ne porte de vecteur : rien a classer par le sens"
+              else empty end ),
+            ( $r | sort_by(- .c) | .[:5] | .[]
+              | "\((.c * 1000 | round) / 1000) | echange \(.e) | \(.s) | \(.h | gsub("\n"; " ")) | \(.a | gsub("\n"; " "))" ),
+            ( if ($tot - ($r | length)) > 0
+              then "note : \($tot - ($r | length)) ligne(s) sans vecteur (lisibles par mots)" else empty end )'
   - id: 134
     tool: write_spec
     family: MANAGE

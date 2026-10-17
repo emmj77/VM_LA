@@ -15,6 +15,14 @@
 #   stamp   the UTC timestamp, placed by THIS SCRIPT (never by the model)
 #   human   at most TWO lines : what the human asked, and what he got
 #   agent   at most TWO lines : what the agent did, and where it stands
+#   vec     the VECTOR of the entry, computed HERE from those two sides. It is kept as JSON TEXT
+#           (not a float32 blob) : the reading side is sh + coreutils + jq, and jq does not decode
+#           a blob. Each float is rounded to 1e-6 : 640 of them then weigh about 5 KB, where the
+#           raw precision weighed 13 KB, and the sixth decimal changes no ranking.
+#           THIS SCRIPT IS THE ONLY WRITER OF THE TABLE (1715), so the vector is posed
+#           here or nowhere ; a silent embedder leaves it NULL AND SAYS SO, and the entry is
+#           never lost for a vector. The DOCUMENT side carries NO instruction : the instruction
+#           belongs to the QUESTION, written by the caller of the search (laws 1513, 1714).
 #   The compaction comes from the MODEL (safe mode of summary.sh, 6 lines / 400 bytes) ; when
 #   the model does not separate its two blocks, we SAY so in the human block and the text goes
 #   into the agent block : NEVER a block invented by this script.
@@ -82,7 +90,30 @@ EX=$(sqlite3 "$DB" 'SELECT COALESCE(MAX(exchange),0) FROM messages;' 2>/dev/null
 case "${EX:-}" in ''|*[!0-9]*) EX=0 ;; esac
 _H=$(printf '%s' "$HUMAN_SIDE" | sed "s/'/''/g")
 _A=$(printf '%s' "$AGENT_SIDE" | sed "s/'/''/g")
-sqlite3 "$MEM" "INSERT INTO memory(exchange, stamp, human, agent) VALUES($EX, '$STAMP', '$_H', '$_A');" 2>/dev/null \
+
+# THE VECTOR GOES IN WITH THE ENTRY (1714). The text embedded is the ENTRY ITSELF -- the two sides
+# in the order the table holds them -- and NOTHING is added : the document side of this model's
+# contract carries no instruction. The vector is asked of the resident through its port ; if the
+# resident is silent, the entry is STILL placed, with a NULL vector, and the line says it out loud
+# (1516 : a silent engine names itself ; 354 : a bound is SAID, it does not cut).
+EMB_PORT=${LA_EMBED_PORT:-8096}
+if [ -z "${LA_EMBED_OFF:-}" ] && command -v curl >/dev/null 2>&1; then
+  _BODY=$(printf '%s\n%s' "$HUMAN_SIDE" "$AGENT_SIDE" | jq -Rsc '{input: .}' 2>/dev/null || printf '')
+  if [ -n "$_BODY" ]; then
+    _OUT=$(curl -s --max-time 20 -H 'Content-Type: application/json' --data "$_BODY" \
+             "http://127.0.0.1:$EMB_PORT/embedding" 2>/dev/null || printf '')
+    VEC=$(printf '%s' "$_OUT" | jq -c '.[0].embedding[0] | map((. * 1000000 | round) / 1000000) // empty' 2>/dev/null || printf '')
+  fi
+fi
+case "${VEC:-}" in ''|null) VEC='' ;; esac
+if [ -n "$VEC" ]; then
+  _V="'$VEC'"
+else
+  _V='NULL'
+  echo "note: no vector was posed (the embedder is silent on $EMB_PORT) : the entry stays readable by words" >&2
+fi
+
+sqlite3 "$MEM" "INSERT INTO memory(exchange, stamp, human, agent, vec) VALUES($EX, '$STAMP', '$_H', '$_A', $_V);" 2>/dev/null \
   || { echo "refused: the entry could not be placed ($MEM)" >&2 ; exit 1 ; }
 
 echo "session_note : exchange compacted and placed at $STAMP (exchange $EX, $MEM)"
