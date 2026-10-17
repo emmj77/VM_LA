@@ -8,7 +8,7 @@ RULES:                       # l'etat du projet, et ce qui le borne
   writeable: true            # le fichier est-il editable ? (true | false)
   # ... deux ou trois autres choses a decider (a completer)
 
-SUMMARY:                     # LE CONTEXTE : ce qu'est ce projet (20 LIGNES MAXIMUM)
+SUMMARY:                     # LE CONTEXTE : ce qu'est ce projet (10 LIGNES MAXIMUM)
   101: "..."
   102: "..."
 

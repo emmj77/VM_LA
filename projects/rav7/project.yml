@@ -1,0 +1,25 @@
+project: "rav7"
+path: "Documents/MODELE_RA"
+date: "2026-10-17"
+tags: ["rav7", "modele-ra", "graphe", "proc", "alpine"]
+
+RULES:
+  enabled: true
+  writeable: true
+
+SUMMARY:
+  101: "MODELE_RA V7 (RA) : le processeur de lois. RA = une VM ou le graphe EST la loi."
+  102: "Le canon = AGENTS.md ; les specs numerotees, et rien d'autre."
+  103: "290 procs (10 lettres : A C D E G M N P R T), en C statique, sous Linux Alpine."
+  104: "Le graphe : annuaire + liens (4 champs source/famille/espece/cible), en RAM."
+  105: "VM_RA/ = la maison (graphe, tables, rootfs, image) ; RA boote de la."
+  106: "Filet : backup/ (tables en anneau) + git (origin emmj77/MODELE_RA)."
+
+SKILLS:
+  1: "search-code"
+  2: "edit-file"
+  3: "git"
+  4: "read-log"
+  5: "manage-processes"
+  6: "computer-debug"
+  7: "report-web-search"

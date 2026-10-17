@@ -1,0 +1,21 @@
+project: "webtoon-destin"
+path: "work/WEBTOON DESTIN"
+date: "2026-10-17"
+tags: ["webtoon-destin", "destin", "dessin", "storyboard"]
+
+RULES:
+  enabled: true
+  writeable: true
+
+SUMMARY:
+  101: "WEBTOON DESTIN : les planches du webtoon DESTIN."
+  102: "Le coffre (worldbuilding + storyboard) vit separement : home/DESTIN_OBS."
+  103: "Outils du dessin : Krita, ComfyUI (colorier, poser un decor)."
+  104: "..."                  # a completer
+
+SKILLS:
+  1: "comfyui"
+  2: "krita"
+  3: "blender"
+  4: "manipulation-3d"
+  5: "analyze-image"
