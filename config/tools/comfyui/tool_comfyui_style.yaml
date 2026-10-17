@@ -1,20 +1,86 @@
-# QUI : palette transfer from a reference (ipadapter)
-# ORIGINE : migre tel quel de la ligne 167 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
-# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+# QUI : dessine une image NEUVE a partir d'un texte, en prenant sa palette et son ambiance a une image
+#   de reference (ipadapter). C'est la machine du dessin qui travaille ; ce corps ne fait que lui parler.
+# REFUSE : (1) la reference absente de l'espace du skill ; (2) le texte libre vide ; (3) ComfyUI muet
+#   sur 8188 ; (4) un envoi refuse, un graphe refuse, une erreur de noeud -- NOMMES ; (5) un dessin qui
+#   n'arrive pas dans le delai.
+# ORIGINE : reecrit en shell le 2026-10-17. Avant : "python3 comfy_tool.py style", qui lisait
+#   TOOLS/config/style.json (une passerelle vers une autre maison). Les reglages sont maintenant ici
+#   (surchargeables par l'environnement) ; la machine n'est jointe que par son API sur 127.0.0.1:8188.
 tool: "comfyui_style"
 date: "2026-10-17"
 tags: ["comfyui", "comfyui_style"]
 
-comfyui
 doc: comfyui
 
 RULES:
   enabled: true
-  timeout: 300
+  timeout: 700
 
-DESCRIPTION: "palette transfer from a reference (ipadapter)"
+DESCRIPTION: "draws a new image from free text, taking its palette and mood from a reference image (ipadapter)"
 
 COMMAND: |
-  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" style </dev/null
+  SERVICE=http://127.0.0.1:8188
+  T=$(cat)
+  [ -n "$T" ] || { printf "refuse : le texte libre (le sujet) manque sur l'entree standard\n" >&2; exit 1; }
+  REF="$W/{{image}}"
+  [ -f "$REF" ] || { printf "refuse : la reference est absente (%s)\n" "$REF" >&2; exit 1; }
+  curl -sf "$SERVICE/system_stats" >/dev/null 2>&1 \
+    || { printf "refuse : le service ComfyUI ne repond pas sur %s\n" "$SERVICE" >&2; exit 1; }
+  NOM=$(curl -s -F "image=@$REF" -F "type=input" -F "subfolder=" -F "overwrite=true" "$SERVICE/upload/image" \
+        | jq -r '.name // empty')
+  [ -n "$NOM" ] || { printf "refuse : la machine a refuse l'envoi de la reference (%s)\n" "$REF" >&2; exit 1; }
+  GRAINE=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
+  G=$(jq -cn \
+    --arg ck "${LA_COMFY_CKPT:-dreamshaper_8.safetensors}" \
+    --arg ipa "${LA_COMFY_IPA:-ip-adapter_sd15.safetensors}" \
+    --arg cvi "${LA_COMFY_CLIP_VISION:-clip-vision_vit-h.safetensors}" \
+    --arg img "$NOM" --arg t "$T" --argjson sd "$GRAINE" \
+    --argjson poids "${LA_COMFY_POIDS:-0.85}" \
+    --argjson larg "${LA_COMFY_LARGEUR:-832}" \
+    --argjson haut "${LA_COMFY_HAUTEUR:-1216}" \
+    --argjson etapes "${LA_COMFY_ETAPES:-28}" \
+    --argjson cfg "${LA_COMFY_CFG:-6.5}" '
+    {"1":{"class_type":"CheckpointLoaderSimple","inputs":{"ckpt_name":$ck}},
+     "2":{"class_type":"IPAdapterModelLoader","inputs":{"ipadapter_file":$ipa}},
+     "3":{"class_type":"CLIPVisionLoader","inputs":{"clip_name":$cvi}},
+     "4":{"class_type":"IPAdapterAdvanced","inputs":{"model":["1",0],"ipadapter":["2",0],
+          "clip_vision":["3",0],"image":["5",0],"weight":$poids,"weight_type":"style transfer",
+          "combine_embeds":"concat","start_at":0.0,"end_at":1.0,"embeds_scaling":"V only"}},
+     "5":{"class_type":"LoadImage","inputs":{"image":$img}},
+     "6":{"class_type":"CLIPTextEncode","inputs":{"text":$t,"clip":["1",1]}},
+     "7":{"class_type":"CLIPTextEncode","inputs":{"text":"low quality, worst quality, blurry, jpeg artifacts, text, watermark, signature","clip":["1",1]}},
+     "8":{"class_type":"EmptyLatentImage","inputs":{"width":$larg,"height":$haut,"batch_size":1}},
+     "9":{"class_type":"KSampler","inputs":{"seed":$sd,"steps":$etapes,"cfg":$cfg,
+          "sampler_name":"dpmpp_2m","scheduler":"karras","denoise":1.0,"model":["4",0],
+          "positive":["6",0],"negative":["7",0],"latent_image":["8",0]}},
+     "10":{"class_type":"VAEDecode","inputs":{"samples":["9",0],"vae":["1",2]}},
+     "11":{"class_type":"SaveImage","inputs":{"filename_prefix":"la_style","images":["10",0]}}}')
+  R=$(jq -cn --argjson p "$G" '{prompt:$p,client_id:"la"}' \
+      | curl -s -H 'Content-Type: application/json' --data-binary @- "$SERVICE/prompt")
+  PID=$(printf '%s' "$R" | jq -r '.prompt_id // empty')
+  [ -n "$PID" ] || { printf "refuse : la machine n'a pas accepte le graphe : %s\n" \
+      "$(printf '%s' "$R" | jq -c '.error // .node_errors // .' | cut -c1-400)" >&2; exit 1; }
+  i=0
+  while [ "$i" -lt 300 ]; do
+    H=$(curl -s "$SERVICE/history/$PID")
+    printf '%s' "$H" | jq -e --arg p "$PID" 'has($p)' >/dev/null 2>&1 && break
+    sleep 2
+    i=$((i + 1))
+  done
+  [ "$i" -lt 300 ] || { printf "refuse : le dessin n'est pas venu en 600 s (prompt %s)\n" "$PID" >&2; exit 1; }
+  ECHEC=$(printf '%s' "$H" | jq -r --arg p "$PID" \
+      '.[$p].status.messages[]? | select(.[0]=="execution_error") | ((.[1].exception_type // "erreur") + " : " + (.[1].exception_message // ""))' \
+      | head -n 1)
+  [ -z "$ECHEC" ] || { printf "refuse : la machine a echoue : %s\n" "$ECHEC" >&2; exit 1; }
+  IMG=$(printf '%s' "$H" | jq -r --arg p "$PID" '.[$p].outputs[]?.images[]? | [.filename, (.subfolder // ""), (.type // "output")] | @tsv' | head -n 1)
+  [ -n "$IMG" ] || { printf "refuse : le dessin est fini et la machine ne rend aucune image\n" >&2; exit 1; }
+  SORTIE="$W/style-$(date +%Y%m%d-%H%M%S).png"
+  curl -s -G --data-urlencode "filename=$(printf '%s' "$IMG" | cut -f1)" \
+       --data-urlencode "subfolder=$(printf '%s' "$IMG" | cut -f2)" \
+       --data-urlencode "type=$(printf '%s' "$IMG" | cut -f3)" "$SERVICE/view" -o "$SORTIE"
+  [ -s "$SORTIE" ] || { printf "refuse : l'image n'est pas descendue (%s)\n" "$SORTIE" >&2; exit 1; }
+  printf "image : %s (%s octets, graine %s)\n" "$SORTIE" "$(wc -c < "$SORTIE")" "$GRAINE"
 
-ARGS: []                    # aucun argument : ce tool se nomme seul
+ARGS:
+  - {name: image, type: path}                  # la reference, relative a l'espace du skill (familie WRITE)
+  - {name: style, type: text, stdin: true}     # le sujet, en texte libre : par l'ENTREE STANDARD

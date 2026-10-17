@@ -1,20 +1,140 @@
-# QUI : coherent character : ipadapter + optional lora + optional openpose pose
-# ORIGINE : migre tel quel de la ligne 168 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
-# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+# QUI : dessine un PERSONNAGE, et le tient : l'identite vient du visage (ipadapter plus-face), le
+#   vetement de la planche entiere (ipadapter plus), la silhouette d'un ControlNet, la pose d'une
+#   image de reference. Deux references valent mieux qu'une : le prompt ne sait pas decrire une
+#   tunique a motifs -- sans la planche, la machine INVENTE un costume.
+# REFUSE : (1) le visage absent de l'espace du skill ; (2) un costume ou une pose nommes mais absents ;
+#   (3) le texte libre vide ; (4) ComfyUI muet sur 8188 ; (5) un envoi refuse, un graphe refuse, une
+#   erreur de noeud -- NOMMES ; (6) un dessin qui n'arrive pas dans le delai.
+# ORIGINE : reecrit en shell le 2026-10-17. Avant : "python3 comfy_tool.py coherence", qui lisait
+#   TOOLS/config/coherence.json (une passerelle vers une autre maison). Les etages (LoRA, costume,
+#   ControlNet, pose) sont montes ICI, dans l'ordre du modele : Checkpoint -> LoRA -> costume -> visage.
 tool: "comfyui_coherence"
 date: "2026-10-17"
 tags: ["comfyui", "comfyui_coherence"]
 
-comfyui
 doc: comfyui
 
 RULES:
   enabled: true
-  timeout: 300
+  timeout: 700
 
-DESCRIPTION: "coherent character : ipadapter + optional lora + optional openpose pose"
+DESCRIPTION: "draws one recurring character and holds it : identity from a face, clothes from a full sheet, silhouette from a controlnet, pose from a reference"
 
 COMMAND: |
-  "$HOME/Applications/ComfyUI/venv/bin/python3" "$HOME/Applications/ComfyUI/TOOLS/comfy_tool.py" coherence </dev/null
+  SERVICE=http://127.0.0.1:8188
+  T=$(cat)
+  [ -n "$T" ] || { printf "refuse : le texte libre (le sujet) manque sur l'entree standard\n" >&2; exit 1; }
+  PERSO="$W/{{personnage}}"
+  [ -f "$PERSO" ] || { printf "refuse : le visage de reference est absent (%s)\n" "$PERSO" >&2; exit 1; }
+  COS=
+  [ -n "{{costume}}" ] && { COS="$W/{{costume}}"; [ -f "$COS" ] || { printf "refuse : la planche du costume est absente (%s)\n" "$COS" >&2; exit 1; }; }
+  POSE=
+  [ -n "{{pose}}" ] && { POSE="$W/{{pose}}"; [ -f "$POSE" ] || { printf "refuse : la pose de reference est absente (%s)\n" "$POSE" >&2; exit 1; }; }
+  curl -sf "$SERVICE/system_stats" >/dev/null 2>&1 \
+    || { printf "refuse : le service ComfyUI ne repond pas sur %s\n" "$SERVICE" >&2; exit 1; }
+  envoie() {  # $1 = un fichier ; rend le nom distant, ou rien
+    curl -s -F "image=@$1" -F "type=input" -F "subfolder=" -F "overwrite=true" "$SERVICE/upload/image" \
+      | jq -r '.name // empty'
+  }
+  NOM_PERSO=$(envoie "$PERSO")
+  [ -n "$NOM_PERSO" ] || { printf "refuse : la machine a refuse l'envoi du visage (%s)\n" "$PERSO" >&2; exit 1; }
+  NOM_COS=
+  [ -n "$COS" ] && { NOM_COS=$(envoie "$COS"); [ -n "$NOM_COS" ] || { printf "refuse : la machine a refuse l'envoi du costume (%s)\n" "$COS" >&2; exit 1; }; }
+  NOM_POSE=
+  [ -n "$POSE" ] && { NOM_POSE=$(envoie "$POSE"); [ -n "$NOM_POSE" ] || { printf "refuse : la machine a refuse l'envoi de la pose (%s)\n" "$POSE" >&2; exit 1; }; }
+  LORA=${LA_COMFY_LORA:-}
+  if [ -n "$LORA" ]; then REF_M='["10",0]'; REF_C='["10",1]'; else REF_M='["1",0]'; REF_C='["1",1]'; fi
+  GRAINE=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
+  G=$(jq -cn \
+    --arg ck "${LA_COMFY_CKPT:-juggernautXL_version2.safetensors}" \
+    --arg ipa_face "${LA_COMFY_IPA_VISAGE:-ip-adapter-plus-face_sdxl_vit-h.safetensors}" \
+    --arg ipa_cos "${LA_COMFY_IPA_COSTUME:-ip-adapter-plus_sdxl_vit-h.safetensors}" \
+    --arg cvi "${LA_COMFY_CLIP_VISION:-clip-vision_vit-h.safetensors}" \
+    --arg lora "$LORA" \
+    --arg cn_couleur "${LA_COMFY_CONTROLNET:-}" \
+    --arg cn_pose "${LA_COMFY_CONTROLNET_POSE:-openpose-sdxl.safetensors}" \
+    --arg t "$T" --arg perso "$NOM_PERSO" --arg cos "$NOM_COS" --arg pose "$NOM_POSE" \
+    --argjson m0 "$REF_M" --argjson c0 "$REF_C" --argjson sd "$GRAINE" \
+    --argjson fl "${LA_COMFY_FORCE_LORA:-0.7}" --argjson flc "${LA_COMFY_FORCE_LORA_CLIP:-0.7}" \
+    --argjson p_face "${LA_COMFY_POIDS_VISAGE:-0.8}" --argjson p_cos "${LA_COMFY_POIDS_COSTUME:-0.7}" \
+    --argjson f_cn "${LA_COMFY_FORCE_CONTROLNET:-0.45}" --argjson f_pose "${LA_COMFY_FORCE_POSE:-0.8}" \
+    --argjson larg "${LA_COMFY_LARGEUR:-832}" --argjson haut "${LA_COMFY_HAUTEUR:-1216}" \
+    --argjson etapes "${LA_COMFY_ETAPES:-28}" --argjson cfg "${LA_COMFY_CFG:-6.5}" \
+    --arg sm "${LA_COMFY_ECHANTILLONNEUR:-dpmpp_2m}" --arg sch "${LA_COMFY_PLANIFICATEUR:-karras}" '
+    { "1":{"class_type":"CheckpointLoaderSimple","inputs":{"ckpt_name":$ck}},
+      "3":{"class_type":"CLIPVisionLoader","inputs":{"clip_name":$cvi}},
+      "6":{"class_type":"CLIPTextEncode","inputs":{"text":$t,"clip":$c0}},
+      "7":{"class_type":"CLIPTextEncode","inputs":{"text":"worst quality, low quality, blurry, jpeg artifacts, EasyNegative, deformed, bad anatomy, bad hands, extra limbs, extra fingers, text, watermark, signature, multiple people","clip":$c0}},
+      "8":{"class_type":"EmptyLatentImage","inputs":{"width":$larg,"height":$haut,"batch_size":1}} }
+    | (if $lora != "" then . + { "10":{"class_type":"LoraLoader","inputs":{"model":["1",0],"clip":["1",1],
+         "lora_name":$lora,"strength_model":$fl,"strength_clip":$flc}} } else . end)
+    | (if $cos != "" then . + {
+         "2":{"class_type":"IPAdapterModelLoader","inputs":{"ipadapter_file":$ipa_cos}},
+         "5":{"class_type":"LoadImage","inputs":{"image":$cos}},
+         "4":{"class_type":"IPAdapterAdvanced","inputs":{"model":$m0,"ipadapter":["2",0],"clip_vision":["3",0],
+              "image":["5",0],"weight":$p_cos,"weight_type":"linear","combine_embeds":"concat",
+              "start_at":0.0,"end_at":1.0,"embeds_scaling":"V only"}} } else . end)
+    | . + {
+        "20":{"class_type":"IPAdapterModelLoader","inputs":{"ipadapter_file":$ipa_face}},
+        "25":{"class_type":"LoadImage","inputs":{"image":$perso}},
+        "24":{"class_type":"IPAdapterAdvanced","inputs":{"model":(if $cos != "" then ["4",0] else $m0 end),
+              "ipadapter":["20",0],"clip_vision":["3",0],"image":["25",0],"weight":$p_face,
+              "weight_type":"linear","combine_embeds":"concat","start_at":0.0,"end_at":1.0,
+              "embeds_scaling":"V only"}} }
+    | (if $cn_couleur != "" then . + {
+         "31":{"class_type":"Canny","inputs":{"image":(if $cos != "" then ["5",0] else ["25",0] end),
+               "low_threshold":0.3,"high_threshold":0.7}},
+         "32":{"class_type":"ControlNetLoader","inputs":{"control_net_name":$cn_couleur}},
+         "33":{"class_type":"ControlNetApplyAdvanced","inputs":{"positive":["6",0],"negative":["7",0],
+               "control_net":["32",0],"image":["31",0],"strength":$f_cn,"start_percent":0.0,
+               "end_percent":0.6}} } else . end)
+    | (if $pose != "" then . + {
+         "15":{"class_type":"LoadImage","inputs":{"image":$pose}},
+         "16":{"class_type":"OpenposePreprocessor","inputs":{"image":["15",0],"detect_hand":false,
+               "detect_body":true,"detect_face":false,"resolution":512}},
+         "17":{"class_type":"ControlNetLoader","inputs":{"control_net_name":$cn_pose}},
+         "18":{"class_type":"ControlNetApplyAdvanced","inputs":{
+               "positive":(if $cn_couleur != "" then ["33",0] else ["6",0] end),
+               "negative":(if $cn_couleur != "" then ["33",1] else ["7",0] end),
+               "control_net":["17",0],"image":["16",0],"strength":$f_pose,"start_percent":0.0,
+               "end_percent":0.8}} } else . end)
+    | . + {
+        "9":{"class_type":"KSampler","inputs":{"seed":$sd,"steps":$etapes,"cfg":$cfg,
+             "sampler_name":$sm,"scheduler":$sch,"denoise":1.0,"model":["24",0],
+             "positive":(if $pose != "" then ["18",0] elif $cn_couleur != "" then ["33",0] else ["6",0] end),
+             "negative":(if $pose != "" then ["18",1] elif $cn_couleur != "" then ["33",1] else ["7",0] end),
+             "latent_image":["8",0]}},
+        "11":{"class_type":"VAEDecode","inputs":{"samples":["9",0],"vae":["1",2]}},
+        "12":{"class_type":"SaveImage","inputs":{"filename_prefix":"la_coherence","images":["11",0]}} }')
+  R=$(jq -cn --argjson p "$G" '{prompt:$p,client_id:"la"}' \
+      | curl -s -H 'Content-Type: application/json' --data-binary @- "$SERVICE/prompt")
+  PID=$(printf '%s' "$R" | jq -r '.prompt_id // empty')
+  [ -n "$PID" ] || { printf "refuse : la machine n'a pas accepte le graphe : %s\n" \
+      "$(printf '%s' "$R" | jq -c '.error // .node_errors // .' | cut -c1-400)" >&2; exit 1; }
+  i=0
+  while [ "$i" -lt 300 ]; do
+    H=$(curl -s "$SERVICE/history/$PID")
+    printf '%s' "$H" | jq -e --arg p "$PID" 'has($p)' >/dev/null 2>&1 && break
+    sleep 2
+    i=$((i + 1))
+  done
+  [ "$i" -lt 300 ] || { printf "refuse : le dessin n'est pas venu en 600 s (prompt %s)\n" "$PID" >&2; exit 1; }
+  ECHEC=$(printf '%s' "$H" | jq -r --arg p "$PID" \
+      '.[$p].status.messages[]? | select(.[0]=="execution_error") | ((.[1].exception_type // "erreur") + " : " + (.[1].exception_message // ""))' \
+      | head -n 1)
+  [ -z "$ECHEC" ] || { printf "refuse : la machine a echoue : %s\n" "$ECHEC" >&2; exit 1; }
+  IMG=$(printf '%s' "$H" | jq -r --arg p "$PID" '.[$p].outputs[]?.images[]? | [.filename, (.subfolder // ""), (.type // "output")] | @tsv' | head -n 1)
+  [ -n "$IMG" ] || { printf "refuse : le dessin est fini et la machine ne rend aucune image\n" >&2; exit 1; }
+  SORTIE="$W/coherence-$(date +%Y%m%d-%H%M%S).png"
+  curl -s -G --data-urlencode "filename=$(printf '%s' "$IMG" | cut -f1)" \
+       --data-urlencode "subfolder=$(printf '%s' "$IMG" | cut -f2)" \
+       --data-urlencode "type=$(printf '%s' "$IMG" | cut -f3)" "$SERVICE/view" -o "$SORTIE"
+  [ -s "$SORTIE" ] || { printf "refuse : l'image n'est pas descendue (%s)\n" "$SORTIE" >&2; exit 1; }
+  printf "image : %s (%s octets, graine %s, noeuds %s)\n" "$SORTIE" "$(wc -c < "$SORTIE")" "$GRAINE" \
+    "$(printf '%s' "$G" | jq -r 'length')"
 
-ARGS: []                    # aucun argument : ce tool se nomme seul
+ARGS:
+  - {name: personnage, type: path}             # le VISAGE de reference (l'identite)
+  - {name: costume, type: path}                # la planche entiere du costume (vide : pas de costume)
+  - {name: pose, type: path}                   # la POSE de reference (vide : pose libre)
+  - {name: sujet, type: text, stdin: true}     # le texte libre : par l'ENTREE STANDARD
