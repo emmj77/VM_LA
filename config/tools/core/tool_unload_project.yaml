@@ -1,0 +1,22 @@
+# QUI : unloads the project : removes projects/.active, so the whole skillset reopens
+# ORIGINE : ecrit pour le PROJECT MANAGER (2026-10-17), jumeau de load_project.
+# REFUSE : rien (idempotent) ; ne touche que le fichier d'etat projects/.active
+tool: "unload_project"
+date: "2026-10-17"
+tags: ["unload_project", "project"]
+
+RULES:
+  enabled: true
+  timeout: 60
+
+DESCRIPTION: "unloads the project : removes projects/.active, so the whole skillset reopens"
+
+COMMAND: |
+  # UNLOAD_PROJECT : retire projects/.active -> plus de projet -> tout le skillset rouvre.
+  # On ne touche QUE le fichier d'etat (un lien est refuse par le moteur ; on le signale).
+  F="$ROOT/projects/.active"
+  if [ -L "$F" ]; then echo "refuse : $F est un lien (interdit)" >&2; exit 1; fi
+  if [ -e "$F" ]; then rm -f "$F"; fi
+  printf 'projet decharge : tout le skillset est rouvert\n'
+
+ARGS: []
