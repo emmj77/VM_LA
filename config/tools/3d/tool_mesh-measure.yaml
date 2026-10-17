@@ -1,0 +1,20 @@
+# QUI : measures a 3D mesh (via the cage CLI `mesh measure`)
+# ORIGINE : enveloppe le CLI de la cage `mesh measure`.
+# REFUSE : une entree absente.
+tool: "mesh-measure"
+date: "2026-10-17"
+tags: ["3d", "mesh-measure", "mesure", "inspect"]
+doc: 3d
+
+RULES:
+  enabled: true
+  timeout: 300
+
+DESCRIPTION: "measures a 3D mesh"
+
+COMMAND: |
+  I=$(cat); [ -n "$I" ] || { echo 'refuse : mesh absent' >&2; exit 1; }; [ -f "$I" ] || { echo "refuse : mesh introuvable ($I)" >&2; exit 1; }
+  mesh measure "$I"
+
+ARGS:
+  - {name: input, type: path, stdin: true}

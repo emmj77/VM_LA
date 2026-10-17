@@ -1,0 +1,22 @@
+# QUI : turns an image into a 3D asset (.glb) via ComfyUI Pixal3D / TRELLIS.2
+# ORIGINE : enveloppe le CLI de la cage `pixal3d gen` ($H/bin/pixal3d).
+# REFUSE : une image d'entree absente ; une cible deja existante.
+tool: "image2glb"
+date: "2026-10-17"
+tags: ["3d", "image2glb", "pixal3d", "trellis", "glb"]
+doc: 3d
+
+RULES:
+  enabled: true
+  timeout: 1800
+
+DESCRIPTION: "turns an image into a 3D asset (.glb) via ComfyUI Pixal3D / TRELLIS.2"
+
+COMMAND: |
+  I=$(cat); [ -n "$I" ] || { echo 'refuse : image absente' >&2; exit 1; }; [ -f "$I" ] || { echo "refuse : image introuvable ($I)" >&2; exit 1; }
+  O="{{out}}"; [ -n "$O" ] || O="$ROOT/work/GLB_PIXAL3D"
+  pixal3d gen "$I" --out "$O"
+
+ARGS:
+  - {name: image, type: path, stdin: true}
+  - {name: out, type: path, required: false}

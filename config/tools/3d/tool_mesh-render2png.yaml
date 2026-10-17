@@ -1,0 +1,22 @@
+# QUI : renders a 3D mesh to .png (via the cage CLI `mesh render`)
+# ORIGINE : enveloppe le CLI de la cage `mesh render`.
+# REFUSE : une entree absente ; une cible deja existante.
+tool: "mesh-render2png"
+date: "2026-10-17"
+tags: ["3d", "mesh-render2png", "png", "render"]
+doc: 3d
+
+RULES:
+  enabled: true
+  timeout: 600
+
+DESCRIPTION: "renders a 3D mesh to .png"
+
+COMMAND: |
+  I=$(cat); [ -n "$I" ] || { echo 'refuse : mesh absent' >&2; exit 1; }; [ -f "$I" ] || { echo "refuse : mesh introuvable ($I)" >&2; exit 1; }
+  O="{{out}}"; [ -n "$O" ] || O="${I%.*}.png"
+  mesh render "$I" "$O"
+
+ARGS:
+  - {name: input, type: path, stdin: true}
+  - {name: out, type: path, required: false}
