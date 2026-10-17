@@ -37,9 +37,6 @@ tools:
   - id: 107
     tool: trash_file
     family: WRITE
-  - id: 108
-    tool: note
-    family: MANAGE
   - id: 109
     tool: tools_list
     family: READ
