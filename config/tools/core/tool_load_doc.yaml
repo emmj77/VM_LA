@@ -38,7 +38,7 @@ COMMAND: |
   P=
   case "$RES" in
     web_search|web|none) ;;
-    *) for C in "$ROOT/skills/$A/$RES" "$ROOT/$RES" "$ROOT/config/tools/$RES"; do
+    *) for C in "$ROOT/skills/$A/$RES" "$ROOT/$RES" "$ROOT/config/tools/$RES" "$ROOT"/config/tools/*/tool_"$RES".yaml; do
          case "$C" in *..*) continue ;; esac
          [ -e "$C" ] || continue
          P="$C" ; break
