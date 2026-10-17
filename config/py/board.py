@@ -494,6 +494,15 @@ def controle(leger=False):
         verdict = ("%s · :%d" % (motif, port)) if faute else ("%d Mo · :%d" % (mo, port))
         L.append(("resident " + nom, verdict, faute))
     L.append(("ram de LA", "%d Mo" % sum(r[4] for r in res if r[4]), False))
+    # UNE LIGNE PAR CARTE. board.py lisait deja les deux -- mais seulement pour le tableau en
+    # terminal. Le menu ne les disait pas, et l'applet ne peut montrer que ce que le menu lui
+    # donne. La VRAM vient de nvidia-smi : sur cette machine c'est la SEULE source, le pilote
+    # proprietaire n'exposant ni mem_info_vram_used ni gpu_busy_percent dans /sys (mesure du 17/10).
+    # Verdict « 9 / 12288 Mo » : ce qui est pris, contre ce que la carte a. Jamais une faute --
+    # une carte qui travaille n'est pas un defaut, et le menu ne doit pas sortir en faute pour ca.
+    for nom, mo, tot, pc in lire_machine().get("cartes", []):
+        L.append(("gpu " + nom,
+                  "%s / %s Mo" % (mo.replace(" MiB", ""), tot.replace(" MiB", "")), False))
     if "adresse" in trafic:
         prov, alias, mod, post = trafic["adresse"]
         L.append(("api", "%s : %s" % (prov, mod), False))

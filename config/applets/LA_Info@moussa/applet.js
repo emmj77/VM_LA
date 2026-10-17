@@ -44,6 +44,9 @@ const EMOTICONE = {
     "api status": "\u{1F4E1}",
     "pont": "\u{1F309}",
     "vision": "\u{1F441}",
+    // une ligne par carte, comme pour les residents
+    "gpu RTX 3060": "\u{1F3AE}",
+    "gpu Quadro P2200": "\u{1F5A5}",
     // les cinq residents, un par ligne maintenant
     "resident embed": "\u{1F9E9}",
     "resident rerank": "\u{1F3AF}",
@@ -71,6 +74,13 @@ function rapportDe(titre, verdict, ramDeLA) {
     if (titre.startsWith("resident ") && ramDeLA) {
         m = verdict.match(/^(\d+)\s*Mo/);
         if (m) return { part: Math.min(Number(m[1]) / ramDeLA, 1), genre: "part" };
+    }
+    // UNE CARTE SE MESURE CONTRE ELLE-MEME : « 9 / 12288 Mo » est ce qu elle a pris sur ce
+    // qu elle peut prendre. Genre « part » et non « sante » : c est une consommation, elle
+    // chauffe (vert sous la moitie, ambre a la moitie, rouge au dela), elle ne sanctionne pas.
+    if (titre.startsWith("gpu ")) {
+        m = verdict.match(/^(\d+)\s*\/\s*(\d+)/);
+        if (m) { const a = Number(m[1]), b = Number(m[2]); return { part: b > 0 ? Math.min(a / b, 1) : 0, genre: "part" }; }
     }
     m = verdict.match(/(\d+)\s*\/\s*(\d+)\b/);
     if (m) { const a = Number(m[1]), b = Number(m[2]); return { part: b > 0 ? Math.min(a / b, 1) : 0, genre: "sante" }; }
@@ -118,7 +128,7 @@ class LAInfoApplet extends Applet.TextIconApplet {
     // ---- la montre : le tableau est relu toutes les N secondes, et il ne s'arrete pas
     _remonterLaMontre() {
         if (this._minuterie) { Mainloop.source_remove(this._minuterie); }
-        this._minuterie = Mainloop.timeout_add_seconds(this.secondes || 10, () => {
+        this._minuterie = Mainloop.timeout_add_seconds(this.secondes || 15, () => {
             this._lire();
             return true;
         });
@@ -230,7 +240,8 @@ class LAInfoApplet extends Applet.TextIconApplet {
     }
 
     _barre(r) {
-        const rail = new St.Bin({ style_class: "la-info-rail" });
+        // x_align START, sinon St.Bin CENTRE son enfant et le vert flotte au milieu du rail.
+        const rail = new St.Bin({ style_class: "la-info-rail", x_align: Clutter.ActorAlign.START });
         rail.set_width(72);
         rail.set_child(new St.Widget({
             style_class: this._couleurDe(r),

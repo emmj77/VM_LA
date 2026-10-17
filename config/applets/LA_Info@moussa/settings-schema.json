@@ -7,12 +7,12 @@
   },
   "secondes": {
     "type": "spinbutton",
-    "default": 10,
-    "min": 3,
+    "default": 15,
+    "min": 5,
     "max": 120,
     "step": 1,
     "units": "secondes",
     "description": "Rafraichissement",
-    "tooltip": "Le tableau coute quelques secondes : dix est raisonnable"
+    "tooltip": "Le tableau coute quelques secondes : quinze est raisonnable, cinq est le plancher"
   }
 }
