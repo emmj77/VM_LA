@@ -21302,9 +21302,29 @@ class WeatherApplet extends TextIconApplet {
             const deja = menu._getMenuItems().some((it) => {
                 try { return it.label && it.label.text === "Mise a jour"; } catch (e) { return false; }
             });
-            if (!deja)
-                menu.addMenuItem(new MenuItem("Mise a jour", REFRESH_ICON,
-                    () => { void this.loop.Refresh({ rebuild: true }); }));
+            if (!deja) {
+                const ligne = new MenuItem("Mise a jour", REFRESH_ICON, () => { });
+                // DEUX DEFAUTS CORRIGES ICI.
+                //  1. Un element de menu se ferme tout seul quand on l'active : le widget
+                //     disparaissait donc a chaque mise a jour. On AVALE le clic (rendre true
+                //     l'arrete) : on rafraichit, et le menu reste ouvert sous les yeux.
+                //  2. On rafraichissait en RECONSTRUISANT le menu : il se refaisait alors sans
+                //     cette ligne et mincissait de quelques millimetres avant de la revoir.
+                //     Sans reconstruction, les valeurs se mettent a jour en place.
+                const cible = ligne.actor || ligne;
+                // TROISIEME DEFAUT, ET C'EST CELUI QUI FAISAIT DIRE « le bouton ne marche pas ».
+                // Refresh() n'agit que si la donnee est deja perimee :
+                //     needToUpdate = errorCount > 0 || NextUpdate() < now
+                //     if (!needToUpdate && !immediate) return;   <- "No need to update yet, skipping."
+                // Un clic sur des mesures fraiches ne faisait donc RIEN, sans rien dire. Un clic,
+                // c'est « je veux maintenant » : immediate a vrai. Et sans reconstruction, pour que
+                // le menu garde sa forme et ses valeurs se mettent a jour en place.
+                cible.connect("button-release-event", () => {
+                    void this.loop.Refresh({ immediate: true, rebuild: false });
+                    return true;
+                });
+                menu.addMenuItem(ligne);
+            }
         } catch (e) { }
         // NOTRE ETIQUETTE : LE MOT DE LA, la ou la meteo pose sa temperature. C'est le seul texte
         // que nous ecrivons dans la barre ; tout le reste -- l'icone, le menu, les lignes de
@@ -21446,7 +21466,10 @@ The contents of the file saved from the applet help page goes here
     }
     AddRefreshButton() {
         const itemLabel = _("Refresh");
-        const refreshMenuItem = new MenuItem(itemLabel, REFRESH_ICON, () => this.loop.Refresh({ rebuild: true }));
+        // Meme defaut que la ligne du menu : sans immediate, un clic ne fait rien tant que la
+        // donnee n'a pas 15 minutes -- en silence. Un clic veut dire « maintenant ».
+        const refreshMenuItem = new MenuItem(itemLabel, REFRESH_ICON,
+            () => this.loop.Refresh({ immediate: true, rebuild: true }));
         this._applet_context_menu.addMenuItem(refreshMenuItem);
     }
     HandleHTTPError(error) {
