@@ -25,9 +25,9 @@ PERIMETER:                   # deux choses, et deux seulement
   type-file: ".md .yaml .sh .json .txt"   # les types de fichier acceptes
 ERROR:                       # ce que la skill dit quand un tool refuse
   600: "..."
-SECTIONS:                    # les sections libres, A LA FIN, 5 au maximum
-  SECTION:REF:               # la 1re : 1000, 1001, 1002...
-    1000: "une reference"
-    1001: "une autre"
-  SECTION:REF2:              # la 2e : 2001, 2002, 2003...
-    2001: "une reference"
+STEPS:                       # la suite qui GUIDE le modele, A LA FIN : le moteur IMPOSE l'ordre,
+                             # un pas a la fois (pas de plafond ; plus de "5 au maximum").
+                             # Un PAS = un TOOL, ses arguments, un mot (trois colonnes).
+  1: {tool: "...", args: "...", note: "..."}   # pas 1
+  2: {tool: "...", args: "...", note: "..."}   # pas 2
+  3: {tool: "...", args: "...", note: "..."}   # pas 3
