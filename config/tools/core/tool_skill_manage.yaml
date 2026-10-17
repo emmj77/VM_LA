@@ -1,6 +1,9 @@
 # QUI : manages a skill : creation, one tool per field, load, remove, list
 # ORIGINE : migre tel quel de la ligne 126 du registre (2026-10-17). Le corps n'a PAS ete reecrit ici.
-# REFUSE : (a completer par l'auteur -- ce que ce tool refuse, en le nommant)
+# REFUSE : un nom hors form (aucun slug) ; un skill de l humain (pas la marque source: agent) ; retirer
+#          un skill sans approbation ; charger une skill hors de la liste SKILLS du PROJET actif
+#          (quand un projet est actif et declare une liste) ; charger une AUTRE skill quand un plan
+#          est ouvert ; un nom, un chemin ou une ligne hors form.
 tool: "skill_manage"
 date: "2026-10-17"
 tags: ["skill_manage"]
@@ -286,6 +289,21 @@ COMMAND: |
   load_skill)
     if [ -L "$SK/$SLUG" ]; then echo "refuse : la cible est un lien symbolique (skills/$SLUG)" >&2; exit 1; fi
     [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { echo "refuse : le skill n existe pas (skills/$SLUG/skill.yaml)" >&2; exit 1; }
+    # L ENVELOPPE DU PROJET (le miroir : une skill restreint les TOOLS, un projet restreint les
+    # SKILLS). Quand un projet est actif ET qu il declare une liste SKILLS, la skill doit y etre.
+    # Un projet SANS liste SKILLS laisse le perimetre large.
+    PAF="$ROOT/projects/.active"
+    if [ -f "$PAF" ] && [ ! -L "$PAF" ]; then
+      PN=$(sed -n '1p' "$PAF" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+      case "$PN" in ''|*/*|*..*) PN= ;; esac
+      PJ="$ROOT/projects/$PN/project.yml"
+      if [ -n "$PN" ] && [ -f "$PJ" ]; then
+        PSK=$(sed -n '/^SKILLS:/,/^[^[:space:]]/p' "$PJ" | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' | sed -e 's/^"//' -e 's/"$//' | grep -v '^$')
+        if [ -n "$PSK" ]; then
+          printf '%s\n' "$PSK" | grep -qxF -- "$SLUG" || { echo "refuse : le projet $PN n ouvre pas la skill $SLUG (ses skills : $(printf '%s ' $PSK))" >&2; exit 1; }
+        fi
+      fi
+    fi
     OUV=$(printf '' | "${PROCS:-$ROOT/config/engine}/plan.sh" status 2>/dev/null) || OUV=
     case "$OUV" in
       ''|'no open plan'*|'aucun plan ouvert'*) : ;;

@@ -5,7 +5,6 @@ tool: "unity_assets"
 date: "2026-10-17"
 tags: ["unity", "unity_assets"]
 
-unity
 doc: unity
 
 RULES:

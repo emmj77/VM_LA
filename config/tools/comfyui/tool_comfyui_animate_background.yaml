@@ -5,7 +5,6 @@ tool: "comfyui_animate_background"
 date: "2026-10-17"
 tags: ["comfyui", "comfyui_animate_background"]
 
-comfyui
 doc: comfyui
 
 RULES:

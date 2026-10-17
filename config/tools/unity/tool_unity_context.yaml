@@ -5,7 +5,6 @@ tool: "unity_context"
 date: "2026-10-17"
 tags: ["unity", "unity_context"]
 
-unity
 doc: unity
 
 RULES:

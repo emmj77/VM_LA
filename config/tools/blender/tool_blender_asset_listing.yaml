@@ -5,7 +5,6 @@ tool: "blender_asset_listing"
 date: "2026-10-17"
 tags: ["blender", "blender_asset_listing"]
 
-blender
 doc: blender
 
 RULES:

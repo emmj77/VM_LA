@@ -5,7 +5,6 @@ tool: "blender_maketx"
 date: "2026-10-17"
 tags: ["blender", "blender_maketx"]
 
-blender
 doc: blender
 
 RULES:

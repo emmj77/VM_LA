@@ -342,7 +342,7 @@ else
   ABLOC=$(printf '%s\n' "$BLOCK" | sed -n '/^    args:/,/^    [a-z]/p' | sed '$d')
 fi
 NA=$(printf '%s\n' "$ABLOC" | grep -c '^      - {')
-NOT_STDIN=$(printf '%s\n' "$ABLOC" | sed -n 's/^      - {\(.*\)}[[:space:]]*$/\1/p' | grep -c 'stdin:[[:space:]]*true')
+NOT_STDIN=$(printf '%s\n' "$ABLOC" | sed -n 's/^      - {\([^}]*\)}.*$/\1/p' | grep -c 'stdin:[[:space:]]*true')
 DECLARES=$((NA - NOT_STDIN))
 GIVEN=$#
 [ "$GIVEN" -le "$DECLARES" ] \
@@ -353,7 +353,7 @@ i=0
 while [ "$i" -lt "$NA" ]; do
   i=$((i + 1))
   ARG_LINE=$(printf '%s\n' "$ABLOC" | grep '^      - {' | sed -n "${i}p")
-  SPEC=$(printf '%s' "$ARG_LINE" | sed -n 's/^      - {\(.*\)}[[:space:]]*$/\1/p')
+  SPEC=$(printf '%s' "$ARG_LINE" | sed -n 's/^      - {\([^}]*\)}.*$/\1/p')
   [ -n "$SPEC" ] \
     || refuse_tool "the line $ID ($TOOL) is unreadable : the $i-th argument declaration cannot be read"
 
