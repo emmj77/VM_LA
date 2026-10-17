@@ -240,13 +240,17 @@ class LAInfoApplet extends Applet.TextIconApplet {
     }
 
     _barre(r) {
-        // x_align START, sinon St.Bin CENTRE son enfant et le vert flotte au milieu du rail.
-        const rail = new St.Bin({ style_class: "la-info-rail", x_align: Clutter.ActorAlign.START });
+        // UNE BOITE, PAS UN St.Bin. Mesure du 17/10 : sur un rail de 72 px, un remplissage de
+        // 9 px se posait a x=31 -- soit exactement (72-9)/2, le centre. St.Bin centrait son
+        // enfant et x_align n y changeait rien. Une boite horizontale range ses enfants de
+        // gauche a droite, sans interpretation : le vert part du bord, un ressort mange le reste.
+        const rail = new St.BoxLayout({ style_class: "la-info-rail" });
         rail.set_width(72);
-        rail.set_child(new St.Widget({
+        rail.add_child(new St.Widget({
             style_class: this._couleurDe(r),
             width: Math.max(2, Math.round(72 * r.part)),
         }));
+        rail.add_child(new St.Widget({ x_expand: true }));   // le ressort : rien apres le vert
         return rail;
     }
 
