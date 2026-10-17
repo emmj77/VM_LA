@@ -20710,15 +20710,15 @@ class UIBar {
             icon_type: uiBar_IconType.SYMBOLIC,
             icon_size: 24,
         });
-        // NOTRE BOUTON DE MISE A JOUR. L'icone existe dans la barre de la meteo, mais elle n'avait
-        // AUCUN clic branche et restait cachee : c'etait un voyant d'attente, pas un bouton. Ici
-        // elle est visible, reactive, et elle rafraichit tout de suite.
-        this.refreshIcon.show();
-        this.refreshIcon.reactive = true;
-        this.refreshIcon.connect("button-release-event", () => {
-            void this.app.loop.Refresh();
-            return true;
-        });
+        // NOTRE BOUTON DE MISE A JOUR, EN TOUTES LETTRES. Chez la meteo il n'y a ici qu'un voyant
+        // d'attente : une icone sans clic. Coller un clic dessus ne suffit pas -- les evenements de
+        // pointeur n'arrivent pas a une icone posee dans la barre. On fait donc un VRAI bouton de
+        // barre, sur le modele du bouton « donnees fournies par », avec un mot : Moussa sait ce
+        // qu'il clique, et le mot est celui qu'il emploie lui-meme.
+        this.refreshButton = new WeatherButton({ label: "Maj", reactive: true, can_focus: true });
+        this.refreshButtonTooltip = new uiBar_Tooltip(this.refreshButton.actor, "Mise a jour");
+        this.refreshButton.actor.connect(SIGNAL_CLICKED, () => { void this.app.loop.Refresh(); });
+        this.refreshIcon.hide();
         this.actor.add(this.providerCreditButton.actor, {
             x_fill: false,
             x_align: uiBar_Align.END,
@@ -20726,16 +20726,13 @@ class UIBar {
             y_fill: false,
             expand: true
         });
+        // Cliquer l'heure rafraichit aussi : c'est ce qu'on fait naturellement dans cette barre.
+        // uiBar_Button est un vrai bouton : il emet « clicked », pas l'evenement pointeur.
         if (this._timestamp) {
-            try {
-                this._timestamp.reactive = true;
-                this._timestamp.connect("button-release-event", () => {
-                    void this.app.loop.Refresh();
-                    return true;
-                });
-            } catch (e) { }
+            try { this._timestamp.connect(SIGNAL_CLICKED, () => { void this.app.loop.Refresh(); }); }
+            catch (e) { }
         }
-        this.actor.add(this.refreshIcon, {
+        this.actor.add(this.refreshButton.actor, {
             x_fill: false,
             x_align: uiBar_Align.END,
             y_align: uiBar_Align.MIDDLE,
@@ -20748,8 +20745,7 @@ class UIBar {
         return _("km");
     }
     ShowRefreshIcon() {
-        var _a;
-        (_a = this.refreshIcon) === null || _a === void 0 ? void 0 : _a.show();
+        // Le bouton de mise a jour est permanent : il n'y a plus rien a allumer ni a eteindre.
     }
     HideRefreshIcon() {
         // NOTRE BOUTON RESTE VISIBLE. Chez la meteo l'icone ne s'allume que PENDANT la requete :
