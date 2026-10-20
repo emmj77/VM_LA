@@ -7,6 +7,7 @@ RULES
   Nothing runs when sourced, except engine/la.sh.                    # rien ne s execute au source
   One door to a tool: engine/run.sh <id> [args].                     # une seule porte vers le shell
   Two registries: the model reads one, the engine reads its own.     # deux registres, deux canaux
+  One owner per fact: la_config says of each key whether it is config or body. # un fait, un proprietaire
   One carrier: la(g,a).                                              # un seul porteur depuis le modele
   engine/shell.sh alone builds a command line.                       # lui seul batit la commande
   No python, no heredoc, no eval in a .sh.                           # le shell reste du shell
@@ -105,6 +106,7 @@ VM_LA
 │       ├── doctor                             # les controles : une famille de tools
 │       │   ├── tool_doctor_data.yaml          # ops bases memory
 │       │   ├── tool_doctor_forms.yaml         # ops forms
+│       │   ├── tool_doctor_keys.yaml          # ops keys : la_config contre les corps
 │       │   ├── tool_doctor_knowledge.yaml     # ops skills active canon
 │       │   ├── tool_doctor_language.yaml      # ops vocab
 │       │   ├── tool_doctor_machine.yaml       # ops residents instruments benches
@@ -117,8 +119,10 @@ VM_LA
 │       │   ├── tool_engine_approve.yaml       # la demande, la lecture de l etat, la signature humaine
 │       │   ├── tool_engine_asr.yaml           # l oreille
 │       │   ├── tool_engine_backup.yaml        # la sauvegarde hors disque
+│       │   ├── tool_engine_commands.yaml      # les surfaces de la commande la
 │       │   ├── tool_engine_doctor.yaml        # le diagnostic : short light json all
 │       │   ├── tool_engine_hist.yaml          # sessions.db : init add window apply result
+│       │   ├── tool_engine_install.yaml       # ce qu on pose : units command desktop applet certs
 │       │   ├── tool_engine_models.yaml        # charger le reranker, demarrer, arreter, dire l etat
 │       │   ├── tool_engine_retention.yaml     # applique les bornes : audio returns journaux bases
 │       │   ├── tool_engine_spec.yaml          # ecrit une loi du canon
@@ -160,7 +164,7 @@ VM_LA
 │       └── skill.yaml                         # une competence et sa palette
 └── work                                       # les livraisons de l agent
 
-26 directories, 94 files
+26 directories, 97 files
 
 DOCTOR - one control is a tool          # un controle est un tool, pas un .sh a part
   family  tools/doctor: nine bodies, seventeen controls in ops       # neuf corps, dix-sept controles
@@ -209,7 +213,7 @@ TEXTS - conf/texts.yaml                     # toutes les phrases, une cle, un us
   rule      a key without reader = fail, a reader without key = fail, no french
   where     nowhere else: not in a .sh, not in a .py
 
-TOOLS - family engine                       # quatorze actions, un corps YAML chacune
+TOOLS - family engine                       # seize actions, un corps YAML chacune
   models     40 l.  load unload status       # charger le reranker, demarrer, arreter, l etat
   asr        22 l.  start stop status        # l oreille
   tts        26 l.  start stop status        # la voix
@@ -221,6 +225,8 @@ TOOLS - family engine                       # quatorze actions, un corps YAML ch
   spec       27 l.  add list                 # ecrit une loi du canon
   stat       28 l.  exchanges tools          # lit sessions.db et rend un compte
   approve    76 l.  request grant deny status# la demande, la signature, le refus
+  commands  117 l.  board app once cli say turn doctor tool new update help # les surfaces de la
+  install   274 l.  units command desktop applet certs # ce qu on pose sur la machine
   hist       90 l.  init add window apply result# sessions.db, ce que le tour ecrit
   trace      60 l.  line                     # trace.jsonl, ce que le tour raconte
   doctor    418 l.  short light json all     # le diagnostic : parcourt la famille doctor
@@ -241,6 +247,7 @@ TOOLS - family doctor                        # les controles, en tools comme le 
   forms       forms                          # formulaires de retour
   language    vocab                          # aucun mot francais
   manifest    manifest                       # le disque contre ce fichier
+  keys        keys                           # la_config contre les corps
   entry       engine.doctor: short light json all                     # le compte et le verdict
   light       benches skip, programs partial                          # ce que --light epargne
 
@@ -264,6 +271,44 @@ PIPELINE - conf/pipeline.yaml              # le tour est une suite declaree, pas
   fail    the step that falls stops the turn, leaves turn.json as it is, and the doctor sees it
   gain    add a step = one line here and one body. no .sh to touch
 
+SIX LISTS - where each one landed           # les six listes, et leur adresse
+  commands    engine.commands, ops are the surfaces of la           # les onze surfaces
+  checks      family doctor, ops are the controls                   # dix-sept controles
+  residents   engine.models asr tts: unit port probe                # ce qui ecoute
+  retention   engine.retention, ops are the folders                 # les bornes
+  units       engine.install: units command desktop applet certs    # ce qu on pose
+  env         la_config paths: and ports:, exported by boot.sh      # les LA_*
+
+BODY KEYS - five for every body, six more for the engine   # les cles d un corps
+  always    tool RULES DESCRIPTION ARGS, COMMAND or machine+op      # les cinq de tout corps
+  turn      RULES.turn doc|plan|toolset|project|canon|none          # l effet sur le tour
+  count     RULES.count false, RULES.paths read|write               # le compteur, ce qu on garde
+  address   unit port probe, for what listens                       # son unite, son port, sa sonde
+  events    the watch body carries its events: say voice image      # watcher.sh:16
+  kinds     a second head and a summary carry their kinds in ops    # second.sh:395
+  why       loop.sh 1271 1283 1310 1314 name tools and decide for them  # ce que ces cles suppriment
+
+CONFIG - conf/la_config.yaml, the names      # tout ce qui se nomme, et qui le possede
+  names     paths ports models lists caps thresholds                 # des noms, jamais du texte
+  families  name, base (root|work|none), registry (model|engine)     # les familles, declarees une fois
+  owners    each key: config, read by cfg.sh, or body, carried by the body   # qui possede le fait
+  readers   engine/cfg.sh and programs/laconf.py only. a body never parses la_config
+  why       engine.sh:298 and 367 hold the ten families twice, and doctor.sh greps the source to get them
+                                                                     # ce que la table supprime
+
+TWO TRUTHS - and the control that separates them   # trois endroits ou deux verites peuvent cohabiter
+  doc vs disk       check_manifest reads the tree lines of this file and compares them to
+                    `tree -a`: a path here without a file, or a file without a path, is
+                    one fail. the runtime dirs are declared in the file, never guessed  # le disque contre le document
+  registry vs body  check_tools: every line has a body, every body has a line; the family of
+                    the body equals its folder; an id is unique; a model line names no
+                    engine body; an engine body carries no numeric id                     # le registre contre les corps
+  config vs body    check_keys: la_config carries owners:. a key owned by config that a body
+                    reads, or a key owned by body that la_config still carries, is one fail
+                                                                                        # la config contre les corps
+  rule    a fact lives at its owner, once. the doctor proves it, nobody argues        # un fait, une adresse
+  cost    three bodies of family doctor: manifest, tools, keys                        # trois controles
+
 ENVIRONMENT GIVEN TO PROGRAMS         # ce qu un programme recoit, et rien de plus
   source  la_config paths: and ports:, exported once by boot.sh     # une seule origine, un seul moment
   names   LA_ROOT LA_CONFIG LA_STATE LA_DATA LA_WORK LA_RETURNS LA_AUDIO LA_PAGE LA_TOOL
@@ -277,10 +322,10 @@ DEPENDENCIES
   dash coreutils awk sed grep find xargs jq sqlite3 curl        # le socle
   systemctl --user tailscale git tesseract ffmpeg node          # services et instruments
   tree                                                          # le corps manifest compare l arbre
-  forbidden: python3 in engine and doctor, yq, heredoc, eval     # ce qui n entre pas
+  forbidden: python3 outside programs/, yq, heredoc, eval        # ce qui n entre pas
 
 COMMANDS
   la board | cli | say <text> | app | turn        # les surfaces
   la doctor [--short|--light|--json|--all]        # le diagnostic, par la porte
-  la tool <id> [args]                             # un tool par la porte
+  la tool <id|name> [args]                        # un tool par la porte, par id ou par nom
   la new skill|project|tool <name>                # les gabarits, sans fichier gabarit
