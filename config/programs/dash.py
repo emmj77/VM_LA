@@ -426,15 +426,13 @@ def history(turns=12):
     out = []
     for k in sorted(per):
         x = per[k]
-        # un tour = UN message (celui qui ferme) et SON raisonnement : le bavardage des etapes ne monte pas
-        if x["speech"]:
-            x["speech"] = x["speech"][-1:]
-        if x["think"]:
-            x["think"] = x["think"][-1:]
-        keep = [s for s in x["steps"] if s.get("kind") in ("say", "think")]
-        say = [s for s in keep if s["kind"] == "say"][-1:]
-        think = [s for s in keep if s["kind"] == "think"][-1:]
-        x["steps"] = sorted(think + say, key=lambda s: s.get("ts") or "")
+        # le fil d un tour : raisonnement, reponse, raisonnement, reponse, dans l ordre
+        x["thread"] = [{"role": "user", "text": x["demand"]}] if x["demand"] else []
+        for s in x["steps"]:
+            if s["kind"] == "think":
+                x["thread"].append({"role": "reasoning", "text": s["text"]})
+            elif s["kind"] == "say":
+                x["thread"].append({"role": "reply", "text": s["text"]})
         out.append(x)
     return {"session_start": start, "turns": out}
 
