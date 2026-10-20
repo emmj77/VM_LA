@@ -1,37 +1,38 @@
 LA - ARCHITECTURE                                            root: ~/Documents/VM_LA   # la reference unique
-2026-10-20   # ce fichier dit ce que le moteur doit etre, pas ce qu'il est
-Une ligne = un fichier, son role, puis le francais apres #   # manifeste machine a gauche
+2026-10-20   # ce fichier dit ce que le moteur doit etre, pas ce qu il est
+left = the machine, english. right = the human, french after #   # anglais a gauche, francais a droite
 
 RULES
-  Un fichier = un metier, 200 lignes maximum.                        # pas de fourre-tout
-  Rien ne s'execute au source, sauf engine/la.sh.                    # les briques ne font que definir
-  Une seule porte vers un tool : engine/run.sh <id> [args].          # aucun autre chemin vers le shell
-  Un seul porteur : la(g,a).     # engine/shell.sh seul construit une ligne de commande
-  Aucun python, aucun heredoc, aucun eval dans un .sh.               # le shell reste du shell
-  Aucun fait en dur : chemin, port, unite, modele, liste, borne.     # tout dans conf/la_config.yaml
-  Anglais dans la machine, francais nulle part.                      # identifiants, cles, commentaires, textes agent
-  Un fait = une source : un lecteur (cfg.sh), une liste declaree une fois.
-  Un seul ecrivain par etat, journal, base.                          # sinon on ne sait plus qui ecrit
-  Le python ne lit que l'environnement.                              # jamais un YAML, jamais un chemin
-  Toute base, tout journal, tout dossier a une borne.                # le tool retention l'applique
-  Rien ne s'efface : gio trash.
-  Le moteur ne connait aucun instrument : un binaire n est atteint que par un corps de tool.
-  Un refus est une phrase de conf/texts.yaml, jamais une chaine ecrite dans un .sh.
+  One file = one job, 200 lines maximum.                             # un fichier = un metier
+  Nothing runs when sourced, except engine/la.sh.                    # rien ne s execute au source
+  One door to a tool: engine/run.sh <id> [args].                     # une seule porte vers le shell
+  One carrier: la(g,a).                                              # un seul porteur depuis le modele
+  engine/shell.sh alone builds a command line.                       # lui seul batit la commande
+  No python, no heredoc, no eval in a .sh.                           # le shell reste du shell
+  No literal: path, port, unit, model, list, cap, threshold.         # aucun fait en dur
+  No case, no list in a .sh: every list is a table of conf/.         # toute liste est une table
+  English in the machine.                                            # francais seulement apres le diese
+  One source per fact: one reader, one list declared once.           # un fait = une source
+  One writer per state file, log, base.                              # un seul ecrivain chacun
+  Python reads the environment only.                                 # jamais un YAML, jamais un chemin
+  Every base, log and state dir has a cap.                           # toute chose a une borne
+  Nothing is erased: gio trash.                                      # rien ne s efface
+  The engine knows no instrument: a binary is reached by a body.     # un binaire, un corps de tool
+  A refusal is a key of conf/texts.yaml, never a string in a .sh.    # un refus est une phrase
+  A tool cannot grant itself approval: it carries a human signature. # le feu vert se signe, il ne se demande pas
 
-CRITERE   # trois questions, dans cet ordre
+CRITERION   # trois questions, dans cet ordre
 
-  1. ca tourne pendant un tour, sans que le modele le demande ?                -> brique, sourcee
-  2. action demandee, avec parametres et un verdict ?                          -> tool YAML
-  3. le shell ne sait pas l ecrire (http, onnx, sherpa) ?                       -> instrument
+  1. runs during a turn, without the model asking?   -> brick, sourced      # brique du tour
+  2. action asked, parameters, verdict?              -> YAML tool            # action, donc tool
+  3. the shell cannot write it (http, onnx, sherpa)? -> instrument          # le shell ne sait pas
 
-  Un tool ne peut pas approuver un tool. Tout ce qui ecrit, charge, demarre ou
-  supprime est une action, donc un tool : sinon il existe un deuxieme chemin vers le shell.
-
-ARBORESCENCE   # sortie de tree -a, le role de chaque fichier en face
+  A tool cannot approve another tool by itself. It can carry a decision a human
+  signed; the gate then checks the signature, not the caller good faith.
 
 VM_LA
 ├── ARCHITECTURE_LA.txt                        # ce fichier
-├── config                                     # (conf docteur moteur programmes outils donnees etat page applet filtre audio certs setup)
+├── config                                     # les treize dossiers, aucun fichier a la racine
 │   ├── applet                                 # l applet Cinnamon
 │   │   ├── applet.js                          # lit la sortie courte du docteur, la garde, peint
 │   │   └── metadata.json                      # identite de l applet
@@ -53,6 +54,7 @@ VM_LA
 │   │   ├── check_data.sh                      # bases : integrite, mode, ecrivain, etat declare
 │   │   ├── check_forms.sh                     # formulaires de retour : bornes, marqueurs
 │   │   ├── check_knowledge.sh                 # competence, perimetre, palette, plan, canon
+│   │   ├── check_language.sh                  # aucun mot francais, code et commentaires
 │   │   ├── check_machine.sh                   # residents, units, pont, tailnet, instruments, bancs
 │   │   ├── check_manifest.sh                  # le disque contre ce fichier
 │   │   ├── check_structure.sh                 # racine, config, cles, syntaxe, programmes, aucun litteral
@@ -60,7 +62,7 @@ VM_LA
 │   │   ├── check_tools.sh                     # registre et corps : colonnes, ids, familles, trous
 │   │   └── doctor.sh                          # entree : lance les controles, compte, rend le verdict
 │   ├── engine                                 # le moteur : 18 .sh, dont onze briques jamais executees
-│   │   ├── approval.sh                        # la porte humaine : feu vert, refus, fenetre
+│   │   ├── approval.sh                        # la porte humaine : la signature, le refus, la fenetre
 │   │   ├── args.sh                            # arguments declares vers argv : path enum int bool text, canon des chemins
 │   │   ├── boot.sh                            # la seule ligne sourcee : HERE ROOT LC_ALL, chemins, puis les briques
 │   │   ├── canon.sh                           # le canon : canon_path, loi numero N
@@ -75,7 +77,7 @@ VM_LA
 │   │   ├── shape.sh                           # la forme unique : status tool line result ts return, et les refus nommes
 │   │   ├── shell.sh                           # LE SHELL : machine + operation + arguments vers une commande
 │   │   ├── skl.sh                             # competence et projet actifs, PERIMETER, permanent, approval_of, is_gated
-│   │   ├── step.sh                            # execute une etape du pipeline sur l objet du tour : lit, appelle, ecrit
+│   │   ├── step.sh                            # execute une etape du pipeline : lit turn.json, appelle, ecrit
 │   │   ├── tab.sh                             # le registre : block_by_id table_block table_index body_of count
 │   │   └── trace.sh                           # trace.jsonl, log stderr, say_once, die
 │   ├── filter                                 # le filtre de famille
@@ -95,7 +97,7 @@ VM_LA
 │   │   ├── approve.request                    # la demande en attente
 │   │   ├── doctor.cache                       # la derniere sortie du docteur
 │   │   ├── reply.stream                       # la reponse qui s ecrit
-│   │   ├── returns
+│   │   ├── returns                            # au-dela de la borne
 │   │   ├── say.queue                          # ce qui attend d etre dit
 │   │   ├── second_head.yaml                   # le produit de la tete secondaire
 │   │   ├── stop                               # la marque d arret d un tour
@@ -105,9 +107,10 @@ VM_LA
 │   └── tools                                  # les tools, seul catalogue de la porte
 │       ├── engine                             # les actions du moteur, en tools
 │       │   ├── bin                            # leurs scripts
-│       │   │   ├── asr                        # idem
+│       │   │   ├── approve                    # ecrit la demande, jamais la signature
+│       │   │   ├── asr                        # le script de l action
 │       │   │   ├── backup                     # idem
-│       │   │   ├── models                     # le script de l action, sorti du moteur
+│       │   │   ├── models                     # idem
 │       │   │   ├── retention                  # idem
 │       │   │   ├── spec                       # idem
 │       │   │   ├── stat                       # idem
@@ -115,6 +118,7 @@ VM_LA
 │       │   │   ├── tts                        # idem
 │       │   │   ├── tunnel                     # idem
 │       │   │   └── update                     # idem
+│       │   ├── tool_engine_approve.yaml       # la demande, la lecture de l etat, la signature humaine
 │       │   ├── tool_engine_asr.yaml           # l oreille
 │       │   ├── tool_engine_backup.yaml        # la sauvegarde hors disque
 │       │   ├── tool_engine_doctor.yaml        # la porte d entree du dossier doctor
@@ -139,8 +143,8 @@ VM_LA
 │       ├── registry.yaml                      # id tool family sub_family guardrail description
 │       ├── turn                               # les huit etapes du tour
 │       │   ├── bin                            # leurs scripts
-│       │   │   ├── turn_call                  # idem
-│       │   │   ├── turn_facts                 # le script de l etape
+│       │   │   ├── turn_call                  # le script de l etape
+│       │   │   ├── turn_facts                 # idem
 │       │   │   ├── turn_note                  # idem
 │       │   │   ├── turn_prompt                # idem
 │       │   │   ├── turn_reply                 # idem
@@ -148,20 +152,13 @@ VM_LA
 │       │   │   ├── turn_second                # idem
 │       │   │   └── turn_tools                 # idem
 │       │   ├── tool_turn_call.yaml            # l appel au modele : une reprise
-│       │   ├── tool_turn_facts.yaml           # les faits du tour : ce que le modele vient de recevoir
+│       │   ├── tool_turn_facts.yaml           # les faits du tour
 │       │   ├── tool_turn_note.yaml            # la note de fin : memoire, compactage, coupe
 │       │   ├── tool_turn_prompt.yaml          # le prompt : tete, protocole, portee, mots
 │       │   ├── tool_turn_reply.yaml           # la reponse : flux, bornes, base
 │       │   ├── tool_turn_scope.yaml           # la portee : vecteurs, cosinus, candidats
 │       │   ├── tool_turn_second.yaml          # la tete secondaire : compose, borne
 │       │   └── tool_turn_tools.yaml           # les outils demandes, un par un, par la porte
-│       ├── vision                             # les yeux
-│       │   ├── bin                            # leur instrument
-│       │   │   └── micro_vision               # l instrument des yeux : cv2 et onnx
-│       │   ├── tool_vision_cut_subject.yaml   # detourer un sujet
-│       │   ├── tool_vision_find_objects.yaml  # trouver des objets dans une image
-│       │   ├── tool_vision_read_depth.yaml    # lire une carte de profondeur
-│       │   └── tool_vision_repair_zone.yaml   # reparer une zone
 │       └── watch                              # le juge
 │           ├── bin                            # son script
 │           │   └── watcher                    # le juge : dire voir image
@@ -169,93 +166,112 @@ VM_LA
 ├── .gitignore                                 # secret, bases, audio, state, work
 ├── projects                                   # un dossier par projet
 │   ├── .active                                # le projet charge
-│   └── la
+│   └── la                                     # le projet LA
 │       ├── project.yml                        # le projet LA
 │       └── spec.yaml                          # son canon
 ├── skills                                     # une competence par dossier
 │   ├── .active                                # la competence chargee
-│   └── <nom>
+│   └── <nom>                                  # une competence
 │       └── skill.yaml                         # une competence et sa palette
 └── work                                       # les livraisons de l agent
 
-32 directories, 116 files
+30 directories, 115 files
 
-DOCTOR - contrat d'un controle
-  entree  rien. L'environnement LA_* seulement, comme un programme.
-  sortie  des lignes <ok|note|fail> <sujet> <message>
-  code    0 = le controle a tourne. Ce n'est pas « tout va bien ».
-  panne   un controle qui plante est un fail de plus, il ne tue pas le docteur.
-  compte  doctor.sh additionne : zero fail vert, un fail rouge, sortie 2.
-  cache   state/doctor.cache, pour l'applet et la page qui ne lisent pas du texte.
+DOCTOR - contract of one check
+  in      nothing. The LA_* environment only, like a program.        # rien, l environnement suffit
+  out     lines <ok|note|fail> <topic> <message>                      # une ligne par constat
+  code    0 = the check ran. It does not mean all is well.           # il a tourne, c est tout
+  crash   a crashing check is one more fail, it does not kill doctor # il ne tue pas le docteur
+  count   doctor.sh sums: zero fail green, one fail red, exit 2      # le compte, jamais l avis
+  cache   state/doctor.cache, for the applet and the page            # pour qui ne lit pas du texte
 
 DOOR - engine/run.sh
-  entree  run.sh <id> [arg ...]                                        # un id du registre, ses arguments, le reste sur stdin
-  lit     registre corps competence feu vert bornes                    # ce qu'elle consulte
-  rend    une ligne JSON : status tool line result ts return           # toujours la meme forme
-  codes   0 ok | 3 feu vert requis | 124 delai | autre = refus nomme    # codes stables
-  ecrit   sessions.db returns, state/returns, trace.jsonl               # ce qu'elle laisse
-  ordre   id famille corps coherence perimetre arite types chemins feu vert trous execution forme
+  in      run.sh <id> [arg ...]                stdin: leftover text  # un id, ses arguments
+  reads   registry body active skill approval caps                   # ce qu elle consulte
+  out     one JSON line: status tool line result ts return           # toujours la meme forme
+  codes   0 ok | 3 approval required | 124 timeout | else refused    # des codes stables
+  writes  sessions.db returns, state/returns, trace.jsonl            # ce qu elle laisse
+  order   id family body coherence perimeter arity types paths approval holes run shape
+                                                                     # l ordre impose des controles
+
+APPROVAL - engine/approval.sh, tool engine.approve
+  gate    before a gated tool runs, the door calls approval.sh       # la porte demande
+  state   state/approve holds the signed decision, approve.request the pending one
+  tool    the model may call engine.approve to ask (request) or to read (status)
+  human   only a human channel signs: an hmac of the request id with a key of conf/.env
+  never   a tool signs for the human. a grant without a valid signature is a refusal
+  window  state/approve expires, past the window the tool is refused again
 
 SHELL - engine/shell.sh
-  head.yaml : la(g,a)                           # g = id du registre, a = arguments dans l'ordre declare
-  corps sans COMMAND, avec machine et op :      # la regle
+  head.yaml    la(g,a)                       # g = id of the registry line, a = declared args
+  body without COMMAND, with machine and op:                            # la regle du porteur
     <machine> --op <op> --arg "<arg>={{<arg>}}" ...
 
+TEXTS - conf/texts.yaml                     # toutes les phrases, une cle, un usage
+  refusals  tool_unknown arity perimeter approval_required timeout path_outside_canon
+  turn      the texts the model reads       # protocole, portee, consigne
+  board     the texts the panel reads       # le tableau
+  bridge    the texts the bridge returns    # le telephone
+  voice     the texts that are spoken       # la voix
+  doctor    the labels of the checks        # les libelles
+  rule      a key without reader = fail, a reader without key = fail, no french
+  where     nowhere else: not in a .sh, not in a .py
 
-TEXTES - conf/texts.yaml                 # toutes les phrases, une cle, un usage
-  refus     tool_inconnu, arite, perimetre, feu_vert, delai, chemin_hors_canon
-  tour      ce que le modele lit : protocole, portee, consigne
-  board     ce que lit le tableau
-  pont      ce que rend le pont au telephone
-  voix      ce qui est dit
-  docteur   les libelles des controles
-  regle     une cle sans lecteur = fail ; un lecteur sans cle = fail ; aucun francais
-  ou        les phrases ne vivent nulle part ailleurs, ni dans un .sh, ni dans un .py
+TOOLS - family engine                       # onze actions, un corps YAML chacune
+  models     40 l.  load unload status       # charger le reranker, demarrer, arreter, l etat
+  asr        22 l.  start stop status        # l oreille
+  tts        26 l.  start stop status        # la voix
+  retention  64 l.  audio returns logs bases # applique les bornes
+  tunnel     60 l.  up down status qr        # wireguard, serveur et telephone
+  backup     78 l.  now verify restore       # la sauvegarde hors disque
+  update    151 l.  check apply rollback     # la mise a jour, et le retour arriere
+  switch     82 l.  list take                # change de moteur
+  spec       27 l.  add list                 # ecrit une loi du canon
+  stat       28 l.  exchanges tools          # lit sessions.db et rend un compte
+  approve    76 l.  request grant deny status# la demande, la signature, le refus
+  doctor    418 l.  short light json         # la porte d entree du dossier doctor
 
-TOOLS - famille engine                    # onze actions, un corps YAML chacune, jamais une fonction du moteur
-  models     40 l.  load unload status        charger le reranker, demarrer, arreter, dire l etat
-  asr        22 l.  start stop status         l oreille
-  tts        26 l.  start stop status         la voix
-  retention  64 l.  audio returns logs bases   applique les bornes, brosse ce qui depasse
-  tunnel     60 l.  up down status qr         wireguard : serveur et telephone
-  backup     78 l.  now verify restore       la sauvegarde hors disque
-  update    151 l.  check apply rollback     la mise a jour et le retour arriere
-  switch     82 l.  list take                change de moteur
-  spec       27 l.  add list                 ecrit une loi du canon
-  stat       28 l.  exchanges tools          lit sessions.db et rend un compte
-  doctor    418 l.  short light json         la porte d entree du dossier doctor/
+  model says   la(g, a)                      # g = id de la ligne du registre
+  door reads   tools/<family>/tool_<action>.yaml
+  body says    COMMAND: tools/<family>/bin/<script> {{op}} {{arg}}
+  shell.sh     builds the line, runs it, caps it
+  door returns status tool line result ts return
 
-  le modele dit      la(g, a)                    g = id de la ligne du registre
-  la porte lit       tools/engine/tool_<action>.yaml
-  le corps dit       COMMAND: tools/engine/bin/<script> {{op}} {{arg}}
-  shell.sh           construit la ligne, l execute, la borne
-  la porte rend      status tool line result ts return
+PIPELINE - conf/pipeline.yaml              # le tour est une suite declaree, pas un programme
+  turn    facts second scope prompt call tools reply note
+  step    one registry id, one body, one script. it reads state/turn.json and rewrites it
+  chief   loop.sh reads the order, step.sh runs the step, run.sh opens the door, shell.sh builds
+  fail    the step that falls stops the turn, leaves turn.json as it is, and the doctor sees it
+  gain    add a step = one line here and one body. no .sh to touch
 
-PIPELINE - conf/pipeline.yaml            # le tour est une suite d etapes declarees, pas un programme
-  turn      facts second scope prompt call tools reply note
-  etape     un id du registre, un corps YAML, un script ; elle lit state/turn.json et le reecrit
-  chef      loop.sh lit l ordre, step.sh execute l etape, run.sh ouvre la porte, shell.sh batit la commande
-  echec     l etape qui tombe arrete le tour, laisse turn.json tel quel, et le docteur le voit
-  gain      ajouter une etape = une ligne ici et un corps ; aucun .sh a toucher
+LIST - a list is never one more file       # une liste n est jamais un fichier de plus
+  rule    one source per fact: a tool enum, a key of la_config, or the disk     # trois places, pas quatre
+  never   a conf/ table that repeats what the registry, a body or a key says     # deux sources, jamais
 
-ENVIRONNEMENT DONNE AUX PROGRAMMES
-  la.sh resout la_config une fois et exporte. Un programme lit os.environ seulement.
-  LA_ROOT LA_CONFIG LA_STATE LA_DATA LA_WORK LA_RETURNS LA_AUDIO LA_PAGE LA_TOOL
-  LA_SESSIONS_DB LA_MEMORY_DB LA_TRACE LA_REPLY_STREAM LA_ENV
-  LA_PORT_BRIDGE LA_PORT_TLS LA_PORT_DASH LA_PORT_MODELS LA_PORT_TTS LA_PORT_ASR
-  LA_MODEL LA_HOST LA_AGENT LA_SESSION LA_TURN LA_CAP_BYTES LA_CAP_LINES
+  la.sh surfaces       la_config cli:, one row per surface: key, mode, target       # la.sh ne liste rien
+  doctor controls      the doctor/ files, run in name order, each holding its rows   # le disque est la liste
+  what listens         tools engine.models asr tts, and units and ports of la_config # ce qui ecoute est un tool
+  bounds               tool engine.retention: folders = its ARGS enum, caps = purge: # la borne se nomme
+  units                la_config units:, install.sh writes the .service from it      # plus un gabarit
+  the LA_*             boot.sh exports them from paths: and ports:, and nothing else # la liste sort du .sh
 
-DEPENDANCES
+ENVIRONMENT GIVEN TO PROGRAMS         # ce qu un programme recoit, et rien de plus
+  source  la_config paths: and ports:, exported once by boot.sh     # une seule origine, un seul moment
+  names   LA_ROOT LA_CONFIG LA_STATE LA_DATA LA_WORK LA_RETURNS LA_AUDIO LA_PAGE LA_TOOL
+          LA_SESSIONS_DB LA_MEMORY_DB LA_TRACE LA_REPLY_STREAM LA_ENV
+          LA_PORT_BRIDGE LA_PORT_TLS LA_PORT_DASH LA_PORT_MODELS LA_PORT_TTS LA_PORT_ASR
+          LA_MODEL LA_HOST LA_AGENT LA_SESSION LA_TURN LA_CAP_BYTES LA_CAP_LINES
+  read    a program reads os.environ only: no YAML, no path built   # python lit l environnement
+  gain    a new LA_* is one line of la_config, and nothing else moves  # le moteur ne bouge plus
+
+DEPENDENCIES
   dash coreutils awk sed grep find xargs jq sqlite3 curl        # le socle
   systemctl --user tailscale git tesseract ffmpeg node          # services et instruments
-  tree                                                           # check_manifest compare l'arbre rendu au disque
-  interdit : python3 dans engine et doctor, yq, heredoc, eval     # ce qui n'entre pas
+  tree                                                          # check_manifest compare l arbre
+  forbidden: python3 in engine and doctor, yq, heredoc, eval     # ce qui n entre pas
 
-COMMANDES
-  la board | cli | say <text> | app | turn                       # les surfaces
-  la doctor [--short|--light|--json]                            # le diagnostic, seul appelant de doctor/
-  la tool <id> [args]                                           # un tool par la porte
-  la tool <id> engine.models load|unload|status                 # les residents
-  la tool <id> engine.retention audio|returns|logs|bases        # l'entretien
-  la tool <id> engine.update check|apply|rollback               # la mise a jour, avec retour arriere
-  la new skill|project|tool <name>                              # les gabarits, sans fichier gabarit
+COMMANDS
+  la board | cli | say <text> | app | turn        # les surfaces
+  la doctor [--short|--light|--json]              # le diagnostic
+  la tool <id> [args]                             # un tool par la porte
+  la new skill|project|tool <name>                # les gabarits, sans fichier gabarit
