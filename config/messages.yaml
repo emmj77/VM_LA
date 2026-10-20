@@ -1053,3 +1053,4 @@ tunnel_public_missing: 'refused: the public address of the desktop is required (
 tunnel_public_bad: 'refused: %s is not a usable address (letters, digits, dot, colon, dash)'
 tunnel_brick_missing: 'refused: the tunnel brick is absent (%s)'
 tunnel_needs_sudo: 'refused: sudo would ask for a password ; provision the tunnel from a logged shell'
+turn_same_words: 'you have just said exactly that: do not repeat it, take the next step or answer the open plan'

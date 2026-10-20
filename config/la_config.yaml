@@ -129,6 +129,7 @@ with_project:
   - unload_project
 
 loop:
+  same_words_seconds: 300     # la meme phrase ne se repete pas dans cette fenetre
   window: 4                  # la fenetre du tour, en MESSAGES (loi 809)
   msg_max: 8000              # aucun message plus gros : tete ET queue gardees
   msg_budget: 32000          # le budget de tout ce que le modele lit, tetes systeme a part

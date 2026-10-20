@@ -195,6 +195,28 @@ log_to_stderr() {  # $1 = une ligne deja plate
   printf '%s\n' "$1" >&2
 }
 
+say_once() {  # $1 = la phrase a dire a l humain ; la meme phrase dans la fenetre ne se repete pas
+  _so="$1"
+  [ -n "$(printf '%s' "$_so" | tr -d '[:space:]')" ] || return 0
+  _lastf="$STATE/last_spoken"
+  _win=$(conf_num loop same_words_seconds 300)
+  _last=""
+  _lt=0
+  if [ -f "$_lastf" ]; then
+    _lt=$(sed -n '1p' "$_lastf" 2>/dev/null || printf '0')
+    _last=$(sed -n '2p' "$_lastf" 2>/dev/null || true)
+  fi
+  case "$_lt" in ''|*[!0-9]*) _lt=0 ;; esac
+  _now=$(date +%s)
+  if [ "$_so" = "$_last" ] && [ $(( _now - _lt )) -le "$_win" ]; then
+    log_to_stderr "$(ts)  turn $TURN  talk: the same sentence was already said, it is not repeated"
+    return 1
+  fi
+  printf '%s\n' "$_so" >&2
+  printf '%s\n%s\n' "$_now" "$_so" > "$_lastf" 2>/dev/null || true
+  return 0
+}
+
 hist_apply() {
   jq -c "$@" "$T/hist.json" > "$T/hist.next" || return 1
   _src="$T/hist.next"
@@ -1271,13 +1293,15 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
              content:($c + (if $rid == "" then "" else "\n[return " + $rid + "]\n" end))}]'
 
     if [ "$MSG_STATUS" = "ok" ] && [ "$MODE" = "talk" ]; then
-      printf '%s\n' "$(result_of "$LINE_")" >&2
+      if ! say_once "$(result_of "$LINE_")"; then
+        hist_apply --arg m "$(msg turn_same_words)" '. + [{role:"system",content:$m}]'
+      fi
       log_to_stderr "$(ts)  turn $TURN  talk: the word was passed to the human channel, the turn goes on"
     fi
     if [ "$MSG_STATUS" = "ok" ] && [ "$MODE" = "answer" ]; then
       REPLY=$(result_of "$LINE_")
       if open_plan; then
-        printf '%s\n' "$REPLY" >&2
+        say_once "$REPLY" || true
         log_to_stderr "$(ts)  turn $TURN  answer PASSED and the plan is not finished: the reply goes to the human channel, the turn continues"
         SAID=$(printf '%s' "$REPLY" | tr '\n\t' '  ' | cut -c1-"$(conf_req_num loop error_chars)")
         hist_apply --arg m "$(msg turn_open "$SAID")" '. + [{role:"system",content:$m}]'
