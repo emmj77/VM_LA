@@ -840,15 +840,16 @@ SECTION : TUNNEL
 
 SECTION : PROGRAMS
   2500: "LE ENGINE EST dash + coreutils + jq. LES PROGRAMMES SONT AUTRE CHOSE, et ils le disent."
-  2501: "config/programs/ PORTE LES PROGRAMMES : board.py (panneau et cli), dash.py, sse.py,"
-  2502: "tts_daemon.py, watch.py, micro_vision.py : chacun rend un service ou une page."
+  2501: "config/programs/ PORTE LES QUATRE SERVEURS : board.py (panneau et cli), dash.py,"
+  2502: "tts_daemon.py, watch.py. Un programme ne fait que ce que le shell ne sait pas faire."
   2503: "board.py EST LE BOARD : ce que lit l'applet, en un ecran etroit et vivant."
   2504: "tts_daemon.py TIENT LA VOIX EN MEMOIRE : sherpa-onnx charge une fois, puis repond."
-  2505: "micro_vision.py EST LE PORTEUR DES YEUX : quatre modes de vision, un seul processus."
+  2505: "LES YEUX SONT QUATRE TOOLS : find_objects_in_img, cut_subject_from_img, read_depth_of_img, repair_zone_in_img."
+  2505.1: "LEUR INSTRUMENT EST micro_vision, nomme par le corps du tool, jamais par le moteur."
   2506: "watch.py ECOUTE UN REQUEST : trois reseaux ONNX (3,6 Mo) et il SIGNE ce qui attend."
   2507: "LE VEILLEUR NE CHOISIT RIEN : la voix approuve ce qui attend, elle ne dicte pas an op."
   2508: "LE VEILLEUR TOURNE SUR UN COEUR, 63 a 80 fois le temps reel, sans la carte."
-  2509: "build_tool_vectors.py ECRIT LES VECTEURS des tools ; vector_pick.py les relit."
+  2509: "LE MOTEUR NE CALCULE AUCUN VECTEUR EN PYTHON : vectors.sh les ecrit, rank.sh les compare."
   2510: "LES BANCS VIVENT HORS DU DEPOT : ils mesurent le harness, ils ne le composent pas."
 
 SECTION : DASHBOARD
