@@ -423,7 +423,20 @@ def history(turns=12):
                 i = j
                 break
         pas.insert(i, {"ts": x["ts"], "kind": "think", "text": x["text"]})
-    return {"session_start": start, "turns": [per[k] for k in sorted(per)]}
+    out = []
+    for k in sorted(per):
+        x = per[k]
+        # un tour = UN message (celui qui ferme) et SON raisonnement : le bavardage des etapes ne monte pas
+        if x["speech"]:
+            x["speech"] = x["speech"][-1:]
+        if x["think"]:
+            x["think"] = x["think"][-1:]
+        keep = [s for s in x["steps"] if s.get("kind") in ("say", "think")]
+        say = [s for s in keep if s["kind"] == "say"][-1:]
+        think = [s for s in keep if s["kind"] == "think"][-1:]
+        x["steps"] = sorted(think + say, key=lambda s: s.get("ts") or "")
+        out.append(x)
+    return {"session_start": start, "turns": out}
 
 
 def speak_stream():
