@@ -21,6 +21,7 @@ const RESIDENT_NAMES = ["models", "asr", "tts", "dash"];
 const TITLE_WIDTH = 150;
 const EMO_WIDTH = 22;
 const ICON_DIR = GLib.get_home_dir() + "/.local/share/cinnamon/applets/LA_Info@moussa/icons";
+const CACHE = GLib.get_home_dir() + "/.cache/la_info_menu.txt";
 
 // L'state d'une mesure dit de quelle pastille elle s'habille.
 const BADGE = { ok: "la-active.svg", ko: "la-disabled.svg" };
@@ -119,6 +120,16 @@ function ratioOf(title, verdict, ramDeLA) {
 
 const BAR_WIDTH = 72;
 
+function parseRows(text) {
+    const rows = [];
+    text.split("\n").forEach((l) => {
+        if (l.indexOf("|") === -1) { return; }
+        const c = l.split("|");
+        rows.push({ state: c[0], section: c[1], title: c[2], verdict: c.slice(3).join("|") });
+    });
+    return rows;
+}
+
 function iconOf(title) {
     return EMOTICONE[title] || "\u2022";
 }
@@ -145,6 +156,7 @@ class LAInfoApplet extends Applet.TextIconApplet {
         this._manage = new PopupMenu.PopupMenuManager(this);
         this._manage.addMenu(this._menu);
 
+        this._lines = this._rowsFromCache();
         this._paint();
         this._ready = true;
         this._read();
@@ -152,6 +164,15 @@ class LAInfoApplet extends Applet.TextIconApplet {
     }
 
     // ---- la montre : le board est relu toutes les N secondes, et il ne s'arrete pas
+    _rowsFromCache() {
+        try {
+            const [, bytes] = GLib.file_get_contents(CACHE);
+            return parseRows(bytes.toString());
+        } catch (e) {
+            return [];
+        }
+    }
+
     _restartWatch() {
         if (this._timer) { Mainloop.source_remove(this._timer); }
         this._timer = Mainloop.timeout_add_seconds(this.secondes || 15, () => {
@@ -176,7 +197,7 @@ class LAInfoApplet extends Applet.TextIconApplet {
         }
 
         let done = false;
-        const guard = Mainloop.timeout_add_seconds(10, () => {
+        const guard = Mainloop.timeout_add_seconds(30, () => {
             if (!done) { try { proc.force_exit(); } catch (e) { } }
             return false;
         });
@@ -187,15 +208,22 @@ class LAInfoApplet extends Applet.TextIconApplet {
             try { Mainloop.source_remove(guard); } catch (e) { }
 
             const rows = [];
+            let text = "";
             try {
-                const text = p.communicate_utf8_finish(res)[1] || "";
-                text.split("\n").forEach((l) => {
-                    if (l.indexOf("|") === -1) { return; }
-                    const c = l.split("|");
-                    rows.push({ state: c[0], section: c[1], title: c[2], verdict: c.slice(3).join("|") });
-                });
-            } catch (e) { }
+                text = p.communicate_utf8_finish(res)[1] || "";
+            } catch (e) { text = ""; }
+            parseRows(text).forEach((r) => rows.push(r));
 
+            if (rows.length === 0 && this._lines.length > 0) {
+                this._stale = true;
+                this._paint();
+                return;
+            }
+
+            if (rows.length > 0) {
+                this._stale = false;
+                try { GLib.file_set_contents(CACHE, text); } catch (e) { }
+            }
             this._lines = rows;
             // L'APPROBATION SE LIT DANS LES LIGNES DU TABLEAU, pas dans un second appel : la line
             // dont le title est « approbation » porte le geste en clair (tool + geste). S'il n'y en

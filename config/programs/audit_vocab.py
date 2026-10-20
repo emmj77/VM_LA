@@ -223,8 +223,65 @@ def harvest():
     return raw
 
 
+CACHE = os.path.join(ROOT, "config", "state", "vocab_cache.json")
+WATCHED = ("config/programs/*.py", "config/state/**/*.py", "config/engine/*.sh",
+           "config/applets/**/*.js", "config/*.yaml", "config/tools/*/*.yaml")
+
+
+def stamp():
+    newest = 0.0
+    count = 0
+    for pattern in WATCHED:
+        for path in glob.glob(os.path.join(ROOT, pattern), recursive=True):
+            if path.endswith("audit_vocab.py"):
+                continue
+            try:
+                info = os.stat(path)
+            except OSError:
+                continue
+            newest = max(newest, info.st_mtime)
+            count += 1
+    return "%d:%.6f" % (count, newest)
+
+
+def cached_rows(key):
+    try:
+        with open(CACHE, encoding="utf-8") as handle:
+            data = json.load(handle)
+    except (OSError, ValueError):
+        return None
+    if data.get("key") != key:
+        return None
+    return [tuple(row) for row in data.get("rows", [])]
+
+
+def store_rows(key, rows):
+    try:
+        os.makedirs(os.path.dirname(CACHE), exist_ok=True)
+        with open(CACHE, "w", encoding="utf-8") as handle:
+            json.dump({"key": key, "rows": [list(row) for row in rows]}, handle, ensure_ascii=False)
+    except OSError:
+        pass
+
+
 def main():
-    build_oracle(harvest())
+    key = stamp()
+    rows = None if "--fresh" in sys.argv else cached_rows(key)
+    if rows is None:
+        build_oracle(harvest())
+        rows = sorted({(kind, os.path.relpath(path, ROOT), what, name)
+                       for kind, path, what, name in collect_problems()})
+        store_rows(key, rows)
+    if "--json" in sys.argv:
+        print(json.dumps(rows, ensure_ascii=False))
+        return 0 if not rows else 1
+    for kind, path, what, name in rows:
+        print("%-10s %-46s %-10s %s" % (kind, path, what, name))
+    print("total: %d" % len(rows))
+    return 0 if not rows else 1
+
+
+def collect_problems():
     problems = []
     for path in files("config/programs/*.py"):
         if not path.endswith("audit_vocab.py"):
@@ -240,16 +297,7 @@ def main():
     for path in files("config/tools/*/*.yaml"):
         audit_yaml(path, problems)
     audit_names(problems)
-
-    rows = sorted({(kind, os.path.relpath(path, ROOT), what, name) for kind, path, what, name in problems})
-    if "--json" in sys.argv:
-        print(json.dumps(rows, ensure_ascii=False))
-        return 0 if not rows else 1
-
-    for kind, path, what, name in rows:
-        print("%-10s %-46s %-10s %s" % (kind, path, what, name))
-    print("total: %d" % len(rows))
-    return 0 if not rows else 1
+    return problems
 
 
 if __name__ == "__main__":
