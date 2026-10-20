@@ -426,14 +426,14 @@ def history(turns=12):
     out = []
     for k in sorted(per):
         x = per[k]
-        # le fil d un tour : raisonnement, reponse, raisonnement, reponse, dans l ordre
-        x["thread"] = [{"role": "user", "text": x["demand"]}] if x["demand"] else []
+        thread = [{"role": "user", "text": x["demand"]}] if x["demand"] else []
         for s in x["steps"]:
             if s["kind"] == "think":
-                x["thread"].append({"role": "reasoning", "text": s["text"]})
+                thread.append({"role": "reasoning", "text": s["text"]})
             elif s["kind"] == "say":
-                x["thread"].append({"role": "reply", "text": s["text"]})
-        out.append(x)
+                thread.append({"role": "reply", "text": s["text"]})
+        out.append({"exchange": x["exchange"], "ts": x["ts"], "thread": thread,
+                    "tools": x["tools"], "refused": x["refused"], "tokens": x["tokens"]})
     return {"session_start": start, "turns": out}
 
 

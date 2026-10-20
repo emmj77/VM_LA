@@ -158,28 +158,19 @@ function renderFeed() {
   const turns = h.turns || [];
   turns.forEach((t) => {
     f.appendChild(turnSep(t));
-    if (t.demand) f.appendChild(bubble('me', 'toi', t.demand, null, shortTime(t.ts)));
     let last = null;
-    const pas = (t.steps || []).filter((x) => x && (x.kind === 'think' || x.kind === 'say'));
-    if (pas.length) {
-      pas.forEach((x) => {
-        if (x.kind === 'think') {
-          const tb = thinkBox([x.text], true);
-          if (tb) f.appendChild(tb);
-        } else {
-          last = bubble('la', 'LA', x.text, null, shortTime(t.ts));
-          f.appendChild(last);
-        }
-      });
-    } else {
-      const th = thinkBox(t.think);
-      if (th) f.appendChild(th);
-      const lines = (t.speech || []).filter((x) => x && String(x).trim());
-      if (lines.length) {
-        last = bubble('la', 'LA', lines.join('\n\n'), null, shortTime(t.ts));
-        f.appendChild(last);
+    (t.thread || []).forEach((b) => {
+      const txt = (b && b.text) ? String(b.text) : '';
+      if (!txt.trim()) return;
+      if (b.role === 'user') { f.appendChild(bubble('me', 'toi', txt, null, shortTime(t.ts))); return; }
+      if (b.role === 'reasoning') {
+        const tb = thinkBox([txt], true);
+        if (tb) f.appendChild(tb);
+        return;
       }
-    }
+      last = bubble('la', 'LA', txt, null, shortTime(t.ts));
+      f.appendChild(last);
+    });
     const ch = chips(t.tools);
     if (ch) {
       if (last) last.appendChild(ch);
