@@ -6,6 +6,7 @@ RULES
   One file = one job, 200 lines maximum.                             # un fichier = un metier
   Nothing runs when sourced, except engine/la.sh.                    # rien ne s execute au source
   One door to a tool: engine/run.sh <id> [args].                     # une seule porte vers le shell
+  Two registries: the model reads one, the engine reads its own.     # deux registres, deux canaux
   One carrier: la(g,a).                                              # un seul porteur depuis le modele
   engine/shell.sh alone builds a command line.                       # lui seul batit la commande
   No python, no heredoc, no eval in a .sh.                           # le shell reste du shell
@@ -31,6 +32,14 @@ CRITERION   # trois questions, dans cet ordre
   A tool cannot approve another tool by itself. It can carry a decision a human
   signed; the gate then checks the signature, not the caller good faith.
 
+  The engine is a conductor: it does nothing itself, it calls the bodies it needs,
+  in order. A step that falls stops the turn. The model never sees these bodies.  # le moteur est un chef d orchestre
+
+  Three conditions, or the conductor does not exist.                           # trois conditions
+    caller  the door knows who calls: the model, or the engine                 # la porte sait qui appelle
+    state   state/turn.json, because two processes share no variable           # l etat est un fichier
+    trace   one kind per call, or the live channel becomes unreadable          # la trace distingue l etape
+
 VM_LA
 ├── ARCHITECTURE_LA.txt                        # ce fichier
 ├── config                                     # les treize dossiers, aucun fichier a la racine
@@ -51,7 +60,7 @@ VM_LA
 │   ├── data                                   # les bases, un ecrivain chacune
 │   │   ├── memory.db                          # la memoire durable : une note par tour
 │   │   └── sessions.db                        # messages, returns, vectors, usage, meta
-│   ├── engine                                 # le moteur : 18 .sh, dont onze briques jamais executees
+│   ├── engine                                 # le moteur : 16 .sh, dont onze briques jamais executees
 │   │   ├── approval.sh                        # la porte humaine : la signature, le refus, la fenetre
 │   │   ├── args.sh                            # arguments declares vers argv : path enum int bool text, canon des chemins
 │   │   ├── boot.sh                            # la seule ligne sourcee : HERE ROOT LC_ALL, chemins, puis les briques
@@ -59,7 +68,6 @@ VM_LA
 │   │   ├── cap.sh                             # bornes head tail, table returns, state/returns
 │   │   ├── cfg.sh                             # le lecteur unique de la_config : conf_num conf_str conf_has conf_list
 │   │   ├── fs.sh                              # abs_path state_paths tmpfile write_atomic
-│   │   ├── hist.sh                            # sessions.db : init add insert window apply result usage vectors meta
 │   │   ├── la.sh                              # le maitre : racine, environnement, aiguillage, exec
 │   │   ├── loop.sh                            # la boucle : signal, repos, reprise, marque du tour, etape par etape
 │   │   ├── msg.sh                             # les phrases de texts.yaml : msg msg_str tpn
@@ -68,8 +76,7 @@ VM_LA
 │   │   ├── shell.sh                           # LE SHELL : machine + operation + arguments vers une commande
 │   │   ├── skl.sh                             # competence et projet actifs, PERIMETER, permanent, approval_of, is_gated
 │   │   ├── step.sh                            # execute une etape du pipeline : lit turn.json, appelle, ecrit
-│   │   ├── tab.sh                             # le registre : block_by_id table_block table_index body_of count
-│   │   └── trace.sh                           # trace.jsonl, log stderr, say_once, die
+│   │   └── tab.sh                             # le registre : block_by_id table_block table_index body_of count
 │   ├── filter                                 # le filtre de famille
 │   │   └── family.bin                         # le filtre entraine
 │   ├── page                                   # la page et le telephone
@@ -106,15 +113,18 @@ VM_LA
 │       │   ├── tool_doctor_texts.yaml         # ops prompt
 │       │   └── tool_doctor_tools.yaml         # ops table paths
 │       ├── engine                             # les actions du moteur, en tools
+│       │   ├── registry.yaml                  # SON registre : appele par nom, jamais envoye au modele
 │       │   ├── tool_engine_approve.yaml       # la demande, la lecture de l etat, la signature humaine
 │       │   ├── tool_engine_asr.yaml           # l oreille
 │       │   ├── tool_engine_backup.yaml        # la sauvegarde hors disque
 │       │   ├── tool_engine_doctor.yaml        # le diagnostic : short light json all
+│       │   ├── tool_engine_hist.yaml          # sessions.db : init add window apply result
 │       │   ├── tool_engine_models.yaml        # charger le reranker, demarrer, arreter, dire l etat
 │       │   ├── tool_engine_retention.yaml     # applique les bornes : audio returns journaux bases
 │       │   ├── tool_engine_spec.yaml          # ecrit une loi du canon
 │       │   ├── tool_engine_stat.yaml          # lit sessions.db et rend un compte
 │       │   ├── tool_engine_switch.yaml        # change de moteur
+│       │   ├── tool_engine_trace.yaml         # trace.jsonl : une ligne par evenement, kind=step
 │       │   ├── tool_engine_tts.yaml           # la voix
 │       │   ├── tool_engine_tunnel.yaml        # wireguard : serveur et telephone
 │       │   └── tool_engine_update.yaml        # la mise a jour et le retour arriere
@@ -150,7 +160,7 @@ VM_LA
 │       └── skill.yaml                         # une competence et sa palette
 └── work                                       # les livraisons de l agent
 
-26 directories, 93 files
+26 directories, 94 files
 
 DOCTOR - one control is a tool          # un controle est un tool, pas un .sh a part
   family  tools/doctor: nine bodies, seventeen controls in ops       # neuf corps, dix-sept controles
@@ -164,11 +174,14 @@ DOCTOR - one control is a tool          # un controle est un tool, pas un .sh a 
   cache   state/doctor.cache, for the applet and the page            # pour qui ne lit pas du texte
 
 DOOR - engine/run.sh
-  in      run.sh <id> [arg ...]                stdin: leftover text  # un id, ses arguments
+  in      run.sh <id|name> [arg ...]           stdin: leftover text  # un id, ou un nom pour le moteur
+  caller  LA_FROM: the model reads tools/registry.yaml, the engine reads tools/engine/registry.yaml
   reads   registry body active skill approval caps                   # ce qu elle consulte
+  engine  a call from the engine skips palette, perimeter and arity, and carries no approval
+  model   a call from the model keeps all four, and the four gated bodies wait for a human
   out     one JSON line: status tool line result ts return           # toujours la meme forme
   codes   0 ok | 3 approval required | 124 timeout | else refused    # des codes stables
-  writes  sessions.db returns, state/returns, trace.jsonl            # ce qu elle laisse
+  writes  state/returns, and nothing else: the base and the trace belong to two bodies
   order   id family body coherence perimeter arity types paths approval holes run shape
                                                                      # l ordre impose des controles
 
@@ -182,6 +195,7 @@ APPROVAL - engine/approval.sh, tool engine.approve
 
 SHELL - engine/shell.sh
   head.yaml    la(g,a)                       # g = id of the registry line, a = declared args
+  engine       la(name,a)                    # le moteur appelle par nom, un corps de sa famille
   body without COMMAND, with machine and op:                            # la regle du porteur
     <machine> --op <op> --arg "<arg>={{<arg>}}" ...
 
@@ -195,7 +209,7 @@ TEXTS - conf/texts.yaml                     # toutes les phrases, une cle, un us
   rule      a key without reader = fail, a reader without key = fail, no french
   where     nowhere else: not in a .sh, not in a .py
 
-TOOLS - family engine                       # onze actions, un corps YAML chacune
+TOOLS - family engine                       # quatorze actions, un corps YAML chacune
   models     40 l.  load unload status       # charger le reranker, demarrer, arreter, l etat
   asr        22 l.  start stop status        # l oreille
   tts        26 l.  start stop status        # la voix
@@ -207,6 +221,8 @@ TOOLS - family engine                       # onze actions, un corps YAML chacun
   spec       27 l.  add list                 # ecrit une loi du canon
   stat       28 l.  exchanges tools          # lit sessions.db et rend un compte
   approve    76 l.  request grant deny status# la demande, la signature, le refus
+  hist       90 l.  init add window apply result# sessions.db, ce que le tour ecrit
+  trace      60 l.  line                     # trace.jsonl, ce que le tour raconte
   doctor    418 l.  short light json all     # le diagnostic : parcourt la famille doctor
 
   model says   la(g, a)                      # g = id de la ligne du registre
@@ -228,23 +244,25 @@ TOOLS - family doctor                        # les controles, en tools comme le 
   entry       engine.doctor: short light json all                     # le compte et le verdict
   light       benches skip, programs partial                          # ce que --light epargne
 
+ENGINE FAMILY - not tools like the others  # la famille ENGINE n est pas une famille comme les autres
+  visible   the model never sees them: no head schema, no palette, no permanent   # invisibles au modele
+  registry  tools/engine/registry.yaml, its own file                              # un registre a part
+  channel   the model channel reads tools/registry.yaml only: it stays short      # le canal reste court
+  caller    the door knows who calls, and reads the registry of that caller       # la porte sait qui appelle
+  name      an engine body is called by its name, never by a numeric id           # appele par son nom
+  checks    no palette, no perimeter of a skill, no arity of a skill              # pas de perimetre de skill
+  approval  none: the four gated bodies are asked by the model, never by the engine # le feu vert reste au modele
+  result    no cap and no returns entry: the result feeds the turn, not the model # borne pour le modele seulement
+  failure   a step that falls stops the turn, and the doctor sees the refuse      # un echec arrete le tour
+  trace     kind=step, so the live channel tells an engine call from a model call # la trace distingue
+  plan      an open plan restricts the model, never the engine                    # le plan lie le modele
+
 PIPELINE - conf/pipeline.yaml              # le tour est une suite declaree, pas un programme
   turn    facts second scope prompt call tools reply note
   step    one registry id, one body, one script. it reads state/turn.json and rewrites it
   chief   loop.sh reads the order, step.sh runs the step, run.sh opens the door, shell.sh builds
   fail    the step that falls stops the turn, leaves turn.json as it is, and the doctor sees it
   gain    add a step = one line here and one body. no .sh to touch
-
-LIST - a list is never one more file       # une liste n est jamais un fichier de plus
-  rule    one source per fact: a tool enum, a key of la_config, or the disk     # trois places, pas quatre
-  never   a conf/ table that repeats what the registry, a body or a key says     # deux sources, jamais
-
-  la.sh surfaces       la_config cli:, one row per surface: key, mode, target       # la.sh ne liste rien
-  doctor controls      the family doctor: ops are the controls, the registry orders them # l ordre est le registre
-  what listens         tools engine.models asr tts, and units and ports of la_config # ce qui ecoute est un tool
-  bounds               tool engine.retention: folders = its ARGS enum, caps = purge: # la borne se nomme
-  units                la_config units:, install.sh writes the .service from it      # plus un gabarit
-  the LA_*             boot.sh exports them from paths: and ports:, and nothing else # la liste sort du .sh
 
 ENVIRONMENT GIVEN TO PROGRAMS         # ce qu un programme recoit, et rien de plus
   source  la_config paths: and ports:, exported once by boot.sh     # une seule origine, un seul moment
