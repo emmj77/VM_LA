@@ -21,8 +21,8 @@ DOCS:
   300: "web_search"
 PLAN:
   400: "PLAN espace-disque : Mesurer l espace disque et nommer le gras"
-  401: "[progress] df -h sur les systemes de fichiers montes"
-  402: "[todo] du du repertoire courant, trie du plus gros au plus petit"
+  401: "[complete] df -h sur les systemes de fichiers montes"
+  402: "[progress] du du repertoire courant, trie du plus gros au plus petit"
   403: "[todo] nommer les postes qui pesent et donner leur chiffre"
   404: "[todo] clore le plan pour decharger la skill"
 PERIMETER:

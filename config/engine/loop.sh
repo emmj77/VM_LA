@@ -195,6 +195,13 @@ log_to_stderr() {  # $1 = une ligne deja plate
   printf '%s\n' "$1" >&2
 }
 
+journal_entry() {  # $1 = le message humain ; le raisonnement du tour va avec, rien d autre
+  [ -n "$JOURNAL" ] || return 0
+  jq -cn --arg t "$TURN" --arg ts "$(ts)" --arg m "$1" --arg r "${REASON:-}" \
+    '{turn:($t|tonumber),ts:$ts,role:"assistant",message:$m,reasoning:$r}' \
+    >> "$JOURNAL" 2>/dev/null || :
+}
+
 say_once() {  # $1 = la phrase a dire a l humain ; la meme phrase dans la fenetre ne se repete pas
   _so="$1"
   [ -n "$(printf '%s' "$_so" | tr -d '[:space:]')" ] || return 0
@@ -991,6 +998,7 @@ open_plan() {   # la COUCHE DE L ETAT rend-il un plan ouvert ? (sinon : termine,
 }
 
 TURN=0
+SPOKE=0
 NO_TOOL=0
 SPEECH_NUDGE=0
 ANSWERED=0
@@ -1091,12 +1099,12 @@ log_to_stderr "$(ts)  turn $TURN  transport failure (curl $CRC : $CURL_WHY): the
   NTC=$(printf '%s' "$MSG" | jq -r '(.tool_calls // []) | length')
   CONTENT=$(printf '%s' "$MSG" | jq -r '.content // ""')
 
-  if [ "$NTC" != "0" ] && [ "${SPEECH_NUDGE:-0}" -lt "$(conf_req_num loop speech_tries)" ]; then
+  if [ "$NTC" != "0" ] && [ "$SPOKE" = 0 ] && [ "${SPEECH_NUDGE:-0}" -lt "$(conf_req_num loop speech_tries)" ]; then
     _TAB=$(printf '\t') ; HAS_SPEECH=0 ; HAS_WORDS=0
     printf '%s' "$MSG" | jq -r '.tool_calls[]?.function.arguments | (fromjson? // {}) |
       [(.g // ""), ((.a // [])[0] // ""),
        ((.a // []) | if length >= 4 then (.[3] // "") else (.[2] // "") end),
-       ((.a // [])[2] // "")] | @tsv' 2>/dev/null > "$T/speech.tsv" || : > "$T/speech.tsv"
+       ((.a // []) | if length >= 4 then (.[2] // "") else "" end)] | @tsv' 2>/dev/null > "$T/speech.tsv" || : > "$T/speech.tsv"
     while IFS="$_TAB" read -r _id _mode _txt _next; do
       case "$_id" in ''|*[!0-9]*) continue ;; esac
       _name=$(printf '%s\n' "$(block_of_id "$_id" 2>/dev/null || true)" | sed -n 's/^    tool:[[:space:]]*//p' | head -n 1)
@@ -1112,7 +1120,7 @@ log_to_stderr "$(ts)  turn $TURN  transport failure (curl $CRC : $CURL_WHY): the
       hist_apply --arg m "$(msg no_reply)" '. + [{role:"system",content:$m}]'
       continue
     fi
-    [ "$HAS_WORDS" = 1 ] && SPEECH_NUDGE=0
+    [ "$HAS_WORDS" = 1 ] && { SPEECH_NUDGE=0 ; SPOKE=1 ; }
   fi
   if [ -n "${REASON_FIELD:-}" ]; then
     REASON=$(printf '%s' "$MSG" | jq -r --arg f "$REASON_FIELD" '.[$f] // ""' 2>/dev/null || true)
@@ -1256,7 +1264,7 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
       jq -cn --arg t "$TURN" --arg ts "${MSG_TS:-$(ts)}" --argjson g "$G" --argjson a "$AJ" \
         --argjson tc "$TC" --argjson engine "$LINE_" \
         '{turn:($t|tonumber),ts:$ts,la:{g:$g,a:$a},tool_call:$tc,engine:$engine}' \
-        >> "$JOURNAL" 2>/dev/null || :
+        >> "$STATE/trace.jsonl" 2>/dev/null || :
     fi
 
     case "$TOOL_NAME" in
@@ -1293,6 +1301,7 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
              content:($c + (if $rid == "" then "" else "\n[return " + $rid + "]\n" end))}]'
 
     if [ "$MSG_STATUS" = "ok" ] && [ "$MODE" = "talk" ]; then
+      journal_entry "$(result_of "$LINE_")"
       if ! say_once "$(result_of "$LINE_")"; then
         hist_apply --arg m "$(msg turn_same_words)" '. + [{role:"system",content:$m}]'
       fi
@@ -1301,11 +1310,13 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
     if [ "$MSG_STATUS" = "ok" ] && [ "$MODE" = "answer" ]; then
       REPLY=$(result_of "$LINE_")
       if open_plan; then
+        journal_entry "$REPLY"
         say_once "$REPLY" || true
         log_to_stderr "$(ts)  turn $TURN  answer PASSED and the plan is not finished: the reply goes to the human channel, the turn continues"
         SAID=$(printf '%s' "$REPLY" | tr '\n\t' '  ' | cut -c1-"$(conf_req_num loop error_chars)")
         hist_apply --arg m "$(msg turn_open "$SAID")" '. + [{role:"system",content:$m}]'
       else
+        journal_entry "$REPLY"
         ANSWERED=1
         close_remaining
         break
@@ -1313,6 +1324,7 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
     fi
     if [ "$MSG_STATUS" = "ok" ] && [ "$MODE" = "ask" ]; then
       REPLY=$(result_of "$LINE_")
+      journal_entry "$REPLY"
       ANSWERED=1
       close_remaining
       log_to_stderr "$(ts)  turn $TURN  ask: the turn stops and waits for the human"

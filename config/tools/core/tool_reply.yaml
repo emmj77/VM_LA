@@ -11,5 +11,4 @@ COMMAND: |
 ARGS:
   - {name: mode, type: enum, values: [talk, ask, answer]}
   - {name: form, type: enum, values: [text, list, table, code]}
-  - {name: next, type: text, required: false}
   - {name: text, type: text, stdin: true}

@@ -132,9 +132,15 @@ async function journal() {
     const r = await fetch('/journal', { cache: 'no-store' });
     const j = await r.json();
     const l = Array.isArray(j) ? j : (j.lines || []);
-    const t = l.map((e) => (e.engine && e.engine.line)
-      || (e.tool_call && e.tool_call.function && e.tool_call.function.name) || '').filter(Boolean);
-    $('journal').textContent = t.length ? t.join('\n') : '—';
+    const t = [];
+    l.forEach((e) => {
+      if (!e) { return; }
+      if (e.message) { t.push('MESSAGE  ' + e.message.replace(/\n/g, '\n         ')); }
+      if (e.reasoning) { t.push('reasoning ' + e.reasoning.replace(/\n/g, '\n          ')); }
+      const legacy = (e.engine && e.engine.line) || '';
+      if (!e.message && legacy) { t.push(legacy); }
+    });
+    $('journal').textContent = t.length ? t.join('\n\n') : '—';
   } catch (e) { $('journal').textContent = 'le journal n a pas repondu'; }
 }
 
