@@ -139,9 +139,6 @@ permanent_section() {
   config_section "$CONF" permanent
 }
 
-table_ids() {
-  grep -n '^  - id: ' "$1" | sed 's/^[0-9]*:  - id:[[:space:]]*//' | tr -d ' '
-}
 table_block() {
   TB_TABLE=${1:-}
   TB_ID=${2:-}
