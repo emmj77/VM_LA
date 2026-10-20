@@ -95,7 +95,8 @@ def files(pattern):
 
 
 def audit_python(path, problems):
-    src = open(path, encoding="utf-8").read()
+    with open(path, encoding="utf-8") as handle:
+        src = handle.read()
     try:
         tree = ast.parse(src)
     except SyntaxError as error:
@@ -130,7 +131,8 @@ def audit_shell(path, problems):
 
 
 def audit_js(path, problems):
-    src = open(path, encoding="utf-8").read()
+    with open(path, encoding="utf-8") as handle:
+        src = handle.read()
     for match in re.finditer(r"\b(?:const|let|var|function)\s+([A-Za-z_$][\w$]*)", src):
         if french(match.group(1)):
             problems.append(("javascript", path, "identifier", match.group(1)))
@@ -145,7 +147,8 @@ def audit_js(path, problems):
 def audit_yaml(path, problems, keys_only=False):
     import yaml
     try:
-        doc = yaml.safe_load(open(path, encoding="utf-8")) or {}
+        with open(path, encoding="utf-8") as handle:
+            doc = yaml.safe_load(handle) or {}
     except Exception as error:
         problems.append(("yaml", path, "unreadable", str(error)))
         return
@@ -185,7 +188,8 @@ def harvest():
         if path.endswith("audit_vocab.py"):
             continue
         try:
-            tree = ast.parse(open(path, encoding="utf-8").read())
+            with open(path, encoding="utf-8") as handle:
+                tree = ast.parse(handle.read())
         except SyntaxError:
             continue
         for node in ast.walk(tree):
@@ -196,13 +200,16 @@ def harvest():
             for value in getattr(node, "names", []) or []:
                 raw.add(value)
     for path in files("config/engine/*.sh"):
-        raw.update(re.findall(r"[A-Za-z_][A-Za-z0-9_]*", open(path, encoding="utf-8").read()))
+        with open(path, encoding="utf-8") as handle:
+            raw.update(re.findall(r"[A-Za-z_][A-Za-z0-9_]*", handle.read()))
     for path in files("config/applets/**/*.js"):
-        raw.update(re.findall(r"[A-Za-z_$][\w$]*", open(path, encoding="utf-8").read()))
+        with open(path, encoding="utf-8") as handle:
+            raw.update(re.findall(r"[A-Za-z_$][\w$]*", handle.read()))
     import yaml
     for path in files("config/*.yaml") + files("config/tools/*/*.yaml"):
         try:
-            doc = yaml.safe_load(open(path, encoding="utf-8")) or {}
+            with open(path, encoding="utf-8") as handle:
+                doc = yaml.safe_load(handle) or {}
         except Exception:
             continue
         if isinstance(doc, dict):

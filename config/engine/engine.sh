@@ -53,7 +53,7 @@ def _arguments(argv):
             if v != "":
                 args[k] = v
             i += 2
-        elif a == "--fichier" and i + 1 < len(argv):
+        elif a == "--file" and i + 1 < len(argv):
             file = argv[i + 1]
             i += 2
         else:
@@ -61,7 +61,7 @@ def _arguments(argv):
     return op, args, file
 
 
-def convertir(prop, value):
+def coerce(prop, value):
     t = prop.type
 
     def un(raw):
@@ -71,21 +71,21 @@ def convertir(prop, value):
         if t in ("FLOAT", "FLOAT_COLOR"):
             return float(b)
         if t == "BOOLEAN":
-            return b.lower() in ("1", "true", "vrai", "oui")
+            return b.lower() in ("1", "true", "yes")
         return raw
 
     if getattr(prop, "is_array", False):
         pieces = [m for m in value.replace(" ", ",").split(",") if m != ""]
         vals = [un(m) for m in pieces]
-        manque = getattr(prop, "array_length", 0) - len(vals)
-        if manque > 0:
+        missing = getattr(prop, "array_length", 0) - len(vals)
+        if missing > 0:
             vals += [1.0 if (t == "FLOAT_COLOR" and i == prop.array_length - 1) else un("0")
                      for i in range(len(vals), prop.array_length)]
-        return vals[:prop.array_length] if manque < 0 else vals
+        return vals[:prop.array_length] if missing < 0 else vals
     return un(value)
 
 
-def _appeler(argv):
+def run_op(argv):
     op, args, file = _arguments(argv)
     res = {"op": op, "args": {}, "result": None, "error": None}
     if not op:
@@ -107,7 +107,7 @@ def _appeler(argv):
             if name not in rna.properties:
                 res["error"] = "refused: %s has no property %s" % (op, name)
                 return res
-            clean[name] = convertir(rna.properties[name], raw)
+            clean[name] = coerce(rna.properties[name], raw)
         res["args"] = {k: (v if not hasattr(v, "to_list") else list(v)) for k, v in clean.items()}
         result = function(**clean)
         res["result"] = sorted(result)
@@ -127,7 +127,7 @@ def _appeler(argv):
 END
 )"
   EXPR="$PY
-print('@@OP@@' + json.dumps(_appeler($ARGV), ensure_ascii=False) + '@@END@@')"
+print('@@OP@@' + json.dumps(run_op($ARGV), ensure_ascii=False) + '@@END@@')"
   OUT=$(timeout "$DELAI" "$BIN" --background --factory-startup --python-expr "$EXPR" 2>&1)
   LINE=$(printf '%s' "$OUT" | sed -n 's/.*@@OP@@\(.*\)@@END@@.*/\1/p' | tail -1)
   [ -n "$LINE" ] || { printf '%s\n' "$(msg blender_fail "$(printf '%s' "$OUT" | tail -3 | tr '\n' ' ')")" >&2 ; exit 1 ; }

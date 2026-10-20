@@ -33,7 +33,7 @@ NEED = (WINDOW + 8) * 160
 @contextlib.contextmanager
 def _silent():
     saved = os.dup(2)
-    hole = os.open(os.devholel, os.O_WRONLY)
+    hole = os.open(os.devnull, os.O_WRONLY)
     os.dup2(hole, 2)
     try:
         yield

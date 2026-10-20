@@ -165,7 +165,7 @@ second:
   task_chars: 160
   plan_lines: 16
   plan_chars: 900
-  stamp_lines: 1
+  stamp_lines: 2                     # the label AND the line : the bound counts both
   stamp_chars: 120
   resume_lines: 12
   resume_chars: 800
@@ -184,13 +184,13 @@ second:
   t_project_path: "path : %s"
   t_project_opens: "opens skills : %s"
   t_project_opens_none: "opens skills : none declared ; the perimeter is wide"
-  t_no_project: "no project loaded : the perimeter is wide (every skill is reachable)"
+  t_no_project: "no project loaded : the perimeter is WIDE, but you do NOT hold every tool. A tool lives in a skill : load the skill that owns it (load_skill) to reach its tools. toolset lists the perimeter of THIS turn, never the whole registry."
   t_summary_label: "summary :"
   t_project_summary_none: "summary : none ; the project summary section is empty"
   t_skill_label: "== THE ACTIVE SKILL =="
   t_skill_state: "active skill (state file) : %s"
   t_skill_loaded: "loaded skill : %s"
-  t_no_skill: "no skill loaded : the active skill is missing or nameless (%s)"
+  t_no_skill: "no skill loaded : no skill is active (skills/.active is absent or empty)"
   t_skill_summary_none: "summary : none ; the active skill summary section is empty"
   t_model_label: "== THE LOCAL MODEL SUMMARY =="
   t_model_written: "exchanges %s ; written %s"
@@ -198,6 +198,7 @@ second:
   t_plan_label: "== THE LOADED SKILL PLAN =="
   t_plan_missing: "the plan could not be obtained : the plan brick is missing (%s)"
   t_plan_empty: "the plan could not be obtained : the plan brick returned nothing"
+  t_plan_no_skill: "no open plan : no skill is active"
   t_tools_label: "== THE TOOLS STATE =="
   t_tools_family: "family open : %s"
   t_tools_no_family: "no family open : the perimeter is wide"
@@ -205,7 +206,7 @@ second:
   t_tools_none: "always visible : none declared (%s, permanent section)"
   t_reads_label: "== HOW THE DEMAND READS =="
   t_reads_judged: "judged_family : %s"
-  t_reads_unjudged: "judged_family : non juge -- le filtre n a pas appris (%s)"
+  t_reads_unjudged: "judged_family : not judged -- the family filter has not been trained (%s)"
   t_next_label: "== THE NEXT INSTRUCTION =="
   t_task_label: "== THE TASK =="
   t_stamp_label: "== THE TIMESTAMP =="
@@ -307,7 +308,6 @@ paths:                                        # TOUS LES CHEMINS DU HARNAIS, NOM
   project_active: "projects/.active"           # le projet charge
   skill_active: "skills/.active"               # la skill chargee
   pick: "config/engine/pick.sh"                # la preselection par le sens
-  journal: "config/state/journal.jsonl"         # ce qui transite, tour par tour
   memory_db: "config/memory.db"
   reply_stream: "config/state/reply.stream"
   loop: "config/engine/loop.sh"
@@ -316,7 +316,7 @@ paths:                                        # TOUS LES CHEMINS DU HARNAIS, NOM
   stop: "config/state/stop"
   say_queue: "config/state/say.queue"
   spoken: "config/state/spoken.jsonl"
-  thinking: "config/state/thinking.jsonl"
+  trace: "config/state/trace.jsonl"              # THE live channel of a turn : think and tool, one line each
   audio: "config/audio/"
   bridge_log: "config/state/bridge.log"
   bridge_cert: "config/certs/bridge-cert.pem"

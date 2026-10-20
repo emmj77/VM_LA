@@ -16,6 +16,8 @@ config/terminal_return.db-journal
 work/
 config/audio/
 config/backups/
+# L INDEX DE CODE : un produit d outil (codegraph init), refait a la demande, jamais du source.
+.codegraph/
 *.pid
 *.log
 # LES AGENTS : le tableau, les filigranes et les marques de tour sont de l'ETAT, pas du source.

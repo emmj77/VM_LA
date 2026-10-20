@@ -51,25 +51,28 @@ db_init() {   # pose le schema si la base est neuve ; rend 1 si sqlite3 manque
 
 trim_prog() {
   cat <<'JQ'
-def coupe($n):
+def clip($n):                       # one clip, one marker: a second pass cuts the text raw
   if (.content|type) != "string" then .
   elif (.content|utf8bytelength) <= $n then .
+  elif (.content|test("TRUNCATED:")) then
+    (.content[0:(($n/4)|floor)] + " … " + .content[-(($n/4)|floor):]) as $raw
+    | .content = $raw
   else (.content|utf8bytelength) as $L
        | .content = ((.content[0:(($n/4)|floor)])
-           + "\n[... TRUNCATED: " + ($L|tostring) + " bytes in total; the whole text is in config/sessions.db and in the turn journal ...]\n"
+           + "\n[... TRUNCATED: " + ($L|tostring) + " bytes in total; the whole text is in config/sessions.db and in the turn trace ...]\n"
            + (.content[-(($n/4)|floor):]))
   end;
-map(coupe($cap))
+map(clip($cap))
 | . as $m
 | ($m | length) as $nl
 | ($m | map(.content|length) | add // 0) as $tot
 | ($m | map(select(.role == "tool") | (.content|length)) | add // 0) as $tl
 | ($m | map(select(.role == "tool")) | length) as $nt
 | if $tot <= $bud or $nt == 0 then $m
-  else ((($bud - ($tot - $tl)) / $nt) | floor | if . < 60 then 60 else . end) as $al
+  else ((($bud - ($tot - $tl)) / $nt) | floor | if . < 260 then 260 else . end) as $al
        | ($m | to_entries
               | map(.value = (if (.value.role == "tool" and .key != ($nl - 1))
-                              then (.value | coupe($al)) else .value end))
+                              then (.value | clip($al)) else .value end))
               | map(.value))
   end
 JQ
@@ -109,12 +112,16 @@ db_insert() {  # verse dans la base les messages NOUVEAUX de l historique du tou
   [ "$_n" -gt "$SENT" ] || return 0
   jq -c --argjson n "$SENT" '.[$n:][]' "$T/hist.json" 2>/dev/null | while IFS= read -r _m; do
     [ -n "$_m" ] || continue
+    _r=$(printf '%s' "$_m" | jq -r '.reasoning // .reasoning_content // ""')
+    if [ -z "$_r" ] && [ "$(printf '%s' "$_m" | jq -r '.role // ""')" = "assistant" ] && [ -s "$T/reason" ]; then
+      _r=$(cat "$T/reason") ; : > "$T/reason"
+    fi
     db_add "$(printf '%s' "$_m" | jq -r '.role // ""')" \
            "$(printf '%s' "$_m" | jq -r '.content // ""')" \
            "$(printf '%s' "$_m" | jq -c '.tool_calls // empty')" \
            "$(printf '%s' "$_m" | jq -r '.tool_call_id // ""')" \
            "$(printf '%s' "$_m" | jq -r '.name // ""')" \
-           "$(printf '%s' "$_m" | jq -r '.reasoning_content // ""')"
+           "$_r"
   done
   SENT=$_n
 }
@@ -138,7 +145,7 @@ hist_window() {  # LA ZONE 3 : les WINDOW derniers MESSAGES, BRUTS, identifiants
   [ "$_b" -ge 1 ] || _b=1
   [ "$_b" -gt "$_s" ] || { printf '[]'; return 0 ; }
   sqlite3 -json "$DB" "SELECT role, content, tool_calls, tool_call_id, name, coalesce(reasoning,'') AS reasoning FROM messages WHERE id >= $_b ORDER BY id;" 2>/dev/null \
-   | jq -c --argjson echo "${ECHO_REASON:-0}" --arg k "${REASON_FIELD:-reasoning_content}" '[.[] | {role, content}
+   | jq -c --argjson echo "${ECHO_REASON:-0}" --arg k "${REASON_FIELD:-reasoning}" '[.[] | {role, content}
              + (if (.tool_calls // "") == "" then {} else {tool_calls: (.tool_calls | fromjson)} end)
              + (if (.tool_call_id // "") == "" then {} else {tool_call_id: .tool_call_id} end)
              + (if (.name // "") == "" then {} else {name: .name} end)
@@ -151,7 +158,6 @@ CALLS_MAX=${LA_MAX_CALLS:-$(conf_req_num loop max_calls)}    # la BORNE du nombr
 SECONDS_MAX=${LA_MAX_SECONDS:-$(conf_req_num loop max_seconds)}  # la BORNE de TEMPS MURAL de la task, en SECONDES (0 = aucune).
 TRACE=${LA_TRACE:-0}
 TIMEOUT=${LA_TIMEOUT:-$(conf_req_num loop timeout)}          # le delai de l APPEL AU MODELE. Un long run doit pouvoir
-JOURNAL=${LA_LOG_FILE:-}
 ENV1=${LA_ENV:-$CONF_DIR/.env}
 LA_DEPTH=${LA_DEPTH:-0}
 LA_VOICE=${LA_VOICE:-0}
@@ -191,15 +197,16 @@ die() {
   exit 2
 }
 
-log_to_stderr() {  # $1 = une ligne deja plate
-  printf '%s\n' "$1" >&2
+TRACE_FILE=${LA_TRACE_FILE:-$(conf_str paths trace config/state/trace.jsonl)}
+case "$TRACE_FILE" in /*) ;; *) TRACE_FILE="$ROOT/$TRACE_FILE" ;; esac
+
+trace() {  # $1 = kind ; $2 = the line, already JSON ; the ONE live channel (dash /api/live, the panel)
+  [ -n "$TRACE_FILE" ] || return 0
+  printf '%s\n' "$2" >> "$TRACE_FILE" 2>/dev/null || :
 }
 
-journal_entry() {  # $1 = le message humain ; le raisonnement du tour va avec, rien d autre
-  [ -n "$JOURNAL" ] || return 0
-  jq -cn --arg t "$TURN" --arg ts "$(ts)" --arg m "$1" --arg r "${REASON:-}" \
-    '{turn:($t|tonumber),ts:$ts,role:"assistant",message:$m,reasoning:$r}' \
-    >> "$JOURNAL" 2>/dev/null || :
+log_to_stderr() {  # $1 = une ligne deja plate
+  printf '%s\n' "$1" >&2
 }
 
 say_once() {  # $1 = la phrase a dire a l humain ; la meme phrase dans la fenetre ne se repete pas
@@ -592,7 +599,9 @@ wake_resident() {  # le resident du rerank s endort quand il ne sert pas : on le
   systemctl --user start la-models >/dev/null 2>&1 || true
   _w=0
   while [ "$_w" -lt 10 ]; do
-    curl -s -m 2 -o /dev/null "http://${_rhost}:${_rport}/v1/models" && return 0
+    curl -s -m 3 -o /dev/null -X POST "http://${_rhost}:${_rport}/v1/rerank" \
+      -H 'Content-Type: application/json' \
+      -d '{"model":"'"${LA_RERANK_MODEL:-bge-reranker-v2-m3-Q4_K_M}"'","query":"wake","documents":["wake"],"top_n":1}' && return 0
     sleep 2
     _w=$((_w + 2))
   done
@@ -601,6 +610,11 @@ wake_resident() {  # le resident du rerank s endort quand il ne sert pas : on le
 
 rank_share() {   # $1 = candidats (id|nom|description) ; $2 = la demande ; $3 = la PART ; pose SHARE_NAMES
   _cand=$1; _q=$2; _part_in=${3:-30}
+  if [ ! -s "$_cand" ]; then   # rien a classer : le reranker repond 400 sur une liste vide, et le tour mourait pour ca
+    log_to_stderr "$(ts)  loop: no candidate to rank, the reranker is not called"
+    SHARE_NAMES=''
+    return 0
+  fi
   case "$_part_in" in ''|*[!0-9]*) _part_in=30 ;; esac
   SKILLSET_TOOLS=''
   if [ -n "${LA_SKILLSET:-}" ]; then
@@ -625,10 +639,14 @@ rank_share() {   # $1 = candidats (id|nom|description) ; $2 = la demande ; $3 = 
   _rt=${RERANK_TIMEOUT:-15}
   _rep=$(printf '%s' "$_req" | curl -sS --max-time "$_rt" -X POST \
     "http://127.0.0.1:$_port/v1/rerank" -H 'Content-Type: application/json' -d @- 2>/dev/null) || _rep=''
-  [ -n "$_rep" ] || return 1
+  if [ -z "$_rep" ]; then
+    log_to_stderr "$(ts)  loop: rerank gave no answer (candidates=$(wc -l < "$_cand"), request=${#_req} bytes, timeout=${_rt}s)"
+    return 1
+  fi
   _names=$(jq -R 'split("|")[1]' "$_cand" | jq -s '.')
   SHARE_NAMES=$(printf '%s' "$_rep" | jq -r --argjson names "$_names" --argjson k "$_part" \
     '(.results // .) | sort_by(-.relevance_score) | .[0:$k] | .[] | $names[.index]' 2>/dev/null)
+  [ -n "$SHARE_NAMES" ] || log_to_stderr "$(ts)  loop: rerank answered without names (candidates=$(wc -l < "$_cand"), answer=${#_rep} bytes): $(printf '%s' "$_rep" | head -c 160)"
   [ -n "$SHARE_NAMES" ]
 }
 
@@ -751,7 +769,7 @@ candidates the reranker receives. It is not a turn." ;;
   for _n in $GUARDRAILS ; do _add "$_n" ; done
   _share_set=" $(printf '%s' "${SHARE_NAMES:-}" | tr '\n' ' ') "
   if [ -n "$LOCK" ]; then
-    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - UN LOCK EST ARME (tool impose : $LOCK) : le scope est REDUIT a ce seul tool, EXTRA les garde-fous reply, kill. Par leur NUMERO :
+    SCOPE_TXT="THE TOOLS REACHABLE THIS TURN - A LOCK IS ARMED (imposed tool: $LOCK): the scope is REDUCED to that single tool, PLUS the guardrails reply, kill. By their NUMBER:
 "
     _add "$LOCK"
   elif [ "$UPDATE_DUE" != 0 ]; then
@@ -764,7 +782,7 @@ case "$UPDATE_DUE" in 2) _what='the CANON (update_spec)' ; _add update_spec ;;
 "
     _add "${BIG_ACT:-big_todo}"
   elif [ "$PLAN_DUE" = 1 ]; then
-    SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE PLAN EST IMPOSE (tous les $PLAN_EVERY tours) : marque TON POINT COURANT avec update_todo, et le tour passe. Le toolset du skill ne revient qu une fois le point marque. Par leur NUMERO :
+    SCOPE_TXT="THE TOOLS REACHABLE THIS TURN - THE PLAN IS IMPOSED (every $PLAN_EVERY turns): mark YOUR CURRENT POINT with update_todo, and the turn passes. The skill toolset only comes back once the point is marked. By their NUMBER:
 "
     _add update_todo
   else
@@ -787,20 +805,20 @@ case "$UPDATE_DUE" in 2) _what='the CANON (update_spec)' ; _add update_spec ;;
       fi
     fi
     if [ "$DOC_READ" != 1 ]; then
-      SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA DOC N EST PAS ENCORE LUE : la famille PLAN est FERMEE. Lis la doc (load_doc) pour ouvrir le plan. Les permanents, par leur NUMERO :
+      SCOPE_TXT="THE TOOLS REACHABLE THIS TURN - THE DOC IS NOT READ YET: the PLAN family is CLOSED. Read the doc (load_doc) to open the plan. The permanents, by their NUMBER:
 "
     elif [ "$PLAN_DONE" != 1 ]; then
-      SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LA DOC EST LUE, LE PLAN N EST PAS FAIT : les tools du SKILL sont FERMES. Fais le plan (todo) pour ouvrir le toolset (goal : 100 octets max). Par leur NUMERO :
+      SCOPE_TXT="THE TOOLS REACHABLE THIS TURN - THE DOC IS READ, THE PLAN IS NOT DONE: the SKILL tools are CLOSED. Do the plan (todo) to open the toolset (goal: 100 bytes max). By their NUMBER:
 "
     elif [ "$TOOLSET_ARMED" = 1 ]; then
       SCOPE_TXT="THE TOOLS REACHABLE THIS TURN - THE TOOLSET IS OPEN IN FULL (toolset was just named): the COMPLETE turn of the active skill, LESS the permanents. toolset is ABSENT from this turn. By their NUMBER:
 "
     else
-      SCOPE_TXT="LES TOOLS ATTEIGNABLES CE TOUR - LE TOOLSET DU SKILL (les 30% les plus probables pour cette tache), EXTRA les permanents. Si un tool te manque, nomme toolset : la liste complete t est rendue. Par leur NUMERO :
+      SCOPE_TXT="THE TOOLS REACHABLE THIS TURN - THE TOOLSET OF THE SKILL (the 30% most likely for this task), PLUS the permanents. If a tool is missing, name toolset: the full list is returned to you. By their NUMBER:
 "
     fi
   fi
-  _dmax=$(conf_req_num loop desc_chars)      # lue UNE fois, pas a chaque tool du scope
+  _dmax=$(conf_req_num loop desc_chars)      # read ONCE, not for every tool of the scope
   _q0=$(date +%s%N)
   table_index
   [ -n "${LA_TRACE:-}" ] && printf '%s\n' "$(msg trace_table_index_scope "$(( ($(date +%s%N)-_q0)/1000000 ))")" >&2
@@ -888,6 +906,7 @@ TURN_MARK=${LA_TURN_MARK:-$STATE/turn.pid}
 printf '%s\n' "$$" > "$TURN_MARK" 2>/dev/null || :
 
 : > "$T/read_log"; : > "$T/written"; : > "$T/counter"; CAP_LAST=
+: > "$TRACE_FILE" 2>/dev/null || :
 printf '[]' > "$T/hist.json"; : > "$T/curl.err"
 
 EXCHANGE=1; SENT=0; WINDOW_JSON='[]'
@@ -1134,7 +1153,7 @@ log_to_stderr "$(ts)  turn $TURN  transport failure (curl $CRC : $CURL_WHY): the
       [ "$_name" = reply ] || continue
       [ "$_mode" = talk ] && HAS_SPEECH=1
       [ "$_mode" = talk ] && [ -n "$(printf '%s' "$_txt" | tr -d '[:space:]')" ] && HAS_WORDS=1
-      [ -n "${_next:-}" ] && printf '%s\n' "$_next" > "$STATE/next.md" 2>/dev/null
+
       :
     done < "$T/speech.tsv"
     if [ "$HAS_SPEECH" = 0 ]; then
@@ -1148,15 +1167,16 @@ log_to_stderr "$(ts)  turn $TURN  transport failure (curl $CRC : $CURL_WHY): the
   if [ -n "${REASON_FIELD:-}" ]; then
     REASON=$(printf '%s' "$MSG" | jq -r --arg f "$REASON_FIELD" '.[$f] // ""' 2>/dev/null || true)
   else
-    REASON=$(printf '%s' "$MSG" | jq -r '.reasoning_content // .reasoning // ""' 2>/dev/null || true)
+    REASON=$(printf '%s' "$MSG" | jq -r '.reasoning // .reasoning_content // ""' 2>/dev/null || true)
   fi
   if [ -n "$REASON" ]; then
     printf '%s\n' "$REASON" | sed 's/^/thinking: /' >&2
-    printf '%s' "$REASON" | jq -Rsc --arg t "$TURN" --arg ts "$(ts)" \
-      '{turn:($t|tonumber), ts:$ts, text:.}' >> "$STATE/thinking.jsonl" 2>/dev/null || :
-    printf '%s' "$REASON" | jq -Rsc --arg ex "${EXCHANGE:-0}" --arg t "$TURN" --arg ts "$(ts)" \
-      '{exchange:($ex|tonumber), turn:($t|tonumber), ts:$ts, text:.}' >> "$STATE/reasoning.jsonl" 2>/dev/null || :
-log_to_stderr "$(ts)  turn $TURN  thinking: $(printf '%s' "$REASON" | wc -c) byte(s) to the human channel"
+    # the reasoning goes to the BASE, with the message it produced : one single place ;
+    # the live channel only carries it for the duration of the turn
+    printf '%s' "$REASON" > "$T/reason" 2>/dev/null || :
+    trace think "$(jq -cn --arg t "${TURN:-0}" --arg ts "$(ts)" --arg x "$REASON" \
+      '{turn:($t|tonumber),ts:$ts,kind:"think",text:$x}')"
+    log_to_stderr "$(ts)  turn $TURN  thinking: $(printf '%s' "$REASON" | wc -c) byte(s) to the base"
   fi
 
   if [ "$NTC" = "0" ]; then
@@ -1170,7 +1190,7 @@ log_to_stderr "$(ts)  turn $TURN  no tool ($NO_TOOL) - model text: $(printf '%s'
     '[.tool_calls | to_entries[] | .value + {id: (.value.id // ("call_la_" + $turn + "_" + (.key | tostring)))}]')
   if [ "${ECHO_REASON:-0}" = 1 ]; then
     AM=$(jq -cn --argjson tcs "$TCS" --arg c "$CONTENT" --arg r "$REASON" \
-      --arg k "${REASON_FIELD:-reasoning_content}" \
+      --arg k "${REASON_FIELD:-reasoning}" \
       '{role:"assistant", content:$c, tool_calls:$tcs} + {($k):$r}')
   else
     AM=$(jq -cn --argjson tcs "$TCS" --arg c "$CONTENT" '{role:"assistant", content:$c, tool_calls:$tcs}')
@@ -1282,13 +1302,10 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
       update_spec) [ "$UPDATE_DUE" = 2 ] && UPDATE_DUE=0 ;;
     esac
     MSG_LINE=$(printf '%s' "$LINE_" | jq -r '.line // .result // ""' 2>/dev/null || true)
+    trace tool "$(jq -cn --arg t "${TURN:-0}" --arg ts "${MSG_TS:-$(ts)}" --arg n "${TOOL_NAME:-?}" \
+      --arg s "${MSG_STATUS:-?}" --arg g "${G:-}" --arg a "${AJ:-}" --arg l "$MSG_LINE" \
+      '{turn:($t|tonumber),ts:$ts,kind:"tool",tool:$n,status:$s,g:$g,args:$a,line:$l}')"
     log_to_stderr "${MSG_TS:-$(ts)}  turn $TURN  la(g=$G, a=$AJ)  ->  $MSG_LINE"
-    if [ -n "$JOURNAL" ]; then
-      jq -cn --arg t "$TURN" --arg ts "${MSG_TS:-$(ts)}" --argjson g "$G" --argjson a "$AJ" \
-        --argjson tc "$TC" --argjson engine "$LINE_" \
-        '{turn:($t|tonumber),ts:$ts,la:{g:$g,a:$a},tool_call:$tc,engine:$engine}' \
-        >> "$STATE/trace.jsonl" 2>/dev/null || :
-    fi
 
     case "$TOOL_NAME" in
       read_file|list_dir) P0=$(printf '%s' "$AJ" | jq -r '.[0] // empty'); [ -n "$P0" ] && printf '%s\n' "$P0" >> "$T/read_log" ;;
@@ -1308,9 +1325,9 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
           _ng=$(printf '%s' "$TCS" | jq -r ".[$I].function.arguments | (fromjson? // {}) | .g // empty" 2>/dev/null || true)
           _nb=$(block_of_id "$_ng" 2>/dev/null || true)
           _nn=$(printf '%s\n' "$_nb" | sed -n 's/^    tool:[[:space:]]*//p' | head -n 1)
-          [ -n "$_nn" ] && _suffix="  (le resultat de $_nn arrive juste apres, dans ce meme tour)"
+          [ -n "$_nn" ] && _suffix="  (the result of $_nn follows just after, in this same turn)"
         fi
-        RESULT_TEXT="l humain a dit : $_said$_suffix"
+        RESULT_TEXT="the human said: $_said$_suffix"
         log_to_stderr "$(ts)  turn $TURN  talk: the human word comes in ($(printf '%s' "$_said" | wc -c) byte(s))"
       else
         RESULT_TEXT=""
@@ -1324,7 +1341,6 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
              content:($c + (if $rid == "" then "" else "\n[return " + $rid + "]\n" end))}]'
 
     if [ "$MSG_STATUS" = "ok" ] && [ "$MODE" = "talk" ]; then
-      journal_entry "$(result_of "$LINE_")"
       if ! say_once "$(result_of "$LINE_")"; then
         hist_apply --arg m "$(msg turn_same_words)" '. + [{role:"system",content:$m}]'
       fi
@@ -1333,13 +1349,11 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
     if [ "$MSG_STATUS" = "ok" ] && [ "$MODE" = "answer" ]; then
       REPLY=$(result_of "$LINE_")
       if open_plan; then
-        journal_entry "$REPLY"
         say_once "$REPLY" || true
         log_to_stderr "$(ts)  turn $TURN  answer PASSED and the plan is not finished: the reply goes to the human channel, the turn continues"
         SAID=$(printf '%s' "$REPLY" | tr '\n\t' '  ' | cut -c1-"$(conf_req_num loop error_chars)")
         hist_apply --arg m "$(msg turn_open "$SAID")" '. + [{role:"system",content:$m}]'
       else
-        journal_entry "$REPLY"
         ANSWERED=1
         close_remaining
         break
@@ -1347,7 +1361,6 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
     fi
     if [ "$MSG_STATUS" = "ok" ] && [ "$MODE" = "ask" ]; then
       REPLY=$(result_of "$LINE_")
-      journal_entry "$REPLY"
       ANSWERED=1
       close_remaining
       log_to_stderr "$(ts)  turn $TURN  ask: the turn stops and waits for the human"
@@ -1416,7 +1429,7 @@ fi
 
 signal_task() {
   [ -x "$PROCS/signal_task.sh" ] || return 0
-  ( printf '{}' | nohup "$PROCS/signal_task.sh" >>"$STATE/signal_task.log" 2>&1 & ) >/dev/null 2>&1
+  ( printf '{}' | nohup "$PROCS/signal_task.sh" >>"/dev/null" 2>&1 & ) >/dev/null 2>&1
 }
 
 if [ "$ANSWERED" != 1 ]; then
@@ -1427,7 +1440,7 @@ if [ "$ANSWERED" != 1 ]; then
 fi
 
 if [ -n "$REPLY" ] && [ -x "$PROCS/session_note.sh" ]; then
-  ( nohup "$PROCS/session_note.sh" "$REQUEST" "$REPLY" >>"$STATE/session_note.log" 2>&1 & ) >/dev/null 2>&1
+  ( nohup "$PROCS/session_note.sh" "$REQUEST" "$REPLY" >>"/dev/null" 2>&1 & ) >/dev/null 2>&1
 fi
 signal_task
 

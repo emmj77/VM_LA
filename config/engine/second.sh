@@ -40,6 +40,7 @@ T_model_none='# no summary : %s is missing or empty. The model writes it, never 
 T_plan_label='== THE LOADED SKILL PLAN =='
 T_plan_missing='the plan could not be obtained : the plan brick is missing (%s)'
 T_plan_empty='the plan could not be obtained : the plan brick returned nothing'
+T_plan_no_skill='no open plan : no skill is active'
 T_tools_label='== THE TOOLS STATE =='
 T_tools_family='family open : %s'
 T_tools_no_family='no family open : the perimeter is wide (tools live in skills ; load_skill to reach one)'
@@ -47,7 +48,7 @@ T_tools_visible='always visible : %s'
 T_tools_none='always visible : none declared (%s, permanent section)'
 T_reads_label='== HOW THE DEMAND READS =='
 T_reads_judged='judged_family : %s'
-T_reads_unjudged='judged_family : non juge -- le filtre n a pas appris (%s)'
+T_reads_unjudged='judged_family : not judged -- the family filter has not been trained (%s)'
 T_next_label='== THE NEXT INSTRUCTION =='
 T_task_label='== THE TASK =='
 T_stamp_label='== THE TIMESTAMP =='
@@ -111,6 +112,7 @@ while IFS= read -r _tk; do
     t_plan_label)           T_plan_label=$_tv ;;
     t_plan_missing)         T_plan_missing=$_tv ;;
     t_plan_empty)           T_plan_empty=$_tv ;;
+    t_plan_no_skill)        T_plan_no_skill=$_tv ;;
     t_tools_label)          T_tools_label=$_tv ;;
     t_tools_family)         T_tools_family=$_tv ;;
     t_tools_no_family)      T_tools_no_family=$_tv ;;
@@ -179,11 +181,11 @@ if [ -f "$SKILL" ]; then
 fi
 S_SKILL=$({
   printf '%s\n' "$T_skill_label"
-  tpn "$T_skill_state" "${NAME:-la}"
+  [ -n "${NAME:-}" ] && tpn "$T_skill_state" "$NAME"
   if [ -n "$SKILL_NAME" ]; then
     tpn "$T_skill_loaded" "$SKILL_NAME"
   else
-    tpn "$T_no_skill" "$SKILL"
+    printf '%s\n' "$T_no_skill"
   fi
   if [ -n "$SKRES" ]; then
     printf '%s\n' "$T_summary_label"
@@ -220,8 +222,12 @@ PLAN_SH="$HERE/plan.sh"
 if [ ! -x "$PLAN_SH" ]; then
   PLAN=$(tpn "$T_plan_missing" "$PLAN_SH")
 else
-  PLAN=$(PLAN_FILE="$SKILL" "$PLAN_SH" status 2>/dev/null) || PLAN=
-  [ -n "$PLAN" ] || PLAN=$T_plan_empty
+  if [ -f "$SKILL" ]; then
+    PLAN=$(PLAN_FILE="$SKILL" "$PLAN_SH" status 2>/dev/null) || PLAN=
+    [ -n "$PLAN" ] || PLAN=$T_plan_empty
+  else
+    PLAN=$T_plan_no_skill
+  fi
 fi
 S_PLAN=$({
   printf '%s\n' "$T_plan_label"
@@ -260,7 +266,7 @@ S_TOOLS=$({
 
 S_READS=$({
   printf '%s\n' "$T_reads_label"
-  FAMF=${LA_FILTER_MODEL:-$CONF_DIR/filtre/family.bin}
+  FAMF=${LA_FILTER_MODEL:-$(conf_str paths filter "$CONF_DIR/filter/family.bin")}
   FAM=
   if [ -f "$FAMF" ] && command -v fasttext >/dev/null 2>&1; then
     FAM=$(printf '%s\n' "$TASK" | fasttext predict-prob "$FAMF" - 1 2>/dev/null \

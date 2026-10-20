@@ -61,7 +61,7 @@ while read -r _sec _keys ; do
       fail "la_config : $_sec.$_k est exige par le moteur et MANQUE (il refusera de demarrer, exit 78)"
   done
 done <<EOF
-$(grep -h '^conf_require ' "$ROOT"/config/engine/*.sh 2>/dev/null | sed 's/^conf_require //')
+$(grep -hoE '^conf_req(_num|_str)? [a-z_]+ [a-z_]+' "$ROOT"/config/engine/*.sh 2>/dev/null | sed 's/^conf_req[_a-z]* //')
 EOF
 quiet "$_b" "$NR cle(s) exigees par le moteur, toutes ecrites"
 
@@ -258,7 +258,7 @@ for _d in "$SKILLS"/*/ ; do
       NS=$((NP + NT + NC))
       [ "$NP" = 1 ] || fail "skill $NM : PERMANENT_TODO true mais $NP etape(s) en cours -- il en faut UNE (le tunnel ne saurait pas ou il en est)"
       [ "$NS" -le "$LIM_TUNNEL" ] || fail "skill $NM : $NS etapes dans le tunnel -- $LIM_TUNNEL au plus"
-      for _W in $(sed -n 's/.*--[[:space:]]*outils:[[:space:]]*\(.*\)"$/\1/p' "$S" | tr ',' ' ') ; do
+      for _W in $(sed -n 's/.*--[[:space:]]*tools:[[:space:]]*\(.*\)"$/\1/p' "$S" | tr ',' ' ') ; do
         grep -qE "^    tool: $_W\$" "$TABLE" || \
           fail "skill $NM : une etape nomme l outil \"$_W\", absent de la table -- elle ne se fermerait jamais"
         grep -qE "^  [0-9]+: \"$_W\"" "$S" || \
@@ -313,6 +313,8 @@ else
 fi
 if [ -n "${NAME:-}" ] && [ -f "$SKILLS/$NAME/skill.yaml" ] ; then
   ok "le .active dit $NAME, et $NAME existe"
+elif [ -z "${NAME:-}" ] && [ ! -e "$SKILLS/.active" ] ; then
+  note "aucune skill active : etat normal apres un plan fini (le fil la decharge, loi 921)"
 else
   fail "le .active ne nomme aucune skill qui existe (skills/.active)"
 fi

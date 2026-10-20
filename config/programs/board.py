@@ -26,10 +26,11 @@ TABLE = os.environ.get("LA_CONFIG") or laconf.path("table", "")
 CONF = os.environ.get("LA_CONF") or laconf.path("config", "")
 ENGINE = os.path.join(laconf.path("engine", ""), "engine.sh")
 GGUF = os.environ.get("LA_GGUF_DIR") or laconf.path("gguf", "")
-JOURNALS = os.environ.get("LA_LOG_FILE") or laconf.path("journal", "")
+JOURNALS = laconf.path("bridge_log", "config/state/bridge.log")
 FILTER = laconf.path("filter", "")
 SPECS = [s if os.path.isabs(s) else os.path.join(ROOT, s) for s in laconf.get("paths", "specs", [])]
 VISION = laconf.path("vision_log", "")
+TRACE = laconf.path("trace", "config/state/trace.jsonl")
 DEFAULT_WIDTH = num("board", "columns", 82)
 
 
@@ -272,7 +273,7 @@ def read_modeles():
         for name in _models_in(os.path.join(ROOT, "config", "programs", f)):
             place(name, f, False)
     if os.path.isfile(FILTER):
-        place("family.bin", "filtre 223/224", False)
+        place("family.bin", "filter 223/224", False)
     lines = [(name, size_of(name, pid), who, load)
               for name, (who, load, pid) in found.items()]
     lines.sort(key=lambda x: (not x[3], x[2]))
@@ -336,7 +337,8 @@ def read_doctor():
 def read_engine():
     if not os.path.isfile(ENGINE):
         return False, -1
-    code, out = run(["sh", ENGINE, "104", "config"], timeout=30)
+    rid = read_registry().get("list_dir") or "104"
+    code, out = run(["sh", ENGINE, str(rid), "config"], timeout=30)
     return ('"status":"ok"' in out or '"status": "ok"' in out), code
 
 
@@ -361,7 +363,7 @@ def read_traffic():
         t["sessions"] = (str(c["n"]), str(c["ex"]))
         t["quand"] = c["ts"] or ""
     if os.path.isfile(JOURNALS):
-        _, failures = run(["grep", "-c", "echec de transport", JOURNALS], timeout=6)
+        _, failures = run(["grep", "-c", "transport failure", JOURNALS], timeout=6)
         t["journal"] = (os.path.getsize(JOURNALS), failures.strip() or "0")
     elif JOURNALS:
         t["journal_absent"] = JOURNALS
@@ -371,39 +373,25 @@ def read_traffic():
 
 
 def read_turn():
-    if not os.path.isfile(JOURNALS):
+    if not os.path.isfile(TRACE):
         return []
-    code, out = run(["tail", "-n", "120", JOURNALS], timeout=6)
-    if code != 0:
+    rows = []
+    try:
+        with open(TRACE, "r", errors="replace") as f:
+            for l in f:
+                l = l.strip()
+                if not l.startswith("{"):
+                    continue
+                try:
+                    o = json.loads(l)
+                except ValueError:
+                    continue
+                if isinstance(o, dict) and o.get("kind") == "tool":
+                    rows.append(o)
+    except OSError:
         return []
-    read_rows = []
-    for l in out.splitlines():
-        l = l.strip()
-        if not l.startswith("{"):
-            continue
-        try:
-            o = json.loads(l)
-        except ValueError:
-            continue
-        if not isinstance(o, dict):
-            continue
-        call = o.get("tool_call") or {}
-        func = call.get("function") or {}
-        name = func.get("name") or call.get("type") or "?"
-        args = func.get("arguments") or o.get("la") or ""
-        detail = ""
-        if isinstance(args, str) and args.strip().startswith("{"):
-            try:
-                d = json.loads(args)
-                if isinstance(d, dict) and ("g" in d or "a" in d):
-                    detail = "g=%s a=%s" % (d.get("g", "?"), d.get("a", ""))
-            except ValueError:
-                detail = ""
-        elif isinstance(args, dict):
-            detail = "g=%s a=%s" % (args.get("g", "?"), args.get("a", ""))
-        read_rows.append((str(o.get("ts", ""))[11:19], "n°%s" % str(o.get("turn", "?")), str(name),
-                    detail or str(args)[:60]))
-    return read_rows[-4:]
+    return [(str(o.get("ts", ""))[11:19], "n°%s" % str(o.get("turn", "?")),
+             str(o.get("tool") or "?"), str(o.get("line") or "")[:80]) for o in rows[-4:]]
 
 
 def read_machine_name():
@@ -611,7 +599,7 @@ def _sigwinch(sig, frame):
 
 
 def tint(l):
-    if l.startswith(("CE QUI", "LES ", "LA ")):
+    if l.startswith(("WHAT GOES", "THE MODELS", "THE MACHINE")):
         return "\033[36m" + l + "\033[0m"
     if l.rstrip().endswith("!!") or " !! " in l or "fault(s)" in l:
         return "\033[31m" + l + "\033[0m"
@@ -828,6 +816,8 @@ class Tailer:
 
 
 def _tool_line(e, width=120):
+    if e.get("kind") == "tool":                     # a line of the live trace
+        return shorten(str(e.get("line") or e.get("tool") or ""), width), e.get("status") == "ok"
     eng = e.get("engine") or {}
     line = eng.get("line") or ""
     if not line:
@@ -842,8 +832,8 @@ def _tool_line(e, width=120):
 
 
 def one_turn(text):
-    sj = Tailer(os.path.join(state_dir(), "journal.jsonl"))
-    st = Tailer(os.path.join(state_dir(), "thinking.jsonl"))
+    sj = Tailer(TRACE)
+    st = Tailer(TRACE)
     end = {"obj": None, "fault": None}
 
     def stream():
@@ -856,10 +846,14 @@ def one_turn(text):
     t.start()
     while t.is_alive():
         for e in st.new_lines():
+            if e.get("kind") != "think":
+                continue
             txt = " ".join(str(e.get("text") or "").split())
             if txt:
                 sys.stderr.write("· %s\n" % txt[:400])
         for e in sj.new_lines():
+            if e.get("kind") != "tool":
+                continue
             line, ok = _tool_line(e)
             if line:
                 sys.stderr.write(("  ✓ " if ok else "  ✗ ") + line + "\n")
@@ -901,8 +895,8 @@ class Cli(App):
         self.running = False
         self._pv = None
         self.pending = ""
-        self.sj = Tailer(os.path.join(state_dir(), "journal.jsonl"))
-        self.st = Tailer(os.path.join(state_dir(), "thinking.jsonl"))
+        self.sj = Tailer(TRACE)
+        self.st = Tailer(TRACE)
         self.sr = Tailer(STREAM)
 
     def compose(self) -> ComposeResult:
@@ -1008,11 +1002,15 @@ class Cli(App):
 
     def pump(self):
         for e in self.st.new_lines():
+            if e.get("kind") != "think":
+                continue
             txt = " ".join(str(e.get("text") or e.get("raw") or "").split())
             if txt:
                 self.stream.write(Text("· " + (txt[:400] + ("…" if len(txt) > 400 else "")),
                                     style="dim italic"))
         for e in self.sj.new_lines():
+            if e.get("kind") != "tool":
+                continue
             l, ok = _tool_line(e, max(40, (self.stream.size.width or 78) - 8))
             if l:
                 self.tools += 1
@@ -1302,7 +1300,7 @@ def main():
             n = name.lower()
             if n in RESIDENT_NAMES or n == "residents":
                 return "RESIDENT"
-            if n.startswith("gpu ") or n == "ram de la":
+            if n.startswith("gpu ") or n == "ram of la":
                 return "GPU/RAM"
             if n == "tesseract" or n == "vision":
                 return "TOOLS"

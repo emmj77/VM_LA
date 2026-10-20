@@ -20,7 +20,23 @@ OUT_SLEEP="sleep: nothing waits for an answer now, the event can wait for the ne
 
 refuse() { printf 'watcher : %s\n' "$1" >&2 ; exit 1 ; }
 
-usage() { sed -n '2,37p' "$0" ; }
+usage() {
+  cat >&2 <<'TXT'
+usage: watcher.sh <evenement> [detail] [--decide wake|sleep]
+       watcher.sh --events
+       watcher.sh --last [N]
+
+  <evenement>            ce que le pont a vu : say, voice, image
+  [detail]               le corps de l evenement (defaut : l evenement n a pas de corps)
+  --decide wake|sleep    inscrit le verdict de l humain A COTE de la proposition
+  --events               la liste des evenements que le watcher connait
+  --last [N]             les N derniers verdicts (10 par defaut)
+
+  Le watcher demande au juge de rerank si l evenement doit reveiller la session tout
+  de suite ou attendre le tour suivant. Il ecrit la proposition sur la sortie standard
+  et ajoute UNE ligne de verdict au journal.
+TXT
+}
 
 events_list() { for e in $EVENTS; do printf '%s\n' "$e"; done ; }
 
@@ -76,7 +92,7 @@ REP=$(curl -s -m "$LIMIT" -X POST "$URL" -H 'Content-Type: application/json' -d 
 S1=$(printf '%s' "$REP" | jq -r '[.results[] | select(.index==0) | .relevance_score][0] // empty' 2>/dev/null || true)
 S2=$(printf '%s' "$REP" | jq -r '[.results[] | select(.index==1) | .relevance_score][0] // empty' 2>/dev/null || true)
 case "${S1}${S2}" in
-  ''|*[!0-9.eE+-]*) refuse "le juge ne peut pas NOTER les deux sorties : le classement ne repond pas ($URL). Je n invente pas de verdict (loi 1547)" ;;
+  ''|*[!0-9.eE+-]*) refuse "the judge cannot SCORE the two outputs : the rerank does not answer ($URL). No verdict is invented (law 1547)" ;;
 esac
 
 if awk -v a="$S1" -v b="$S2" 'BEGIN { exit !(a >= b) }'; then PROP=wake ; else PROP=sleep ; fi

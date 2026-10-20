@@ -85,7 +85,8 @@ case "$mode" in
       fi
     done
     [ "$N" -gt 400 ] || { echo 'refused: todo wants at least one point, one per line on the standard input' >&2 ; exit 1 ; }
-    [ -z "$CHG" ] || clear        # change REMPLACE : la section se vide AVANT que les points arrivent
+    # change REPLACES the section : rewrite already drops every old point, so the
+    # section is never cleared first (clear + rewrite would cut the tail twice).
     rewrite < "$TMPL" ; rm -f "$TMPL"
     if [ -n "$CHG" ]; then
       echo "big plan REWRITTEN in $TARGET ($((N - 400)) point(s))"

@@ -8,7 +8,7 @@ DESCRIPTION: "reads the docs NAMED by the active skill (DOCS): the web, a machin
 COMMAND: |
   T="{{topic}}"
   case "$T" in
-    ''|*[!a-zA-Z0-9_.-]*) [ -n "$T" ] && printf '%s\n' "$(msg topic_malformed '%s')""$T" >&2 ; T= ;;
+    ''|*[!a-zA-Z0-9_.-]*) [ -n "$T" ] && printf '%s\n' "$(msg topic_malformed "$T")" >&2 ; T= ;;
   esac
   A=$(sed -n '1p' "${LA_STATE_SKILL:-$ROOT/skills/.active}" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   case "$A" in ''|*/*|*..*) A= ;; esac
@@ -19,13 +19,13 @@ COMMAND: |
         | sed -n 's/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
         | sed -e 's/^"//' -e 's/"[[:space:]]*$//' | grep -v '^$')
   if [ -z "$RES" ]; then
-    printf '%s\n' "$(msg docs_empty)""$A"
+    printf '%s\n' "$(msg docs_empty "$A")"
     exit 0
   fi
   WS=$(sed -n '/^PERIMETER:/,/^[^[:space:]]/p' "$S" | sed -n 's/^[[:space:]]*workspace:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' | head -n 1)
   if [ -n "$T" ]; then
     if printf '%s\n' "$RES" | grep -qxF -- "$T"; then LISTE="$T" ; else
-      printf '%s\n' "$(msg topic_not_named)""$T" "$A"
+      printf '%s\n' "$(msg topic_not_named "$T" "$A")"
       LISTE="$RES"
     fi
   else LISTE="$RES"; fi
@@ -34,7 +34,7 @@ COMMAND: |
     [ -n "$R" ] || continue
     case "$R" in
       web_search|web|none)
-        printf '%s\n' "$(msg doc_on_web)""$A" "$R"
+        printf '%s\n' "$(msg doc_on_web "$A" "$R")"
         printf '%s\n' "$(msg seek_official)"
         continue ;;
     esac
@@ -61,7 +61,7 @@ COMMAND: |
       P="$C" ; break
     done
     if [ -z "$P" ]; then
-      printf '%s\n' "$(msg doc_outside_root)""$A" "$R"
+      printf '%s\n' "$(msg doc_outside_root "$A" "$R")"
       printf '%s\n' "$(msg seek_on_web)"
       continue
     fi
@@ -69,11 +69,11 @@ COMMAND: |
       NAT=$(file -b --mime-type "$P" 2>/dev/null || echo '?')
       case "$NAT" in
         text/*|application/json|application/xml|application/yaml|application/csv)
-          printf '%s\n' "$(msg doc_of_skill)""$R" "$A" "$P"
+          printf '%s\n' "$(msg doc_of_skill "$R" "$A" "$P")"
           LC_ALL=C sed -n '1,400p' "$P" ;;
         *)
-          printf '%s\n' "$(msg resource_not_text)""$R" "$A" "$P"
-          printf '%s\n' "$(msg resource_nature_db)""$NAT" "$(wc -c < "$P" | tr -d ' ')"
+          printf '%s\n' "$(msg resource_not_text "$R" "$A" "$P")"
+          printf '%s\n' "$(msg resource_nature_db "$NAT" "$(wc -c < "$P" | tr -d ' ')")"
           printf '%s\n' "$(msg resource_nature_tail)";;
       esac
       continue
@@ -86,14 +86,14 @@ COMMAND: |
       NAT=$(file -b --mime-type "$F" 2>/dev/null || echo '?')
       case "$NAT" in
         text/*|application/json|application/xml|application/yaml|application/csv)
-          printf '%s\n' "$(msg doc_single_file)""$R" "$A" "$P"
+          printf '%s\n' "$(msg doc_single_file "$R" "$A" "$P")"
           LC_ALL=C sed -n '1,400p' "$F" ; continue ;;
       esac
-      printf '%s\n' "$(msg resource_single_not_text)""$R" "$A" "$P"
-      printf '%s\n' "$(msg resource_nature)""$NAT" "$(wc -c < "$F" | tr -d ' ')"
+      printf '%s\n' "$(msg resource_single_not_text "$R" "$A" "$P")"
+      printf '%s\n' "$(msg resource_nature "$NAT" "$(wc -c < "$F" | tr -d ' ')")"
       continue
     fi
-    printf '%s\n' "$(msg resource_dir)""$R" "$A" "$P" "$NF" "$ND"
+    printf '%s\n' "$(msg resource_dir "$R" "$A" "$P" "$NF" "$ND")"
     for E in "$P"/*; do
       [ -e "$E" ] || continue
       [ -d "$E" ] && printf '  %s/\n' "$(basename "$E")" || printf '  %s\n' "$(basename "$E")"

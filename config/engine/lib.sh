@@ -25,8 +25,11 @@ bip() {  # $1 = notify (defaut, une approbation attend) | ok (le feu vert est si
 CLEAN=
 tmpfile() {   # $1 = a prefix (plan, plant, planp...) ; sets TMPFILE and remembers it
   TMPFILE=$(mktemp "${TMPDIR:-/tmp}/$1.XXXXXX") || { TMPFILE= ; return 1 ; }
-  CLEAN="$CLEAN $TMPFILE"
-  trap 'rm -f $CLEAN' EXIT INT TERM HUP
+  # CLEAN garde UN CHEMIN PAR LIGNE : mktemp accepte un TMPDIR avec des espaces,
+  # et `rm -f $CLEAN` couperait alors un chemin en deux arguments.
+  CLEAN="$CLEAN$TMPFILE
+"
+  trap 'printf "%s" "$CLEAN" | while IFS= read -r _f ; do [ -n "$_f" ] && rm -f -- "$_f" ; done' EXIT INT TERM HUP
 }
 
 HERE=${HERE:-$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)}
@@ -128,7 +131,7 @@ config_section() {  # $1 = le fichier ; $2 = le nom de section : une entree par 
   [ -n "${1:-}" ] && [ -f "${1:-}" ] || return 0
   sed -n "/^$2:/,/^[^[:space:]]/p" "$1" 2>/dev/null \
     | sed -n 's/^[[:space:]]*-[[:space:]]*//p' \
-    | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | grep -v '^$'
+    | sed -e 's/[[:space:]]#.*$//' -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | grep -v '^$'
 }
 
 permanent_section() {

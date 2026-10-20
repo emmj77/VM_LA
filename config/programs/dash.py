@@ -333,29 +333,6 @@ def _epoch(ts):
         return 0.0
 
 
-def recent_think(maxsec=86400):
-    import time as _t
-    out = []
-    now = _t.time()
-    try:
-        with open(os.path.join(W, "reasoning.jsonl"), "r", encoding="utf-8") as h:
-            for ln in h:
-                try:
-                    o = json.loads(ln)
-                except ValueError:
-                    continue
-                txt = (o.get("text") or "").strip()
-                if o.get("exchange") is None or not txt:
-                    continue
-                ep = _epoch(o.get("ts"))
-                if ep and (now - ep) > maxsec:
-                    continue
-                out.append({"exchange": int(o["exchange"]), "ts": o.get("ts") or "", "text": txt})
-    except OSError:
-        return out
-    return out
-
-
 def history(turns=12):
     start = 0
     sf = laconf.path("session_start", "config/session.start")
@@ -410,19 +387,6 @@ def history(turns=12):
                                        "path": (s.get("path") or "").strip()})
         elif r["role"] == "tool":
             pass
-    for x in recent_think():
-        t = per.get(x["exchange"])
-        if not t:
-            continue
-        if x["text"] not in t["think"]:
-            t["think"].append(x["text"])
-        pas = t["steps"]
-        i = len(pas)
-        for j, y in enumerate(pas):
-            if y["ts"] and y["ts"] >= x["ts"]:
-                i = j
-                break
-        pas.insert(i, {"ts": x["ts"], "kind": "think", "text": x["text"]})
     out = []
     for k in sorted(per):
         x = per[k]
@@ -465,10 +429,11 @@ def speak_stream():
 
 
 def live():
+    rows = jsonl(TRACE_FILE)
     return {
         "turn": turn_state(),
-        "thinking": jsonl(os.path.join(W, "thinking.jsonl"))[-40:],
-        "journal": jsonl(os.path.join(W, "journal.jsonl"))[-60:],
+        "thinking": [r for r in rows if r.get("kind") == "think"][-40:],
+        "journal": [r for r in rows if r.get("kind") == "tool"][-60:],
         "spoken": jsonl(os.path.join(W, "spoken.jsonl"))[-20:],
         "say_queue": jsonl(os.path.join(W, "say.queue"))[:20],
         "reply": speak_stream(),
@@ -785,7 +750,7 @@ def command(line):
                "via delegate_task, puis rends-moi la reponse de cet agent. Demande a deleguer : " + arg)
         d, _ = say(brief)
         rep = (d.get("response") or d.get("speech") or d.get("error") or "").strip()
-        return {"kind": "reply", "ok": bool(ok) and bool(rep), "text": rep or "(pas de reponse de l agent)", "delegated": arg}
+        return {"kind": "reply", "ok": bool(rep), "text": rep or "(pas de reponse de l agent)", "delegated": arg}
     if cmd in ("/help", "/?"):
         return {"kind": "help", "ok": True, "text":
                 "/stop  /model <alias>  /skill <nom>  /doctor  /new  /to <agent> <message>  /tools <mot>"}
@@ -928,9 +893,8 @@ STOP_FILE = laconf.path("stop", "config/state/stop")
 SAY_QUEUE = laconf.path("say_queue", "config/state/say.queue")
 WATCHER = laconf.path("watcher_brick", "config/engine/watcher.sh")
 JUDGE_SECONDS = laconf.num("watcher", "judge_seconds", 8)
-JOURNAL_FILE = laconf.path("journal", "config/state/journal.jsonl")
 SPOKEN_FILE = laconf.path("spoken", "config/state/spoken.jsonl")
-THINKING_FILE = laconf.path("thinking", "config/state/thinking.jsonl")
+TRACE_FILE = laconf.path("trace", "config/state/trace.jsonl")
 AUDIO_DIR = laconf.path("audio", "config/audio")
 BRIDGE_LOG = laconf.path("bridge_log", "config/state/bridge.log")
 CERT = laconf.path("bridge_cert", "config/certs/bridge-cert.pem")
@@ -959,7 +923,15 @@ def now():
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
+LOG_MAX = laconf.num("bridge", "log_bytes", 2000000)
+
+
 def blog(msg):
+    try:
+        if os.path.getsize(BRIDGE_LOG) > LOG_MAX:
+            os.replace(BRIDGE_LOG, BRIDGE_LOG + ".1")
+    except OSError:
+        pass
     try:
         with open(BRIDGE_LOG, "a", encoding="utf-8") as f:
             f.write("%s  %s\n" % (now(), msg))
@@ -1026,7 +998,7 @@ def turn(demand, voice=False, who=None):
     who = who or laconf.text("agents", "name_human", "human")
     if not re.match(r"^[a-z0-9_-]+$", who or ""):
         who = "human"
-    for f in (JOURNAL_FILE, SPOKEN_FILE, THINKING_FILE):
+    for f in (SPOKEN_FILE,):
         try:
             open(f, "w").close()
         except OSError:
@@ -1035,7 +1007,7 @@ def turn(demand, voice=False, who=None):
         os.unlink(STOP_FILE)
     except OSError:
         pass
-    env = dict(os.environ, LA_FROM=who, LA_LOG_FILE=JOURNAL_FILE, LA_STOP_FILE=STOP_FILE)
+    env = dict(os.environ, LA_FROM=who, LA_STOP_FILE=STOP_FILE)
     if voice:
         env["LA_VOICE"] = "1"
     said, last, rc = [], "", 1
@@ -1257,8 +1229,6 @@ class Bridge(Handler):
         if p == "/plan":
             txt = plan_text()
             return self._json({"status": "ok", "plan": txt, "result": txt})
-        if p in ("/journal", "/thinking"):
-            return self._json(jsonl(JOURNAL_FILE if p == "/journal" else THINKING_FILE))
         if p == "/spoken":
             try:
                 with open(SPOKEN_FILE, encoding="utf-8", errors="replace") as f:
@@ -1474,6 +1444,9 @@ class H(Handler):
             return self._json(config_page())
         if p == "/api/plan":
             return self._json({"status": "ok", "plan": plan_text()})
+        if p == "/doctor":
+            d = doctor()
+            return self._json({"text": d["text"], "rc": d["rc"], "verdicts": d.get("verdicts") or []})
         if p == "/api/version":
             return self._json({"version": update_version()})
         if p == "/api/update/check":
