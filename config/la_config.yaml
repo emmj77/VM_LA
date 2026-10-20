@@ -726,11 +726,23 @@ archi:                                         # LE FICHIER MAITRE : ce qui doit
                 et sur reload_tools : un id nouveau entre, un id retire sort, aucune erreur.
       other     l id vit dans l en-tete du fichier, et sa liste est ici, dans archi.files.
                 un id qui apparait ou disparait leve une erreur : c est une decision, pas un effet.
+      population tool, skill, project : l id vit dans l en-tete, l index le projette au build.
+            un id nouveau entre, un id retire sort, aucune erreur : c est une population.
+      lock      config/ : l id est ici, dans archi.files. un ecart est une erreur.
+      chain     project J## -> SKILLS [K##] -> TOOLSET [id du tool]. une reference morte = erreur.
+      letters   R racine C conf E engine P programs U units S setup A applet H page B bases
+                N state F filter Z certs D dossier, K une skill, J un projet ; le tool garde son numero.
       dir       un dossier n a pas d en-tete : son id ne vit qu ici, dans archi.dirs.
-      format    une lettre par aire : R racine, C conf, E engine, P programs, U units, S setup,
-                A applet, H page, K data, N state, F filter, Z certs, D dossier. jamais reutilise.
+      format    une lettre par aire, voir letters. jamais reutilise, jamais renumero.
       resolve   cfg path E07 donne le chemin. personne d autre ne sait ou habite E07.
       check     trois directions : declare sans disque, disque sans id, reference morte.
+    GABARITS - engine.new, quatre ops       # ce qu une pose ecrit, et rien d autre
+      sh        #!/bin/sh, puis # id: <libre>, # role: une ligne, puis le corps
+      tool      tool, family, l id libre du numero, ARGS, COMMAND
+      skill     skill, id K##, TOOLSET {id du tool: nom}, RULES, SUMMARY
+      project   project, id J##, SKILLS [K##], path, RULES
+      regle     chaque gabarit ecrit son id en premiere ligne, et ne recopie jamais un nom
+      why       un fichier sans id est invisible pour l index, donc inappelable, donc mort
 
     ENVIRONMENT GIVEN TO PROGRAMS         # ce qu un programme recoit, et rien de plus
       source  la_config paths: and ports:, exported once by boot.sh     # une seule origine, un seul moment
@@ -794,8 +806,8 @@ archi:                                         # LE FICHIER MAITRE : ce qui doit
     - {id: C04, path: "config/conf/pipeline.yaml", role: "le tour en etapes ordonnees : facts second scope prompt call tools reply note"}
     - {id: C05, path: "config/conf/second.head", role: "la tete secondaire : son prompt"}
     - {id: C06, path: "config/conf/texts.yaml", role: "toutes les phrases : refus, tour, board, pont, voix, docteur"}
-    - {id: K01, path: "config/data/memory.db", role: "la memoire durable : une note par tour"}
-    - {id: K02, path: "config/data/sessions.db", role: "messages, returns, vectors, usage, meta"}
+    - {id: B01, path: "config/data/memory.db", role: "la memoire durable : une note par tour"}
+    - {id: B02, path: "config/data/sessions.db", role: "messages, returns, vectors, usage, meta"}
     - {id: E01, path: "config/engine/approval.sh", role: "la porte humaine : la signature, le refus, la fenetre"}
     - {id: E02, path: "config/engine/args.sh", role: "arguments declares vers argv : path enum int bool text, canon des chemins"}
     - {id: E03, path: "config/engine/boot.sh", role: "la seule ligne sourcee : HERE ROOT LC_ALL, chemins, puis les briques"}
