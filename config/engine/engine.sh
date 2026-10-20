@@ -332,8 +332,16 @@ esac
 CMD=$FCMD
 [ -n "$CMD" ] || refuse_tool "the file of the tool $TOOL carries no command ($TOOLFILE)"
 
-[ -f "$SKILL" ] || refuse_tool "the ACTIVE SKILL is missing ($SKILL) : the engine has nowhere to read the registers of the active skill"
-SKW=$(sed -n '/^PERIMETER:/,/^[^[:space:]]/p' "$SKILL" | sed -n 's/^[[:space:]]*workspace:[[:space:]]*//p' | head -n 1)
+# sans skill active, seuls les PERMANENTS se posent : ils ne lisent aucun registre de skill et un
+# tour doit toujours pouvoir repondre a l humain
+if [ ! -f "$SKILL" ]; then
+  case " $(permanent_section "$CONF" | tr '\n' ' ') " in
+    *" $TOOL "*) ;;
+    *) refuse_tool "the ACTIVE SKILL is missing ($SKILL) : the engine has nowhere to read the registers of the active skill ; only the permanents run without a skill ($TOOL is not one)" ;;
+  esac
+fi
+SKW=''
+[ -f "$SKILL" ] && SKW=$(sed -n '/^PERIMETER:/,/^[^[:space:]]/p' "$SKILL" | sed -n 's/^[[:space:]]*workspace:[[:space:]]*//p' | head -n 1)
 value() {   # $1 = the skill value ; cleans it, and refuses what leaves the project
   V=$(printf '%s' "$1" | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//" -e 's:/*$::')
   [ -n "$V" ] || refuse_tool "the ACTIVE SKILL carries no PERIMETER.$2 ($SKILL)"

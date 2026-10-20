@@ -23,8 +23,8 @@ CONF=${LA_CONF:-$CONFD/la_config.yaml}
 PROCS=${LA_PROCS:-$HERE}
 ENGINE=${LA_ENGINE:-$PROCS/engine.sh}
 active_skill
-HEADF="$CONFD/head.yaml"   # LE HEAD GELE : lu sur place, jamais reecrit, donc le prefixe se met en cache
-SECOND_HEAD="$PROCS/second.sh"
+HEADF=$(_abs "$(conf_str paths head 'config/head.yaml')")   # LE HEAD GELE : lu sur place, jamais reecrit, donc le prefixe se met en cache
+SECOND_HEAD=$(_abs "$(conf_str paths second_script 'config/engine/second.sh')")
 
 DB=${LA_SESSIONS_DB:-$CONFD/sessions.db}
 WINDOW=${LA_WINDOW:-$(conf_req_num loop window)}           # LA FENETRE GARDE QUATRE MESSAGES (loi 809) : le HEAD et le
@@ -363,7 +363,7 @@ printf '%s' "$TOOLS" | jq -e 'type == "array" and length == 1 and .[0].type == "
 printf 'loop: the single schema is read (%s, %s byte(s))\n' "$HEADF" "$(printf '%s' "$TOOLS" | wc -c)" >&2
 
 read_prompt() {  # $1 = la cle ; rend le bloc, ou rien
-  _pf="$ROOT/config/turn.yaml"
+  _pf=$(_abs "$(conf_str paths turn 'config/turn.yaml')")
   [ -f "$_pf" ] || return 0
   awk -v k="$1" '
     /^[a-z_]+: *\|/ { on = ($1 == k ":") ; next }
@@ -442,7 +442,9 @@ tool_args_text() {  # $1 = le nom du tool
   args_text "$(printf '    args:\n%s\n    fin\n' "$A")"
 }
 
-[ -f "$SKILL" ] || die "the ACTIVE SKILL is not found ($SKILL) : the scope is unknown"
+# aucune skill active n est pas une panne : le tour se fait avec les PERMANENTS (reply, skill_list,
+# load_skill, todo...). Un tour qui meurt ici ne repond jamais a l humain.
+[ -f "$SKILL" ] || log_to_stderr "$(ts)  turn: no skill active ($SKILL) ; the scope is the PERMANENTS"
 
 DOC_READ=0
 PLAN_DONE=0
@@ -461,6 +463,8 @@ SKILLSET_TOOLS=''
 SK_TOOLS=''
 read_skill_tools() {
   SK_TOOLS_EMPTY=1; SK_TOOLS=''
+  [ -f "$SKILL" ] || return 0
+
   LINE_TOOLS=$(sed -n 's/^TOOLS:[[:space:]]*//p' "$SKILL" | head -n 1)
   if [ -n "$LINE_TOOLS" ]; then
     case "$LINE_TOOLS" in
@@ -652,7 +656,10 @@ scope_build() {
   _s0=$(date +%s%N)
   active_skill
   SKILL="$SKILLS_DIR/$NAME/skill.yaml"
-  [ -f "$SKILL" ] || die "the ACTIVE SKILL is not found ($SKILL) : the scope is unknown"
+  [ -f "$SKILL" ] || {
+    SKILL=""
+    log_to_stderr "$(ts)  turn: no skill active ; the scope is the PERMANENTS only"
+  }
   _s1=$(date +%s%N)
   read_skill_tools
   read_skill_dirs
@@ -689,7 +696,7 @@ scope_build() {
     PLAN_DUE=1
   fi
   if [ "$UPDATE_DUE" = 0 ] && [ "$TURN" -gt 0 ] && [ "$(( TURN % UPDATE_EVERY ))" -eq 0 ]; then
-    ACT_FILE="$ROOT/projects/.active"
+    ACT_FILE=$(_abs "$(conf_str paths project_active 'projects/.active')")
     if [ -f "$ACT_FILE" ] && [ -n "$(sed -n '1p' "$ACT_FILE" 2>/dev/null | tr -d '\r')" ]; then
       UPDATE_DUE=1        # le chantier d abord (le projet est le cadre du travail)
     else
@@ -725,7 +732,7 @@ EOF
     case "$_pick" in
       ''|*[!0-9]*) die "embed.pick is empty or malformed in la_config: it is the number of
 candidates the reranker receives. It is not a turn." ;;
-      *) [ "$_pick" -gt 0 ] && dash "$ROOT/config/engine/pick.sh" "$_cand" \
+      *) [ "$_pick" -gt 0 ] && dash "$(_abs "$(conf_str paths pick 'config/engine/pick.sh')")" "$_cand" \
            "${REQUEST:-} ${PLAN_TXT:-}" "$_pick" ;;
     esac
     [ -n "${LA_TRACE:-}" ] && printf '%s\n' "$(msg trace_meaning_preselect "$(( ($(date +%s%N) - _t0) / 1000000 ))")" >&2
@@ -1006,6 +1013,9 @@ big_act() {     # LE GESTE DU CHANTIER : big_todo quand il n est pas ecrit, upda
 open_plan() {   # la COUCHE DE L ETAT rend-il un plan ouvert ? (sinon : termine, ou rien)
   printf '%s' "$PLAN_TXT" | grep -qi 'no open plan' && return 1
   printf '%s' "$PLAN_TXT" | grep -qi 'could not be obtained' && return 1
+  # une couche qui REFUSE (skill absente, plan illisible) n est pas un plan ouvert : sinon le
+  # perimetre se reduit a update_todo, qui refuse a son tour, et le tour boucle sans fin
+  printf '%s' "$PLAN_TXT" | grep -qiE '^refused|is missing|forbidden' && return 1
   printf '%s' "$PLAN_TXT" | grep -q . || return 1
   return 0
 }
@@ -1040,7 +1050,7 @@ while [ "$TURNS_MAX" -eq 0 ] || [ "$TURN" -lt "$TURNS_MAX" ]; do
     if [ "${LA_FROM:-}" != "${MAIN_NAME:-agent_one}" ]; then
       case "$HEAD_F" in
         *"$LA_FROM"*) ;;
-        *) HEAD_F="$ROOT/config/$LA_FROM.head" ;;
+        *) HEAD_F=$(tpn "$(_abs "$(conf_str paths agent_head 'config/%s.head')")" "$LA_FROM") ;;
       esac
     fi
     case "$HEAD_F" in /*) ;; *) HEAD_F="$ROOT/$HEAD_F" ;; esac
@@ -1116,8 +1126,8 @@ log_to_stderr "$(ts)  turn $TURN  transport failure (curl $CRC : $CURL_WHY): the
     _TAB=$(printf '\t') ; HAS_SPEECH=0 ; HAS_WORDS=0
     printf '%s' "$MSG" | jq -r '.tool_calls[]?.function.arguments | (fromjson? // {}) |
       [(.g // ""), ((.a // [])[0] // ""),
-       ((.a // []) | if length >= 4 then (.[3] // "") else (.[2] // "") end),
-       ((.a // []) | if length >= 4 then (.[2] // "") else "" end)] | @tsv' 2>/dev/null > "$T/speech.tsv" || : > "$T/speech.tsv"
+       ((.a // [])[2] // ""),
+       ((.a // [])[3] // "")] | @tsv' 2>/dev/null > "$T/speech.tsv" || : > "$T/speech.tsv"
     while IFS="$_TAB" read -r _id _mode _txt _next; do
       case "$_id" in ''|*[!0-9]*) continue ;; esac
       _name=$(printf '%s\n' "$(block_of_id "$_id" 2>/dev/null || true)" | sed -n 's/^    tool:[[:space:]]*//p' | head -n 1)
@@ -1258,7 +1268,7 @@ log_to_stderr "$(ts)  turn $TURN  la  ->  g is not a number (sent back to the mo
         PLAN_DONE=1; PLAN_DUE=0
         if [ "$MSG_STATUS" = ok ] && "${PROCS}/plan.sh" status 2>/dev/null | grep -qi 'no open plan'; then
           PLAN_DONE=0 ; DOC_READ=0 ; TOOLSET_ARMED=0
-          SKF="$ROOT/skills/.active"
+          SKF=$(_abs "$(conf_str paths skill_active 'skills/.active')")
           if [ -f "$SKF" ] && [ ! -L "$SKF" ]; then
             SKE=$(sed -n '1p' "$SKF" | tr -d '\r')
             rm -f "$SKF"

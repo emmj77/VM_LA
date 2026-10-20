@@ -298,6 +298,13 @@ paths:                                        # TOUS LES CHEMINS DU HARNAIS, NOM
   filter: "config/filter/family.bin"          # le filtre de famille
   specs: ["projects/la/spec.yaml", "skills/la/spec.yaml"]   # le canon, par ordre
   vision_log: "config/state/voir.log"
+  head: "config/head.yaml"                     # LE HEAD GELE, lu sur place
+  agent_head: "config/%s.head"                 # la tete d un agent donne
+  second_script: "config/engine/second.sh"     # la couche du plan, rebatie a chaque tour
+  turn: "config/turn.yaml"                     # la marque du tour courant
+  project_active: "projects/.active"           # le projet charge
+  skill_active: "skills/.active"               # la skill chargee
+  pick: "config/engine/pick.sh"                # la preselection par le sens
   journal: "config/state/journal.jsonl"         # ce qui transite, tour par tour
   memory_db: "config/memory.db"
   reply_stream: "config/state/reply.stream"

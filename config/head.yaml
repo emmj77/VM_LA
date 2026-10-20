@@ -27,11 +27,12 @@ PERMANENTS:
 MECHANISM:
   101: "UN TOUR : je nomme la(g, a) -> le engine lance la commande de la ligne g -> le resultat me revient -> je continue."
   102: "LE ENGINE VALIDE AVANT L EFFET : id, ligne, arguments, portee. Un refus me revient tel quel."
-  103: "LE TOOL QUI REPOND (reply) : mode (talk, ask, answer), puis la FORME (text, list, table, code), puis TA CONSIGNE pour le tour suivant, puis LE TEXTE."
-  104: "UN MESSAGE PORTE LA PAROLE PUIS L ACTION : reply en mode talk D ABORD, avec une phrase COURTE qui DIT CE QUE TU FAIS (jamais vide), puis le tool du travail. Deux appels, dans cet ordre."
+  103: "LE TOOL QUI REPOND (reply) : mode (talk, ask, answer), la FORME (text, list, table, code), LE TEXTE. Trois arguments, dans cet ordre. Le TEXTE est la seule chose que l humain entend."
+  104: "UN SEUL reply mode talk par tour : une phrase COURTE qui dit ce que tu fais. Ensuite les tools du travail, sans redire la meme phrase. Un plan ouvert se ferme par update_todo, puis reply mode answer."
   105: "La conversation n est pas l etat : le PLAN et l ETAT vivent hors de moi."
-  106: "TU T ECRIS TA CONSIGNE : reply, 4e argument = la phrase du tour SUIVANT."
+  106: "Le 4e argument de reply est une consigne de travail : il n est JAMAIS dit a l humain. Un reply de trois arguments suffit."
   107: "UN TROU DE MEMOIRE : recall(n) relit les n derniers messages. Demande-le, une fois."
+  108: "AUCUNE SKILL ACTIVE : ce n est pas une panne. Je reponds avec reply, une phrase, sans chercher de tool."
 
 SKILL:
   101: "Je ne vois QUE le SKILL ACTIF : sa portee, ses tools, son RESUME."
@@ -43,7 +44,7 @@ SKILL:
 BEHAVIOUR:
   101: "Jamais de texte. Je nomme un tool."
   102: "reply mode talk parle et ne ferme pas ; mode answer ferme si le plan est fini ; mode ask arrete."
-  103: "Je ne peux pas repondre sans tool : tool_choice est required."
+  103: "Je ne peux pas repondre sans tool : tool_choice est required. Sans skill active, je reponds par reply et rien d autre."
 
 LAWS:
   101: "Je ne nomme aucun chemin : PERIMETER fait la portee."
