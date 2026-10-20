@@ -20,6 +20,7 @@ RULES
   The engine knows no instrument: a binary is reached by a body.     # un binaire, un corps de tool
   A refusal is a key of conf/texts.yaml, never a string in a .sh.    # un refus est une phrase
   A tool cannot grant itself approval: it carries a human signature. # le feu vert se signe, il ne se demande pas
+  tools/ holds YAML only: a body carries its code, there is no script beside it. # que du yaml, le code est dans le corps
 
 CRITERION   # trois questions, dans cet ordre
 
@@ -95,16 +96,6 @@ VM_LA
 │   │   └── turn.pid                           # le pid du tour en cours
 │   └── tools                                  # les tools, seul catalogue de la porte
 │       ├── doctor                             # les controles : une famille de tools
-│       │   ├── bin                            # leurs scripts
-│       │   │   ├── data                       # bases et memoire
-│       │   │   ├── forms                      # formulaires de retour
-│       │   │   ├── knowledge                  # competence, projet, canon
-│       │   │   ├── language                   # aucun mot francais
-│       │   │   ├── machine                    # residents, instruments, bancs
-│       │   │   ├── manifest                   # le disque contre ce fichier
-│       │   │   ├── structure                  # racine, cle, syntaxe, programmes, litteraux
-│       │   │   ├── texts                      # les phrases du modele
-│       │   │   └── tools                      # registre et corps, chemins cites
 │       │   ├── tool_doctor_data.yaml          # ops bases memory
 │       │   ├── tool_doctor_forms.yaml         # ops forms
 │       │   ├── tool_doctor_knowledge.yaml     # ops skills active canon
@@ -115,19 +106,6 @@ VM_LA
 │       │   ├── tool_doctor_texts.yaml         # ops prompt
 │       │   └── tool_doctor_tools.yaml         # ops table paths
 │       ├── engine                             # les actions du moteur, en tools
-│       │   ├── bin                            # leurs scripts
-│       │   │   ├── approve                    # ecrit la demande, jamais la signature
-│       │   │   ├── asr                        # le script de l action
-│       │   │   ├── backup                     # idem
-│       │   │   ├── doctor                     # le diagnostic : parcourt la famille doctor
-│       │   │   ├── models                     # idem
-│       │   │   ├── retention                  # idem
-│       │   │   ├── spec                       # idem
-│       │   │   ├── stat                       # idem
-│       │   │   ├── switch                     # idem
-│       │   │   ├── tts                        # idem
-│       │   │   ├── tunnel                     # idem
-│       │   │   └── update                     # idem
 │       │   ├── tool_engine_approve.yaml       # la demande, la lecture de l etat, la signature humaine
 │       │   ├── tool_engine_asr.yaml           # l oreille
 │       │   ├── tool_engine_backup.yaml        # la sauvegarde hors disque
@@ -143,8 +121,6 @@ VM_LA
 │       ├── <familie>                          # une famille de tools
 │       │   └── tool_<nom>.yaml                # un corps par ligne : COMMAND ou machine+op, ARGS, TIMEOUT
 │       ├── plan                               # le plan, en cinq corps
-│       │   ├── bin                            # son magasin
-│       │   │   └── plan                       # le magasin du plan, appele par les cinq corps
 │       │   ├── tool_plan_add.yaml             # ajouter un point
 │       │   ├── tool_plan_change.yaml          # reecrire un point
 │       │   ├── tool_plan_done.yaml            # marquer un point fait
@@ -152,15 +128,6 @@ VM_LA
 │       │   └── tool_plan_read.yaml            # lire le plan de la competence
 │       ├── registry.yaml                      # id tool family sub_family guardrail description
 │       ├── turn                               # les huit etapes du tour
-│       │   ├── bin                            # leurs scripts
-│       │   │   ├── turn_call                  # le script de l etape
-│       │   │   ├── turn_facts                 # idem
-│       │   │   ├── turn_note                  # idem
-│       │   │   ├── turn_prompt                # idem
-│       │   │   ├── turn_reply                 # idem
-│       │   │   ├── turn_scope                 # idem
-│       │   │   ├── turn_second                # idem
-│       │   │   └── turn_tools                 # idem
 │       │   ├── tool_turn_call.yaml            # l appel au modele : une reprise
 │       │   ├── tool_turn_facts.yaml           # les faits du tour
 │       │   ├── tool_turn_note.yaml            # la note de fin : memoire, compactage, coupe
@@ -170,8 +137,6 @@ VM_LA
 │       │   ├── tool_turn_second.yaml          # la tete secondaire : compose, borne
 │       │   └── tool_turn_tools.yaml           # les outils demandes, un par un, par la porte
 │       └── watch                              # le juge
-│           ├── bin                            # son script
-│           │   └── watcher                    # le juge : dire voir image
 │           └── tool_watch_judge.yaml          # un evenement juge : reveiller ou dormir
 ├── .gitignore                                 # secret, bases, audio, state, work
 ├── projects                                   # un dossier par projet
@@ -185,7 +150,7 @@ VM_LA
 │       └── skill.yaml                         # une competence et sa palette
 └── work                                       # les livraisons de l agent
 
-31 directories, 124 files
+26 directories, 93 files
 
 DOCTOR - one control is a tool          # un controle est un tool, pas un .sh a part
   family  tools/doctor: nine bodies, seventeen controls in ops       # neuf corps, dix-sept controles
@@ -246,8 +211,8 @@ TOOLS - family engine                       # onze actions, un corps YAML chacun
 
   model says   la(g, a)                      # g = id de la ligne du registre
   door reads   tools/<family>/tool_<action>.yaml
-  body says    COMMAND: tools/<family>/bin/<script> {{op}} {{arg}}
-  shell.sh     builds the line, runs it, caps it
+  body says    COMMAND: | its own shell code, inline. or machine + op for a machine
+  one carrier  shell.sh takes the block out of the body and runs it, capped
   door returns status tool line result ts return
 
 TOOLS - family doctor                        # les controles, en tools comme le reste
