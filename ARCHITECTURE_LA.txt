@@ -164,7 +164,7 @@ VM_LA
 │       └── skill.yaml                         # une competence et sa palette
 └── work                                       # les livraisons de l agent
 
-26 directories, 97 files
+25 directories, 97 files
 
 DOCTOR - one control is a tool          # un controle est un tool, pas un .sh a part
   family  tools/doctor: nine bodies, seventeen controls in ops       # neuf corps, dix-sept controles
