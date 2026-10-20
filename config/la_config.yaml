@@ -113,6 +113,8 @@ permanent:
   - sleep
   - skill_list
   - skill_view
+  - transcribe          # le pont transcris la voix, hors de toute skill
+  - fast_analyze_img   # le pont regarde la photo, hors de toute skill
   - load_skill
   - project_list
   - project_view

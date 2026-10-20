@@ -432,6 +432,14 @@ def history(turns=12):
                 thread.append({"role": "reasoning", "text": s["text"]})
             elif s["kind"] == "say":
                 thread.append({"role": "reply", "text": s["text"]})
+        # une suite de raisonnements n en garde qu un : celui qui precede la reponse
+        folded = []
+        for b in thread:
+            if b["role"] == "reasoning" and folded and folded[-1]["role"] == "reasoning":
+                folded[-1] = b
+            else:
+                folded.append(b)
+        thread = folded
         out.append({"exchange": x["exchange"], "ts": x["ts"], "thread": thread,
                     "tools": x["tools"], "refused": x["refused"], "tokens": x["tokens"]})
     return {"session_start": start, "turns": out}

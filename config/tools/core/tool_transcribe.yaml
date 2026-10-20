@@ -31,7 +31,7 @@ COMMAND: |
   OUT=$(curl -s --max-time 300 -X POST "http://$SRV/v1/audio/transcriptions" \
     -F "file=@$A" -F "response_format=json" \
     | python3 -c 'import json,sys; d=json.load(sys.stdin); print((d.get("text") or "").strip())')
-  [ -n "$OUT" ] || { printf '%s\n' "$(msg transcription_rendered_nothing_path)" >&2; exit 1; }
+  [ -n "$OUT" ] || { printf '%s\n' "$(msg transcription_rendered_nothing_path "$A")" >&2; exit 1; }
   printf '%s\n' "$OUT"
 
 ARGS:
