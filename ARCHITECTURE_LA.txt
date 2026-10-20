@@ -76,7 +76,7 @@ VM_LA
 │   │   ├── shell.sh                           # LE SHELL : machine + operation + arguments vers une commande
 │   │   ├── skl.sh                             # competence et projet actifs, PERIMETER, permanent, approval_of, is_gated
 │   │   ├── step.sh                            # execute une etape du pipeline : lit turn.json, appelle, ecrit
-│   │   └── tab.sh                             # le registre : block_by_id table_block table_index body_of count
+│   │   └── tab.sh                             # le registre : block_by_id table_block table_index body_of count, sur la table qu on lui donne
 │   ├── filter                                 # le filtre de famille
 │   │   └── family.bin                         # le filtre entraine
 │   ├── page                                   # la page et le telephone
@@ -113,7 +113,7 @@ VM_LA
 │       │   ├── tool_doctor_texts.yaml         # ops prompt
 │       │   └── tool_doctor_tools.yaml         # ops table paths
 │       ├── engine                             # les actions du moteur, en tools
-│       │   ├── registry.yaml                  # SON registre : appele par nom, jamais envoye au modele
+│       │   ├── registry-engine.yaml           # SON registre : appele par nom, jamais envoye au modele
 │       │   ├── tool_engine_approve.yaml       # la demande, la lecture de l etat, la signature humaine
 │       │   ├── tool_engine_asr.yaml           # l oreille
 │       │   ├── tool_engine_backup.yaml        # la sauvegarde hors disque
@@ -175,7 +175,7 @@ DOCTOR - one control is a tool          # un controle est un tool, pas un .sh a 
 
 DOOR - engine/run.sh
   in      run.sh <id|name> [arg ...]           stdin: leftover text  # un id, ou un nom pour le moteur
-  caller  LA_FROM: the model reads tools/registry.yaml, the engine reads tools/engine/registry.yaml
+  caller  LA_FROM: the model reads tools/registry.yaml, the engine reads registry-engine.yaml
   reads   registry body active skill approval caps                   # ce qu elle consulte
   engine  a call from the engine skips palette, perimeter and arity, and carries no approval
   model   a call from the model keeps all four, and the four gated bodies wait for a human
@@ -246,9 +246,9 @@ TOOLS - family doctor                        # les controles, en tools comme le 
 
 ENGINE FAMILY - not tools like the others  # la famille ENGINE n est pas une famille comme les autres
   visible   the model never sees them: no head schema, no palette, no permanent   # invisibles au modele
-  registry  tools/engine/registry.yaml, its own file                              # un registre a part
+  registry  tools/engine/registry-engine.yaml, un fichier un nom, aucun doublon # deux canaux, deux noms
   channel   the model channel reads tools/registry.yaml only: it stays short      # le canal reste court
-  caller    the door knows who calls, and reads the registry of that caller       # la porte sait qui appelle
+  caller    the door knows who calls, and hands the right table to tab.sh         # la porte donne la table
   name      an engine body is called by its name, never by a numeric id           # appele par son nom
   checks    no palette, no perimeter of a skill, no arity of a skill              # pas de perimetre de skill
   approval  none: the four gated bodies are asked by the model, never by the engine # le feu vert reste au modele
@@ -259,7 +259,7 @@ ENGINE FAMILY - not tools like the others  # la famille ENGINE n est pas une fam
 
 PIPELINE - conf/pipeline.yaml              # le tour est une suite declaree, pas un programme
   turn    facts second scope prompt call tools reply note
-  step    one registry id, one body, one script. it reads state/turn.json and rewrites it
+  step    one name, one body. it reads state/turn.json and rewrites it
   chief   loop.sh reads the order, step.sh runs the step, run.sh opens the door, shell.sh builds
   fail    the step that falls stops the turn, leaves turn.json as it is, and the doctor sees it
   gain    add a step = one line here and one body. no .sh to touch
