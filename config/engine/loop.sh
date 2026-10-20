@@ -583,6 +583,18 @@ approval_ask() {  # $1 = tool ; $2 = action : la demande, pour l humain
 
 in_plan_family() { case " $PLAN_FAMILY " in *" $1 "*) return 0 ;; esac; return 1; }
 
+wake_resident() {  # le resident du rerank s endort quand il ne sert pas : on le reveille une fois
+  log_to_stderr "$(ts)  loop: the reranker is silent on ${_rhost}:${_rport}, the resident is woken"
+  systemctl --user start la-models >/dev/null 2>&1 || true
+  _w=0
+  while [ "$_w" -lt 10 ]; do
+    curl -s -m 2 -o /dev/null "http://${_rhost}:${_rport}/v1/models" && return 0
+    sleep 2
+    _w=$((_w + 2))
+  done
+  return 1
+}
+
 rank_share() {   # $1 = candidats (id|nom|description) ; $2 = la demande ; $3 = la PART ; pose SHARE_NAMES
   _cand=$1; _q=$2; _part_in=${3:-30}
   case "$_part_in" in ''|*[!0-9]*) _part_in=30 ;; esac
@@ -721,6 +733,7 @@ candidates the reranker receives. It is not a turn." ;;
     _rhost=${LA_RERANK_HOST:-$(conf_str models host 127.0.0.1)}
     _rport=${LA_RERANK_PORT:-$(conf_num models port 8091)}
     rank_share "$_cand" "${REQUEST:-} ${PLAN_TXT:-}" "$_share" \
+      || { wake_resident && rank_share "$_cand" "${REQUEST:-} ${PLAN_TXT:-}" "$_share" ; } \
       || die "the reranker is silent on $_rhost:$_rport : the resident must be in RAM \
 (la-models start). This is an ENGINE bug, not a turn."
     [ -n "${LA_TRACE:-}" ] && printf '%s\n' "$(msg trace_share_rerank "$(( ($(date +%s%N) - _t0) / 1000000 ))")" >&2
