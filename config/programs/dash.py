@@ -297,8 +297,8 @@ def _speech_of(tool_calls, content):
             argv = a.get("a") or []
             if isinstance(argv, list) and argv:
                 mode = str(argv[0])
-                strs = [str(x) for x in argv[1:] if isinstance(x, str) and x.strip()]
-                text = strs[-1] if strs else ""
+                # a[0]=mode, a[1]=form, a[2]=LA PHRASE, a[3]=l intention (jamais dite)
+                text = str(argv[2]) if len(argv) > 2 and isinstance(argv[2], str) else ""
         if real in ("reply", "talk"):
             said.append({"tool": real, "mode": mode, "text": text})
         else:
