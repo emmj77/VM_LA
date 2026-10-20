@@ -6,7 +6,7 @@ SUMMARY:
   101: "L'atelier 3D : image -> glb, mesh -> fbx, mesh -> png, mesurer, inspecter."
   102: "image2glb produit ; mesh-convert2fbx et mesh-render2png exportent."
   103: "On MESURE et on REGARDE avant de dire que le mesh tient."
-  104: "Variantes Pixal3D (meme pipeline, autres reglages) : pixal3d-optimise (rapide), -memesgraines (rapide, graines fixes), -ref-froid (graines neuves), -texture2048 (texture 2048)."
+  104: "Variantes Pixal3D (meme pipeline, autres reglages) : pixal3d-optimise (rapide), -memesgraines (rapide, graines fixes), -ref-cold (new seeds), -texture2048 (texture 2048)."
 RULES:
   create_subfolder: true
   execute_code: false
@@ -20,7 +20,7 @@ TOOLS:
   204: "mesh-inspect"
   205: "pixal3d-optimise"
   206: "pixal3d-memesgraines"
-  207: "pixal3d-ref-froid"
+  207: "pixal3d-ref-cold"
   208: "pixal3d-texture2048"
   209: "fast_analyze_img"
   210: "list_dir"

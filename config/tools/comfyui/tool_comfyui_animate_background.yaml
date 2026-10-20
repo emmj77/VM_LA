@@ -17,7 +17,7 @@ COMMAND: |
   [ -n "$TEXT" ] || { printf '%s\n' "$(msg backdrop_text_missing)" >&2; exit 1; }
   FILE="$W/{{source}}"
   [ -f "$FILE" ] || { printf '%s\n' "$(msg drawing_missing)""$FILE" >&2; exit 1; }
-  case "$FILE" in *.kra|*.krz) ;; *) printf '%s\n' "$(msg anima_fond_kra '%s')""$FILE" >&2; exit 1 ;; esac
+  case "$FILE" in *.kra|*.krz) ;; *) printf '%s\n' "$(msg anima_backdrop_kra '%s')""$FILE" >&2; exit 1 ;; esac
   unzip -p "$FILE" mergedimage.png > "$T/anim_aplat.png" 2>/dev/null
   [ -s "$T/anim_aplat.png" ] || { printf '%s\n' "$(msg no_flat_colour_p)""$FILE" >&2; exit 1; }
   TAILLE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$T/anim_aplat.png" | tr ',' 'x')

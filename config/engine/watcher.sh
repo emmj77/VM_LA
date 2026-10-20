@@ -11,7 +11,7 @@ JOURNAL="$W/watch.jsonl"
 RHOST=${LA_RERANK_HOST:-$(conf_str models host 127.0.0.1)}
 RPORT=${LA_RERANK_PORT:-$(conf_num models port 8091)}
 URL="http://$RHOST:$RPORT/v1/rerank"
-LIMIT=${LA_VEILLEUR_LIMIT:-$(conf_num watcher limit 40)}
+LIMIT=${LA_WATCH_LIMIT:-$(conf_num watcher limit 40)}
 
 EVENTS="say voice image"
 
@@ -29,8 +29,8 @@ last_verdicts() {
   N=${1:-10}
   case "$N" in ''|*[!0-9]*) refuse "the number of verdicts is not a number ($N)" ;; esac
   tail -n "$N" "$JOURNAL" \
-    | jq -r '[.ts, .event, ("proposition=" + (.proposal // "?")), ("decision=" + (.decision // "attente")),
-              ("scores " + (.score_reveiller // "?") + " / " + (.score_dormir // "?"))] | join("  ")' 2>/dev/null \
+    | jq -r '[.ts, .event, ("proposition=" + (.proposal // "?")), ("decision=" + (.decision // "pending")),
+              ("scores " + (.score_wake // "?") + " / " + (.score_sleep // "?"))] | join("  ")' 2>/dev/null \
     || refuse "the verdict journal is unreadable ($JOURNAL)"
 }
 
@@ -57,10 +57,10 @@ while [ $# -gt 0 ]; do
   shift
 done
 case "$DECIDE" in
-  ''|reveiller|dormir) ;;
+  ''|wake|sleep) ;;
   *) refuse "the decision ($DECIDE) is not one of the two agreed outputs: wake, sleep" ;;
 esac
-[ -n "$DETAIL" ] || DETAIL="(l evenement n a pas de corps)"
+[ -n "$DETAIL" ] || DETAIL="(the event carries no body)"
 
 PLAN_TXT=$("$PLAN" status 2>/dev/null || true)
 case "$PLAN_TXT" in
@@ -79,13 +79,13 @@ case "${S1}${S2}" in
   ''|*[!0-9.eE+-]*) refuse "le juge ne peut pas NOTER les deux sorties : le classement ne repond pas ($URL). Je n invente pas de verdict (loi 1547)" ;;
 esac
 
-if awk -v a="$S1" -v b="$S2" 'BEGIN { exit !(a >= b) }'; then PROP=reveiller ; else PROP=dormir ; fi
+if awk -v a="$S1" -v b="$S2" 'BEGIN { exit !(a >= b) }'; then PROP=wake ; else PROP=sleep ; fi
 
-DEC=${DECIDE:-attente}
+DEC=${DECIDE:-pending}
 LINE=$(jq -cn --arg ts "$(ts)" --arg e "$EV" --arg d "$DETAIL" --arg p "$PROP" --arg dec "$DEC" \
              --arg s1 "$S1" --arg s2 "$S2" --arg plan "$PLAN_TXT" \
              '{ts:$ts,event:$e,detail:$d,proposal:$p,decision:$dec,
-               score_reveiller:$s1,score_dormir:$s2,plan:$plan}')
+               score_wake:$s1,score_sleep:$s2,plan:$plan}')
 printf '%s\n' "$LINE" >> "$JOURNAL" \
   || refuse "the verdict journal cannot be touched ($JOURNAL)"
 printf '%s\n' "$PROP"

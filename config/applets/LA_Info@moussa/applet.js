@@ -45,12 +45,12 @@ const EMOTICONE = {
     "canon": "\u{1F4D6}",
     "git": "\u{1F33F}",
     "doctor": "\u{1FA7A}",
-    "erreurs": "\u{1F41E}",
+    "errors": "\u{1F41E}",
     "journal": "\u{1F4D3}",
     "api": "\u{1F50C}",
     "endpoint": "\u{1F310}",
     "api status": "\u{1F4E1}",
-    "pont": "\u{1F309}",
+    "bridge": "\u{1F309}",
     "vision": "\u{1F441}",
     // une line par carte, comme pour les residents
     "gpu RTX 3060": "\u{1F3AE}",
@@ -77,24 +77,24 @@ const EMOTICONE = {
 // Un resident donne sa memoire en Mo (701 Mo) : sa share se lit contre la line "ram of LA", qui
 // donne le total. C est la seule facon honnete de faire une barre de memoire -- il faut un tout.
 function ratioOf(title, verdict, ramDeLA) {
-    let m = verdict.match(/(\d+)\s*ok\s*\/\s*(\d+)\s*defaut/);
+    let m = verdict.match(/(\d+)\s*ok\s*\/\s*(\d+)\s*fault/);
     if (m) { const a = Number(m[1]), b = Number(m[2]); return { share: (a + b) > 0 ? a / (a + b) : 0, kind: "health" }; }
     // LA MACHINE EN FACE : « 1430 Mo / 46 Go ». La barre dit la share de la machine prise par LA.
     if (title === "ram of LA") {
-        m = verdict.match(/(\d+)\s*Mo\s*\/\s*(\d+)\s*Go/);
+        m = verdict.match(/(\d+)\s*MB\s*\/\s*(\d+)\s*GB/);
         if (m) { const mo = Number(m[1]), go = Number(m[2]); return { share: go > 0 ? Math.min(mo / 1024 / go, 1) : 0, kind: "share" } }
     }
     // ZERO MO, BARRE VIDE. MOUSSA, 19/10 : « vision c est des modeles de vision donc a 0 Mo et donc
     // la barre doit etre vide ». Une line qui ne tient rien en memoire n a pas de pastille : elle
     // a un rail VIDE, ce qui dit exactement ce qu elle pese.
-    if (/\b0 Mo\b/.test(verdict)) {
+    if (/\b0 MB\b/.test(verdict)) {
         return { share: 0, kind: "share" };
     }
     if (title === "tesseract" || title === "vision") {
-        return { share: /absent|introuvable|inactif|down|eteint|muet|n a pas/i.test(verdict) ? 0 : 1, kind: "health" };
+        return { share: /absent|missing|inactive|down|off|silent|no port/i.test(verdict) ? 0 : 1, kind: "health" };
     }
     if (RESIDENT_NAMES.indexOf(title) > -1 && ramDeLA) {
-        m = verdict.match(/^(\d+)\s*Mo/);
+        m = verdict.match(/^(\d+)\s*MB/);
         if (m) return { share: Math.min(Number(m[1]) / ramDeLA, 1), kind: "share" };
     }
     // UNE CARTE SE MESURE CONTRE ELLE-MEME : « 9 / 12288 Mo » est ce qu elle a pris sur ce
@@ -107,7 +107,11 @@ function ratioOf(title, verdict, ramDeLA) {
     m = verdict.match(/(\d+)\s*\/\s*(\d+)\b/);
     if (m) { const a = Number(m[1]), b = Number(m[2]); return { share: b > 0 ? Math.min(a / b, 1) : 0, kind: "health" }; }
     if (title === "journal") {
-        m = verdict.match(/(\d+)\s*echec/);
+        m = verdict.match(/(\d+)\s*failed/);
+        if (m) return { share: Number(m[1]) === 0 ? 1 : 0.25, kind: "health" };
+    }
+    if (title === "errors") {
+        m = verdict.match(/^(\d+)/);
         if (m) return { share: Number(m[1]) === 0 ? 1 : 0.25, kind: "health" };
     }
     return null;
@@ -126,7 +130,7 @@ class LAInfoApplet extends Applet.TextIconApplet {
         this._ready = false;
         this._lines = [];
         this._when = null;
-        this._minuterie = 0;
+        this._timer = 0;
         this._reading = false;
         this.setAllowedLayout(Applet.AllowedLayout.BOTH);
 
@@ -141,7 +145,7 @@ class LAInfoApplet extends Applet.TextIconApplet {
         this._manage = new PopupMenu.PopupMenuManager(this);
         this._manage.addMenu(this._menu);
 
-        this._peindre();
+        this._paint();
         this._ready = true;
         this._read();
         this._restartWatch();
@@ -149,8 +153,8 @@ class LAInfoApplet extends Applet.TextIconApplet {
 
     // ---- la montre : le board est relu toutes les N secondes, et il ne s'arrete pas
     _restartWatch() {
-        if (this._minuterie) { Mainloop.source_remove(this._minuterie); }
-        this._minuterie = Mainloop.timeout_add_seconds(this.secondes || 15, () => {
+        if (this._timer) { Mainloop.source_remove(this._timer); }
+        this._timer = Mainloop.timeout_add_seconds(this.secondes || 15, () => {
             this._read();
             return true;
         });
@@ -206,13 +210,13 @@ class LAInfoApplet extends Applet.TextIconApplet {
                 if (m) { this._approval = [m[1], m[2] || ""]; }
             });
             this._when = new Date();
-            this._peindre();
+            this._paint();
             this._dessinerLeMenu();
         });
     }
 
     // ---- ce qui se voit sans rien ouvrir : la pastille de l'state, et deux chiffres qui bougent
-    _peindre() {
+    _paint() {
         if (this._lines.length === 0) {
             this.set_applet_icon_path(ICON_DIR + "/la-unknown.svg");
             this.set_applet_label("?");
@@ -265,7 +269,7 @@ class LAInfoApplet extends Applet.TextIconApplet {
         // L EMOTICONE DANS LA COLONNE DE GAUCHE (MOUSSA, 19/10), a la place des pastilles : la
         // line commence par son signe, puis son nom. Les pastilles vertes ne bougeaient pas -- il
         // avait raison, elles ne disaient rien.
-        children.push(this._smallLabel(iconOf(line.title), "la-info-emoticone", EMO_WIDTH));
+        children.push(this._smallLabel(iconOf(line.title), "la-info-emoji", EMO_WIDTH));
         children.push(this._smallLabel(line.title.toUpperCase(), "la-info-title", TITLE_WIDTH));
         const r = ratioOf(line.title, line.verdict, this._ramOfLA);
         children.push(r === null ? this._pastille(line) : this._barre(r));
@@ -276,9 +280,9 @@ class LAInfoApplet extends Applet.TextIconApplet {
     // La couleur d une barre : la health sanctionne (vert si parfait, ambre sinon), la
     // consommation chauffe (vert sous la moitie, ambre a la moitie, rouge au dela).
     _couleurDe(r) {
-        if (r.kind === "health") return r.share >= 1 ? "la-info-full" : "la-info-partiel";
-        if (r.share >= 0.8) return "la-info-chaud";
-        if (r.share >= 0.5) return "la-info-partiel";
+        if (r.kind === "health") return r.share >= 1 ? "la-info-full" : "la-info-partial";
+        if (r.share >= 0.8) return "la-info-hot";
+        if (r.share >= 0.5) return "la-info-partial";
         return "la-info-full";
     }
 
@@ -289,13 +293,13 @@ class LAInfoApplet extends Applet.TextIconApplet {
     // bien, gris si c est muet ou decharge, rouge si c est en faute. Plus courte qu une barre
     // (11 x 6 contre 72 x 7) : l oeil ne confond pas un state avec une mesure.
     _pastille(line) {
-        let klass = "la-info-vert";
-        if (line.state !== "ok") klass = "la-info-rouge";
-        else if (/muet|decharge|absent|eteint|non charge|\b0 Mo\b/i.test(line.verdict)) klass = "la-info-gris";
+        let klass = "la-info-green";
+        if (line.state !== "ok") klass = "la-info-red";
+        else if (/muet|decharge|absent|eteint|non charge|\b0 Mo\b/i.test(line.verdict)) klass = "la-info-grey";
         const box = new St.BoxLayout({ style_class: "la-info-slot" });
         box.set_width(BAR_WIDTH);
         box.add_child(new St.Widget({ x_expand: true }));
-        const dot = new St.Widget({ style_class: "la-info-pastille " + klass });
+        const dot = new St.Widget({ style_class: "la-info-dot " + klass });
         dot.set_size(14, 6);
         dot.y_align = Clutter.ActorAlign.CENTER;
         box.add_child(dot);
@@ -406,7 +410,7 @@ class LAInfoApplet extends Applet.TextIconApplet {
     }
 
     on_applet_removed_from_panel() {
-        if (this._minuterie) { Mainloop.source_remove(this._minuterie); this._minuterie = 0; }
+        if (this._timer) { Mainloop.source_remove(this._timer); this._timer = 0; }
         try { this._settings.finalize(); } catch (e) { }
     }
 }

@@ -77,7 +77,7 @@ COMMAND: |
   printf '%s\n' "$(msg render_resized)""$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$RENDER")" "$L" "$H"
   APLATI="$T/la_colorier_final.png"
   RA=$(curl -sS --max-time 600 -H 'Content-Type: application/json' -d "$(jq -cn --arg m "$MASQUE" --arg g "$GUIDE" --arg o "$APLATI" --argjson s "${LA_APLAT_SEUIL:-60}" '{mask:$m,guide:$g,out:$o,seuil:$s}')" "$APLAT/")
-  printf '%s' "$RA" | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg l_aplatisseur)""$(printf '%s' "$RA" | jq -r '.error.message // "reponse illisible"')" >&2; exit 1; }
+  printf '%s' "$RA" | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg the_flattener)""$(printf '%s' "$RA" | jq -r '.error.message // "reponse illisible"')" >&2; exit 1; }
   [ -s "$APLATI" ] || { printf '%s\n' "$(msg flattener_empty)" >&2; exit 1; }
   printf "l'aplat : %s regions (%s grandes, %s petites recollees), %s octets\n" "$(printf '%s' "$RA" | jq -r .regions)" "$(printf '%s' "$RA" | jq -r .grandes)" "$(printf '%s' "$RA" | jq -r .petites)" "$(wc -c < "$APLATI")"
   OUTPUT="$W/{{output}}"

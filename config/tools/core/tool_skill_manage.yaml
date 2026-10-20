@@ -296,7 +296,7 @@ COMMAND: |
     printf '%s\n' "$(msg skill_trashed "$SLUG")"
     ;;
   *)
-    printf '%s\n' "$(msg action_inconnue "$A")" >&2; exit 1 ;;
+    printf '%s\n' "$(msg action_unknown "$A")" >&2; exit 1 ;;
   esac
 
 ARGS:

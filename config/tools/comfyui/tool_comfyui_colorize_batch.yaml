@@ -59,7 +59,7 @@ COMMAND: |
   }
   aplatir() {              # $1 = masque, $2 = guide, $3 = sortie ; pose le compte des regions
     RA=$(curl -sS --max-time 600 -H 'Content-Type: application/json' -d "$(jq -cn --arg m "$1" --arg g "$2" --arg o "$3" '{mask:$m,guide:$g,out:$o}')" "$APLAT/")
-    printf '%s' "$RA" | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg l_aplatisseur)""$(printf '%s' "$RA" | jq -r '.error.message // "reponse illisible"')" >&2; exit 1; }
+    printf '%s' "$RA" | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg the_flattener)""$(printf '%s' "$RA" | jq -r '.error.message // "reponse illisible"')" >&2; exit 1; }
     REGIONS=$(printf '%s' "$RA" | jq -r .regions); GRANDES=$(printf '%s' "$RA" | jq -r .grandes); PETITES=$(printf '%s' "$RA" | jq -r .petites)
     return 0
   }

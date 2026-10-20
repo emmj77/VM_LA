@@ -500,7 +500,7 @@
     doc: 3d
     description: "image -> 3D (Pixal3D), variante rapide a graines FIXES (memes que la base)"
   - id: 212
-    tool: pixal3d-ref-froid
+    tool: pixal3d-ref-cold
     family: IMAGE
     sub_family: "convert"
     doc: 3d

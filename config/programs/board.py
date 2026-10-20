@@ -347,7 +347,7 @@ def read_git():
     return st["dirty"], st["rev"]
 
 
-def read_trafic():
+def read_traffic():
     t = {}
     e = model.engine()
     if e["post"]:
@@ -455,7 +455,7 @@ def control(light=False):
     appoints = read_appoints()
     instr = read_instruments()
     table = read_table()
-    traffic = read_trafic()
+    traffic = read_traffic()
     canon = {"path": None} if light else read_canon()
     doctor = None if light else read_doctor()
     ok_engine = False if light else read_engine()[0]

@@ -11,7 +11,7 @@ import unicodedata
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 HUNSPELL = "/usr/share/hunspell"
-ENGLISH_KEEP = set("conf environ vals tris config data meta json yaml python dash shell bash args argv stdin stdout stderr tmp dir dirs src dest repo branch commit diff merge push pull stash key keys item items list lists map maps node nodes".split())
+ENGLISH_KEEP = set("anima conf environ vals tris profiler verts flac destin frame config data meta json yaml python dash shell bash args argv stdin stdout stderr tmp dir dirs src dest repo branch commit diff merge push pull stash key keys item items list lists map maps node nodes".split())
 
 STOP = set("""
 demande demandes reponse reponses outil outils corps ligne lignes nom noms valeur valeurs texte textes
@@ -65,6 +65,10 @@ ONLY_FR = None
 
 def build_oracle(raw):
     global ONLY_FR
+    split = set()
+    for word in raw:
+        split.update(w for w in re.split(r"[^0-9A-Za-z]+", str(word)) if w)
+    raw = split
     plain = {str(w).lower() for w in raw if len(str(w)) >= 4 and not any(c in str(w) for c in ACCENT)}
     plain -= ENGLISH_KEEP
     en_ok = plain - aspell_bad(plain, "en")
