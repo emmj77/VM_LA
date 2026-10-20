@@ -1179,7 +1179,12 @@ def transcribe(raw):
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *a):
-        pass
+        # une ligne par requete, avec le CODE : sans lui un 500 reste invisible
+        try:
+            sys.stderr.write("%s  bridge %s  %s\n" % (time.strftime("%H:%M:%S"), self.client_address[0], fmt % a))
+            sys.stderr.flush()
+        except Exception:
+            pass
 
     def _send(self, code, body, ctype="application/json; charset=utf-8", extra=None):
         if isinstance(body, str):
