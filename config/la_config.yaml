@@ -1,4 +1,3 @@
-
 engines:
   - provider: ollama-cloud
     alias: ollama-cloud
@@ -540,9 +539,8 @@ schema:
 archi:                                         # LE FICHIER MAITRE : ce qui doit exister, avec son id
   note: |
     deux mondes, deux comportements.
-    les tools : l id vit dans l en-tete du corps, la_tools en est la projection, le build la reecrit.
-    le reste  : l id vit dans l en-tete du fichier, la_config en tient la liste, un id qui
-                apparait ou disparait leve une erreur.
+    une population (tool, skill, project) : l id vit dans l en-tete, l index le projette, aucune erreur.
+    le reste de config/ : l id vit dans l en-tete ET dans la liste ici ; un ecart est une erreur.
     les dossiers n ont pas d en-tete : leur id ne vit qu ici.
   rules: |
     archi - LE FICHIER MAITRE                                   root: ~/Documents/VM_LA   # ce qui doit exister, et son id
@@ -721,21 +719,21 @@ archi:                                         # LE FICHIER MAITRE : ce qui doit
       why       engine.sh:298 and 367 hold the ten families twice, and doctor.sh greps the source to get them
                                                                          # ce que la table supprime
 
-    IDS - two worlds, two rules                  # un id par chose, deux comportements
-      tool      l id vit dans l en-tete du corps. la_tools est la projection, ecrite au build
-                et sur reload_tools : un id nouveau entre, un id retire sort, aucune erreur.
-      other     l id vit dans l en-tete du fichier, et sa liste est ici, dans archi.files.
-                un id qui apparait ou disparait leve une erreur : c est une decision, pas un effet.
-      population tool, skill, project : l id vit dans l en-tete, l index le projette au build.
-            un id nouveau entre, un id retire sort, aucune erreur : c est une population.
-      lock      config/ : l id est ici, dans archi.files. un ecart est une erreur.
-      chain     project J## -> SKILLS [K##] -> TOOLSET [id du tool]. une reference morte = erreur.
-      letters   R racine C conf E engine P programs U units S setup A applet H page B bases
-                N state F filter Z certs D dossier, K une skill, J un projet ; le tool garde son numero.
-      dir       un dossier n a pas d en-tete : son id ne vit qu ici, dans archi.dirs.
-      format    une lettre par aire, voir letters. jamais reutilise, jamais renumero.
-      resolve   cfg path E07 donne le chemin. personne d autre ne sait ou habite E07.
-      check     trois directions : declare sans disque, disque sans id, reference morte.
+    IDS - une place par monde, aucun fichier sans id
+      population  tool, skill, project, spec : l id vit dans l en-tete du fichier,
+                  et l index le projette au build. aucun registre tenu a la main.
+      tool        id: 205 dans la_tools, le corps ne porte rien
+      skill       skill.yaml en tete : id: "K07"        project.yml : id: "J03"
+      spec        son canon porte deja le sien : id: "LA"
+      lock        config/, la racine, docs/ : l id vit dans archi.files, le fichier n en
+                  porte aucun. un id qui apparait ou disparait leve une erreur.
+      dir         un dossier n a pas d en-tete : son id ne vit qu ici, dans archi.dirs.
+      chain       project J## -> SKILLS [K##] -> TOOLSET [id du tool]. un id mort = erreur.
+      letters     R racine C conf E engine P programs U units S setup A applet H page B bases
+                  N state F filter Z certs D dossier ; K skill, J project.
+      resolve     cfg path E07 donne le chemin. personne d autre ne sait ou habite E07.
+      check       declare sans disque, disque sans id, reference morte.
+
     GABARITS - engine.new, quatre ops       # ce qu une pose ecrit, et rien d autre
       sh        #!/bin/sh, puis # id: <libre>, # role: une ligne, puis le corps
       tool      tool, family, l id libre du numero, ARGS, COMMAND
@@ -764,91 +762,164 @@ archi:                                         # LE FICHIER MAITRE : ce qui doit
       la doctor [--short|--light|--json|--all]        # le diagnostic, par la porte
       la tool <id|name> [args]                        # un tool par la porte, par id ou par nom
       la new skill|project|tool <name>                # les gabarits, sans fichier gabarit
+
   tools:
     path: config/tools
-    registry: config/la_tools.yaml
+    registry: config/la_tools.yaml      # id T00, genere
     build: au demarrage, et sur reload_tools
     id: dans l en-tete du corps
     check: "aucun. le build reecrit, un id nouveau entre, un id retire sort"
-  dirs:                                        # 24 dossiers, aucun en-tete possible
+  dirs:                                        # 57 dossiers, aucun en-tete possible
     - {id: D01, path: "config", role: "les treize dossiers, aucun fichier a la racine"}
-    - {id: D02, path: "config/applet", role: "l applet Cinnamon"}
-    - {id: D03, path: "config/audio", role: "la matiere sonore (runtime)"}
-    - {id: D04, path: "config/certs", role: "le TLS du pont (runtime)"}
-    - {id: D05, path: "config/conf", role: "la configuration : noms, phrases, pipeline, tetes, cles"}
-    - {id: D06, path: "config/data", role: "les bases, un ecrivain chacune"}
-    - {id: D07, path: "config/engine", role: "le moteur : 16 .sh, dont onze briques jamais executees"}
-    - {id: D08, path: "config/filter", role: "le filtre de famille"}
-    - {id: D09, path: "config/page", role: "la page et le telephone"}
-    - {id: D10, path: "config/programs", role: "les quatre serveurs : jamais sources"}
-    - {id: D11, path: "config/setup", role: "l installation"}
-    - {id: D12, path: "config/state", role: "l etat d execution"}
-    - {id: D13, path: "config/state/returns", role: "au-dela de la borne"}
-    - {id: D14, path: "config/tools", role: "les tools, seul catalogue de la porte"}
-    - {id: D15, path: "config/tools/doctor", role: "les controles : une famille de tools"}
-    - {id: D16, path: "config/tools/engine", role: "les actions du moteur, en tools"}
-    - {id: D17, path: "config/tools/<familie>", role: "une famille de tools"}
-    - {id: D18, path: "config/tools/plan", role: "le plan, en cinq corps"}
-    - {id: D19, path: "config/tools/turn", role: "les huit etapes du tour"}
-    - {id: D20, path: "config/tools/watch", role: "le juge"}
-    - {id: D21, path: "projects", role: "un dossier par projet"}
-    - {id: D22, path: "projects/la", role: "le projet LA"}
-    - {id: D23, path: "skills", role: "une competence par dossier"}
-    - {id: D24, path: "skills/<nom>", role: "une competence"}
-  files:                                       # 53 fichiers, les corps de tools exclus
-    - {id: A01, path: "config/applet/applet.js", role: "lit la sortie courte du docteur, la garde, peint"}
-    - {id: A02, path: "config/applet/metadata.json", role: "identite de l applet"}
-    - {id: Z01, path: "config/certs/bridge-cert.pem", role: "le certificat du pont"}
-    - {id: Z02, path: "config/certs/bridge-key.pem", role: "sa cle privee, 0600"}
-    - {id: C01, path: "config/conf/.env", role: "cles d API, 0600"}
-    - {id: C02, path: "config/conf/head.yaml", role: "tete gelee : prompt systeme + schema la(g,a)"}
-    - {id: C03, path: "config/conf/la_config.yaml", role: "les noms : paths ports units models lists caps thresholds"}
-    - {id: C04, path: "config/conf/pipeline.yaml", role: "le tour en etapes ordonnees : facts second scope prompt call tools reply note"}
-    - {id: C05, path: "config/conf/second.head", role: "la tete secondaire : son prompt"}
-    - {id: C06, path: "config/conf/texts.yaml", role: "toutes les phrases : refus, tour, board, pont, voix, docteur"}
-    - {id: B01, path: "config/data/memory.db", role: "la memoire durable : une note par tour"}
-    - {id: B02, path: "config/data/sessions.db", role: "messages, returns, vectors, usage, meta"}
-    - {id: E01, path: "config/engine/approval.sh", role: "la porte humaine : la signature, le refus, la fenetre"}
-    - {id: E02, path: "config/engine/args.sh", role: "arguments declares vers argv : path enum int bool text, canon des chemins"}
-    - {id: E03, path: "config/engine/boot.sh", role: "la seule ligne sourcee : HERE ROOT LC_ALL, chemins, puis les briques"}
-    - {id: E04, path: "config/engine/canon.sh", role: "le canon : canon_path, loi numero N"}
-    - {id: E05, path: "config/engine/cap.sh", role: "bornes head tail, table returns, state/returns"}
-    - {id: E06, path: "config/engine/cfg.sh", role: "le lecteur unique de la_config : conf_num conf_str conf_has conf_list"}
-    - {id: E07, path: "config/engine/fs.sh", role: "abs_path state_paths tmpfile write_atomic"}
-    - {id: E08, path: "config/engine/la.sh", role: "le maitre : racine, environnement, aiguillage, exec"}
-    - {id: E09, path: "config/engine/loop.sh", role: "la boucle : signal, repos, reprise, marque du tour, etape par etape"}
-    - {id: E10, path: "config/engine/msg.sh", role: "les phrases de texts.yaml : msg msg_str tpn"}
-    - {id: E11, path: "config/engine/run.sh", role: "LA PORTE : valide, execute, met en forme"}
-    - {id: E12, path: "config/engine/shape.sh", role: "la forme unique : status tool line result ts return, et les refus nommes"}
-    - {id: E13, path: "config/engine/shell.sh", role: "LE SHELL : machine + operation + arguments vers une commande"}
-    - {id: E14, path: "config/engine/skl.sh", role: "competence et projet actifs, PERIMETER, permanent, approval_of, is_gated"}
-    - {id: E15, path: "config/engine/step.sh", role: "execute une etape du pipeline : lit turn.json, appelle, ecrit"}
-    - {id: E16, path: "config/engine/tab.sh", role: "le registre : block_by_id table_block table_index body_of count, sur la table qu on lui donne"}
-    - {id: F01, path: "config/filter/family.bin", role: "le filtre entraine"}
-    - {id: H01, path: "config/page/page.html", role: "tout dedans : style, client, flux. Servi sur / et sur /m"}
-    - {id: P01, path: "config/programs/board.py", role: "le tableau et le CLI : une passe, une ligne, un menu, un tour"}
-    - {id: P02, path: "config/programs/bridge.py", role: "le pont : page, API, audio, delegate. Transport seulement"}
-    - {id: P03, path: "config/programs/tts_daemon.py", role: "la voix : sherpa-onnx charge une fois, POST /say vers un wav"}
-    - {id: P04, path: "config/programs/watch.py", role: "la veille : onnxruntime, le mot passe, il signe ce qui attend"}
-    - {id: S01, path: "config/setup/install.sh", role: "pose units, commande la, bureau, applet, certs"}
-    - {id: S02, path: "config/setup/uninstall.sh", role: "retire ce qui a ete pose, garde les donnees"}
-    - {id: N01, path: "config/state/approve", role: "le feu vert signe"}
-    - {id: N02, path: "config/state/approve.request", role: "la demande en attente"}
-    - {id: N03, path: "config/state/doctor.cache", role: "la derniere sortie du docteur"}
-    - {id: N04, path: "config/state/reply.stream", role: "la reponse qui s ecrit"}
-    - {id: N05, path: "config/state/say.queue", role: "ce qui attend d etre dit"}
-    - {id: N06, path: "config/state/second_head.yaml", role: "le produit de la tete secondaire"}
-    - {id: N07, path: "config/state/stop", role: "la marque d arret d un tour"}
-    - {id: N08, path: "config/state/trace.jsonl", role: "le canal vivant"}
-    - {id: N09, path: "config/state/turn.json", role: "l objet du tour, passe d etape en etape"}
-    - {id: N10, path: "config/state/turn.pid", role: "le pid du tour en cours"}
-    - {id: R01, path: ".gitignore", role: "secret, bases, audio, state, work"}
-    - {id: R02, path: "projects/.active", role: "le projet charge"}
-    - {id: R03, path: "projects/la/project.yml", role: "le projet LA"}
-    - {id: R04, path: "projects/la/spec.yaml", role: "son canon"}
-    - {id: R05, path: "skills/.active", role: "la competence chargee"}
-    - {id: R06, path: "skills/<nom>/skill.yaml", role: "une competence et sa palette"}
-    - {id: R07, path: "work", role: "les livraisons de l agent"}
+    - {id: D02, path: "config/applets/LA_Info@moussa", role: ""}
+    - {id: D03, path: "config/applets/LA_Info@moussa/icons", role: ""}
+    - {id: D04, path: "config/dashboard", role: ""}
+    - {id: D05, path: "config/engine", role: "le moteur : 16 .sh, dont onze briques jamais executees"}
+    - {id: D06, path: "config/filter", role: "le filtre de famille"}
+    - {id: D07, path: "config/programs", role: "les quatre serveurs : jamais sources"}
+    - {id: D08, path: "config/templates", role: ""}
+    - {id: D09, path: "config/tools", role: "les tools, seul catalogue de la porte"}
+    - {id: D10, path: "config/tools/3d", role: ""}
+    - {id: D11, path: "config/tools/asset_builder", role: ""}
+    - {id: D12, path: "config/tools/blender", role: ""}
+    - {id: D13, path: "config/tools/comfyui", role: ""}
+    - {id: D14, path: "config/tools/core", role: ""}
+    - {id: D15, path: "config/tools/krita", role: ""}
+    - {id: D16, path: "config/tools/unity", role: ""}
+    - {id: D17, path: "config/units", role: ""}
+    - {id: D18, path: "docs", role: ""}
+    - {id: D19, path: "projects/la", role: ""}
+    - {id: D20, path: "projects/rav7", role: ""}
+    - {id: D21, path: "projects/rav8", role: ""}
+    - {id: D22, path: "projects/supreme-pmc", role: ""}
+    - {id: D23, path: "projects/webtoon-destin", role: ""}
+    - {id: D24, path: "skills/analyze-image", role: ""}
+    - {id: D25, path: "skills/asset-builder", role: ""}
+    - {id: D26, path: "skills/blender", role: ""}
+    - {id: D27, path: "skills/comfyui", role: ""}
+    - {id: D28, path: "skills/computer-debug", role: ""}
+    - {id: D29, path: "skills/delegate-work", role: ""}
+    - {id: D30, path: "skills/disk-report", role: ""}
+    - {id: D31, path: "skills/download-file", role: ""}
+    - {id: D32, path: "skills/edit-file", role: ""}
+    - {id: D33, path: "skills/edit-table", role: ""}
+    - {id: D34, path: "skills/git", role: ""}
+    - {id: D35, path: "skills/krita", role: ""}
+    - {id: D36, path: "skills/list-files", role: ""}
+    - {id: D37, path: "skills/manage-processes", role: ""}
+    - {id: D38, path: "skills/manipulation-3d", role: ""}
+    - {id: D39, path: "skills/models-bench", role: ""}
+    - {id: D40, path: "skills/phone-tunnel", role: ""}
+    - {id: D41, path: "skills/program-manage", role: ""}
+    - {id: D42, path: "skills/query-yaml", role: ""}
+    - {id: D43, path: "skills/read-log", role: ""}
+    - {id: D44, path: "skills/search-code", role: ""}
+    - {id: D45, path: "skills/search-files", role: ""}
+    - {id: D46, path: "skills/search-memory", role: ""}
+    - {id: D47, path: "skills/speak-text", role: ""}
+    - {id: D48, path: "skills/summarize-document", role: ""}
+    - {id: D49, path: "skills/tool-manager", role: ""}
+    - {id: D50, path: "skills/transcribe-audio", role: ""}
+    - {id: D51, path: "skills/translate-document", role: ""}
+    - {id: D52, path: "skills/trash-file", role: ""}
+    - {id: D53, path: "skills/unity", role: ""}
+    - {id: D54, path: "skills/web-agent", role: ""}
+    - {id: D55, path: "skills/web-search", role: ""}
+    - {id: D56, path: "skills/workshop", role: ""}
+    - {id: D57, path: "skills/write-spec", role: ""}
+  files:                                       # 110 fichiers : config/, la racine et docs/ ; skills et projects sont des populations
+    - {id: "R01", path: ".gitignore", role: "secret, bases, audio, state, work"}
+    - {id: "R02", path: "config/BACKLOG.md", role: ""}
+    - {id: "A01", path: "config/applets/LA_Info@moussa/applet.js", role: ""}
+    - {id: "A02", path: "config/applets/LA_Info@moussa/icons/la-active.svg", role: ""}
+    - {id: "A03", path: "config/applets/LA_Info@moussa/icons/la-disabled.svg", role: ""}
+    - {id: "A04", path: "config/applets/LA_Info@moussa/icons/la-unknown.svg", role: ""}
+    - {id: "A05", path: "config/applets/LA_Info@moussa/metadata.json", role: ""}
+    - {id: "A06", path: "config/applets/LA_Info@moussa/settings-schema.json", role: ""}
+    - {id: "A07", path: "config/applets/LA_Info@moussa/stylesheet.css", role: ""}
+    - {id: "H01", path: "config/dashboard/dash.css", role: ""}
+    - {id: "H02", path: "config/dashboard/dash.js", role: ""}
+    - {id: "H03", path: "config/dashboard/index.html", role: ""}
+    - {id: "H04", path: "config/dashboard/la.svg", role: ""}
+    - {id: "E01", path: "config/engine/approval.sh", role: "la porte humaine : la signature, le refus, la fenetre"}
+    - {id: "E02", path: "config/engine/asr.sh", role: ""}
+    - {id: "E03", path: "config/engine/audio_purge.sh", role: ""}
+    - {id: "E04", path: "config/engine/backup.sh", role: ""}
+    - {id: "E05", path: "config/engine/board.sh", role: ""}
+    - {id: "E06", path: "config/engine/doctor.sh", role: ""}
+    - {id: "E07", path: "config/engine/engine.sh", role: ""}
+    - {id: "E08", path: "config/engine/engine_switch.sh", role: ""}
+    - {id: "E09", path: "config/engine/la.sh", role: "le maitre : racine, environnement, aiguillage, exec"}
+    - {id: "E10", path: "config/engine/lib.sh", role: ""}
+    - {id: "E11", path: "config/engine/loop.sh", role: "la boucle : signal, repos, reprise, marque du tour, etape par etape"}
+    - {id: "E12", path: "config/engine/models.sh", role: ""}
+    - {id: "E13", path: "config/engine/pick.sh", role: ""}
+    - {id: "E14", path: "config/engine/plan.sh", role: ""}
+    - {id: "E15", path: "config/engine/second.sh", role: ""}
+    - {id: "E16", path: "config/engine/session_note.sh", role: ""}
+    - {id: "E17", path: "config/engine/signal_task.sh", role: ""}
+    - {id: "E18", path: "config/engine/spec.sh", role: ""}
+    - {id: "E19", path: "config/engine/summary.sh", role: ""}
+    - {id: "E20", path: "config/engine/trim_forms.sh", role: ""}
+    - {id: "E21", path: "config/engine/tts.sh", role: ""}
+    - {id: "E22", path: "config/engine/tunnel.sh", role: ""}
+    - {id: "E23", path: "config/engine/update.sh", role: ""}
+    - {id: "E24", path: "config/engine/watcher.sh", role: ""}
+    - {id: "F01", path: "config/filter/clean.txt", role: ""}
+    - {id: "F02", path: "config/filter/families.txt", role: ""}
+    - {id: "F03", path: "config/filter/family.bin", role: "", opaque: true}
+    - {id: "F04", path: "config/filter/family.vec", role: "", opaque: true}
+    - {id: "F05", path: "config/filter/family_test.bin", role: "", opaque: true}
+    - {id: "F06", path: "config/filter/family_test.vec", role: "", opaque: true}
+    - {id: "F07", path: "config/filter/judge.txt", role: ""}
+    - {id: "F08", path: "config/filter/learned.txt", role: ""}
+    - {id: "F09", path: "config/filter/requests.txt", role: ""}
+    - {id: "F10", path: "config/filter/test.txt", role: ""}
+    - {id: "F11", path: "config/filter/test_expected.txt", role: ""}
+    - {id: "F12", path: "config/filter/test_raw.txt", role: ""}
+    - {id: "F13", path: "config/filter/test_seen.txt", role: ""}
+    - {id: "R03", path: "config/head.yaml", role: ""}
+    - {id: "R04", path: "config/install.sh", role: ""}
+    - {id: "R05", path: "config/la_config.yaml", role: ""}
+    - {id: "T00", path: "config/la_tools.yaml", role: "", generated: true}
+    - {id: "R07", path: "config/llama_preset.ini", role: ""}
+    - {id: "R08", path: "config/messages.yaml", role: ""}
+    - {id: "P01", path: "config/programs/audit_vocab.py", role: ""}
+    - {id: "P02", path: "config/programs/board.py", role: "le tableau et le CLI : une passe, une ligne, un menu, un tour"}
+    - {id: "P03", path: "config/programs/build_tool_vectors.py", role: ""}
+    - {id: "P04", path: "config/programs/dash.py", role: ""}
+    - {id: "P05", path: "config/programs/laconf.py", role: ""}
+    - {id: "P06", path: "config/programs/micro_vision.py", role: ""}
+    - {id: "P07", path: "config/programs/model.py", role: ""}
+    - {id: "P08", path: "config/programs/sse.py", role: ""}
+    - {id: "P09", path: "config/programs/tts_daemon.py", role: "la voix : sherpa-onnx charge une fois, POST /say vers un wav"}
+    - {id: "P10", path: "config/programs/vector_pick.py", role: ""}
+    - {id: "P11", path: "config/programs/watch.py", role: "la veille : onnxruntime, le mot passe, il signe ce qui attend"}
+    - {id: "R09", path: "config/templates/project_template.yml", role: ""}
+    - {id: "R10", path: "config/templates/registry_template.yaml", role: ""}
+    - {id: "R11", path: "config/templates/skill_template.yaml", role: ""}
+    - {id: "R12", path: "config/templates/specs_template.yaml", role: ""}
+    - {id: "R13", path: "config/templates/tool_template.yaml", role: ""}
+    - {id: "R14", path: "config/turn.yaml", role: ""}
+    - {id: "R15", path: "config/uninstall.sh", role: ""}
+    - {id: "U01", path: "config/units/la-asr.service.in", role: ""}
+    - {id: "U02", path: "config/units/la-audio-purge.service.in", role: ""}
+    - {id: "U03", path: "config/units/la-audio-purge.timer.in", role: ""}
+    - {id: "U04", path: "config/units/la-dash.service.in", role: ""}
+    - {id: "U05", path: "config/units/la-models.service.in", role: ""}
+    - {id: "U06", path: "config/units/la-tts.service.in", role: ""}
+    - {id: "R16", path: "config/widget-icon.svg", role: ""}
+    - {id: "R17", path: "config/widget-sw.js", role: ""}
+    - {id: "R18", path: "config/widget.html", role: ""}
+    - {id: "R19", path: "config/widget.webmanifest", role: ""}
+    - {id: "O01", path: "docs/2026-10-16_chat-agents.md", role: ""}
+    - {id: "O02", path: "docs/2026-10-16_speech-between-sessions.md", role: ""}
+    - {id: "O03", path: "docs/2026-10-20_blender-tools-merge.md", role: ""}
+    - {id: "O04", path: "docs/2026-10-20_unity-tools-merge.md", role: ""}
+    - {id: "O05", path: "docs/PISTES-micromodeles.md", role: ""}
+    - {id: "O06", path: "docs/TUNNEL_three_skills_to_judge.md", role: ""}
+    - {id: "O07", path: "docs/engine-audit-2026-10-20.md", role: ""}
+    - {id: "O08", path: "docs/state-registry.md", role: ""}
   check:                                       # ce que le docteur refuse
     files: un id apparu ou disparu, un chemin declare absent, un fichier sans id
     dirs: un dossier sans id, un id de dossier orphelin

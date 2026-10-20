@@ -1,3 +1,4 @@
+id: "M02"
 # agent-browser : la doc de l'app installee
 
 Source : la version posee sur le disque (0.26.0), doc servie par le CLI lui-meme.
