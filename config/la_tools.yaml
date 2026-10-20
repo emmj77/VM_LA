@@ -12158,6 +12158,11 @@
     family: MANAGE
     sub_family: "tunnel"
     description: "brings the wireguard tunnel down with wg-quick and says what is left"
+  - id: 3666
+    tool: tunnel_provision
+    family: MANAGE
+    sub_family: "tunnel"
+    description: "provisions the wireguard tunnel: server conf, phone profile, QR code, then brings wg0 up"
   - id: 3489
     tool: download_file
     family: MANAGE

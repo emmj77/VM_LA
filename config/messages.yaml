@@ -1049,3 +1049,7 @@ trace_skill_setup: 'loop: trace    skill %s ms | tools+dirs %s ms | lock+approva
 trace_facts_secondary: 'loop: trace  turn %s  facts+secondary: %s ms'
 trace_scope_build: 'loop: trace  turn %s  scope build (candidates, pick, rerank): %s ms'
 tunnel_down: 'down: %s disappeared%s'
+tunnel_public_missing: 'refused: the public address of the desktop is required (tunnel_provision <address>)'
+tunnel_public_bad: 'refused: %s is not a usable address (letters, digits, dot, colon, dash)'
+tunnel_brick_missing: 'refused: the tunnel brick is absent (%s)'
+tunnel_needs_sudo: 'refused: sudo would ask for a password ; provision the tunnel from a logged shell'

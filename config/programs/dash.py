@@ -907,6 +907,8 @@ PLAN_BRICK = laconf.path("plan_brick", "config/engine/plan.sh")
 APPROVAL_BRICK = laconf.path("approval_brick", "config/engine/approval.sh")
 STOP_FILE = laconf.path("stop", "config/state/stop")
 SAY_QUEUE = laconf.path("say_queue", "config/state/say.queue")
+WATCHER = laconf.path("watcher_brick", "config/engine/watcher.sh")
+JUDGE_SECONDS = laconf.num("watcher", "judge_seconds", 8)
 JOURNAL_FILE = laconf.path("journal", "config/state/journal.jsonl")
 SPOKEN_FILE = laconf.path("spoken", "config/state/spoken.jsonl")
 THINKING_FILE = laconf.path("thinking", "config/state/thinking.jsonl")
@@ -985,6 +987,22 @@ def sentence(text, limit):
     return cut[:i + 1] if i > 60 else cut
 
 
+def judge(event, detail):
+    """Le watcher PROPOSE (wake ou sleep) ; il ne bloque jamais : muet = wake (loi 1569)."""
+    try:
+        p = subprocess.run([SH, WATCHER, event, detail[:400]], capture_output=True, text=True,
+                           timeout=JUDGE_SECONDS)
+    except (OSError, subprocess.TimeoutExpired):
+        blog("judge %s -> unreachable, the event is served" % event)
+        return "wake"
+    word = (p.stdout or "").strip().split("\n")[-1].strip() if p.stdout else ""
+    if word not in ("wake", "sleep"):
+        blog("judge %s -> no verdict (%s), the event is served" % (event, (p.stderr or "").strip()[:160]))
+        return "wake"
+    blog("judge %s -> %s" % (event, word))
+    return word
+
+
 def turn(demand, voice=False, who=None):
     who = who or laconf.text("agents", "name_human", "human")
     if not re.match(r"^[a-z0-9_-]+$", who or ""):
@@ -1042,6 +1060,7 @@ def say(demand):
     if not demand:
         return {"error": "empty demand"}, 400
     blog("say  %s" % " ".join(demand.split())[:LOG_CHARS])
+    threading.Thread(target=judge, args=("say", demand), daemon=True).start()
     if turn_state()["running"]:
         try:
             with open(SAY_QUEUE, "a", encoding="utf-8") as f:
@@ -1300,9 +1319,11 @@ class Bridge(Handler):
             blog("%s %s -> %s" % (tool, name, " ".join(seen.split())[:LOG_CHARS]))
             if voice:
                 demand = seen.strip()
+                threading.Thread(target=judge, args=("voice", demand), daemon=True).start()
                 d = turn(demand, voice=True, who=laconf.text("agents", "name_voice", "voice"))
                 d["request"] = demand
             else:
+                threading.Thread(target=judge, args=("image", seen.strip()), daemon=True).start()
                 demand = ("Je viens de te donner une photo a voir, celle que je viens de prendre. Ce que la vision "
                           "en dit : %s\nReponds a ce que j en attends : dis-moi ce que cette image montre, et ce "
                           "qu il y a d utile a en retenir." % seen.strip())
