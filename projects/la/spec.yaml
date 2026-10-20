@@ -673,7 +673,7 @@ SECTION : MODEL
   1543: "LE VOLONTAIRE : le model appelle le sommeil, et le retour du systeme revient A LUI."
   1544: "L'AUTOMATIQUE : answer l'ARME ; son retour va AU JUGE, jamais a l'agent."
   1545: "LA VEILLE ARMEE PAR answer VIT AU BRIDGE : un turn meurt, le bridge vit."
-  1546: "LE JUGE EST LE VEILLEUR : une input, DEUX OUTPUTS convenues, reveiller ou dormir."
+  1546: "LE JUGE EST LE WATCHER : une input, DEUX OUTPUTS convenues : wake or sleep."
   1547: "SON ETAGE EST LE RERANKER : il NOTE les deux outputs, il n'en INVENTE aucune."
   1548: "IL JUGE LE REVEIL, JAMAIS L'ARRET : l'arret reste un COMPTE d'etapes (lois 382, 393)."
   1549: "IL PROPOSE, LE ENGINE DECIDE (loi 1533) ; un reveil ouvre une REQUEST."
