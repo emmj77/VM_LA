@@ -1,0 +1,12 @@
+tool: "blender_mesh_select_boundary_loop_multi"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select entire boundary loop of each selected boundary edge"
+machine: blender
+op: mesh.select_boundary_loop_multi
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: delimit_edge_loop, type: text}          # un de : SEAM | SHARP | NGONS | INNER_CORNERS | OUTER_CORNERS
+

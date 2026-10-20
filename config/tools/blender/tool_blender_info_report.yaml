@@ -1,0 +1,10 @@
+tool: "blender_info_report"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a report line of the info editor: copy | delete | replay (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "info.report_{{op}}"
+ARGS:
+  - {name: op, type: enum, values: [copy, delete, replay]}

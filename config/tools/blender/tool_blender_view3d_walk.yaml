@@ -1,0 +1,11 @@
+tool: "blender_view3d_walk"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Interactively walk around the scene"
+machine: blender
+op: view3d.walk
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

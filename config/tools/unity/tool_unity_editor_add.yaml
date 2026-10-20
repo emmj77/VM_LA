@@ -1,0 +1,34 @@
+tool: "unity_editor_add"
+date: "2026-10-18"
+tags: ["unity", "cli", "editor"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add an existing Unity editor to the Hub"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- editor add --no-banner --no-pager --non-interactive
+  [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'unity editor add')" >&2; exit 1; }
+  case "{{no_fetch_modules}}" in ''|true|false) ;; *) printf '%s\n' "$(msg fetch_modules_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ "{{no_fetch_modules}}" = true ] && set -- "$@" --no-fetch-modules
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_editor_add_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: path, type: text}
+  - {name: no_fetch_modules, type: text}   # true pour poser --no-fetch-modules ; Skip fetching the module list from Unity Cloud.
+

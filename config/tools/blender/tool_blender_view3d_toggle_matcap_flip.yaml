@@ -1,0 +1,11 @@
+tool: "blender_view3d_toggle_matcap_flip"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Flip MatCap"
+machine: blender
+op: view3d.toggle_matcap_flip
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

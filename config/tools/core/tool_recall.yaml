@@ -1,0 +1,19 @@
+tool: "recall"
+date: "2026-10-18"
+tags: ["recall", "history", "window", "session"]
+RULES:
+  enabled: true
+  timeout: 30
+DESCRIPTION: "reads back the last N messages of the running session, oldest first (read only)"
+COMMAND: |
+  _n="{{n}}"
+  case "$_n" in ''|*[!0-9]*) _n=20 ;; esac
+  [ "$_n" -ge 1 ] && [ "$_n" -le 200 ] || { printf '%s\n' "$(msg n_out_1_200)""$_n" >&2 ; exit 1 ; }
+  _db="${LA_SESSIONS_DB:-$LA_ROOT/config/sessions.db}"
+  [ -f "$_db" ] || { printf '%s\n' "$(msg session_db_missing '%s')""$_db" >&2 ; exit 1 ; }
+  sqlite3 -json "$_db" "SELECT role, substr(COALESCE(content,''),1,600) AS content FROM messages ORDER BY id DESC LIMIT $_n;" 2>/dev/null \
+    | jq -r 'if (length // 0) == 0 then "refused: aucun message dans la base" else (reverse[] | "[" + .role + "] " + (.content // "")) end' 2>/dev/null \
+    || printf '%s\n' "$(msg db_no_read)" >&2
+
+ARGS:
+  - {name: n, type: int}

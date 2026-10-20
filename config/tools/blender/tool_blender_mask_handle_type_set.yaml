@@ -1,0 +1,11 @@
+tool: "blender_mask_handle_type_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set type of handles for selected control points"
+machine: blender
+op: mask.handle_type_set
+ARGS:
+  - {name: type, type: text}          # un de : AUTO | VECTOR | ALIGNED | ALIGNED_DOUBLESIDE | FREE
+

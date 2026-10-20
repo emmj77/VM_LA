@@ -1,0 +1,11 @@
+tool: "blender_clip_clear_solution"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear all calculated data"
+machine: blender
+op: clip.clear_solution
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

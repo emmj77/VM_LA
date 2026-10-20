@@ -1,0 +1,11 @@
+tool: "blender_clip_delete_track"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete selected tracks"
+machine: blender
+op: clip.delete_track
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
+

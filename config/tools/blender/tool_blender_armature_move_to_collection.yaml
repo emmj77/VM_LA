@@ -1,0 +1,12 @@
+tool: "blender_armature_move_to_collection"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move bones to a collection"
+machine: blender
+op: armature.move_to_collection
+ARGS:
+  - {name: collection_index, type: int}
+  - {name: new_collection_name, type: text}
+

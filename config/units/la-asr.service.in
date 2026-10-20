@@ -1,0 +1,14 @@
+# UN MODELE, PAS UNE UNITE VIVANTE : install.sh remplace @ROOT@ par la racine reelle et
+# pose le fichier dans ~/.config/systemd/user/. Le depot porte la source, le poste porte l'unite.
+[Unit]
+Description=LA - ASR (resident ear, parakeet, model loaded once)
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=@ROOT@/config/engine/asr.sh run
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

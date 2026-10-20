@@ -1,0 +1,17 @@
+tool: "blender_graph_select_circle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select keyframe points using circle selection"
+machine: blender
+op: graph.select_circle
+ARGS:
+  - {name: x, type: int}
+  - {name: y, type: int}
+  - {name: radius, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # un de : SET | ADD | SUB
+  - {name: include_handles, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_curve_selection, type: text}          # true|false, vide pour ne rien poser
+

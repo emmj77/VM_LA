@@ -1,0 +1,28 @@
+tool: "coplay_physics_assign_material"
+date: "2026-10-18"
+tags: ["unity", "coplay", "physics"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Assign a physics material to a..."
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- physics assign-material
+  [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+  [ -n "{{material_path}}" ] && set -- "$@" --material-path "{{material_path}}"
+  [ -n "{{collider_type}}" ] && set -- "$@" --collider-type "{{collider_type}}"
+  [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: target, type: text}
+  - {name: material_path, type: text}
+  - {name: collider_type, type: text}
+  - {name: component_index, type: int}
+

@@ -1,0 +1,18 @@
+tool: "blender_node_link"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Use the mouse to create a link between two nodes"
+machine: blender
+op: node.link
+ARGS:
+  - {name: detach, type: text}          # true|false, vide pour ne rien poser
+  - {name: drag_start, type: text}          # 2 valeurs separees par des virgules
+  - {name: inside_padding, type: text}
+  - {name: outside_padding, type: text}
+  - {name: speed_ramp, type: text}
+  - {name: max_speed, type: text}
+  - {name: delay, type: text}
+  - {name: zoom_influence, type: text}
+

@@ -1,0 +1,11 @@
+tool: "blender_paint_texture_paint_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Toggle texture paint mode in 3D view"
+machine: blender
+op: paint.texture_paint_toggle
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

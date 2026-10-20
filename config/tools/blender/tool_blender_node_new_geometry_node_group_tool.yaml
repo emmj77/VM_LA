@@ -1,0 +1,11 @@
+tool: "blender_node_new_geometry_node_group_tool"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new geometry node group for a tool"
+machine: blender
+op: node.new_geometry_node_group_tool
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

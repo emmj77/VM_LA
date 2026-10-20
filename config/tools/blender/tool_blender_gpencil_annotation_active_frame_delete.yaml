@@ -1,0 +1,11 @@
+tool: "blender_gpencil_annotation_active_frame_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete the active frame for the active Annotation Layer"
+machine: blender
+op: gpencil.annotation_active_frame_delete
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

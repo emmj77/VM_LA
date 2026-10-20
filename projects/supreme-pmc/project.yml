@@ -1,0 +1,25 @@
+project: "supreme-pmc"
+path: "Documents/SUPREME_PMC"
+date: "2026-10-17"
+tags: ["supreme-pmc", "unity", "csharp", "rts"]
+
+RULES:
+  enabled: true
+  writeable: true
+
+SUMMARY:
+  101: "SUPREME_PMC : RTS tactique hybride (Chef SimCity / Commandant RTS / Hacker cyber)."
+  102: "Unity 6.3 LTS (6000.3.24f1), C#, rendu Built-in."
+  103: "AGENTS.md porte le SUIVI ; SPMC_SPECS/ porte la conception (172 notes)."
+  104: "Ressources/spmc.db = UNE base SQLite : tout le contenu, texte ET binaires."
+  105: "Le projet est en LECTURE SEULE dans la cage ; seul l'editeur Unity ecrit."
+
+SKILLS:
+  1: "unity"
+  2: "blender"
+  3: "manipulation-3d"
+  4: "git"
+  5: "edit-file"
+  6: "comfyui"
+
+PROJECT_PLAN:                # LE GRAND PLAN (le chantier) ; vide : il s ecrit au chargement

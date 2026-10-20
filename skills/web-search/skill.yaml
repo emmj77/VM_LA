@@ -1,0 +1,30 @@
+skill: "web-search"
+date: "2026-10-17"
+tags: ["web-search", "web", "recherche", "rapport"]
+
+SUMMARY:
+  101: "Chercher sur le web, ramener la reponse sourcee -- ou en faire un RAPPORT ecrit."
+  102: "web_search trouve les pages ; web_extract lit UNE page en propre."
+  103: "On cherche, on LIT la meilleure page, et on repond en citant l'URL."
+  104: "Rapport ECRIT demande ? meme chemin, plus write_file : le rapport dit ses sources."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "web_search"
+  201: "web_extract"
+  202: "read_file"
+  203: "write_file"
+  205: "load_doc"
+  206: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Si web_search ne rend rien : reformuler la requete avec des mots DISTINCTIFS, jamais la repeter telle quelle."
+  601: "Pas de source trouvee : le rapport ecrit dit ce qui MANQUE, il n'invente pas."

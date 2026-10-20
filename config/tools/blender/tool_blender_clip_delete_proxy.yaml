@@ -1,0 +1,11 @@
+tool: "blender_clip_delete_proxy"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete movie clip proxy files from the hard drive"
+machine: blender
+op: clip.delete_proxy
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

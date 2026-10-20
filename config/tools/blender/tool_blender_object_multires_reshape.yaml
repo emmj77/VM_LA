@@ -1,0 +1,11 @@
+tool: "blender_object_multires_reshape"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy vertex coordinates from other object"
+machine: blender
+op: object.multires_reshape
+ARGS:
+  - {name: modifier, type: text}
+

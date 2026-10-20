@@ -1,0 +1,11 @@
+tool: "blender_sequencer_strip_transform_fit"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: sequencer.strip_transform_fit
+ARGS:
+  - {name: fit_method, type: text}          # un de : FIT | FILL | STRETCH | ORIGINAL
+

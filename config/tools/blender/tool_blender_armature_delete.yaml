@@ -1,0 +1,11 @@
+tool: "blender_armature_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove selected bones from the armature"
+machine: blender
+op: armature.delete
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
+

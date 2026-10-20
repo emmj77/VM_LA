@@ -1,0 +1,14 @@
+tool: "blender_mesh_intersect"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cut an intersection into faces"
+machine: blender
+op: mesh.intersect
+ARGS:
+  - {name: mode, type: text}          # un de : SELECT | SELECT_UNSELECT
+  - {name: separate_mode, type: text}          # un de : ALL | CUT | NONE
+  - {name: threshold, type: text}
+  - {name: solver, type: text}          # un de : FLOAT | EXACT
+

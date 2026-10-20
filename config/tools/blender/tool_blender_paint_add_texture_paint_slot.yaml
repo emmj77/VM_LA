@@ -1,0 +1,22 @@
+tool: "blender_paint_add_texture_paint_slot"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a paint slot"
+machine: blender
+op: paint.add_texture_paint_slot
+ARGS:
+  - {name: type, type: text}          # un de : BASE_COLOR | SPECULAR | ROUGHNESS | METALLIC | NORMAL | BUMP | DISPLACEMENT
+  - {name: slot_type, type: text}          # un de : IMAGE | COLOR_ATTRIBUTE
+  - {name: name, type: text}
+  - {name: color, type: text}          # 4 valeurs separees par des virgules
+  - {name: width, type: int}
+  - {name: height, type: int}
+  - {name: alpha, type: text}          # true|false, vide pour ne rien poser
+  - {name: generated_type, type: text}          # un de : BLANK | UV_GRID | COLOR_GRID
+  - {name: float, type: text}          # true|false, vide pour ne rien poser
+  - {name: tiled, type: text}          # true|false, vide pour ne rien poser
+  - {name: domain, type: text}          # un de : POINT | CORNER
+  - {name: data_type, type: text}          # un de : FLOAT_COLOR | BYTE_COLOR
+

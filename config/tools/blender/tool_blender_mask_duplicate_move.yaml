@@ -1,0 +1,12 @@
+tool: "blender_mask_duplicate_move"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate mask and move"
+machine: blender
+op: mask.duplicate_move
+ARGS:
+  - {name: MASK_OT_duplicate, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}
+

@@ -1,0 +1,11 @@
+tool: "blender_constraint_normalize_target_weights"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Normalize weights of all target bones"
+machine: blender
+op: constraint.normalize_target_weights
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

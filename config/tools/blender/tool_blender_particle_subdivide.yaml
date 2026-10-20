@@ -1,0 +1,11 @@
+tool: "blender_particle_subdivide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Subdivide selected particles segments (adds keys)"
+machine: blender
+op: particle.subdivide
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

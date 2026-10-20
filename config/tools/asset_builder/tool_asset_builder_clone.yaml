@@ -1,0 +1,23 @@
+tool: "asset_builder_clone"
+date: "2026-10-19"
+tags: ["asset_builder", "session"]
+
+RULES:
+  enabled: true
+  timeout: 60
+
+DESCRIPTION: "copies an asset document and its scripts under a new name"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{name2}}"
+  case "$A2" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name2_a2 "$A2")" >&2 ; exit 1 ;; esac
+  AB_HOME="$W/asset_builder" "$B" clone --name "$A1" --name2 "$A2"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: name2, type: text}

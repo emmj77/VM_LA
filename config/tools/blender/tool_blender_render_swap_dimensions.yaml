@@ -1,0 +1,11 @@
+tool: "blender_render_swap_dimensions"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Flip X and Y resolutions"
+machine: blender
+op: render.swap_dimensions
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

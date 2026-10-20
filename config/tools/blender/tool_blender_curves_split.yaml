@@ -1,0 +1,11 @@
+tool: "blender_curves_split"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Split selected points"
+machine: blender
+op: curves.split
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

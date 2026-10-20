@@ -1,0 +1,12 @@
+tool: "blender_mesh_offset_edge_loops_slide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Offset edge loop slide"
+machine: blender
+op: mesh.offset_edge_loops_slide
+ARGS:
+  - {name: MESH_OT_offset_edge_loops, type: text}
+  - {name: TRANSFORM_OT_edge_slide, type: text}
+

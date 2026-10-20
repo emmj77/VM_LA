@@ -1,0 +1,11 @@
+tool: "blender_render_generate_texture_cache"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Generate Cycles texture cache files for all images used in shader nodes"
+machine: blender
+op: render.generate_texture_cache
+ARGS:
+  - {name: generate_sequences, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,12 @@
+tool: "blender_grease_pencil_select_similar"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all strokes with similar characteristics"
+machine: blender
+op: grease_pencil.select_similar
+ARGS:
+  - {name: mode, type: text}          # un de : LAYER | MATERIAL | VERTEX_COLOR | RADIUS | OPACITY
+  - {name: threshold, type: text}
+

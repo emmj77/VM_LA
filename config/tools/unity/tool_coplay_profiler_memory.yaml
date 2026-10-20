@@ -1,0 +1,45 @@
+tool: "coplay_profiler_memory"
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the profiler memory: compare | list | snapshot (op picks which)"
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  compare)
+    set -f
+    set -- profiler memory-compare
+    [ -n "{{snapshot_a}}" ] && set -- "$@" --a "{{snapshot_a}}"
+    [ -n "{{snapshot_b}}" ] && set -- "$@" --b "{{snapshot_b}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  list)
+    set -f
+    set -- profiler memory-list
+    [ -n "{{search_path}}" ] && set -- "$@" --search-path "{{search_path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  snapshot)
+    set -f
+    set -- profiler memory-snapshot
+    [ -n "{{path}}" ] && set -- "$@" --path "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+ARGS:
+  - {name: op, type: enum, values: [compare, list, snapshot]}
+  - {name: path, type: text}
+  - {name: search_path, type: text}
+  - {name: snapshot_a, type: text}
+  - {name: snapshot_b, type: text}

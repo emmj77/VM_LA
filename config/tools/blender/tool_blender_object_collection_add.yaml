@@ -1,0 +1,11 @@
+tool: "blender_object_collection_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add an object to a new collection"
+machine: blender
+op: object.collection_add
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

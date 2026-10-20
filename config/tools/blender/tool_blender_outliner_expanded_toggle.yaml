@@ -1,0 +1,11 @@
+tool: "blender_outliner_expanded_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Expand/Collapse all items"
+machine: blender
+op: outliner.expanded_toggle
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

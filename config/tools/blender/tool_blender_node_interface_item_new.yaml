@@ -1,0 +1,11 @@
+tool: "blender_node_interface_item_new"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a new item to the interface"
+machine: blender
+op: node.interface_item_new
+ARGS:
+  - {name: item_type, type: text}          # un de : INPUT | OUTPUT | PANEL
+

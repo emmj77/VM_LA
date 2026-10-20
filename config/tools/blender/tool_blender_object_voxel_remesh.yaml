@@ -1,0 +1,11 @@
+tool: "blender_object_voxel_remesh"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Calculates a new manifold mesh based on the volume of the current mesh. All data layers will be lost"
+machine: blender
+op: object.voxel_remesh
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

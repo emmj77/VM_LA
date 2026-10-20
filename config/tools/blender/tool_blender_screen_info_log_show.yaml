@@ -1,0 +1,11 @@
+tool: "blender_screen_info_log_show"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Show info log in a separate window"
+machine: blender
+op: screen.info_log_show
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

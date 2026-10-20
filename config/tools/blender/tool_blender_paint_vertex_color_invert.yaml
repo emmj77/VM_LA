@@ -1,0 +1,11 @@
+tool: "blender_paint_vertex_color_invert"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Invert RGB values"
+machine: blender
+op: paint.vertex_color_invert
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

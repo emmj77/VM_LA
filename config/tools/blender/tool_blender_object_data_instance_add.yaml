@@ -1,0 +1,19 @@
+tool: "blender_object_data_instance_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add an object data instance"
+machine: blender
+op: object.data_instance_add
+ARGS:
+  - {name: name, type: text}
+  - {name: session_uid, type: int}
+  - {name: type, type: text}          # un de : ACTION | ARMATURE | BRUSH | CACHEFILE | CAMERA | COLLECTION | CURVE | CURVES | FONT | GREASEPENCIL | GREASEPENCIL_V3 | IMAGE | KEY | LATTICE | LIBRARY | LIGHT | LIGHT_PROBE | LINESTYLE | MASK | MATERIAL | MESH | META | MOVIECLIP | NODETREE | OBJECT | PAINTCURVE | PALETTE | PARTICLE | POINTCLOUD | SCENE | SCREEN | SOUND | SPEAKER | TEXT | TEXTURE | VOLUME | WINDOWMANAGER | WORKSPACE | WORLD
+  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 valeurs separees par des virgules
+  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
+  - {name: scale, type: text}          # 3 valeurs separees par des virgules
+  - {name: drop_x, type: int}
+  - {name: drop_y, type: int}
+

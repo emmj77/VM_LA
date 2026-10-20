@@ -1,0 +1,11 @@
+tool: "blender_text_convert_whitespace"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Convert whitespaces by type"
+machine: blender
+op: text.convert_whitespace
+ARGS:
+  - {name: type, type: text}          # un de : SPACES | TABS
+

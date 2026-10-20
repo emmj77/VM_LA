@@ -1,0 +1,12 @@
+tool: "blender_pose_select_mirror"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Mirror the bone selection"
+machine: blender
+op: pose.select_mirror
+ARGS:
+  - {name: only_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+

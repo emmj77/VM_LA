@@ -1,0 +1,11 @@
+tool: "blender_curve_normals_make_consistent"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Recalculate the direction of selected handles"
+machine: blender
+op: curve.normals_make_consistent
+ARGS:
+  - {name: calc_length, type: text}          # true|false, vide pour ne rien poser
+

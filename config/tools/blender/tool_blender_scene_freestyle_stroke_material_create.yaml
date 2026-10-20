@@ -1,0 +1,11 @@
+tool: "blender_scene_freestyle_stroke_material_create"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create Freestyle stroke material for testing"
+machine: blender
+op: scene.freestyle_stroke_material_create
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

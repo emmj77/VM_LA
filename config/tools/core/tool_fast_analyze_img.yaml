@@ -1,0 +1,62 @@
+tool: "fast_analyze_img"
+date: "2026-10-17"
+tags: ["fast_analyze_img"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "reads a workspace image with the small or the big model"
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  MODELE="${LA_VISION_MODELE:-{{vision_model}}}"
+  [ -n "$MODELE" ] || MODELE=small
+  F="$W/{{path}}"
+  [ -f "$F" ] || { printf '%s\n' "$(msg image_missing_path)" >&2 ; exit 1 ; }
+  case "$F" in
+    *.png) M=image/png ;;
+    *.jpg|*.jpeg) M=image/jpeg ;;
+    *.webp) M=image/webp ;;
+    *.gif) M=image/gif ;;
+    *.bmp) M=image/bmp ;;
+    *) printf '%s\n' "$(msg image_type_unread)" >&2 ; exit 1 ;;
+  esac
+  Q=$(cat); [ -n "$Q" ] || Q="Describe this image in one sentence."
+  case "$MODELE" in
+    small)
+      A=http://127.0.0.1:8091
+      NAME=smolvlm
+      ;;
+    big)
+      A=http://127.0.0.1:8092
+      NAME=qwen3-vl-8b-instruct
+      if ! curl -sS -m 2 "$A/health" >/dev/null 2>&1; then
+        BIN=${LA_LLAMA_BIN:-/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-server}
+        GD=${LA_GGUF_DIR:-/home/moussa/LLM_GGUF}
+        [ -x "$BIN" ] || { printf '%s\n' "$(msg big_model_binary_missing "$BIN")" >&2 ; exit 1 ; }
+        [ -f "$GD/Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf" ] || { printf '%s\n' "$(msg big_model_absent "$GD")" >&2 ; exit 1 ; }
+        CUDA_VISIBLE_DEVICES=0 setsid "$BIN" -m "$GD/Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf" --mmproj "$GD/mmproj-Qwen3VL-8B-Instruct-Q8_0.gguf" --host 127.0.0.1 --port 8092 -ngl 99 -sm none -c 4096 >/dev/null 2>&1 < /dev/null &
+        VU=0
+        while [ "$VU" -lt 60 ]; do
+          curl -sS -m 2 "$A/health" >/dev/null 2>&1 && { VU=99; break; }
+          VU=$((VU + 1))
+          sleep 2
+        done
+        [ "$VU" = 99 ] || { printf '%s\n' "$(msg big_model_no_start)" >&2 ; exit 1 ; }
+      fi
+      ;;
+    *) printf '%s\n' "$(msg vision_model_unknown "${MODELE:-absent}")" >&2 ; exit 1 ;;
+  esac
+  command -v jq >/dev/null 2>&1 || { printf '%s\n' "$(msg jq_missing)" >&2 ; exit 1 ; }
+  curl -sS -m 2 "$A/health" >/dev/null 2>&1 || { printf '%s\n' "$(msg vision_unreachable "$A" "$MODELE")" >&2 ; exit 1 ; }
+  TD=$(mktemp -d "${TMPDIR:-/tmp}/fast_analyze_img.XXXXXX") || { printf '%s\n' "$(msg no_temporary_space)" >&2 ; exit 1 ; }
+  trap 'rm -f "$TD/b" "$TD/q"' EXIT INT TERM HUP
+  base64 -w 0 -- "$F" > "$TD/b" || { printf '%s\n' "$(msg image_unreadable "$F")" >&2 ; exit 1 ; }
+  jq -cn --arg m "$M" --rawfile b "$TD/b" --arg q "$Q" --arg n "$NAME" '{model:$n,temperature:0.1,max_tokens:1024,messages:[{role:"user",content:[{type:"image_url",image_url:{url:("data:"+$m+";base64,"+$b)}},{type:"text",text:$q}]}]}' > "$TD/q" || { printf '%s\n' "$(msg request_not_built)" >&2 ; exit 1 ; }
+  R=$(curl -sS -m 180 -H 'Content-Type: application/json' --data-binary @"$TD/q" "$A/v1/chat/completions") || { printf '%s\n' "$(msg vision_no_answer_a "$A")" >&2 ; exit 1 ; }
+  T=$(printf '%s' "$R" | jq -r '.choices[0].message.content // empty' 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
+  [ -n "$T" ] || { printf '%s\n' "$(msg vision_empty "$MODELE")" >&2 ; exit 1 ; }
+  printf '%s\n' "$T"
+
+ARGS:
+  - {name: path, type: path}
+  - {name: vision_model, type: text}
+  - {name: question, type: text, stdin: true}

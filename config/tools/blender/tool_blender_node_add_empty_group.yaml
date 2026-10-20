@@ -1,0 +1,12 @@
+tool: "blender_node_add_empty_group"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a group node with an empty group"
+machine: blender
+op: node.add_empty_group
+ARGS:
+  - {name: settings, type: text}
+  - {name: use_transform, type: text}          # true|false, vide pour ne rien poser
+

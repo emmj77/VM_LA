@@ -1,0 +1,11 @@
+tool: "blender_text_to_3d_object"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create 3D text object from active text data-block"
+machine: blender
+op: text.to_3d_object
+ARGS:
+  - {name: split_lines, type: text}          # true|false, vide pour ne rien poser
+

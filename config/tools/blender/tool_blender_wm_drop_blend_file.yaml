@@ -1,0 +1,12 @@
+tool: "blender_wm_drop_blend_file"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: wm.drop_blend_file
+ARGS:
+  - {name: filepath, type: text}
+  - {name: use_scripts, type: text}          # true|false, vide pour ne rien poser
+

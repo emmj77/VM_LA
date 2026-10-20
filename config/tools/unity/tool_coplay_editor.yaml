@@ -1,0 +1,229 @@
+tool: "coplay_editor"
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the Unity editor: add-layer | add-tag | console | custom-tool | deploy | menu | pause | play | poll-test | redo | refresh | remove-layer | remove-tag | restore | stop | tests | tool | undo (op picks which)"
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  add-layer)
+    set -f
+    set -- editor add-layer
+    [ -n "{{layer_name}}" ] || { printf '%s\n' "$(msg argument_required 'layer_name' 'editor add-layer')" >&2; exit 1; }
+    [ -n "{{layer_name}}" ] && set -- "$@" "{{layer_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  add-tag)
+    set -f
+    set -- editor add-tag
+    [ -n "{{tag_name}}" ] || { printf '%s\n' "$(msg argument_required 'tag_name' 'editor add-tag')" >&2; exit 1; }
+    [ -n "{{tag_name}}" ] && set -- "$@" "{{tag_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  console)
+    set -f
+    set -- editor console
+    case "{{stacktrace}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'stacktrace')" >&2; exit 1 ;; esac
+    case "{{clear}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'clear')" >&2; exit 1 ;; esac
+    [ -n "{{log_types}}" ] && set -- "$@" --type "{{log_types}}"
+    [ -n "{{count}}" ] && set -- "$@" --count "{{count}}"
+    [ -n "{{filter_text}}" ] && set -- "$@" --filter "{{filter_text}}"
+    [ "{{stacktrace}}" = true ] && set -- "$@" --stacktrace
+    [ "{{clear}}" = true ] && set -- "$@" --clear
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  custom-tool)
+    set -f
+    set -- editor custom-tool
+    [ -n "{{tool_name}}" ] || { printf '%s\n' "$(msg argument_required 'tool_name' 'editor custom-tool')" >&2; exit 1; }
+    [ -n "{{params}}" ] && set -- "$@" --params "{{params}}"
+    [ -n "{{tool_name}}" ] && set -- "$@" "{{tool_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  deploy)
+    set -f
+    set -- editor deploy
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  menu)
+    set -f
+    set -- editor menu
+    [ -n "{{menu_path}}" ] || { printf '%s\n' "$(msg argument_required 'menu_path' 'editor menu')" >&2; exit 1; }
+    [ -n "{{menu_path}}" ] && set -- "$@" "{{menu_path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  pause)
+    set -f
+    set -- editor pause
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  play)
+    set -f
+    set -- editor play
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  poll-test)
+    set -f
+    set -- editor poll-test
+    case "{{details}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'details')" >&2; exit 1 ;; esac
+    case "{{failed_only}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'failed_only')" >&2; exit 1 ;; esac
+    [ -n "{{job_id}}" ] || { printf '%s\n' "$(msg argument_required 'job_id' 'editor poll-test')" >&2; exit 1; }
+    [ -n "{{wait}}" ] && set -- "$@" --wait "{{wait}}"
+    [ "{{details}}" = true ] && set -- "$@" --details
+    [ "{{failed_only}}" = true ] && set -- "$@" --failed-only
+    [ -n "{{job_id}}" ] && set -- "$@" "{{job_id}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  redo)
+    set -f
+    set -- editor redo
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  refresh)
+    set -f
+    set -- editor refresh
+    case "{{compile}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'compile')" >&2; exit 1 ;; esac
+    case "{{no_wait}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'no_wait')" >&2; exit 1 ;; esac
+    [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+    [ -n "{{scope}}" ] && set -- "$@" --scope "{{scope}}"
+    [ "{{compile}}" = true ] && set -- "$@" --compile
+    [ "{{no_wait}}" = true ] && set -- "$@" --no-wait
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  remove-layer)
+    set -f
+    set -- editor remove-layer
+    [ -n "{{layer_name}}" ] || { printf '%s\n' "$(msg argument_required 'layer_name' 'editor remove-layer')" >&2; exit 1; }
+    [ -n "{{layer_name}}" ] && set -- "$@" "{{layer_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  remove-tag)
+    set -f
+    set -- editor remove-tag
+    [ -n "{{tag_name}}" ] || { printf '%s\n' "$(msg argument_required 'tag_name' 'editor remove-tag')" >&2; exit 1; }
+    [ -n "{{tag_name}}" ] && set -- "$@" "{{tag_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  restore)
+    set -f
+    set -- editor restore
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  stop)
+    set -f
+    set -- editor stop
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  tests)
+    set -f
+    set -- editor tests
+    case "{{async_mode}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'async_mode')" >&2; exit 1 ;; esac
+    case "{{details}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'details')" >&2; exit 1 ;; esac
+    case "{{failed_only}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'failed_only')" >&2; exit 1 ;; esac
+    case "{{clear_stuck}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'clear_stuck')" >&2; exit 1 ;; esac
+    [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+    [ "{{async_mode}}" = true ] && set -- "$@" --async
+    [ -n "{{wait}}" ] && set -- "$@" --wait "{{wait}}"
+    [ "{{details}}" = true ] && set -- "$@" --details
+    [ "{{failed_only}}" = true ] && set -- "$@" --failed-only
+    [ "{{clear_stuck}}" = true ] && set -- "$@" --clear-stuck
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  tool)
+    set -f
+    set -- editor tool
+    [ -n "{{tool_name}}" ] || { printf '%s\n' "$(msg argument_required 'tool_name' 'editor tool')" >&2; exit 1; }
+    [ -n "{{tool_name}}" ] && set -- "$@" "{{tool_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  undo)
+    set -f
+    set -- editor undo
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+ARGS:
+  - {name: op, type: enum, values: [add-layer, add-tag, console, custom-tool, deploy, menu, pause, play, poll-test, redo, refresh, remove-layer, remove-tag, restore, stop, tests, tool, undo]}
+  - {name: job_id, type: text}
+  - {name: menu_path, type: text}
+  - {name: tool_name, type: text}
+  - {name: tag_name, type: text}
+  - {name: layer_name, type: text}
+  - {name: count, type: int}
+  - {name: filter_text, type: text}
+  - {name: log_types, type: text}
+  - {name: mode, type: text}
+  - {name: params, type: text}
+  - {name: scope, type: text}
+  - {name: wait, type: int}
+  - {name: async_mode, type: text}
+  - {name: clear, type: text}
+  - {name: clear_stuck, type: text}
+  - {name: compile, type: text}
+  - {name: details, type: text}
+  - {name: failed_only, type: text}
+  - {name: no_wait, type: text}
+  - {name: stacktrace, type: text}

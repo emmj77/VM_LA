@@ -1,0 +1,11 @@
+tool: "blender_particle_select_tips"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select tips of all visible particles"
+machine: blender
+op: particle.select_tips
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT
+

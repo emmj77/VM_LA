@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_snap_to_cursor"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Snap selected points/strokes to the cursor"
+machine: blender
+op: grease_pencil.snap_to_cursor
+ARGS:
+  - {name: use_offset, type: text}          # true|false, vide pour ne rien poser
+

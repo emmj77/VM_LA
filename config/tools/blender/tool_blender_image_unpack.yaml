@@ -1,0 +1,12 @@
+tool: "blender_image_unpack"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Save an image packed in the .blend file to disk"
+machine: blender
+op: image.unpack
+ARGS:
+  - {name: method, type: text}          # un de : REMOVE | USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL
+  - {name: id, type: text}
+

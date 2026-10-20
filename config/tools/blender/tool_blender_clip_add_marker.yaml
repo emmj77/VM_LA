@@ -1,0 +1,11 @@
+tool: "blender_clip_add_marker"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Place new marker at specified location"
+machine: blender
+op: clip.add_marker
+ARGS:
+  - {name: location, type: text}          # 2 valeurs separees par des virgules
+

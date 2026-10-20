@@ -1,0 +1,11 @@
+tool: "blender_screen_repeat_history"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Display menu for previous actions performed"
+machine: blender
+op: screen.repeat_history
+ARGS:
+  - {name: index, type: int}
+

@@ -1,0 +1,11 @@
+tool: "blender_curves_select_less"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Shrink the selection by one point"
+machine: blender
+op: curves.select_less
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

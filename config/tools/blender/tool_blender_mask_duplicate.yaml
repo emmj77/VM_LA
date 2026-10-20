@@ -1,0 +1,11 @@
+tool: "blender_mask_duplicate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate selected control points and segments between them"
+machine: blender
+op: mask.duplicate
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

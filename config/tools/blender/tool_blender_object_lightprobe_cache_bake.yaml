@@ -1,0 +1,11 @@
+tool: "blender_object_lightprobe_cache_bake"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Bake irradiance volume light cache"
+machine: blender
+op: object.lightprobe_cache_bake
+ARGS:
+  - {name: subset, type: text}          # un de : ALL | SELECTED | ACTIVE
+

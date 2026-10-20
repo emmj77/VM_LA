@@ -1,0 +1,11 @@
+tool: "blender_mesh_solidify"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a solid skin by extruding, compensating for sharp angles"
+machine: blender
+op: mesh.solidify
+ARGS:
+  - {name: thickness, type: text}
+

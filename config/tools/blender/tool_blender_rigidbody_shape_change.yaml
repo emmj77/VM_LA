@@ -1,0 +1,11 @@
+tool: "blender_rigidbody_shape_change"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change collision shapes for selected Rigid Body Objects"
+machine: blender
+op: rigidbody.shape_change
+ARGS:
+  - {name: type, type: text}          # un de : BOX | SPHERE | CAPSULE | CYLINDER | CONE | CONVEX_HULL | MESH | COMPOUND
+

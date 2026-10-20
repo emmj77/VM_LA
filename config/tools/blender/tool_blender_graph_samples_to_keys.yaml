@@ -1,0 +1,11 @@
+tool: "blender_graph_samples_to_keys"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Convert selected channels from samples to keyframes"
+machine: blender
+op: graph.samples_to_keys
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

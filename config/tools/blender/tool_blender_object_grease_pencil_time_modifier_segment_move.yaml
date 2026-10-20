@@ -1,0 +1,12 @@
+tool: "blender_object_grease_pencil_time_modifier_segment_move"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move the active time segment up or down"
+machine: blender
+op: object.grease_pencil_time_modifier_segment_move
+ARGS:
+  - {name: modifier, type: text}
+  - {name: type, type: text}          # un de : UP | DOWN
+

@@ -1,0 +1,11 @@
+tool: "blender_armature_dissolve"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Dissolve selected bones from the armature"
+machine: blender
+op: armature.dissolve
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,18 @@
+tool: "blender_mball_metaelems"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the meta elements of a metaball: delete_metaelems | duplicate_metaelems | duplicate_move | hide_metaelems | reveal_metaelems | select_random_metaelems (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "mball.{{op}}" --arg "MBALL_OT_duplicate_metaelems={{MBALL_OT_duplicate_metaelems}}" --arg "TRANSFORM_OT_translate={{TRANSFORM_OT_translate}}" --arg "action={{action}}" --arg "confirm={{confirm}}" --arg "ratio={{ratio}}" --arg "seed={{seed}}" --arg "select={{select}}" --arg "unselected={{unselected}}"
+ARGS:
+  - {name: op, type: enum, values: [delete_metaelems, duplicate_metaelems, duplicate_move, hide_metaelems, reveal_metaelems, select_random_metaelems]}
+  - {name: MBALL_OT_duplicate_metaelems, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}
+  - {name: action, type: text}
+  - {name: confirm, type: text}
+  - {name: ratio, type: text}
+  - {name: seed, type: int}
+  - {name: select, type: text}
+  - {name: unselected, type: text}

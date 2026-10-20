@@ -1,0 +1,11 @@
+tool: "blender_mesh_face_split_by_edges"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Weld loose edges into faces (splitting them into new faces)"
+machine: blender
+op: mesh.face_split_by_edges
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_particle_mirror"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate and mirror the selected particles along the local X axis"
+machine: blender
+op: particle.mirror
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

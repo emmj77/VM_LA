@@ -1,0 +1,14 @@
+tool: "blender_mask_vertex_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a vertex added to a mask: feather_vertex | feather_vertex_slide | vertex | vertex_slide (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "mask.add_{{op}}" --arg "MASK_OT_slide_point={{MASK_OT_slide_point}}" --arg "location={{location}}" --arg "MASK_OT_add_feather_vertex={{MASK_OT_add_feather_vertex}}" --arg "MASK_OT_add_vertex={{MASK_OT_add_vertex}}"
+ARGS:
+  - {name: op, type: enum, values: [feather_vertex, feather_vertex_slide, vertex, vertex_slide]}
+  - {name: MASK_OT_slide_point, type: text}
+  - {name: location, type: text}
+  - {name: MASK_OT_add_feather_vertex, type: text}
+  - {name: MASK_OT_add_vertex, type: text}

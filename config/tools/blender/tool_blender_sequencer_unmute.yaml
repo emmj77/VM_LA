@@ -1,0 +1,11 @@
+tool: "blender_sequencer_unmute"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Unmute (un)selected strips"
+machine: blender
+op: sequencer.unmute
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser
+

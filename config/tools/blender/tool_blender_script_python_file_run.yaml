@@ -1,0 +1,11 @@
+tool: "blender_script_python_file_run"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Run Python file"
+machine: blender
+op: script.python_file_run
+ARGS:
+  - {name: filepath, type: text}
+

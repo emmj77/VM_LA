@@ -1,0 +1,11 @@
+tool: "blender_ui_override_idtemplate_make"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a local override of the selected linked data-block, and its hierarchy of dependencies"
+machine: blender
+op: ui.override_idtemplate_make
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

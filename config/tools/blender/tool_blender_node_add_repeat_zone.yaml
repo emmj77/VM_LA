@@ -1,0 +1,13 @@
+tool: "blender_node_add_repeat_zone"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a repeat zone that allows executing nodes a dynamic number of times"
+machine: blender
+op: node.add_repeat_zone
+ARGS:
+  - {name: settings, type: text}
+  - {name: use_transform, type: text}          # true|false, vide pour ne rien poser
+  - {name: offset, type: text}          # 2 valeurs separees par des virgules
+

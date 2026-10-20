@@ -1,0 +1,11 @@
+tool: "blender_outliner_keyingset_add_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add selected items (blue-gray rows) to active Keying Set"
+machine: blender
+op: outliner.keyingset_add_selected
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

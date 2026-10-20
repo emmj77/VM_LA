@@ -1,0 +1,11 @@
+tool: "blender_clip_set_plane"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set plane based on 3 selected bundles by moving camera (or its parent if present) in 3D space"
+machine: blender
+op: clip.set_plane
+ARGS:
+  - {name: plane, type: text}          # un de : FLOOR | WALL
+

@@ -1,0 +1,11 @@
+tool: "blender_object_parent_no_inverse_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the object's parenting without setting the inverse parent correction"
+machine: blender
+op: object.parent_no_inverse_set
+ARGS:
+  - {name: keep_transform, type: text}          # true|false, vide pour ne rien poser
+

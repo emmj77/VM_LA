@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_set_start_point"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select which point is the beginning of the curve"
+machine: blender
+op: grease_pencil.set_start_point
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

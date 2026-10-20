@@ -1,0 +1,11 @@
+tool: "blender_gizmogroup_gizmo_tweak"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Tweak the active gizmo"
+machine: blender
+op: gizmogroup.gizmo_tweak
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

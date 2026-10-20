@@ -1,0 +1,11 @@
+tool: "blender_outliner_show_one_level"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Expand/collapse all entries by one level"
+machine: blender
+op: outliner.show_one_level
+ARGS:
+  - {name: open, type: text}          # true|false, vide pour ne rien poser
+

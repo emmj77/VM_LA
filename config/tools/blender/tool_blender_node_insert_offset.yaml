@@ -1,0 +1,11 @@
+tool: "blender_node_insert_offset"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Automatically offset nodes on insertion"
+machine: blender
+op: node.insert_offset
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,14 @@
+tool: "blender_object_curves_random_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a curves object with random curves to the scene"
+machine: blender
+op: object.curves_random_add
+ARGS:
+  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 valeurs separees par des virgules
+  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
+  - {name: scale, type: text}          # 3 valeurs separees par des virgules
+

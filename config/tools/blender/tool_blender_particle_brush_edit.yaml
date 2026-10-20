@@ -1,0 +1,12 @@
+tool: "blender_particle_brush_edit"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Apply a stroke of brush to the particles"
+machine: blender
+op: particle.brush_edit
+ARGS:
+  - {name: stroke, type: text}
+  - {name: pen_flip, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,11 @@
+tool: "blender_curves_switch_direction"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reverse the direction of the selected curves"
+machine: blender
+op: curves.switch_direction
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

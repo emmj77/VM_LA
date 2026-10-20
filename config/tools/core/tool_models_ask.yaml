@@ -1,0 +1,24 @@
+tool: "models_ask"
+date: "2026-10-17"
+tags: ["models_ask"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "asks the local model a question and returns its answer"
+COMMAND: |
+  P=$(cat); [ -n "$P" ] || { printf '%s\n' "$(msg prompt_empty)" >&2; exit 1; }
+  C=$(printf '%s' "$P" | jq -Rs --arg s "{{system}}" '{model:"local",stream:false,max_tokens:1024,messages:((if $s=="" then [] else [{role:"system",content:$s}] end)+[{role:"user",content:.}])}') || { printf '%s\n' "$(msg request_not_built)" >&2; exit 1; }
+  LP=${LA_LOCAL_PORT:-8088}
+  R=$(curl -s -m 60 -H 'Content-Type: application/json' -d "$C" -w '\n%{http_code}' \
+    "http://127.0.0.1:$LP/v1/chat/completions")
+  K=$(printf '%s' "$R" | tail -n 1); B=$(printf '%s' "$R" | sed '$d')
+  if [ "$K" = '' ] || [ "$K" = 000 ]; then
+    printf '%s\n' "$(msg local_model_unreachable "$LP")" >&2 ; exit 1
+  fi
+  [ "$K" = 200 ] || { printf '%s\n' "$(msg local_service_http "$K")" >&2; exit 1; }
+  T=$(printf '%s' "$B" | jq -r '.choices[0].message.content // empty' 2>/dev/null); [ -n "$T" ] || { printf '%s\n' "$(msg local_model_no_text)" >&2; exit 1; }
+  printf '%s\n' "$T"
+
+ARGS:
+  - {name: prompt, type: text, stdin: true}
+  - {name: system, type: text}

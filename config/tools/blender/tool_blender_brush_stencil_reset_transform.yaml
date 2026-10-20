@@ -1,0 +1,11 @@
+tool: "blender_brush_stencil_reset_transform"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset the stencil transformation to the default"
+machine: blender
+op: brush.stencil_reset_transform
+ARGS:
+  - {name: mask, type: text}          # true|false, vide pour ne rien poser
+

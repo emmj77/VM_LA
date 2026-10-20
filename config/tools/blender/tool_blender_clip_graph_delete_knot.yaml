@@ -1,0 +1,11 @@
+tool: "blender_clip_graph_delete_knot"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete curve knots"
+machine: blender
+op: clip.graph_delete_knot
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

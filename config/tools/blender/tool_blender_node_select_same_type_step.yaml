@@ -1,0 +1,11 @@
+tool: "blender_node_select_same_type_step"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Activate and view same node type, step by step"
+machine: blender
+op: node.select_same_type_step
+ARGS:
+  - {name: prev, type: text}          # true|false, vide pour ne rien poser
+

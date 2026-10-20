@@ -1,0 +1,11 @@
+tool: "blender_node_link_viewer"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Link to viewer node"
+machine: blender
+op: node.link_viewer
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

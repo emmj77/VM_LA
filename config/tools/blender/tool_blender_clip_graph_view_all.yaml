@@ -1,0 +1,11 @@
+tool: "blender_clip_graph_view_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "View all curves in editor"
+machine: blender
+op: clip.graph_view_all
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

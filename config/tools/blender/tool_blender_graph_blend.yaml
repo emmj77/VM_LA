@@ -1,0 +1,11 @@
+tool: "blender_graph_blend"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the blend of a keyframe: offset | to_default | to_ease | to_neighbor (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "graph.blend_{{op}}" --arg "factor={{factor}}"
+ARGS:
+  - {name: op, type: enum, values: [offset, to_default, to_ease, to_neighbor]}
+  - {name: factor, type: text}

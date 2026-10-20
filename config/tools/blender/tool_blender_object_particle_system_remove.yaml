@@ -1,0 +1,11 @@
+tool: "blender_object_particle_system_remove"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove the selected particle system"
+machine: blender
+op: object.particle_system_remove
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

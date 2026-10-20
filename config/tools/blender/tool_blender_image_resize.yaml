@@ -1,0 +1,12 @@
+tool: "blender_image_resize"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Resize the image"
+machine: blender
+op: image.resize
+ARGS:
+  - {name: size, type: int}
+  - {name: all_udims, type: text}          # true|false, vide pour ne rien poser
+

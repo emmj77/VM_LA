@@ -1,0 +1,12 @@
+tool: "blender_object_hook"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a hook of an object: add_newob | add_selob | assign | recenter | remove | reset | select (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "object.hook_{{op}}" --arg "modifier={{modifier}}" --arg "use_bone={{use_bone}}"
+ARGS:
+  - {name: op, type: enum, values: [add_newob, add_selob, assign, recenter, remove, reset, select]}
+  - {name: modifier, type: text}
+  - {name: use_bone, type: text}

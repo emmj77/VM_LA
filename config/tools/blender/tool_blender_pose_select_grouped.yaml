@@ -1,0 +1,12 @@
+tool: "blender_pose_select_grouped"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all visible bones grouped by similar properties"
+machine: blender
+op: pose.select_grouped
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : COLLECTION | COLOR | KEYINGSET | CHILDREN | CHILDREN_IMMEDIATE | PARENT | SIBLINGS
+

@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_relative_layer_mask_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Mask active layer with layer above or below"
+machine: blender
+op: grease_pencil.relative_layer_mask_add
+ARGS:
+  - {name: mode, type: text}          # un de : ABOVE | BELOW
+

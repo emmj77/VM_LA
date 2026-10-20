@@ -1,0 +1,11 @@
+tool: "blender_anim_keyingset_button_remove"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove current UI-active property from current keying set"
+machine: blender
+op: anim.keyingset_button_remove
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

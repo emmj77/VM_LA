@@ -1,0 +1,11 @@
+tool: "blender_nla_selected_objects_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Make selected objects appear in NLA Editor by adding Animation Data"
+machine: blender
+op: nla.selected_objects_add
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

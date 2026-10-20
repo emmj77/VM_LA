@@ -1,0 +1,11 @@
+tool: "blender_wm_previews_clear"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear data-block previews (only for some types like objects, materials, textures, etc.)"
+machine: blender
+op: wm.previews_clear
+ARGS:
+  - {name: id_type, type: text}          # un de : ALL | GEOMETRY | SHADING | SCENE | COLLECTION | OBJECT | MATERIAL | LIGHT | WORLD | TEXTURE | IMAGE
+

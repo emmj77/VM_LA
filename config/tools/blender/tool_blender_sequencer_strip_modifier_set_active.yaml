@@ -1,0 +1,11 @@
+tool: "blender_sequencer_strip_modifier_set_active"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Activate the strip modifier to use as the context"
+machine: blender
+op: sequencer.strip_modifier_set_active
+ARGS:
+  - {name: modifier, type: text}
+

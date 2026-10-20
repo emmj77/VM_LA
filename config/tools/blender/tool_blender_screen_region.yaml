@@ -1,0 +1,11 @@
+tool: "blender_screen_region"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a screen region: blend | context_menu | flip | quadview | scale | toggle (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "screen.region_{{op}}" --arg "region_type={{region_type}}"
+ARGS:
+  - {name: op, type: enum, values: [blend, context_menu, flip, quadview, scale, toggle]}
+  - {name: region_type, type: text}

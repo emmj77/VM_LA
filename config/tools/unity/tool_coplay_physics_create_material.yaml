@@ -1,0 +1,34 @@
+tool: "coplay_physics_create_material"
+date: "2026-10-18"
+tags: ["unity", "coplay", "physics"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a physics material asset."
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- physics create-material
+  [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+  [ -n "{{path}}" ] && set -- "$@" --path "{{path}}"
+  [ -n "{{dimension}}" ] && set -- "$@" --dimension "{{dimension}}"
+  [ -n "{{bounciness}}" ] && set -- "$@" --bounciness "{{bounciness}}"
+  [ -n "{{dynamic_friction}}" ] && set -- "$@" --dynamic-friction "{{dynamic_friction}}"
+  [ -n "{{static_friction}}" ] && set -- "$@" --static-friction "{{static_friction}}"
+  [ -n "{{friction}}" ] && set -- "$@" --friction "{{friction}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: name, type: text}
+  - {name: path, type: text}
+  - {name: dimension, type: text}
+  - {name: bounciness, type: text}
+  - {name: dynamic_friction, type: text}
+  - {name: static_friction, type: text}
+  - {name: friction, type: text}
+

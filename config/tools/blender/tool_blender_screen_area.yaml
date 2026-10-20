@@ -1,0 +1,19 @@
+tool: "blender_screen_area"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a screen area: close | dupli | join | move | options | split | swap (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "screen.area_{{op}}" --arg "cursor={{cursor}}" --arg "delta={{delta}}" --arg "direction={{direction}}" --arg "factor={{factor}}" --arg "snap={{snap}}" --arg "source_xy={{source_xy}}" --arg "target_xy={{target_xy}}" --arg "x={{x}}" --arg "y={{y}}"
+ARGS:
+  - {name: op, type: enum, values: [close, dupli, join, move, options, split, swap]}
+  - {name: cursor, type: int}
+  - {name: delta, type: int}
+  - {name: direction, type: text}
+  - {name: factor, type: text}
+  - {name: snap, type: text}
+  - {name: source_xy, type: int}
+  - {name: target_xy, type: int}
+  - {name: x, type: int}
+  - {name: y, type: int}

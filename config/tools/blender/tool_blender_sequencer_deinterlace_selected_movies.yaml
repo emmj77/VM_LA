@@ -1,0 +1,11 @@
+tool: "blender_sequencer_deinterlace_selected_movies"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Deinterlace all selected movie sources"
+machine: blender
+op: sequencer.deinterlace_selected_movies
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

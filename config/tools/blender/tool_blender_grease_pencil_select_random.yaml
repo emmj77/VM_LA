@@ -1,0 +1,13 @@
+tool: "blender_grease_pencil_select_random"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Selects random points from the current strokes selection"
+machine: blender
+op: grease_pencil.select_random
+ARGS:
+  - {name: ratio, type: text}
+  - {name: seed, type: int}
+  - {name: action, type: text}          # un de : SELECT | DESELECT
+

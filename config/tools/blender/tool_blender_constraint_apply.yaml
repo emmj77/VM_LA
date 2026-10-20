@@ -1,0 +1,13 @@
+tool: "blender_constraint_apply"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Apply constraint and remove from the stack"
+machine: blender
+op: constraint.apply
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE
+  - {name: report, type: text}          # true|false, vide pour ne rien poser
+

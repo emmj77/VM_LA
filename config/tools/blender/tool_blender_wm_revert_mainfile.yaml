@@ -1,0 +1,11 @@
+tool: "blender_wm_revert_mainfile"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reload the saved file"
+machine: blender
+op: wm.revert_mainfile
+ARGS:
+  - {name: use_scripts, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,58 @@
+tool: "unity_editors_upgrade"
+date: "2026-10-18"
+tags: ["unity", "cli", "editors"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Upgrade an installed editor to the newest patch in its release line"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- editors upgrade --no-banner --no-pager --non-interactive
+  case "{{all}}" in ''|true|false) ;; *) printf '%s\n' "$(msg all_true_false)" >&2; exit 1 ;; esac
+  case "{{replace}}" in ''|true|false) ;; *) printf '%s\n' "$(msg replace_true_false)" >&2; exit 1 ;; esac
+  case "{{remove_old}}" in ''|true|false) ;; *) printf '%s\n' "$(msg remove_old_true_false)" >&2; exit 1 ;; esac
+  case "{{no_modules}}" in ''|true|false) ;; *) printf '%s\n' "$(msg modules_true_false)" >&2; exit 1 ;; esac
+  case "{{yes}}" in ''|true|false) ;; *) printf '%s\n' "$(msg yes_true_false)" >&2; exit 1 ;; esac
+  case "{{accept_eula}}" in ''|true|false) ;; *) printf '%s\n' "$(msg accept_eula_true_false)" >&2; exit 1 ;; esac
+  case "{{dry_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg dry_run_true_false)" >&2; exit 1 ;; esac
+  case "{{check}}" in ''|true|false) ;; *) printf '%s\n' "$(msg check_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{editor}}" ] && set -- "$@" "{{editor}}"
+  [ "{{all}}" = true ] && set -- "$@" --all
+  [ "{{replace}}" = true ] && set -- "$@" --replace
+  [ "{{remove_old}}" = true ] && set -- "$@" --remove-old
+  [ -n "{{architecture}}" ] && set -- "$@" --architecture "{{architecture}}"
+  [ -n "{{module}}" ] && set -- "$@" --module "{{module}}"
+  [ "{{no_modules}}" = true ] && set -- "$@" --no-modules
+  [ "{{yes}}" = true ] && set -- "$@" --yes
+  [ "{{accept_eula}}" = true ] && set -- "$@" --accept-eula
+  [ "{{dry_run}}" = true ] && set -- "$@" --dry-run
+  [ "{{check}}" = true ] && set -- "$@" --check
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_editors_upgrade_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: editor, type: text}   # facultatif
+  - {name: all, type: text}   # true pour poser --all ; Upgrade every installed editor that has a newer patch
+  - {name: replace, type: text}   # true pour poser --replace ; Uninstall the old editor after the upgrade succeeds
+  - {name: remove_old, type: text}   # true pour poser --remove-old ; Alias for --replace
+  - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
+  - {name: module, type: text}   # Extra module to install, on top of the modules carried over (repeatabl
+  - {name: no_modules, type: text}   # true pour poser --no-modules ; Skip carrying over the current editor’s modules
+  - {name: yes, type: text}   # true pour poser --yes ; Skip confirmation prompts
+  - {name: accept_eula, type: text}   # true pour poser --accept-eula ; Accept module license agreements automatically
+  - {name: dry_run, type: text}   # true pour poser --dry-run ; Show available upgrades without installing
+  - {name: check, type: text}   # true pour poser --check ; Alias for --dry-run
+

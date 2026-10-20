@@ -1,0 +1,11 @@
+tool: "blender_anim_version_bone_hide_property"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Moves any F-Curves for the `hide` property of selected armatures into the action of the object. This will only operate on the first layer and strip of"
+machine: blender
+op: anim.version_bone_hide_property
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

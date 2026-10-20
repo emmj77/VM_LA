@@ -1,0 +1,11 @@
+tool: "blender_console_execute"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Execute the current console line as a Python expression"
+machine: blender
+op: console.execute
+ARGS:
+  - {name: interactive, type: text}          # true|false, vide pour ne rien poser
+

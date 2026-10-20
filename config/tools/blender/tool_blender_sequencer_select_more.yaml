@@ -1,0 +1,11 @@
+tool: "blender_sequencer_select_more"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select more strips adjacent to the current selection"
+machine: blender
+op: sequencer.select_more
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

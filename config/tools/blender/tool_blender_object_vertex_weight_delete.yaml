@@ -1,0 +1,11 @@
+tool: "blender_object_vertex_weight_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete this weight from the vertex (disabled if vertex group is locked)"
+machine: blender
+op: object.vertex_weight_delete
+ARGS:
+  - {name: weight_group, type: int}
+

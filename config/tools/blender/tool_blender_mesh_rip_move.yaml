@@ -1,0 +1,12 @@
+tool: "blender_mesh_rip_move"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Rip polygons and move the result"
+machine: blender
+op: mesh.rip_move
+ARGS:
+  - {name: MESH_OT_rip, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}
+

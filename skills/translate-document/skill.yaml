@@ -1,0 +1,29 @@
+skill: "translate-document"
+date: "2026-10-17"
+tags: ["translate-document", "traduire", "langue", "document"]
+
+SUMMARY:
+  101: "Traduire un document d'une langue a une autre, fidelement."
+  102: "read_file lit la source ; write_file pose la traduction."
+  103: "On ne traduit que ce qui est LU ; les noms propres ne se rendent pas."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "read_file"
+  201: "write_file"
+  202: "search"
+  203: "load_doc"
+  204: "list_dir"
+  205: "read_language_of_text"
+  206: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Source illisible : le dire et nommer le chemin, jamais inventer un texte."

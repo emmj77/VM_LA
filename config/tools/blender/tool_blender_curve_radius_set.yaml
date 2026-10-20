@@ -1,0 +1,11 @@
+tool: "blender_curve_radius_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set per-point radius which is used for bevel tapering"
+machine: blender
+op: curve.radius_set
+ARGS:
+  - {name: radius, type: text}
+

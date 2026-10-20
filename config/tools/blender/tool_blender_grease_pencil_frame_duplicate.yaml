@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_frame_duplicate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Make a copy of the active Grease Pencil frame(s)"
+machine: blender
+op: grease_pencil.frame_duplicate
+ARGS:
+  - {name: all, type: text}          # true|false, vide pour ne rien poser
+

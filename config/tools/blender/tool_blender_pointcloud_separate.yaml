@@ -1,0 +1,11 @@
+tool: "blender_pointcloud_separate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Separate selected geometry into a new point cloud"
+machine: blender
+op: pointcloud.separate
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

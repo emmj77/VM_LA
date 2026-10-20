@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<title>LA</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 12px; background: #111; color: #e8e8e8;
+         font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  h1 { font-size: 17px; margin: 0 0 2px; letter-spacing: .18em; font-weight: 600; }
+  #state { font-size: 12px; color: #8a8a8a; min-height: 1.2em; }
+  .bloc { border: 1px solid #2c2c2c; border-radius: 10px; padding: 10px; margin: 10px 0; }
+  .titre { font-size: 11px; letter-spacing: .14em; color: #7a7a7a; text-transform: uppercase; }
+  #asked { font-size: 12.5px; color: #9a9a9a; white-space: pre-wrap; word-wrap: break-word; }
+  #reply { white-space: pre-wrap; word-wrap: break-word; margin-top: 6px; min-height: 3em; }
+  button { font: inherit; color: #111; background: #ddd; border: 0; border-radius: 999px;
+           padding: 12px 18px; min-height: 46px; }
+  button:disabled { background: #3a3a3a; color: #777; }
+  #talk { flex: 1; background: #d8d8d8; font-weight: 600; }
+  #talk.ecoute { background: #e05252; color: #fff; }
+  .rangee { display: flex; gap: 8px; align-items: center; }
+  #text { flex: 1; font: inherit; padding: 11px; border-radius: 8px; border: 1px solid #333;
+           background: #1b1b1b; color: inherit; min-width: 0; }
+  label.fichier { display: inline-block; }
+  label.fichier input { display: none; }
+  label.fichier span { display: inline-block; padding: 12px 16px; border: 1px solid #333;
+           border-radius: 999px; }
+  audio { width: 100%; margin-top: 8px; }
+  #note { font-size: 12px; color: #b98a3a; margin-top: 6px; white-space: pre-wrap; }
+  #plan { font-size: 12.5px; white-space: pre-wrap; word-wrap: break-word; color: #bdbdbd; }
+  select { font: inherit; background: #1b1b1b; color: inherit; border: 1px solid #333;
+           border-radius: 8px; padding: 10px; max-width: 60%; }
+  #img { max-width: 100%; border-radius: 8px; margin-top: 8px; display: none; }
+</style>
+</head>
+<body>
+
+<h1>LA</h1>
+<div id="state">…</div>
+
+<div class="bloc">
+  <div class="titre">ce que la machine a compris</div>
+  <div id="asked">—</div>
+  <div class="titre" style="margin-top:8px">reponse</div>
+  <div id="reply">—</div>
+  <audio id="audio" controls style="display:none"></audio>
+  <div id="note"></div>
+</div>
+
+<div class="bloc">
+  <div class="titre">la parole (maintenir pour parler)</div>
+  <div class="rangee" style="margin-top:8px">
+    <button id="talk" disabled>parler</button>
+    <button id="stop" disabled>stop</button>
+  </div>
+  <div id="voicenote" class="titre" style="margin-top:6px; text-transform:none; letter-spacing:0"></div>
+</div>
+
+<div class="bloc">
+  <div class="titre">l image (appareil photo)</div>
+  <div class="rangee" style="margin-top:8px">
+    <label class="fichier"><input id="photo" type="queue" accept="image/*" capture="environment"><span>prendre une photo</span></label>
+    <button id="sendphoto" disabled>voir</button>
+  </div>
+  <img id="img" alt="">
+</div>
+
+<div class="bloc">
+  <div class="titre">le texte</div>
+  <div class="rangee" style="margin-top:8px">
+    <input id="text" placeholder="ecrire a LA" autocomplete="off">
+    <button id="say">say</button>
+  </div>
+</div>
+
+<div class="bloc">
+  <div class="titre">le plan</div>
+  <div class="rangee" style="margin-top:6px">
+    <button id="refresh">rafraichir</button>
+  </div>
+  <div id="plan" style="margin-top:8px">—</div>
+</div>
+
+<div class="bloc">
+  <div class="titre">le journal des tools</div>
+  <div id="journal" style="margin-top:8px; font-family:monospace; font-size:12px; white-space:pre-wrap; max-height:220px; overflow:auto">—</div>
+</div>
+
+<div class="bloc">
+  <div class="titre">le raisonnement</div>
+  <div id="thinking" style="margin-top:8px; font-family:monospace; font-size:11px; white-space:pre-wrap; max-height:200px; overflow:auto; opacity:.75">—</div>
+</div>
+
+<div class="bloc">
+  <div class="titre">l adresse active</div>
+  <div class="rangee" style="margin-top:8px">
+    <select id="engine"></select>
+    <button id="take">prendre</button>
+  </div>
+  <div id="enginenote" class="titre" style="margin-top:6px; text-transform:none; letter-spacing:0"></div>
+</div>
+
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const note = (texte) => { $('note').textContent = texte || ''; };
+const setState = (texte) => { $('state').textContent = texte || ''; };
+
+// --- l setState de la machine : GET /ping et GET /plan. Rien n est decide ici.
+async function ping() {
+  try {
+    const r = await fetch('/ping', { cache: 'no-store' });
+    const j = await r.json();
+    setState('vivant sur ' + j.address + ':' + j.port + ' — boucle ' + j.loop);
+  } catch (e) { setState('injoignable'); }
+}
+async function plan() {
+  try {
+    const r = await fetch('/plan', { cache: 'no-store' });
+    const j = await r.json();
+    $('plan').textContent = (j.line || j.result || '—');
+  } catch (e) { $('plan').textContent = 'le plan n a pas repondu'; }
+}
+// --- LE JOURNAL DES TOOLS : la ligne de chaque tool du tour courant (lois 610/1432).
+async function journal() {
+  try {
+    const r = await fetch('/journal', { cache: 'no-store' });
+    const j = await r.json();
+    const l = Array.isArray(j) ? j : (j.lines || []);
+    const t = l.map((e) => (e.engine && e.engine.line)
+      || (e.tool_call && e.tool_call.function && e.tool_call.function.name) || '').filter(Boolean);
+    $('journal').textContent = t.length ? t.join('\n') : '—';
+  } catch (e) { $('journal').textContent = 'le journal n a pas repondu'; }
+}
+
+// --- LE RAISONNEMENT DU TOUR, tel que le modele l ecrit (GET /thinking). Ce n est pas ce que
+// l agent DIT, c est ce qu il SE DIT : la boucle le jette dans work/thinking.jsonl, une ligne par
+// message, et le pont le rend ici. On ne le lit qu au tour courant ; il s efface au tour suivant.
+async function thinking() {
+  try {
+    const r = await fetch('/thinking', { cache: 'no-store' });
+    const j = await r.json();
+    const l = Array.isArray(j) ? j : [];
+    const t = l.map((e) => (e.text || '').trim()).filter(Boolean);
+    $('thinking').textContent = t.length ? t.join('\n\n') : '—';
+  } catch (e) { $('thinking').textContent = 'le raisonnement n a pas repondu'; }
+}
+
+// --- LA VOIX S ENTEND AU FIL DU TOUR. Le pont synthetise chaque mot des qu il parait (le wav
+// tombe dans config/audio/) et publie la liste sous /spoken : ici on la relit pendant le tour et on
+// JOUE chaque nouveau wav des qu il est pret, l un apres l autre. Sans ca, l appli n attendait
+// qu UN wav, a la fin du tour : un tour long faisait un long silence.
+let heard = new Set(), queue = [], nowPlaying = null, turnOpen = false;
+function playNext() {
+  if (nowPlaying || !queue.length) return;
+  const name = queue.shift();
+  nowPlaying = name;
+  $('audio').src = '/audio/' + name;
+  $('audio').style.display = 'block';
+  $('audio').play().catch(() => {});
+}
+$('audio').addEventListener('ended', () => { nowPlaying = null; playNext(); });
+$('audio').addEventListener('error', () => { nowPlaying = null; playNext(); });
+async function spoken() {
+  if (!turnOpen) return;
+  try {
+    const r = await fetch('/spoken', { cache: 'no-store' });
+    const j = await r.json();
+    const l = Array.isArray(j) ? j : (j.spoken || []);
+    l.forEach((n) => {
+      if (typeof n === 'string' && n && !heard.has(n)) { heard.add(n); queue.push(n); }
+    });
+    playNext();
+  } catch (e) { /* le pont n a pas repondu : on retentera au tour suivant */ }
+}
+
+// --- LA REPONSE D UN TOUR : {response, audio, code} (+ request quand il y en a une)
+function showReply(j) {
+  if (!j) { note('reponse illisible'); return; }
+  if (j.request) { $('asked').textContent = j.request; }
+  if (j.error) { note(j.error); return; }
+  // 202 du pont : un tour tournait deja, le mot est entre dans la FILE (pas perdu, pas un
+  // second tour). Le modele le lira comme resultat de son prochain reply/talk.
+  if (j.queued) { note(j.note || 'ton mot est entre dans la file du tour en cours'); $('reply').textContent = '(en attente du prochain mot du modele)'; return; }
+  $('reply').textContent = (j.response !== undefined ? j.response : JSON.stringify(j));
+  if (j.audio && !heard.has(j.audio)) {
+    $('audio').src = '/audio/' + j.audio;
+    $('audio').style.display = 'block';
+    $('audio').play().catch(() => {});
+  } else if (!j.audio) {
+    $('audio').style.display = 'none';
+    $('audio').removeAttribute('src');
+  }
+  if (j.code && j.code !== 0) { note('la boucle a rendu le code ' + j.code); }
+  else note('');
+}
+
+async function turnFetch(url, options) {
+  $('reply').textContent = '…';
+  note('');
+  // LE TOUR S OUVRE : la liste des wav repart a zero cote pont, et on se met a l ecouter.
+  heard = new Set(); queue = []; nowPlaying = null; turnOpen = true;
+  try {
+    const r = await fetch(url, options);
+    const j = await r.json().catch(() => null);
+    showReply(j);
+  } catch (e) { note('le pont n a pas repondu : ' + e); $('reply').textContent = '—'; }
+  finally { turnOpen = false; }
+}
+
+// --- LE TEXTE : POST /say, le corps EST la demande
+async function say() {
+  const t = $('text').value.trim();
+  if (!t) return;
+  $('text').value = '';
+  await turnFetch('/say', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: t });
+}
+
+// --- LA PHOTO : la base conseille <input accept="image/*" capture="environment">.
+// L image est REDUITE sur le telephone avant de partir (canvas) : le modele de vision
+// n a pas besoin de 12 megapixels.
+let photoFile = null, photoBlob = null;
+$('photo').addEventListener('change', async (e) => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  photoFile = f;
+  const bitmap = await createImageBitmap(f).catch(() => null);
+  if (!bitmap) { photoBlob = f; $('img').style.display = 'none'; $('sendphoto').disabled = false; return; }
+  const max = 1024;
+  const k = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(bitmap.width * k); c.height = Math.round(bitmap.height * k);
+  c.getContext('2d').drawImage(bitmap, 0, 0, c.width, c.height);
+  photoBlob = await new Promise((res) => c.toBlob(res, 'image/jpeg', 0.8)) || f;
+  $('img').src = URL.createObjectURL(photoBlob);
+  $('img').style.display = 'block';
+  $('sendphoto').disabled = false;
+  note('photo prete (' + Math.round(photoBlob.size / 1024) + ' Ko, ' + c.width + 'x' + c.height + ')');
+});
+$('sendphoto').addEventListener('click', async () => {
+  if (!photoBlob) return;
+  $('sendphoto').disabled = true;
+  await turnFetch('/image', {
+    method: 'POST',
+    headers: { 'Content-Type': photoBlob.type || 'image/jpeg' },
+    body: photoBlob
+  });
+  $('sendphoto').disabled = false;
+});
+
+// --- LA PAROLE : le motif documente (getUserMedia -> MediaRecorder -> Blob -> POST).
+// getUserMedia N EXISTE PAS hors contexte securise : on le dit au lieu de le subir.
+let recorder = null, chunks = [], stream = null;
+const formats = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+function pickFormat() {
+  if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
+  for (const t of formats) { if (MediaRecorder.isTypeSupported(t)) return t; }
+  return '';
+}
+async function startTalking() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    $('voicenote').textContent = 'la voix demande un contexte securise (HTTPS) : ici le micro est invisible. Le texte et la photo marchent.';
+    return;
+  }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
+  } catch (e) {
+    $('voicenote').textContent = 'micro refuse ou absent : ' + e.name;
+    return;
+  }
+  chunks = [];
+  const mt = pickFormat();
+  recorder = mt ? new MediaRecorder(stream, { mimeType: mt }) : new MediaRecorder(stream);
+  recorder.addEventListener('dataavailable', (e) => { if (e.data && e.data.size) chunks.push(e.data); });
+  recorder.addEventListener('stop', async () => {
+    const type = recorder.mimeType || chunks[0] && chunks[0].type || 'application/octet-stream';
+    const blob = new Blob(chunks, { type: type });
+    if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
+    $('talk').classList.remove('ecoute');
+    $('talk').disabled = false; $('stop').disabled = true;
+    if (!blob.size) { note('rien enregistre'); return; }
+    $('voicenote').textContent = Math.round(blob.size / 1024) + ' Ko enregistres, envoi…';
+    await turnFetch('/voice', { method: 'POST', headers: { 'Content-Type': blob.type }, body: blob });
+    $('voicenote').textContent = 'envoye (' + (blob.type || '?') + ')';
+  });
+  recorder.start();
+  $('talk').classList.add('ecoute');
+  $('talk').disabled = true; $('stop').disabled = false;
+  $('voicenote').textContent = 'la machine ecoute…';
+}
+function stopTalking() { if (recorder && recorder.state !== 'inactive') recorder.stop(); }
+$('talk').addEventListener('pointerdown', (e) => { e.preventDefault(); startTalking(); });
+$('talk').addEventListener('pointerup', (e) => { e.preventDefault(); stopTalking(); });
+$('talk').addEventListener('pointercancel', stopTalking);
+$('talk').addEventListener('pointerleave', stopTalking);
+$('stop').addEventListener('click', stopTalking);
+
+// --- L ADRESSE ACTIVE : on LIT les adresses declarees, et on en PREND une.
+async function engines() {
+  try {
+    const r = await fetch('/engine', { cache: 'no-store' });
+    const j = await r.json();
+    const s = $('engine');
+    s.innerHTML = '';
+    (j.engines || []).forEach((e) => {
+      const o = document.createElement('option');
+      o.value = e.alias;
+      o.textContent = e.alias + ' — ' + (e.model || '?') + (e.active ? '  (active)' : '');
+      o.selected = !!e.active;
+      s.appendChild(o);
+    });
+    $('enginenote').textContent = (j.engines || []).length + ' adresse(s) declaree(s)';
+  } catch (e) { $('enginenote').textContent = 'la config n a pas repondu'; }
+}
+$('take').addEventListener('click', async () => {
+  const alias = $('engine').value;
+  if (!alias) return;
+  $('enginenote').textContent = 'je prends ' + alias + '…';
+  try {
+    const r = await fetch('/engine', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ alias: alias })
+    });
+    const j = await r.json();
+    $('enginenote').textContent = j.line || j.error || JSON.stringify(j);
+  } catch (e) { $('enginenote').textContent = 'echec : ' + e; }
+  await engines();
+});
+
+$('say').addEventListener('click', say);
+$('text').addEventListener('keydown', (e) => { if (e.key === 'Enter') say(); });
+$('refresh').addEventListener('click', plan);
+
+// --- l amorcage
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { $('talk').disabled = false; }
+else { $('voicenote').textContent = 'la voix demande un contexte securise (HTTPS) : le micro est invisible ici.'; }
+$('say').disabled = false;
+// LE FILET D INSTALLATION : Chrome ne propose l ecran d accueil que s il voit un
+// gestionnaire de fetch. Il ne met rien en cache (voir /sw.js).
+if (navigator.serviceWorker) { navigator.serviceWorker.register('/sw.js').catch(() => {}); }
+ping(); plan(); engines(); journal(); thinking();
+setInterval(ping, 60000);
+setInterval(plan, 15000);
+setInterval(journal, 3000);
+setInterval(thinking, 2000);
+setInterval(spoken, 1200);
+$('say').disabled = false;
+</script>
+</body>
+</html>

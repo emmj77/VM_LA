@@ -1,0 +1,11 @@
+tool: "blender_preferences_clear_filter"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear the search filter"
+machine: blender
+op: preferences.clear_filter
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

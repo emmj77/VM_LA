@@ -1,0 +1,11 @@
+tool: "blender_gpencil_layer_annotation"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "an annotation layer: add | move | remove (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "gpencil.layer_annotation_{{op}}" --arg "type={{type}}"
+ARGS:
+  - {name: op, type: enum, values: [add, move, remove]}
+  - {name: type, type: text}

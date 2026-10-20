@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_set_uniform_thickness"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set all stroke points to same thickness"
+machine: blender
+op: grease_pencil.set_uniform_thickness
+ARGS:
+  - {name: thickness, type: text}
+

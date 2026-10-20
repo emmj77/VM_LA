@@ -1,0 +1,11 @@
+tool: "blender_text_comment_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: text.comment_toggle
+ARGS:
+  - {name: type, type: text}          # un de : TOGGLE | COMMENT | UNCOMMENT
+

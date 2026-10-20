@@ -1,0 +1,15 @@
+tool: "blender_mesh_subdivide_edgering"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Subdivide perpendicular edges to the selected edge-ring"
+machine: blender
+op: mesh.subdivide_edgering
+ARGS:
+  - {name: number_cuts, type: int}
+  - {name: interpolation, type: text}          # un de : LINEAR | PATH | SURFACE
+  - {name: smoothness, type: text}
+  - {name: profile_shape_factor, type: text}
+  - {name: profile_shape, type: text}          # un de : SMOOTH | SPHERE | ROOT | INVERSE_SQUARE | SHARP | LINEAR
+

@@ -1,0 +1,11 @@
+tool: "blender_wm_owner_disable"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Disable add-on for workspace"
+machine: blender
+op: wm.owner_disable
+ARGS:
+  - {name: owner_id, type: text}
+

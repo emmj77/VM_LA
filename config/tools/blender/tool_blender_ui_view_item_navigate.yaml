@@ -1,0 +1,11 @@
+tool: "blender_ui_view_item_navigate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Walk and select view items in given direction"
+machine: blender
+op: ui.view_item_navigate
+ARGS:
+  - {name: direction, type: text}          # un de : UP | DOWN | LEFT | RIGHT
+

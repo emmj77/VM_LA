@@ -1,0 +1,11 @@
+tool: "blender_object_forcefield_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Toggle object's force field"
+machine: blender
+op: object.forcefield_toggle
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

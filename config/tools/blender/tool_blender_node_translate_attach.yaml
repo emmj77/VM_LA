@@ -1,0 +1,12 @@
+tool: "blender_node_translate_attach"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move nodes and attach to frame"
+machine: blender
+op: node.translate_attach
+ARGS:
+  - {name: TRANSFORM_OT_translate, type: text}
+  - {name: NODE_OT_attach, type: text}
+

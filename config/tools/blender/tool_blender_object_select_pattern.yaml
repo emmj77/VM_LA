@@ -1,0 +1,13 @@
+tool: "blender_object_select_pattern"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select objects matching a naming pattern"
+machine: blender
+op: object.select_pattern
+ARGS:
+  - {name: pattern, type: text}
+  - {name: case_sensitive, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+

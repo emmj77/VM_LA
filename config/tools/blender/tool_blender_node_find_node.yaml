@@ -1,0 +1,11 @@
+tool: "blender_node_find_node"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Search for a node by name and focus and select it"
+machine: blender
+op: node.find_node
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

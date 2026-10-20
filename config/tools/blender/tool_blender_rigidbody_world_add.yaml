@@ -1,0 +1,11 @@
+tool: "blender_rigidbody_world_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add Rigid Body simulation world to the current scene"
+machine: blender
+op: rigidbody.world_add
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

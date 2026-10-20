@@ -1,0 +1,12 @@
+tool: "blender_grease_pencil_primitive_arc"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create predefined Grease Pencil stroke arcs"
+machine: blender
+op: grease_pencil.primitive_arc
+ARGS:
+  - {name: subdivision, type: int}
+  - {name: type, type: text}          # un de : BOX | LINE | POLYLINE | CIRCLE | ARC | CURVE
+

@@ -1,0 +1,11 @@
+tool: "blender_paint_weight_paint_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Toggle weight paint mode in 3D view"
+machine: blender
+op: paint.weight_paint_toggle
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

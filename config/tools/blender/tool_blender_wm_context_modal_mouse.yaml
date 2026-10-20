@@ -1,0 +1,16 @@
+tool: "blender_wm_context_modal_mouse"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Adjust arbitrary values with mouse input"
+machine: blender
+op: wm.context_modal_mouse
+ARGS:
+  - {name: data_path_iter, type: text}
+  - {name: data_path_item, type: text}
+  - {name: header_text, type: text}
+  - {name: input_scale, type: text}
+  - {name: invert, type: text}          # true|false, vide pour ne rien poser
+  - {name: initial_x, type: int}
+

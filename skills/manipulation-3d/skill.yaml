@@ -1,0 +1,36 @@
+skill: "manipulation-3d"
+date: "2026-10-17"
+tags: ["manipulation-3d", "3d", "mesh", "glb", "fbx"]
+
+SUMMARY:
+  101: "L'atelier 3D : image -> glb, mesh -> fbx, mesh -> png, mesurer, inspecter."
+  102: "image2glb produit ; mesh-convert2fbx et mesh-render2png exportent."
+  103: "On MESURE et on REGARDE avant de dire que le mesh tient."
+  104: "Variantes Pixal3D (meme pipeline, autres reglages) : pixal3d-optimise (rapide), -memesgraines (rapide, graines fixes), -ref-froid (graines neuves), -texture2048 (texture 2048)."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "image2glb"
+  201: "mesh-convert2fbx"
+  202: "mesh-render2png"
+  203: "mesh-measure"
+  204: "mesh-inspect"
+  205: "pixal3d-optimise"
+  206: "pixal3d-memesgraines"
+  207: "pixal3d-ref-froid"
+  208: "pixal3d-texture2048"
+  209: "fast_analyze_img"
+  210: "list_dir"
+  211: "load_doc"
+  212: "mkdir"
+DOCS:
+  300: "3d"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".glb .gltf .fbx .obj .png .jpg .webp"
+ERROR:
+  600: "Le mesh ou le serveur ne repond pas : le dire (mesh-inspect / comfyui), ne pas forcer."

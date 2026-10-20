@@ -1,0 +1,11 @@
+tool: "blender_graph_time_offset"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Shifts the value of selected keys in time"
+machine: blender
+op: graph.time_offset
+ARGS:
+  - {name: frame_offset, type: text}
+

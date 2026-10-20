@@ -1,0 +1,15 @@
+tool: "blender_wm_xr_navigation_grab"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Navigate the VR scene by grabbing with controllers"
+machine: blender
+op: wm.xr_navigation_grab
+ARGS:
+  - {name: lock_location, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_location_z, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_rotation, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_rotation_z, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_scale, type: text}          # true|false, vide pour ne rien poser
+

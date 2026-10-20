@@ -1,0 +1,16 @@
+tool: "blender_image_tile_fill"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Fill the current tile with a generated image"
+machine: blender
+op: image.tile_fill
+ARGS:
+  - {name: color, type: text}          # 4 valeurs separees par des virgules
+  - {name: generated_type, type: text}          # un de : BLANK | UV_GRID | COLOR_GRID
+  - {name: width, type: int}
+  - {name: height, type: int}
+  - {name: float, type: text}          # true|false, vide pour ne rien poser
+  - {name: alpha, type: text}          # true|false, vide pour ne rien poser
+

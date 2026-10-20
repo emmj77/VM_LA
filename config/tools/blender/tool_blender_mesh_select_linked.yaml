@@ -1,0 +1,11 @@
+tool: "blender_mesh_select_linked"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all vertices connected to the current selection"
+machine: blender
+op: mesh.select_linked
+ARGS:
+  - {name: delimit, type: text}          # un de : NORMAL | MATERIAL | SEAM | SHARP | UV
+

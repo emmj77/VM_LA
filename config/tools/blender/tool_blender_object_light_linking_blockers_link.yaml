@@ -1,0 +1,11 @@
+tool: "blender_object_light_linking_blockers_link"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Light link selected blockers to the active emitter object"
+machine: blender
+op: object.light_linking_blockers_link
+ARGS:
+  - {name: link_state, type: text}          # un de : INCLUDE | EXCLUDE
+

@@ -1,0 +1,11 @@
+tool: "blender_sculpt_set_persistent_base"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset the copy of the mesh that is being sculpted on"
+machine: blender
+op: sculpt.set_persistent_base
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

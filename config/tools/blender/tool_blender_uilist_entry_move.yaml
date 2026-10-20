@@ -1,0 +1,13 @@
+tool: "blender_uilist_entry_move"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move an entry in the list up or down"
+machine: blender
+op: uilist.entry_move
+ARGS:
+  - {name: list_path, type: text}
+  - {name: active_index_path, type: text}
+  - {name: direction, type: text}          # un de : UP | DOWN
+

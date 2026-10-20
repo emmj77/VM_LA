@@ -1,0 +1,62 @@
+skill: "asset-builder"
+date: "2026-10-19"
+tags: ["asset-builder", "3d", "glb", "html", "three", "rts"]
+
+SUMMARY:
+  101: "Forger un asset 3D par gestes : un document JSON, des parts, un .glb validé."
+  102: "Chaque geste est une commande ; le code n'est qu'UN geste, sur stdin, jamais une commande."
+  103: "On ne dit jamais qu'un asset tient sans l'avoir REGARDÉ et mesuré."
+  104: "La porte est `final` : elle refuse une vue sans verdict, un validateur sale, un budget dépassé."
+
+RULES:
+  create_subfolder: true
+  execute_code: true
+  max_section_lines: 100
+
+APPROVAL: false              # cette skill ne modifie pas le harnais
+
+TOOLS:
+  200: "asset_builder_new"
+  201: "asset_builder_list"
+  202: "asset_builder_show"
+  203: "asset_builder_clone"
+  204: "asset_builder_remove"
+  205: "asset_builder_add_box"
+  206: "asset_builder_add_cylinder"
+  207: "asset_builder_add_sphere"
+  208: "asset_builder_add_plane"
+  209: "asset_builder_add_cone"
+  210: "asset_builder_add_torus"
+  211: "asset_builder_set"
+  212: "asset_builder_duplicate"
+  213: "asset_builder_array"
+  214: "asset_builder_mirror"
+  215: "asset_builder_del"
+  216: "asset_builder_mat"
+  217: "asset_builder_js"
+  218: "asset_builder_stats"
+  219: "asset_builder_build"
+  220: "asset_builder_validate"
+  221: "asset_builder_optimize"
+  222: "asset_builder_views"
+  223: "asset_builder_view"
+  224: "asset_builder_review"
+  225: "asset_builder_final"
+  226: "fast_analyze_img"
+  227: "read_file"
+  228: "asset_builder_texture"
+  229: "comfyui_start"
+  230: "comfyui_status"
+  231: "comfyui_stop"
+
+DOCS:
+  300: "asset_builder"
+
+PLAN:
+
+PERIMETER:
+  workspace: "work/"
+  type-file: ".json .glb .png .js"
+
+ERROR:
+  600: "Un .glb sale, une vue vide ou une part qui flotte : le dire avec la mesure, corriger, refaire la vue. Jamais valider à l'aveugle."

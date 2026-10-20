@@ -1,0 +1,11 @@
+tool: "blender_paintcurve_cursor"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Place cursor"
+machine: blender
+op: paintcurve.cursor
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

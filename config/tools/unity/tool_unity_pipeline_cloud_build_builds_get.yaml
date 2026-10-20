@@ -1,0 +1,33 @@
+tool: "unity_pipeline_cloud_build_builds_get"
+date: "2026-10-18"
+tags: ["unity", "cli", "pipeline"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Show one Build Automation build"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- pipeline cloud-build builds get --no-banner --no-pager --non-interactive
+  [ -n "{{build_number}}" ] || { printf '%s\n' "$(msg argument_required 'build_number' 'unity pipeline cloud-build builds get')" >&2; exit 1; }
+
+  [ -n "{{build_number}}" ] && set -- "$@" "{{build_number}}"
+  [ -n "{{build_target}}" ] && set -- "$@" --build-target "{{build_target}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_pipeline_cloud_build_3)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: build_number, type: text}
+  - {name: build_target, type: text}   # Limit the results to one build target. Omit to include every target.
+

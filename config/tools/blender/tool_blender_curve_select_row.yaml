@@ -1,0 +1,11 @@
+tool: "blender_curve_select_row"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select a row of control points including active one. Successive use on the same point switches between U/V directions"
+machine: blender
+op: curve.select_row
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

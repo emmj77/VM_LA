@@ -1,0 +1,11 @@
+tool: "blender_sequencer_swap_data"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Swap 2 sequencer strips"
+machine: blender
+op: sequencer.swap_data
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

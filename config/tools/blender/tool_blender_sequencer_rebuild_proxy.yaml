@@ -1,0 +1,11 @@
+tool: "blender_sequencer_rebuild_proxy"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Rebuild all selected proxies"
+machine: blender
+op: sequencer.rebuild_proxy
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

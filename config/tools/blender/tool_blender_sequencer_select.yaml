@@ -1,0 +1,24 @@
+tool: "blender_sequencer_select"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select a strip (last selected becomes the 'active strip')"
+machine: blender
+op: sequencer.select
+ARGS:
+  - {name: wait_to_deselect_others, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_select_on_click, type: text}          # true|false, vide pour ne rien poser
+  - {name: mouse_x, type: int}
+  - {name: mouse_y, type: int}
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: select_passthrough, type: text}          # true|false, vide pour ne rien poser
+  - {name: center, type: text}          # true|false, vide pour ne rien poser
+  - {name: linked_handle, type: text}          # true|false, vide pour ne rien poser
+  - {name: linked_time, type: text}          # true|false, vide pour ne rien poser
+  - {name: side_of_frame, type: text}          # true|false, vide pour ne rien poser
+  - {name: ignore_connections, type: text}          # true|false, vide pour ne rien poser
+

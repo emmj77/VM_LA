@@ -1,0 +1,12 @@
+tool: "blender_object_select_by_type"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all visible objects that are of a type"
+machine: blender
+op: object.select_by_type
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : MESH | CURVE | SURFACE | META | FONT | CURVES | POINTCLOUD | VOLUME | GREASEPENCIL | ARMATURE | LATTICE | EMPTY | LIGHT | LIGHT_PROBE | CAMERA | SPEAKER
+

@@ -1,0 +1,74 @@
+__label__READ affiche les vingt dernieres lignes du journal
+__label__READ regarde si le service du dashboard tourne
+__label__READ trouve le tool qui installe un paquet
+__label__READ quel modele sert au reranker
+__label__READ ou sont stockes les retours du terminal
+__label__READ affiche les ports ouverts
+__label__READ montre les cinq derniers commits
+__label__READ montre le resultat du dernier banc
+__label__READ cherche un tool qui parle de video
+__label__READ combien d entrees porte la base de memoire
+__label__WRITE renomme ce fichier en config.yaml
+__label__WRITE supprime les lignes vides du fichier
+__label__WRITE modifie le seuil du veilleur
+__label__WRITE convertis l image en png
+__label__WRITE remplace toutes les occurrences de VM par cage
+__label__WRITE corrige l orthographe du message
+__label__WRITE ecris la doc du tool de download
+__label__WRITE ecris un script qui liste les ports
+__label__WRITE reduis la taille de l image avant de l envoyer
+__label__WRITE ecris le plan du projet dans un fichier
+__label__MANAGE fais moi un backup du projet avant de continuer
+__label__MANAGE lance le banc des residents
+__label__MANAGE cree une skill pour les videos
+__label__MANAGE vide le dossier des retours
+__label__MANAGE coupe la connexion du telephone
+__label__MANAGE declenche la mise a jour du canon
+__label__MANAGE desactive la skill krita
+__label__MANAGE restaure la configuration d hier
+__label__MANAGE tire les dernieres modifications
+__label__MANAGE regenere les tools blender
+__label__REPLY tu as fini
+__label__REPLY pourquoi tu as choisi ce tool
+__label__REPLY combien de temps ca va prendre
+__label__REPLY de quoi as tu besoin pour continuer
+__label__REPLY reponds moi en une phrase
+__label__REPLY que penses tu de cette idee
+__label__REPLY peux tu me rassurer sur ce point
+__label__REPLY c est grave ou pas
+__label__REPLY tu peux repeter la derniere phrase
+__label__REPLY comment tu qualifies ce resultat
+__label__PLAN cree le grand plan du projet
+__label__PLAN coche la tache qui est finie
+__label__PLAN rappelle toi ce qu on a decide hier
+__label__PLAN qu est ce que le canon dit du perimetre
+__label__PLAN relis le plan et dis ou on en est
+__label__VISION lis ce qui est ecrit sur l ecran
+__label__VISION decoupe le sujet de cette photo
+__label__VISION quel texte porte cette capture
+__label__VISION ou est le curseur sur l ecran
+__label__BLENDER ouvre blender et cree un cube
+__label__BLENDER extrude la face du haut
+__label__BLENDER mets un materiau rouge sur l objet
+__label__BLENDER selectionne tous les objets de la collection
+__label__BLENDER bake la texture du materiau
+__label__BLENDER lis le fichier blend et dis moi ce qu il contient
+__label__BLENDER applique le modificateur d array sur l objet
+__label__UNITY cree un nouveau projet unity
+__label__UNITY passe le projet en version 6.3
+__label__UNITY ajoute une scene au projet
+__label__UNITY nettoie le cache du projet unity
+__label__UNITY configure l accelerator unity
+__label__KRITA applique un filtre de flou sur le calque
+__label__KRITA remplis la selection avec la couleur du fond
+__label__KRITA change l opacite du calque a 60 pour cent
+__label__KRITA enregistre le document krita
+__label__KRITA ouvre le fichier kra du projet destn
+__label__IMAGE anime cette image en video
+__label__IMAGE genere une texture de pierre sans couture
+__label__IMAGE change le style de l image en anime
+__label__IMAGE genere quatre propositions pour le logo
+__label__READ lis le fichier de configuration et dis moi ce qu il contient
+__label__READ lis le document et dis moi sa taille
+__label__READ parcours le fichier et compte les lignes vides
+__label__VISION lis le panneau a l ecran et dis moi ce qu il dit

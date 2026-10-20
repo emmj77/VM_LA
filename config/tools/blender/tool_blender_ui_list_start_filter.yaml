@@ -1,0 +1,11 @@
+tool: "blender_ui_list_start_filter"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Start entering filter text for the list in focus"
+machine: blender
+op: ui.list_start_filter
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

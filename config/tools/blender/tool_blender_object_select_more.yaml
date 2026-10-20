@@ -1,0 +1,11 @@
+tool: "blender_object_select_more"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select connected parent/child objects"
+machine: blender
+op: object.select_more
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

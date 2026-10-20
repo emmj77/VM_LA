@@ -1,0 +1,12 @@
+tool: "blender_extensions_userpref"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "an extension user preference: allow_online | allow_online_popup | show_for_update | show_online | tags_set (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "extensions.userpref_{{op}}" --arg "data_path={{data_path}}" --arg "value={{value}}"
+ARGS:
+  - {name: op, type: enum, values: [allow_online, allow_online_popup, show_for_update, show_online, tags_set]}
+  - {name: data_path, type: text}
+  - {name: value, type: text}

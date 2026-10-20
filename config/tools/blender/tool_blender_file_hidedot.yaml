@@ -1,0 +1,11 @@
+tool: "blender_file_hidedot"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Toggle hide hidden dot files"
+machine: blender
+op: file.hidedot
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_render_view_cancel"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cancel showing the render view"
+machine: blender
+op: render.view_cancel
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

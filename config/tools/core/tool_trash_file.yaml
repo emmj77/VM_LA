@@ -1,0 +1,12 @@
+tool: "trash_file"
+date: "2026-10-17"
+tags: ["trash_file"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "moves a file from work to the system trash, without erasing"
+COMMAND: |
+  [ -f "$W/{{path}}" ] || { printf '%s\n' "$(msg target_absent)" >&2; exit 1; }; gio trash -- "$W/{{path}}"
+
+ARGS:
+  - {name: path, type: path}

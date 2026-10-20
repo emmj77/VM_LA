@@ -1,0 +1,13 @@
+tool: "blender_clip_tracking_settings_preset_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add or remove a motion tracking settings preset"
+machine: blender
+op: clip.tracking_settings_preset_add
+ARGS:
+  - {name: name, type: text}
+  - {name: remove_name, type: text}          # true|false, vide pour ne rien poser
+  - {name: remove_active, type: text}          # true|false, vide pour ne rien poser
+

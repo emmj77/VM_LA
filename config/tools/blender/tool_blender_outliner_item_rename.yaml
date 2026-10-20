@@ -1,0 +1,11 @@
+tool: "blender_outliner_item_rename"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Rename the active element"
+machine: blender
+op: outliner.item_rename
+ARGS:
+  - {name: use_active, type: text}          # true|false, vide pour ne rien poser
+

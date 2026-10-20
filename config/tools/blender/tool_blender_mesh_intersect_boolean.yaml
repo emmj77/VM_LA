@@ -1,0 +1,15 @@
+tool: "blender_mesh_intersect_boolean"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cut solid geometry from selected to unselected"
+machine: blender
+op: mesh.intersect_boolean
+ARGS:
+  - {name: operation, type: text}          # un de : INTERSECT | UNION | DIFFERENCE
+  - {name: use_swap, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_self, type: text}          # true|false, vide pour ne rien poser
+  - {name: threshold, type: text}
+  - {name: solver, type: text}          # un de : FLOAT | EXACT
+

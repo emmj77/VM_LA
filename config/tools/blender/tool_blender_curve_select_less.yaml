@@ -1,0 +1,11 @@
+tool: "blender_curve_select_less"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Deselect control points at the boundary of each selection region"
+machine: blender
+op: curve.select_less
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

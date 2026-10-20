@@ -1,0 +1,15 @@
+tool: "blender_render_opengl"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Take a snapshot of the active viewport"
+machine: blender
+op: render.opengl
+ARGS:
+  - {name: animation, type: text}          # true|false, vide pour ne rien poser
+  - {name: render_keyed_only, type: text}          # true|false, vide pour ne rien poser
+  - {name: sequencer, type: text}          # true|false, vide pour ne rien poser
+  - {name: write_still, type: text}          # true|false, vide pour ne rien poser
+  - {name: view_context, type: text}          # true|false, vide pour ne rien poser
+

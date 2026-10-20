@@ -1,0 +1,13 @@
+tool: "blender_uv_select_similar"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select similar UVs by property types"
+machine: blender
+op: uv.select_similar
+ARGS:
+  - {name: type, type: text}          # un de : PIN | LENGTH | LENGTH_3D | AREA | AREA_3D | MATERIAL | OBJECT | SIDES | WINDING | FACE
+  - {name: compare, type: text}          # un de : EQUAL | GREATER | LESS
+  - {name: threshold, type: text}
+

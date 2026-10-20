@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_set_active_material"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the selected stroke material as the active material"
+machine: blender
+op: grease_pencil.set_active_material
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

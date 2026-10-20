@@ -1,0 +1,11 @@
+tool: "blender_render_view_show"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Toggle show render view"
+machine: blender
+op: render.view_show
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

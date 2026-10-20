@@ -1,0 +1,12 @@
+tool: "blender_clip_marker_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the way a clip marker is added: at_click | move | slide (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "clip.add_marker_{{op}}" --arg "CLIP_OT_add_marker={{CLIP_OT_add_marker}}" --arg "TRANSFORM_OT_translate={{TRANSFORM_OT_translate}}"
+ARGS:
+  - {name: op, type: enum, values: [at_click, move, slide]}
+  - {name: CLIP_OT_add_marker, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}

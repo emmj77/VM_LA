@@ -1,0 +1,11 @@
+tool: "blender_graph_breakdown"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move selected keyframes to an inbetween position relative to adjacent keys"
+machine: blender
+op: graph.breakdown
+ARGS:
+  - {name: factor, type: text}
+

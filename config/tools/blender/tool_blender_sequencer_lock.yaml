@@ -1,0 +1,11 @@
+tool: "blender_sequencer_lock"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Lock strips so they cannot be transformed"
+machine: blender
+op: sequencer.lock
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

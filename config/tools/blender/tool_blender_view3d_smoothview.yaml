@@ -1,0 +1,11 @@
+tool: "blender_view3d_smoothview"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: view3d.smoothview
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

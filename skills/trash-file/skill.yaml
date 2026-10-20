@@ -1,0 +1,26 @@
+skill: "trash-file"
+date: "2026-10-17"
+tags: ["trash-file", "corbeille", "supprimer", "ranger"]
+
+SUMMARY:
+  101: "Mettre un fichier a la corbeille (jamais supprimer)."
+  102: "trash_file deplace vers la corbeille ; rien n'est efface."
+  103: "On NOMME la cible, on ne devine pas un motif."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "trash_file"
+  201: "list_dir"
+  202: "load_doc"
+  203: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Cible absente : le dire, ne rien forcer."

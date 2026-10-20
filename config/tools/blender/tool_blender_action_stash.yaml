@@ -1,0 +1,11 @@
+tool: "blender_action_stash"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Store this action in the NLA stack as a non-contributing strip for later use"
+machine: blender
+op: action.stash
+ARGS:
+  - {name: create_new, type: text}          # true|false, vide pour ne rien poser
+

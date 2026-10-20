@@ -1,0 +1,11 @@
+tool: "blender_object_constraints_copy"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy constraints to other selected objects"
+machine: blender
+op: object.constraints_copy
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

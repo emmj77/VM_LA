@@ -1,0 +1,13 @@
+tool: "blender_outliner_select_walk"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Use walk navigation to select tree elements"
+machine: blender
+op: outliner.select_walk
+ARGS:
+  - {name: direction, type: text}          # un de : UP | DOWN | LEFT | RIGHT
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle_all, type: text}          # true|false, vide pour ne rien poser
+

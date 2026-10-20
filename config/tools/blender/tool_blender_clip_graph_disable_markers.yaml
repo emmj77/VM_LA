@@ -1,0 +1,11 @@
+tool: "blender_clip_graph_disable_markers"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Disable/enable selected markers"
+machine: blender
+op: clip.graph_disable_markers
+ARGS:
+  - {name: action, type: text}          # un de : DISABLE | ENABLE | TOGGLE
+

@@ -1,0 +1,14 @@
+tool: "blender_view3d_bone_select_menu"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Menu bone selection"
+machine: blender
+op: view3d.bone_select_menu
+ARGS:
+  - {name: name, type: text}          # un de : 
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+

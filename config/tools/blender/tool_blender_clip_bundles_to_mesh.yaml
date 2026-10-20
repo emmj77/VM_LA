@@ -1,0 +1,11 @@
+tool: "blender_clip_bundles_to_mesh"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create vertex cloud using coordinates of reconstructed tracks"
+machine: blender
+op: clip.bundles_to_mesh
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

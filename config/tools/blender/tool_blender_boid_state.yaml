@@ -1,0 +1,10 @@
+tool: "blender_boid_state"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a boid state: add | del | move_down | move_up (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "boid.state_{{op}}"
+ARGS:
+  - {name: op, type: enum, values: [add, del, move_down, move_up]}

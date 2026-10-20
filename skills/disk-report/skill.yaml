@@ -1,0 +1,32 @@
+skill: "disk-report"
+date: "2026-10-17"
+tags: ["disk-report", "disque", "espace", "systeme"]
+
+SUMMARY:
+  101: "Faire le point sur l'espace disque : ou est le gras."
+  102: "shell_run porte df et du ; on lit du PLUS GROS au plus petit."
+  103: "On NOMME ce qui occupe, avec son chiffre."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "shell_run"
+  201: "read_file"
+  202: "load_doc"
+  203: "list_dir"
+  204: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+  400: "PLAN espace-disque : Mesurer l espace disque et nommer le gras"
+  401: "[progress] df -h sur les systemes de fichiers montes"
+  402: "[todo] du du repertoire courant, trie du plus gros au plus petit"
+  403: "[todo] nommer les postes qui pesent et donner leur chiffre"
+  404: "[todo] clore le plan pour decharger la skill"
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Un dossier illisible : le dire, continuer sur le reste, jamais bloquer."

@@ -1,0 +1,11 @@
+tool: "blender_wm_call_menu"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Open a predefined menu"
+machine: blender
+op: wm.call_menu
+ARGS:
+  - {name: name, type: text}
+

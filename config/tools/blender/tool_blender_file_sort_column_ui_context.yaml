@@ -1,0 +1,11 @@
+tool: "blender_file_sort_column_ui_context"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change sorting to use column under cursor"
+machine: blender
+op: file.sort_column_ui_context
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

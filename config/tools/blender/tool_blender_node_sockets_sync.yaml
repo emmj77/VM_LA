@@ -1,0 +1,11 @@
+tool: "blender_node_sockets_sync"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Update sockets to match what is actually used"
+machine: blender
+op: node.sockets_sync
+ARGS:
+  - {name: node_name, type: text}
+

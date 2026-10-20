@@ -1,0 +1,12 @@
+tool: "blender_console_scrollback_append"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Append scrollback text by type"
+machine: blender
+op: console.scrollback_append
+ARGS:
+  - {name: text, type: text}
+  - {name: type, type: text}          # un de : OUTPUT | INPUT | INFO | ERROR
+

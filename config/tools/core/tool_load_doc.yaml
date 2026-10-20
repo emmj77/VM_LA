@@ -1,0 +1,110 @@
+tool: "load_doc"
+date: "2026-10-17"
+tags: ["load_doc"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "reads the docs NAMED by the active skill (DOCS): the web, a machine, or a path"
+COMMAND: |
+  T="{{topic}}"
+  case "$T" in
+    ''|*[!a-zA-Z0-9_.-]*) [ -n "$T" ] && printf '%s\n' "$(msg topic_malformed '%s')""$T" >&2 ; T= ;;
+  esac
+  A=$(sed -n '1p' "${LA_STATE_SKILL:-$ROOT/skills/.active}" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  case "$A" in ''|*/*|*..*) A= ;; esac
+  [ -n "$A" ] || { printf '%s\n' "$(msg no_active_skill)" >&2 ; exit 1; }
+  S="$ROOT/skills/$A/skill.yaml"
+  [ -f "$S" ] || { printf '%s\n' "$(msg active_manifest_missing "$S")" >&2 ; exit 1; }
+  RES=$(sed -n '/^DOCS:/,/^[^[:space:]]/p' "$S" \
+        | sed -n 's/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
+        | sed -e 's/^"//' -e 's/"[[:space:]]*$//' | grep -v '^$')
+  if [ -z "$RES" ]; then
+    printf '%s\n' "$(msg docs_empty)""$A"
+    exit 0
+  fi
+  WS=$(sed -n '/^PERIMETER:/,/^[^[:space:]]/p' "$S" | sed -n 's/^[[:space:]]*workspace:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' | head -n 1)
+  if [ -n "$T" ]; then
+    if printf '%s\n' "$RES" | grep -qxF -- "$T"; then LISTE="$T" ; else
+      printf '%s\n' "$(msg topic_not_named)""$T" "$A"
+      LISTE="$RES"
+    fi
+  else LISTE="$RES"; fi
+
+  printf '%s\n' "$LISTE" | while IFS= read -r R; do
+    [ -n "$R" ] || continue
+    case "$R" in
+      web_search|web|none)
+        printf '%s\n' "$(msg doc_on_web)""$A" "$R"
+        printf '%s\n' "$(msg seek_official)"
+        continue ;;
+    esac
+    PERIM=
+    PAC=$(sed -n '1p' "${LA_STATE_PROJECT:-$ROOT/projects/.active}" 2>/dev/null | tr -d '\r')
+    PJL="$ROOT/projects/*/project.yml"
+    if [ -n "$PAC" ] && [ -f "$ROOT/projects/$PAC/project.yml" ]; then
+      PJL="$ROOT/projects/$PAC/project.yml $ROOT/projects/*/project.yml"
+    fi
+    for PJ in $PJL; do
+      [ -f "$PJ" ] || continue
+      PP=$(sed -n 's/^path:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' "$PJ" | head -n 1)
+      [ -n "$PP" ] || continue
+      for D in "$ROOT/$PP" "$HOME/$PP" "$ROOT/../$PP"; do
+        [ -d "$D/$R" ] && { PERIM="$D/$R" ; break; }
+      done
+      [ -n "$PERIM" ] && break
+    done
+    P=
+    for C in "$ROOT/config/tools/$R" "$PERIM" "$ROOT/$R" "$ROOT/skills/$A/$R" "$ROOT/skills/$R" \
+             ${WS:+"$ROOT/$WS/$R"}; do
+      case "$C" in *..*) continue ;; esac
+      [ -e "$C" ] || continue
+      P="$C" ; break
+    done
+    if [ -z "$P" ]; then
+      printf '%s\n' "$(msg doc_outside_root)""$A" "$R"
+      printf '%s\n' "$(msg seek_on_web)"
+      continue
+    fi
+    if [ -f "$P" ]; then
+      NAT=$(file -b --mime-type "$P" 2>/dev/null || echo '?')
+      case "$NAT" in
+        text/*|application/json|application/xml|application/yaml|application/csv)
+          printf '%s\n' "$(msg doc_of_skill)""$R" "$A" "$P"
+          LC_ALL=C sed -n '1,400p' "$P" ;;
+        *)
+          printf '%s\n' "$(msg resource_not_text)""$R" "$A" "$P"
+          printf '%s\n' "$(msg resource_nature_db)""$NAT" "$(wc -c < "$P" | tr -d ' ')"
+          printf '%s\n' "$(msg resource_nature_tail)";;
+      esac
+      continue
+    fi
+    SUJ=$(grep -h '^doc:' "$P"/tool_*.yaml 2>/dev/null | sed -e 's/^doc:[[:space:]]*//' -e 's/[[:space:]]*$//' | LC_ALL=C sort -u | grep -v '^$' | tr '\n' ' ')
+    NF=$(find "$P" -maxdepth 1 -type f 2>/dev/null | wc -l)
+    ND=$(find "$P" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | wc -l)
+    if [ "$NF" -eq 1 ] && [ "$ND" -eq 0 ]; then
+      F=$(find "$P" -maxdepth 1 -type f 2>/dev/null)
+      NAT=$(file -b --mime-type "$F" 2>/dev/null || echo '?')
+      case "$NAT" in
+        text/*|application/json|application/xml|application/yaml|application/csv)
+          printf '%s\n' "$(msg doc_single_file)""$R" "$A" "$P"
+          LC_ALL=C sed -n '1,400p' "$F" ; continue ;;
+      esac
+      printf '%s\n' "$(msg resource_single_not_text)""$R" "$A" "$P"
+      printf '%s\n' "$(msg resource_nature)""$NAT" "$(wc -c < "$F" | tr -d ' ')"
+      continue
+    fi
+    printf '%s\n' "$(msg resource_dir)""$R" "$A" "$P" "$NF" "$ND"
+    for E in "$P"/*; do
+      [ -e "$E" ] || continue
+      [ -d "$E" ] && printf '  %s/\n' "$(basename "$E")" || printf '  %s\n' "$(basename "$E")"
+    done | LC_ALL=C sort | head -n 60
+    if [ -n "$SUJ" ]; then
+      printf '%s\n' "$(msg doc_topics_p "$R" "$SUJ")"
+      printf '%s\n' "$(msg text_from_source)"
+    fi
+  done
+  exit 0
+
+
+ARGS:
+  - {name: topic, type: text}

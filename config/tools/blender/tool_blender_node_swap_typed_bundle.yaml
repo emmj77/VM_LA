@@ -1,0 +1,11 @@
+tool: "blender_node_swap_typed_bundle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Swap existing node with a Combine Bundle node with a type input"
+machine: blender
+op: node.swap_typed_bundle
+ARGS:
+  - {name: settings, type: text}
+

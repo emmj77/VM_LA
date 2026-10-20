@@ -1,0 +1,14 @@
+tool: "blender_grease_pencil_outline"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Convert selected strokes to perimeter"
+machine: blender
+op: grease_pencil.outline
+ARGS:
+  - {name: type, type: text}          # un de : VIEW | FRONT | SIDE | TOP | CURSOR | CAMERA
+  - {name: radius, type: text}
+  - {name: offset_factor, type: text}
+  - {name: corner_subdivisions, type: int}
+

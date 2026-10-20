@@ -1,0 +1,11 @@
+tool: "blender_outliner_orphans_manage"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Open a window to manage unused data"
+machine: blender
+op: outliner.orphans_manage
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

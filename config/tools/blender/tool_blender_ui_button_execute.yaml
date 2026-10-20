@@ -1,0 +1,11 @@
+tool: "blender_ui_button_execute"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Presses active button"
+machine: blender
+op: ui.button_execute
+ARGS:
+  - {name: skip_depressed, type: text}          # true|false, vide pour ne rien poser
+

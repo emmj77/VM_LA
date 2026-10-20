@@ -1,0 +1,33 @@
+tool: "update_spec"
+date: "2026-10-17"
+tags: ["update_spec", "spec"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "updates ONE law of the CANON (projects/<active>/spec.yaml) : a law that already exists"
+COMMAND: |
+  [ -r "$PROCS/spec.sh" ] || { echo "refused: the spec brick is missing ($PROCS/spec.sh)" >&2 ; exit 1 ; }
+  . "$PROCS/spec.sh"
+  LAW="{{law}}"
+  case "$LAW" in ''|*[!0-9]*) printf '%s\n' "$(msg malformed_law_law_law "$LAW")" >&2 ; exit 1 ;; esac
+  F="$SPEC_FILE"
+  [ -f "$F" ] || { echo "refused: the active skill spec is missing ($F)" >&2 ; exit 1 ; }
+  grep -q "^  $LAW:" "$F" || { printf '%s\n' "$(msg law_does_not_exist "$LAW" "$F")" >&2 ; exit 1 ; }
+  SK="$SKILL"
+  [ -f "$SK" ] || { echo "refused: the active skill is missing ($SK)" >&2 ; exit 1 ; }
+  CH=$(sed -n 's/^[[:space:]]*chars:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' "$SK" | head -n 1)
+  case "$CH" in ''|*[!0-9]*) CH=100 ;; esac
+  BODY=$(cat)
+  V=$(printf '%s\n' "$BODY" | sed -e '/^[[:space:]]*$/d')
+  [ "$(printf '%s\n' "$V" | wc -l | tr -d ' ')" = 1 ] || { printf '%s\n' "$(msg update_spec_updates_one)" >&2 ; exit 1 ; }
+  V=$(printf '%s' "$V" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  R="  $LAW: \"$V\""
+  [ "$(printf '%s' "$R" | wc -c | tr -d ' ')" -le "$CH" ] || { printf '%s\n' "$(msg law_law_goes_past "$LAW" "$CH")" >&2 ; exit 1 ; }
+  OLD=$(sed -n "s/^  $LAW: \"\(.*\)\"$/\1/p" "$F" | head -n 1)
+  [ "$OLD" != "$V" ] || { printf '%s\n' "$(msg law_already_one_nothing "$LAW")" >&2 ; exit 1 ; }
+  law_write "$F" "$LAW" "$R" || { printf '%s\n' "$(msg cannot_write_f "$F")" >&2 ; exit 1 ; }
+  printf '%s\n' "$(msg law_updated "$F" "$LAW" "$(printf '%s' "$R" | wc -c | tr -d ' ')")"
+
+ARGS:
+  - {name: law, type: int}
+  - {name: law_text, type: text, stdin: true}

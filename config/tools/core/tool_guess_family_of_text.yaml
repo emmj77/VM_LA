@@ -1,0 +1,18 @@
+tool: "guess_family_of_text"
+date: "2026-10-17"
+tags: ["guess_family_of_text", "fasttext", "filter", "family", "routing"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "reads the family of a demand : READ, WRITE, MANAGE or REPLY"
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  M="$ROOT/config/filter/family.bin"
+  [ -f "$M" ] || { printf '%s\n' "$(msg filter_untrained "$M")" >&2 ; exit 1 ; }
+  command -v fasttext >/dev/null 2>&1 || { printf '%s\n' "$(msg missing_binary 'fasttext')" >&2 ; exit 1 ; }
+  T=$(cat)
+  [ -n "$(printf '%s' "$T" | tr -d '[:space:]')" ] || { printf '%s\n' "$(msg nothing_to_judge)" >&2 ; exit 1 ; }
+  printf '%s\n' "$T" | fasttext predict-prob "$M" - 1 | sed -e 's/^__label__//' -e 's/\([0-9]\.[0-9][0-9]\).*/\1/'
+
+ARGS:
+  - {name: text, type: text, stdin: true}

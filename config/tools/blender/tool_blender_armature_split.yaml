@@ -1,0 +1,11 @@
+tool: "blender_armature_split"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Split off selected bones from connected unselected bones"
+machine: blender
+op: armature.split
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

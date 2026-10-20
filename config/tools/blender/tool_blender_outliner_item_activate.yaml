@@ -1,0 +1,14 @@
+tool: "blender_outliner_item_activate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Handle mouse clicks to select and activate items"
+machine: blender
+op: outliner.item_activate
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend_range, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: recurse, type: text}          # true|false, vide pour ne rien poser
+

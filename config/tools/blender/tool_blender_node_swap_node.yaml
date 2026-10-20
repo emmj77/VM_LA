@@ -1,0 +1,13 @@
+tool: "blender_node_swap_node"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Replace the selected nodes with the specified type"
+machine: blender
+op: node.swap_node
+ARGS:
+  - {name: settings, type: text}
+  - {name: type, type: text}
+  - {name: visible_output, type: text}
+

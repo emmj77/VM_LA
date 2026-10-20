@@ -1,0 +1,11 @@
+tool: "blender_node_delete_reconnect"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove nodes and reconnect nodes as if deletion was muted"
+machine: blender
+op: node.delete_reconnect
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

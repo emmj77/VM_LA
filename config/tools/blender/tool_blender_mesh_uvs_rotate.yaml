@@ -1,0 +1,11 @@
+tool: "blender_mesh_uvs_rotate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Rotate UV coordinates inside faces"
+machine: blender
+op: mesh.uvs_rotate
+ARGS:
+  - {name: use_ccw, type: text}          # true|false, vide pour ne rien poser
+

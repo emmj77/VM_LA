@@ -1,0 +1,12 @@
+tool: "blender_object_shaderfx_remove"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove a effect from the active Grease Pencil object"
+machine: blender
+op: object.shaderfx_remove
+ARGS:
+  - {name: shaderfx, type: text}
+  - {name: report, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,13 @@
+tool: "blender_uv_move_on_axis"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move UVs on an axis"
+machine: blender
+op: uv.move_on_axis
+ARGS:
+  - {name: type, type: text}          # un de : DYNAMIC | PIXEL | UDIM
+  - {name: axis, type: text}          # un de : X | Y
+  - {name: distance, type: int}
+

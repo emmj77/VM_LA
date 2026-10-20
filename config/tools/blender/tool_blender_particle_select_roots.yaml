@@ -1,0 +1,11 @@
+tool: "blender_particle_select_roots"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select roots of all visible particles"
+machine: blender
+op: particle.select_roots
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT
+

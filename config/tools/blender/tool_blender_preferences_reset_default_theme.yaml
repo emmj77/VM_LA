@@ -1,0 +1,11 @@
+tool: "blender_preferences_reset_default_theme"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset to the default theme colors"
+machine: blender
+op: preferences.reset_default_theme
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

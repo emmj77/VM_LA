@@ -1,0 +1,11 @@
+tool: "blender_sequencer_strip_color_tag_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set a color tag for the selected strips"
+machine: blender
+op: sequencer.strip_color_tag_set
+ARGS:
+  - {name: color, type: text}          # un de : NONE | COLOR_01 | COLOR_02 | COLOR_03 | COLOR_04 | COLOR_05 | COLOR_06 | COLOR_07 | COLOR_08 | COLOR_09
+

@@ -1,0 +1,11 @@
+tool: "blender_node_new_compositor_sequencer_node_group"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new compositor node group for sequencer"
+machine: blender
+op: node.new_compositor_sequencer_node_group
+ARGS:
+  - {name: name, type: text}
+

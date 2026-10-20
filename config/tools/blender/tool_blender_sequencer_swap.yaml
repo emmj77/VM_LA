@@ -1,0 +1,11 @@
+tool: "blender_sequencer_swap"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Swap active strip with strip to the right or left"
+machine: blender
+op: sequencer.swap
+ARGS:
+  - {name: side, type: text}          # un de : LEFT | RIGHT
+

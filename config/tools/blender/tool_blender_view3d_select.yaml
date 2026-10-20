@@ -1,0 +1,19 @@
+tool: "blender_view3d_select"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select and activate item(s)"
+machine: blender
+op: view3d.select
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: select_passthrough, type: text}          # true|false, vide pour ne rien poser
+  - {name: center, type: text}          # true|false, vide pour ne rien poser
+  - {name: enumerate, type: text}          # true|false, vide pour ne rien poser
+  - {name: object, type: text}          # true|false, vide pour ne rien poser
+  - {name: location, type: int}
+

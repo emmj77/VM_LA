@@ -1,0 +1,12 @@
+tool: "blender_mask_move_to_layer"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move the active spline to layer"
+machine: blender
+op: mask.move_to_layer
+ARGS:
+  - {name: target_layer_name, type: text}
+  - {name: add_new_layer, type: text}          # true|false, vide pour ne rien poser
+

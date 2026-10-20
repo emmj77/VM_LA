@@ -1,0 +1,11 @@
+tool: "blender_clip_view_zoom_out"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Zoom out the view"
+machine: blender
+op: clip.view_zoom_out
+ARGS:
+  - {name: location, type: text}          # 2 valeurs separees par des virgules
+

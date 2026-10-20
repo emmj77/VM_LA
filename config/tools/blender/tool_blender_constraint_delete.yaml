@@ -1,0 +1,13 @@
+tool: "blender_constraint_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove constraint from constraint stack"
+machine: blender
+op: constraint.delete
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE
+  - {name: report, type: text}          # true|false, vide pour ne rien poser
+

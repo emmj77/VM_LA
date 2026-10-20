@@ -1,0 +1,18 @@
+tool: "blender_action_clickselect"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select keyframes by clicking on them"
+machine: blender
+op: action.clickselect
+ARGS:
+  - {name: wait_to_deselect_others, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_select_on_click, type: text}          # true|false, vide pour ne rien poser
+  - {name: mouse_x, type: int}
+  - {name: mouse_y, type: int}
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: column, type: text}          # true|false, vide pour ne rien poser
+  - {name: channel, type: text}          # true|false, vide pour ne rien poser
+

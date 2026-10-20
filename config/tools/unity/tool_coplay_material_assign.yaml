@@ -1,0 +1,32 @@
+tool: "coplay_material_assign"
+date: "2026-10-18"
+tags: ["unity", "coplay", "material"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Assign a material to a GameObject's renderer."
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- material assign
+  [ -n "{{material_path}}" ] || { printf '%s\n' "$(msg argument_required 'material_path' 'material assign')" >&2; exit 1; }
+  [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'material assign')" >&2; exit 1; }
+  [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+  [ -n "{{slot}}" ] && set -- "$@" --slot "{{slot}}"
+  [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+  [ -n "{{material_path}}" ] && set -- "$@" "{{material_path}}"
+  [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: search_method, type: text}          # un de : by_id | by_name | by_path | by_tag | by_layer | by_component
+  - {name: slot, type: int}
+  - {name: mode, type: text}          # un de : shared | instance | property_block | create_unique
+  - {name: material_path, type: text}
+  - {name: target, type: text}
+

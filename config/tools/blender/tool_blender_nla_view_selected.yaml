@@ -1,0 +1,11 @@
+tool: "blender_nla_view_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset viewable area to show selected strips range"
+machine: blender
+op: nla.view_selected
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_object_make_links_scene"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Link selection to another scene"
+machine: blender
+op: object.make_links_scene
+ARGS:
+  - {name: scene, type: text}          # un de : 
+

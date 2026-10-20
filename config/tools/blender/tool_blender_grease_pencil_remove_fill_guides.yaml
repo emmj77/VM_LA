@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_remove_fill_guides"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove all the strokes that were created from the fill tool as guides"
+machine: blender
+op: grease_pencil.remove_fill_guides
+ARGS:
+  - {name: mode, type: text}          # un de : ACTIVE_FRAME | ALL_FRAMES
+

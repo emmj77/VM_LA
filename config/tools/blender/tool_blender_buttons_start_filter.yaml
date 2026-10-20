@@ -1,0 +1,11 @@
+tool: "blender_buttons_start_filter"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Start entering filter text"
+machine: blender
+op: buttons.start_filter
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

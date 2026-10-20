@@ -1,0 +1,17 @@
+tool: "blender_sequencer_split"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Split the selected strips in two"
+machine: blender
+op: sequencer.split
+ARGS:
+  - {name: frame, type: int}
+  - {name: channel, type: int}
+  - {name: type, type: text}          # un de : SOFT | HARD
+  - {name: use_cursor_position, type: text}          # true|false, vide pour ne rien poser
+  - {name: side, type: text}          # un de : MOUSE | LEFT | RIGHT | BOTH | NO_CHANGE
+  - {name: ignore_selection, type: text}          # true|false, vide pour ne rien poser
+  - {name: ignore_connections, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,13 @@
+tool: "blender_file_select_walk"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select/Deselect files by walking through them"
+machine: blender
+op: file.select_walk
+ARGS:
+  - {name: direction, type: text}          # un de : UP | DOWN | LEFT | RIGHT
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: fill, type: text}          # true|false, vide pour ne rien poser
+

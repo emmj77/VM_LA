@@ -1,0 +1,39 @@
+tool: "unity_collaboration_thumbnail_download"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Download the thumbnail for an annotation"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration thumbnail download --no-banner --no-pager --non-interactive
+  [ -n "{{annotationid}}" ] || { printf '%s\n' "$(msg argument_required 'annotationid' 'unity collaboration thumbnail download')" >&2; exit 1; }
+
+  [ -n "{{annotationid}}" ] && set -- "$@" "{{annotationid}}"
+  [ -n "{{out}}" ] && set -- "$@" --out "{{out}}"
+  [ -n "{{width}}" ] && set -- "$@" --width "{{width}}"
+  [ -n "{{project_id}}" ] && set -- "$@" --project-id "{{project_id}}"
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_thumbnail_download)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: annotationid, type: text}
+  - {name: out, type: text}   # Output file path (default: thumbnail in current directory)
+  - {name: width, type: text}   # Desired thumbnail width in pixels
+  - {name: project_id, type: text}   # Unity Cloud project id
+  - {name: project_path, type: text}   # Path to the Unity project (defaults to the current directory); used to
+

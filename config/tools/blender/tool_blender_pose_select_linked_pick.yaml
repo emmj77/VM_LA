@@ -1,0 +1,11 @@
+tool: "blender_pose_select_linked_pick"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select bones linked by connected parent/child relationships under the mouse cursor"
+machine: blender
+op: pose.select_linked_pick
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+

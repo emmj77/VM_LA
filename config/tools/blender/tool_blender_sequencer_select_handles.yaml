@@ -1,0 +1,11 @@
+tool: "blender_sequencer_select_handles"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select gizmo handles on the sides of the selected strip"
+machine: blender
+op: sequencer.select_handles
+ARGS:
+  - {name: side, type: text}          # un de : LEFT | RIGHT | BOTH | LEFT_NEIGHBOR | RIGHT_NEIGHBOR | BOTH_NEIGHBORS
+

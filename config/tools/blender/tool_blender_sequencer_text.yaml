@@ -1,0 +1,16 @@
+tool: "blender_sequencer_text"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the text of a sequencer strip: cursor_move | cursor_set | delete | deselect_all | edit_copy | edit_cut | edit_mode_toggle | edit_paste | insert | line_break | select_all | strip_style_preset_add (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "sequencer.text_{{op}}" --arg "select_text={{select_text}}" --arg "type={{type}}" --arg "name={{name}}" --arg "remove_active={{remove_active}}" --arg "remove_name={{remove_name}}" --arg "string={{string}}"
+ARGS:
+  - {name: op, type: enum, values: [cursor_move, cursor_set, delete, deselect_all, edit_copy, edit_cut, edit_mode_toggle, edit_paste, insert, line_break, select_all, strip_style_preset_add]}
+  - {name: select_text, type: text}
+  - {name: type, type: text}
+  - {name: name, type: text}
+  - {name: remove_active, type: text}
+  - {name: remove_name, type: text}
+  - {name: string, type: text}

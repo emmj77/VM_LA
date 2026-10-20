@@ -1,0 +1,49 @@
+tool: "coplay_probuilder_extrude"
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a probuilder mesh's elements: edges | faces (op picks which)"
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  edges)
+    set -f
+    set -- probuilder extrude-edges
+    case "{{as_group}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'as_group')" >&2; exit 1 ;; esac
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'probuilder extrude-edges')" >&2; exit 1; }
+    [ -n "{{edges}}" ] && set -- "$@" --edges "{{edges}}"
+    [ -n "{{distance}}" ] && set -- "$@" --distance "{{distance}}"
+    [ "{{as_group}}" = true ] && set -- "$@" --as-group
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  faces)
+    set -f
+    set -- probuilder extrude-faces
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'probuilder extrude-faces')" >&2; exit 1; }
+    [ -n "{{faces}}" ] && set -- "$@" --faces "{{faces}}"
+    [ -n "{{distance}}" ] && set -- "$@" --distance "{{distance}}"
+    [ -n "{{method}}" ] && set -- "$@" --method "{{method}}"
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+ARGS:
+  - {name: op, type: enum, values: [edges, faces]}
+  - {name: target, type: text}
+  - {name: distance, type: text}
+  - {name: edges, type: text}
+  - {name: faces, type: text}
+  - {name: method, type: text}
+  - {name: search_method, type: text}
+  - {name: as_group, type: text}

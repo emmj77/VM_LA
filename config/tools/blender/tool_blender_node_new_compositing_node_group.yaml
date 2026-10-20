@@ -1,0 +1,11 @@
+tool: "blender_node_new_compositing_node_group"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new compositing node group and initialize it with default nodes"
+machine: blender
+op: node.new_compositing_node_group
+ARGS:
+  - {name: name, type: text}
+

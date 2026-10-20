@@ -1,0 +1,13 @@
+tool: "blender_paintcurve_select"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select a paint curve point"
+machine: blender
+op: paintcurve.select
+ARGS:
+  - {name: location, type: int}
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+

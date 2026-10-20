@@ -1,0 +1,12 @@
+tool: "blender_console_clear"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear text by type"
+machine: blender
+op: console.clear
+ARGS:
+  - {name: scrollback, type: text}          # true|false, vide pour ne rien poser
+  - {name: history, type: text}          # true|false, vide pour ne rien poser
+

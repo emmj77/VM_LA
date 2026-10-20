@@ -1,0 +1,19 @@
+tool: "blender_transform_rotate_normal"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Rotate custom normal of selected items"
+machine: blender
+op: transform.rotate_normal
+ARGS:
+  - {name: value, type: text}
+  - {name: orient_axis, type: text}          # un de : X | Y | Z
+  - {name: orient_type, type: text}          # un de : 
+  - {name: orient_matrix, type: text}          # 9 valeurs separees par des virgules
+  - {name: orient_matrix_type, type: text}          # un de : 
+  - {name: constraint_axis, type: text}          # 3 valeurs separees par des virgules
+  - {name: mirror, type: text}          # true|false, vide pour ne rien poser
+  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_accurate, type: text}          # true|false, vide pour ne rien poser
+

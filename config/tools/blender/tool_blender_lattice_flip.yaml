@@ -1,0 +1,11 @@
+tool: "blender_lattice_flip"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Mirror all control points without inverting the lattice deform"
+machine: blender
+op: lattice.flip
+ARGS:
+  - {name: axis, type: text}          # un de : U | V | W
+

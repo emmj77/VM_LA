@@ -1,0 +1,35 @@
+tool: "unity_cloud_project_list"
+date: "2026-10-18"
+tags: ["unity", "cli", "cloud"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "List Unity Cloud projects in the active organization"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- cloud project list --no-banner --no-pager --non-interactive
+
+
+  [ -n "{{search}}" ] && set -- "$@" --search "{{search}}"
+  [ -n "{{limit}}" ] && set -- "$@" --limit "{{limit}}"
+  [ -n "{{skip}}" ] && set -- "$@" --skip "{{skip}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_cloud_project_list)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: search, type: text}   # Filter projects by name (server-side substring match)
+  - {name: limit, type: text}   # Single-page page size. Supplying --limit or --skip switches off the de
+  - {name: skip, type: text}   # Single-page offset. Supplying --skip or --limit switches off the defau
+

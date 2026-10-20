@@ -1,0 +1,11 @@
+tool: "blender_object_copy_relative_transform"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copies the matrix of the currently active object or pose bone to the clipboard. Uses matrices relative to a specific object or the active scene camera"
+machine: blender
+op: object.copy_relative_transform
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

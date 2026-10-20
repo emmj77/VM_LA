@@ -1,0 +1,11 @@
+tool: "blender_armature_extrude"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create new bones from the selected joints"
+machine: blender
+op: armature.extrude
+ARGS:
+  - {name: forked, type: text}          # true|false, vide pour ne rien poser
+

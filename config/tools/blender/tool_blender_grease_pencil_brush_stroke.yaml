@@ -1,0 +1,14 @@
+tool: "blender_grease_pencil_brush_stroke"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Draw a new stroke in the active Grease Pencil object"
+machine: blender
+op: grease_pencil.brush_stroke
+ARGS:
+  - {name: stroke, type: text}
+  - {name: mode, type: text}          # un de : NORMAL | INVERT
+  - {name: brush_toggle, type: text}          # un de : None | SMOOTH | ERASE | MASK
+  - {name: pen_flip, type: text}          # true|false, vide pour ne rien poser
+

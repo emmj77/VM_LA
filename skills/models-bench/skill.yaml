@@ -1,0 +1,26 @@
+skill: "models-bench"
+date: "2026-10-17"
+tags: ["models-bench", "modele", "comparer", "bench"]
+
+SUMMARY:
+  101: "Interroger les modeles et comparer leurs reponses."
+  102: "models_status liste les modeles ; models_ask en interroge un."
+  103: "On compare ce qui a ETE rendu, sur la MEME question."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "models_status"
+  201: "models_ask"
+  202: "load_doc"
+  203: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .txt"
+ERROR:
+  600: "Un modele ne repond pas : le dire, continuer avec les autres, ne pas inventer sa reponse."

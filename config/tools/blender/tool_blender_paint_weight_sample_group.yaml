@@ -1,0 +1,11 @@
+tool: "blender_paint_weight_sample_group"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select one of the vertex groups available under current mouse position"
+machine: blender
+op: paint.weight_sample_group
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

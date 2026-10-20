@@ -1,0 +1,12 @@
+tool: "blender_paint_vertex_color_levels"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Adjust levels of vertex colors"
+machine: blender
+op: paint.vertex_color_levels
+ARGS:
+  - {name: offset, type: text}
+  - {name: gain, type: text}
+

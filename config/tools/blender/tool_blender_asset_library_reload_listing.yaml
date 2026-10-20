@@ -1,0 +1,11 @@
+tool: "blender_asset_library_reload_listing"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Re-download the asset listing of a remote library. Only supported when the active asset library is remote or has a remote component (the Essentials li"
+machine: blender
+op: asset.library_reload_listing
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

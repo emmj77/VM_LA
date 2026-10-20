@@ -1,0 +1,11 @@
+tool: "blender_sequencer_set_range_to_strips"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the frame range to the selected strips start and end"
+machine: blender
+op: sequencer.set_range_to_strips
+ARGS:
+  - {name: preview, type: text}          # true|false, vide pour ne rien poser
+

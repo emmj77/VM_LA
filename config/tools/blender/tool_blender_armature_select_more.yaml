@@ -1,0 +1,11 @@
+tool: "blender_armature_select_more"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select those bones connected to the initial selection"
+machine: blender
+op: armature.select_more
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

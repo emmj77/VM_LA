@@ -1,0 +1,11 @@
+tool: "blender_pose_ik_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add an IK Constraint to the active Bone. The target can be a selected bone or object"
+machine: blender
+op: pose.ik_add
+ARGS:
+  - {name: with_targets, type: text}          # true|false, vide pour ne rien poser
+

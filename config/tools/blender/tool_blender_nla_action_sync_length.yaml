@@ -1,0 +1,11 @@
+tool: "blender_nla_action_sync_length"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Synchronize the length of the referenced Action with the length used in the strip"
+machine: blender
+op: nla.action_sync_length
+ARGS:
+  - {name: active, type: text}          # true|false, vide pour ne rien poser
+

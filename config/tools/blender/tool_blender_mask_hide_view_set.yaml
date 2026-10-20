@@ -1,0 +1,11 @@
+tool: "blender_mask_hide_view_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Temporarily hide mask layers"
+machine: blender
+op: mask.hide_view_set
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser
+

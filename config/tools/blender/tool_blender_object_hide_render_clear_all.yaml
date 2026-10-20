@@ -1,0 +1,11 @@
+tool: "blender_object_hide_render_clear_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reveal all render objects by setting the hide render flag"
+machine: blender
+op: object.hide_render_clear_all
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

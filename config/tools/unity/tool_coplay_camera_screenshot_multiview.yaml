@@ -1,0 +1,26 @@
+tool: "coplay_camera_screenshot_multiview"
+date: "2026-10-18"
+tags: ["unity", "coplay", "camera"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Capture a 6-angle contact sheet around the..."
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- camera screenshot-multiview
+  [ -n "{{max_resolution}}" ] && set -- "$@" --max-resolution "{{max_resolution}}"
+  [ -n "{{view_target}}" ] && set -- "$@" --view-target "{{view_target}}"
+  [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: max_resolution, type: int}
+  - {name: view_target, type: text}
+  - {name: output_folder, type: text}
+

@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_select_linked"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all points in curves with any point selection"
+machine: blender
+op: grease_pencil.select_linked
+ARGS:
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+

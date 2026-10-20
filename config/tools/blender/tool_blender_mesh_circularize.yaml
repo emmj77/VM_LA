@@ -1,0 +1,18 @@
+tool: "blender_mesh_circularize"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Shape selected geometry into a circle"
+machine: blender
+op: mesh.circularize
+ARGS:
+  - {name: factor, type: text}
+  - {name: fit_method, type: text}          # un de : LEAST_SQUARE | CONTRACT
+  - {name: angle, type: text}
+  - {name: use_custom_radius, type: text}          # true|false, vide pour ne rien poser
+  - {name: custom_radius, type: text}
+  - {name: regular, type: text}          # true|false, vide pour ne rien poser
+  - {name: flatten, type: text}
+  - {name: lock, type: text}          # 3 valeurs separees par des virgules
+

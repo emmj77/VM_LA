@@ -1,0 +1,11 @@
+tool: "blender_node_view_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Resize view so you can see all nodes"
+machine: blender
+op: node.view_all
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

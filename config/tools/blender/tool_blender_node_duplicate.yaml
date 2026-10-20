@@ -1,0 +1,12 @@
+tool: "blender_node_duplicate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate selected nodes"
+machine: blender
+op: node.duplicate
+ARGS:
+  - {name: keep_inputs, type: text}          # true|false, vide pour ne rien poser
+  - {name: linked, type: text}          # true|false, vide pour ne rien poser
+

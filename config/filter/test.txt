@@ -1,0 +1,74 @@
+affiche les vingt dernieres lignes du journal
+regarde si le service du dashboard tourne
+trouve le tool qui installe un paquet
+quel modele sert au reranker
+ou sont stockes les retours du terminal
+affiche les ports ouverts
+montre les cinq derniers commits
+montre le resultat du dernier banc
+cherche un tool qui parle de video
+combien d entrees porte la base de memoire
+renomme ce fichier en config.yaml
+supprime les lignes vides du fichier
+modifie le seuil du veilleur
+convertis l image en png
+remplace toutes les occurrences de VM par cage
+corrige l orthographe du message
+ecris la doc du tool de download
+ecris un script qui liste les ports
+reduis la taille de l image avant de l envoyer
+ecris le plan du projet dans un fichier
+fais moi un backup du projet avant de continuer
+lance le banc des residents
+cree une skill pour les videos
+vide le dossier des retours
+coupe la connexion du telephone
+declenche la mise a jour du canon
+desactive la skill krita
+restaure la configuration d hier
+tire les dernieres modifications
+regenere les tools blender
+tu as fini
+pourquoi tu as choisi ce tool
+combien de temps ca va prendre
+de quoi as tu besoin pour continuer
+reponds moi en une phrase
+que penses tu de cette idee
+peux tu me rassurer sur ce point
+c est grave ou pas
+tu peux repeter la derniere phrase
+comment tu qualifies ce resultat
+cree le grand plan du projet
+coche la tache qui est finie
+rappelle toi ce qu on a decide hier
+qu est ce que le canon dit du perimetre
+relis le plan et dis ou on en est
+lis ce qui est ecrit sur l ecran
+decoupe le sujet de cette photo
+quel texte porte cette capture
+ou est le curseur sur l ecran
+ouvre blender et cree un cube
+extrude la face du haut
+mets un materiau rouge sur l objet
+selectionne tous les objets de la collection
+bake la texture du materiau
+lis le fichier blend et dis moi ce qu il contient
+applique le modificateur d array sur l objet
+cree un nouveau projet unity
+passe le projet en version 6.3
+ajoute une scene au projet
+nettoie le cache du projet unity
+configure l accelerator unity
+applique un filtre de flou sur le calque
+remplis la selection avec la couleur du fond
+change l opacite du calque a 60 pour cent
+enregistre le document krita
+ouvre le fichier kra du projet destn
+anime cette image en video
+genere une texture de pierre sans couture
+change le style de l image en anime
+genere quatre propositions pour le logo
+lis le fichier de configuration et dis moi ce qu il contient
+lis le document et dis moi sa taille
+parcours le fichier et compte les lignes vides
+lis le panneau a l ecran et dis moi ce qu il dit

@@ -1,0 +1,11 @@
+tool: "blender_graph_reveal"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Make previously hidden curves visible again in Graph Editor view"
+machine: blender
+op: graph.reveal
+ARGS:
+  - {name: select, type: text}          # true|false, vide pour ne rien poser
+

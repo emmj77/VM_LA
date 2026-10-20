@@ -1,0 +1,298 @@
+__label__READ lis le fichier spec.yaml
+__label__READ montre moi la tete du canon
+__label__READ qu est ce qu il y a dans le dossier work
+__label__READ affiche les vingt dernieres lignes du journal
+__label__READ cherche dans les notes ce qu on a dit du reranker
+__label__READ ou en est le tour numero 12
+__label__READ combien de tools porte la table
+__label__READ regarde si le service du dashboard tourne
+__label__READ donne moi la liste des skills
+__label__READ ou est declare le port du pont
+__label__READ montre le contenu de la_config
+__label__READ trouve le tool qui installe un paquet
+__label__READ quelles sont les regles du canon
+__label__READ lis la doc de la skill blender
+__label__READ affiche la memoire du projet
+__label__READ quel modele sert au reranker
+__label__READ montre moi les erreurs du dernier tour
+__label__READ donne moi l etat des agents
+__label__READ cherche les fichiers modifies aujourd hui
+__label__READ ou sont stockes les retours du terminal
+__label__READ montre la sortie de la commande precedente
+__label__READ qu est ce que dit la ligne 40 du readme
+__label__READ liste les processus qui tournent
+__label__READ affiche les ports ouverts
+__label__READ montre moi le plan en cours
+__label__READ quel est le perimetre de la skill krita
+__label__READ combien de place reste sur le disque
+__label__READ montre les cinq derniers commits
+__label__READ qui a ecrit ce fichier
+__label__READ affiche la version du canon
+__label__READ ou est le modele de langue
+__label__READ montre le resultat du dernier banc
+__label__READ lis ce que le pont a recu
+__label__READ quels tools sont permanents
+__label__READ affiche les taches en cours
+__label__READ cherche un tool qui parle de video
+__label__READ montre moi la structure du depot
+__label__READ quel est le sha du dernier commit
+__label__READ affiche le journal du service de parole
+__label__READ combien d entrees porte la base de memoire
+__label__WRITE ecris un fichier de notes dans work
+__label__WRITE ajoute une fonction qui calcule la moyenne
+__label__WRITE corrige la faute de la ligne 40 du readme
+__label__WRITE renomme ce fichier en config.yaml
+__label__WRITE cree le dossier des captures
+__label__WRITE remplace le texte du titre
+__label__WRITE mets a jour la date du canon
+__label__WRITE supprime les lignes vides du fichier
+__label__WRITE change le port du dashboard a 8771
+__label__WRITE ajoute l entete de licence au script
+__label__WRITE ecris la phrase d accueil du pont
+__label__WRITE modifie le seuil du veilleur
+__label__WRITE redige un resume de la reunion
+__label__WRITE ecris une reponse pour le client
+__label__WRITE decoupe cette video en trois parties
+__label__WRITE convertis l image en png
+__label__WRITE redimensionne la photo a 800 pixels
+__label__WRITE fusionne les deux fichiers texte
+__label__WRITE insere une ligne apres le titre
+__label__WRITE remplace toutes les occurrences de VM par cage
+__label__WRITE cree un fichier vide pour le plan
+__label__WRITE ecris le compte rendu dans le dossier docs
+__label__WRITE ajoute un paragraphe a la fin du document
+__label__WRITE corrige l orthographe du message
+__label__WRITE ecris un test pour cette fonction
+__label__WRITE nettoie le fichier des doublons
+__label__WRITE mets les lignes dans l ordre alphabetique
+__label__WRITE ecris la doc du tool de download
+__label__WRITE sauvegarde cette note dans le coffre
+__label__WRITE ecris un exemple d appel du pont
+__label__WRITE modifie le titre de la fenetre
+__label__WRITE ecris un script qui liste les ports
+__label__WRITE ajoute la ligne au fichier de configuration
+__label__WRITE traduis ce paragraphe en anglais
+__label__WRITE ecris les resultats dans un tableau markdown
+__label__WRITE reduis la taille de l image avant de l envoyer
+__label__WRITE ecris un gabarit de skill vierge
+__label__WRITE ajoute les accents dans le fichier texte
+__label__WRITE note dans le journal que le banc est passe
+__label__WRITE ecris le plan du projet dans un fichier
+__label__MANAGE charge la skill blender
+__label__MANAGE installe ffmpeg depuis les depots
+__label__MANAGE redemarre le service du dashboard
+__label__MANAGE fais moi un backup du projet avant de continuer
+__label__MANAGE supprime ce tool de la table
+__label__MANAGE arrete le reranker
+__label__MANAGE demarre le pont
+__label__MANAGE lance le banc des residents
+__label__MANAGE active le service de parole au demarrage
+__label__MANAGE desinstalle le paquet en trop
+__label__MANAGE ouvre un blender et prends une capture
+__label__MANAGE cree une skill pour les videos
+__label__MANAGE ajoute ce tool a la skill comfyui
+__label__MANAGE change le modele du compacteur
+__label__MANAGE mets le reranker sur la carte 1
+__label__MANAGE vide le dossier des retours
+__label__MANAGE range les fichiers du bureau
+__label__MANAGE supprime les vieux journaux de plus d un mois
+__label__MANAGE configure le tunnel wireguard
+__label__MANAGE coupe la connexion du telephone
+__label__MANAGE monte le reseau prive
+__label__MANAGE arme le mode tunnel
+__label__MANAGE charge le projet la
+__label__MANAGE declenche la mise a jour du canon
+__label__MANAGE relance tous les services de la machine
+__label__MANAGE eteins le serveur local
+__label__MANAGE demarre comfyui sur le port 8188
+__label__MANAGE desactive la skill krita
+__label__MANAGE permets l installation de programmes
+__label__MANAGE nettoie la table des tools
+__label__MANAGE sauvegarde la base de memoire
+__label__MANAGE restaure la configuration d hier
+__label__MANAGE reinstalle les unites systemd
+__label__MANAGE pousse le commit sur github
+__label__MANAGE clone le depot android
+__label__MANAGE tire les dernieres modifications
+__label__MANAGE fais tourner le docteur
+__label__MANAGE mesure le temps du reranker
+__label__MANAGE exporte le corpus du filtre
+__label__MANAGE regenere les tools blender
+__label__REPLY dis moi simplement oui ou non
+__label__REPLY explique moi pourquoi le tour a echoue
+__label__REPLY resume ce que tu viens de faire
+__label__REPLY tu as fini
+__label__REPLY merci c est bon pour aujourd hui
+__label__REPLY reponds a moussa que c est fait
+__label__REPLY confirme que le fichier est ecrit
+__label__REPLY pourquoi tu as choisi ce tool
+__label__REPLY qu est ce que tu penses de ce plan
+__label__REPLY dis lui bonjour de ma part
+__label__REPLY explique la difference entre les deux skills
+__label__REPLY combien de temps ca va prendre
+__label__REPLY est ce que c est fini
+__label__REPLY donne moi ton avis sur cette approche
+__label__REPLY redis moi ce que je t ai demande
+__label__REPLY de quoi as tu besoin pour continuer
+__label__REPLY quelle est la prochaine etape
+__label__REPLY merci beaucoup
+__label__REPLY c est bon continue
+__label__REPLY reponds moi en une phrase
+__label__REPLY tu peux confirmer la mesure
+__label__REPLY dis moi ce qui bloque
+__label__REPLY explique moi le resultat du banc
+__label__REPLY que penses tu de cette idee
+__label__REPLY tu es la
+__label__REPLY on reprend demain
+__label__REPLY raconte moi ce qui s est passe
+__label__REPLY peux tu me rassurer sur ce point
+__label__REPLY envoie un message a paul pour dire que c est pret
+__label__REPLY donne moi ton sentiment sur le resultat
+__label__REPLY t as compris ce que je veux dire
+__label__REPLY c est grave ou pas
+__label__REPLY on fait comme ca alors
+__label__REPLY note que je suis d accord
+__label__REPLY bravo c est exactement ca
+__label__REPLY tu peux repeter la derniere phrase
+__label__REPLY explique moi sans jargon
+__label__REPLY ca marche pour toi
+__label__REPLY qu est ce que tu en conclus
+__label__REPLY comment tu qualifies ce resultat
+__label__PLAN note ce que tu viens de faire dans la memoire
+__label__PLAN mets a jour le plan du tour
+__label__PLAN marque le point courant avec update_todo
+__label__PLAN cree le grand plan du projet
+__label__PLAN revise le chantier du projet
+__label__PLAN qu est ce qui reste a faire sur ce chantier
+__label__PLAN ajoute cette tache au plan
+__label__PLAN coche la tache qui est finie
+__label__PLAN reecris le canon avec ce qui existe aujourd hui
+__label__PLAN charge la doc de la skill pour ouvrir le plan
+__label__PLAN ouvre le toolset du skill en entier
+__label__PLAN rappelle toi ce qu on a decide hier
+__label__PLAN enregistre cette decision dans la memoire
+__label__PLAN cherche dans les sessions precedentes ce qu on a fait du filtre
+__label__PLAN compacte la conversation dans la memoire
+__label__PLAN qu est ce que le canon dit du perimetre
+__label__PLAN mets a jour la section du filtre dans le canon
+__label__PLAN cree une tache pour la prochaine session
+__label__PLAN fais le point sur l avancement du projet
+__label__PLAN relis le plan et dis ou on en est
+__label__VISION regarde cette capture d ecran
+__label__VISION qu est ce qu il y a sur cette image
+__label__VISION lis le texte de cette fenetre
+__label__VISION lis ce qui est ecrit sur l ecran
+__label__VISION trouve le bouton dans l image
+__label__VISION quelle est la profondeur de cette photo
+__label__VISION repere les objets sur cette image
+__label__VISION decoupe le sujet de cette photo
+__label__VISION repare la zone abimee de l image
+__label__VISION lis la page affichee dans le navigateur
+__label__VISION decris moi ce que tu vois a l ecran
+__label__VISION quel texte porte cette capture
+__label__VISION transcris cette note vocale
+__label__VISION lis le numero sur la boite
+__label__VISION analyze cette image et dis moi ce qu elle contient
+__label__VISION ou est le curseur sur l ecran
+__label__VISION lis les trois lignes du terminal affiche
+__label__VISION prends une capture et dis moi ce qu il y a
+__label__VISION regarde la fenetre de blender et decris la
+__label__BLENDER ouvre blender et cree un cube
+__label__BLENDER ajoute une sphere de deux metres
+__label__BLENDER rends le cube lisse
+__label__BLENDER applique un modificateur de subdivision
+__label__BLENDER extrude la face du haut
+__label__BLENDER fais une animation de rotation du cube
+__label__BLENDER exporte la scene en fbx
+__label__BLENDER importe le modele obj dans la scene
+__label__BLENDER mets un materiau rouge sur l objet
+__label__BLENDER ajoute une camera et oriente la vers le cube
+__label__BLENDER fais le rendu de l image en 1920
+__label__BLENDER ajoute une lumiere de type soleil
+__label__BLENDER selectionne tous les objets de la collection
+__label__BLENDER duplique l objet et deplace le de dix metres
+__label__BLENDER supprime la boucle d animation
+__label__BLENDER cree un noeud de texture dans le shader
+__label__BLENDER bake la texture du materiau
+__label__BLENDER sculpte le nez du personnage
+__label__BLENDER decoupe le maillage en deux parties
+__label__BLENDER assigne la cle d animation a la frame 40
+__label__BLENDER lis le fichier blend et dis moi ce qu il contient
+__label__BLENDER sauvegarde la scene sous un autre nom
+__label__BLENDER ajoute un modificateur de bevel sur les aretes
+__label__BLENDER fais tourner la camera autour de l objet
+__label__BLENDER applique le modificateur d array sur l objet
+__label__UNITY ouvre le projet unity supreme pmc
+__label__UNITY compile le projet unity
+__label__UNITY lance l editeur unity
+__label__UNITY cree un nouveau projet unity
+__label__UNITY installe le module android pour unity
+__label__UNITY exporte le build android du jeu
+__label__UNITY lis le log de l editeur unity
+__label__UNITY passe le projet en version 6.3
+__label__UNITY configure le pipeline de build
+__label__UNITY fais un commit du projet unity avec le vcs
+__label__UNITY installe le package cinemachine
+__label__UNITY ajoute une scene au projet
+__label__UNITY verifie la licence unity
+__label__UNITY active le mode play dans l editeur
+__label__UNITY ouvre la console du vcs
+__label__UNITY nettoie le cache du projet unity
+__label__UNITY liste les editeurs installes
+__label__UNITY redemarre l editeur unity
+__label__UNITY verifie que le projet compile sans erreur
+__label__UNITY configure l accelerator unity
+__label__KRITA ouvre krita et charge le dessin
+__label__KRITA cree un nouveau calque dans le document
+__label__KRITA change la couleur du pinceau en bleu
+__label__KRITA applique un filtre de flou sur le calque
+__label__KRITA redimensionne le canevas en 2000 pixels
+__label__KRITA exporte le dessin en png
+__label__KRITA selectionne la zone du visage
+__label__KRITA remplis la selection avec la couleur du fond
+__label__KRITA fusionne les deux calques
+__label__KRITA ajoute un masque de transparence sur le calque
+__label__KRITA inverse la selection courante
+__label__KRITA change l opacite du calque a 60 pour cent
+__label__KRITA fais tourner le canevas de 90 degres
+__label__KRITA applique un trait de pinceau le long du contour
+__label__KRITA supprime le calque vide
+__label__KRITA enregistre le document krita
+__label__KRITA liste les calques du document
+__label__KRITA place l image de reference sur le calque du dessous
+__label__KRITA redessine le contour du personnage en noir
+__label__KRITA ouvre le fichier kra du projet destn
+__label__IMAGE genere une image de paysage au coucher du soleil
+__label__IMAGE fais moi une illustration de dragon
+__label__IMAGE compte dix images de chat
+__label__IMAGE anime cette image en video
+__label__IMAGE genere un portrait en style aquarelle
+__label__IMAGE convertis le modele en glb
+__label__IMAGE transforme cette image en modele 3d
+__label__IMAGE genere une texture de pierre sans couture
+__label__IMAGE fais varier l image avec un autre prompt
+__label__IMAGE rends l image en 1024 par 1024
+__label__IMAGE genere une video de cinq secondes a partir de l image
+__label__IMAGE change le style de l image en anime
+__label__IMAGE utilise le modele comfyui pour un upscale
+__label__IMAGE convertis ce fichier mesh en fbx
+__label__IMAGE prepare le pipeline image vers 3d
+__label__IMAGE genere quatre propositions pour le logo
+__label__IMAGE applique un img2img sur ce croquis
+__label__IMAGE fais un inpainting sur la zone effacee
+__label__READ lis les trois premieres lignes du fichier spec.yaml
+__label__READ lis le fichier de configuration et dis moi ce qu il contient
+__label__READ lis le contenu du fichier et resumes le
+__label__READ lis cette ligne du code et explique la
+__label__READ lis le fichier de log et trouve l erreur
+__label__READ lis le document et dis moi sa taille
+__label__READ lis le fichier readme du projet
+__label__READ ouvre le fichier et lis le debut
+__label__READ lis la fin du fichier de journal
+__label__READ parcours le fichier et compte les lignes vides
+__label__VISION lis le texte sur la capture d ecran
+__label__VISION lis ce qui est affiche sur cette fenetre
+__label__VISION lis les mots ecrits sur l image
+__label__VISION lis le panneau a l ecran et dis moi ce qu il dit
+__label__VISION lis la page ouverte dans le navigateur, je te joins la capture
+__label__VISION lis les chiffres sur cette photo de la boite

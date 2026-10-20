@@ -1,0 +1,11 @@
+tool: "blender_ui_override_idtemplate_reset"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset the selected local override to its linked reference values"
+machine: blender
+op: ui.override_idtemplate_reset
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

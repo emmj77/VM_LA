@@ -1,0 +1,39 @@
+tool: "unity_collaboration_annotations_delete_fields"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove one or more metadata fields from an annotation"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration annotations delete-fields --no-banner --no-pager --non-interactive
+  [ -n "{{annotationid}}" ] || { printf '%s\n' "$(msg argument_required 'annotationid' 'unity collaboration annotations delete-fields')" >&2; exit 1; }
+  T=$(printf '%s' "{{field}}" | tr -d 'A-Za-z0-9_./ -')
+  [ -z "$T" ] || { printf '%s\n' "$(msg field_wants_space_separated)" >&2; exit 1; }
+
+  [ -n "{{annotationid}}" ] && set -- "$@" "{{annotationid}}"
+  [ -n "{{field}}" ] && set -- "$@" {{field}}
+  [ -n "{{project_id}}" ] && set -- "$@" --project-id "{{project_id}}"
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_annotations_delete)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: annotationid, type: text}
+  - {name: field, type: text}   # plusieurs valeurs separees par des espaces
+  - {name: project_id, type: text}   # Unity Cloud project id
+  - {name: project_path, type: text}   # Path to the Unity project (defaults to the current directory); used to
+

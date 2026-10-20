@@ -1,0 +1,11 @@
+tool: "blender_curve_select_more"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select control points at the boundary of each selection region"
+machine: blender
+op: curve.select_more
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

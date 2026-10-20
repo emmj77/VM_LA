@@ -1,0 +1,11 @@
+tool: "blender_palette_join"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Join Palette Swatches"
+machine: blender
+op: palette.join
+ARGS:
+  - {name: palette, type: text}
+

@@ -1,0 +1,15 @@
+tool: "reply"
+date: "2026-10-18"
+tags: ["reply", "talk", "ask", "answer", "parole"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "speaks (talk), asks the human (ask) or returns the reply (answer), depending on the mode"
+COMMAND: |
+  cat
+
+ARGS:
+  - {name: mode, type: enum, values: [talk, ask, answer]}
+  - {name: form, type: enum, values: [text, list, table, code]}
+  - {name: next, type: text, required: false}
+  - {name: text, type: text, stdin: true}

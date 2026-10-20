@@ -1,0 +1,13 @@
+tool: "blender_paint_vertex_color_hsv"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Adjust vertex color Hue/Saturation/Value"
+machine: blender
+op: paint.vertex_color_hsv
+ARGS:
+  - {name: h, type: text}
+  - {name: s, type: text}
+  - {name: v, type: text}
+

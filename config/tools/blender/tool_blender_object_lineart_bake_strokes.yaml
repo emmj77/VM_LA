@@ -1,0 +1,11 @@
+tool: "blender_object_lineart_bake_strokes"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Bake Line Art for current Grease Pencil object"
+machine: blender
+op: object.lineart_bake_strokes
+ARGS:
+  - {name: bake_all, type: text}          # true|false, vide pour ne rien poser
+

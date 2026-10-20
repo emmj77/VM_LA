@@ -1,0 +1,11 @@
+tool: "blender_image_clipboard_paste"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Paste new image from the clipboard"
+machine: blender
+op: image.clipboard_paste
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

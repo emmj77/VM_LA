@@ -1,0 +1,12 @@
+tool: "blender_wm_tool_set_by_brush_type"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Look up the most appropriate tool for the given brush type and activate that"
+machine: blender
+op: wm.tool_set_by_brush_type
+ARGS:
+  - {name: brush_type, type: text}
+  - {name: space_type, type: text}          # un de : EMPTY | VIEW_3D | IMAGE_EDITOR | NODE_EDITOR | SEQUENCE_EDITOR | CLIP_EDITOR | DOPESHEET_EDITOR | GRAPH_EDITOR | NLA_EDITOR | TEXT_EDITOR | CONSOLE | INFO | TOPBAR | STATUSBAR | OUTLINER | PROPERTIES | FILE_BROWSER | SPREADSHEET | PREFERENCES
+

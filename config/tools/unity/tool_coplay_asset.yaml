@@ -1,0 +1,114 @@
+tool: "coplay_asset"
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "an asset: create | delete | duplicate | import | info | mkdir | move | rename (op picks which)"
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  create)
+    set -f
+    set -- asset create
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'asset create')" >&2; exit 1; }
+    [ -n "{{asset_type}}" ] || { printf '%s\n' "$(msg argument_required 'asset_type' 'asset create')" >&2; exit 1; }
+    [ -n "{{properties}}" ] && set -- "$@" --properties "{{properties}}"
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    [ -n "{{asset_type}}" ] && set -- "$@" "{{asset_type}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  delete)
+    set -f
+    set -- asset delete
+    case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'force')" >&2; exit 1 ;; esac
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'asset delete')" >&2; exit 1; }
+    [ "{{force}}" = true ] && set -- "$@" --force
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  duplicate)
+    set -f
+    set -- asset duplicate
+    [ -n "{{source}}" ] || { printf '%s\n' "$(msg argument_required 'source' 'asset duplicate')" >&2; exit 1; }
+    [ -n "{{destination}}" ] || { printf '%s\n' "$(msg argument_required 'destination' 'asset duplicate')" >&2; exit 1; }
+    [ -n "{{source}}" ] && set -- "$@" "{{source}}"
+    [ -n "{{destination}}" ] && set -- "$@" "{{destination}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  import)
+    set -f
+    set -- asset import
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'asset import')" >&2; exit 1; }
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  info)
+    set -f
+    set -- asset info
+    case "{{preview}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'preview')" >&2; exit 1 ;; esac
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'asset info')" >&2; exit 1; }
+    [ "{{preview}}" = true ] && set -- "$@" --preview
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  mkdir)
+    set -f
+    set -- asset mkdir
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'asset mkdir')" >&2; exit 1; }
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  move)
+    set -f
+    set -- asset move
+    [ -n "{{source}}" ] || { printf '%s\n' "$(msg argument_required 'source' 'asset move')" >&2; exit 1; }
+    [ -n "{{destination}}" ] || { printf '%s\n' "$(msg argument_required 'destination' 'asset move')" >&2; exit 1; }
+    [ -n "{{source}}" ] && set -- "$@" "{{source}}"
+    [ -n "{{destination}}" ] && set -- "$@" "{{destination}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  rename)
+    set -f
+    set -- asset rename
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'asset rename')" >&2; exit 1; }
+    [ -n "{{new_name}}" ] || { printf '%s\n' "$(msg argument_required 'new_name' 'asset rename')" >&2; exit 1; }
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    [ -n "{{new_name}}" ] && set -- "$@" "{{new_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+ARGS:
+  - {name: op, type: enum, values: [create, delete, duplicate, import, info, mkdir, move, rename]}
+  - {name: source, type: text}
+  - {name: destination, type: text}
+  - {name: path, type: text}
+  - {name: new_name, type: text}
+  - {name: asset_type, type: text}
+  - {name: properties, type: text}
+  - {name: force, type: text}
+  - {name: preview, type: text}

@@ -1,0 +1,11 @@
+tool: "blender_object_collection_unlink"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Unlink the collection from all objects"
+machine: blender
+op: object.collection_unlink
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

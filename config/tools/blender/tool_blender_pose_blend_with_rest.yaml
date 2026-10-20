@@ -1,0 +1,15 @@
+tool: "blender_pose_blend_with_rest"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Make the current pose more similar to, or further away from, the rest pose"
+machine: blender
+op: pose.blend_with_rest
+ARGS:
+  - {name: factor, type: text}
+  - {name: prev_frame, type: int}
+  - {name: next_frame, type: int}
+  - {name: channels, type: text}          # un de : ALL | LOC | ROT | SIZE | BBONE | CUSTOM
+  - {name: axis_lock, type: text}          # un de : FREE | X | Y | Z
+

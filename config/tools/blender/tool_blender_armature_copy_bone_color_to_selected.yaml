@@ -1,0 +1,11 @@
+tool: "blender_armature_copy_bone_color_to_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy the bone color of the active bone to all selected bones"
+machine: blender
+op: armature.copy_bone_color_to_selected
+ARGS:
+  - {name: bone_type, type: text}          # un de : EDIT | POSE
+

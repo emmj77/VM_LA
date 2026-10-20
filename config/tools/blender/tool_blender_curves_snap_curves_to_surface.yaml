@@ -1,0 +1,11 @@
+tool: "blender_curves_snap_curves_to_surface"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move curves so that the first point is exactly on the surface mesh"
+machine: blender
+op: curves.snap_curves_to_surface
+ARGS:
+  - {name: attach_mode, type: text}          # un de : NEAREST | DEFORM
+

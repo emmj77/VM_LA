@@ -1,0 +1,25 @@
+tool: "coplay_camera_force"
+date: "2026-10-18"
+tags: ["unity", "coplay", "camera"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Force Brain to use a specific camera."
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- camera force
+  [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'camera force')" >&2; exit 1; }
+  [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+  [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: search_method, type: text}          # un de : by_id | by_name | by_path
+  - {name: target, type: text}
+

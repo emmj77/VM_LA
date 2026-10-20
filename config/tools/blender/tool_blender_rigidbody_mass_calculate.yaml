@@ -1,0 +1,12 @@
+tool: "blender_rigidbody_mass_calculate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Automatically calculate mass values for Rigid Body Objects based on volume"
+machine: blender
+op: rigidbody.mass_calculate
+ARGS:
+  - {name: material, type: text}          # un de : DEFAULT
+  - {name: density, type: text}
+

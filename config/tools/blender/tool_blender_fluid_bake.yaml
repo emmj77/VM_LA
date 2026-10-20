@@ -1,0 +1,11 @@
+tool: "blender_fluid_bake"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a fluid simulation cache: op : bake | free ; part : all | data | guides | mesh | noise | particles"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "fluid.{{op}}_{{part}}"
+ARGS:
+  - {name: op, type: enum, values: [bake, free]}
+  - {name: part, type: enum, values: [all, data, guides, mesh, noise, particles]}

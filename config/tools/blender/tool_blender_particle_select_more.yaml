@@ -1,0 +1,11 @@
+tool: "blender_particle_select_more"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select keys linked to boundary selected keys of each particle"
+machine: blender
+op: particle.select_more
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

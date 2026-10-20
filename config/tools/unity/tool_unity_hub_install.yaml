@@ -1,0 +1,41 @@
+tool: "unity_hub_install"
+date: "2026-10-18"
+tags: ["unity", "cli", "hub"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Install the Unity Hub"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- hub install --no-banner --no-pager --non-interactive
+  case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg force_true_false)" >&2; exit 1 ;; esac
+  case "{{headless}}" in ''|true|false) ;; *) printf '%s\n' "$(msg headless_true_false)" >&2; exit 1 ;; esac
+  case "{{skip_signature_check}}" in ''|true|false) ;; *) printf '%s\n' "$(msg skip_signature_check_true)" >&2; exit 1 ;; esac
+
+  [ "{{force}}" = true ] && set -- "$@" --force
+  [ "{{headless}}" = true ] && set -- "$@" --headless
+  [ "{{skip_signature_check}}" = true ] && set -- "$@" --skip-signature-check
+  [ -n "{{architecture}}" ] && set -- "$@" --architecture "{{architecture}}"
+  [ -n "{{hub_version}}" ] && set -- "$@" --hub-version "{{hub_version}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_hub_install_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: force, type: text}   # true pour poser --force ; Reinstall even if Unity Hub is already installed
+  - {name: headless, type: text}   # true pour poser --headless ; Run the installer silently without a graphical interface (Windows only
+  - {name: skip_signature_check, type: text}   # true pour poser --skip-signature-check ; Install without verifying the installer's code signature (not recommen
+  - {name: architecture, type: text}   # Target architecture (x64 or arm64, default: system architecture)
+  - {name: hub_version, type: text}   # Hub version to install (e.g. 3.17.0). Defaults to latest.
+

@@ -1,0 +1,12 @@
+tool: "blender_object_drop_named_material"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: object.drop_named_material
+ARGS:
+  - {name: name, type: text}
+  - {name: session_uid, type: int}
+

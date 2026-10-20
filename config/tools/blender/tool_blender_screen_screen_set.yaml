@@ -1,0 +1,11 @@
+tool: "blender_screen_screen_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cycle through available screens"
+machine: blender
+op: screen.screen_set
+ARGS:
+  - {name: delta, type: int}
+

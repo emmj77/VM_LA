@@ -1,0 +1,11 @@
+tool: "blender_sequencer_refresh_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Refresh the sequencer editor"
+machine: blender
+op: sequencer.refresh_all
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

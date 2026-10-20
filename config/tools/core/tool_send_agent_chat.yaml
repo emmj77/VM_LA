@@ -1,0 +1,63 @@
+tool: "send_agent_chat"
+date: "2026-10-19"
+tags: ["send_agent_chat", "agents", "chat"]
+RULES:
+  enabled: true
+  timeout: 20
+DESCRIPTION: "writes ONE message onto the agents board, and never more than one"
+COMMAND: |
+  HERE="$LA_ROOT/config/engine" ROOT="$LA_ROOT"
+  . "$LA_ROOT/config/engine/lib.sh"
+  N=${LA_FROM:-agent}
+  D="{{to}}"
+  T=$(cat)
+
+  NAMES=$(conf_str agents names "")
+  [ -n "$NAMES" ] || { printf '%s\n' "$(msg no_agent_names)" >&2 ; exit 1 ; }
+  BODY_MAX=$(conf_num agents body_bytes 1024)
+  LINE_MAX=$(conf_num agents line_bytes 1600)
+  BOARD_LINES=$(conf_num agents board_lines 24)
+  CHAT=$(conf_str agents chat 'config/agent_chat.jsonl')
+  case "$CHAT" in /*) ;; *) CHAT="$ROOT/$CHAT" ;; esac
+
+  case "$D" in
+    ''|*[!a-z0-9_-]*) printf '%s\n' "$(msg agent_bad_name "$D")" >&2 ; exit 1 ;;
+  esac
+  case " $(printf '%s' "$NAMES" | tr '\n' ' ') " in
+    *" $D "*) ;;
+    *) printf '%s\n' "$(msg agent_not_declared "$D" "$NAMES")" >&2 ; exit 1 ;;
+  esac
+  [ "$D" != "$N" ] || { printf '%s\n' "$(msg self_message "$N")" >&2 ; exit 1 ; }
+
+  [ -n "$T" ] || { printf '%s\n' "$(msg empty_message)" >&2 ; exit 1 ; }
+  [ -n "$(printf '%s' "$T" | tr -d '[:space:]')" ] || { printf '%s\n' "$(msg blank_message)" >&2 ; exit 1 ; }
+  S=$(printf '%s' "$T" | wc -c)
+  [ "$S" -le "$BODY_MAX" ] || { printf '%s\n' "$(msg body_too_big "$S" "$BODY_MAX")" >&2 ; exit 1 ; }
+
+  TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  ID="$TS-$$"
+  L=$(printf '%s' "$T" | jq -Rsc --arg i "$ID" --arg t "$TS" --arg f "$N" --arg d "$D" \
+        '{id:$i, ts:$t, from:$f, to:$d, body:.}') || { printf '%s\n' "$(msg line_not_built)" >&2 ; exit 1 ; }
+  NB=$(printf '%s' "$L" | wc -c)
+  [ "$NB" -le "$LINE_MAX" ] || { printf '%s\n' "$(msg line_over_bound "$NB" "$LINE_MAX")" >&2 ; exit 1 ; }
+
+  printf '%s\n' "$L" >> "$CHAT" \
+    || { printf '%s\n' "$(msg board_not_written "$CHAT")" >&2 ; exit 1 ; }
+
+  LN=$(wc -l < "$CHAT" 2>/dev/null | tr -d ' ')
+  case "${LN:-}" in ''|*[!0-9]*) LN=0 ;; esac
+  if [ "$LN" -gt "$BOARD_LINES" ]; then
+    TM="$CHAT.tmp.$$"
+    if tail -n "$BOARD_LINES" "$CHAT" > "$TM" 2>/dev/null; then
+      mv -f -- "$TM" "$CHAT" \
+        || { printf '%s\n' "$(msg purge_incomplete "$TM")" >&2 ; exit 1 ; }
+    else
+      printf '%s\n' "$(msg purge_incomplete "$TM")" >&2 ; exit 1
+    fi
+  fi
+
+  printf '%s\n' "$(msg message_written_id_bytes)""$D" "$ID" "$S"
+
+ARGS:
+  - {name: to, type: text}
+  - {name: body, type: text, stdin: true}

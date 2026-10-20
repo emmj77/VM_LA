@@ -1,0 +1,29 @@
+tool: "asset_builder_mirror"
+date: "2026-10-19"
+tags: ["asset_builder", "edit"]
+
+RULES:
+  enabled: true
+  timeout: 30
+
+DESCRIPTION: "mirrors one part across an axis (x, y or z) under a new id"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{id}}"
+  case "$A2" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_id_a2 "$A2")" >&2 ; exit 1 ;; esac
+  A3="{{id2}}"
+  case "$A3" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_id2_a3 "$A3")" >&2 ; exit 1 ;; esac
+  A4="{{axis}}"
+  case "$A4" in x|y|z) ;; *) printf '%s\n' "$(msg axis_out_list_x)" >&2 ; exit 1 ;; esac
+  AB_HOME="$W/asset_builder" "$B" mirror --name "$A1" --id "$A2" --id2 "$A3" --axis "$A4"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: id, type: text}
+  - {name: id2, type: text}
+  - {name: axis, type: text}

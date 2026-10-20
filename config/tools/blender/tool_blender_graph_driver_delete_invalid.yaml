@@ -1,0 +1,11 @@
+tool: "blender_graph_driver_delete_invalid"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete all visible drivers considered invalid"
+machine: blender
+op: graph.driver_delete_invalid
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

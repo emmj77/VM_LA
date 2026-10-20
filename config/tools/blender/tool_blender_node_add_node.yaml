@@ -1,0 +1,14 @@
+tool: "blender_node_add_node"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a node to the active tree"
+machine: blender
+op: node.add_node
+ARGS:
+  - {name: settings, type: text}
+  - {name: use_transform, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}
+  - {name: visible_output, type: text}
+

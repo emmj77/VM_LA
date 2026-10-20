@@ -1,0 +1,16 @@
+tool: "blender_object_clear"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "values cleared on an object: constraints | hide_view | lineart | location | modifiers | origin | parent | paths | rotation | scale | skin_loose_mark | track (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "object.{{op}}_clear" --arg "clear_delta={{clear_delta}}" --arg "type={{type}}" --arg "action={{action}}" --arg "clear_all={{clear_all}}" --arg "only_selected={{only_selected}}" --arg "select={{select}}"
+ARGS:
+  - {name: op, type: enum, values: [constraints, hide_view, lineart, location, modifiers, origin, parent, paths, rotation, scale, skin_loose_mark, track]}
+  - {name: clear_delta, type: text}
+  - {name: type, type: text}
+  - {name: action, type: text}
+  - {name: clear_all, type: text}
+  - {name: only_selected, type: text}
+  - {name: select, type: text}

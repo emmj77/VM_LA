@@ -1,0 +1,56 @@
+tool: "unity_projects_list"
+date: "2026-10-18"
+tags: ["unity", "cli", "projects"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "List Unity projects registered in the Hub"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- projects list --no-banner --no-pager --non-interactive
+  case "{{verbose}}" in ''|true|false) ;; *) printf '%s\n' "$(msg verbose_true_false)" >&2; exit 1 ;; esac
+  case "{{editor_version}}" in ''|true|false) ;; *) printf '%s\n' "$(msg editor_version_true_false)" >&2; exit 1 ;; esac
+  case "{{modified}}" in ''|true|false) ;; *) printf '%s\n' "$(msg modified_true_false)" >&2; exit 1 ;; esac
+  case "{{cloud}}" in ''|true|false) ;; *) printf '%s\n' "$(msg cloud_true_false)" >&2; exit 1 ;; esac
+  case "{{pipeline}}" in ''|true|false) ;; *) printf '%s\n' "$(msg pipeline_true_false)" >&2; exit 1 ;; esac
+  case "{{vcs}}" in ''|true|false) ;; *) printf '%s\n' "$(msg vcs_true_false)" >&2; exit 1 ;; esac
+  case "{{all}}" in ''|true|false) ;; *) printf '%s\n' "$(msg all_true_false)" >&2; exit 1 ;; esac
+  case "{{watch}}" in ''|true|false) ;; *) printf '%s\n' "$(msg watch_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{pattern}}" ] && set -- "$@" "{{pattern}}"
+  [ "{{verbose}}" = true ] && set -- "$@" --verbose
+  [ "{{editor_version}}" = true ] && set -- "$@" --editor-version
+  [ "{{modified}}" = true ] && set -- "$@" --modified
+  [ "{{cloud}}" = true ] && set -- "$@" --cloud
+  [ "{{pipeline}}" = true ] && set -- "$@" --pipeline
+  [ "{{vcs}}" = true ] && set -- "$@" --vcs
+  [ "{{all}}" = true ] && set -- "$@" --all
+  [ -n "{{limit}}" ] && set -- "$@" --limit "{{limit}}"
+  [ "{{watch}}" = true ] && set -- "$@" --watch
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_projects_list_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: pattern, type: text}   # facultatif
+  - {name: verbose, type: text}   # true pour poser --verbose ; Show all columns (name, path, version, modified, cloud, pipeline)
+  - {name: editor_version, type: text}   # true pour poser --editor-version ; Show editor version column
+  - {name: modified, type: text}   # true pour poser --modified ; Show last-modified column
+  - {name: cloud, type: text}   # true pour poser --cloud ; Show the Unity Cloud project id column
+  - {name: pipeline, type: text}   # true pour poser --pipeline ; Show render pipeline column
+  - {name: vcs, type: text}   # true pour poser --vcs ; Show VCS provider and repository column
+  - {name: all, type: text}   # true pour poser --all ; Print all projects without paging
+  - {name: limit, type: text}   # Projects per page (default: 10)
+  - {name: watch, type: text}   # true pour poser --watch ; Watch for project list changes and refresh output (Ctrl-C to stop)
+

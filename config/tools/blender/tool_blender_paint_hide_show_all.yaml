@@ -1,0 +1,11 @@
+tool: "blender_paint_hide_show_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Hide/show all vertices"
+machine: blender
+op: paint.hide_show_all
+ARGS:
+  - {name: action, type: text}          # un de : HIDE | SHOW
+

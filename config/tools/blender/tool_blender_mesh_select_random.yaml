@@ -1,0 +1,13 @@
+tool: "blender_mesh_select_random"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Randomly select vertices"
+machine: blender
+op: mesh.select_random
+ARGS:
+  - {name: ratio, type: text}
+  - {name: seed, type: int}
+  - {name: action, type: text}          # un de : SELECT | DESELECT
+

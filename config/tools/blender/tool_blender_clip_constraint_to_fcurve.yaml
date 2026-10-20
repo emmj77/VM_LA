@@ -1,0 +1,11 @@
+tool: "blender_clip_constraint_to_fcurve"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create F-Curves for object which will copy object's movement caused by this constraint"
+machine: blender
+op: clip.constraint_to_fcurve
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

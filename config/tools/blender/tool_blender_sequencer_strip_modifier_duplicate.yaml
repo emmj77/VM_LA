@@ -1,0 +1,11 @@
+tool: "blender_sequencer_strip_modifier_duplicate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate (active) modifier of the active strip"
+machine: blender
+op: sequencer.strip_modifier_duplicate
+ARGS:
+  - {name: modifier, type: text}
+

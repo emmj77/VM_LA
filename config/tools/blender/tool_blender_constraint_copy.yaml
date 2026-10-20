@@ -1,0 +1,13 @@
+tool: "blender_constraint_copy"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate constraint at the same position in the stack"
+machine: blender
+op: constraint.copy
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE
+  - {name: report, type: text}          # true|false, vide pour ne rien poser
+

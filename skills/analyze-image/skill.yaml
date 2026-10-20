@@ -1,0 +1,32 @@
+skill: "analyze-image"
+date: "2026-10-17"
+tags: ["analyze-image", "image", "vision", "voir"]
+
+SUMMARY:
+  101: "Analyser une image : ce qu'elle montre, jusque dans le detail."
+  102: "vision_analyze lit l'image ; fast_analyze_img l'ouvre a l'oeil."
+  103: "On decrit ce qui est VU ; au doute, on refait l'appel SEUL (jamais groupe)."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "vision_analyze"
+  201: "fast_analyze_img"
+  202: "load_doc"
+  203: "list_dir"
+  204: "read_text_in_img"
+  205: "find_objects_in_img"
+  206: "cut_subject_from_img"
+  207: "read_depth_of_img"
+  208: "repair_zone_in_img"
+  209: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".png .jpg .webp"
+ERROR:
+  600: "Image illisible ou absente : le dire, nommer le chemin, ne pas decrire de memoire."

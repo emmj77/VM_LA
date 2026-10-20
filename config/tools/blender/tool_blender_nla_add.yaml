@@ -1,0 +1,12 @@
+tool: "blender_nla_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "an NLA element: actionclip | meta | soundclip | tracks | transition (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "nla.{{op}}_add" --arg "above_selected={{above_selected}}" --arg "action={{action}}"
+ARGS:
+  - {name: op, type: enum, values: [actionclip, meta, soundclip, tracks, transition]}
+  - {name: above_selected, type: text}
+  - {name: action, type: text}

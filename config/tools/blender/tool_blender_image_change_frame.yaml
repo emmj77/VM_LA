@@ -1,0 +1,11 @@
+tool: "blender_image_change_frame"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Interactively change the current frame number"
+machine: blender
+op: image.change_frame
+ARGS:
+  - {name: frame, type: int}
+

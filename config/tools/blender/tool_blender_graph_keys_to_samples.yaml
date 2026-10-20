@@ -1,0 +1,11 @@
+tool: "blender_graph_keys_to_samples"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Convert selected channels to an uneditable set of samples to save storage space"
+machine: blender
+op: graph.keys_to_samples
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_file_external_operation"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Perform external operation on a file or folder"
+machine: blender
+op: file.external_operation
+ARGS:
+  - {name: operation, type: text}          # un de : OPEN | FOLDER_OPEN | EDIT | NEW | FIND | SHOW | PLAY | BROWSE | PREVIEW | PRINT | INSTALL | RUNAS | PROPERTIES | FOLDER_FIND | CMD
+

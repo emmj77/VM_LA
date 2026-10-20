@@ -1,0 +1,11 @@
+tool: "blender_sequencer_offset_clear"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear strip in/out offsets from the start and end of content"
+machine: blender
+op: sequencer.offset_clear
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

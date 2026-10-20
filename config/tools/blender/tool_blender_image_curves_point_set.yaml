@@ -1,0 +1,12 @@
+tool: "blender_image_curves_point_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set black point or white point for curves"
+machine: blender
+op: image.curves_point_set
+ARGS:
+  - {name: point, type: text}          # un de : BLACK_POINT | WHITE_POINT
+  - {name: size, type: int}
+

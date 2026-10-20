@@ -1,0 +1,11 @@
+tool: "blender_view3d_object_mode_pie_or_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: view3d.object_mode_pie_or_toggle
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

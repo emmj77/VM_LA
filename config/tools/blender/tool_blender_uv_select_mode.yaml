@@ -1,0 +1,11 @@
+tool: "blender_uv_select_mode"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change UV selection mode"
+machine: blender
+op: uv.select_mode
+ARGS:
+  - {name: type, type: text}          # un de : VERTEX | EDGE | FACE
+

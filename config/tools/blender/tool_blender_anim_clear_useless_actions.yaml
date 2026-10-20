@@ -1,0 +1,11 @@
+tool: "blender_anim_clear_useless_actions"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Mark actions with no F-Curves for deletion after save and reload of file preserving 'action libraries'"
+machine: blender
+op: anim.clear_useless_actions
+ARGS:
+  - {name: only_unused, type: text}          # true|false, vide pour ne rien poser
+

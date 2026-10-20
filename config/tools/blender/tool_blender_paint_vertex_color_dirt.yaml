@@ -1,0 +1,16 @@
+tool: "blender_paint_vertex_color_dirt"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Generate a dirt map gradient based on cavity"
+machine: blender
+op: paint.vertex_color_dirt
+ARGS:
+  - {name: blur_strength, type: text}
+  - {name: blur_iterations, type: int}
+  - {name: clean_angle, type: text}
+  - {name: dirt_angle, type: text}
+  - {name: dirt_only, type: text}          # true|false, vide pour ne rien poser
+  - {name: normalize, type: text}          # true|false, vide pour ne rien poser
+

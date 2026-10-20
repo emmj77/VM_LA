@@ -1,0 +1,11 @@
+tool: "blender_wm_call_menu_pie"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Open a predefined pie menu"
+machine: blender
+op: wm.call_menu_pie
+ARGS:
+  - {name: name, type: text}
+

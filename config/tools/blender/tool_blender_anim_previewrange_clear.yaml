@@ -1,0 +1,11 @@
+tool: "blender_anim_previewrange_clear"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear preview range"
+machine: blender
+op: anim.previewrange_clear
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

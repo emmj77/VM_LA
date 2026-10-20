@@ -1,0 +1,12 @@
+tool: "blender_armature_select_linked_pick"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(De)select bones linked by parent/child connections under the mouse cursor"
+machine: blender
+op: armature.select_linked_pick
+ARGS:
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: all_forks, type: text}          # true|false, vide pour ne rien poser
+

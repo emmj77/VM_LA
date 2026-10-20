@@ -1,0 +1,44 @@
+project: "LA"
+path: "Documents/VM_LA"
+date: "2026-10-17"
+tags: ["LA", "harness", "engine", "table", "spec"]
+
+RULES:
+  enabled: true
+  writeable: true
+
+SUMMARY:
+  101: "LA est un harness : le modele NOMME un tool, le engine le valide et l'execute."
+  102: "La racine est le projet lui-meme."
+  103: "LE ENGINE lit une ligne de la table config/la_tools.yaml, valide, puis execute."
+  104: "LE SKILL ACTIF porte la portee et ouvre la palette de ses tools."
+  105: "Le contexte a trois zones : TETE immuable, etat rebatie, fenetre bornee."
+  106: "LE CANON EST spec.yaml : L'ARCHITECTURE."
+  107: "config/engine/*.sh EST LE ENGINE."
+  108: "LA BOUCLE PORTE CINQ BORNES D'ARRET : CONTEXTE, ANTI-BOUCLE, JETONS, APPELS, TEMPS."
+
+SKILLS:
+  1: "workshop"
+  2: "git"
+  3: "edit-file"
+  4: "search-code"
+  5: "search-files"
+  6: "list-files"
+  7: "trash-file"
+  8: "query-yaml"
+  9: "read-log"
+  10: "disk-report"
+  11: "computer-debug"
+  12: "web-search"
+  14: "search-memory"
+  15: "models-bench"
+  16: "speak-text"
+  17: "delegate-work"
+  18: "manage-processes"
+  20: "edit-table"
+  21: "write-spec"
+  22: "tool-manager"
+  23: "phone-tunnel"
+  24: "download-file"
+
+PROJECT_PLAN:                # LE GRAND PLAN (le chantier) ; vide : il s ecrit au chargement

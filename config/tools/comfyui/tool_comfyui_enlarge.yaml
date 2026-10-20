@@ -1,0 +1,64 @@
+tool: "comfyui_enlarge"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_enlarge"]
+doc: comfyui
+RULES:
+  enabled: true
+  timeout: 700
+DESCRIPTION: "enlarges a drawing (a .kra flat, or an image) with the drawing machine's ESRGAN model, then scales it back to the wanted size"
+COMMAND: |
+  SERVICE=http://127.0.0.1:8188
+  curl -sf --max-time 10 "$SERVICE/system_stats" >/dev/null 2>&1 || { printf '%s\n' "$(msg comfy_no_answer)""$SERVICE" >&2; exit 1; }
+  SRC="$W/{{source}}"
+  [ -f "$SRC" ] || { printf '%s\n' "$(msg source_missing '%s')""$SRC" >&2; exit 1; }
+  command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1 || { printf '%s\n' "$(msg ffmpeg_missing)" >&2; exit 1; }
+  T="${TMPDIR:-/tmp}"
+  BRUT="$T/la_agrandir_source.png"
+  case "$SRC" in
+    *.kra|*.krz) unzip -p "$SRC" mergedimage.png > "$BRUT" 2>/dev/null ;;
+    *) cp "$SRC" "$BRUT" ;;
+  esac
+  [ -s "$BRUT" ] || { printf '%s\n' "$(msg no_image_from_kra)""$SRC" >&2; exit 1; }
+  TAILLE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$BRUT" | tr ',' 'x')
+  L=${TAILLE%x*}; H=${TAILLE#*x}
+  FACTEUR="{{factor}}"; case "$FACTEUR" in ''|*[!0-9]*) FACTEUR=2 ;; esac
+  [ "$FACTEUR" -ge 1 ] && [ "$FACTEUR" -le 4 ] || { printf '%s\n' "$(msg factor_range)""$FACTEUR" >&2; exit 1; }
+  NAME=$(curl -s -F "image=@$BRUT" -F "type=input" -F "subfolder=" -F "overwrite=true" "$SERVICE/upload/image" | jq -r '.name // empty')
+  [ -n "$NAME" ] || { printf '%s\n' "$(msg upload_refused)""$BRUT" >&2; exit 1; }
+  MODELE="${LA_COMFY_UPSCALE:-4x-UltraSharp.pth}"
+  G=$(jq -cn --arg m "$MODELE" --arg img "$NAME" '
+    {"1":{"class_type":"LoadImage","inputs":{"image":$img}},
+     "2":{"class_type":"UpscaleModelLoader","inputs":{"model_name":$m}},
+     "3":{"class_type":"ImageUpscaleWithModel","inputs":{"upscale_model":["2",0],"image":["1",0]}},
+     "5":{"class_type":"SaveImage","inputs":{"filename_prefix":"la_agrandi","images":["3",0]}}}')
+  R=$(jq -cn --argjson p "$G" '{prompt:$p,client_id:"la"}' | curl -s -H 'Content-Type: application/json' --data-binary @- "$SERVICE/prompt")
+  PID=$(printf '%s' "$R" | jq -r '.prompt_id // empty')
+  [ -n "$PID" ] || { printf '%s\n' "$(msg graph_rejected)""$(printf '%s' "$R" | jq -c '.error // .node_errors // .' | cut -c1-400)" >&2; exit 1; }
+  printf '%s\n' "$(msg submitted)""$PID" "$MODELE" "$L" "$H"
+  i=0
+  while [ "$i" -lt 300 ]; do
+    H2=$(curl -s "$SERVICE/history/$PID")
+    printf '%s' "$H2" | jq -e --arg p "$PID" 'has($p)' >/dev/null 2>&1 && break
+    sleep 2
+    i=$((i + 1))
+  done
+  [ "$i" -lt 300 ] || { printf '%s\n' "$(msg upscale_timeout)""$PID" >&2; exit 1; }
+  ECHEC=$(printf '%s' "$H2" | jq -r --arg p "$PID" '.[$p].status.messages[]? | select(.[0]=="execution_error") | ((.[1].exception_type // "erreur") + " : " + (.[1].exception_message // ""))' | head -n 1)
+  [ -z "$ECHEC" ] || { printf '%s\n' "$(msg machine_failed)""$ECHEC" >&2; exit 1; }
+  IMG=$(printf '%s' "$H2" | jq -r --arg p "$PID" '.[$p].outputs[]?.images[]? | [.filename, (.subfolder // ""), (.type // "output")] | @tsv' | head -n 1)
+  [ -n "$IMG" ] || { printf '%s\n' "$(msg machine_no_image)" >&2; exit 1; }
+  G4="$T/la_agrandi_4x.png"
+  curl -s -G --data-urlencode "filename=$(printf '%s' "$IMG" | cut -f1)" --data-urlencode "subfolder=$(printf '%s' "$IMG" | cut -f2)" --data-urlencode "type=$(printf '%s' "$IMG" | cut -f3)" "$SERVICE/view" -o "$G4"
+  [ -s "$G4" ] || { printf '%s\n' "$(msg upscaled_not_down '%s')""$G4" >&2; exit 1; }
+  TAILLE4=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$G4" | tr ',' 'x')
+  OUTPUT="$W/{{output}}"
+  [ -n "{{output}}" ] || OUTPUT="$W/agrandi-$(date +%Y%m%d-%H%M%S).png"
+  VOULU="$((L * FACTEUR)):$((H * FACTEUR))"
+  if [ "$TAILLE4" = "$(printf '%s' "$VOULU" | tr ':' 'x')" ]; then cp "$G4" "$OUTPUT"; else ffmpeg -y -loglevel error -i "$G4" -vf "scale=${VOULU}:flags=lanczos" "$OUTPUT" || { printf '%s\n' "$(msg ffmpeg_resize_failed)""$VOULU" >&2; exit 1; }; fi
+  [ -s "$OUTPUT" ] || { printf '%s\n' "$(msg empty_p)""$OUTPUT" >&2; exit 1; }
+  printf '%s\n' "$(msg upscaled_summary '%s' '%s')""$FACTEUR" "$OUTPUT" "$VOULU" "$(wc -c < "$OUTPUT")" "$TAILLE4"
+
+ARGS:
+  - {name: source, type: path}                # le dessin (.kra ou image), relatif a l'espace du skill
+  - {name: factor, type: int}                 # le facteur d'agrandissement, 1 a 4 (vide : 2)
+  - {name: output, type: path}                # le PNG de sortie, dans l'espace du skill (vide : un nom date)

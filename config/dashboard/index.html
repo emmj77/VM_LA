@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LA — tableau de bord</title>
+<link rel="stylesheet" href="/dash.css?v=2">
+</head>
+<body>
+
+<!-- ===================== L EN-TETE : l etat, sur toutes les pages ===================== -->
+<header id="head">
+  <div class="brand">LA<span class="dim">· tableau de bord</span></div>
+
+  <label class="pick" title="Le modèle chargé (alias de la_config)">
+    <span class="lbl">modèle</span>
+    <select id="model"></select>
+  </label>
+
+  <div class="kv" title="Les jetons de la session en cours (config/usage.jsonl)">
+    <span class="lbl">session</span><b id="tok-session">0</b><span class="dim">jetons</span>
+  </div>
+  <div class="kv opt" title="Les jetons du dernier appel">
+    <span class="lbl">dernier</span><b id="tok-last">0</b>
+  </div>
+  <div class="kv" title="L état du tour">
+    <span class="lbl">tour</span><b id="turn">libre</b>
+  </div>
+  <div class="kv" title="La skill chargée">
+    <span class="lbl">skill</span><b id="skill">—</b>
+  </div>
+  <div class="kv opt" title="Le projet chargé">
+    <span class="lbl">projet</span><b id="project">—</b>
+  </div>
+  <div class="kv" id="doctor-badge" title="Le verdict du doctor">
+    <span class="lbl">doctor</span><b>—</b>
+  </div>
+
+  <div class="grow"></div>
+  <div class="kv dim" id="clock" title="heure locale">—</div>
+</header>
+
+<!-- ===================== LE RAIL : les étagères ===================== -->
+<nav id="rail">
+  <button data-page="chat" class="on" title="Ctrl+1">
+    <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H8l-4 3v-5.5A8 8 0 0 1 13 4a8 8 0 0 1 8 8z"/></svg>
+    <span>Chat</span>
+  </button>
+  <button data-page="config" title="Ctrl+2">
+    <svg viewBox="0 0 24 24"><path d="M4 8h10M18 8h2M4 16h4M12 16h8"/><circle cx="16" cy="8" r="2"/><circle cx="10" cy="16" r="2"/></svg>
+    <span>Config</span>
+  </button>
+  <button data-page="skills" title="Ctrl+3">
+    <svg viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>
+    <span>Skills</span>
+  </button>
+  <button data-page="agents" title="Ctrl+4">
+    <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 6.5a3 3 0 0 1 0 5.5M18 20a6 6 0 0 0-3-5"/></svg>
+    <span>Agents</span>
+  </button>
+  <button data-page="maj" title="Ctrl+6">
+    <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/></svg>
+    <span>Maj</span>
+  </button>
+  <div class="grow"></div>
+  <div class="hint" title="Les commandes du chat">
+    <b>/stop</b> /model /skill<br><b>/project</b> /doctor /new<br>/to /tools /help
+  </div>
+</nav>
+
+<main>
+
+<!-- ===================== 1. LE CHAT ===================== -->
+<section id="page-chat" class="page on">
+  <div class="chat-main">
+    <div id="feed" class="feed"></div>
+
+    <div id="live" class="live hid">
+      <div class="live-head">
+        <span class="dot"></span> tour en cours
+        <span class="dim" id="live-pid"></span>
+        <span class="grow"></span>
+        <span class="dim" id="live-count"></span>
+      </div>
+      <div id="live-body" class="live-body"></div>
+    </div>
+
+    <form id="say-form" class="saybar" autocomplete="off">
+      <div class="say-wrap">
+        <textarea id="say" rows="2" placeholder="Écris à LA. Une ligne qui commence par / est un geste — /help les liste."></textarea>
+        <div class="say-hints">
+          <span><kbd>Ctrl</kbd>+<kbd>Entrée</kbd> envoyer</span>
+          <span><kbd>Échap</kbd> vider le champ</span>
+          <span><kbd>Ctrl</kbd>+<kbd>K</kbd> chercher</span>
+          <span class="grow"></span>
+          <span id="say-count"></span>
+        </div>
+      </div>
+      <div class="saybar-side">
+        <button type="submit" id="send" class="primary">Envoyer</button>
+        <button type="button" id="stop" class="danger" title="/stop — arrêter le tour">Stop</button>
+        <button type="button" id="say-audio" class="ghost" aria-pressed="false"
+          title="lire chaque nouvelle réponse à voix haute, avec la voix de LA">♪ voix</button>
+        <button type="button" id="clear" class="ghost" title="vider l écran, sans toucher à la session">Vider</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- LE HEAD SECONDAIRE, EN DIRECT : ce que le modèle lit de la machine, section par section -->
+  <aside id="head-panel">
+    <div class="hp-head">
+      <span class="hp-title">head secondaire</span>
+      <span class="dim small" id="hp-meta">—</span>
+      <span class="hp-who" id="hp-who"></span>
+      <span class="grow"></span>
+      <button type="button" id="hp-copy" class="ghost" title="copier tout le head"
+              aria-label="copier tout le head">⧉</button>
+      <button type="button" id="hp-refresh" class="ghost" title="relire le dépôt maintenant"
+              aria-label="relire le head secondaire">↻</button>
+      <button type="button" id="hp-close" class="ghost" title="replier le panneau"
+              aria-label="replier le head secondaire">›</button>
+    </div>
+    <div class="hp-bar">
+      <input id="hp-filter" placeholder="filtrer une section…" aria-label="filtrer les sections">
+    </div>
+    <div class="hp-demand" id="hp-demand"></div>
+    <div class="hp-body" id="hp-body"></div>
+  </aside>
+  <button type="button" id="hp-open" class="hp-open hid" title="déplier le head secondaire">‹ head</button>
+</section>
+
+<!-- ===================== 2. LA CONFIG ===================== -->
+<section id="page-config" class="page">
+  <div class="cols">
+    <div class="col">
+      <h2>Le modèle chargé</h2>
+      <p class="dim small">Ce qui distingue une adresse, et qui se règle ici : les listes sont fermées.
+        Un changement d'adresse passe par le pont (il est vérifié deux fois).</p>
+      <div id="engines"></div>
+
+      <h2>La boucle</h2>
+      <p class="dim small">Chaque valeur vient de <code>config/la_config.yaml</code> et y retourne.
+        Bornes déclarées : hors bornes, rien n'est écrit.</p>
+      <div id="cfg-loop"></div>
+
+      <h2>Le head secondaire</h2>
+      <div id="cfg-second"></div>
+
+      <h2>Les agents</h2>
+      <div id="cfg-agents"></div>
+
+      <h2>Le tableau de bord</h2>
+      <div id="cfg-dash"></div>
+
+      <h2>Le pont</h2>
+      <div id="cfg-bridge"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 3. LES SKILLS ===================== -->
+<section id="page-skills" class="page">
+  <div class="cols wide">
+    <div class="col narrow">
+      <h2>Les skills <span class="dim" id="skill-count"></span></h2>
+      <input id="skill-filter" placeholder="filtrer…">
+      <div id="skill-list" class="list"></div>
+    </div>
+    <div class="col">
+      <div id="skill-head" class="hidden-head"></div>
+      <div id="skill-editor">
+        <p class="dim empty-hint">Choisis une skill à gauche. Chaque ligne est un id : <b>100 octets au plus</b>,
+          une section <b>100 lignes au plus</b> (PLAN : 20). Un texte vidé <b>supprime</b> la ligne.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 4. LES PROJETS ===================== -->
+<!-- ===================== 5. LES AGENTS ===================== -->
+<section id="page-agents" class="page">
+  <div class="cols">
+    <div class="col">
+      <h2>Qui travaille, maintenant <span id="agent-count" class="dim small"></span></h2>
+      <p class="dim small">Le statut est un fait de la machine : un pid vit ou il ne vit pas.
+        Il n'est jamais déclaré.</p>
+      <div id="agent-list"></div>
+      <h2>Le chat entre agents</h2>
+      <p class="dim small">Le tableau est <b>un fichier</b> (<code>config/agent_chat.jsonl</code>),
+        pas un service. Un message entre dans le head du destinataire <b>une seule fois</b>.</p>
+      <div id="board" class="board"></div>
+    </div>
+    <div class="col side">
+      <h2>Écrire à un agent</h2>
+      <form id="to-form">
+        <select id="to-who"></select>
+        <textarea id="to-text" rows="4" placeholder="Le message (1024 octets au plus)"></textarea>
+        <div class="row"><span class="dim small" id="to-count">0 / 1024</span>
+          <span class="grow"></span><button class="primary">Envoyer</button></div>
+      </form>
+      <p class="dim small" id="to-log"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 6. LES TOOLS ===================== -->
+<!-- ===================== 7. LA MEMOIRE ===================== -->
+<!-- ===================== 8. LE DIFF ===================== -->
+<!-- ===================== 9. LA MISE A JOUR ===================== -->
+<section id="page-maj" class="page">
+  <div class="cols">
+    <div class="col">
+      <h2>La mise à jour <span class="dim small" id="maj-version"></span></h2>
+      <p class="dim small">Une seule brique décide : <code>config/engine/update.sh</code>. Cette page ne lit
+        jamais git elle-même — elle demanderait une seconde vérité. L'update refuse si l'arbre est sale
+        ou si un tour tourne, pose le tag <code>la-avant-update</code>, puis redémarre le pont <b>en dernier</b>,
+        détaché : la réponse est déjà écrite quand la porte se referme.</p>
+      <div id="maj-etat"></div>
+      <div class="row">
+        <button type="button" id="maj-check" class="ghost">Vérifier</button>
+        <button type="button" id="maj-apply" class="primary">Appliquer</button>
+      </div>
+      <p class="dim small" id="maj-note"></p>
+    </div>
+    <div class="col side">
+      <h2>Ce qui attend</h2>
+      <div id="maj-commits" class="list"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div id="toast" class="toast hid"></div>
+<div id="ctx" class="ctx hid" role="menu"></div>
+<script src="/dash.js?v=2"></script>
+</body>
+</html>

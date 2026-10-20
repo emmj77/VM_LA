@@ -1,0 +1,11 @@
+tool: "blender_sculpt_dynamic_topology_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Dynamic topology alters the mesh topology while sculpting"
+machine: blender
+op: sculpt.dynamic_topology_toggle
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

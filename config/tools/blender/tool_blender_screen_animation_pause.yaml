@@ -1,0 +1,11 @@
+tool: "blender_screen_animation_pause"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Pause animation, stopping at the current frame"
+machine: blender
+op: screen.animation_pause
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

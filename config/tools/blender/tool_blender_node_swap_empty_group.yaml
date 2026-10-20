@@ -1,0 +1,11 @@
+tool: "blender_node_swap_empty_group"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Replace active node with an empty group"
+machine: blender
+op: node.swap_empty_group
+ARGS:
+  - {name: settings, type: text}
+

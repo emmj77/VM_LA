@@ -1,0 +1,11 @@
+tool: "blender_wm_doc_view_manual"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Load online manual"
+machine: blender
+op: wm.doc_view_manual
+ARGS:
+  - {name: doc_id, type: text}
+

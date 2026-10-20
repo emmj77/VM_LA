@@ -1,0 +1,11 @@
+tool: "blender_anim_separate_slots"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move all slots of the action on the active object into newly created, separate actions. All users of those slots will be reassigned to the new actions"
+machine: blender
+op: anim.separate_slots
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_sculpt_optimize"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Recalculate the sculpt BVH to improve performance"
+machine: blender
+op: sculpt.optimize
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

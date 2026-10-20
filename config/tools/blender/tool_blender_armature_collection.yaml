@@ -1,0 +1,13 @@
+tool: "blender_armature_collection"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a bone collection of an armature: add | assign | create_and_assign | deselect | move | remove | remove_unused | select | show_all | unassign | unassign_named | unsolo_all (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "armature.collection_{{op}}" --arg "name={{name}}" --arg "bone_name={{bone_name}}" --arg "direction={{direction}}"
+ARGS:
+  - {name: op, type: enum, values: [add, assign, create_and_assign, deselect, move, remove, remove_unused, select, show_all, unassign, unassign_named, unsolo_all]}
+  - {name: name, type: text}
+  - {name: bone_name, type: text}
+  - {name: direction, type: text}

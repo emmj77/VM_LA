@@ -1,0 +1,11 @@
+tool: "blender_image_clear_render_border"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear the boundaries of the render region and disable render region"
+machine: blender
+op: image.clear_render_border
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

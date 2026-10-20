@@ -1,0 +1,29 @@
+tool: "coplay_probuilder_bevel_edges"
+date: "2026-10-18"
+tags: ["unity", "coplay", "probuilder"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Bevel edges of a ProBuilder mesh."
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- probuilder bevel-edges
+  [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'probuilder bevel-edges')" >&2; exit 1; }
+  [ -n "{{edges}}" ] && set -- "$@" --edges "{{edges}}"
+  [ -n "{{amount}}" ] && set -- "$@" --amount "{{amount}}"
+  [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+  [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: edges, type: text}
+  - {name: amount, type: text}
+  - {name: search_method, type: text}          # un de : by_name | by_path | by_id | by_tag | by_layer
+  - {name: target, type: text}
+

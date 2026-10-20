@@ -1,0 +1,12 @@
+tool: "blender_mesh_loopcut_slide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cut mesh loop and slide it"
+machine: blender
+op: mesh.loopcut_slide
+ARGS:
+  - {name: MESH_OT_loopcut, type: text}
+  - {name: TRANSFORM_OT_edge_slide, type: text}
+

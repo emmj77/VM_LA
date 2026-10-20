@@ -1,0 +1,11 @@
+tool: "blender_action_type"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the keyframe property of an action: easing | extrapolation | handle | interpolation | keyframe (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "action.{{op}}_type" --arg "type={{type}}"
+ARGS:
+  - {name: op, type: enum, values: [easing, extrapolation, handle, interpolation, keyframe]}
+  - {name: type, type: text}

@@ -1,0 +1,11 @@
+tool: "blender_scene_freestyle_linestyle_new"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new line style, reusable by multiple line sets"
+machine: blender
+op: scene.freestyle_linestyle_new
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

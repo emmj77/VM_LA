@@ -1,0 +1,27 @@
+tool: "upipe_get_animator_controller"
+date: "2026-10-18"
+tags: ["unity", "pipeline", "get_animator_controller"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Read an AnimatorController's full structure: parameters, layers, states (with motion / default), and transitions (with conditions)."
+COMMAND: |
+  PROJ=$(sed -n '1p' "$ROOT/projects/.active" 2>/dev/null | tr -d '\r')
+  P=
+  [ -n "$PROJ" ] && P=$(sed -n 's/^path:[[:space:]]*//p' "$ROOT/projects/$PROJ/project.yml" 2>/dev/null | head -1 | tr -d '"')
+  [ -n "$P" ] || { printf '%s\n' "$(msg no_project_unity)" >&2; exit 1; }
+  case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
+  [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -n "{{controller}}" ] || { printf '%s\n' "$(msg argument_required 'controller' 'get_animator_controller')" >&2; exit 1; }
+  set -- command --project-path "$P" get_animator_controller
+  [ -n "{{controller}}" ] && set -- "$@" --controller "{{controller}}"
+
+  OUT=$(timeout 90 "$CLI" --no-banner --no-pager --non-interactive --format json "$@" </dev/null 2>&1)
+  printf '%s' "$OUT" | jq -e '.success == true' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | jq -r '.errors[0].message // .errors[0].code // "reponse illisible du CLI"' 2>/dev/null || printf '%s' "$OUT")" >&2; exit 1; }
+  printf '%s\n' "$OUT" | jq -c '.data'
+ARGS:
+  - {name: controller, type: text}
+

@@ -1,0 +1,11 @@
+tool: "blender_preferences_copy_prev"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy settings from previous version"
+machine: blender
+op: preferences.copy_prev
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

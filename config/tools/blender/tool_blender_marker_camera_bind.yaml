@@ -1,0 +1,11 @@
+tool: "blender_marker_camera_bind"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Bind the selected camera to a marker on the current frame"
+machine: blender
+op: marker.camera_bind
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

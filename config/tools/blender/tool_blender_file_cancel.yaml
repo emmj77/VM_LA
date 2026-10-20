@@ -1,0 +1,11 @@
+tool: "blender_file_cancel"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cancel file operation"
+machine: blender
+op: file.cancel
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

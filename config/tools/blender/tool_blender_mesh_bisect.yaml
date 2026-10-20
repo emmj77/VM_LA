@@ -1,0 +1,22 @@
+tool: "blender_mesh_bisect"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cut geometry along a plane (click-drag to define plane)"
+machine: blender
+op: mesh.bisect
+ARGS:
+  - {name: plane_co, type: text}          # 3 valeurs separees par des virgules
+  - {name: plane_no, type: text}          # 3 valeurs separees par des virgules
+  - {name: use_fill, type: text}          # true|false, vide pour ne rien poser
+  - {name: clear_inner, type: text}          # true|false, vide pour ne rien poser
+  - {name: clear_outer, type: text}          # true|false, vide pour ne rien poser
+  - {name: threshold, type: text}
+  - {name: xstart, type: int}
+  - {name: xend, type: int}
+  - {name: ystart, type: int}
+  - {name: yend, type: int}
+  - {name: flip, type: text}          # true|false, vide pour ne rien poser
+  - {name: cursor, type: int}
+

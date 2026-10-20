@@ -1,0 +1,11 @@
+tool: "blender_nla_apply_scale"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Apply scaling of selected strips to their referenced Actions"
+machine: blender
+op: nla.apply_scale
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

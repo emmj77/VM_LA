@@ -1,0 +1,13 @@
+tool: "blender_mesh_flatten"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Flatten vertices on a best-fitting plane"
+machine: blender
+op: mesh.flatten
+ARGS:
+  - {name: factor, type: text}
+  - {name: method, type: text}          # un de : BEST_FIT | NORMAL | VIEW
+  - {name: lock, type: text}          # 3 valeurs separees par des virgules
+

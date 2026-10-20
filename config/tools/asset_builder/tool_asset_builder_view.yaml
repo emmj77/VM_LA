@@ -1,0 +1,31 @@
+tool: "asset_builder_view"
+date: "2026-10-19"
+tags: ["asset_builder", "review"]
+
+RULES:
+  enabled: true
+  timeout: 180
+
+DESCRIPTION: "renders one view at a precise azimuth and elevation for a close look"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{shot}}"
+  A3="{{az}}"
+  case "$A3" in ''|*[!0-9.-]*) printf '%s\n' "$(msg az_number_a3 "$A3")" >&2 ; exit 1 ;; esac
+  A4="{{el}}"
+  case "$A4" in ''|*[!0-9.-]*) printf '%s\n' "$(msg el_number_a4 "$A4")" >&2 ; exit 1 ;; esac
+  A5="{{size}}"
+  case "$A5" in ''|*[!0-9]*) printf '%s\n' "$(msg size_integer_a5 "$A5")" >&2 ; exit 1 ;; esac
+  AB_HOME="$W/asset_builder" "$B" view --name "$A1" --shot "$A2" --az "$A3" --el "$A4" --size "$A5"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: shot, type: text}
+  - {name: az, type: text}
+  - {name: el, type: text}
+  - {name: size, type: int}

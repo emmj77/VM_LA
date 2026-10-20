@@ -1,0 +1,11 @@
+tool: "blender_particle_reveal"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Show hidden particles"
+machine: blender
+op: particle.reveal
+ARGS:
+  - {name: select, type: text}          # true|false, vide pour ne rien poser
+

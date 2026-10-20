@@ -1,0 +1,11 @@
+tool: "blender_clip_select_grouped"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all tracks from specified group"
+machine: blender
+op: clip.select_grouped
+ARGS:
+  - {name: group, type: text}          # un de : KEYFRAMED | ESTIMATED | TRACKED | LOCKED | DISABLED | COLOR | FAILED
+

@@ -1,0 +1,11 @@
+tool: "blender_clip_lock_selection_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Toggle Lock Selection option of the current clip editor"
+machine: blender
+op: clip.lock_selection_toggle
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

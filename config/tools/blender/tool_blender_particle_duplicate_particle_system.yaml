@@ -1,0 +1,11 @@
+tool: "blender_particle_duplicate_particle_system"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate particle system within the active object"
+machine: blender
+op: particle.duplicate_particle_system
+ARGS:
+  - {name: use_duplicate_settings, type: text}          # true|false, vide pour ne rien poser
+

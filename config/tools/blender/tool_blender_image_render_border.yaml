@@ -1,0 +1,15 @@
+tool: "blender_image_render_border"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the boundaries of the render region and enable render region"
+machine: blender
+op: image.render_border
+ARGS:
+  - {name: xmin, type: int}
+  - {name: xmax, type: int}
+  - {name: ymin, type: int}
+  - {name: ymax, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+

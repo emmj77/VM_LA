@@ -1,0 +1,11 @@
+tool: "blender_view3d_view_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move the view to the selection center"
+machine: blender
+op: view3d.view_selected
+ARGS:
+  - {name: use_all_regions, type: text}          # true|false, vide pour ne rien poser
+

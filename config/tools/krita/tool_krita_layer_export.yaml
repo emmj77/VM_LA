@@ -1,0 +1,47 @@
+tool: "krita_layer_export"
+date: "2026-10-17"
+tags: ["krita", "krita_layer_export"]
+doc: krita
+RULES:
+  enabled: true
+  timeout: 300
+DESCRIPTION: "exports one layer alone as a png (the mask source), then puts the document back"
+COMMAND: |
+  SERVICE=$(dash "$ROOT/config/engine/engine.sh" carrier krita-url) || exit 1
+  COUCHE="{{layer}}"; OUTPUT="$W/{{path}}"
+  REP=$(curl -sS --max-time 30 -H 'Content-Type: application/json' -d '{"action":"list_layers","params":{}}' "$SERVICE/")
+  NAMES=$(printf '%s' "$REP" | jq -r '.layers[].name')
+  printf '%s\n' "$NAMES" | grep -Fxq "$COUCHE" \
+    || { printf '%s\n' "$(msg layer_does_not_exist)""$COUCHE" "$(printf '%s' "$NAMES" | tr '\n' ' ')" >&2; exit 1; }
+  VIS=$(printf '%s' "$REP" | jq -r '.layers[] | select(.visible) | .name')
+  CACHES=$(printf '%s' "$REP" | jq -r '.layers[] | select(.visible|not) | .name')
+  printf '%s\n' "$NAMES" | while IFS= read -r N; do
+    if [ "$N" = "$COUCHE" ]; then V=true; else V=false; fi
+    curl -sS --max-time 20 -H 'Content-Type: application/json' \
+      -d "$(jq -cn --arg n "$N" --argjson v "$V" '{action:"set_layer_visibility",params:{name:$n,visible:$v}}')" "$SERVICE/" >/dev/null
+  done
+  curl -sS --max-time 20 -H 'Content-Type: application/json' \
+    -d "$(jq -cn --arg n "$COUCHE" '{action:"select_layer",params:{name:$n}}')" "$SERVICE/" >/dev/null
+  REP=$(curl -sS --max-time 240 -H 'Content-Type: application/json' \
+    -d "$(jq -cn --arg p "$OUTPUT" '{action:"save",params:{path:$p}}')" "$SERVICE/")
+  if printf '%s' "$VIS" | grep -q . ; then
+    printf '%s\n' "$VIS" | while IFS= read -r N; do
+      curl -sS --max-time 20 -H 'Content-Type: application/json' \
+        -d "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:true}}')" "$SERVICE/" >/dev/null
+    done
+  fi
+  if printf '%s' "$CACHES" | grep -q . ; then
+    printf '%s\n' "$CACHES" | while IFS= read -r N; do
+      curl -sS --max-time 20 -H 'Content-Type: application/json' \
+        -d "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:false}}')" "$SERVICE/" >/dev/null
+    done
+  fi
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  [ -s "$OUTPUT" ] || { printf '%s\n' "$(msg layer_gave_nothing_empty)""$COUCHE" "$OUTPUT" >&2; exit 1; }
+  TAILLE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$OUTPUT" 2>/dev/null | tr ',' 'x')
+  printf '%s\n' "$(msg layer_exported_bytes)""$COUCHE" "$OUTPUT" "$TAILLE" "$(wc -c < "$OUTPUT")"
+
+ARGS:
+  - {name: layer, type: text}                 # le nom du calque a regarder
+  - {name: path, type: path}                  # ou ecrire le PNG, dans l'espace du skill

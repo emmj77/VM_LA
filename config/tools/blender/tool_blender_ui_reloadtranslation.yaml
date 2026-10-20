@@ -1,0 +1,11 @@
+tool: "blender_ui_reloadtranslation"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Force a full reload of UI translation"
+machine: blender
+op: ui.reloadtranslation
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,13 @@
+tool: "blender_mesh_blend_from_shape"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Blend in shape from a shape key"
+machine: blender
+op: mesh.blend_from_shape
+ARGS:
+  - {name: shape, type: text}          # un de : 
+  - {name: blend, type: text}
+  - {name: add, type: text}          # true|false, vide pour ne rien poser
+

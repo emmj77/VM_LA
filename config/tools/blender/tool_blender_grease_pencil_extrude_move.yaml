@@ -1,0 +1,12 @@
+tool: "blender_grease_pencil_extrude_move"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Extrude selected points and move them"
+machine: blender
+op: grease_pencil.extrude_move
+ARGS:
+  - {name: GREASE_PENCIL_OT_extrude, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}
+

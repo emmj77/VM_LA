@@ -1,0 +1,16 @@
+tool: "blender_mesh_vertices_smooth"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Flatten angles of selected vertices"
+machine: blender
+op: mesh.vertices_smooth
+ARGS:
+  - {name: factor, type: text}
+  - {name: repeat, type: int}
+  - {name: xaxis, type: text}          # true|false, vide pour ne rien poser
+  - {name: yaxis, type: text}          # true|false, vide pour ne rien poser
+  - {name: zaxis, type: text}          # true|false, vide pour ne rien poser
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+

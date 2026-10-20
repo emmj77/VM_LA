@@ -1,0 +1,11 @@
+tool: "blender_outliner_operation"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Context menu for item operations"
+machine: blender
+op: outliner.operation
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

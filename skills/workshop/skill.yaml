@@ -1,0 +1,32 @@
+skill: "workshop"
+date: "2026-10-14"
+tags: ["workshop", "skill", "table", "spec"]
+
+SUMMARY:
+  101: "Tenir l'atelier : les skills, la table des tools, et la spec du skill actif."
+  102: "skill_manage tient un skill PAR CHAMP ; table_manage tient la table elle-meme."
+  103: "write_spec ecrit UNE section de la spec du skill actif, bornee par cap."
+  104: "load_doc me rend la doc du skill actif avant un tool sensible."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section: 5
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "skill_manage"
+  201: "table_manage"
+  202: "write_spec"
+  203: "load_doc"
+  204: "list_dir"
+  205: "train_family_filter"
+  206: "guess_family_of_text"
+  207: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+SECTIONS:

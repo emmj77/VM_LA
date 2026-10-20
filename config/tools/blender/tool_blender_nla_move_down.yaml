@@ -1,0 +1,11 @@
+tool: "blender_nla_move_down"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move selected strips down a track if there's room"
+machine: blender
+op: nla.move_down
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,17 @@
+tool: "blender_grease_pencil_interpolate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Interpolate Grease Pencil strokes between frames"
+machine: blender
+op: grease_pencil.interpolate
+ARGS:
+  - {name: shift, type: text}
+  - {name: layers, type: text}          # un de : ACTIVE | ALL
+  - {name: exclude_breakdowns, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_selection, type: text}          # true|false, vide pour ne rien poser
+  - {name: flip, type: text}          # un de : NONE | FLIP | AUTO
+  - {name: smooth_steps, type: int}
+  - {name: smooth_factor, type: text}
+

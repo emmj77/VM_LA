@@ -1,0 +1,11 @@
+tool: "blender_wm_sysinfo"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Generate system information, saved into a text file"
+machine: blender
+op: wm.sysinfo
+ARGS:
+  - {name: filepath, type: text}
+

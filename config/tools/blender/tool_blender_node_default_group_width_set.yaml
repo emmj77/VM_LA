@@ -1,0 +1,11 @@
+tool: "blender_node_default_group_width_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the width based on the parent group node in the current context"
+machine: blender
+op: node.default_group_width_set
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

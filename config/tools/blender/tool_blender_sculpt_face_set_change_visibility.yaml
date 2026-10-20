@@ -1,0 +1,12 @@
+tool: "blender_sculpt_face_set_change_visibility"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change the visibility of the face sets of the sculpt"
+machine: blender
+op: sculpt.face_set_change_visibility
+ARGS:
+  - {name: mode, type: text}          # un de : TOGGLE | SHOW_ACTIVE | HIDE_ACTIVE
+  - {name: active_face_set, type: int}
+

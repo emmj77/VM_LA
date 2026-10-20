@@ -1,0 +1,11 @@
+tool: "blender_armature_fill"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add bone between selected joint(s) and/or 3D cursor"
+machine: blender
+op: armature.fill
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

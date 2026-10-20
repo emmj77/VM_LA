@@ -1,0 +1,11 @@
+tool: "blender_scene_drop_scene_asset"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Import scene and set it as the active one in the window"
+machine: blender
+op: scene.drop_scene_asset
+ARGS:
+  - {name: session_uid, type: int}
+

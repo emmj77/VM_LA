@@ -1,0 +1,15 @@
+tool: "blender_mesh_dissolve_mode"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Dissolve geometry based on the selection mode"
+machine: blender
+op: mesh.dissolve_mode
+ARGS:
+  - {name: use_verts, type: text}          # true|false, vide pour ne rien poser
+  - {name: angle_threshold, type: text}
+  - {name: use_preserve_quads, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_face_split, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_boundary_tear, type: text}          # true|false, vide pour ne rien poser
+

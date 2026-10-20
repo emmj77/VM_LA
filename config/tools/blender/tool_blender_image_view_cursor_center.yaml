@@ -1,0 +1,11 @@
+tool: "blender_image_view_cursor_center"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set 2D cursor to center view location"
+machine: blender
+op: image.view_cursor_center
+ARGS:
+  - {name: fit_view, type: text}          # true|false, vide pour ne rien poser
+

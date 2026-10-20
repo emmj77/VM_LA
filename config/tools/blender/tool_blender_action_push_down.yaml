@@ -1,0 +1,11 @@
+tool: "blender_action_push_down"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Push action down on to the NLA stack as a new strip"
+machine: blender
+op: action.push_down
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

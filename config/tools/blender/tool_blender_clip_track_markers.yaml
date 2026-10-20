@@ -1,0 +1,12 @@
+tool: "blender_clip_track_markers"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Track selected markers"
+machine: blender
+op: clip.track_markers
+ARGS:
+  - {name: backwards, type: text}          # true|false, vide pour ne rien poser
+  - {name: sequence, type: text}          # true|false, vide pour ne rien poser
+

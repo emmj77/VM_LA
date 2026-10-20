@@ -1,0 +1,12 @@
+tool: "blender_uv_select_edge_ring"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select an edge ring of connected UV vertices"
+machine: blender
+op: uv.select_edge_ring
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: location, type: text}          # 2 valeurs separees par des virgules
+

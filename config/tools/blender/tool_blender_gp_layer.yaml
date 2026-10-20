@@ -1,0 +1,23 @@
+tool: "blender_gp_layer"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a grease pencil layer: active | add | duplicate | duplicate_object | group_add | group_color_tag | group_remove | hide | isolate | lock_all | mask_add | mask_remove | mask_reorder | merge | move | remove | reveal (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "grease_pencil.layer_{{op}}" --arg "direction={{direction}}" --arg "mode={{mode}}" --arg "affect_visibility={{affect_visibility}}" --arg "color_tag={{color_tag}}" --arg "empty_keyframes={{empty_keyframes}}" --arg "keep_children={{keep_children}}" --arg "layer={{layer}}" --arg "lock={{lock}}" --arg "name={{name}}" --arg "new_layer_group_name={{new_layer_group_name}}" --arg "new_layer_name={{new_layer_name}}" --arg "only_active={{only_active}}" --arg "unselected={{unselected}}"
+ARGS:
+  - {name: op, type: enum, values: [active, add, duplicate, duplicate_object, group_add, group_color_tag, group_remove, hide, isolate, lock_all, mask_add, mask_remove, mask_reorder, merge, move, remove, reveal]}
+  - {name: direction, type: text}
+  - {name: mode, type: text}
+  - {name: affect_visibility, type: text}
+  - {name: color_tag, type: text}
+  - {name: empty_keyframes, type: text}
+  - {name: keep_children, type: text}
+  - {name: layer, type: int}
+  - {name: lock, type: text}
+  - {name: name, type: text}
+  - {name: new_layer_group_name, type: text}
+  - {name: new_layer_name, type: text}
+  - {name: only_active, type: text}
+  - {name: unselected, type: text}

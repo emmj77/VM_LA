@@ -1,0 +1,11 @@
+tool: "blender_graph_handle_type"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set type of handle for selected keyframes"
+machine: blender
+op: graph.handle_type
+ARGS:
+  - {name: type, type: text}          # un de : FREE | ALIGNED | VECTOR | AUTO | AUTO_CLAMPED
+

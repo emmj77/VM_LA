@@ -1,0 +1,26 @@
+tool: "asset_builder_texture"
+date: "2026-10-19"
+tags: ["asset_builder", "material"]
+
+RULES:
+  enabled: true
+  timeout: 60
+
+DESCRIPTION: "binds a PNG of the asset to a material so the .glb carries the image (uv 0..1, the image fits the face)"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{mat}}"
+  case "$A2" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_mat_a2 "$A2")" >&2 ; exit 1 ;; esac
+  A3="{{file}}"
+  case "$A3" in ''|/*|*..*) printf '%s\n' "$(msg file_outside_asset "$A3")" >&2 ; exit 1 ;; esac
+  AB_HOME="$W/asset_builder" "$B" texture --name "$A1" --mat "$A2" --file "$A3"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: mat, type: text}
+  - {name: file, type: text}

@@ -1,0 +1,11 @@
+tool: "blender_armature_click_extrude"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new bone going from the last selected joint to the mouse position"
+machine: blender
+op: armature.click_extrude
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,15 @@
+tool: "blender_grease_pencil_erase_box"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Erase points in the box region"
+machine: blender
+op: grease_pencil.erase_box
+ARGS:
+  - {name: xmin, type: int}
+  - {name: xmax, type: int}
+  - {name: ymin, type: int}
+  - {name: ymax, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+

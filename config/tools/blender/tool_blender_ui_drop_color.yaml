@@ -1,0 +1,13 @@
+tool: "blender_ui_drop_color"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Drop colors to buttons"
+machine: blender
+op: ui.drop_color
+ARGS:
+  - {name: color, type: text}          # 4 valeurs separees par des virgules
+  - {name: gamma, type: text}          # true|false, vide pour ne rien poser
+  - {name: has_alpha, type: text}          # true|false, vide pour ne rien poser
+

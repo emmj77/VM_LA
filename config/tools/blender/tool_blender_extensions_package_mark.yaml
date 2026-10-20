@@ -1,0 +1,12 @@
+tool: "blender_extensions_package_mark"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the mark on an extension package: clear | clear_all | set | set_all (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "extensions.package_mark_{{op}}" --arg "pkg_id={{pkg_id}}" --arg "repo_index={{repo_index}}"
+ARGS:
+  - {name: op, type: enum, values: [clear, clear_all, set, set_all]}
+  - {name: pkg_id, type: text}
+  - {name: repo_index, type: int}

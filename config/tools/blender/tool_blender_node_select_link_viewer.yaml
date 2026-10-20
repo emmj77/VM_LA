@@ -1,0 +1,12 @@
+tool: "blender_node_select_link_viewer"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select node and link it to a viewer node"
+machine: blender
+op: node.select_link_viewer
+ARGS:
+  - {name: NODE_OT_select, type: text}
+  - {name: NODE_OT_link_viewer, type: text}
+

@@ -1,0 +1,43 @@
+tool: "coplay_profiler_frame_debugger"
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the frame debugger: disable | enable | events (op picks which)"
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  disable)
+    set -f
+    set -- profiler frame-debugger-disable
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  enable)
+    set -f
+    set -- profiler frame-debugger-enable
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  events)
+    set -f
+    set -- profiler frame-debugger-events
+    [ -n "{{page_size}}" ] && set -- "$@" --page-size "{{page_size}}"
+    [ -n "{{cursor}}" ] && set -- "$@" --cursor "{{cursor}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+ARGS:
+  - {name: op, type: enum, values: [disable, enable, events]}
+  - {name: cursor, type: int}
+  - {name: page_size, type: int}

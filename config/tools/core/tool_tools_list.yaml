@@ -1,0 +1,75 @@
+tool: "tools_list"
+date: "2026-10-17"
+tags: ["tools_list"]
+RULES:
+  enabled: true
+  timeout: 60
+DESCRIPTION: "the table's tools: the map of the families, one family (40 at most), or the nearest to a question -- by meaning"
+COMMAND: |
+  TBL="$LA_CONFIG"
+  [ -n "$TBL" ] || { printf '%s\n' "$(msg registry_unknown)" >&2; exit 1; }
+  [ -f "$TBL" ] || { printf '%s\n' "$(msg registry_missing)""$TBL" >&2; exit 1; }
+  [ -r "$TBL" ] || { printf '%s\n' "$(msg registry_unreadable '%s')""$TBL" >&2; exit 1; }
+  F="{{family}}"
+  Q="{{q}}"
+  CAP=40
+  K=12
+
+  _args() {  # $1 = le nom du tool
+    _f=""
+    for _d in "$ROOT"/config/tools/*/ ; do
+      [ -f "$_d/tool_$1.yaml" ] && { _f="$_d/tool_$1.yaml" ; break ; }
+    done
+    [ -n "$_f" ] || return 0
+    sed -n '/^ARGS:/,$p' "$_f" \
+      | sed -n 's/^  - {name:[[:space:]]*\([A-Za-z0-9_]*\).*/\1/p' | paste -sd',' - | sed 's/,/, /g'
+  }
+
+  if [ -n "$Q" ]; then
+    C="${TMPDIR:-/tmp}/tools_list.$$"
+    awk -v sel="$F" '
+      function emit() { if (id != "") { if (sel == "" || fam == sel) printf "%s|%s|%s\n", id, tool, d } }
+      /^  - id: /      { emit() ; id = $0 ; sub(/^  - id:[ \t]*/, "", id) ; sub(/[^0-9].*$/, "", id) ; tool = "" ; fam = "" ; d = "" ; next }
+      /^    tool: /      { tool = $0 ; sub(/^    tool:[ \t]*/, "", tool) ; gsub(/"/, "", tool) ; next }
+      /^    family: /    { fam = $0 ; sub(/^    family:[ \t]*/, "", fam) ; gsub(/"/, "", fam) ; next }
+      /^    description: / { d = $0 ; sub(/^    description:[ \t]*/, "", d) ; sub(/^"/, "", d) ; sub(/"$/, "", d) ; next }
+      END { emit() }
+    ' "$TBL" > "$C"
+    if [ -s "$C" ]; then
+      dash "$ROOT/config/engine/pick.sh" "$C" "$Q" "$K" 2>/dev/null || :
+      while IFS='|' read -r G N D; do
+        [ -n "$G" ] || continue
+        A=$(_args "$N")
+        [ -n "$A" ] && A=" (args : $A)"
+        printf '%s %s%s\n' "$G" "$N" "$A"
+      done < "$C"
+    fi
+    exit 0
+  fi
+
+  awk -v sel="$F" -v cap="$CAP" '
+    /^  - id: / { id = $3 ; next }
+    /^    tool: / { t = $2 ; gsub(/"/, "", t) ; next }
+    /^    family: / {
+      f = $2 ; gsub(/"/, "", f) ; tot[f]++ ; n++
+      if (sel != "" && f == sel) { c++ ; if (c <= cap) printf "%s|%s|%s\n", id, t, f }
+      next
+    }
+    END {
+      if (sel == "") {
+        printf "--|%d tools --", n
+        for (k in tot) printf " %s:%d", k, tot[k]
+        printf "\n"
+      } else if (c == 0) { printf '%s\n' "$(msg no_tool_in_family)", sel }
+      else if (c > cap) { printf '%s\n' "$(msg more_in_family)", c - cap, sel }
+    }' "$TBL" | while IFS='|' read -r G N FA; do
+    [ -n "$G" ] || continue
+    if [ "$G" = "--" ]; then printf '%s\n' "$N" ; continue ; fi
+    A=$(_args "$N")
+    [ -n "$A" ] && A=" $A"
+    printf '%s %s [%s]%s\n' "$G" "$N" "$FA" "$A"
+  done
+
+ARGS:
+  - {name: family, type: enum, values: [READ, WRITE, MANAGE, REPLY, PLAN, VISION, BLENDER, UNITY, KRITA, IMAGE, ""]}
+  - {name: q, type: text}

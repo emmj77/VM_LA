@@ -1,0 +1,12 @@
+tool: "blender_view3d_view_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "View all objects in scene"
+machine: blender
+op: view3d.view_all
+ARGS:
+  - {name: use_all_regions, type: text}          # true|false, vide pour ne rien poser
+  - {name: center, type: text}          # true|false, vide pour ne rien poser
+

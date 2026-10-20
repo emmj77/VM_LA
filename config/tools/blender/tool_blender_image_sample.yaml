@@ -1,0 +1,11 @@
+tool: "blender_image_sample"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Use mouse to sample a color in current image"
+machine: blender
+op: image.sample
+ARGS:
+  - {name: size, type: int}
+

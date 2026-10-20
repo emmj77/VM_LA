@@ -1,0 +1,11 @@
+tool: "blender_armature_subdivide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Break selected bones into chains of smaller bones"
+machine: blender
+op: armature.subdivide
+ARGS:
+  - {name: number_cuts, type: int}
+

@@ -1,0 +1,11 @@
+tool: "blender_scene_freestyle_modifier_copy"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate the modifier within the list of modifiers"
+machine: blender
+op: scene.freestyle_modifier_copy
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

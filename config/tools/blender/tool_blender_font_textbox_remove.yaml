@@ -1,0 +1,11 @@
+tool: "blender_font_textbox_remove"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove the text box"
+machine: blender
+op: font.textbox_remove
+ARGS:
+  - {name: index, type: int}
+

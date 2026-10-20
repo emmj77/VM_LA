@@ -1,0 +1,94 @@
+tool: "comfyui_clean_lines"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_clean_lines"]
+doc: comfyui
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "cleans the ink line of a .kra drawing (removes specks, closes micro-holes, thickens it) and writes it back into a new layer"
+COMMAND: |
+  NAME="{{layer}}"; [ -n "$NAME" ] || NAME="encrage"
+  SERVICE=http://127.0.0.1:5678
+  K() { curl -sS --max-time "$2" -H 'Content-Type: application/json' -d "$1" "$SERVICE/"; }
+  curl -sf --max-time 10 "$SERVICE/health" >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_no_answer_hint)""$SERVICE" >&2; exit 1; }
+  command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1 || { printf '%s\n' "$(msg ffmpeg_missing)" >&2; exit 1; }
+  SRC="$W/{{source}}"
+  [ -f "$SRC" ] || { printf '%s\n' "$(msg drawing_missing)""$SRC" >&2; exit 1; }
+  case "$SRC" in *.kra|*.krz) ;; *) printf '%s\n' "$(msg kra_required '%s')""$SRC" >&2; exit 1 ;; esac
+  K "$(jq -cn --arg p "$SRC" '{action:"open_file",params:{path:$p}}')" 180 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_cannot_open_p)""$SRC" >&2; exit 1; }
+  ENC="$NAME"
+  LISTE=$(K '{"action":"list_layers","params":{}}' 60)
+  NAMES=$(printf '%s' "$LISTE" | jq -r '.layers[].name')
+  printf '%s\n' "$NAMES" | grep -Fxq "$ENC" || { printf '%s\n' "$(msg layer_unknown_drawing)""$ENC" "$(printf '%s' "$NAMES" | tr '\n' ' ')" >&2; exit 1; }
+  VIS=$(printf '%s' "$LISTE" | jq -r '.layers[] | select(.visible) | .name')
+  CACHES=$(printf '%s' "$LISTE" | jq -r '.layers[] | select(.visible|not) | .name')
+  printf '%s\n' "$NAMES" | while IFS= read -r N; do
+    if [ "$N" = "$ENC" ]; then V=true; else V=false; fi
+    K "$(jq -cn --arg n "$N" --argjson v "$V" '{action:"set_layer_visibility",params:{name:$n,visible:$v}}')" 30 >/dev/null
+  done
+  K "$(jq -cn --arg n "$ENC" '{action:"select_layer",params:{name:$n}}')" 30 >/dev/null
+  T="${TMPDIR:-/tmp}"
+  TRAIT="$T/la_trait.png"
+  K "$(jq -cn --arg p "$TRAIT" '{action:"save",params:{path:$p}}')" 300 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg layer_unrendered)""$ENC" >&2; exit 1; }
+  [ -s "$TRAIT" ] || { printf '%s\n' "$(msg layer_empty)""$ENC" >&2; exit 1; }
+  if printf '%s' "$VIS" | grep -q . ; then printf '%s\n' "$VIS" | while IFS= read -r N; do K "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:true}}')" 30 >/dev/null; done; fi
+  if printf '%s' "$CACHES" | grep -q . ; then printf '%s\n' "$CACHES" | while IFS= read -r N; do K "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:false}}')" 30 >/dev/null; done; fi
+  TAILLE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$TRAIT" 2>/dev/null | tr ',' 'x')
+  L=${TAILLE%x*}; H=${TAILLE#*x}
+  [ -n "$L" ] && [ -n "$H" ] || { printf '%s\n' "$(msg layer_unreadable)" >&2; exit 1; }
+  printf '%s\n' "$(msg stroke_alone)""$TRAIT" "$L" "$H" "$(printf '%s' "$NAMES" | grep -c .)"
+  case "{{clean}}" in
+    none)   TACHE=0; TROU=0; EPAIS=0 ;;
+    light)  TACHE=4; TROU=1; EPAIS=1 ;;
+    strong) TACHE=12; TROU=3; EPAIS=2 ;;
+    *)      TACHE=8; TROU=2; EPAIS=1 ;;
+  esac
+  CH="alphaextract,lut=y='if(gt(val,60),255,0)'"
+  C=""
+  i=0
+  while [ "$i" -lt "$TACHE" ]; do C="$C,erosion"; i=$((i + 1)); done
+  C="${C#,}"
+  [ -n "$C" ] && CH="$CH,$C"
+  D=""
+  i=0
+  while [ "$i" -lt "$TACHE" ]; do D="$D,dilation"; i=$((i + 1)); done
+  D="${D#,}"
+  [ -n "$D" ] && CH="$CH,$D"
+  E=""
+  i=0
+  while [ "$i" -lt "$TROU" ]; do E="$E,dilation"; i=$((i + 1)); done
+  E="${E#,}"
+  [ -n "$E" ] && CH="$CH,$E"
+  F=""
+  i=0
+  while [ "$i" -lt "$TROU" ]; do F="$F,erosion"; i=$((i + 1)); done
+  F="${F#,}"
+  [ -n "$F" ] && CH="$CH,$F"
+  G=""
+  i=0
+  while [ "$i" -lt "$EPAIS" ]; do G="$G,dilation"; i=$((i + 1)); done
+  G="${G#,}"
+  [ -n "$G" ] && CH="$CH,$G"
+  MASQUE="$T/la_masque_trait.png"
+  ffmpeg -y -loglevel error -i "$TRAIT" -vf "$CH,format=gray" "$MASQUE" || { printf '%s\n' "$(msg ffmpeg_clean_failed)" >&2; exit 1; }
+  OUTPUT="$W/{{output}}"
+  [ -n "{{output}}" ] || OUTPUT="$W/trait_nettoye.png"
+  ffmpeg -y -loglevel error -f lavfi -i "color=c=black:s=${L}x${H}" -i "$MASQUE" -filter_complex "[0:v][1:v]alphamerge" -frames:v 1 "$OUTPUT" || { printf '%s\n' "$(msg ffmpeg_redraw_failed)" >&2; exit 1; }
+  printf "trait net : %s (%s octets)\n" "$OUTPUT" "$(wc -c < "$OUTPUT")"
+  case "{{keep}}" in
+    file) ;;
+    *)
+      NAME="{{output_layer}}"; [ -n "$NAME" ] || NAME="encrage_nettoye"
+      K "$(jq -cn --arg p "$OUTPUT" --arg n "$NAME" '{action:"import_image",params:{path:$p,name:$n}}')" 300 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg new_layer_failed)" >&2; exit 1; }
+      K "$(jq -cn --arg p "$SRC" '{action:"save_document",params:{path:$p}}')" 300 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg layer_write_failed)""$SRC" >&2; exit 1; }
+      printf '%s\n' "$(msg layer_written '%s')""$NAME" "$SRC" "$(wc -c < "$SRC")"
+      ;;
+  esac
+
+ARGS:
+  - {name: source, type: path}                # le dessin, relatif a l'espace du skill
+  - {name: layer, type: text}                 # le calque du trait (vide : encrage)
+  - {name: clean, type: enum, values: [none, light, normal, strong, ""]}   # la force du nettoyage
+  - {name: output, type: path}                # le PNG de sortie, dans l'espace du skill
+  - {name: output_layer, type: text}          # le nom du calque neuf (vide : encrage_nettoye)
+  - {name: keep, type: enum, values: [kra, file, ""]}   # kra : rentre dans le .kra ; file : PNG seul

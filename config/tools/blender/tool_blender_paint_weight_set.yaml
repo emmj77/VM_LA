@@ -1,0 +1,11 @@
+tool: "blender_paint_weight_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Fill the active vertex group with the current paint weight"
+machine: blender
+op: paint.weight_set
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

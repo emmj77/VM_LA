@@ -1,0 +1,12 @@
+tool: "blender_node_add_collection"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a collection info node to the current node editor"
+machine: blender
+op: node.add_collection
+ARGS:
+  - {name: name, type: text}
+  - {name: session_uid, type: int}
+

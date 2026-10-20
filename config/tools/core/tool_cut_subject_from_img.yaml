@@ -1,0 +1,16 @@
+tool: "cut_subject_from_img"
+date: "2026-10-20"
+tags: ["cut_subject_from_img", "matte", "u2net"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "cuts the subject out of an image and writes its alpha mask (PNG)"
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  F="$W/{{source}}"; [ -f "$F" ] || F="$ROOT/{{source}}"
+  O=""; [ -z "{{out}}" ] || O="$W/{{out}}"
+  exec "${LA_PYTHON:-/usr/bin/python3}" "${LA_MICRO_VISION:-$ROOT/config/programs/micro_vision.py}" matte "$F" "$O"
+
+ARGS:
+  - {name: source, type: path}
+  - {name: out, type: path}

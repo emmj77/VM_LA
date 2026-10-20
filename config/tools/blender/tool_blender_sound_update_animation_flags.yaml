@@ -1,0 +1,11 @@
+tool: "blender_sound_update_animation_flags"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Update animation flags"
+machine: blender
+op: sound.update_animation_flags
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,15 @@
+tool: "find_objects_in_img"
+date: "2026-10-20"
+tags: ["find_objects_in_img", "yolo", "boxes"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "gives the boxes of the objects an image carries, best first"
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  F="$W/{{path}}"; [ -f "$F" ] || F="$ROOT/{{path}}"
+  exec "${LA_PYTHON:-/usr/bin/python3}" "${LA_MICRO_VISION:-$ROOT/config/programs/micro_vision.py}" boxes "$F" "{{threshold}}"
+
+ARGS:
+  - {name: path, type: path}
+  - {name: threshold, type: text}

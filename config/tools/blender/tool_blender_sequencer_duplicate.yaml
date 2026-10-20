@@ -1,0 +1,11 @@
+tool: "blender_sequencer_duplicate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate the selected strips"
+machine: blender
+op: sequencer.duplicate
+ARGS:
+  - {name: linked, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,20 @@
+tool: "repair_zone_in_img"
+date: "2026-10-20"
+tags: ["repair_zone_in_img", "inpaint", "lama"]
+RULES:
+  enabled: true
+  timeout: 900
+DESCRIPTION: "repairs a zone of an image (blot, text, object) and writes the result"
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  F="$W/{{source}}"; [ -f "$F" ] || F="$ROOT/{{source}}"
+  O=""; [ -z "{{out}}" ] || O="$W/{{out}}"
+  exec "${LA_PYTHON:-/usr/bin/python3}" "${LA_MICRO_VISION:-$ROOT/config/programs/micro_vision.py}" inpaint "$F" "{{x}}" "{{y}}" "{{width}}" "{{height}}" "$O"
+
+ARGS:
+  - {name: source, type: path}
+  - {name: out, type: path}
+  - {name: x, type: int}
+  - {name: y, type: int}
+  - {name: width, type: int}
+  - {name: height, type: int}

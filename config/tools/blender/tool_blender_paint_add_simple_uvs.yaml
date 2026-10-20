@@ -1,0 +1,11 @@
+tool: "blender_paint_add_simple_uvs"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add cube map UVs on mesh"
+machine: blender
+op: paint.add_simple_uvs
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

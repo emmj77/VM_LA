@@ -1,0 +1,11 @@
+tool: "blender_paint_grab_clone"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move the clone source image"
+machine: blender
+op: paint.grab_clone
+ARGS:
+  - {name: delta, type: text}          # 2 valeurs separees par des virgules
+

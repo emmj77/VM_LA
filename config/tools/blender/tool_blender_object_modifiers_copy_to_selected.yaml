@@ -1,0 +1,11 @@
+tool: "blender_object_modifiers_copy_to_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy modifiers to other selected objects"
+machine: blender
+op: object.modifiers_copy_to_selected
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

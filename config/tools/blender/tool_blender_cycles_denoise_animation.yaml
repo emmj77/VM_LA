@@ -1,0 +1,12 @@
+tool: "blender_cycles_denoise_animation"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Denoise rendered animation sequence using current scene and view layer settings. Requires denoising data passes and output to OpenEXR multilayer files"
+machine: blender
+op: cycles.denoise_animation
+ARGS:
+  - {name: input_filepath, type: text}
+  - {name: output_filepath, type: text}
+

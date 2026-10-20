@@ -1,0 +1,11 @@
+tool: "blender_particle_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete selected particles or keys"
+machine: blender
+op: particle.delete
+ARGS:
+  - {name: type, type: text}          # un de : PARTICLE | KEY
+

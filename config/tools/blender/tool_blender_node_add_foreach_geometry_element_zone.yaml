@@ -1,0 +1,13 @@
+tool: "blender_node_add_foreach_geometry_element_zone"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a For Each Geometry Element zone that allows executing nodes e.g. for each vertex separately"
+machine: blender
+op: node.add_foreach_geometry_element_zone
+ARGS:
+  - {name: settings, type: text}
+  - {name: use_transform, type: text}          # true|false, vide pour ne rien poser
+  - {name: offset, type: text}          # 2 valeurs separees par des virgules
+

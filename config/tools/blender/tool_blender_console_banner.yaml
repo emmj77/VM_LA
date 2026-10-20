@@ -1,0 +1,11 @@
+tool: "blender_console_banner"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Print a message when the terminal initializes"
+machine: blender
+op: console.banner
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

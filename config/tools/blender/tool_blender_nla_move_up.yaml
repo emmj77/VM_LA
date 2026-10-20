@@ -1,0 +1,11 @@
+tool: "blender_nla_move_up"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move selected strips up a track if there's room"
+machine: blender
+op: nla.move_up
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

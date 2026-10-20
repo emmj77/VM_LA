@@ -1,0 +1,11 @@
+tool: "blender_mesh_customdata_face_sets_clear"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear sculpt face set data from the mesh"
+machine: blender
+op: mesh.customdata_face_sets_clear
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

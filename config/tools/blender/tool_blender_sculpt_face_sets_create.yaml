@@ -1,0 +1,11 @@
+tool: "blender_sculpt_face_sets_create"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new face set"
+machine: blender
+op: sculpt.face_sets_create
+ARGS:
+  - {name: mode, type: text}          # un de : MASKED | VISIBLE | ALL | SELECTION
+

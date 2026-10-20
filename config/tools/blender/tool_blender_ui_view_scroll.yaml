@@ -1,0 +1,11 @@
+tool: "blender_ui_view_scroll"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: ui.view_scroll
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

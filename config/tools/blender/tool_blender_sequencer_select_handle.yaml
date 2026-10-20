@@ -1,0 +1,15 @@
+tool: "blender_sequencer_select_handle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select strip handle"
+machine: blender
+op: sequencer.select_handle
+ARGS:
+  - {name: wait_to_deselect_others, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_select_on_click, type: text}          # true|false, vide pour ne rien poser
+  - {name: mouse_x, type: int}
+  - {name: mouse_y, type: int}
+  - {name: ignore_connections, type: text}          # true|false, vide pour ne rien poser
+

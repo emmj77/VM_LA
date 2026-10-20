@@ -1,0 +1,16 @@
+tool: "blender_uv_select"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select UV vertices"
+machine: blender
+op: uv.select
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: select_passthrough, type: text}          # true|false, vide pour ne rien poser
+  - {name: location, type: text}          # 2 valeurs separees par des virgules
+

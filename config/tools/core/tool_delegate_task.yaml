@@ -1,0 +1,97 @@
+tool: "delegate_task"
+date: "2026-10-19"
+tags: ["delegate_task", "agent", "sous-agent", "relais"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "hands a short task to a named agent below, and returns its reply"
+COMMAND: |
+  case "{{turns}}" in ''|*[!0-9]*) T=3 ;; *) T={{turns}} ;; esac
+  { [ "$T" -ge 1 ] && [ "$T" -le 6 ]; } || { printf '%s\n' "$(msg turns_out_bounds_1)" >&2; exit 1; }
+  [ "${LA_DEPTH:-0}" = 0 ] || { printf '%s\n' "$(msg depth_already_agent_below "${LA_DEPTH}")" >&2; exit 1; }
+  B="${LA_LOOP:-$(dirname "${LA_CONFIG:?la table est inconnue}")/engine/loop.sh}"
+  [ -f "$B" ] || { printf '%s\n' "$(msg loop_missing "$B")" >&2; exit 1; }
+
+  SECT=$(sed -n '/^agents:/,/^[^[:space:]]/p' "$ROOT/config/la_config.yaml" 2>/dev/null)
+  NAMES=$(printf '%s\n' "$SECT" | sed -n 's/^[[:space:]]*names:[[:space:]]*//p' | head -n 1 \
+          | sed -e 's/[[:space:]]*#.*$//' -e 's/^"//' -e 's/"$//')
+  MAIN=$(printf '%s\n' "$SECT" | sed -n 's/^[[:space:]]*main:[[:space:]]*//p' | head -n 1 \
+          | sed -e 's/[[:space:]]*#.*$//' -e 's/^"//' -e 's/"$//')
+  [ -n "$MAIN" ] || MAIN=agent_one
+  CINQ=''
+  for N in $NAMES ; do [ "$N" = "$MAIN" ] && continue ; CINQ="$CINQ $N" ; done
+  [ -n "$CINQ" ] || { printf '%s\n' "$(msg agent_declared_under_agents)" >&2 ; exit 1 ; }
+
+  WANT="{{agent}}"
+  MARQ=$(printf '%s\n' "$SECT" | sed -n 's/^[[:space:]]*run:[[:space:]]*//p' | head -n 1 \
+          | sed -e 's/[[:space:]]*#.*$//' -e 's/^"//' -e 's/"$//')
+  [ -n "$MARQ" ] || MARQ='config/%s.run'
+  if [ -n "$WANT" ]; then
+    case " $CINQ " in
+      *" $WANT "*) FROM=$WANT ;;
+      *) printf '%s\n' "$(msg not_one_of_five "$WANT" "$CINQ")" >&2 ; exit 1 ;;
+    esac
+  else
+    FROM=''
+    for N in $CINQ ; do
+      F=$(printf "$MARQ" "$N") ; case "$F" in /*) ;; *) F="${LA_ROOT:-.}/$F" ;; esac
+      [ -f "$F" ] && continue
+      FROM=$N ; break
+    done
+    if [ -z "$FROM" ]; then
+      printf '%s\n' "$(msg five_busy_free_seat)" >&2
+      for N in $CINQ ; do
+        F=$(printf "$MARQ" "$N") ; case "$F" in /*) ;; *) F="${LA_ROOT:-.}/$F" ;; esac
+        printf '  %s : %s\n' "$N" "$(sed -n '1p' "$F" 2>/dev/null | cut -c1-100)" >&2
+      done
+      exit 1
+    fi
+  fi
+
+  WANT_SK="{{skills}}"
+  SET=''
+  if [ -n "$WANT_SK" ]; then
+    PAF="${LA_STATE_PROJECT:-$ROOT/projects/.active}"
+    PNAME=$(sed -n '1p' "$PAF" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    DECL=''
+    if [ -n "$PNAME" ]; then
+      DECL=$(sed -n '/^SKILLS:/,/^[A-Z_]/p' "$ROOT/projects/$PNAME/project.yml" 2>/dev/null \
+             | sed -n 's/^  [0-9][0-9]*:[[:space:]]*"\([a-z0-9_-]*\)".*/\1/p')
+    fi
+    if [ -z "$DECL" ]; then
+      DECL=$(ls -1 "$ROOT/skills" 2>/dev/null | while read -r _d ; do
+               [ -f "$ROOT/skills/$_d/skill.yaml" ] && printf '%s\n' "$_d" ; done)
+    fi
+    for S in $(printf '%s' "$WANT_SK" | tr ',' ' ') ; do
+      [ -n "$S" ] || continue
+      case "$S" in
+        ''|*[!a-z0-9_-]*) printf '%s\n' "$(msg not_skill_name_lowercase "$S")" >&2 ; exit 1 ;;
+      esac
+      [ -f "$ROOT/skills/$S/skill.yaml" ] || { printf '%s\n' "$(msg skill_does_not_exist "$S")" >&2 ; exit 1 ; }
+      printf '%s\n' "$DECL" | grep -qxF -- "$S" || {
+        printf '%s\n' "$(msg skill_not_in_project "$S" "${PNAME:-aucun}")" >&2
+        printf '%s\n' "$DECL" | sed -e 's/^/  /' >&2
+        exit 1
+      }
+      SET="$SET$S,"
+    done
+    SET=${SET%,}
+  fi
+
+  for PA in "$ROOT/skills/.active:$ROOT/config/$FROM.skill" \
+            "$ROOT/projects/.active:$ROOT/config/$FROM.project" ; do
+    SRC=${PA%%:*} ; DST=${PA#*:}
+    [ -f "$SRC" ] || continue
+    V=$(sed -n '1p' "$SRC" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    [ -n "$V" ] || continue
+    printf '%s\n' "$V" > "$DST" || { printf '%s\n' "$(msg sub_agent_state_could "$DST")" >&2 ; exit 1 ; }
+  done
+
+  cat | LA_FROM="$FROM" LA_SKILLSET="$SET" LA_ROOT="${LA_ROOT:?}" LA_TABLE="$LA_CONFIG" \
+      LA_DEPTH=1 LA_MAX_TURNS="$T" timeout 120 sh "$B"
+
+ARGS:
+  - {name: goal, type: text, stdin: true}
+  - {name: turns, type: int}
+  - {name: agent, type: text}
+  - {name: skills, type: text}

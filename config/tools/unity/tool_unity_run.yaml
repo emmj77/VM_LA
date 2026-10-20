@@ -1,0 +1,53 @@
+tool: "unity_run"
+date: "2026-10-18"
+tags: ["unity", "cli", "run"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Run a Unity project in batch mode and forward args to the editor"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- run --no-banner --no-pager --non-interactive
+  case "{{allow_install}}" in ''|true|false) ;; *) printf '%s\n' "$(msg allow_install_true_false)" >&2; exit 1 ;; esac
+  case "{{no_tail}}" in ''|true|false) ;; *) printf '%s\n' "$(msg tail_true_false)" >&2; exit 1 ;; esac
+  case "{{no_accelerator}}" in ''|true|false) ;; *) printf '%s\n' "$(msg accelerator_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{project}}" ] && set -- "$@" "{{project}}"
+  [ -n "{{editor_version}}" ] && set -- "$@" --editor-version "{{editor_version}}"
+  [ -n "{{editor_path}}" ] && set -- "$@" --editor-path "{{editor_path}}"
+  [ -n "{{architecture}}" ] && set -- "$@" --architecture "{{architecture}}"
+  [ "{{allow_install}}" = true ] && set -- "$@" --allow-install
+  [ -n "{{command}}" ] && set -- "$@" --command "{{command}}"
+  [ -n "{{timeout}}" ] && set -- "$@" --timeout "{{timeout}}"
+  [ -n "{{log_file}}" ] && set -- "$@" --log-file "{{log_file}}"
+  [ "{{no_tail}}" = true ] && set -- "$@" --no-tail
+  [ -n "{{accelerator}}" ] && set -- "$@" --accelerator "{{accelerator}}"
+  [ "{{no_accelerator}}" = true ] && set -- "$@" --no-accelerator
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_run_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: project, type: text}   # facultatif
+  - {name: editor_version, type: text}   # Override editor version (default: from ProjectVersion.txt)
+  - {name: editor_path, type: text}   # Path to a specific editor binary
+  - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
+  - {name: allow_install, type: text}   # true pour poser --allow-install ; Install the project's editor version if it is not already installed
+  - {name: command, type: text}   # Execute a registered Editor command headlessly (args after -- are pars
+  - {name: timeout, type: text}   # Kill the Unity process after this many seconds (disabled by default)
+  - {name: log_file, type: text}   # Write the Editor log to this file instead of Unity's default log locat
+  - {name: no_tail, type: text}   # true pour poser --no-tail ; Do not stream the log to the console in real time
+  - {name: accelerator, type: text}   # Unity Accelerator endpoint for this invocation. A bare host defaults t
+  - {name: no_accelerator, type: text}   # true pour poser --no-accelerator ; Ignore any configured Unity Accelerator for this invocation
+

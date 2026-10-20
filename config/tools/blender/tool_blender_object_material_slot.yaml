@@ -1,0 +1,11 @@
+tool: "blender_object_material_slot"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a material slot of an object: add | assign | copy | deselect | move | remove | remove_all | remove_unused | select (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "object.material_slot_{{op}}" --arg "direction={{direction}}"
+ARGS:
+  - {name: op, type: enum, values: [add, assign, copy, deselect, move, remove, remove_all, remove_unused, select]}
+  - {name: direction, type: text}

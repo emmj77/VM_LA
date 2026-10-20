@@ -1,0 +1,38 @@
+tool: "transcribe"
+date: "2026-10-17"
+tags: ["transcribe"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "transcribes an audio file from config/audio/ with the parakeet engine"
+COMMAND: |
+  SRV=127.0.0.1:${LA_ASR_PORT:-8080}
+  curl -s --max-time 5 -f "http://$SRV/ready" >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg resident_ear_does_not "$SRV")" >&2; exit 1; }
+  CONF=$(CDPATH= cd -- "$W/.." && pwd)
+  AUDIO="$CONF/config/audio"
+  P="{{path}}"
+  case "$P" in /*) printf '%s\n' "$(msg absolute_path_not_accepted "$P")" >&2 ; exit 1 ;; esac
+  F="$W/$P"
+  [ -f "$F" ] || F="$CONF/$P"
+  [ -f "$F" ] || F="$AUDIO/${P##*/}"
+  [ -f "$F" ] || { printf '%s\n' "$(msg audio_file_not_found)" >&2 ; exit 1; }
+  case "$F" in
+    *.wav|*.flac|*.mp3|*.ogg) A="$F" ;;
+    *.webm|*.mp4|*.m4a)
+      command -v ffmpeg >/dev/null 2>&1 || { printf '%s\n' "$(msg ffmpeg_missing_station)" >&2 ; exit 1 ; }
+      TD=$(mktemp -d "${TMPDIR:-/tmp}/transcribe.XXXXXX") || { printf '%s\n' "$(msg temporary_space)" >&2 ; exit 1 ; }
+      trap 'rm -f "$TD/a.wav" ; rmdir "$TD" 2>/dev/null' EXIT INT TERM HUP
+      A="$TD/a.wav"
+      ffmpeg -y -loglevel error -i "$F" -ar 16000 -ac 1 "$A" >/dev/null 2>&1 || { printf '%s\n' "$(msg audio_conversion_failed_path)" >&2 ; exit 1 ; }
+      ;;
+    *) printf '%s\n' "$(msg format_audio_out_flac)" >&2 ; exit 1 ;;
+  esac
+  OUT=$(curl -s --max-time 300 -X POST "http://$SRV/v1/audio/transcriptions" \
+    -F "file=@$A" -F "response_format=json" \
+    | python3 -c 'import json,sys; d=json.load(sys.stdin); print((d.get("text") or "").strip())')
+  [ -n "$OUT" ] || { printf '%s\n' "$(msg transcription_rendered_nothing_path)" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: path, type: path}

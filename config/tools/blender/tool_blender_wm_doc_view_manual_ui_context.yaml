@@ -1,0 +1,11 @@
+tool: "blender_wm_doc_view_manual_ui_context"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "View a context based online manual in a web browser"
+machine: blender
+op: wm.doc_view_manual_ui_context
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

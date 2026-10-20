@@ -1,0 +1,11 @@
+tool: "blender_curve_select_linked_pick"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all control points linked to already selected ones"
+machine: blender
+op: curve.select_linked_pick
+ARGS:
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+

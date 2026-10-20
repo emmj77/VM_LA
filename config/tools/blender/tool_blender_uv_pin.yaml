@@ -1,0 +1,12 @@
+tool: "blender_uv_pin"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set/clear selected UV vertices as anchored between multiple unwrap operations"
+machine: blender
+op: uv.pin
+ARGS:
+  - {name: clear, type: text}          # true|false, vide pour ne rien poser
+  - {name: invert, type: text}          # true|false, vide pour ne rien poser
+

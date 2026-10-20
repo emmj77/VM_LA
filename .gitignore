@@ -1,0 +1,61 @@
+# --- SECRETS ET PRIVE : JAMAIS publies (ce depot est PUBLIC) ---
+memory/
+config/.env
+config/certs/
+config/sessions.yaml
+config/sessions.db
+config/sessions.db-journal
+# la memoire porte des faits PRIVES (comme memory/, deja ignore plus haut) : meme main que la
+# base des sessions, jamais dans un depot public.
+config/memory.db
+config/memory.db-journal
+config/terminal_return.db
+config/terminal_return.db-journal
+
+# --- EXECUTION ET ETAT LOCAL (pas du source) ---
+work/
+config/audio/
+config/backups/
+*.pid
+*.log
+# LES AGENTS : le tableau, les filigranes et les marques de tour sont de l'ETAT, pas du source.
+# Ils vivent dans config/ (le harnais), jamais dans work/ (l'espace de travail de l'agent).
+config/agent_chat.jsonl
+config/agent_chat.jsonl.tmp.*
+config/*.seen
+config/*.run
+# L ETAT PAR AGENT (chantier du 19/10) : ses pointeurs de skill et de projet, et son head.
+# Meme regle que %s.run et %s.seen : le harnais le porte, git ne le publie pas.
+config/*.skill
+config/*.project
+config/*.head
+config/usage.jsonl
+# LE HEAD DEPOSE : un produit de la boucle, relu par le tableau (config/second.head).
+config/second.head
+config/second.head.tmp.*
+# LE MICRO-RESUME DU HEAD (ecrit par le modele local, reecrit a chaque passe).
+config/second.yaml
+
+# --- LE FILTRE : le CORPUS est du source, le MODELE est un produit (il se refait en 60 ms) ---
+config/filtre/*.bin
+config/filtre/*.vec
+config/filtre/propre.txt
+config/filtre/appris.txt
+config/filtre/essai*.txt
+
+# --- DIVERS ---
+.DS_Store
+*.swp
+
+# --- PYTHON : les .pyc ne sont pas du source ---
+__pycache__/
+*.pyc
+
+# --- L ETAT DU HARNAIS : des traces, pas du source (journaux, marques, retours archives) ---
+config/state/
+
+# UNE BASE SE CREE EN PASSANT (sqlite3 ouvre un fichier absent) : elle ne s ajoute jamais seule.
+config/*.db
+config/*.db-wal
+config/*.db-shm
+skills/.active

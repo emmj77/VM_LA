@@ -1,0 +1,11 @@
+tool: "blender_graph_hide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Hide selected curves from Graph Editor view"
+machine: blender
+op: graph.hide
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser
+

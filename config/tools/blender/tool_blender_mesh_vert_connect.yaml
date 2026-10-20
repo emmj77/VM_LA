@@ -1,0 +1,11 @@
+tool: "blender_mesh_vert_connect"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Connect selected vertices of faces, splitting the face"
+machine: blender
+op: mesh.vert_connect
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

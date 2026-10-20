@@ -1,0 +1,13 @@
+tool: "blender_rigidbody_bake_to_keyframes"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Bake rigid body transformations of selected objects to keyframes"
+machine: blender
+op: rigidbody.bake_to_keyframes
+ARGS:
+  - {name: frame_start, type: int}
+  - {name: frame_end, type: int}
+  - {name: step, type: int}
+

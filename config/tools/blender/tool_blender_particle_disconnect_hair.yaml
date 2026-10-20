@@ -1,0 +1,11 @@
+tool: "blender_particle_disconnect_hair"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Disconnect hair from the emitter mesh"
+machine: blender
+op: particle.disconnect_hair
+ARGS:
+  - {name: all, type: text}          # true|false, vide pour ne rien poser
+

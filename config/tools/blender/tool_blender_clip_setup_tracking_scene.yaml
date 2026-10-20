@@ -1,0 +1,11 @@
+tool: "blender_clip_setup_tracking_scene"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Prepare scene for compositing 3D objects into this footage"
+machine: blender
+op: clip.setup_tracking_scene
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

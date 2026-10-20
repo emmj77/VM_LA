@@ -1,0 +1,12 @@
+tool: "blender_mask_slide_point"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Slide control points"
+machine: blender
+op: mask.slide_point
+ARGS:
+  - {name: slide_feather, type: text}          # true|false, vide pour ne rien poser
+  - {name: is_new_point, type: text}          # true|false, vide pour ne rien poser
+

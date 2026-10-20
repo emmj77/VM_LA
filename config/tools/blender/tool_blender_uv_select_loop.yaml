@@ -1,0 +1,12 @@
+tool: "blender_uv_select_loop"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select a loop of connected UV vertices"
+machine: blender
+op: uv.select_loop
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: location, type: text}          # 2 valeurs separees par des virgules
+

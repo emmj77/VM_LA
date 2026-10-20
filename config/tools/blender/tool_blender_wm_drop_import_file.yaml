@@ -1,0 +1,12 @@
+tool: "blender_wm_drop_import_file"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Operator that allows file handlers to receive file drops"
+machine: blender
+op: wm.drop_import_file
+ARGS:
+  - {name: directory, type: text}
+  - {name: files, type: text}
+

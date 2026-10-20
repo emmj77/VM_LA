@@ -1,0 +1,11 @@
+tool: "blender_palette_extract_from_image"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Extract all colors used in Image and create a Palette"
+machine: blender
+op: palette.extract_from_image
+ARGS:
+  - {name: threshold, type: int}
+

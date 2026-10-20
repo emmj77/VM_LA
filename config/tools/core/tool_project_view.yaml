@@ -1,0 +1,23 @@
+tool: "project_view"
+date: "2026-10-17"
+tags: ["project_view", "project"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "shows a project as it is written (RULES, SUMMARY, PROJECT_PLAN, SKILLS) ; no name = the active project"
+COMMAND: |
+  NAME="{{name}}"
+  D="$ROOT/projects"
+  [ -d "$D" ] || { printf '%s\n' "$(msg projects_not_found "$D")" >&2 ; exit 1 ; }
+  [ -f "$PROCS/lib.sh" ] || { printf '%s\n' "$(msg shared_library_missing_procs "$PROCS")" >&2 ; exit 1 ; }
+  . "$PROCS/lib.sh"
+  active_project
+  [ -n "$NAME" ] || NAME=$PNAME
+  [ -n "$NAME" ] || { printf '%s\n' "$(msg active_project_name_given)" >&2 ; exit 1 ; }
+  case "$NAME" in */*|*..*) printf '%s\n' "$(msg invalid_project_name_nor)" >&2 ; exit 1 ;; esac
+  F="$D/$NAME/project.yml"
+  [ -f "$F" ] || { printf '%s\n' "$(msg not_found_project_list "$F")" >&2 ; exit 1 ; }
+  cat "$F"
+ARGS:
+ARGS:
+  - {name: name, type: text}

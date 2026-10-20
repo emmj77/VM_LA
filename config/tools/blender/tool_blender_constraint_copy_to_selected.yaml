@@ -1,0 +1,12 @@
+tool: "blender_constraint_copy_to_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy constraint to other selected objects/bones"
+machine: blender
+op: constraint.copy_to_selected
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE
+

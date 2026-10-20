@@ -1,0 +1,11 @@
+tool: "blender_image_save_sequence"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Save a sequence of images"
+machine: blender
+op: image.save_sequence
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

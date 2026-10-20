@@ -1,0 +1,11 @@
+tool: "blender_object_simulation_nodes_cache_calculate_to_frame"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Calculate simulations in geometry nodes modifiers from the start to current frame"
+machine: blender
+op: object.simulation_nodes_cache_calculate_to_frame
+ARGS:
+  - {name: selected, type: text}          # true|false, vide pour ne rien poser
+

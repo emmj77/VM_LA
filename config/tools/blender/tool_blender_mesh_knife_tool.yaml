@@ -1,0 +1,17 @@
+tool: "blender_mesh_knife_tool"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cut new topology"
+machine: blender
+op: mesh.knife_tool
+ARGS:
+  - {name: use_occlude_geometry, type: text}          # true|false, vide pour ne rien poser
+  - {name: only_selected, type: text}          # true|false, vide pour ne rien poser
+  - {name: xray, type: text}          # true|false, vide pour ne rien poser
+  - {name: visible_measurements, type: text}          # un de : NONE | BOTH | DISTANCE | ANGLE
+  - {name: angle_snapping, type: text}          # un de : NONE | SCREEN | RELATIVE
+  - {name: angle_snapping_increment, type: text}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+

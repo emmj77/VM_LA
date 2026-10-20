@@ -1,0 +1,11 @@
+tool: "blender_image_view_ndof"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Use a 3D mouse device to pan/zoom the view"
+machine: blender
+op: image.view_ndof
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

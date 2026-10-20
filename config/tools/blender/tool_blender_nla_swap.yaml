@@ -1,0 +1,11 @@
+tool: "blender_nla_swap"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Swap order of selected strips within tracks"
+machine: blender
+op: nla.swap
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

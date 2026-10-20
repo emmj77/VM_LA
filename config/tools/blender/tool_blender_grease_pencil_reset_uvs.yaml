@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_reset_uvs"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset UV transformation to default values"
+machine: blender
+op: grease_pencil.reset_uvs
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

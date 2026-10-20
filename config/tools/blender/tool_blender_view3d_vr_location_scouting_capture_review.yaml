@@ -1,0 +1,11 @@
+tool: "blender_view3d_vr_location_scouting_capture_review"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Interactively review Location Scouting VR Captures"
+machine: blender
+op: view3d.vr_location_scouting_capture_review
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

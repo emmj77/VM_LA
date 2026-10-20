@@ -1,0 +1,11 @@
+tool: "blender_mask_select_linked"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all curve points linked to already selected ones"
+machine: blender
+op: mask.select_linked
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

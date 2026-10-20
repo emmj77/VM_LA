@@ -1,0 +1,11 @@
+tool: "blender_mesh_dissolve_degenerate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Dissolve zero area faces and zero length edges"
+machine: blender
+op: mesh.dissolve_degenerate
+ARGS:
+  - {name: threshold, type: text}
+

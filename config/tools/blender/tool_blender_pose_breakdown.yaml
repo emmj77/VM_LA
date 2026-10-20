@@ -1,0 +1,15 @@
+tool: "blender_pose_breakdown"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a suitable breakdown pose on the current frame"
+machine: blender
+op: pose.breakdown
+ARGS:
+  - {name: factor, type: text}
+  - {name: prev_frame, type: int}
+  - {name: next_frame, type: int}
+  - {name: channels, type: text}          # un de : ALL | LOC | ROT | SIZE | BBONE | CUSTOM
+  - {name: axis_lock, type: text}          # un de : FREE | X | Y | Z
+

@@ -1,0 +1,36 @@
+tool: "tunnel_down"
+date: "2026-10-19"
+tags: ["tunnel_down", "tunnel", "wireguard", "wg0", "coucher"]
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "brings the wireguard tunnel down with wg-quick and says what is left"
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  SECT=$(sed -n '/^tunnel:/,/^[a-z_]/p' "$ROOT/config/la_config.yaml" 2>/dev/null)
+  IFACE=$(printf '%s\n' "$SECT" | sed -n 's/^  iface:[[:space:]]*//p' | head -n 1 \
+          | sed -e 's/#.*//' -e 's/[[:space:]]*$//')
+  [ -n "$IFACE" ] || IFACE=wg0
+  case "$IFACE" in
+    ''|*[!a-zA-Z0-9_-]*) printf '%s\n' "$(msg bad_interface "$IFACE")" >&2 ; exit 1 ;;
+  esac
+  command -v wg-quick >/dev/null 2>&1 || { printf '%s\n' "$(msg wgquick_missing)" >&2 ; exit 1 ; }
+  command -v ip >/dev/null 2>&1 || { printf '%s\n' "$(msg ip_missing)" >&2 ; exit 1 ; }
+
+  if ! ip link show "$IFACE" >/dev/null 2>&1; then
+    printf '%s\n' "$(msg already_down)""$IFACE"
+    exit 0
+  fi
+
+  L=$(sudo -n wg-quick down "$IFACE" 2>&1) || {
+    printf '%s\n' "$(msg wg_quick_down_iface "$IFACE")"$L" | tail -n 3 | tr '\n' ' ' | cut -c1-240)" >&2
+    exit 1
+  }
+  if ip link show "$IFACE" >/dev/null 2>&1; then
+    printf '%s\n' "$(msg wg_down_silent "$IFACE")" >&2
+    exit 1
+  fi
+  ADR=$(ip -4 -o addr show dev "$IFACE" 2>/dev/null | awk '{print $4}' | head -n 1)
+  printf '%s\n' "$(msg tunnel_down "$IFACE" "${ADR:+ (address $ADR still visible)}")"
+
+ARGS: []

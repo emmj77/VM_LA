@@ -1,0 +1,11 @@
+tool: "blender_text_reload"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reload active text data-block from its file"
+machine: blender
+op: text.reload
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

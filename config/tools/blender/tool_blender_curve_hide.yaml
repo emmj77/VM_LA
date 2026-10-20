@@ -1,0 +1,11 @@
+tool: "blender_curve_hide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Hide (un)selected control points"
+machine: blender
+op: curve.hide
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser
+

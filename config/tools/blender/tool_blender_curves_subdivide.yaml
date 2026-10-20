@@ -1,0 +1,11 @@
+tool: "blender_curves_subdivide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Subdivide selected curve segments"
+machine: blender
+op: curves.subdivide
+ARGS:
+  - {name: number_cuts, type: int}
+

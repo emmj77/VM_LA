@@ -1,0 +1,23 @@
+tool: "blender_image_convert_to_mesh_plane"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Convert selected reference images to textured mesh plane"
+machine: blender
+op: image.convert_to_mesh_plane
+ARGS:
+  - {name: interpolation, type: text}          # un de : Linear | Closest | Cubic | Smart
+  - {name: extension, type: text}          # un de : CLIP | EXTEND | REPEAT
+  - {name: use_auto_refresh, type: text}          # true|false, vide pour ne rien poser
+  - {name: relative, type: text}          # true|false, vide pour ne rien poser
+  - {name: shader, type: text}          # un de : PRINCIPLED | SHADELESS | EMISSION
+  - {name: emit_strength, type: text}
+  - {name: use_transparency, type: text}          # true|false, vide pour ne rien poser
+  - {name: render_method, type: text}          # un de : DITHERED | BLENDED
+  - {name: use_backface_culling, type: text}          # true|false, vide pour ne rien poser
+  - {name: show_transparent_back, type: text}          # true|false, vide pour ne rien poser
+  - {name: overwrite_material, type: text}          # true|false, vide pour ne rien poser
+  - {name: name_from, type: text}          # un de : OBJECT | IMAGE
+  - {name: delete_ref, type: text}          # true|false, vide pour ne rien poser
+

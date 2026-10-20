@@ -1,0 +1,11 @@
+tool: "blender_object_surfacedeform_bind"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Bind mesh to target in surface deform modifier"
+machine: blender
+op: object.surfacedeform_bind
+ARGS:
+  - {name: modifier, type: text}
+

@@ -1,0 +1,13 @@
+tool: "blender_sequencer_paste"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Paste strips from the internal clipboard"
+machine: blender
+op: sequencer.paste
+ARGS:
+  - {name: keep_offset, type: text}          # true|false, vide pour ne rien poser
+  - {name: x, type: int}
+  - {name: y, type: int}
+

@@ -1,0 +1,11 @@
+tool: "blender_sequencer_crossfade_sounds"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Do cross-fading volume animation of two selected sound strips"
+machine: blender
+op: sequencer.crossfade_sounds
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

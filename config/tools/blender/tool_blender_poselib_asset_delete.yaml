@@ -1,0 +1,11 @@
+tool: "blender_poselib_asset_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete the selected Pose Asset"
+machine: blender
+op: poselib.asset_delete
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

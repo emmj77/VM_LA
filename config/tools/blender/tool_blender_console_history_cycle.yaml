@@ -1,0 +1,11 @@
+tool: "blender_console_history_cycle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cycle through history"
+machine: blender
+op: console.history_cycle
+ARGS:
+  - {name: reverse, type: text}          # true|false, vide pour ne rien poser
+

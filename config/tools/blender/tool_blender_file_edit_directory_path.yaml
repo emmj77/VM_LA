@@ -1,0 +1,11 @@
+tool: "blender_file_edit_directory_path"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Start editing directory field"
+machine: blender
+op: file.edit_directory_path
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

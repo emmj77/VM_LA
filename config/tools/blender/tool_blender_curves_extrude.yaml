@@ -1,0 +1,11 @@
+tool: "blender_curves_extrude"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Extrude selected control point(s)"
+machine: blender
+op: curves.extrude
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

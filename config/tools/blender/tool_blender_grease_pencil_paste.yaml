@@ -1,0 +1,13 @@
+tool: "blender_grease_pencil_paste"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Paste Grease Pencil points or strokes from the internal clipboard to the active layer"
+machine: blender
+op: grease_pencil.paste
+ARGS:
+  - {name: type, type: text}          # un de : ACTIVE | LAYER
+  - {name: paste_back, type: text}          # true|false, vide pour ne rien poser
+  - {name: keep_world_transform, type: text}          # true|false, vide pour ne rien poser
+

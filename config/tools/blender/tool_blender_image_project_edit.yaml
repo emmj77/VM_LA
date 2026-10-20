@@ -1,0 +1,11 @@
+tool: "blender_image_project_edit"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Edit a snapshot of the 3D Viewport in an external image editor"
+machine: blender
+op: image.project_edit
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

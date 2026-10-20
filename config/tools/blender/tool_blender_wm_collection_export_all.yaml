@@ -1,0 +1,11 @@
+tool: "blender_wm_collection_export_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Invoke all configured exporters for all collections"
+machine: blender
+op: wm.collection_export_all
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

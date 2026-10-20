@@ -1,0 +1,11 @@
+tool: "blender_object_laplaciandeform_bind"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Bind mesh to system in laplacian deform modifier"
+machine: blender
+op: object.laplaciandeform_bind
+ARGS:
+  - {name: modifier, type: text}
+

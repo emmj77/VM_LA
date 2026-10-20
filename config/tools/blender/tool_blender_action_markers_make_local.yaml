@@ -1,0 +1,11 @@
+tool: "blender_action_markers_make_local"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move selected scene markers to the active Action as local 'pose' markers"
+machine: blender
+op: action.markers_make_local
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

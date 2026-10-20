@@ -1,0 +1,11 @@
+tool: "blender_anim_end_frame_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the current frame as the preview or scene end frame"
+machine: blender
+op: anim.end_frame_set
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

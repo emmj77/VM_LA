@@ -1,0 +1,32 @@
+tool: "blender_transform_skin_resize"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Scale selected vertices' skin radii"
+machine: blender
+op: transform.skin_resize
+ARGS:
+  - {name: value, type: text}          # 3 valeurs separees par des virgules
+  - {name: orient_type, type: text}          # un de : 
+  - {name: orient_matrix, type: text}          # 9 valeurs separees par des virgules
+  - {name: orient_matrix_type, type: text}          # un de : 
+  - {name: constraint_axis, type: text}          # 3 valeurs separees par des virgules
+  - {name: mirror, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_proportional_edit, type: text}          # true|false, vide pour ne rien poser
+  - {name: proportional_edit_falloff, type: text}          # un de : SMOOTH | SPHERE | ROOT | INVERSE_SQUARE | SHARP | LINEAR | CONSTANT | RANDOM
+  - {name: proportional_size, type: text}
+  - {name: use_proportional_connected, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_proportional_projected, type: text}          # true|false, vide pour ne rien poser
+  - {name: snap, type: text}          # true|false, vide pour ne rien poser
+  - {name: snap_elements, type: text}          # un de : INCREMENT | GRID | VERTEX | EDGE | FACE | VOLUME | EDGE_MIDPOINT | EDGE_PERPENDICULAR | FACE_MIDPOINT | FACE_PROJECT | FACE_NEAREST
+  - {name: use_snap_project, type: text}          # true|false, vide pour ne rien poser
+  - {name: snap_target, type: text}          # un de : CLOSEST | CENTER | MEDIAN | ACTIVE
+  - {name: use_snap_self, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_snap_edit, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_snap_nonedit, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_snap_selectable, type: text}          # true|false, vide pour ne rien poser
+  - {name: snap_point, type: text}          # 3 valeurs separees par des virgules
+  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_accurate, type: text}          # true|false, vide pour ne rien poser
+

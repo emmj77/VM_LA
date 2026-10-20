@@ -1,0 +1,11 @@
+tool: "blender_asset_assets_download"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Download the selected asset(s)"
+machine: blender
+op: asset.assets_download
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

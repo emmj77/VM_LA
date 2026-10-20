@@ -1,0 +1,14 @@
+tool: "blender_view3d_camera_background_image_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a new background image to the active camera"
+machine: blender
+op: view3d.camera_background_image_add
+ARGS:
+  - {name: filepath, type: text}
+  - {name: relative_path, type: text}          # true|false, vide pour ne rien poser
+  - {name: name, type: text}
+  - {name: session_uid, type: int}
+

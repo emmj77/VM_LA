@@ -1,0 +1,18 @@
+tool: "upscale-4x"
+date: "2026-10-17"
+tags: ["comfyui", "upscale-4x", "upscale", "image"]
+doc: comfyui
+RULES:
+  enabled: true
+  timeout: 900
+DESCRIPTION: "upscales an image x4 (ESRGAN) via ComfyUI"
+COMMAND: |
+  I=$(cat); [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }
+  S=http://127.0.0.1:8188; curl -sS -m 5 "$S/system_stats" >/dev/null 2>&1 || { printf '%s\n' "$(msg comfyui_does_not_answer "$S")" >&2; exit 1; }
+  D=/mnt/hermes_workspace/hermes/skills/software-development/comfyui
+  O="{{out}}"; [ -n "$O" ] || O="$ROOT/work/GEN"
+  python3 "$D/scripts/run_workflow.py" --workflow "$D/workflows/upscale_4x.json" --input-image "image=$I" --output-dir "$O"
+
+ARGS:
+  - {name: image, type: path, stdin: true}
+  - {name: out, type: path, required: false}

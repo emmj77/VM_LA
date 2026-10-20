@@ -1,0 +1,11 @@
+tool: "blender_view3d_view_center_camera"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Center the camera view, resizing the view to fit its bounds"
+machine: blender
+op: view3d.view_center_camera
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

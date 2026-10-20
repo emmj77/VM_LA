@@ -1,0 +1,11 @@
+tool: "blender_render_clear_texture_cache"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete Cycles texture cache files from disk"
+machine: blender
+op: render.clear_texture_cache
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

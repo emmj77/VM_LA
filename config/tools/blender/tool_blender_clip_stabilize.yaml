@@ -1,0 +1,10 @@
+tool: "blender_clip_stabilize"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "2D stabilisation of a clip: add | remove | rotation_add | rotation_remove | rotation_select | select (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "clip.stabilize_2d_{{op}}"
+ARGS:
+  - {name: op, type: enum, values: [add, remove, rotation_add, rotation_remove, rotation_select, select]}

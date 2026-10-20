@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_clean_loose"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove loose points"
+machine: blender
+op: grease_pencil.clean_loose
+ARGS:
+  - {name: limit, type: int}
+

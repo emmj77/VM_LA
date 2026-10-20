@@ -1,0 +1,47 @@
+tool: "unity_templates_edit"
+date: "2026-10-18"
+tags: ["unity", "cli", "templates"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Edit a custom (user-generated) template's metadata"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- templates edit --no-banner --no-pager --non-interactive
+  [ -n "{{name}}" ] || { printf '%s\n' "$(msg argument_required 'name' 'unity templates edit')" >&2; exit 1; }
+  case "{{remove_preview_image}}" in ''|true|false) ;; *) printf '%s\n' "$(msg remove_preview_image_true)" >&2; exit 1 ;; esac
+  case "{{yes}}" in ''|true|false) ;; *) printf '%s\n' "$(msg yes_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{name}}" ] && set -- "$@" "{{name}}"
+  [ -n "{{editor}}" ] && set -- "$@" --editor "{{editor}}"
+  [ -n "{{display_name}}" ] && set -- "$@" --display-name "{{display_name}}"
+  [ -n "{{description}}" ] && set -- "$@" --description "{{description}}"
+  [ -n "{{template_version}}" ] && set -- "$@" --template-version "{{template_version}}"
+  [ -n "{{preview_image}}" ] && set -- "$@" --preview-image "{{preview_image}}"
+  [ "{{remove_preview_image}}" = true ] && set -- "$@" --remove-preview-image
+  [ "{{yes}}" = true ] && set -- "$@" --yes
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_templates_edit_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: name, type: text}
+  - {name: editor, type: text}   # Unity editor version (uses stored default if omitted)
+  - {name: display_name, type: text}   # New display name for the template
+  - {name: description, type: text}   # New description for the template
+  - {name: template_version, type: text}   # New version for the template (e.g. 1.1.0)
+  - {name: preview_image, type: text}   # Path to a new preview image for the template
+  - {name: remove_preview_image, type: text}   # true pour poser --remove-preview-image ; Remove the current preview image from the template
+  - {name: yes, type: text}   # true pour poser --yes ; Skip confirmation prompt
+

@@ -1,0 +1,12 @@
+tool: "blender_mesh_rip_edge"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Extend vertices along the edge closest to the cursor"
+machine: blender
+op: mesh.rip_edge
+ARGS:
+  - {name: location, type: text}          # 3 valeurs separees par des virgules
+  - {name: direction, type: text}          # 3 valeurs separees par des virgules
+

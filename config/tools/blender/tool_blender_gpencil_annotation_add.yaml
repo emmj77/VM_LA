@@ -1,0 +1,11 @@
+tool: "blender_gpencil_annotation_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add new Annotation data-block"
+machine: blender
+op: gpencil.annotation_add
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

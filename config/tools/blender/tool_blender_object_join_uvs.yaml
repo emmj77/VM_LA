@@ -1,0 +1,11 @@
+tool: "blender_object_join_uvs"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Transfer UV Maps from active to selected objects (needs matching geometry)"
+machine: blender
+op: object.join_uvs
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

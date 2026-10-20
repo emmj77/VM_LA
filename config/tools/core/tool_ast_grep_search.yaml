@@ -1,0 +1,15 @@
+tool: "ast_grep_search"
+date: "2026-10-17"
+tags: ["ast_grep_search"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "searches a code shape (ast-grep pattern) in the project"
+COMMAND: |
+  PAT=$(cat); [ -n "$PAT" ] || { printf '%s\n' "$(msg empty_missing_pattern)" >&2; exit 1; }
+  cd "$ROOT" || { printf '%s\n' "$(msg project_root_not_found)" >&2; exit 1; }
+  R="{{path}}"; [ -n "$R" ] || R=.; ast-grep run --pattern "$PAT" --json=compact -- "$R" | jq -r '.[] | "\(.file):\(.range.start.line+1):\(.text)"'
+
+ARGS:
+  - {name: pattern, type: text, stdin: true}
+  - {name: path, type: path}

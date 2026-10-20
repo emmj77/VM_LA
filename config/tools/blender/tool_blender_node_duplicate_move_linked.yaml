@@ -1,0 +1,12 @@
+tool: "blender_node_duplicate_move_linked"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate selected nodes, but not their node trees, and move them"
+machine: blender
+op: node.duplicate_move_linked
+ARGS:
+  - {name: NODE_OT_duplicate, type: text}
+  - {name: NODE_OT_translate_attach, type: text}
+

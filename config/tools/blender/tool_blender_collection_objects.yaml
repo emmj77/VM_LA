@@ -1,0 +1,11 @@
+tool: "blender_collection_objects"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the objects linked to a collection: add_active | remove | remove_active | remove_all (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "collection.objects_{{op}}" --arg "collection={{collection}}"
+ARGS:
+  - {name: op, type: enum, values: [add_active, remove, remove_active, remove_all]}
+  - {name: collection, type: text}

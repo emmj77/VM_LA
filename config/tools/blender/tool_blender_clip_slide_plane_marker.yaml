@@ -1,0 +1,11 @@
+tool: "blender_clip_slide_plane_marker"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Slide plane marker areas"
+machine: blender
+op: clip.slide_plane_marker
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

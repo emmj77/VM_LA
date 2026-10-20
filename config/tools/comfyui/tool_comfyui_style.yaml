@@ -1,0 +1,74 @@
+tool: "comfyui_style"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_style"]
+doc: comfyui
+RULES:
+  enabled: true
+  timeout: 700
+DESCRIPTION: "draws a new image from free text, taking its palette and mood from a reference image (ipadapter)"
+COMMAND: |
+  SERVICE=http://127.0.0.1:8188
+  T=$(cat)
+  [ -n "$T" ] || { printf '%s\n' "$(msg free_text_missing)" >&2; exit 1; }
+  REF="$W/{{image}}"
+  [ -f "$REF" ] || { printf '%s\n' "$(msg reference_missing '%s')""$REF" >&2; exit 1; }
+  curl -sf "$SERVICE/system_stats" >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg comfy_service_no_answer)""$SERVICE" >&2; exit 1; }
+  NAME=$(curl -s -F "image=@$REF" -F "type=input" -F "subfolder=" -F "overwrite=true" "$SERVICE/upload/image" \
+        | jq -r '.name // empty')
+  [ -n "$NAME" ] || { printf '%s\n' "$(msg reference_upload_refused '%s')""$REF" >&2; exit 1; }
+  GRAINE=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
+  G=$(jq -cn \
+    --arg ck "${LA_COMFY_CKPT:-dreamshaper_8.safetensors}" \
+    --arg ipa "${LA_COMFY_IPA:-ip-adapter_sd15.safetensors}" \
+    --arg cvi "${LA_COMFY_CLIP_VISION:-clip-vision_vit-h.safetensors}" \
+    --arg img "$NAME" --arg t "$T" --argjson sd "$GRAINE" \
+    --argjson weight "${LA_COMFY_WEIGHT:-0.85}" \
+    --argjson larg "${LA_COMFY_LARGEUR:-832}" \
+    --argjson haut "${LA_COMFY_HAUTEUR:-1216}" \
+    --argjson etapes "${LA_COMFY_ETAPES:-28}" \
+    --argjson cfg "${LA_COMFY_CFG:-6.5}" '
+    {"1":{"class_type":"CheckpointLoaderSimple","inputs":{"ckpt_name":$ck}},
+     "2":{"class_type":"IPAdapterModelLoader","inputs":{"ipadapter_file":$ipa}},
+     "3":{"class_type":"CLIPVisionLoader","inputs":{"clip_name":$cvi}},
+     "4":{"class_type":"IPAdapterAdvanced","inputs":{"model":["1",0],"ipadapter":["2",0],
+          "clip_vision":["3",0],"image":["5",0],"weight":$weight,"weight_type":"style transfer",
+          "combine_embeds":"concat","start_at":0.0,"end_at":1.0,"embeds_scaling":"V only"}},
+     "5":{"class_type":"LoadImage","inputs":{"image":$img}},
+     "6":{"class_type":"CLIPTextEncode","inputs":{"text":$t,"clip":["1",1]}},
+     "7":{"class_type":"CLIPTextEncode","inputs":{"text":"low quality, worst quality, blurry, jpeg artifacts, text, watermark, signature","clip":["1",1]}},
+     "8":{"class_type":"EmptyLatentImage","inputs":{"width":$larg,"height":$haut,"batch_size":1}},
+     "9":{"class_type":"KSampler","inputs":{"seed":$sd,"steps":$etapes,"cfg":$cfg,
+          "sampler_name":"dpmpp_2m","scheduler":"karras","denoise":1.0,"model":["4",0],
+          "positive":["6",0],"negative":["7",0],"latent_image":["8",0]}},
+     "10":{"class_type":"VAEDecode","inputs":{"samples":["9",0],"vae":["1",2]}},
+     "11":{"class_type":"SaveImage","inputs":{"filename_prefix":"la_style","images":["10",0]}}}')
+  R=$(jq -cn --argjson p "$G" '{prompt:$p,client_id:"la"}' \
+      | curl -s -H 'Content-Type: application/json' --data-binary @- "$SERVICE/prompt")
+  PID=$(printf '%s' "$R" | jq -r '.prompt_id // empty')
+  [ -n "$PID" ] || { printf '%s\n' "$(msg graph_rejected)"\
+      "$(printf '%s' "$R" | jq -c '.error // .node_errors // .' | cut -c1-400)" >&2; exit 1; }
+  i=0
+  while [ "$i" -lt 300 ]; do
+    H=$(curl -s "$SERVICE/history/$PID")
+    printf '%s' "$H" | jq -e --arg p "$PID" 'has($p)' >/dev/null 2>&1 && break
+    sleep 2
+    i=$((i + 1))
+  done
+  [ "$i" -lt 300 ] || { printf '%s\n' "$(msg drawing_timeout '600')""$PID" >&2; exit 1; }
+  ECHEC=$(printf '%s' "$H" | jq -r --arg p "$PID" \
+      '.[$p].status.messages[]? | select(.[0]=="execution_error") | ((.[1].exception_type // "erreur") + " : " + (.[1].exception_message // ""))' \
+      | head -n 1)
+  [ -z "$ECHEC" ] || { printf '%s\n' "$(msg machine_failed)""$ECHEC" >&2; exit 1; }
+  IMG=$(printf '%s' "$H" | jq -r --arg p "$PID" '.[$p].outputs[]?.images[]? | [.filename, (.subfolder // ""), (.type // "output")] | @tsv' | head -n 1)
+  [ -n "$IMG" ] || { printf '%s\n' "$(msg drawing_no_image)" >&2; exit 1; }
+  OUTPUT="$W/style-$(date +%Y%m%d-%H%M%S).png"
+  curl -s -G --data-urlencode "filename=$(printf '%s' "$IMG" | cut -f1)" \
+       --data-urlencode "subfolder=$(printf '%s' "$IMG" | cut -f2)" \
+       --data-urlencode "type=$(printf '%s' "$IMG" | cut -f3)" "$SERVICE/view" -o "$OUTPUT"
+  [ -s "$OUTPUT" ] || { printf '%s\n' "$(msg image_not_down '%s')""$OUTPUT" >&2; exit 1; }
+  printf "image : %s (%s octets, graine %s)\n" "$OUTPUT" "$(wc -c < "$OUTPUT")" "$GRAINE"
+
+ARGS:
+  - {name: image, type: path}                  # la reference, relative a l'espace du skill (familie WRITE)
+  - {name: style, type: text, stdin: true}     # le sujet, en texte libre : par l'ENTREE STANDARD

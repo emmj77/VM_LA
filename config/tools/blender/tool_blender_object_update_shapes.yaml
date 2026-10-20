@@ -1,0 +1,11 @@
+tool: "blender_object_update_shapes"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Update existing shape keys with the vertex positions of selected objects with matching names"
+machine: blender
+op: object.update_shapes
+ARGS:
+  - {name: use_mirror, type: text}          # true|false, vide pour ne rien poser
+

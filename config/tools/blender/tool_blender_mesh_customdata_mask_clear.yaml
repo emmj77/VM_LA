@@ -1,0 +1,11 @@
+tool: "blender_mesh_customdata_mask_clear"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear vertex sculpt masking data from the mesh"
+machine: blender
+op: mesh.customdata_mask_clear
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_object_multires_higher_levels_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Deletes the higher resolution mesh, potential loss of detail"
+machine: blender
+op: object.multires_higher_levels_delete
+ARGS:
+  - {name: modifier, type: text}
+

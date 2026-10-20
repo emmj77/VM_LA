@@ -1,0 +1,11 @@
+tool: "blender_font_edit"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a font datablock: delete | line_break | move | move_select | select_all | select_word | selection_set (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "font.{{op}}" --arg "type={{type}}"
+ARGS:
+  - {name: op, type: enum, values: [delete, line_break, move, move_select, select_all, select_word, selection_set]}
+  - {name: type, type: text}

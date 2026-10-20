@@ -1,0 +1,11 @@
+tool: "blender_particle_select_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(De)select all particles' keys"
+machine: blender
+op: particle.select_all
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT
+

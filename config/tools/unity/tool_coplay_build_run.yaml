@@ -1,0 +1,39 @@
+tool: "coplay_build_run"
+date: "2026-10-18"
+tags: ["unity", "coplay", "build"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Trigger a player build."
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- build run
+  case "{{development}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'development')" >&2; exit 1 ;; esac
+  case "{{clean}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'clean')" >&2; exit 1 ;; esac
+  case "{{auto_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'auto_run')" >&2; exit 1 ;; esac
+  [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+  [ -n "{{output_path}}" ] && set -- "$@" --output "{{output_path}}"
+  [ "{{development}}" = true ] && set -- "$@" --development
+  [ -n "{{scripting_backend}}" ] && set -- "$@" --backend "{{scripting_backend}}"
+  [ -n "{{subtarget}}" ] && set -- "$@" --subtarget "{{subtarget}}"
+  [ -n "{{profile}}" ] && set -- "$@" --profile "{{profile}}"
+  [ "{{clean}}" = true ] && set -- "$@" --clean
+  [ "{{auto_run}}" = true ] && set -- "$@" --auto-run
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: target, type: text}
+  - {name: output_path, type: text}
+  - {name: development, type: text}          # true pour poser le drapeau, vide sinon
+  - {name: scripting_backend, type: text}          # un de : mono | il2cpp
+  - {name: subtarget, type: text}          # un de : player | server
+  - {name: profile, type: text}
+  - {name: clean, type: text}          # true pour poser le drapeau, vide sinon
+  - {name: auto_run, type: text}          # true pour poser le drapeau, vide sinon
+

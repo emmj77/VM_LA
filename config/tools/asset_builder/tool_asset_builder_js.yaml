@@ -1,0 +1,28 @@
+tool: "asset_builder_js"
+date: "2026-10-19"
+tags: ["asset_builder", "js", "geometrie", "glb"]
+
+RULES:
+  enabled: true
+  timeout: 120
+
+DESCRIPTION: "writes the JavaScript of one part: node runs it with the geometry api; the code arrives on stdin and is never a shell command"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  A="{{asset}}"
+  case "$A" in
+    ''|*[!a-z0-9_]*) printf '%s\n' "$(msg asset_name_invalid "$A")" >&2 ; exit 1 ;;
+  esac
+  I="{{id}}"
+  case "$I" in
+    ''|*[!a-z0-9_]*) echo "refused: id de part invalide ($I)" >&2 ; exit 1 ;;
+  esac
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  AB_HOME="$W/asset_builder" "$B" script "$A" "$I"
+
+ARGS:
+  - {name: asset, type: text}
+  - {name: id, type: text}
+  - {name: code, type: text, stdin: true}

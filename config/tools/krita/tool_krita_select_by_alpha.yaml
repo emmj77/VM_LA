@@ -1,0 +1,27 @@
+tool: "krita_select_by_alpha"
+date: "2026-10-18"
+tags: ["krita", "krita_select_by_alpha"]
+doc: krita
+RULES:
+  enabled: true
+  timeout: 60
+DESCRIPTION: "Select pixels by alpha value range"
+COMMAND: |
+  SERVICE=$(dash "$ROOT/config/engine/engine.sh" carrier krita-url) || exit 1
+  num() { case "$1" in ''|*[!0-9.-]*) printf 'null' ;; *) printf '%s' "$1" ;; esac; }
+  tab() { case "$1" in '') printf 'null' ;; *) printf '%s' "$1" | jq -c . 2>/dev/null || printf 'null' ;; esac; }
+  A_min_alpha=$(num "{{min_alpha}}")
+  A_max_alpha=$(num "{{max_alpha}}")
+
+  D=$(jq -cn \
+    --argjson min_alpha "$A_min_alpha" \
+    --argjson max_alpha "$A_max_alpha" \
+    '{action:"select_by_alpha", params:({ min_alpha:$min_alpha, max_alpha:$max_alpha } | with_entries(select(.value != null and .value != "")))}')
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: min_alpha, type: int}
+  - {name: max_alpha, type: int}

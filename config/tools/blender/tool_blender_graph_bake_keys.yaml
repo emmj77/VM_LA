@@ -1,0 +1,11 @@
+tool: "blender_graph_bake_keys"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add keyframes on every frame between the selected keyframes"
+machine: blender
+op: graph.bake_keys
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

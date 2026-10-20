@@ -1,0 +1,11 @@
+tool: "blender_outliner_lib_relocate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Relocate the library under cursor"
+machine: blender
+op: outliner.lib_relocate
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

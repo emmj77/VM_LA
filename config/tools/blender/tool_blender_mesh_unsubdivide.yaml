@@ -1,0 +1,11 @@
+tool: "blender_mesh_unsubdivide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Un-subdivide selected edges and faces"
+machine: blender
+op: mesh.unsubdivide
+ARGS:
+  - {name: iterations, type: int}
+

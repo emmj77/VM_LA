@@ -1,0 +1,11 @@
+tool: "blender_mask_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete selected control points or splines"
+machine: blender
+op: mask.delete
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
+

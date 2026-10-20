@@ -1,0 +1,12 @@
+tool: "blender_armature_assign_to_collection"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Assign all selected bones to a collection, or unassign them, depending on whether the active bone is already assigned or not"
+machine: blender
+op: armature.assign_to_collection
+ARGS:
+  - {name: collection_index, type: int}
+  - {name: new_collection_name, type: text}
+

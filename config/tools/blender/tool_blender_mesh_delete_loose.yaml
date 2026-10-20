@@ -1,0 +1,13 @@
+tool: "blender_mesh_delete_loose"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete loose vertices, edges or faces"
+machine: blender
+op: mesh.delete_loose
+ARGS:
+  - {name: use_verts, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_edges, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_faces, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,47 @@
+skill: "comfyui"
+date: "2026-10-17"
+tags: ["comfyui", "image", "dessin", "generer", "krita"]
+
+SUMMARY:
+  101: "L'atelier image : generer (txt2img/video), colorier, nettoyer, styler, agrandir."
+  102: "comfyui_status dit si le serveur repond ; les comfyui_* et les workflows font le geste."
+  103: "On REGARDE le resultat (fast_analyze_img) avant de le rendre."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "comfyui_status"
+  201: "comfyui_generate"
+  202: "comfyui_colorize"
+  203: "comfyui_colorize_under_lines"
+  204: "comfyui_colorize_batch"
+  205: "comfyui_render_drawing"
+  206: "comfyui_clean_lines"
+  207: "comfyui_style"
+  208: "comfyui_variants"
+  209: "comfyui_coherence"
+  210: "comfyui_enlarge"
+  211: "comfyui_find_layers"
+  212: "comfyui_animate_background"
+  213: "sd15-txt2img"
+  214: "sdxl-txt2img"
+  215: "flux-txt2img"
+  216: "sdxl-img2img"
+  217: "sdxl-inpaint"
+  218: "upscale-4x"
+  219: "animatediff-video"
+  220: "wan-t2v"
+  221: "fast_analyze_img"
+  222: "list_dir"
+  223: "load_doc"
+  224: "mkdir"
+DOCS:
+  300: "comfyui"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".png .jpg .webp .kra .mp4 .gif"
+ERROR:
+  600: "Le serveur ne repond pas : le dire (comfyui_status), ne pas lancer a l'aveugle."

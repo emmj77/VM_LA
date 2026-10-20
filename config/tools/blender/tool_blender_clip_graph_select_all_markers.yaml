@@ -1,0 +1,11 @@
+tool: "blender_clip_graph_select_all_markers"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change selection of all markers of active track"
+machine: blender
+op: clip.graph_select_all_markers
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT
+

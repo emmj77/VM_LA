@@ -1,0 +1,11 @@
+tool: "blender_outliner_action_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change the active action used"
+machine: blender
+op: outliner.action_set
+ARGS:
+  - {name: action, type: text}          # un de : 
+

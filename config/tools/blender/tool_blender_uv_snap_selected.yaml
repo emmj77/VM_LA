@@ -1,0 +1,11 @@
+tool: "blender_uv_snap_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Snap selected UV vertices to target type"
+machine: blender
+op: uv.snap_selected
+ARGS:
+  - {name: target, type: text}          # un de : PIXELS | CURSOR | CURSOR_OFFSET | ADJACENT_UNSELECTED
+

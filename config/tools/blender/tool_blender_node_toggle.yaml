@@ -1,0 +1,10 @@
+tool: "blender_node_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a node switch (hide, mute, options...): collapse_hide_unused | hide_socket | hide | interface_item_make_panel | interface_item_new_panel | interface_item_unlink_panel | mute | options | preview (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "node.{{op}}_toggle"
+ARGS:
+  - {name: op, type: enum, values: [collapse_hide_unused, hide_socket, hide, interface_item_make_panel, interface_item_new_panel, interface_item_unlink_panel, mute, options, preview]}

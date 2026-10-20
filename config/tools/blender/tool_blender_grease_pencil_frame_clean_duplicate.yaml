@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_frame_clean_duplicate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove any keyframe that is a duplicate of the previous one"
+machine: blender
+op: grease_pencil.frame_clean_duplicate
+ARGS:
+  - {name: selected, type: text}          # true|false, vide pour ne rien poser
+

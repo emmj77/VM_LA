@@ -1,0 +1,11 @@
+tool: "blender_pose_visual_transform_apply"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Apply final constrained position of pose bones to their transform"
+machine: blender
+op: pose.visual_transform_apply
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,47 @@
+tool: "comfyui_find_layers"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_find_layers"]
+doc: comfyui
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "lists the .kra files of a folder and each one's layers (name, visibility, offset) with a guessed role"
+COMMAND: |
+  FOLDER="$ROOT/{{folder}}"
+  [ -d "$FOLDER" ] || { printf '%s\n' "$(msg dir_missing '%s')""$FOLDER" >&2; exit 1; }
+  command -v unzip >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg unzip_missing)" >&2; exit 1; }
+  FILES=$(find "$FOLDER" -maxdepth 6 -name '*.kra' -not -name '*~' | sort | head -n 10)
+  [ -n "$FILES" ] || { printf '%s\n' "$(msg no_kra_under)""$FOLDER" >&2; exit 1; }
+  printf '%s\n' "$(msg files_under)""$(printf '%s\n' "$FILES" | grep -c .)" "$FOLDER"
+  printf '%s\n' "$FILES" | while IFS= read -r F; do
+    DOC=$(unzip -p "$F" maindoc.xml 2>/dev/null)
+    if [ -z "$DOC" ]; then
+      printf '%s\n' "$(msg kra_unreadable "$(basename "$F")")"
+      continue
+    fi
+    LW=$(printf '%s' "$DOC" | grep -o 'width="[0-9]*"' | head -n 1 | tr -dc '0-9')
+    LH=$(printf '%s' "$DOC" | grep -o 'height="[0-9]*"' | head -n 1 | tr -dc '0-9')
+    if [ -n "$LW" ] && [ -n "$LH" ]; then TAILLE="${LW}x${LH}"; else TAILLE="taille inconnue"; fi
+    printf "%s  %s\n" "$(basename "$F")" "$TAILLE"
+    printf '%s' "$DOC" | tr '>' '\n' | grep '<layer ' | while IFS= read -r L; do
+      IND=$(printf '%s' "$L" | sed -n 's/^\( *\)<layer .*/\1/p' | tr -d '\n' | wc -c)
+      IND=$(printf '%.*s' "$((IND - 1))" "            ")
+      CLEAN=$(printf '%s' "$L" | sed -e 's/colorspacename="[^"]*"//g' -e 's/filename="[^"]*"//g')
+      NM=$(printf '%s' "$CLEAN" | sed -n 's/.* name="\([^"]*\)".*/\1/p')
+      VI=$(printf '%s' "$L" | sed -n 's/.*visible="\([0-9]*\)".*/\1/p')
+      XX=$(printf '%s' "$L" | sed -n 's/.*[ ]x="\([-0-9]*\)".*/\1/p')
+      YY=$(printf '%s' "$L" | sed -n 's/.*[ ]y="\([-0-9]*\)".*/\1/p')
+      case "$(printf '%s' "$NM" | tr 'A-Z' 'a-z')" in
+        *encrage*|*trait*|*line*|*dessin*|*ink*)  ROLE=trait ;;
+        *couleur*|*couleurs*|*color*)             ROLE=couleur ;;
+        *decor*|*fond*|*back*|*arriere*)          ROLE=decor/fond ;;
+        *masque*|*mask*)                          ROLE=masque ;;
+        *)                                        ROLE=? ;;
+      esac
+      printf "    %-26s visible=%s  offset=%s,%s  role~ %s\n" "$NM" "${VI:-?}" "${XX:-0}" "${YY:-0}" "$ROLE"
+    done
+  done
+
+ARGS:
+  - {name: folder, type: path}                 # le dossier des dessins, relatif a la racine du projet

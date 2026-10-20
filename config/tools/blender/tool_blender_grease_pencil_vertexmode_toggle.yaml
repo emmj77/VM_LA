@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_vertexmode_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Enter/Exit vertex paint mode for Grease Pencil strokes"
+machine: blender
+op: grease_pencil.vertexmode_toggle
+ARGS:
+  - {name: back, type: text}          # true|false, vide pour ne rien poser
+

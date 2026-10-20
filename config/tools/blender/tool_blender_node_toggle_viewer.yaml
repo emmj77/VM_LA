@@ -1,0 +1,11 @@
+tool: "blender_node_toggle_viewer"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Toggle selected viewer node in compositor and geometry nodes"
+machine: blender
+op: node.toggle_viewer
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

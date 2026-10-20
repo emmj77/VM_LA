@@ -1,0 +1,11 @@
+tool: "blender_wm_search_operator"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Pop-up a search over all available operators in current context"
+machine: blender
+op: wm.search_operator
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

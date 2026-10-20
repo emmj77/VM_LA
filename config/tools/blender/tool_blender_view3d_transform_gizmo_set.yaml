@@ -1,0 +1,12 @@
+tool: "blender_view3d_transform_gizmo_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the current transform gizmo"
+machine: blender
+op: view3d.transform_gizmo_set
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : TRANSLATE | ROTATE | SCALE
+

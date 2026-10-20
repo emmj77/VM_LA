@@ -1,0 +1,11 @@
+tool: "blender_screen_spacedata_cleanup"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove unused settings for invisible editors"
+machine: blender
+op: screen.spacedata_cleanup
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

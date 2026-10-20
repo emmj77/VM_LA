@@ -1,0 +1,11 @@
+tool: "blender_texture_slot_move"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move texture slots up and down"
+machine: blender
+op: texture.slot_move
+ARGS:
+  - {name: type, type: text}          # un de : UP | DOWN
+

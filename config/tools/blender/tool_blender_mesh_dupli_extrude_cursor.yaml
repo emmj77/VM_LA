@@ -1,0 +1,11 @@
+tool: "blender_mesh_dupli_extrude_cursor"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate and extrude selected vertices, edges or faces towards the mouse cursor"
+machine: blender
+op: mesh.dupli_extrude_cursor
+ARGS:
+  - {name: rotate_source, type: text}          # true|false, vide pour ne rien poser
+

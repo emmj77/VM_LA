@@ -1,0 +1,11 @@
+tool: "blender_object_collection_link"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add an object to an existing collection"
+machine: blender
+op: object.collection_link
+ARGS:
+  - {name: collection, type: text}          # un de : 
+

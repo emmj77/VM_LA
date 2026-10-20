@@ -1,0 +1,11 @@
+tool: "blender_action_view_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset viewable area to show full keyframe range"
+machine: blender
+op: action.view_all
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

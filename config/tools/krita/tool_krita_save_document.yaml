@@ -1,0 +1,22 @@
+tool: "krita_save_document"
+date: "2026-10-17"
+tags: ["krita", "krita_save_document"]
+doc: krita
+RULES:
+  enabled: true
+  timeout: 300
+DESCRIPTION: "writes the open document to disk -- the .kra itself, not an export"
+COMMAND: |
+  SERVICE=$(dash "$ROOT/config/engine/engine.sh" carrier krita-url) || exit 1
+  OUTPUT="$W/{{path}}"
+  REP=$(curl -sS --max-time 240 -H 'Content-Type: application/json' \
+    -d "$(jq -cn --arg p "$OUTPUT" '{action:"save_document",params:{path:$p}}')" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  [ -s "$OUTPUT" ] || { printf '%s\n' "$(msg machine_says_wrote_but)""$OUTPUT" >&2; exit 1; }
+  printf '%s\n' "$(msg written_by_bytes)""$(printf '%s' "$REP" | jq -r .how)" "$OUTPUT" "$(wc -c < "$OUTPUT")"
+  CALQUES=$(unzip -p "$OUTPUT" maindoc.xml 2>/dev/null | tr '>' '\n' | grep -c '<layer ')
+  printf '%s\n' "$(msg kra_carries_layers)""${CALQUES:-?}"
+
+ARGS:
+  - {name: path, type: path}                  # ou ecrire le .kra, dans l'espace du skill

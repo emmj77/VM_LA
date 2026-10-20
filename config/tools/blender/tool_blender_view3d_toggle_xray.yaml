@@ -1,0 +1,11 @@
+tool: "blender_view3d_toggle_xray"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Transparent scene display. Allow selecting through items"
+machine: blender
+op: view3d.toggle_xray
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

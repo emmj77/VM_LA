@@ -1,0 +1,11 @@
+tool: "blender_graph_duplicate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Make a copy of all selected keyframes"
+machine: blender
+op: graph.duplicate
+ARGS:
+  - {name: mode, type: text}          # un de : INIT | DUMMY | TRANSLATION | ROTATION | RESIZE | SKIN_RESIZE | TOSPHERE | SHEAR | BEND | SHRINKFATTEN | TILT | TRACKBALL | PUSHPULL | CREASE | VERTEX_CREASE | MIRROR | BONE_SIZE | BONE_ENVELOPE | BONE_ENVELOPE_DIST | CURVE_SHRINKFATTEN | MASK_SHRINKFATTEN | BONE_ROLL | TIME_TRANSLATE | TIME_SLIDE | TIME_SCALE | TIME_EXTEND | BAKE_TIME | BWEIGHT | ALIGN | EDGESLIDE | SEQSLIDE | GPENCIL_OPACITY
+

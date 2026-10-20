@@ -1,0 +1,11 @@
+tool: "blender_file_rename"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Rename file or file directory"
+machine: blender
+op: file.rename
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

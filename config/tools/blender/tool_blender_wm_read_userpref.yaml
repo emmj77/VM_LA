@@ -1,0 +1,11 @@
+tool: "blender_wm_read_userpref"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Load last saved preferences"
+machine: blender
+op: wm.read_userpref
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

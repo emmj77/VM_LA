@@ -1,0 +1,11 @@
+tool: "blender_sequencer_gap_remove"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove gap at current frame to first strip at the right, independent of selection or locked state of strips"
+machine: blender
+op: sequencer.gap_remove
+ARGS:
+  - {name: all, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,11 @@
+tool: "blender_view3d_move"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move the view"
+machine: blender
+op: view3d.move
+ARGS:
+  - {name: use_cursor_init, type: text}          # true|false, vide pour ne rien poser
+

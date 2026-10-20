@@ -1,0 +1,11 @@
+tool: "blender_clip_refine_markers"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Refine selected markers positions by running the tracker from track's reference to current frame"
+machine: blender
+op: clip.refine_markers
+ARGS:
+  - {name: backwards, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,13 @@
+tool: "blender_wm_context_collection_boolean_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set boolean values for a collection of items"
+machine: blender
+op: wm.context_collection_boolean_set
+ARGS:
+  - {name: data_path_iter, type: text}
+  - {name: data_path_item, type: text}
+  - {name: type, type: text}          # un de : TOGGLE | ENABLE | DISABLE
+

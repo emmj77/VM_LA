@@ -1,0 +1,12 @@
+tool: "blender_sculpt_uv_sculpt_relax"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Relax UVs"
+machine: blender
+op: sculpt.uv_sculpt_relax
+ARGS:
+  - {name: use_invert, type: text}          # true|false, vide pour ne rien poser
+  - {name: relax_method, type: text}          # un de : LAPLACIAN | HC | COTAN
+

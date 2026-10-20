@@ -1,0 +1,11 @@
+tool: "blender_action_frame_jump"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the current frame to the average frame value of selected keyframes"
+machine: blender
+op: action.frame_jump
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

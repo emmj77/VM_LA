@@ -1,0 +1,22 @@
+tool: "blender_uv_unwrap"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Unwrap the mesh of the object being edited"
+machine: blender
+op: uv.unwrap
+ARGS:
+  - {name: method, type: text}          # un de : ANGLE_BASED | CONFORMAL | MINIMUM_STRETCH
+  - {name: fill_holes, type: text}          # true|false, vide pour ne rien poser
+  - {name: correct_aspect, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_subsurf_data, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_original_bounds, type: text}          # true|false, vide pour ne rien poser
+  - {name: margin_method, type: text}          # un de : SCALED | ADD | FRACTION
+  - {name: margin, type: text}
+  - {name: no_flip, type: text}          # true|false, vide pour ne rien poser
+  - {name: iterations, type: int}
+  - {name: use_weights, type: text}          # true|false, vide pour ne rien poser
+  - {name: weight_group, type: text}
+  - {name: weight_factor, type: text}
+

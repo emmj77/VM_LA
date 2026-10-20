@@ -1,0 +1,11 @@
+tool: "blender_object_geometry_node_tree_copy_assign"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate the active geometry node group and assign it to the active modifier"
+machine: blender
+op: object.geometry_node_tree_copy_assign
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

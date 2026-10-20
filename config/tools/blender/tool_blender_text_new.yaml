@@ -1,0 +1,11 @@
+tool: "blender_text_new"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new text data-block"
+machine: blender
+op: text.new
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

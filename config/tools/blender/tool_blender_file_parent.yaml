@@ -1,0 +1,11 @@
+tool: "blender_file_parent"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move to parent directory"
+machine: blender
+op: file.parent
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

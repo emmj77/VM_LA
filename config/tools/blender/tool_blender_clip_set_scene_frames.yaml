@@ -1,0 +1,11 @@
+tool: "blender_clip_set_scene_frames"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set scene's start and end frame to match clip's start frame and length"
+machine: blender
+op: clip.set_scene_frames
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

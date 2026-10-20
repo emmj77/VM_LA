@@ -1,0 +1,11 @@
+tool: "blender_object_light_linking_unlink_from_collection"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove this object or collection from the light linking collection"
+machine: blender
+op: object.light_linking_unlink_from_collection
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

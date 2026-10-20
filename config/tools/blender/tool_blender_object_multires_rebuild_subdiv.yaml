@@ -1,0 +1,11 @@
+tool: "blender_object_multires_rebuild_subdiv"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Rebuilds all possible subdivisions levels to generate a lower resolution base mesh"
+machine: blender
+op: object.multires_rebuild_subdiv
+ARGS:
+  - {name: modifier, type: text}
+

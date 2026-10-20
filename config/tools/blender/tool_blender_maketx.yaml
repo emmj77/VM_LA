@@ -1,0 +1,12 @@
+tool: "blender_maketx"
+date: "2026-10-17"
+tags: ["blender", "blender_maketx"]
+doc: blender
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "generate cycles texture cache (.tx) files."
+machine: blender-cli
+op: maketx
+ARGS: []                    # aucun argument : ce tool se nomme seul
+

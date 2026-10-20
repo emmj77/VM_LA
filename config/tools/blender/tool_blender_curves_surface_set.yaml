@@ -1,0 +1,11 @@
+tool: "blender_curves_surface_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Use the active object as surface for selected curves objects and set it as the parent"
+machine: blender
+op: curves.surface_set
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

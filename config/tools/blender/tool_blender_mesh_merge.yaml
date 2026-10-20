@@ -1,0 +1,12 @@
+tool: "blender_mesh_merge"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Merge selected vertices"
+machine: blender
+op: mesh.merge
+ARGS:
+  - {name: type, type: text}          # un de : CENTER | CURSOR | COLLAPSE | FIRST | LAST
+  - {name: uvs, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,11 @@
+tool: "blender_text_scroll"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: text.scroll
+ARGS:
+  - {name: lines, type: int}
+

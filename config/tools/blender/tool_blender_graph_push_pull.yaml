@@ -1,0 +1,11 @@
+tool: "blender_graph_push_pull"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Exaggerate or minimize the value of the selected keys"
+machine: blender
+op: graph.push_pull
+ARGS:
+  - {name: factor, type: text}
+

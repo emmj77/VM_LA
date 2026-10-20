@@ -1,0 +1,14 @@
+tool: "blender_mesh_dissolve_edges"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Dissolve edges, merging faces"
+machine: blender
+op: mesh.dissolve_edges
+ARGS:
+  - {name: use_verts, type: text}          # true|false, vide pour ne rien poser
+  - {name: angle_threshold, type: text}
+  - {name: use_face_split, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_preserve_quads, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,11 @@
+tool: "blender_outliner_drivers_delete_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete drivers assigned to selected items"
+machine: blender
+op: outliner.drivers_delete_selected
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

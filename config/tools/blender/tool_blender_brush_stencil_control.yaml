@@ -1,0 +1,12 @@
+tool: "blender_brush_stencil_control"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Control the stencil brush"
+machine: blender
+op: brush.stencil_control
+ARGS:
+  - {name: mode, type: text}          # un de : TRANSLATION | SCALE | ROTATION
+  - {name: texmode, type: text}          # un de : PRIMARY | SECONDARY
+

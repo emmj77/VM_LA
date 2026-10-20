@@ -1,0 +1,10 @@
+tool: "blender_anim_slot"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "an animation slot: channels_move_to_new_action | new_for_id | unassign_from_constraint | unassign_from_id | unassign_from_nla_strip (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "anim.slot_{{op}}"
+ARGS:
+  - {name: op, type: enum, values: [channels_move_to_new_action, new_for_id, unassign_from_constraint, unassign_from_id, unassign_from_nla_strip]}

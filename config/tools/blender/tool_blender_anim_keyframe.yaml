@@ -1,0 +1,13 @@
+tool: "blender_anim_keyframe"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a keyframe: clear_button | clear_v3d | clear_vse | delete_button | delete_by_name | delete_v3d | delete_vse | insert_button | insert_by_name (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "anim.keyframe_{{op}}" --arg "confirm={{confirm}}" --arg "all={{all}}" --arg "type={{type}}"
+ARGS:
+  - {name: op, type: enum, values: [clear_button, clear_v3d, clear_vse, delete_button, delete_by_name, delete_v3d, delete_vse, insert_button, insert_by_name]}
+  - {name: confirm, type: text}
+  - {name: all, type: text}
+  - {name: type, type: text}

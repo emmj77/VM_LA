@@ -1,0 +1,15 @@
+tool: "blender_uv_project_from_view"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Project the UV vertices of the mesh as seen in current 3D view"
+machine: blender
+op: uv.project_from_view
+ARGS:
+  - {name: orthographic, type: text}          # true|false, vide pour ne rien poser
+  - {name: camera_bounds, type: text}          # true|false, vide pour ne rien poser
+  - {name: correct_aspect, type: text}          # true|false, vide pour ne rien poser
+  - {name: clip_to_bounds, type: text}          # true|false, vide pour ne rien poser
+  - {name: scale_to_bounds, type: text}          # true|false, vide pour ne rien poser
+

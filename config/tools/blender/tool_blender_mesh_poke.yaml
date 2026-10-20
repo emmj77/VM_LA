@@ -1,0 +1,13 @@
+tool: "blender_mesh_poke"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Split a face into a fan"
+machine: blender
+op: mesh.poke
+ARGS:
+  - {name: offset, type: text}
+  - {name: use_relative_offset, type: text}          # true|false, vide pour ne rien poser
+  - {name: center_mode, type: text}          # un de : MEDIAN_WEIGHTED | MEDIAN | BOUNDS
+

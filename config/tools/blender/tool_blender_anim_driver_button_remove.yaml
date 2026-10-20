@@ -1,0 +1,11 @@
+tool: "blender_anim_driver_button_remove"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove the driver(s) for the connected property(s) represented by the highlighted button"
+machine: blender
+op: anim.driver_button_remove
+ARGS:
+  - {name: all, type: text}          # true|false, vide pour ne rien poser
+

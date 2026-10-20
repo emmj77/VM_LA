@@ -1,0 +1,11 @@
+tool: "blender_paint_brush_colors_flip"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Swap primary and secondary brush colors"
+machine: blender
+op: paint.brush_colors_flip
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_scene_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete active scene"
+machine: blender
+op: scene.delete
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

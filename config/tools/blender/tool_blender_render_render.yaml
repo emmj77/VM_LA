@@ -1,0 +1,18 @@
+tool: "blender_render_render"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: render.render
+ARGS:
+  - {name: animation, type: text}          # true|false, vide pour ne rien poser
+  - {name: write_still, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_viewport, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_sequencer_scene, type: text}          # true|false, vide pour ne rien poser
+  - {name: layer, type: text}
+  - {name: scene, type: text}
+  - {name: frame_start, type: int}
+  - {name: frame_end, type: int}
+

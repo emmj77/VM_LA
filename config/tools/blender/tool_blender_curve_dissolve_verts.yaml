@@ -1,0 +1,11 @@
+tool: "blender_curve_dissolve_verts"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete selected control points, correcting surrounding handles"
+machine: blender
+op: curve.dissolve_verts
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

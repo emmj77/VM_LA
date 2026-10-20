@@ -1,0 +1,18 @@
+tool: "blender_node_select"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select the node under the cursor"
+machine: blender
+op: node.select
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: select_passthrough, type: text}          # true|false, vide pour ne rien poser
+  - {name: location, type: int}
+  - {name: socket_select, type: text}          # true|false, vide pour ne rien poser
+  - {name: clear_viewer, type: text}          # true|false, vide pour ne rien poser
+

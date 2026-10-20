@@ -1,0 +1,11 @@
+tool: "blender_wm_save_userpref"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Make the current preferences default"
+machine: blender
+op: wm.save_userpref
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_sequencer_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete selected strips from the sequencer"
+machine: blender
+op: sequencer.delete
+ARGS:
+  - {name: delete_data, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,11 @@
+tool: "blender_armature_shortest_path_pick"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select shortest path between two bones"
+machine: blender
+op: armature.shortest_path_pick
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

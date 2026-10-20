@@ -1,0 +1,11 @@
+tool: "blender_node_detach"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Detach selected nodes from parents"
+machine: blender
+op: node.detach
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

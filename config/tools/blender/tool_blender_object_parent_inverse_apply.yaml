@@ -1,0 +1,11 @@
+tool: "blender_object_parent_inverse_apply"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Apply the object's parent inverse to its data"
+machine: blender
+op: object.parent_inverse_apply
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

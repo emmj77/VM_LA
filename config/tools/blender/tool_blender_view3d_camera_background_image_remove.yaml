@@ -1,0 +1,11 @@
+tool: "blender_view3d_camera_background_image_remove"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove a background image from the camera"
+machine: blender
+op: view3d.camera_background_image_remove
+ARGS:
+  - {name: index, type: int}
+

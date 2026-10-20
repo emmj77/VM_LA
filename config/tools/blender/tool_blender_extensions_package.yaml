@@ -1,0 +1,24 @@
+tool: "blender_extensions_package"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "an extension package: disable | install | install_files | install_marked | obsolete_marked | show_clear | show_set | show_settings | theme_disable | theme_enable | uninstall | uninstall_marked | uninstall_system | upgrade_all (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "extensions.package_{{op}}" --arg "pkg_id={{pkg_id}}" --arg "repo_index={{repo_index}}" --arg "enable_on_install={{enable_on_install}}" --arg "repo_directory={{repo_directory}}" --arg "url={{url}}" --arg "directory={{directory}}" --arg "do_legacy_replace={{do_legacy_replace}}" --arg "filepath={{filepath}}" --arg "files={{files}}" --arg "overwrite={{overwrite}}" --arg "repo={{repo}}" --arg "target={{target}}" --arg "use_active_only={{use_active_only}}" --arg "filter_glob={{filter_glob}}"
+ARGS:
+  - {name: op, type: enum, values: [disable, install, install_files, install_marked, obsolete_marked, show_clear, show_set, show_settings, theme_disable, theme_enable, uninstall, uninstall_marked, uninstall_system, upgrade_all]}
+  - {name: pkg_id, type: text}
+  - {name: repo_index, type: int}
+  - {name: enable_on_install, type: text}
+  - {name: repo_directory, type: text}
+  - {name: url, type: text}
+  - {name: directory, type: text}
+  - {name: do_legacy_replace, type: text}
+  - {name: filepath, type: text}
+  - {name: files, type: text}
+  - {name: overwrite, type: text}
+  - {name: repo, type: text}
+  - {name: target, type: text}
+  - {name: use_active_only, type: text}
+  - {name: filter_glob, type: text}

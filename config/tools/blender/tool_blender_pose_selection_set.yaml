@@ -1,0 +1,12 @@
+tool: "blender_pose_selection_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a bone selection set: add | add_and_assign | assign | copy | delete_all | deselect | move | paste | remove | remove_bones | select | unassign (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "pose.selection_set_{{op}}" --arg "direction={{direction}}" --arg "selection_set_index={{selection_set_index}}"
+ARGS:
+  - {name: op, type: enum, values: [add, add_and_assign, assign, copy, delete_all, deselect, move, paste, remove, remove_bones, select, unassign]}
+  - {name: direction, type: text}
+  - {name: selection_set_index, type: int}

@@ -1,0 +1,12 @@
+tool: "blender_node_add_reroute"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a reroute node"
+machine: blender
+op: node.add_reroute
+ARGS:
+  - {name: path, type: text}
+  - {name: cursor, type: int}
+

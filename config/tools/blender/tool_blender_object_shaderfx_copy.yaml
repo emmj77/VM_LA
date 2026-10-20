@@ -1,0 +1,11 @@
+tool: "blender_object_shaderfx_copy"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate effect at the same position in the stack"
+machine: blender
+op: object.shaderfx_copy
+ARGS:
+  - {name: shaderfx, type: text}
+

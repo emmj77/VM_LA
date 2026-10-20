@@ -1,0 +1,11 @@
+tool: "blender_pose_reveal"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reveal all bones hidden in Pose Mode"
+machine: blender
+op: pose.reveal
+ARGS:
+  - {name: select, type: text}          # true|false, vide pour ne rien poser
+

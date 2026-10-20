@@ -1,0 +1,14 @@
+tool: "blender_uv_select_linked_pick"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all UV vertices linked under the mouse"
+machine: blender
+op: uv.select_linked_pick
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: delimit, type: text}          # un de : SEAM | SHARP | MATERIAL
+  - {name: location, type: text}          # 2 valeurs separees par des virgules
+

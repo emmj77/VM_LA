@@ -1,0 +1,11 @@
+tool: "blender_mesh_uvs_reverse"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Flip direction of UV coordinates inside faces"
+machine: blender
+op: mesh.uvs_reverse
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

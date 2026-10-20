@@ -1,0 +1,97 @@
+tool: "coplay_vfx_particle"
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a particle system: clear | info | pause | play | restart | stop (op picks which)"
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  clear)
+    set -f
+    set -- vfx particle clear
+    case "{{with_children}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'with_children')" >&2; exit 1 ;; esac
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'vfx particle clear')" >&2; exit 1; }
+    [ "{{with_children}}" = true ] && set -- "$@" --with-children
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  info)
+    set -f
+    set -- vfx particle info
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'vfx particle info')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  pause)
+    set -f
+    set -- vfx particle pause
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'vfx particle pause')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  play)
+    set -f
+    set -- vfx particle play
+    case "{{with_children}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'with_children')" >&2; exit 1 ;; esac
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'vfx particle play')" >&2; exit 1; }
+    [ "{{with_children}}" = true ] && set -- "$@" --with-children
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  restart)
+    set -f
+    set -- vfx particle restart
+    case "{{with_children}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'with_children')" >&2; exit 1 ;; esac
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'vfx particle restart')" >&2; exit 1; }
+    [ "{{with_children}}" = true ] && set -- "$@" --with-children
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  stop)
+    set -f
+    set -- vfx particle stop
+    case "{{with_children}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'with_children')" >&2; exit 1 ;; esac
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'vfx particle stop')" >&2; exit 1; }
+    [ "{{with_children}}" = true ] && set -- "$@" --with-children
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+ARGS:
+  - {name: op, type: enum, values: [clear, info, pause, play, restart, stop]}
+  - {name: target, type: text}
+  - {name: component_index, type: int}
+  - {name: search_method, type: text}
+  - {name: with_children, type: text}

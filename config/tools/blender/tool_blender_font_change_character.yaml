@@ -1,0 +1,11 @@
+tool: "blender_font_change_character"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change font character code"
+machine: blender
+op: font.change_character
+ARGS:
+  - {name: delta, type: int}
+

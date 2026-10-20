@@ -1,0 +1,15 @@
+tool: "blender_image_open_images"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: image.open_images
+ARGS:
+  - {name: directory, type: text}
+  - {name: files, type: text}
+  - {name: relative_path, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_sequence_detection, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_udim_detection, type: text}          # true|false, vide pour ne rien poser
+

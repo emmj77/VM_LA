@@ -1,0 +1,40 @@
+tool: "unity_editors_prune"
+date: "2026-10-18"
+tags: ["unity", "cli", "editors"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Find editors no registered project uses, and optionally uninstall them"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- editors prune --no-banner --no-pager --non-interactive
+  case "{{remove}}" in ''|true|false) ;; *) printf '%s\n' "$(msg remove_true_false)" >&2; exit 1 ;; esac
+  case "{{yes}}" in ''|true|false) ;; *) printf '%s\n' "$(msg yes_true_false)" >&2; exit 1 ;; esac
+  case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg force_true_false)" >&2; exit 1 ;; esac
+  case "{{remove_missing}}" in ''|true|false) ;; *) printf '%s\n' "$(msg remove_missing_true_false)" >&2; exit 1 ;; esac
+
+  [ "{{remove}}" = true ] && set -- "$@" --remove
+  [ "{{yes}}" = true ] && set -- "$@" --yes
+  [ "{{force}}" = true ] && set -- "$@" --force
+  [ "{{remove_missing}}" = true ] && set -- "$@" --remove-missing
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_editors_prune_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: remove, type: text}   # true pour poser --remove ; Uninstall the unused editors (default is report-only)
+  - {name: yes, type: text}   # true pour poser --yes ; Skip the confirmation prompt
+  - {name: force, type: text}   # true pour poser --force ; Remove even when the running-editor check cannot be completed
+  - {name: remove_missing, type: text}   # true pour poser --remove-missing ; Remove registered editors whose install path no longer exists (nothing
+

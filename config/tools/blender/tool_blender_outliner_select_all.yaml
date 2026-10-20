@@ -1,0 +1,11 @@
+tool: "blender_outliner_select_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Toggle the Outliner selection of items"
+machine: blender
+op: outliner.select_all
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT
+

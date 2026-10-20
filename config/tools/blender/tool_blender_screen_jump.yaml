@@ -1,0 +1,13 @@
+tool: "blender_screen_jump"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a timeline jump: frame | keyframe | marker | time (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "screen.{{op}}_jump" --arg "next={{next}}" --arg "backward={{backward}}" --arg "end={{end}}"
+ARGS:
+  - {name: op, type: enum, values: [frame, keyframe, marker, time]}
+  - {name: next, type: text}
+  - {name: backward, type: text}
+  - {name: end, type: text}

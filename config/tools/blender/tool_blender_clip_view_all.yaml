@@ -1,0 +1,11 @@
+tool: "blender_clip_view_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "View whole image with markers"
+machine: blender
+op: clip.view_all
+ARGS:
+  - {name: fit_view, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,12 @@
+tool: "blender_node_delete_copy_reconnect"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy nodes to clipboard, remove and reconnect them."
+machine: blender
+op: node.delete_copy_reconnect
+ARGS:
+  - {name: NODE_OT_clipboard_copy, type: text}
+  - {name: NODE_OT_delete_reconnect, type: text}
+

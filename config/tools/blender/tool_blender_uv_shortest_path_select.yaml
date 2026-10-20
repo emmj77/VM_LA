@@ -1,0 +1,16 @@
+tool: "blender_uv_shortest_path_select"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select shortest path between two vertices/edges/faces"
+machine: blender
+op: uv.shortest_path_select
+ARGS:
+  - {name: use_face_step, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_topology_distance, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_fill, type: text}          # true|false, vide pour ne rien poser
+  - {name: skip, type: int}
+  - {name: nth, type: int}
+  - {name: offset, type: int}
+

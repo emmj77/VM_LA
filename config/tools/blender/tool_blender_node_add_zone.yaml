@@ -1,0 +1,16 @@
+tool: "blender_node_add_zone"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: node.add_zone
+ARGS:
+  - {name: settings, type: text}
+  - {name: use_transform, type: text}          # true|false, vide pour ne rien poser
+  - {name: offset, type: text}          # 2 valeurs separees par des virgules
+  - {name: input_node_type, type: text}
+  - {name: output_node_type, type: text}
+  - {name: add_default_geometry_link, type: text}          # true|false, vide pour ne rien poser
+

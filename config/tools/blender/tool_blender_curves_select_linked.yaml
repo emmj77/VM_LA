@@ -1,0 +1,11 @@
+tool: "blender_curves_select_linked"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all points in curves with any point selection"
+machine: blender
+op: curves.select_linked
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

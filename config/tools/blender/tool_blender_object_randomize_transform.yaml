@@ -1,0 +1,19 @@
+tool: "blender_object_randomize_transform"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Randomize objects location, rotation, and scale"
+machine: blender
+op: object.randomize_transform
+ARGS:
+  - {name: random_seed, type: int}
+  - {name: use_delta, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_loc, type: text}          # true|false, vide pour ne rien poser
+  - {name: loc, type: text}          # 3 valeurs separees par des virgules
+  - {name: use_rot, type: text}          # true|false, vide pour ne rien poser
+  - {name: rot, type: text}          # 3 valeurs separees par des virgules
+  - {name: use_scale, type: text}          # true|false, vide pour ne rien poser
+  - {name: scale_even, type: text}          # true|false, vide pour ne rien poser
+  - {name: scale, type: text}          # 3 valeurs separees par des virgules
+

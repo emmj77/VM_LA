@@ -1,0 +1,15 @@
+tool: "blender_sculpt_paint_mask_extract"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new mesh object from the current paint mask"
+machine: blender
+op: sculpt.paint_mask_extract
+ARGS:
+  - {name: mask_threshold, type: text}
+  - {name: add_boundary_loop, type: text}          # true|false, vide pour ne rien poser
+  - {name: smooth_iterations, type: int}
+  - {name: apply_shrinkwrap, type: text}          # true|false, vide pour ne rien poser
+  - {name: add_solidify, type: text}          # true|false, vide pour ne rien poser
+

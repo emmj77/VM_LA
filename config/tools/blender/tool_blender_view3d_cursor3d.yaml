@@ -1,0 +1,12 @@
+tool: "blender_view3d_cursor3d"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the location of the 3D cursor"
+machine: blender
+op: view3d.cursor3d
+ARGS:
+  - {name: use_depth, type: text}          # true|false, vide pour ne rien poser
+  - {name: orientation, type: text}          # un de : NONE | VIEW | XFORM | GEOM
+

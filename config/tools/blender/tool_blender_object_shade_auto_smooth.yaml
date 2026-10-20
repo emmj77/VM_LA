@@ -1,0 +1,12 @@
+tool: "blender_object_shade_auto_smooth"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add modifier to automatically set the sharpness of mesh edges based on the angle between the neighboring faces"
+machine: blender
+op: object.shade_auto_smooth
+ARGS:
+  - {name: use_auto_smooth, type: text}          # true|false, vide pour ne rien poser
+  - {name: angle, type: text}
+

@@ -1,0 +1,13 @@
+tool: "blender_wm_xr_navigation_reset"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset VR navigation deltas relative to session base pose"
+machine: blender
+op: wm.xr_navigation_reset
+ARGS:
+  - {name: location, type: text}          # true|false, vide pour ne rien poser
+  - {name: rotation, type: text}          # true|false, vide pour ne rien poser
+  - {name: scale, type: text}          # true|false, vide pour ne rien poser
+

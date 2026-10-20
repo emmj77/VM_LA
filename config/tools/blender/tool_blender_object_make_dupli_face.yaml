@@ -1,0 +1,11 @@
+tool: "blender_object_make_dupli_face"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Convert objects into instanced faces"
+machine: blender
+op: object.make_dupli_face
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_ui_view_item_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete selected list item"
+machine: blender
+op: ui.view_item_delete
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

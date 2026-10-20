@@ -1,0 +1,19 @@
+tool: "blender_mesh_loop_select"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select a loop of connected edges"
+machine: blender
+op: mesh.loop_select
+ARGS:
+  - {name: delimit_edge_loop, type: text}          # un de : SEAM | SHARP | NGONS | INNER_CORNERS | OUTER_CORNERS
+  - {name: delimit_face_loop, type: text}          # un de : SEAM | SHARP | MATERIAL
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: object_index, type: int}
+  - {name: edge_index, type: int}
+  - {name: vert_index, type: int}
+  - {name: face_index, type: int}
+

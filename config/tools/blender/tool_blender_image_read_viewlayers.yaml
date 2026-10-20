@@ -1,0 +1,11 @@
+tool: "blender_image_read_viewlayers"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Read all the current scene's view layers from cache, as needed"
+machine: blender
+op: image.read_viewlayers
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

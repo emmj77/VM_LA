@@ -1,0 +1,11 @@
+tool: "blender_outliner_show_hierarchy"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Open all object entries and close all others"
+machine: blender
+op: outliner.show_hierarchy
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

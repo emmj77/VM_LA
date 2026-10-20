@@ -1,0 +1,11 @@
+tool: "blender_armature_separate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Isolate selected bones into a separate armature"
+machine: blender
+op: armature.separate
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

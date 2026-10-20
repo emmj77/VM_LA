@@ -1,0 +1,11 @@
+tool: "blender_paint_face_vert_reveal"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reveal hidden faces and vertices"
+machine: blender
+op: paint.face_vert_reveal
+ARGS:
+  - {name: select, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,11 @@
+tool: "blender_anim_copy_driver_button"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy the driver for the highlighted button"
+machine: blender
+op: anim.copy_driver_button
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

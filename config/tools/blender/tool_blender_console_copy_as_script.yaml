@@ -1,0 +1,11 @@
+tool: "blender_console_copy_as_script"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy the console contents for use in a script"
+machine: blender
+op: console.copy_as_script
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

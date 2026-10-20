@@ -1,0 +1,11 @@
+tool: "blender_wm_quit_blender"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Quit Blender"
+machine: blender
+op: wm.quit_blender
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

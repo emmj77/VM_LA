@@ -1,0 +1,11 @@
+tool: "blender_object_grease_pencil_time_modifier_segment_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a segment to the time modifier"
+machine: blender
+op: object.grease_pencil_time_modifier_segment_add
+ARGS:
+  - {name: modifier, type: text}
+

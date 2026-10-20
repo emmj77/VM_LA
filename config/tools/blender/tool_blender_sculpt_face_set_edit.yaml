@@ -1,0 +1,14 @@
+tool: "blender_sculpt_face_set_edit"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Edits the current active face set"
+machine: blender
+op: sculpt.face_set_edit
+ARGS:
+  - {name: active_face_set, type: int}
+  - {name: mode, type: text}          # un de : GROW | SHRINK | DELETE_GEOMETRY | FAIR_POSITIONS | FAIR_TANGENCY
+  - {name: strength, type: text}
+  - {name: modify_hidden, type: text}          # true|false, vide pour ne rien poser
+

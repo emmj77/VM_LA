@@ -1,0 +1,42 @@
+tool: "blender_graph_sound_to_samples"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Bakes a sound wave to samples on selected channels"
+machine: blender
+op: graph.sound_to_samples
+ARGS:
+  - {name: filepath, type: text}
+  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_backup, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_image, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_movie, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_python, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_font, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_sound, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_text, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_archive, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_btx, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_alembic, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_usd, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_obj, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_volume, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blenlib, type: text}          # true|false, vide pour ne rien poser
+  - {name: filemode, type: int}
+  - {name: show_multiview, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_multiview, type: text}          # true|false, vide pour ne rien poser
+  - {name: display_type, type: text}          # un de : DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
+  - {name: sort_method, type: text}          # un de : 
+  - {name: low, type: text}
+  - {name: high, type: text}
+  - {name: attack, type: text}
+  - {name: release, type: text}
+  - {name: threshold, type: text}
+  - {name: use_accumulate, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_additive, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_square, type: text}          # true|false, vide pour ne rien poser
+  - {name: sthreshold, type: text}
+

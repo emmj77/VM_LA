@@ -1,0 +1,29 @@
+# LE JEU DE JUGEMENT : vingt-six demandes ecrites a la main, reparties sur les DIX familles,
+# qui n entrent dans AUCUN corpus d apprentissage. C est sur celles-la qu on dit si le filtre
+# juge une demande, ou s il devine.
+__label__READ donne moi la tete du canon
+__label__READ qu est ce que contient ce dossier
+__label__READ affiche les vingt dernieres lignes du journal
+__label__WRITE corrige la faute de la ligne 40 du readme
+__label__WRITE renomme le fichier en config.yaml
+__label__WRITE ajoute un paragraphe a la fin du document
+__label__MANAGE redemarre le service du dashboard
+__label__MANAGE fais moi un backup du projet avant de continuer
+__label__MANAGE installe ffmpeg depuis les depots
+__label__REPLY explique moi pourquoi le tour a echoue
+__label__REPLY tu as fini
+__label__REPLY c est bon, continue
+__label__PLAN mets a jour le plan de ce tour
+__label__PLAN qu est ce qui reste a faire sur le chantier
+__label__PLAN note cette decision dans la memoire
+__label__VISION lis ce qui est ecrit sur cette capture
+__label__VISION qu est ce qu il y a sur l ecran
+__label__BLENDER cree un cube de deux metres et rends le lisse
+__label__BLENDER exporte la scene en fbx
+__label__BLENDER ajoute un materiau bleu sur l objet
+__label__UNITY compile le projet unity
+__label__UNITY ouvre l editeur du jeu
+__label__KRITA exporte le dessin en png
+__label__KRITA change la couleur du pinceau
+__label__IMAGE genere une image de dragon
+__label__IMAGE transforme ce croquis en modele 3d

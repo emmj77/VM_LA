@@ -1,0 +1,11 @@
+tool: "blender_view3d_object_as_camera"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the active object as the active camera for this view or scene"
+machine: blender
+op: view3d.object_as_camera
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

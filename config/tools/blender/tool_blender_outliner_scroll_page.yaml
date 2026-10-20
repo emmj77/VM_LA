@@ -1,0 +1,11 @@
+tool: "blender_outliner_scroll_page"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Scroll page up or down"
+machine: blender
+op: outliner.scroll_page
+ARGS:
+  - {name: up, type: text}          # true|false, vide pour ne rien poser
+

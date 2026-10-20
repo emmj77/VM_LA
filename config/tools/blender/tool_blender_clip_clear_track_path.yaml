@@ -1,0 +1,12 @@
+tool: "blender_clip_clear_track_path"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear tracks after/before current position or clear the whole track"
+machine: blender
+op: clip.clear_track_path
+ARGS:
+  - {name: action, type: text}          # un de : UPTO | REMAINED | ALL
+  - {name: clear_active, type: text}          # true|false, vide pour ne rien poser
+

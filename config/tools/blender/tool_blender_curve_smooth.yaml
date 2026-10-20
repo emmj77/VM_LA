@@ -1,0 +1,11 @@
+tool: "blender_curve_smooth"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Flatten angles of selected points"
+machine: blender
+op: curve.smooth
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,11 @@
+tool: "blender_wm_xr_session_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Open a view for use with virtual reality headsets, or close it if already opened"
+machine: blender
+op: wm.xr_session_toggle
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

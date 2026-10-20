@@ -1,0 +1,11 @@
+tool: "blender_screen_space_context_cycle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Cycle through the editor context by activating the next/previous one"
+machine: blender
+op: screen.space_context_cycle
+ARGS:
+  - {name: direction, type: text}          # un de : PREV | NEXT
+

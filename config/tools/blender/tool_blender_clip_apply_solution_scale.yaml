@@ -1,0 +1,11 @@
+tool: "blender_clip_apply_solution_scale"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Apply scale on solution itself to make distance between selected tracks equals to desired"
+machine: blender
+op: clip.apply_solution_scale
+ARGS:
+  - {name: distance, type: text}
+

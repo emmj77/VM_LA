@@ -1,0 +1,11 @@
+tool: "blender_clip_track_to_empty"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create an Empty object which will be copying movement of active track"
+machine: blender
+op: clip.track_to_empty
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

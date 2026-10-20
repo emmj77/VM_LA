@@ -1,0 +1,11 @@
+tool: "blender_graph_select_less"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Deselect keyframes on ends of selection islands"
+machine: blender
+op: graph.select_less
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

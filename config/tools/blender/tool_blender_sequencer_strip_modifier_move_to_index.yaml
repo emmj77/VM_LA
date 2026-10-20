@@ -1,0 +1,12 @@
+tool: "blender_sequencer_strip_modifier_move_to_index"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change the strip modifier's index in the stack so it evaluates after the set number of others"
+machine: blender
+op: sequencer.strip_modifier_move_to_index
+ARGS:
+  - {name: modifier, type: text}
+  - {name: index, type: int}
+

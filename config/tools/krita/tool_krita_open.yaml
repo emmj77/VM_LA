@@ -1,0 +1,23 @@
+tool: "krita_open"
+date: "2026-10-17"
+tags: ["krita", "krita_open"]
+doc: krita
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "opens a drawing in Krita and reports its size"
+COMMAND: |
+  SERVICE=$(dash "$ROOT/config/engine/engine.sh" carrier krita-url) || exit 1
+  SRC="$W/{{source}}"
+  [ -f "$SRC" ] || { printf '%s\n' "$(msg drawing_missing)""$SRC" >&2; exit 1; }
+  case "$SRC" in
+    *.kra|*.krz|*.png|*.jpg|*.jpeg) ;;
+    *) printf '%s\n' "$(msg krita_does_not_open)""$SRC" >&2; exit 1 ;;
+  esac
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$(jq -cn --arg p "$SRC" '{action:"open_file",params:{path:$p}}')" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf 'ouvert : %s (%s x %s)\n' "$(printf '%s' "$REP" | jq -r .path)" "$(printf '%s' "$REP" | jq -r .width)" "$(printf '%s' "$REP" | jq -r .height)"
+
+ARGS:
+  - {name: source, type: path}                 # le dessin, relatif a l'espace du skill

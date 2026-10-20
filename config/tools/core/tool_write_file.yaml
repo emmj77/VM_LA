@@ -1,0 +1,30 @@
+tool: "write_file"
+date: "2026-10-17"
+tags: ["write_file", "ecriture"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "writes a file in the write perimeter (new, append, replace) and creates parent folders"
+COMMAND: |
+  C="{{path}}"
+  [ -n "$C" ] || { printf '%s\n' "$(msg write_file_wants_path)" >&2; exit 1; }
+  case "{{mode}}" in
+    new)
+      [ -e "$W/$C" ] && { printf '%s\n' "$(msg file_already_exists)""$C" >&2; exit 1; }
+      mkdir -p -- "$(dirname "$W/$C")" 2>/dev/null || { printf '%s\n' "$(msg parent_directories_cannot_be)""$C" >&2; exit 1; }
+      cat > "$W/$C"
+      ;;
+    append)
+      [ -f "$W/$C" ] || { printf '%s\n' "$(msg file_missing)""$C" >&2; exit 1; }
+      cat >> "$W/$C"
+      ;;
+    replace)
+      [ -f "$W/$C" ] || { printf '%s\n' "$(msg file_missing)""$C" >&2; exit 1; }
+      cat > "$W/$C"
+      ;;
+  esac
+
+ARGS:
+  - {name: path, type: path}
+  - {name: mode, type: enum, values: [new, append, replace]}
+  - {name: text, type: text, stdin: true}

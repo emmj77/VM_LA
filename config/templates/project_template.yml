@@ -1,0 +1,25 @@
+project: "{{name}}"          # le nom du projet
+path: "{{path}}"            # le chemin du projet : ou il vit
+date: "{{date}}"
+tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE le projet
+
+RULES:                       # l'etat du projet, et ce qui le borne
+  enabled: true              # le projet est-il actif ? (true | false)
+  writeable: true            # le fichier est-il editable ? (true | false)
+  # ... deux ou trois autres choses a decider (a completer)
+
+SUMMARY:                     # LE CONTEXTE : ce qu'est ce projet (10 LIGNES MAXIMUM)
+  101: "..."
+  102: "..."
+
+PROJECT_PLAN:                # LE GRAND PLAN : le chantier du projet, ecrit a son chargement
+  400: "PLAN {{name}} : <ce que le projet doit produire>"   # le but
+  401: "[progress] <le point en cours>"                    # le premier point OUVRE en progress
+  402: "[todo] <un point pas commence>"                     # les etats : todo, progress, complete
+  # Il se lit et s ecrit avec la meme brique que le petit plan : config/engine/plan.sh big ...
+  # Il ne s efface jamais tout seul : un grand plan se CHANGE (change_big_todo), avec validation.
+
+SKILLS:                      # LE TOOLSET DU PROJET = une liste de SKILLS (pas des tools !)
+  1: "skill-un"              # une ligne, un nom de skill que le projet ouvre
+  2: "skill-deux"
+  3: "skill-trois"

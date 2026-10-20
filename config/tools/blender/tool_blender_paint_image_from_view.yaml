@@ -1,0 +1,11 @@
+tool: "blender_paint_image_from_view"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Make an image from biggest 3D view for reprojection"
+machine: blender
+op: paint.image_from_view
+ARGS:
+  - {name: filepath, type: text}
+

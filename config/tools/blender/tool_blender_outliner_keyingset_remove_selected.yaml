@@ -1,0 +1,11 @@
+tool: "blender_outliner_keyingset_remove_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove selected items (blue-gray rows) from active Keying Set"
+machine: blender
+op: outliner.keyingset_remove_selected
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

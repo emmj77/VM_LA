@@ -1,0 +1,11 @@
+tool: "blender_object_shaderfx_move_up"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move effect up in the stack"
+machine: blender
+op: object.shaderfx_move_up
+ARGS:
+  - {name: shaderfx, type: text}
+

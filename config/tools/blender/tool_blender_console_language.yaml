@@ -1,0 +1,11 @@
+tool: "blender_console_language"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the current language for this console"
+machine: blender
+op: console.language
+ARGS:
+  - {name: language, type: text}
+

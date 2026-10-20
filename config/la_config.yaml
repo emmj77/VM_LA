@@ -1,0 +1,528 @@
+
+engines:
+  - provider: ollama-cloud
+    alias: ollama-cloud
+    post: https://ollama.com/v1/chat/completions
+    header: Authorization
+    variable: OLLAMA_API_KEY
+    model: deepseek-v4.1-flash
+    active: "true"
+    thinking: enabled
+    reasoning_effort: high
+    reasoning_field: reasoning
+    context: 1000000
+    stream: true
+    max_tokens: 32768
+    tool_choice: required
+  - provider: deepseek
+    alias: pro
+    post: https://api.deepseek.com/chat/completions
+    header: Authorization
+    variable: DEEPSEEK_API_KEY
+    model: deepseek-v4-pro
+    active: "false"
+    max_tokens: 32768
+    tool_choice: auto
+    thinking: enabled
+    reasoning_effort: medium
+    reasoning_echo: true
+  - provider: xiaomi-mimo
+    alias: mimo
+    post: https://api.xiaomimimo.com/v1/chat/completions
+    header: api-key
+    variable: MIMO_API_KEY
+    model: mimo-v2.6-flash
+    active: "false"
+
+
+agents:
+  main: "agent_one"                   # L'AGENT PRINCIPAL : le head de cette boucle
+  names: "agent_one agent_001_jarvis agent_002_paul agent_003_albert agent_004_eleonore agent_005_claire"
+  name_human: "user"                  # le nom que le pont pose pour le texte et la photo
+  name_voice: "voice"                 # le nom que le pont pose pour le telephone
+  run_chars: 120                      # combien de signes de la demande entrent dans la marque
+  board_lines: 24                     # le plafond du tableau : une reecriture, jamais un rm (loi 2013)
+  body_bytes: 1024                    # le corps d'un message, borne declaree (loi 2010)
+  line_bytes: 1600                    # la ligne entiere (mesure M1 : 4096 octets est sure)
+
+secrets:
+  - OLLAMA_API_KEY
+  - DEEPSEEK_API_KEY
+  - MIMO_API_KEY
+  - TELEGRAM_BOT_TOKEN
+  - TELEGRAM_CHAT_ID
+  - GITHUB_TOKEN
+
+llama:
+  bin: /home/moussa/Applications/llama.cpp/build_cuda/bin/llama-server
+  gguf: /home/moussa/LLM_GGUF                  # le dossier des modeles .gguf
+  threads: 8                                   # le routeur, quand le preset n en declare pas
+
+blender:                                       # Blender par bpy, en --background : le binaire et
+  bin: /home/moussa/Applications/blender-5.2.2-linux-x64/blender   # le temps qu on lui laisse
+  timeout: 110                                 # secondes : ce qu on laisse a un geste avant de rendre la main
+
+krita:                                         # Krita parle par son plugin (kritamcp, HTTP)
+  host: 127.0.0.1
+  port: 5678
+
+unity:                                         # LE CLI UNITY EST DEBRANCHE (20/10) : les tools de la
+  cli: ""                                      # famille refusent en le nommant, jamais en silence.
+  mcp: ""                                      # Rebrancher = poser les deux chemins ici, rien d autre.
+
+models:                                       # LE ROUTEUR : UN seul llama-server, TROIS modeles
+  host: 127.0.0.1
+  port: 8091                                  # UNE porte pour les trois (embed, rerank, local)
+  dir: /home/moussa/LLM_GGUF
+  preset: config/llama_preset.ini             # les reglages PAR modele
+  max: 3                                      # les trois tiennent en meme temps
+  sleep: 120                                  # ... puis rendent leur memoire apres 2 min d oisivete
+  embed: harrier-oss-v1-270M-Q8_0             # le nom que les clients envoient dans "model"
+  rerank: bge-reranker-v2-m3-Q4_K_M
+  local: LFM2.5-1.2B-Instruct-Q4_K_M
+  pick: 60                                    # au-dela de 60 candidats, le sens pre-selectionne
+
+
+asr:                                          # l oreille (NeMo-Speech.cpp, parakeet)
+  root: /home/moussa/Applications/NeMo-Speech.cpp
+  cli: build/cpu-server/bin/nemo-speech         # relatif a root
+  model: models/parakeet-tdt-0.6b-v3.q8_0.gguf  # relatif a root
+  host: 127.0.0.1
+  port: 8080
+  threads: 4
+
+tts:                                          # la voix (sherpa-onnx, lancee par uv)
+  uv: /home/moussa/.local/bin/uv
+  cache: /home/moussa/.cache/uv                 # le cache de uv : sinon il se met dans le home
+  model_dir: "~/Applications/sherpa-onnx/voix/vits-piper-fr_FR-upmc-medium"
+  port: 8090
+  sid: 1
+  threads: 8
+
+dashboard:
+  host: 127.0.0.1
+  port: 8770
+  poll_ms: 1500                   # la cadence de rafraichissement du chat et de l entete
+  feed_turns: 12                  # combien de tours l historique du chat relit au demarrage
+  units: [la-models, la-asr, la-tts, la-dash]
+
+permanent:
+  - reply
+  - kill
+  - tools_list
+  - sleep
+  - skill_list
+  - skill_view
+  - load_skill
+  - project_list
+  - project_view
+  - load_project
+  - search_memory
+  - load_memory
+  - search_sessions
+  - read_return
+
+with_skill:
+  - recall
+
+with_project:
+  - unload_project
+
+loop:
+  window: 4                  # la fenetre du tour, en MESSAGES (loi 809)
+  msg_max: 8000              # aucun message plus gros : tete ET queue gardees
+  msg_budget: 32000          # le budget de tout ce que le modele lit, tetes systeme a part
+  max_turns: 400             # la borne de securite des tours
+  max_tokens: 0              # la borne de jetons d une task (0 = aucune)
+  max_calls: 0               # la borne d appels d outil d une task (0 = aucune)
+  max_seconds: 0             # la borne de temps mural d une task, en secondes (0 = aucune)
+  plan_every: 10             # l imposition du plan, tous les N tours
+  update_every: 10           # la maj du grand plan puis du canon, tous les N tours
+  timeout: 600               # le delai de l appel au modele
+  share: 30                  # la part de tete du perimetre (loi 472) ; toolset ouvre le tour entier
+  speech_tries: 2            # combien de fois un message SANS parole est redemande
+  load_tries: 8              # combien de tentatives de chargement du modele avant d arreter
+  plan_family: "todo update_todo"   # la famille que le palier 2 ouvre
+  answer_tokens: 2048        # les jetons de la reponse quand l engine n en declare pas
+  error_chars: 200           # combien de signes d une erreur passent au journal
+  desc_chars: 40             # combien de signes d une description passent dans le perimetre
+
+second:
+  order: who project skill summary plan agents messages tools reads next task stamp
+  t_who_label: "== THE HUMAN =="
+  t_who_line: "you are talking with %s (%s) ; the agent answering is %s"
+  agents_lines: 8
+  agents_chars: 600
+  msg_lines: 14
+  msg_chars: 1200
+  msg_reserve_bytes: 260
+  msg_reserve_lines: 3
+  msg_head_bytes: 90                 # l'en-tete estime d'un message (« X wrote to me at ... : »)
+  task_lines: 1
+  task_chars: 160
+  plan_lines: 16
+  plan_chars: 900
+  stamp_lines: 1
+  stamp_chars: 120
+  resume_lines: 12
+  resume_chars: 800
+  tools_lines: 4
+  tools_chars: 200
+  skill_lines: 12
+  skill_chars: 800
+  next_lines: 3
+  next_chars: 240
+  reads_lines: 3
+  reads_chars: 240
+
+  t_project_label: "== THE ACTIVE PROJECT =="
+  t_project_state: "active project (state file) : %s"
+  t_project_loaded: "loaded project : %s"
+  t_project_path: "path : %s"
+  t_project_opens: "opens skills : %s"
+  t_project_opens_none: "opens skills : none declared ; the perimeter is wide"
+  t_no_project: "no project loaded : the perimeter is wide (every skill is reachable)"
+  t_summary_label: "summary :"
+  t_project_summary_none: "summary : none ; the project summary section is empty"
+  t_skill_label: "== THE ACTIVE SKILL =="
+  t_skill_state: "active skill (state file) : %s"
+  t_skill_loaded: "loaded skill : %s"
+  t_no_skill: "no skill loaded : the active skill is missing or nameless (%s)"
+  t_skill_summary_none: "summary : none ; the active skill summary section is empty"
+  t_model_label: "== THE LOCAL MODEL SUMMARY =="
+  t_model_written: "exchanges %s ; written %s"
+  t_model_none: "# no summary : %s is missing or empty. The model writes it, never here."
+  t_plan_label: "== THE LOADED SKILL PLAN =="
+  t_plan_missing: "the plan could not be obtained : the plan brick is missing (%s)"
+  t_plan_empty: "the plan could not be obtained : the plan brick returned nothing"
+  t_tools_label: "== THE TOOLS STATE =="
+  t_tools_family: "family open : %s"
+  t_tools_no_family: "no family open : the perimeter is wide"
+  t_tools_visible: "always visible : %s"
+  t_tools_none: "always visible : none declared (%s, permanent section)"
+  t_reads_label: "== HOW THE DEMAND READS =="
+  t_reads_judged: "judged_family : %s"
+  t_reads_unjudged: "judged_family : non juge -- le filtre n a pas appris (%s)"
+  t_next_label: "== THE NEXT INSTRUCTION =="
+  t_task_label: "== THE TASK =="
+  t_stamp_label: "== THE TIMESTAMP =="
+  t_stamp_line: "date %s  time %s  locale UTC"
+  t_agents_label: "== THE AGENTS =="
+  t_agents_line: "%s  pid %s  %s  task : %s"
+  t_agents_on: "active"
+  t_agents_off: "ended"
+  t_agents_idle: "%s  idle : no turn runs"
+  t_agents_none: "no agent is declared (agents: names, la_config)"
+  t_msg_label: "== THE MESSAGES =="
+  t_msg_count: "%s message(s) for me"
+  t_msg_none: "no message for me"
+  t_msg_nobody: "no board is readable (%s)"
+  t_msg_from: "%s wrote to me at %s :"
+  t_msg_wait: "%s and the following wait for the next call (the declared bound is reached)"
+  t_msg_lost: "MESSAGES WERE LOST before I read them : my watermark fell outside the board"
+
+forms:
+  head_bytes: 1000           # octets gardes en tete de la forme RESUME
+
+summary:
+  msg_chars: 1000            # ce qu on garde d un echange avant de le donner au compacteur
+  lines_max: 12
+  bytes_max: 1200
+  brief_lines: 2             # la forme breve : deux cotes, deux lignes chacun
+  brief_bytes: 200
+  input_max: 24000
+  tokens_max: 400
+  timeout: 300
+  temperature: 0.2
+  top_p: 0.9
+  repeat_penalty: 1.15
+  t_output: "You will summarize the tool output placed between the lines [[[ and ]]]. It may be JSON, a list of files or prose: summarize its CONTENT in French, do not copy it. At most %s lines and at most %s bytes. Write only the summary, without an introductory sentence."
+  t_exchange: "You will summarize an EXCHANGE between a human (ME) and an agent (AGENT), placed between the lines [[[ and ]]. Keep what MOVED FORWARD, the DECISIONS taken and the FILES modified. Invent nothing: what is not in the exchange is not written. At most %s lines and at most %s bytes. Write only the summary, without an introductory sentence."
+  t_frame_open: "[[["
+  t_frame_close: "]]]"
+  t_prime: "Summary :"
+
+note:
+  timeout: 20                # secondes : l attente du modele local pour la note de fin de tour
+  side_lines: 2
+  request_bytes: 4000
+  reply_bytes: 19000
+  t_human: "HUMAN REQUEST :"
+  t_agent: "AGENT REPLY :"
+  t_frame_human: "WHAT THE HUMAN ASKED, AND WHAT HE GOT"
+  t_frame_agent: "WHAT THE AGENT DID, AND WHERE IT STANDS"
+  t_empty_human: "the local model returned nothing on the human side"
+  t_empty_agent: "the local model returned nothing on the agent side"
+  t_no_vector: "note: no vector was posed (the embedder is silent on %s) : the entry stays readable by words"
+
+limits:
+  health_timeout: 3           # secondes : une sonde /health qui n a pas repondu a ce terme est muette
+  ping_timeout: 2             # secondes : la sonde courte (/health de la page, /ping du pont, la porte TLS)
+  bench_timeout: 120          # secondes : le banc du selecteur, quand le docteur le joue
+  tunnel_steps: 12            # au-dela, un tunnel de tool n est plus un tunnel : c est un roman
+  db_busy_ms: 5000            # millisecondes : sqlite attend ce temps avant de rendre SQLITE_BUSY
+  rerank_timeout: 15          # secondes : l attente du juge (reranker) sur une part de tete
+  frame_bytes: 400            # octets gardes pour les marques d un retour borne (tete ET queue)
+  stop_tries: 50              # fois 0,1 s : ce qu on attend qu un processus rende la main avant KILL
+  port_tries: 100             # fois 0,1 s : ce qu on attend qu un porteur (blender) ouvre sa porte
+  boot_tries: 40              # fois 0,25 s : ce qu on attend qu un service se leve au demarrage
+  engine_bytes: 4000         # ce que le moteur rend au harnais
+  engine_lines: 200
+  return_bytes: 4000          # au-dela, le retour garde son CHEMIN dans la base, pas son texte
+  engine_timeout: 600        # secondes : marge au-dessus du plus long delai interne
+  form_queue_bytes: 1000     # octets gardes en queue de la forme RESUME (la tete : forms:)
+  form_judge_bytes: 400      # ce que le reranker LIT de chaque retour pour le juger
+  form_demand_chars: 600     # ce qu on envoie du tour comme question au reranker
+  form_rerank_timeout: 5     # secondes d attente du juge
+
+paths:                                        # TOUS LES CHEMINS DU HARNAIS, NOMMES ICI ET NULLE
+  work: "work/"
+  state: "config/state/"
+  returns: "config/state/returns/"
+  programs: "config/programs/"
+  docs: "docs/"
+  usage: "config/usage.jsonl"                  # les jetons du tour (lu par le CLI et le tableau)
+  sessions: "config/sessions.db"               # le corps des sessions (lu par les trois clients)
+  chat: "config/agent_chat.jsonl"              # le tableau inter-agents (une ligne = un message)
+  seen: "config/%s.seen"                       # le filigrane d un agent, un fichier par agent
+  run: "config/%s.run"                         # la marque d un tour : pid, heure, tache
+  head_file: "config/second.head"              # la tete de l agent qui repond
+  session_start: "config/session.start"        # l heure de depart de la session
+  config: "config/la_config.yaml"              # LE fichier qui nomme tout
+  table: "config/la_tools.yaml"                # le registre des tools
+  engine: "config/engine/"                     # les briques
+  tools: "config/tools/"                       # les corps des tools
+  dashboard: "config/dashboard/"               # la page
+  gguf: "~/LLM_GGUF"                           # les modeles locaux
+  filter: "config/filter/family.bin"          # le filtre de famille
+  specs: ["projects/la/spec.yaml", "skills/la/spec.yaml"]   # le canon, par ordre
+  vision_log: "config/state/voir.log"
+  journal: "config/state/journal.jsonl"         # ce qui transite, tour par tour
+  memory_db: "config/memory.db"
+  reply_stream: "config/state/reply.stream"
+  loop: "config/engine/loop.sh"
+  plan_brick: "config/engine/plan.sh"
+  approval_brick: "config/engine/approval.sh"
+  stop: "config/state/stop"
+  say_queue: "config/state/say.queue"
+  spoken: "config/state/spoken.jsonl"
+  thinking: "config/state/thinking.jsonl"
+  audio: "config/audio/"
+  bridge_log: "config/state/bridge.log"
+  bridge_cert: "config/certs/bridge-cert.pem"
+  bridge_key: "config/certs/bridge-key.pem"
+  skill_active: "skills/.active"
+  project_active: "projects/.active"
+  widget: "config/widget.html"
+  widget_manifest: "config/widget.webmanifest"
+  widget_icon: "config/widget-icon.svg"
+  widget_sw: "config/widget-sw.js"
+
+download:                                     # la borne du tool download_file (il n a pas de
+  max_mb: 200
+
+approval:                                     # LA PORTE : quels gestes se signent, et combien de temps
+  window: 300                                 # le feu vert est frais 300 s, puis il ne vaut plus
+
+update:
+  log_lines: 20              # combien de commits l apercu de mise a jour montre (et compte)
+
+watcher:
+  limit: 40
+
+purge:
+  keep: 20                   # fichiers gardes (les plus recents)
+  min_minutes: 10            # jamais plus jeune que ca
+  max_mb: 200                # au-dela, les plus vieux partent
+
+board:
+  columns: 82
+  lines: 50
+  residents:
+    - {name: models, unit: la-models, port: models, probe: health}
+    - {name: asr, unit: la-asr, port: asr, probe: ready}
+    - {name: tts, unit: la-tts, port: tts, probe: health}
+    - {name: dash, unit: la-dash, port: dashboard, probe: health}
+  appoints:
+    - {name: bridge, port: bridge, probe: ping, word: "the app is off"}
+    - {name: vision, port: 1234, probe: health, word: "il nait a la demande"}
+  instruments:
+    - {name: tesseract, why: "l'OCR de read_text_in_img"}
+  carriers: [micro_vision.py]
+  forms: '[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)'
+
+tunnel:
+  port: 51820
+  iface: wg0
+
+bridge:
+  host: 127.0.0.1               # la porte claire
+  port: 8765
+  tls_host: ""                  # vide = l adresse du tailnet, calculee au demarrage (start_tls)
+  tls_port: 8766                # la porte chiffree
+  apk: /home/moussa/Applications/LA-app.apk
+  stt_timeout: 25            # secondes : la transcription d un mot de reveil
+  log_chars: 120             # combien de signes d un texte entrent au journal du pont
+  voice_bytes: 600           # au-dela, la reponse n est pas lue au telephone : elle est coupee a la phrase
+  audio_bytes: 16000000      # octets : la borne du corps audio accepte (une image disque n est pas un mot)
+  tls_wait: 30               # secondes : ce qu on attend que le tailnet donne son adresse au boot
+
+schema:
+  engine_choices:
+    thinking: ["", enabled, disabled]
+    reasoning_effort: ["", none, low, medium, high, max]
+    reasoning_field: ["", reasoning, reasoning_content]
+    stream: ["true", "false"]
+    reasoning_echo: ["true", "false"]
+    tool_choice: [auto, required, none]
+    max_tokens: ["1024", "2048", "4096", "8192", "16384", "32768", "65536"]
+  fields:
+  - section: loop
+    key: window
+    kind: int
+    min: 2
+    max: 40
+    step: 1
+    why: la fenetre du tour, en messages (loi 809)
+  - section: loop
+    key: max_turns
+    kind: int
+    min: 0
+    max: 400
+    why: la borne de securite des tours (0 = aucune)
+  - section: loop
+    key: msg_budget
+    kind: int
+    min: 4000
+    max: 128000
+    step: 4000
+    why: le budget en octets de tout ce que le modele lit
+  - section: loop
+    key: plan_every
+    kind: int
+    min: 1
+    max: 50
+    why: l imposition du plan, tous les N tours
+  - section: loop
+    key: update_every
+    kind: int
+    min: 1
+    max: 50
+    why: la mise a jour du grand plan et du canon, tous les N tours
+  - section: loop
+    key: share
+    kind: int
+    min: 0
+    max: 100
+    why: la part de tete du scope (loi 472)
+  - section: loop
+    key: speech_tries
+    kind: int
+    min: 1
+    max: 8
+    why: combien de fois un message sans parole est redemande
+  - section: second
+    key: order
+    kind: order
+    choices:
+    - project
+    - skill
+    - summary
+    - plan
+    - agents
+    - messages
+    - tools
+    - reads
+    - next
+    - task
+    - stamp
+    why: l ordre des sections du head secondaire, du plus stable au plus volatil
+  - section: second
+    key: agents_lines
+    kind: int
+    min: 3
+    max: 30
+    why: la fenetre des agents, en lignes
+  - section: second
+    key: agents_chars
+    kind: int
+    min: 200
+    max: 4000
+    step: 50
+    why: la fenetre des agents, en octets
+  - section: second
+    key: msg_lines
+    kind: int
+    min: 4
+    max: 60
+    why: la fenetre des messages, en lignes
+  - section: second
+    key: msg_chars
+    kind: int
+    min: 400
+    max: 6000
+    step: 100
+    why: la fenetre des messages, en octets
+  - section: second
+    key: plan_lines
+    kind: int
+    min: 4
+    max: 40
+    why: la fenetre du plan, en lignes
+  - section: second
+    key: tools_lines
+    kind: int
+    min: 1
+    max: 20
+    why: la fenetre des tools, en lignes
+  - section: agents
+    key: main
+    kind: choice
+    choices:
+    - agent_one
+    - agent_001_jarvis
+    - agent_002_paul
+    - agent_003_albert
+    - agent_004_eleonore
+    - agent_005_claire
+    why: 'l agent principal : l auteur d un tour quand le lanceur n en pose pas'
+  - section: agents
+    key: board_lines
+    kind: int
+    min: 8
+    max: 200
+    why: le plafond du tableau des agents (reecriture, jamais un rm)
+  - section: agents
+    key: body_bytes
+    kind: int
+    min: 128
+    max: 4096
+    step: 64
+    why: la borne d un message d agent
+  - section: agents
+    key: run_chars
+    kind: int
+    min: 20
+    max: 400
+    step: 10
+    why: combien de signes de la demande entrent dans la marque du tour
+  - section: dashboard
+    key: poll_ms
+    kind: int
+    min: 500
+    max: 10000
+    step: 100
+    why: la cadence de rafraichissement de cette page
+  - section: dashboard
+    key: feed_turns
+    kind: int
+    min: 2
+    max: 60
+    why: combien de tours l historique du chat relit
+  - section: bridge
+    key: port
+    kind: int
+    min: 1024
+    max: 65535
+    why: la porte du pont (le telephone s y connecte)
+

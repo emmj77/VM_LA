@@ -1,0 +1,12 @@
+tool: "blender_workspace"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a workspace: add | append_activate | delete | delete_all_others | duplicate | reorder_to_back | reorder_to_front | scene_pin_toggle (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "workspace.{{op}}" --arg "filepath={{filepath}}" --arg "idname={{idname}}"
+ARGS:
+  - {name: op, type: enum, values: [add, append_activate, delete, delete_all_others, duplicate, reorder_to_back, reorder_to_front, scene_pin_toggle]}
+  - {name: filepath, type: text}
+  - {name: idname, type: text}

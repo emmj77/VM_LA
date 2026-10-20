@@ -1,0 +1,11 @@
+tool: "blender_mesh_edge_face_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add an edge or face to selected"
+machine: blender
+op: mesh.edge_face_add
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

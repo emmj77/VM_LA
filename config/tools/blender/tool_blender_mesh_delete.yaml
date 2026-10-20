@@ -1,0 +1,11 @@
+tool: "blender_mesh_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete selected vertices, edges or faces"
+machine: blender
+op: mesh.delete
+ARGS:
+  - {name: type, type: text}          # un de : VERT | EDGE | FACE | EDGE_FACE | ONLY_FACE
+

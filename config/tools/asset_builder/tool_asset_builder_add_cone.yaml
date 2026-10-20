@@ -1,0 +1,40 @@
+tool: "asset_builder_add_cone"
+date: "2026-10-19"
+tags: ["asset_builder", "geom"]
+
+RULES:
+  enabled: true
+  timeout: 30
+
+DESCRIPTION: "adds a cone part (radius, height, segments)"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{id}}"
+  case "$A2" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_id_a2 "$A2")" >&2 ; exit 1 ;; esac
+  A3="{{r}}"
+  case "$A3" in ''|*[!0-9.-]*) printf '%s\n' "$(msg r_number_a3 "$A3")" >&2 ; exit 1 ;; esac
+  A4="{{h}}"
+  case "$A4" in ''|*[!0-9.-]*) printf '%s\n' "$(msg h_number_a4 "$A4")" >&2 ; exit 1 ;; esac
+  A5="{{seg}}"
+  case "$A5" in ''|*[!0-9]*) printf '%s\n' "$(msg seg_integer_a5 "$A5")" >&2 ; exit 1 ;; esac
+  A6="{{pos}}"
+  case "$A6" in ''|*[!0-9.,-]*) printf '%s\n' "$(msg pos_must_be_x "$A6")" >&2 ; exit 1 ;; esac
+  A7="{{rot}}"
+  case "$A7" in ''|*[!0-9.,-]*) printf '%s\n' "$(msg rot_must_be_x "$A7")" >&2 ; exit 1 ;; esac
+  A8="{{mat}}"
+  AB_HOME="$W/asset_builder" "$B" add_cone --name "$A1" --id "$A2" --r "$A3" --h "$A4" --seg "$A5" --pos "$A6" --rot "$A7" --mat "$A8"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: id, type: text}
+  - {name: r, type: text}
+  - {name: h, type: text}
+  - {name: seg, type: int}
+  - {name: pos, type: text}
+  - {name: rot, type: text}
+  - {name: mat, type: text}

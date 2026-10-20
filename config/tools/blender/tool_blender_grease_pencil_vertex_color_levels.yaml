@@ -1,0 +1,13 @@
+tool: "blender_grease_pencil_vertex_color_levels"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Adjust levels of vertex colors"
+machine: blender
+op: grease_pencil.vertex_color_levels
+ARGS:
+  - {name: mode, type: text}          # un de : STROKE | FILL | BOTH
+  - {name: offset, type: text}
+  - {name: gain, type: text}
+

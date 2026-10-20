@@ -1,0 +1,17 @@
+tool: "mkdir"
+date: "2026-10-18"
+tags: ["mkdir", "ecriture", "dir"]
+doc: socle
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "creates a folder (and its parents) in the skill write perimeter"
+COMMAND: |
+  C="{{path}}"
+  [ -n "$C" ] || { printf '%s\n' "$(msg mkdir_wants_path)" >&2; exit 1; }
+  [ -e "$W/$C" ] && [ ! -d "$W/$C" ] && { printf '%s\n' "$(msg path_exists_not_directory)""$C" >&2; exit 1; }
+  mkdir -p -- "$W/$C" 2>/dev/null || { printf '%s\n' "$(msg directory_cannot_be_created)""$W/$C" >&2; exit 1; }
+  printf 'cree : %s\n' "$W/$C"
+
+ARGS:
+  - {name: path, type: path}

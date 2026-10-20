@@ -1,0 +1,12 @@
+tool: "blender_paint_vertex_color_brightness_contrast"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Adjust vertex color brightness/contrast"
+machine: blender
+op: paint.vertex_color_brightness_contrast
+ARGS:
+  - {name: brightness, type: text}
+  - {name: contrast, type: text}
+

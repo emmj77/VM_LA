@@ -1,0 +1,11 @@
+tool: "blender_action_new"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create new action"
+machine: blender
+op: action.new
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

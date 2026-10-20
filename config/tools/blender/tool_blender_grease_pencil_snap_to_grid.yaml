@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_snap_to_grid"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Snap selected points to the nearest grid points"
+machine: blender
+op: grease_pencil.snap_to_grid
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

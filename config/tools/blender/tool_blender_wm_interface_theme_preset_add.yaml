@@ -1,0 +1,13 @@
+tool: "blender_wm_interface_theme_preset_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a custom theme to the preset list"
+machine: blender
+op: wm.interface_theme_preset_add
+ARGS:
+  - {name: name, type: text}
+  - {name: remove_name, type: text}          # true|false, vide pour ne rien poser
+  - {name: remove_active, type: text}          # true|false, vide pour ne rien poser
+

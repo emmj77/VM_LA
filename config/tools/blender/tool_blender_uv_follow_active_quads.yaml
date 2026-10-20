@@ -1,0 +1,11 @@
+tool: "blender_uv_follow_active_quads"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Follow UVs from active quads along continuous face loops"
+machine: blender
+op: uv.follow_active_quads
+ARGS:
+  - {name: mode, type: text}          # un de : EVEN | LENGTH | LENGTH_AVERAGE
+

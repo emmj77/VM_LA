@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_reorder"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change the display order of the selected strokes"
+machine: blender
+op: grease_pencil.reorder
+ARGS:
+  - {name: direction, type: text}          # un de : TOP | UP | DOWN | BOTTOM
+

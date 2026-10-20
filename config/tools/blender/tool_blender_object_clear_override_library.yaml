@@ -1,0 +1,11 @@
+tool: "blender_object_clear_override_library"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete the selected local overrides and relink their usages to the linked data-blocks if possible, else reset them and mark them as non editable"
+machine: blender
+op: object.clear_override_library
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

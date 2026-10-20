@@ -1,0 +1,65 @@
+skill: "phone-tunnel"
+date: "2026-10-19"
+tags: ["tunnel", "telephone", "wireguard", "wg0", "appairage", "route"]
+
+SUMMARY:
+  100: "AMENER LE TELEPHONE JUSQU AU PONT, ET LE PROUVER PAR LA MACHINE."
+  101: "Ceci n est pas une recette : c est une ROUTE FERMEE (PERMANENT_TODO: true)."
+  102: "A chaque etape, le harnais ne t ouvre QUE les outils nommes sur la ligne de l etape."
+  103: "Tu n as pas le choix du suivant, et tu n as pas a le choisir : il s ouvre quand la"
+  104: "machine a dit oui -- c est-a-dire quand TOUS les outils de l etape ont rendu ok."
+  105: "Une etape qui refuse (wg absent, conf illisible) ne se ferme pas : dis ce qui manque."
+  110: "CE QUE FAIT LE TELEPHONE, ET CE QU IL NE FAIT PAS"
+  111: "Le tunnel porte le pont du telephone (bridge). Le pont ecoute en 127.0.0.1 : il ne"
+  112: "s ouvre pas sur le reseau, c est le tunnel qui amene le telephone jusqu a lui."
+  113: "Lever le tunnel n ouvre AUCUN service : il pose une adresse (10.10.0.1/24) et un port"
+  114: "d ecoute UDP. Ce qui passe ensuite, c est le pont, et il a sa propre porte."
+  120: "LES QUATRE GESTES, DANS CET ORDRE, SANS EN SAUTER UN"
+  121: "1. LIRE : tunnel_status. On ne leve pas ce qui est deja debout, on ne couche pas ce"
+  122: "   qui ne l est pas. L etat se lit AVANT le geste, toujours."
+  123: "2. LEVER : tunnel_up. Il refuse une interface deja debout, une conf absente, un sudo"
+  124: "   qui veut un mot de passe. Ce qu il monte, il le dit, et il le dit par la machine."
+  125: "3. CONSTATER : tunnel_status de nouveau. C est le fait qui ferme l etape, pas la"
+  126: "   parole de tunnel_up. Adresse, port qui ecoute, pair qui a parle : trois choses."
+  127: "4. RENDRE : reply. Quatre lignes au plus : ce qui est debout, l adresse, le port, et"
+  128: "   ce qui reste a faire cote telephone."
+  130: "CE QUE TU NE FAIS PAS ICI : descendre le tunnel sans qu on te le demande, ouvrir le"
+  131: "pont sur le reseau, ni promettre que le telephone est joignable avant que l etape 3"
+  132: "ait vu une adresse ET un port qui ecoute."
+
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+
+# APPROVAL: false -- ET CE N EST PAS UN OUBLI. Les trois tools de tunnel ne sont pas dans GATED :
+# la regle de MOUSSA (19/10) est courte et nommee (« juste install_program et download_file »).
+# Ce qui borne ce skill, c est le TUNNEL lui-meme : chaque etape ferme le perimetre a ses outils.
+APPROVAL: false
+PERMANENT_TODO: true
+
+TOOLS:
+  200: "tunnel_status"
+  201: "tunnel_up"
+  202: "tunnel_down"
+  204: "read_file"
+
+DOCS:
+  300: "TUNNEL_trois_skills_a_juger"
+
+PLAN:
+  400: "PLAN phone-tunnel : amener le telephone jusqu au pont, et le prouver"
+  401: "[progress] lire l etat du tunnel -- tools: tunnel_status"
+  402: "[todo] lever wg0 et le dire -- tools: tunnel_up"
+  403: "[todo] constater ce qui est monte -- tools: tunnel_status"
+  404: "[todo] rendre compte au telephone"
+
+PERIMETER:
+  # le tunnel n ECRIT rien : il lit l etat de la machine et il rend compte. Le workspace est la
+  # seule chose qu il puisse toucher, et il n en a pas besoin -- il est declare pour la forme que
+  # le harnais exige, et il ne sert a aucune etape.
+  workspace: "work/"
+  type-file: ".md .yaml .txt .json"
+ERROR:
+  600: "tunnel_status/tunnel_up/tunnel_down n existent pas ou ont ete coupes : la route est morte, dis-le"
+  601: "sudo reclame un mot de passe : aucun geste de tunnel n est possible depuis ici, dis-le"

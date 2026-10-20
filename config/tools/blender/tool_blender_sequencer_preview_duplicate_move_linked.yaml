@@ -1,0 +1,12 @@
+tool: "blender_sequencer_preview_duplicate_move_linked"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate selected strips, but not their data, and move them"
+machine: blender
+op: sequencer.preview_duplicate_move_linked
+ARGS:
+  - {name: SEQUENCER_OT_duplicate, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}
+

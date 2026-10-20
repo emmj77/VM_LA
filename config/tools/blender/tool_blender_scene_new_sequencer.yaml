@@ -1,0 +1,11 @@
+tool: "blender_scene_new_sequencer"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add new scene by type in the sequence editor and assign to active strip"
+machine: blender
+op: scene.new_sequencer
+ARGS:
+  - {name: type, type: text}          # un de : NEW | EMPTY | LINK_COPY | FULL_COPY
+

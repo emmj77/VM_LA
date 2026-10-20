@@ -1,0 +1,12 @@
+tool: "blender_object_multires_subdivide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a new level of subdivision"
+machine: blender
+op: object.multires_subdivide
+ARGS:
+  - {name: modifier, type: text}
+  - {name: mode, type: text}          # un de : CATMULL_CLARK | SIMPLE | LINEAR
+

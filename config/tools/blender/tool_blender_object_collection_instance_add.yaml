@@ -1,0 +1,19 @@
+tool: "blender_object_collection_instance_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a collection instance"
+machine: blender
+op: object.collection_instance_add
+ARGS:
+  - {name: name, type: text}
+  - {name: collection, type: text}          # un de : 
+  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 valeurs separees par des virgules
+  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
+  - {name: scale, type: text}          # 3 valeurs separees par des virgules
+  - {name: session_uid, type: int}
+  - {name: drop_x, type: int}
+  - {name: drop_y, type: int}
+

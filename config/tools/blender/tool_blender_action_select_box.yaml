@@ -1,0 +1,18 @@
+tool: "blender_action_select_box"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all keyframes within the specified region"
+machine: blender
+op: action.select_box
+ARGS:
+  - {name: axis_range, type: text}          # true|false, vide pour ne rien poser
+  - {name: xmin, type: int}
+  - {name: xmax, type: int}
+  - {name: ymin, type: int}
+  - {name: ymax, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # un de : SET | ADD | SUB
+  - {name: tweak, type: text}          # true|false, vide pour ne rien poser
+

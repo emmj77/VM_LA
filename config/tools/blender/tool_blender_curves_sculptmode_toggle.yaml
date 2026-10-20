@@ -1,0 +1,11 @@
+tool: "blender_curves_sculptmode_toggle"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Enter/Exit sculpt mode for curves"
+machine: blender
+op: curves.sculptmode_toggle
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

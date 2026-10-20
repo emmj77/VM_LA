@@ -1,0 +1,11 @@
+tool: "blender_action_view_frame"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move the view to the current frame"
+machine: blender
+op: action.view_frame
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

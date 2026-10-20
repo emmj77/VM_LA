@@ -1,0 +1,53 @@
+skill: "{{name}}"            # le nom de la skill
+date: "{{date}}"             # la date de pose
+tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE la skill, et ouvre ses tools
+
+SUMMARY:                      # pour le head secondaire, tant que la skill est chargee
+  101: "..."                 # une loi de resume, 100 octets au plus
+  102: "..."
+  110: "..."
+RULES:                       # sous SUMMARY : les lois que le HARNESS applique
+  create_subfolder: true          # il est autorisé de créer des sous dossiers
+  execute_code: false
+  max_section_lines: 100   # le plafond d une section, en lignes
+APPROVAL: false              # CETTE SKILL A-T-ELLE LE DROIT DE MODIFIER LE HARNAIS ?
+                             # true : chaque geste qui touche la TABLE ou une SKILL (table_manage,
+                             # skill_manage) demande un FEU VERT HUMAIN, a chaque appel, et le
+                             # feu vert ne vaut QUE pour le geste nomme (work/approve, fenetre de
+                             # approval.window secondes, une seule fois). false : ces gestes sont
+                             # refuses, comme partout ailleurs. Aucune skill ne met true par
+                             # defaut : ecrire dans la table, c'est ecrire dans le harnais.
+PERMANENT_TODO: false        # LE PLAN EST-IL UN TUNNEL ? (une route fermee, pas une suggestion)
+                             # true : le PLAN est ecrit ICI par l humain, et la boucle s en sert :
+                             #   - le TODO OBLIGATOIRE tombe (le plan est deja ouvert) ;
+                             #   - le PERIMETRE du tour se ferme aux outils de l ETAPE COURANTE ;
+                             #   - l etape se ferme quand TOUS ses outils ont rendu status: ok, et
+                             #     c est la BOUCLE qui la ferme, jamais le modele.
+                             # Une etape = UNE ligne, 100 octets, ses outils nommes a la fin :
+                             #   401: "[progress] lire l etat -- tools: tunnel_status"
+                             #   402: "[todo] lever wg0 -- tools: tunnel_up, tunnel_status"
+                             # false : le plan est un JOURNAL, le modele l ecrit et le mene.
+                             # Une skill qui met true n a pas besoin d autre chose : le plan EST la route.
+TOOLS:                       # les tools que ce skill ouvre, et eux seuls (200 a 299)
+  200: "..."              # une ligne, un nom de tool
+  201: "..."
+DOCS:                        # la source : le NOM d un fichier, OU d un dossier (sans chemin)
+  300: "..."                 # le modele le cherche et lit le seul fichier utile ; sinon "web_search"
+PLAN:                        # 20 lignes au plus, DEUX par tache (400 a 419)
+  400: "tache : ..."         # une tache par pas de deux
+  401: "etat : todo | in_progress | done"
+PERIMETER:                   # deux choses, et deux seulement
+  workspace: "work/"        # les dossiers de travail
+  type-file: ".md .yaml .sh .json .txt"   # les types de fichier acceptes
+ERROR:                       # ce que la skill dit quand un tool refuse
+  600: "..."
+# PAS DE BLOC STEPS (retire le 19/10). Il annoncait « le moteur IMPOSE l ordre » : c etait faux --
+# RIEN ne l appliquait, ni la boucle ni le moteur ; seuls le docteur et l editeur le lisaient, et le
+# docteur vient d en perdre la relecture. Une route qu on ne peut pas appliquer est une suggestion de
+# plus. La route, quand il en faut une, est le PLAN PERMANENT (PERMANENT_TODO: true, voir plus haut) :
+# chaque etape nomme ses outils, le harnais ferme le perimetre dessus et l ouvre sur un fait.
+
+# LE PORTEUR : la machine que cette skill tient ouverte pendant qu elle vit (facultatif).
+# Il nomme un SCRIPT de config/engine/ qui sait start|stop (ex : <service>_port.sh).
+# load_skill l ouvre en chargeant la skill, et le ferme quand une AUTRE skill prend la place.
+PORTEUR: ""

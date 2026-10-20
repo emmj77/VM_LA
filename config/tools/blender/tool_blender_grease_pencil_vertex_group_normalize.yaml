@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_vertex_group_normalize"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Normalize weights of the active vertex group"
+machine: blender
+op: grease_pencil.vertex_group_normalize
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

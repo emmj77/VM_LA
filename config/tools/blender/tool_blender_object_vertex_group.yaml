@@ -1,0 +1,35 @@
+tool: "blender_object_vertex_group"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a vertex group of an object: add | assign | assign_new | clean | copy | copy_to_selected | deselect | invert | levels | limit_total | lock | mirror | move | normalize | normalize_all | quantize | remove | remove_from | select | set_active | smooth | sort (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "object.vertex_group_{{op}}" --arg "group_select_mode={{group_select_mode}}" --arg "limit={{limit}}" --arg "action={{action}}" --arg "all={{all}}" --arg "all_groups={{all_groups}}" --arg "all_unlocked={{all_unlocked}}" --arg "auto_assign={{auto_assign}}" --arg "auto_remove={{auto_remove}}" --arg "direction={{direction}}" --arg "expand={{expand}}" --arg "factor={{factor}}" --arg "flip_group_names={{flip_group_names}}" --arg "gain={{gain}}" --arg "group={{group}}" --arg "keep_single={{keep_single}}" --arg "lock_active={{lock_active}}" --arg "mask={{mask}}" --arg "mirror_weights={{mirror_weights}}" --arg "offset={{offset}}" --arg "repeat={{repeat}}" --arg "sort_type={{sort_type}}" --arg "steps={{steps}}" --arg "use_topology={{use_topology}}" --arg "use_all_groups={{use_all_groups}}" --arg "use_all_verts={{use_all_verts}}"
+ARGS:
+  - {name: op, type: enum, values: [add, assign, assign_new, clean, copy, copy_to_selected, deselect, invert, levels, limit_total, lock, mirror, move, normalize, normalize_all, quantize, remove, remove_from, select, set_active, smooth, sort]}
+  - {name: group_select_mode, type: text}
+  - {name: limit, type: text}
+  - {name: action, type: text}
+  - {name: all, type: text}
+  - {name: all_groups, type: text}
+  - {name: all_unlocked, type: text}
+  - {name: auto_assign, type: text}
+  - {name: auto_remove, type: text}
+  - {name: direction, type: text}
+  - {name: expand, type: text}
+  - {name: factor, type: text}
+  - {name: flip_group_names, type: text}
+  - {name: gain, type: text}
+  - {name: group, type: text}
+  - {name: keep_single, type: text}
+  - {name: lock_active, type: text}
+  - {name: mask, type: text}
+  - {name: mirror_weights, type: text}
+  - {name: offset, type: text}
+  - {name: repeat, type: int}
+  - {name: sort_type, type: text}
+  - {name: steps, type: int}
+  - {name: use_topology, type: text}
+  - {name: use_all_groups, type: text}
+  - {name: use_all_verts, type: text}

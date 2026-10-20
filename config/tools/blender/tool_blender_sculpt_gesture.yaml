@@ -1,0 +1,33 @@
+tool: "blender_sculpt_gesture"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a sculpt gesture: face_set_box | face_set_lasso | face_set_line | face_set_polyline | project_line | trim_box | trim_lasso | trim_line | trim_polyline (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "sculpt.{{op}}_gesture" --arg "use_front_faces_only={{use_front_faces_only}}" --arg "location={{location}}" --arg "path={{path}}" --arg "trim_extrude_mode={{trim_extrude_mode}}" --arg "trim_mode={{trim_mode}}" --arg "trim_orientation={{trim_orientation}}" --arg "trim_solver={{trim_solver}}" --arg "use_cursor_depth={{use_cursor_depth}}" --arg "cursor={{cursor}}" --arg "flip={{flip}}" --arg "use_limit_to_segment={{use_limit_to_segment}}" --arg "xend={{xend}}" --arg "xstart={{xstart}}" --arg "yend={{yend}}" --arg "ystart={{ystart}}" --arg "smooth_stroke_factor={{smooth_stroke_factor}}" --arg "smooth_stroke_radius={{smooth_stroke_radius}}" --arg "use_smooth_stroke={{use_smooth_stroke}}" --arg "wait_for_input={{wait_for_input}}" --arg "xmax={{xmax}}" --arg "xmin={{xmin}}" --arg "ymax={{ymax}}" --arg "ymin={{ymin}}"
+ARGS:
+  - {name: op, type: enum, values: [face_set_box, face_set_lasso, face_set_line, face_set_polyline, project_line, trim_box, trim_lasso, trim_line, trim_polyline]}
+  - {name: use_front_faces_only, type: text}
+  - {name: location, type: int}
+  - {name: path, type: text}
+  - {name: trim_extrude_mode, type: text}
+  - {name: trim_mode, type: text}
+  - {name: trim_orientation, type: text}
+  - {name: trim_solver, type: text}
+  - {name: use_cursor_depth, type: text}
+  - {name: cursor, type: int}
+  - {name: flip, type: text}
+  - {name: use_limit_to_segment, type: text}
+  - {name: xend, type: int}
+  - {name: xstart, type: int}
+  - {name: yend, type: int}
+  - {name: ystart, type: int}
+  - {name: smooth_stroke_factor, type: text}
+  - {name: smooth_stroke_radius, type: int}
+  - {name: use_smooth_stroke, type: text}
+  - {name: wait_for_input, type: text}
+  - {name: xmax, type: int}
+  - {name: xmin, type: int}
+  - {name: ymax, type: int}
+  - {name: ymin, type: int}

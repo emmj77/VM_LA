@@ -1,0 +1,13 @@
+tool: "blender_object_link_to_collection"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Link objects to a collection"
+machine: blender
+op: object.link_to_collection
+ARGS:
+  - {name: collection_uid, type: int}
+  - {name: is_new, type: text}          # true|false, vide pour ne rien poser
+  - {name: new_collection_name, type: text}
+

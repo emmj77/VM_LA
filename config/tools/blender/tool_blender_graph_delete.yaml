@@ -1,0 +1,11 @@
+tool: "blender_graph_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove all selected keyframes"
+machine: blender
+op: graph.delete
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
+

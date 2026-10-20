@@ -1,0 +1,11 @@
+tool: "blender_graph_driver_variables_copy"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy the driver variables of the active driver"
+machine: blender
+op: graph.driver_variables_copy
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

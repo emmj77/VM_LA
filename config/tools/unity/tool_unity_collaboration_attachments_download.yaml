@@ -1,0 +1,45 @@
+tool: "unity_collaboration_attachments_download"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Download an attachment to disk"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration attachments download --no-banner --no-pager --non-interactive
+  [ -n "{{annotationid}}" ] || { printf '%s\n' "$(msg argument_required 'annotationid' 'unity collaboration attachments download')" >&2; exit 1; }
+  [ -n "{{attachmentid}}" ] || { printf '%s\n' "$(msg argument_required 'attachmentid' 'unity collaboration attachments download')" >&2; exit 1; }
+  case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg force_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{annotationid}}" ] && set -- "$@" "{{annotationid}}"
+  [ -n "{{attachmentid}}" ] && set -- "$@" "{{attachmentid}}"
+  [ -n "{{out}}" ] && set -- "$@" --out "{{out}}"
+  [ "{{force}}" = true ] && set -- "$@" --force
+  [ -n "{{width}}" ] && set -- "$@" --width "{{width}}"
+  [ -n "{{project_id}}" ] && set -- "$@" --project-id "{{project_id}}"
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_attachments_download)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: annotationid, type: text}
+  - {name: attachmentid, type: text}
+  - {name: out, type: text}   # Output file path (defaults to original filename in CWD)
+  - {name: force, type: text}   # true pour poser --force ; Overwrite existing file
+  - {name: width, type: text}   # Resize image to this width (px) before download
+  - {name: project_id, type: text}   # Unity Cloud project id
+  - {name: project_path, type: text}   # Path to the Unity project (defaults to the current directory); used to
+

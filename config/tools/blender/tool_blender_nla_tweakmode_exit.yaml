@@ -1,0 +1,11 @@
+tool: "blender_nla_tweakmode_exit"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Exit tweaking mode for the action referenced by the active strip"
+machine: blender
+op: nla.tweakmode_exit
+ARGS:
+  - {name: isolate_action, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,41 @@
+tool: "unity_collaboration_annotations_count"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Count annotation threads for a target"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration annotations count --no-banner --no-pager --non-interactive
+  case "{{grouped}}" in ''|true|false) ;; *) printf '%s\n' "$(msg grouped_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+  [ -n "{{project_id}}" ] && set -- "$@" --project-id "{{project_id}}"
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  [ "{{grouped}}" = true ] && set -- "$@" --grouped
+  [ -n "{{offset}}" ] && set -- "$@" --offset "{{offset}}"
+  [ -n "{{limit}}" ] && set -- "$@" --limit "{{limit}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_annotations_count)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: target, type: text}   # facultatif
+  - {name: project_id, type: text}   # Unity Cloud project id
+  - {name: project_path, type: text}   # Path to the Unity project (defaults to the current directory); used to
+  - {name: grouped, type: text}   # true pour poser --grouped ; Group counts by target path (returns per-target breakdown instead of a
+  - {name: offset, type: text}   # Number of target groups to skip
+  - {name: limit, type: text}   # Maximum number of target groups to return
+

@@ -1,0 +1,11 @@
+tool: "blender_scene_freestyle_lineset_remove"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Remove the active line set from the list of line sets"
+machine: blender
+op: scene.freestyle_lineset_remove
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

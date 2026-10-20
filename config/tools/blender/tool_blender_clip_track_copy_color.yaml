@@ -1,0 +1,11 @@
+tool: "blender_clip_track_copy_color"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy color to all selected tracks"
+machine: blender
+op: clip.track_copy_color
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

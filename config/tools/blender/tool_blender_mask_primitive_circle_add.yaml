@@ -1,0 +1,12 @@
+tool: "blender_mask_primitive_circle_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add new circle-shaped spline"
+machine: blender
+op: mask.primitive_circle_add
+ARGS:
+  - {name: size, type: text}
+  - {name: location, type: text}          # 2 valeurs separees par des virgules
+

@@ -1,0 +1,23 @@
+tool: "sleep"
+date: "2026-10-17"
+tags: ["sleep"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "makes the turn wait for the chosen duration, and never longer"
+COMMAND: |
+  S={{seconds}}
+  SP=${LA_STOP_FILE:-}
+  i=0
+  while [ "$i" -lt "$S" ]; do
+    if [ -n "$SP" ] && [ -e "$SP" ]; then
+      printf '%s\n' "$(msg sleep_interrupted)""$i" "$S"
+      exit 0
+    fi
+    sleep 1
+    i=$((i + 1))
+  done
+  printf 'sommeil : %s s, echeance atteinte\n' "$S"
+
+ARGS:
+  - {name: seconds, type: enum, values: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]}

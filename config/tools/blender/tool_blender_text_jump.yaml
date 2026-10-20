@@ -1,0 +1,11 @@
+tool: "blender_text_jump"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Jump cursor to line"
+machine: blender
+op: text.jump
+ARGS:
+  - {name: line, type: int}
+

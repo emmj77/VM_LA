@@ -1,0 +1,11 @@
+tool: "blender_graph_keyframe_jump"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Jump to previous/next keyframe"
+machine: blender
+op: graph.keyframe_jump
+ARGS:
+  - {name: next, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,11 @@
+tool: "blender_sequencer_strip_modifier_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a modifier to the strip"
+machine: blender
+op: sequencer.strip_modifier_add
+ARGS:
+  - {name: type, type: text}          # un de : 
+

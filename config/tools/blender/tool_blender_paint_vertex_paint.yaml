@@ -1,0 +1,15 @@
+tool: "blender_paint_vertex_paint"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Paint a stroke in the active color attribute layer"
+machine: blender
+op: paint.vertex_paint
+ARGS:
+  - {name: stroke, type: text}
+  - {name: mode, type: text}          # un de : NORMAL | INVERT
+  - {name: brush_toggle, type: text}          # un de : None | SMOOTH | ERASE | MASK
+  - {name: pen_flip, type: text}          # true|false, vide pour ne rien poser
+  - {name: override_location, type: text}          # true|false, vide pour ne rien poser
+

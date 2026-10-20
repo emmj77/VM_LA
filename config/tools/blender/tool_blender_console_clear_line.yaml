@@ -1,0 +1,11 @@
+tool: "blender_console_clear_line"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Clear the line and store in history"
+machine: blender
+op: console.clear_line
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

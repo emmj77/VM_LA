@@ -1,0 +1,12 @@
+tool: "blender_view3d_view_roll"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Roll the view"
+machine: blender
+op: view3d.view_roll
+ARGS:
+  - {name: angle, type: text}
+  - {name: type, type: text}          # un de : ANGLE | LEFT | RIGHT
+

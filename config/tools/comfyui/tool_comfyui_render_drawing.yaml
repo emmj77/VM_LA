@@ -1,0 +1,62 @@
+tool: "comfyui_render_drawing"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_render_drawing"]
+doc: comfyui
+RULES:
+  enabled: true
+  timeout: 300
+DESCRIPTION: "flattens a .kra into a png or a jpg, on white or transparent, and resizes it on demand"
+COMMAND: |
+  SRC="$W/{{source}}"
+  [ -f "$SRC" ] || { printf '%s\n' "$(msg source_missing '%s')""$SRC" >&2; exit 1; }
+  case "$(printf '%s' "$SRC" | tr 'A-Z' 'a-z')" in
+    *.kra) ;;
+    *) printf '%s\n' "$(msg kra_required '%s')""$SRC" >&2; exit 1 ;;
+  esac
+  command -v unzip >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg unzip_missing)" >&2; exit 1; }
+  STAMP=$(date +%Y%m%d-%H%M%S)
+  TMP="$W/.aplat-$STAMP.png"
+  unzip -p "$SRC" mergedimage.png > "$TMP" 2>/dev/null
+  if [ ! -s "$TMP" ]; then
+    rm -f "$TMP"
+    printf '%s\n' "$(msg kra_no_merged)""$(basename "$SRC")" >&2
+    exit 1
+  fi
+  case "{{format}}" in
+    jpg|jpeg) EXT=jpg ;;
+    *)        EXT=png ;;
+  esac
+  OUT="$W/render-$STAMP.$EXT"
+  if [ "{{fond}}" = transparent ]; then
+    if [ "$EXT" = jpg ]; then
+      printf '%s\n' "$(msg jpg_no_alpha)" >&2
+      rm -f "$TMP"; exit 1
+    fi
+    mv "$TMP" "$OUT"
+  else
+    command -v ffmpeg >/dev/null 2>&1 \
+      || { printf '%s\n' "$(msg ffmpeg_missing_backdrop)" >&2; rm -f "$TMP"; exit 1; }
+    DIM=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$TMP" 2>/dev/null | tr ',' 'x')
+    [ -n "$DIM" ] || { printf '%s\n' "$(msg flat_size_unreadable '%s')""$(basename "$SRC")" >&2; rm -f "$TMP"; exit 1; }
+    ffmpeg -y -loglevel error -f lavfi -i "color=c=white:s=$DIM" -i "$TMP" \
+      -filter_complex "[1:v]format=rgba[a];[0:v][a]overlay=format=auto" -frames:v 1 "$OUT" >/dev/null 2>&1
+    RC=$?
+    rm -f "$TMP"
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg ffmpeg_flatten_failed)""$(basename "$SRC")" >&2; exit 1; }
+  fi
+  [ -s "$OUT" ] || { printf '%s\n' "$(msg image_not_written '%s')""$OUT" >&2; exit 1; }
+  if [ -n "{{max_side}}" ]; then
+    RE=$(printf '%s' "$OUT" | sed "s/\.$EXT$/-$EXT.{{max_side}}.$EXT/")
+    ffmpeg -y -loglevel error -i "$OUT" \
+      -vf "scale='if(gt(iw,ih),{{max_side}},-2)':'if(gt(iw,ih),-2,{{max_side}})'" "$RE" >/dev/null 2>&1
+    if [ -s "$RE" ]; then mv "$RE" "$OUT"; else rm -f "$RE"; printf '%s\n' "$(msg resize_failed_note)"; fi
+  fi
+  TAILLE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$OUT" 2>/dev/null | tr ',' 'x')
+  printf "image : %s (%s, %s octets)\n" "$OUT" "${TAILLE:-?}" "$(wc -c < "$OUT")"
+
+ARGS:
+  - {name: source, type: path}                              # le .kra, relatif a l'espace du skill
+  - {name: max_side, type: int}                             # le plus grand cote, en pixels (vide : taille du document)
+  - {name: format, type: enum, values: [png, jpg, ""]}      # le format (vide : png)
+  - {name: fond, type: enum, values: [white, transparent, ""]}   # le fond (vide : blanc)

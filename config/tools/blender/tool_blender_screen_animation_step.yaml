@@ -1,0 +1,11 @@
+tool: "blender_screen_animation_step"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Step through animation by position"
+machine: blender
+op: screen.animation_step
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

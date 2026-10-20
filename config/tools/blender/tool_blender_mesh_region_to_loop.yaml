@@ -1,0 +1,11 @@
+tool: "blender_mesh_region_to_loop"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select boundary edges around the selected faces"
+machine: blender
+op: mesh.region_to_loop
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

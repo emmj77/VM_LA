@@ -1,0 +1,12 @@
+tool: "blender_object_drop_geometry_nodes"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(undocumented operator)"
+machine: blender
+op: object.drop_geometry_nodes
+ARGS:
+  - {name: session_uid, type: int}
+  - {name: show_datablock_in_modifier, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,12 @@
+tool: "blender_object_multires_base_apply"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Modify the base mesh to conform to the displaced mesh"
+machine: blender
+op: object.multires_base_apply
+ARGS:
+  - {name: modifier, type: text}
+  - {name: apply_heuristic, type: text}          # true|false, vide pour ne rien poser
+

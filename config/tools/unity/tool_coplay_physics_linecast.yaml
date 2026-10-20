@@ -1,0 +1,26 @@
+tool: "coplay_physics_linecast"
+date: "2026-10-18"
+tags: ["unity", "coplay", "physics"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Check if anything intersects the line..."
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- physics linecast
+  [ -n "{{start}}" ] && set -- "$@" --start "{{start}}"
+  [ -n "{{end}}" ] && set -- "$@" --end "{{end}}"
+  [ -n "{{dimension}}" ] && set -- "$@" --dimension "{{dimension}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: start, type: text}
+  - {name: end, type: text}
+  - {name: dimension, type: text}
+

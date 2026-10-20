@@ -1,0 +1,12 @@
+tool: "blender_uv_seams_from_islands"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set mesh seams according to island setup in the UV editor"
+machine: blender
+op: uv.seams_from_islands
+ARGS:
+  - {name: mark_seams, type: text}          # true|false, vide pour ne rien poser
+  - {name: mark_sharp, type: text}          # true|false, vide pour ne rien poser
+

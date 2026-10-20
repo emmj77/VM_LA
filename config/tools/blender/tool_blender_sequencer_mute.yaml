@@ -1,0 +1,11 @@
+tool: "blender_sequencer_mute"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Mute (un)selected strips"
+machine: blender
+op: sequencer.mute
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser
+

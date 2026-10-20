@@ -1,0 +1,264 @@
+tool: "table_manage"
+date: "2026-10-19"
+tags: ["table_manage"]
+RULES:
+  enabled: true
+  timeout: 600
+  approval: write
+  approval_actions: [add_tool, install_tool, delete_tool, enable_tool, disable_tool, set_tools, set_paths]
+DESCRIPTION: "manages the table: lists, adds/installs (from the template), removes, enables or disables a tool"
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  A="{{action}}"
+  ID="{{id}}"
+  T="{{tool}}"
+  FAM="{{family}}"
+  DES="{{description}}"
+  DIR="{{dir}}"
+  TO="{{timeout}}"
+  APV="{{approval}}"
+  ARGSV="{{args}}"
+  TBL="$LA_CONFIG"
+  [ -n "$TBL" ] || { printf '%s\n' "$(msg la_config_empty_table)" >&2; exit 1; }
+  [ -f "$TBL" ] || { printf '%s\n' "$(msg table_missing "$TBL")" >&2; exit 1; }
+  RACINE=$(CDPATH= cd -- "$(dirname -- "$TBL")/.." && pwd)
+  TOOLS="$RACINE/config/tools"
+  DIRS='core 3d blender comfyui krita unity'
+
+  corps() {  # $1 = nom de tool : ecrit le chemin si le fichier existe
+    for D in $DIRS; do
+      [ -f "$TOOLS/$D/tool_$1.yaml" ] && { printf '%s\n' "$TOOLS/$D/tool_$1.yaml"; return 0; }
+    done
+    return 1
+  }
+
+  case "$A" in
+    list_tools|add_tool|install_tool|delete_tool|enable_tool|disable_tool) ;;
+    *) printf '%s\n' "$(msg unknown_action_list_tools "${A:-absente}")" >&2; exit 1 ;;
+  esac
+
+  if [ "$A" = list_tools ]; then
+    if [ -n "$T" ]; then
+      N=$(grep -c "^    tool: .*$T" "$TBL" 2>/dev/null || true)
+      [ "${N:-0}" -gt 0 ] || { printf '%s\n' "$(msg table_no_line "$T" "$(grep -c '^  - id: ' "$TBL")")" ; exit 0 ; }
+      awk -v pat="$T" '
+        /^  - id: /{id=$3}
+        /^    tool: /{t=$2}
+        /^    family: /{ if (t ~ pat) printf "%s  %-24s %s\n", id, t, $2 }
+      ' "$TBL" | head -n 40
+      printf '%s\n' "$(msg table_more_lines "$((N - 40))" "$T")"
+      printf '%s\n' "$(msg table_lines_carry_n "$N" "$T")"
+      exit 0
+    fi
+    MX=$(grep -o '^  - id: [0-9]*' "$TBL" | grep -o '[0-9]*' | sort -n | tail -n 1)
+    MN=$(grep -o '^  - id: [0-9]*' "$TBL" | grep -o '[0-9]*' | sort -n | head -n 1)
+    echo "table : $(grep -c '^  - id: ' "$TBL") lignes, ids de $MN a $MX ; le prochain id libre est $((MX + 1))"
+    printf '%s\n' "$(msg last_fifteen)"
+    awk '/^  - id: /{id=$3} /^    tool: /{t=$2} /^    family: /{ if (id != "") { l[NR] = id "  " t "  " $2 ; id="" } } END { n=0 ; for (i in l) n++ ; c=0 ; for (i=1;i<=NR;i++) if (i in l) { c++ ; if (c > n - 15) print l[i] } }' "$TBL"
+    printf '%s\n' "$(msg search_list_tools_pattern)"
+    exit 0
+  fi
+
+  GEN=0
+  if [ "$A" = install_tool ]; then
+    GEN=1
+    if [ -z "$ID" ]; then
+      MX=$(grep -o '^  - id: [0-9]*' "$TBL" | grep -o '[0-9]*' | sort -n | tail -n 1)
+      ID=$(( ${MX:-0} + 1 ))
+    fi
+  fi
+
+  case "$ID" in ''|*[!0-9]*) printf '%s\n' "$(msg malformed_id_id_number "${ID:-absent}")" >&2; exit 1 ;; esac
+  if [ -n "$T" ]; then
+    case "$T" in *[!a-z0-9_]*) echo "refused: malformed tool ($T) ; minuscules, chiffres et soulignes" >&2; exit 1 ;; esac
+    [ ${#T} -le 40 ] || { printf '%s\n' "$(msg tool_too_long_bytes "${#T}")" >&2; exit 1; }
+  fi
+  AV=$(wc -c < "$TBL"); NL=$(wc -l < "$TBL")
+  TD=$(mktemp -d "${TMPDIR:-/tmp}/table_manage.XXXXXX") || { printf '%s\n' "$(msg temporary_space_tmpdir)" >&2; exit 1; }
+  NEUF=''
+  fin() { [ -n "$TD" ] || return 0; rm -f "$TD"/* 2>/dev/null; rmdir "$TD" 2>/dev/null; }
+  trap fin EXIT INT TERM HUP
+
+  ligne() {  # $1 = id : pose DEB (debut du bloc) et END (debut du bloc suivant)
+    DEB=$(grep -n "^  - id: $1[[:space:]]*$" "$TBL" | head -n 1 | cut -d: -f1)
+    [ -n "$DEB" ] || return 1
+    END=$(grep -n '^  - id: ' "$TBL" | cut -d: -f1 | while IFS= read -r n; do [ "$n" -gt "$DEB" ] && { printf '%s\n' "$n"; break; }; done)
+    TOTAL=$(wc -l < "$TBL")
+    END=${END:-$((TOTAL + 1))}
+    return 0
+  }
+  block() { sed -n "${DEB},$((END - 1))p" "$TBL"; }
+
+  render_body() {
+    DTV=$(date -u +%Y-%m-%d)
+    printf 'tool: "%s"\n' "$T"
+    printf 'date: "%s"\n' "$DTV"
+    printf 'tags: ["%s"]\n\n' "$T"
+    printf 'RULES:\n  enabled: true\n  timeout: %s\n' "${TO:-300}"
+    case "$APV" in
+      '') ;;
+      whole|write) printf '  approval: %s\n' "$APV" ;;
+      *) printf '%s\n' "$(msg malformed_approval_whole_write "${APV}")" >&2 ; return 1 ;;
+    esac
+    printf '\nDESCRIPTION: "%s"\n\n' "$DES"
+    printf 'COMMAND: |\n'
+    sed 's/^/  /' "$TD/cmd"
+    printf '\nARGS:\n'
+    if [ -n "$ARGSV" ]; then
+      for PAIR in $ARGSV; do
+        AN=${PAIR%%:*} ; AT=${PAIR#*:}
+        case "$AN" in ''|*[!A-Za-z0-9_]*) printf '%s\n' "$(msg argument_name_malformed "$AN")" >&2 ; return 1 ;; esac
+        case "$AT" in path|enum|int|bool|text) ;; *) printf '%s\n' "$(msg unknown_argument_type_path "$AT" "$AN")" >&2 ; return 1 ;; esac
+        printf '  - {name: %s, type: %s}\n' "$AN" "$AT"
+      done
+    else
+      printf '  []\n'
+    fi
+  }
+
+  if [ "$A" = add_tool ] || [ "$GEN" = 1 ]; then
+    [ -n "$T" ] || { printf '%s\n' "$(msg add_tool_wants_tool)" >&2; exit 1; }
+    grep -q "^    tool: $T[[:space:]]*$" "$TBL" && { printf '%s\n' "$(msg table_already_carries_tool "$T")" >&2; exit 1; }
+    grep -q "^  - id: $ID[[:space:]]*$" "$TBL" && { printf '%s\n' "$(msg id_already_table_list "$ID")" >&2; exit 1; }
+    case "$FAM" in READ|WRITE|MANAGE|REPLY|PLAN|VISION|BLENDER|UNITY|KRITA|IMAGE) ;; *) printf '%s\n' "$(msg malformed_family_read_write "${FAM:-absente}")" >&2; exit 1 ;; esac
+    [ -n "$DES" ] || { printf '%s\n' "$(msg empty_description_add_tool)" >&2; exit 1; }
+    [ ${#DES} -le 80 ] || { printf '%s\n' "$(msg description_too_long_bytes "${#DES}")" >&2; exit 1; }
+    D=${DIR:-core}
+    case " $DIRS " in *" $D "*) ;; *) printf '%s\n' "$(msg unknown_machine_one "${D}" "$DIRS")" >&2 ; exit 1 ;; esac
+    BODY="$TOOLS/$D/tool_$T.yaml"
+    [ -f "$BODY" ] && { printf '%s\n' "$(msg body_already_exists_add "$BODY")" >&2; exit 1; }
+    if [ "$GEN" = 1 ]; then
+      cat > "$TD/cmd" || { printf '%s\n' "$(msg command_standard_input_could)" >&2; exit 1; }
+      [ -s "$TD/cmd" ] || { printf '%s\n' "$(msg install_tool_wants_shell)" >&2; exit 1; }
+      render_body > "$TD/corps" || exit 1
+    else
+      cat > "$TD/corps" || { printf '%s\n' "$(msg body_could_not_be)" >&2; exit 1; }
+    fi
+    [ -s "$TD/corps" ] || { printf '%s\n' "$(msg empty_body_add_tool)" >&2; exit 1; }
+    TB=$(printf '\t')
+    grep -q "$TB" "$TD/corps" && { printf '%s\n' "$(msg body_carries_tab_tool)" >&2; exit 1; }
+    for BLOC in "tool:" "RULES:" "DESCRIPTION:" "COMMAND:" "ARGS:"; do
+      grep -q "^$BLOC" "$TD/corps" || { printf '%s\n' "$(msg body_has_line_tool "$BLOC")" >&2; exit 1; }
+    done
+    BN=$(sed -n 's/^tool:[[:space:]]*"\{0,1\}\([a-z0-9_]*\)"\{0,1\}[[:space:]]*$/\1/p' "$TD/corps" | head -n 1)
+    [ "$BN" = "$T" ] || { printf '%s\n' "$(msg body_other_tool_p "$BN" "$T")" >&2; exit 1; }
+    grep -q '^  enabled:[[:space:]]*\(true\|false\)$' "$TD/corps" || { printf '%s\n' "$(msg body_has_enabled_field)" >&2; exit 1; }
+    grep -q '^  - id: ' "$TD/corps" && { printf '%s\n' "$(msg body_carries_table_line)" >&2; exit 1; }
+    printf '  - id: %s\n    tool: %s\n    family: %s\n' "$ID" "$T" "$FAM" > "$TD/entree"
+    if [ "${LA_APPROVED:-0}" != 1 ]; then
+      printf '%s\n' "$(msg approval_required_add_tool)""$T" "$ID" "$FAM"
+      printf '%s\n' "$(msg what_would_be_written)""$TBL"
+      cat "$TD/entree"
+      printf '%s\n' "$(msg body)""$BODY"
+      cat "$TD/corps"
+      printf '%s\n' "$(msg nothing_written_before_your)"
+      exit 3
+    fi
+    cp "$TD/corps" "$BODY.tmp.$$" || { printf '%s\n' "$(msg body_could_not_be_2 "$BODY")" >&2; exit 1; }
+    mv -f "$BODY.tmp.$$" "$BODY" || { rm -f "$BODY.tmp.$$"; printf '%s\n' "$(msg body_could_not_be_3 "$BODY")" >&2; exit 1; }
+    cp "$TBL" "$TD/avant" || { rm -f "$BODY"; printf '%s\n' "$(msg table_could_not_be)" >&2; exit 1; }
+    cat "$TD/entree" >> "$TBL" || { rm -f "$BODY"; printf '%s\n' "$(msg cannot_write_tbl "$TBL")" >&2; exit 1; }
+    head -c "$AV" "$TBL" > "$TD/apres"
+    if ! cmp -s "$TD/avant" "$TD/apres" || ! grep -q "^  - id: $ID$" "$TBL"; then
+      cp "$TD/avant" "$TBL"; rm -f "$BODY"
+      printf '%s\n' "$(msg table_moved_outside_added)" >&2
+      exit 1
+    fi
+    AP=$(wc -c < "$TBL"); LP=$(wc -l < "$TBL")
+    VEC='vecteur absent (base froide ou embedder muet : lancer build_tool_vectors.py)'
+    NBC=$(python3 -c "import sqlite3;print(sqlite3.connect('$RACINE/config/tool_vec.db').execute('select count(*) from tool_vec').fetchone()[0])" 2>/dev/null || echo 0)
+    if [ "${NBC:-0}" -ge 100 ]; then
+      if timeout 25 python3 "$RACINE/config/programs/build_tool_vectors.py" --table "$TBL" --db "$RACINE/config/tool_vec.db" --seulement-manquants >/dev/null 2>&1; then
+        VEC='vecteur pose'
+      else
+        VEC='vecteur absent (embedder muet)'
+      fi
+    fi
+    printf '%s\n' "$(msg table_line_added "$ID" "$T" "$FAM" "$D" "$(wc -c < "$BODY")" "$((AP - AV))" "$((LP - NL))" "$VEC")"
+    exit 0
+  fi
+
+  ligne "$ID" || { printf '%s\n' "$(msg id_not_table_list "$ID" "$TBL")" >&2; exit 1; }
+  NM=$(block | sed -n 's/^    tool:[[:space:]]*//p' | head -n 1)
+  [ -n "$NM" ] || { printf '%s\n' "$(msg line_unreadable_carries_tool "$ID")" >&2; exit 1; }
+  if [ -n "$T" ] && [ "$T" != "$NM" ]; then
+    printf '%s\n' "$(msg line_carries_tool_not "$ID" "$NM" "$T")" >&2; exit 1
+  fi
+
+  if [ "$A" = delete_tool ]; then
+    case "$NM" in
+      skill_manage|table_manage|load_skill|todo|update_todo|big_todo|update_big_todo|change_big_todo)
+        printf '%s\n' "$(msg line_carries_manager_we "$ID" "$NM")" >&2
+        exit 1 ;;
+    esac
+    CUT=0; DP=0
+    if [ "$END" -gt "$TOTAL" ]; then
+      [ -z "$(sed -n "$((DEB - 1))p" "$TBL")" ] && DP=1
+    else
+      [ -z "$(sed -n "$((DEB - 1))p" "$TBL")" ] && [ -z "$(sed -n "${END}p" "$TBL")" ] && CUT=1
+    fi
+    RT=$((END - DEB + CUT + DP))
+    BC=$(corps "$NM" || true)
+    if [ "${LA_APPROVED:-0}" != 1 ]; then
+      printf '%s\n' "$(msg approval_required_remove_line)""$ID" "$NM"
+      printf '%s\n' "$(msg line_s_leave_table)""$RT"
+      block
+      if [ -n "$BC" ]; then printf '%s\n' "$(msg body_will_go_project)""$BC"
+      else printf '%s\n' "$(msg body_found_line_will)""$NM" ; fi
+      exit 3
+    fi
+    H=$((DEB - 1 - DP)); T2=$((END + CUT))
+    { head -n "$H" "$TBL"; tail -n "+$T2" "$TBL"; } > "$TD/tbl"
+    grep -q "^  - id: $ID[[:space:]]*$" "$TD/tbl" && { printf '%s\n' "$(msg line_stayed_mount "$ID")" >&2; exit 1; }
+    head -n "$H" "$TBL" > "$TD/a"; head -n "$H" "$TD/tbl" > "$TD/b"
+    cmp -s "$TD/a" "$TD/b" || { printf '%s\n' "$(msg head_table_moved_nothing)" >&2; exit 1; }
+    tail -n "+$T2" "$TBL" > "$TD/c"; tail -n "+$((H + 1))" "$TD/tbl" > "$TD/d"
+    cmp -s "$TD/c" "$TD/d" || { printf '%s\n' "$(msg tail_table_moved_nothing)" >&2; exit 1; }
+    mv -f "$TD/tbl" "$TBL" || { printf '%s\n' "$(msg cannot_write_tbl "$TBL")" >&2; exit 1; }
+    grep -q "^  - id: $ID[[:space:]]*$" "$TBL" && { printf '%s\n' "$(msg line_came_back "$ID" "$TBL")" >&2; exit 1; }
+    DEHORS=''
+    if [ -n "$BC" ]; then
+      mkdir -p "$RACINE/work/trash" 2>/dev/null || true
+      NEUF="$RACINE/work/trash/$(basename -- "$BC").$(date +%Y%m%d-%H%M%S)"
+      mv -f "$BC" "$NEUF" 2>/dev/null && DEHORS=" ; corps range en work/trash/$(basename -- "$NEUF")" || DEHORS=" ; le corps $BC est reste (deplacement impossible)"
+    fi
+    printf '%s\n' "$(msg table_line_removed "$ID" "$NM" "$RT" "$DEHORS")"
+    exit 0
+  fi
+
+  BC=$(corps "$NM" || true)
+  [ -n "$BC" ] || { printf '%s\n' "$(msg tool_without_body "$NM" "$TOOLS" "$DIRS")" >&2; exit 1; }
+  REL=$(grep -n '^  enabled:' "$BC" | head -n 1 | cut -d: -f1)
+  [ -n "$REL" ] || { printf '%s\n' "$(msg body_has_enabled_line "$BC")" >&2; exit 1; }
+  if [ "$A" = enable_tool ]; then VOULU=true; else VOULU=false; fi
+  CUR=$(sed -n "${REL}p" "$BC" | sed -e 's/^  enabled:[[:space:]]*//' -e 's/[[:space:]]*$//')
+  case "$CUR" in true|false) ;; *) printf '%s\n' "$(msg enabled_malformed_carries_true "$NM" "${CUR}")" >&2; exit 1 ;; esac
+  if [ "$CUR" = "$VOULU" ]; then
+    printf '%s\n' "$(msg switch_already_set "$NM" "$ID" "$VOULU" "$BC")"
+    exit 0
+  fi
+  if [ "${LA_APPROVED:-0}" != 1 ]; then
+    printf '%s\n' "$(msg approval_required_tool_id)""$A" "$NM" "$ID" "$REL" "$BC" "$CUR" "$VOULU"
+    printf '%s\n' "$(msg other_byte_moves_nothing)"
+    exit 3
+  fi
+  { head -n "$((REL - 1))" "$BC"; printf '  enabled: %s\n' "$VOULU"; tail -n "+$((REL + 1))" "$BC"; } > "$TD/corps"
+  head -n "$((REL - 1))" "$BC" > "$TD/a"; head -n "$((REL - 1))" "$TD/corps" > "$TD/b"
+  cmp -s "$TD/a" "$TD/b" || { printf '%s\n' "$(msg body_moved_before_enabled)" >&2; exit 1; }
+  tail -n "+$((REL + 1))" "$BC" > "$TD/c"; tail -n "+$((REL + 1))" "$TD/corps" > "$TD/d"
+  cmp -s "$TD/c" "$TD/d" || { printf '%s\n' "$(msg body_moved_after_enabled)" >&2; exit 1; }
+  mv -f "$TD/corps" "$BC" || { printf '%s\n' "$(msg cannot_write_2 "$BC")" >&2; exit 1; }
+  grep -q "^  enabled: $VOULU$" "$BC" || { printf '%s\n' "$(msg switch_did_not_take "$BC")" >&2; exit 1; }
+  printf '%s\n' "$(msg switch_done "$NM" "$ID" "$CUR" "$VOULU" "$REL" "$(basename -- "$BC")")"
+
+ARGS:
+  - {name: action, type: enum, values: [list_tools, add_tool, install_tool, delete_tool, enable_tool, disable_tool]}
+  - {name: id, type: int}
+  - {name: tool, type: text}
+  - {name: family, type: enum, values: [READ, WRITE, MANAGE, REPLY, PLAN, VISION, BLENDER, UNITY, KRITA, IMAGE, ""]}
+  - {name: description, type: text}
+  - {name: dir, type: text}
+  - {name: timeout, type: int}
+  - {name: approval, type: text}
+  - {name: args, type: text}
+  - {name: entry, type: text, stdin: true}

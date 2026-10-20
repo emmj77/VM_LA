@@ -1,0 +1,11 @@
+tool: "blender_image_view_zoom_in"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Zoom in the image (centered around 2D cursor)"
+machine: blender
+op: image.view_zoom_in
+ARGS:
+  - {name: location, type: text}          # 2 valeurs separees par des virgules
+

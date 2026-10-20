@@ -1,0 +1,11 @@
+tool: "blender_mesh_colors_reverse"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Flip direction of face corner color attribute inside faces"
+machine: blender
+op: mesh.colors_reverse
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

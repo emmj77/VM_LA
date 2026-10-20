@@ -1,0 +1,13 @@
+tool: "blender_sequencer_snap"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Snap strips to the current frame, using the active (or closest) strip as the anchor, and the mouse cursor relative to the playhead to determine the si"
+machine: blender
+op: sequencer.snap
+ARGS:
+  - {name: frame, type: int}
+  - {name: side, type: text}          # un de : LEFT | RIGHT
+  - {name: keep_offset, type: text}          # true|false, vide pour ne rien poser
+

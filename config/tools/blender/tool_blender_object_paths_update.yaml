@@ -1,0 +1,11 @@
+tool: "blender_object_paths_update"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Recalculate motion paths for selected objects"
+machine: blender
+op: object.paths_update
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

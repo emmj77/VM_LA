@@ -1,0 +1,21 @@
+tool: "blender_object_quadriflow_remesh"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new quad based mesh using the surface data of the current mesh. All data layers will be lost"
+machine: blender
+op: object.quadriflow_remesh
+ARGS:
+  - {name: use_mesh_symmetry, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_preserve_sharp, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_preserve_boundary, type: text}          # true|false, vide pour ne rien poser
+  - {name: preserve_attributes, type: text}          # true|false, vide pour ne rien poser
+  - {name: smooth_normals, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # un de : RATIO | EDGE | FACES
+  - {name: target_ratio, type: text}
+  - {name: target_edge_length, type: text}
+  - {name: target_faces, type: int}
+  - {name: mesh_area, type: text}
+  - {name: seed, type: int}
+

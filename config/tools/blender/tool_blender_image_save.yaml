@@ -1,0 +1,11 @@
+tool: "blender_image_save"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Save the image with current name and settings"
+machine: blender
+op: image.save
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

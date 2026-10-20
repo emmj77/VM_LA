@@ -1,0 +1,12 @@
+tool: "blender_mball_select_similar"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select similar metaballs by property types"
+machine: blender
+op: mball.select_similar
+ARGS:
+  - {name: type, type: text}          # un de : TYPE | RADIUS | STIFFNESS | ROTATION
+  - {name: threshold, type: text}
+

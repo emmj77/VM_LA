@@ -1,0 +1,28 @@
+tool: "krita_ai_save_preview"
+date: "2026-10-18"
+tags: ["krita", "krita_ai_save_preview"]
+doc: krita
+RULES:
+  enabled: true
+  timeout: 180
+DESCRIPTION: "ai_save_preview"
+COMMAND: |
+  SERVICE=$(dash "$ROOT/config/engine/engine.sh" carrier krita-url) || exit 1
+  num() { case "$1" in ''|*[!0-9.-]*) printf 'null' ;; *) printf '%s' "$1" ;; esac; }
+  tab() { case "$1" in '') printf 'null' ;; *) printf '%s' "$1" | jq -c . 2>/dev/null || printf 'null' ;; esac; }
+  A_index=$(num "{{index}}")
+
+  D=$(jq -cn \
+    --arg job_id "{{job_id}}" \
+    --argjson index "$A_index" \
+    --arg filename "{{filename}}" \
+    '{action:"ai_save_preview", params:({ job_id:$job_id, index:$index, filename:$filename } | with_entries(select(.value != null and .value != "")))}')
+  REP=$(curl -sS --max-time 180 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: job_id, type: text}
+  - {name: index, type: int}
+  - {name: filename, type: text}

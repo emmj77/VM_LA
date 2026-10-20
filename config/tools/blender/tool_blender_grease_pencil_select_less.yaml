@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_select_less"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Shrink the selection by one point"
+machine: blender
+op: grease_pencil.select_less
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

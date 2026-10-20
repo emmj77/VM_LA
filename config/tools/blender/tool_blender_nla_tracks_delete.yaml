@@ -1,0 +1,11 @@
+tool: "blender_nla_tracks_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete selected NLA-Tracks and the strips they contain"
+machine: blender
+op: nla.tracks_delete
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

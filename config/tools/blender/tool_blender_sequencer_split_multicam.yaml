@@ -1,0 +1,11 @@
+tool: "blender_sequencer_split_multicam"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Split multicam strip and select camera"
+machine: blender
+op: sequencer.split_multicam
+ARGS:
+  - {name: camera, type: int}
+

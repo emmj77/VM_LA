@@ -1,0 +1,11 @@
+tool: "blender_wm_url_open"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Open a website in the web browser"
+machine: blender
+op: wm.url_open
+ARGS:
+  - {name: url, type: text}
+

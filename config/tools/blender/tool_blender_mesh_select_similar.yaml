@@ -1,0 +1,13 @@
+tool: "blender_mesh_select_similar"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select similar vertices, edges or faces by property types"
+machine: blender
+op: mesh.select_similar
+ARGS:
+  - {name: type, type: text}          # un de : VERT_NORMAL | VERT_FACES | VERT_GROUPS | VERT_EDGES | VERT_CREASE | EDGE_LENGTH | EDGE_DIR | EDGE_FACES | EDGE_FACE_ANGLE | EDGE_CREASE | EDGE_BEVEL | EDGE_SEAM | EDGE_SHARP | EDGE_FREESTYLE | FACE_MATERIAL | FACE_AREA | FACE_SIDES | FACE_PERIMETER | FACE_NORMAL | FACE_COPLANAR | FACE_SMOOTH | FACE_FREESTYLE
+  - {name: compare, type: text}          # un de : EQUAL | GREATER | LESS
+  - {name: threshold, type: text}
+

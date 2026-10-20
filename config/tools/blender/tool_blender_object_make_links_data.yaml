@@ -1,0 +1,11 @@
+tool: "blender_object_make_links_data"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Transfer data from active object to selected objects"
+machine: blender
+op: object.make_links_data
+ARGS:
+  - {name: type, type: text}          # un de : OBDATA | MATERIAL | ANIMATION | GROUPS | DUPLICOLLECTION | FONTS | MODIFIERS | CONSTRAINTS | EFFECTS | LIGHT_LINKING | SHADOW_LINKING
+

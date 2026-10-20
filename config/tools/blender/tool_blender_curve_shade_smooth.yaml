@@ -1,0 +1,11 @@
+tool: "blender_curve_shade_smooth"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set shading to smooth"
+machine: blender
+op: curve.shade_smooth
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

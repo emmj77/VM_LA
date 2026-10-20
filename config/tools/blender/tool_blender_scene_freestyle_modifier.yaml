@@ -1,0 +1,11 @@
+tool: "blender_scene_freestyle_modifier"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a freestyle modifier: alpha | color | geometry | thickness (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "scene.freestyle_{{op}}_modifier_add" --arg "type={{type}}"
+ARGS:
+  - {name: op, type: enum, values: [alpha, color, geometry, thickness]}
+  - {name: type, type: text}

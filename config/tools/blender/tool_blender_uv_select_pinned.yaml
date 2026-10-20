@@ -1,0 +1,11 @@
+tool: "blender_uv_select_pinned"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all pinned UV vertices"
+machine: blender
+op: uv.select_pinned
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

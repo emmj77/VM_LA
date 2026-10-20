@@ -1,0 +1,11 @@
+tool: "blender_sequencer_select_side"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select strips on the nominated side of the selected strips"
+machine: blender
+op: sequencer.select_side
+ARGS:
+  - {name: side, type: text}          # un de : MOUSE | LEFT | RIGHT | BOTH | NO_CHANGE
+

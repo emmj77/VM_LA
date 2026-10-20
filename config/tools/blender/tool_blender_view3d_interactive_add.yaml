@@ -1,0 +1,16 @@
+tool: "blender_view3d_interactive_add"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Interactively add an object"
+machine: blender
+op: view3d.interactive_add
+ARGS:
+  - {name: primitive_type, type: text}          # un de : CUBE | CYLINDER | CONE | SPHERE_UV | SPHERE_ICO
+  - {name: plane_origin_base, type: text}          # un de : EDGE | CENTER
+  - {name: plane_origin_depth, type: text}          # un de : EDGE | CENTER
+  - {name: plane_aspect_base, type: text}          # un de : FREE | FIXED
+  - {name: plane_aspect_depth, type: text}          # un de : FREE | FIXED
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+

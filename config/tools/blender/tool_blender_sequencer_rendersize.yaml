@@ -1,0 +1,11 @@
+tool: "blender_sequencer_rendersize"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set render size and aspect from active strip"
+machine: blender
+op: sequencer.rendersize
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

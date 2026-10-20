@@ -1,0 +1,11 @@
+tool: "blender_mesh_select_next_item"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select the next element (using selection order)"
+machine: blender
+op: mesh.select_next_item
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

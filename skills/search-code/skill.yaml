@@ -1,0 +1,29 @@
+skill: "search-code"
+date: "2026-10-17"
+tags: ["search-code", "code", "chercher", "ast"]
+
+SUMMARY:
+  101: "Chercher dans le code par sa FORME (ast) ou son texte."
+  102: "ast_grep_search cherche par la forme ; search, par le texte."
+  103: "On cite le fichier ET la ligne, jamais un extrait de memoire."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "ast_grep_search"
+  201: "search"
+  202: "read_file"
+  203: "load_doc"
+  204: "list_dir"
+  205: "count_lines_of_code"
+  206: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt .py .c .cs .js"
+ERROR:
+  600: "Aucun resultat : le dire, et proposer un motif plus large."

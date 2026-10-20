@@ -1,0 +1,12 @@
+tool: "blender_node_link_drag_operation_test"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Run a node link-drag operation for testing"
+machine: blender
+op: node.link_drag_operation_test
+ARGS:
+  - {name: find_link_operations, type: text}          # true|false, vide pour ne rien poser
+  - {name: link_operation_index, type: int}
+

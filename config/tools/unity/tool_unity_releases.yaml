@@ -1,0 +1,39 @@
+tool: "unity_releases"
+date: "2026-10-18"
+tags: ["unity", "cli", "releases"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "List available Unity releases"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- releases --no-banner --no-pager --non-interactive
+  case "{{lts}}" in ''|true|false) ;; *) printf '%s\n' "$(msg lts_true_false)" >&2; exit 1 ;; esac
+
+  [ "{{lts}}" = true ] && set -- "$@" --lts
+  [ -n "{{stream}}" ] && set -- "$@" --stream "{{stream}}"
+  [ -n "{{since}}" ] && set -- "$@" --since "{{since}}"
+  [ -n "{{limit}}" ] && set -- "$@" --limit "{{limit}}"
+  [ -n "{{skip}}" ] && set -- "$@" --skip "{{skip}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_releases_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: lts, type: text}   # true pour poser --lts ; Show only LTS releases
+  - {name: stream, type: text}   # Filter by release stream: alpha, beta, lts, tech
+  - {name: since, type: text}   # Show releases from this year onwards (e.g. 2023)
+  - {name: limit, type: text}   # Maximum number of releases to show (default: 20)
+  - {name: skip, type: text}   # Skip the first N releases (for pagination)
+

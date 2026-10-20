@@ -1,0 +1,12 @@
+tool: "blender_constraint_move_up"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move constraint up in constraint stack"
+machine: blender
+op: constraint.move_up
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE
+

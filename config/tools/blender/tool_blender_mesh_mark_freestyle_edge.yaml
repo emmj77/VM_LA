@@ -1,0 +1,11 @@
+tool: "blender_mesh_mark_freestyle_edge"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "(Un)mark selected edges as Freestyle feature edges"
+machine: blender
+op: mesh.mark_freestyle_edge
+ARGS:
+  - {name: clear, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,11 @@
+tool: "blender_ed_redo"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Redo previous action"
+machine: blender
+op: ed.redo
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

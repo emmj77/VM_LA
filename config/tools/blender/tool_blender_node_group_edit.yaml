@@ -1,0 +1,11 @@
+tool: "blender_node_group_edit"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Edit node group"
+machine: blender
+op: node.group_edit
+ARGS:
+  - {name: exit, type: text}          # true|false, vide pour ne rien poser
+

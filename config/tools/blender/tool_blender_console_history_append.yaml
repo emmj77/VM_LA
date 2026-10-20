@@ -1,0 +1,13 @@
+tool: "blender_console_history_append"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Append history at cursor position"
+machine: blender
+op: console.history_append
+ARGS:
+  - {name: text, type: text}
+  - {name: current_character, type: int}
+  - {name: remove_duplicates, type: text}          # true|false, vide pour ne rien poser
+

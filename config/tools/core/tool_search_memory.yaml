@@ -1,0 +1,41 @@
+tool: "search_memory"
+date: "2026-10-17"
+tags: ["search_memory"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "reads the memory table under a QUESTION and returns the entries that answer it, by sense, best first"
+COMMAND: |
+  T=$(cat); [ -n "$T" ] || { printf '%s\n' "$(msg empty_question)" >&2; exit 1; }
+  M=${LA_MEMORY_DB:-$ROOT/config/memory.db}
+  [ -f "$M" ] || { printf '%s\n' "$(msg memory_database_missing_m "$M")" >&2; exit 1; }
+  P=${LA_EMBED_PORT:-$(conf_num models port 8091)}
+  _M=${LA_EMBED_MODEL:-$(conf_str models embed)}
+  _I='Instruct: Given a web search query, retrieve relevant passages that answer the query'
+  _B=$(printf '%s\nQuery: %s' "$_I" "$T" | jq -Rsc --arg m "$_M" '{model: $m, input: .}' 2>/dev/null || printf '')
+  _Q=$(curl -s --max-time 30 -H 'Content-Type: application/json' --data "$_B" \
+         "http://127.0.0.1:$P/embedding" 2>/dev/null | jq -c '.[0].embedding[0] // empty' 2>/dev/null || printf '')
+  case "${_Q:-}" in
+    ''|null)
+      printf '%s\n' "$(msg note_embedder_mute_port)""$P"
+      _X=$(printf '%s' "$T" | sed "s/'/''/g")
+      sqlite3 "$M" "SELECT exchange || ' | ' || stamp || ' | ' || replace(human, char(10), ' ') || ' | ' || replace(agent, char(10), ' ') FROM memory WHERE human LIKE '%$_X%' OR agent LIKE '%$_X%' ORDER BY id DESC LIMIT 20;" 2>/dev/null
+      exit 0 ;;
+  esac
+  sqlite3 -json "$M" "SELECT exchange, stamp, human, agent, vec FROM memory ORDER BY id DESC LIMIT 500;" 2>/dev/null \
+  | jq -sr --argjson q "$_Q" '
+      ( .[0] // [] ) as $rows
+      | ( [ $rows[] | . as $r | (try ($r.vec | fromjson) catch null) as $v
+            | select(($v | type) == "array") | select(($v | length) == ($q | length))
+            | { e: $r.exchange, s: $r.stamp, h: $r.human, a: $r.agent,
+                c: ([ range(0; ($q | length)) | $q[.] * $v[.] ] | add) } ] ) as $r
+      | ( $rows | length ) as $tot
+      | ( if ($r | length) == 0 then "aucune ligne de la table ne porte de vecteur : rien a classer par le sens"
+          else empty end ),
+        ( $r | sort_by(- .c) | .[:5] | .[]
+          | "\((.c * 1000 | round) / 1000) | echange \(.e) | \(.s) | \(.h | gsub("\n"; " ")) | \(.a | gsub("\n"; " "))" ),
+        ( if ($tot - ($r | length)) > 0
+          then "note : \($tot - ($r | length)) ligne(s) sans vecteur (lisibles par words)" else empty end )'
+
+ARGS:
+  - {name: text, type: text, stdin: true}

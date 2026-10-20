@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_select_more"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Grow the selection by one point"
+machine: blender
+op: grease_pencil.select_more
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

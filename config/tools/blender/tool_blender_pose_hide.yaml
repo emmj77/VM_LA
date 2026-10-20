@@ -1,0 +1,11 @@
+tool: "blender_pose_hide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Tag selected bones to not be visible in Pose Mode"
+machine: blender
+op: pose.hide
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser
+

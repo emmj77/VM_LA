@@ -1,0 +1,11 @@
+tool: "blender_view3d_view_camera"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Toggle the camera view"
+machine: blender
+op: view3d.view_camera
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

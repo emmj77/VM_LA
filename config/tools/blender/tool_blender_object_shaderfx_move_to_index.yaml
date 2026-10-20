@@ -1,0 +1,12 @@
+tool: "blender_object_shaderfx_move_to_index"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change the effect's position in the list so it evaluates after the set number of others"
+machine: blender
+op: object.shaderfx_move_to_index
+ARGS:
+  - {name: shaderfx, type: text}
+  - {name: index, type: int}
+

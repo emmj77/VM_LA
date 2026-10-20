@@ -1,0 +1,43 @@
+tool: "unity_license_activate"
+date: "2026-10-18"
+tags: ["unity", "cli", "license"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Activate a Unity license"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- license activate --no-banner --no-pager --non-interactive
+  case "{{personal}}" in ''|true|false) ;; *) printf '%s\n' "$(msg personal_true_false)" >&2; exit 1 ;; esac
+  case "{{floating}}" in ''|true|false) ;; *) printf '%s\n' "$(msg floating_true_false)" >&2; exit 1 ;; esac
+  case "{{accept_eula}}" in ''|true|false) ;; *) printf '%s\n' "$(msg accept_eula_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{serial}}" ] && set -- "$@" --serial "{{serial}}"
+  [ "{{personal}}" = true ] && set -- "$@" --personal
+  [ "{{floating}}" = true ] && set -- "$@" --floating
+  [ -n "{{file}}" ] && set -- "$@" --file "{{file}}"
+  [ -n "{{generate_request}}" ] && set -- "$@" --generate-request "{{generate_request}}"
+  [ "{{accept_eula}}" = true ] && set -- "$@" --accept-eula
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_license_activate_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: serial, type: text}   # Activate with a license serial number
+  - {name: personal, type: text}   # true pour poser --personal ; Activate the free Unity Personal license
+  - {name: floating, type: text}   # true pour poser --floating ; Acquire a license from the configured floating license server
+  - {name: file, type: text}   # Activate offline from a license file (.ulf or .xml)
+  - {name: generate_request, type: text}   # Save an offline activation request (.alf) to the given path
+  - {name: accept_eula, type: text}   # true pour poser --accept-eula ; Accept the Unity Personal license terms (required with --personal)
+

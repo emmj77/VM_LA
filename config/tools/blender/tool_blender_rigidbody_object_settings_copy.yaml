@@ -1,0 +1,11 @@
+tool: "blender_rigidbody_object_settings_copy"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy Rigid Body settings from active object to selected"
+machine: blender
+op: rigidbody.object_settings_copy
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

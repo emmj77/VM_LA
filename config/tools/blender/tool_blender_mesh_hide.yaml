@@ -1,0 +1,11 @@
+tool: "blender_mesh_hide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Hide (un)selected vertices, edges or faces"
+machine: blender
+op: mesh.hide
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser
+

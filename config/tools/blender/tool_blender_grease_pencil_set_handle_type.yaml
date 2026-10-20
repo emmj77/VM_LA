@@ -1,0 +1,11 @@
+tool: "blender_grease_pencil_set_handle_type"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set the handle type for Bézier curves"
+machine: blender
+op: grease_pencil.set_handle_type
+ARGS:
+  - {name: type, type: text}          # un de : AUTO | VECTOR | ALIGN | FREE_ALIGN | TOGGLE_FREE_ALIGN
+

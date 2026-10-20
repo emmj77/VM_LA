@@ -1,0 +1,15 @@
+tool: "blender_object_transform_to_mouse"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Snap selected item(s) to the mouse location"
+machine: blender
+op: object.transform_to_mouse
+ARGS:
+  - {name: name, type: text}
+  - {name: session_uid, type: int}
+  - {name: matrix, type: text}          # 16 valeurs separees par des virgules
+  - {name: drop_x, type: int}
+  - {name: drop_y, type: int}
+

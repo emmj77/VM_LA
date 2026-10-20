@@ -1,0 +1,36 @@
+skill: "tool-manager"
+date: "2026-10-19"
+tags: ["tool-manager", "forge", "outil", "outils", "table", "skill", "palette", "ajouter", "retirer", "activer"]
+
+SUMMARY:
+  101: "Modifier le HARNAIS : la table des tools, ou une skill et sa palette."
+  102: "list_tools d abord : on ne devine pas un id libre, et on n ecrase pas une ligne."
+  103: "Chaque geste qui ECRIT demande un feu vert HUMAIN, NOMME, une seule fois."
+  104: "Le corps d un tool est un FICHIER (config/tools/<machine>/tool_<nom>.yaml), jamais une ligne."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+# LA SEULE SKILL QUI PORTE CE DROIT, ET CE N EST PAS UN DETAIL : `table_manage` ecrit dans la table,
+# `skill_manage` ecrit dans un mode d emploi. Ce sont les deux choses qui DEFINISSENT le harnais.
+# Avec APPROVAL: true, chacun de ces gestes exige un feu vert humain qui NOMME le geste et ne sert
+# qu une fois (work/approve). Sans feu vert, le geste est refuse -- et la boucle ecrit la demande
+# pour que l humain puisse la voir et la signer (approval.sh allow <tool> <geste>).
+APPROVAL: true
+TOOLS:
+  200: "table_manage"
+  201: "skill_manage"
+  202: "read_file"
+  203: "list_dir"
+  205: "load_doc"
+  206: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "Refus sans feu vert : l humain doit approuver CE geste-la (approval.sh allow <tool> <geste>). Ne le contourne pas, ne le repete pas en esperant qu il passe : demande-le."
+  601: "table_manage refuse de retirer un MANAGER (table_manage, skill_manage, todo...). C est voulu : un harnais ne se coupe pas la main."
+  602: "Le corps d un tool doit porter tool:, RULES:, DESCRIPTION:, COMMAND:, ARGS: et nommer LE MEME tool. Refuse sinon : la ligne serait muette."

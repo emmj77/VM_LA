@@ -1,0 +1,12 @@
+tool: "blender_mask_shape_key"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a shape key of a mask: clear | feather_reset | insert | rekey (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "mask.shape_key_{{op}}" --arg "feather={{feather}}" --arg "location={{location}}"
+ARGS:
+  - {name: op, type: enum, values: [clear, feather_reset, insert, rekey]}
+  - {name: feather, type: text}
+  - {name: location, type: text}

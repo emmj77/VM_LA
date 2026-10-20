@@ -1,0 +1,41 @@
+tool: "upipe_add_timeline_clip"
+date: "2026-10-18"
+tags: ["unity", "pipeline", "add_timeline_clip"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a clip to a named track on a TimelineAsset. For Animation tracks pass an AnimationClip asset; for Audio tracks an AudioClip."
+COMMAND: |
+  PROJ=$(sed -n '1p' "$ROOT/projects/.active" 2>/dev/null | tr -d '\r')
+  P=
+  [ -n "$PROJ" ] && P=$(sed -n 's/^path:[[:space:]]*//p' "$ROOT/projects/$PROJ/project.yml" 2>/dev/null | head -1 | tr -d '"')
+  [ -n "$P" ] || { printf '%s\n' "$(msg no_project_unity)" >&2; exit 1; }
+  case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
+  [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -n "{{timeline}}" ] || { printf '%s\n' "$(msg argument_required 'timeline' 'add_timeline_clip')" >&2; exit 1; }
+  [ -n "{{track}}" ] || { printf '%s\n' "$(msg argument_required 'track' 'add_timeline_clip')" >&2; exit 1; }
+  [ -n "{{start}}" ] || { printf '%s\n' "$(msg argument_required 'start' 'add_timeline_clip')" >&2; exit 1; }
+  [ -n "{{duration}}" ] || { printf '%s\n' "$(msg argument_required 'duration' 'add_timeline_clip')" >&2; exit 1; }
+  case "{{dry_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'dry_run' 'add_timeline_clip')""{{dry_run}}" >&2; exit 1 ;; esac
+  set -- command --project-path "$P" add_timeline_clip
+  [ -n "{{timeline}}" ] && set -- "$@" --timeline "{{timeline}}"
+  [ -n "{{track}}" ] && set -- "$@" --track "{{track}}"
+  [ -n "{{start}}" ] && set -- "$@" --start "{{start}}"
+  [ -n "{{duration}}" ] && set -- "$@" --duration "{{duration}}"
+  [ -n "{{asset}}" ] && set -- "$@" --asset "{{asset}}"
+  [ -n "{{dry_run}}" ] && set -- "$@" --dry_run "{{dry_run}}"
+
+  OUT=$(timeout 90 "$CLI" --no-banner --no-pager --non-interactive --format json "$@" </dev/null 2>&1)
+  printf '%s' "$OUT" | jq -e '.success == true' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | jq -r '.errors[0].message // .errors[0].code // "reponse illisible du CLI"' 2>/dev/null || printf '%s' "$OUT")" >&2; exit 1; }
+  printf '%s\n' "$OUT" | jq -c '.data'
+ARGS:
+  - {name: timeline, type: text}
+  - {name: track, type: text}
+  - {name: start, type: text}
+  - {name: duration, type: text}
+  - {name: asset, type: text}
+  - {name: dry_run, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,12 @@
+tool: "blender_scene_freestyle_fill_range_by_selection"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Fill the Range Min/Max entries by the min/max distance between selected mesh objects and the source object (either a user-specified object or the acti"
+machine: blender
+op: scene.freestyle_fill_range_by_selection
+ARGS:
+  - {name: type, type: text}          # un de : COLOR | ALPHA | THICKNESS
+  - {name: name, type: text}
+

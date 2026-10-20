@@ -1,0 +1,13 @@
+tool: "blender_mesh_fill_grid"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Fill grid from two loops"
+machine: blender
+op: mesh.fill_grid
+ARGS:
+  - {name: span, type: int}
+  - {name: offset, type: int}
+  - {name: use_interp_simple, type: text}          # true|false, vide pour ne rien poser
+

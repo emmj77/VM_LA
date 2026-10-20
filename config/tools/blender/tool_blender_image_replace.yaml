@@ -1,0 +1,35 @@
+tool: "blender_image_replace"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Replace current image by another one from disk"
+machine: blender
+op: image.replace
+ARGS:
+  - {name: filepath, type: text}
+  - {name: hide_props_region, type: text}          # true|false, vide pour ne rien poser
+  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_backup, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_image, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_movie, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_python, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_font, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_sound, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_text, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_archive, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_btx, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_alembic, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_usd, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_obj, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_volume, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blenlib, type: text}          # true|false, vide pour ne rien poser
+  - {name: filemode, type: int}
+  - {name: relative_path, type: text}          # true|false, vide pour ne rien poser
+  - {name: show_multiview, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_multiview, type: text}          # true|false, vide pour ne rien poser
+  - {name: display_type, type: text}          # un de : DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
+  - {name: sort_method, type: text}          # un de : 
+

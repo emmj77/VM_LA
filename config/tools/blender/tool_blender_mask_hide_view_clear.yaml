@@ -1,0 +1,11 @@
+tool: "blender_mask_hide_view_clear"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reveal temporarily hidden mask layers"
+machine: blender
+op: mask.hide_view_clear
+ARGS:
+  - {name: select, type: text}          # true|false, vide pour ne rien poser
+

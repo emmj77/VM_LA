@@ -1,0 +1,45 @@
+tool: "unity_collaboration_annotations_update"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Update an existing annotation"
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration annotations update --no-banner --no-pager --non-interactive
+  [ -n "{{annotationid}}" ] || { printf '%s\n' "$(msg argument_required 'annotationid' 'unity collaboration annotations update')" >&2; exit 1; }
+
+  [ -n "{{annotationid}}" ] && set -- "$@" "{{annotationid}}"
+  [ -n "{{project_id}}" ] && set -- "$@" --project-id "{{project_id}}"
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  [ -n "{{text}}" ] && set -- "$@" --text "{{text}}"
+  [ -n "{{metadata}}" ] && set -- "$@" --metadata "{{metadata}}"
+  [ -n "{{camera}}" ] && set -- "$@" --camera "{{camera}}"
+  [ -n "{{local_space}}" ] && set -- "$@" --local-space "{{local_space}}"
+  [ -n "{{time}}" ] && set -- "$@" --time "{{time}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_annotations_update)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: annotationid, type: text}
+  - {name: project_id, type: text}   # Unity Cloud project id
+  - {name: project_path, type: text}   # Path to the Unity project (defaults to the current directory); used to
+  - {name: text, type: text}   # Updated annotation text body
+  - {name: metadata, type: text}   # Metadata as key=value pairs (repeat the flag)
+  - {name: camera, type: text}   # Camera state as a JSON object (position, rotation, fieldOfView, target
+  - {name: local_space, type: text}   # Local-space anchor as a JSON object (parentId, position, cameraPositio
+  - {name: time, type: text}   # Playback time as a JSON object (timeScale, timeStamp)
+

@@ -1,0 +1,11 @@
+tool: "blender_node_test_inlining_shader_nodes"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create a new inlined shader node tree as is consumed by renderers"
+machine: blender
+op: node.test_inlining_shader_nodes
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

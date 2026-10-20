@@ -1,0 +1,11 @@
+tool: "blender_view3d_edit_extrude"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "an extrusion in the 3D view: individual_move | manifold_normal | move_normal | move_shrink_fatten (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "view3d.edit_mesh_extrude_{{op}}" --arg "dissolve_and_intersect={{dissolve_and_intersect}}"
+ARGS:
+  - {name: op, type: enum, values: [individual_move, manifold_normal, move_normal, move_shrink_fatten]}
+  - {name: dissolve_and_intersect, type: text}

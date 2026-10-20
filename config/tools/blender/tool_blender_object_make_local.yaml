@@ -1,0 +1,11 @@
+tool: "blender_object_make_local"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Make library linked data-blocks local to this file"
+machine: blender
+op: object.make_local
+ARGS:
+  - {name: type, type: text}          # un de : SELECT_OBJECT | SELECT_OBDATA | SELECT_OBDATA_MATERIAL | ALL
+

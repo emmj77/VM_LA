@@ -1,0 +1,11 @@
+tool: "blender_ptcache"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a point cache: add | bake | bake_all | bake_from_cache | free_bake | free_bake_all | remove (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "ptcache.{{op}}" --arg "bake={{bake}}"
+ARGS:
+  - {name: op, type: enum, values: [add, bake, bake_all, bake_from_cache, free_bake, free_bake_all, remove]}
+  - {name: bake, type: text}

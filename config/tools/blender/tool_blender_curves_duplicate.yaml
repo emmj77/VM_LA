@@ -1,0 +1,11 @@
+tool: "blender_curves_duplicate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy selected points or curves"
+machine: blender
+op: curves.duplicate
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

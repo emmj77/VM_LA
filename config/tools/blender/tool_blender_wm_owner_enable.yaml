@@ -1,0 +1,11 @@
+tool: "blender_wm_owner_enable"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Enable add-on for workspace"
+machine: blender
+op: wm.owner_enable
+ARGS:
+  - {name: owner_id, type: text}
+

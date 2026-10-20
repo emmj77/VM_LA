@@ -1,0 +1,37 @@
+tool: "coplay_physics_get"
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a physics setting: rigidbody | settings (op picks which)"
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  rigidbody)
+    set -f
+    set -- physics get-rigidbody
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'physics get-rigidbody')" >&2; exit 1; }
+    [ -n "{{dimension}}" ] && set -- "$@" --dimension "{{dimension}}"
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  settings)
+    set -f
+    set -- physics get-settings
+    [ -n "{{dimension}}" ] && set -- "$@" --dimension "{{dimension}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+ARGS:
+  - {name: op, type: enum, values: [rigidbody, settings]}
+  - {name: target, type: text}
+  - {name: dimension, type: text}
+  - {name: search_method, type: text}

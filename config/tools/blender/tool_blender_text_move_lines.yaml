@@ -1,0 +1,11 @@
+tool: "blender_text_move_lines"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Move the currently selected line(s) up/down"
+machine: blender
+op: text.move_lines
+ARGS:
+  - {name: direction, type: text}          # un de : UP | DOWN
+

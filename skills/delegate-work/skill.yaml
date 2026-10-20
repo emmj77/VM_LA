@@ -1,0 +1,27 @@
+skill: "delegate-work"
+date: "2026-10-17"
+tags: ["delegate-work", "deleguer", "sous-agent", "tache"]
+
+SUMMARY:
+  101: "Deleguer une tache a un sous-agent, et lire son verdict."
+  102: "delegate_task confie la tache ; on ne fait PAS le travail soi-meme."
+  103: "On rend le RESULTAT rendu par le sous-agent, jamais un suppose."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "delegate_task"
+  201: "read_file"
+  202: "load_doc"
+  203: "mkdir"
+  204: "send_agent_chat"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+  type-file: ".md .txt .json"
+ERROR:
+  600: "Le sous-agent n'a rien rendu : le dire, ne pas fabriquer un resultat."

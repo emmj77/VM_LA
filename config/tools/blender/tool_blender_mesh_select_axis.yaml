@@ -1,0 +1,14 @@
+tool: "blender_mesh_select_axis"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all data in the mesh on a single axis"
+machine: blender
+op: mesh.select_axis
+ARGS:
+  - {name: orientation, type: text}          # un de : GLOBAL | LOCAL | NORMAL | GIMBAL | VIEW | CURSOR | PARENT
+  - {name: sign, type: text}          # un de : POS | NEG | ALIGN
+  - {name: axis, type: text}          # un de : X | Y | Z
+  - {name: threshold, type: text}
+

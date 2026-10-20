@@ -1,0 +1,11 @@
+tool: "blender_graph_view_selected"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset viewable area to show selected keyframe range"
+machine: blender
+op: graph.view_selected
+ARGS:
+  - {name: include_handles, type: text}          # true|false, vide pour ne rien poser
+

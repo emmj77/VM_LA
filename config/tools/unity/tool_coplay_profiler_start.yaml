@@ -1,0 +1,25 @@
+tool: "coplay_profiler_start"
+date: "2026-10-18"
+tags: ["unity", "coplay", "profiler"]
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Start the Unity Profiler, optionally..."
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- profiler start
+  case "{{callstacks}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'callstacks')" >&2; exit 1 ;; esac
+  [ -n "{{log_file}}" ] && set -- "$@" --log-file "{{log_file}}"
+  [ "{{callstacks}}" = true ] && set -- "$@" --callstacks
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+ARGS:
+  - {name: log_file, type: text}
+  - {name: callstacks, type: text}          # true pour poser le drapeau, vide sinon
+

@@ -1,0 +1,11 @@
+tool: "blender_mesh_duplicate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Duplicate selected vertices, edges or faces"
+machine: blender
+op: mesh.duplicate
+ARGS:
+  - {name: mode, type: int}
+

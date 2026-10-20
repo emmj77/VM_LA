@@ -1,0 +1,16 @@
+tool: "blender_preferences_keyconfig"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "a key configuration: activate | export | import | remove | test (op picks which)"
+COMMAND: |
+  exec dash "$ROOT/config/engine/engine.sh" carrier blender --op "preferences.keyconfig_{{op}}" --arg "filepath={{filepath}}" --arg "all={{all}}" --arg "keep_original={{keep_original}}" --arg "filter_folder={{filter_folder}}" --arg "filter_python={{filter_python}}" --arg "filter_text={{filter_text}}"
+ARGS:
+  - {name: op, type: enum, values: [activate, export, import, remove, test]}
+  - {name: filepath, type: text}
+  - {name: all, type: text}
+  - {name: keep_original, type: text}
+  - {name: filter_folder, type: text}
+  - {name: filter_python, type: text}
+  - {name: filter_text, type: text}

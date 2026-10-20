@@ -1,0 +1,12 @@
+tool: "blender_wm_set_working_color_space"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Change the working color space of all colors in this blend file"
+machine: blender
+op: wm.set_working_color_space
+ARGS:
+  - {name: convert_colors, type: text}          # true|false, vide pour ne rien poser
+  - {name: working_space, type: text}          # un de : 
+

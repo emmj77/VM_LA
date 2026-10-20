@@ -1,0 +1,19 @@
+tool: "blender_transform_seq_slide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Slide a sequence strip in time"
+machine: blender
+op: transform.seq_slide
+ARGS:
+  - {name: value, type: text}          # 2 valeurs separees par des virgules
+  - {name: use_restore_handle_selection, type: text}          # true|false, vide pour ne rien poser
+  - {name: snap, type: text}          # true|false, vide pour ne rien poser
+  - {name: texture_space, type: text}          # true|false, vide pour ne rien poser
+  - {name: remove_on_cancel, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_duplicated_keyframes, type: text}          # true|false, vide pour ne rien poser
+  - {name: view2d_edge_pan, type: text}          # true|false, vide pour ne rien poser
+  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_accurate, type: text}          # true|false, vide pour ne rien poser
+

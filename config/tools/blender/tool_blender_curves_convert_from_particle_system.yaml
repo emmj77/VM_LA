@@ -1,0 +1,11 @@
+tool: "blender_curves_convert_from_particle_system"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a new curves object based on the current state of the particle system"
+machine: blender
+op: curves.convert_from_particle_system
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

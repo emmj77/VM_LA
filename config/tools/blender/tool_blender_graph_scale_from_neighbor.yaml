@@ -1,0 +1,12 @@
+tool: "blender_graph_scale_from_neighbor"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Increase or decrease the value of selected keys in relationship to the neighboring one"
+machine: blender
+op: graph.scale_from_neighbor
+ARGS:
+  - {name: factor, type: text}
+  - {name: anchor, type: text}          # un de : LEFT | RIGHT
+

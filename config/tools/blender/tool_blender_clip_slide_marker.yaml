@@ -1,0 +1,11 @@
+tool: "blender_clip_slide_marker"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Slide marker areas"
+machine: blender
+op: clip.slide_marker
+ARGS:
+  - {name: offset, type: text}          # 2 valeurs separees par des virgules
+

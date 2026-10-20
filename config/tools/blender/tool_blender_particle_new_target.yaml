@@ -1,0 +1,11 @@
+tool: "blender_particle_new_target"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add a new particle target"
+machine: blender
+op: particle.new_target
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

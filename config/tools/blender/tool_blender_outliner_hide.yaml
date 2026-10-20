@@ -1,0 +1,11 @@
+tool: "blender_outliner_hide"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Hide selected objects and collections"
+machine: blender
+op: outliner.hide
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

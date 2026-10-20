@@ -1,0 +1,11 @@
+tool: "blender_object_quick_liquid"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Make selected objects liquid"
+machine: blender
+op: object.quick_liquid
+ARGS:
+  - {name: show_flows, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,12 @@
+tool: "blender_object_select_linked"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select all visible objects that are linked"
+machine: blender
+op: object.select_linked
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : OBDATA | MATERIAL | DUPGROUP | PARTICLE | LIBRARY | LIBRARY_OBDATA
+

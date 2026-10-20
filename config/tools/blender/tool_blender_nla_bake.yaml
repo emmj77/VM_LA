@@ -1,0 +1,21 @@
+tool: "blender_nla_bake"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Bake all selected objects location/scale/rotation animation to an action"
+machine: blender
+op: nla.bake
+ARGS:
+  - {name: frame_start, type: int}
+  - {name: frame_end, type: int}
+  - {name: step, type: int}
+  - {name: only_selected, type: text}          # true|false, vide pour ne rien poser
+  - {name: visual_keying, type: text}          # true|false, vide pour ne rien poser
+  - {name: clear_constraints, type: text}          # true|false, vide pour ne rien poser
+  - {name: clear_parents, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_current_action, type: text}          # true|false, vide pour ne rien poser
+  - {name: clean_curves, type: text}          # true|false, vide pour ne rien poser
+  - {name: bake_types, type: text}          # un de : POSE | OBJECT
+  - {name: channel_types, type: text}          # un de : LOCATION | ROTATION | SCALE | BBONE | PROPS
+

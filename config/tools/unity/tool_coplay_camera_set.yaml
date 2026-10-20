@@ -1,0 +1,120 @@
+tool: "coplay_camera_set"
+doc: unity
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "the camera: aim | blend | body | lens | noise | priority | target (op picks which)"
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  aim)
+    set -f
+    set -- camera set-aim
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'camera set-aim')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{aim_type}}" ] && set -- "$@" --aim-type "{{aim_type}}"
+    [ -n "{{props}}" ] && set -- "$@" --props "{{props}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  blend)
+    set -f
+    set -- camera set-blend
+    [ -n "{{style}}" ] && set -- "$@" --style "{{style}}"
+    [ -n "{{duration}}" ] && set -- "$@" --duration "{{duration}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  body)
+    set -f
+    set -- camera set-body
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'camera set-body')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{body_type}}" ] && set -- "$@" --body-type "{{body_type}}"
+    [ -n "{{props}}" ] && set -- "$@" --props "{{props}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  lens)
+    set -f
+    set -- camera set-lens
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'camera set-lens')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{fov}}" ] && set -- "$@" --fov "{{fov}}"
+    [ -n "{{near}}" ] && set -- "$@" --near "{{near}}"
+    [ -n "{{far}}" ] && set -- "$@" --far "{{far}}"
+    [ -n "{{ortho_size}}" ] && set -- "$@" --ortho-size "{{ortho_size}}"
+    [ -n "{{dutch}}" ] && set -- "$@" --dutch "{{dutch}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  noise)
+    set -f
+    set -- camera set-noise
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'camera set-noise')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{amplitude}}" ] && set -- "$@" --amplitude "{{amplitude}}"
+    [ -n "{{frequency}}" ] && set -- "$@" --frequency "{{frequency}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  priority)
+    set -f
+    set -- camera set-priority
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'camera set-priority')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{priority}}" ] && set -- "$@" --priority "{{priority}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  target)
+    set -f
+    set -- camera set-target
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'camera set-target')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{follow}}" ] && set -- "$@" --follow "{{follow}}"
+    [ -n "{{look_at}}" ] && set -- "$@" --look-at "{{look_at}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+ARGS:
+  - {name: op, type: enum, values: [aim, blend, body, lens, noise, priority, target]}
+  - {name: target, type: text}
+  - {name: aim_type, type: text}
+  - {name: amplitude, type: text}
+  - {name: body_type, type: text}
+  - {name: duration, type: text}
+  - {name: dutch, type: text}
+  - {name: far, type: text}
+  - {name: follow, type: text}
+  - {name: fov, type: text}
+  - {name: frequency, type: text}
+  - {name: look_at, type: text}
+  - {name: near, type: text}
+  - {name: ortho_size, type: text}
+  - {name: priority, type: int}
+  - {name: props, type: text}
+  - {name: search_method, type: text}
+  - {name: style, type: text}

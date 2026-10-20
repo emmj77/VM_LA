@@ -1,0 +1,18 @@
+tool: "krita_layers"
+date: "2026-10-17"
+tags: ["krita", "krita_layers"]
+doc: krita
+RULES:
+  enabled: true
+  timeout: 40
+DESCRIPTION: "lists the layers of the document Krita has open (name, type, visibility, opacity)"
+COMMAND: |
+  SERVICE=$(dash "$ROOT/config/engine/engine.sh" carrier krita-url) || exit 1
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$(jq -cn "{\"action\":\"list_layers\",\"params\":{}}")" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf '%s' "$REP" | jq -r '.layers[] | "  " + .name + "  " + .type + "  visible=" + (.visible|tostring) + "  opacity=" + (.opacity|tostring)'
+  printf '%s\n' "$(msg layer_s)""$(printf '%s' "$REP" | jq -r .count)"
+
+ARGS:
+ARGS: []                    # aucun argument : ce tool se nomme seul

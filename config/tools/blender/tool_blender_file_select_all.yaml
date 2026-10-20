@@ -1,0 +1,11 @@
+tool: "blender_file_select_all"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Select or deselect all files"
+machine: blender
+op: file.select_all
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT
+

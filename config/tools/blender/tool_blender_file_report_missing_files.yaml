@@ -1,0 +1,11 @@
+tool: "blender_file_report_missing_files"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Report all missing external files"
+machine: blender
+op: file.report_missing_files
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

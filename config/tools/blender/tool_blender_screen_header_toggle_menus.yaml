@@ -1,0 +1,11 @@
+tool: "blender_screen_header_toggle_menus"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Expand or collapse the header pull-down menus"
+machine: blender
+op: screen.header_toggle_menus
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

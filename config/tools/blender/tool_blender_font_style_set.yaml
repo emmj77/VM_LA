@@ -1,0 +1,12 @@
+tool: "blender_font_style_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set font style"
+machine: blender
+op: font.style_set
+ARGS:
+  - {name: style, type: text}          # un de : BOLD | ITALIC | UNDERLINE | SMALL_CAPS
+  - {name: clear, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,40 @@
+tool: "uninstall_program"
+date: "2026-10-17"
+tags: ["uninstall_program", "retirer", "desinstaller", "apt", "program-manage"]
+RULES:
+  enabled: true
+  timeout: 1800
+  approval: whole
+DESCRIPTION: "removes an installed program (apt) -- the name must be given twice"
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  P="{{name}}"
+  C="{{confirm}}"
+  case "$P" in
+    '') printf '%s\n' "$(msg package_required)" >&2 ; exit 1 ;;
+    -*|.*|*..*) printf '%s\n' "$(msg package_bad_name "$P")" >&2 ; exit 1 ;;
+    *[!a-z0-9+.-]*) printf '%s\n' "$(msg package_bad_char "$P")" >&2 ; exit 1 ;;
+  esac
+  [ "$C" = "$P" ] || {
+    printf '%s\n' "$(msg removal_needs_confirm "$P" "${C:-rien}")" >&2
+    printf '%s\n' "$(msg re_issue_call_confirm "$P")" >&2
+    exit 1
+  }
+  command -v apt-get >/dev/null 2>&1 || { printf '%s\n' "$(msg missing_binary 'apt-get')" >&2 ; exit 1 ; }
+  dpkg -s "$P" >/dev/null 2>&1 || { printf '%s\n' "$(msg package_absent "$P")" >&2 ; exit 1 ; }
+  V=$(dpkg-query -W -f='${Version}' "$P" 2>/dev/null)
+  SHARE=$(apt-get -s -y remove -- "$P" 2>/dev/null | sed -n 's/^Remv \([^ ]*\).*/\1/p' | tr '\n' ' ' | cut -c1-200)
+  L=$(sudo -n apt-get -y remove -- "$P" 2>&1) || {
+    printf '%s\n' "$(msg removal_failed "$P" "$(printf '%s' "$L" | tail -n 3 | tr '\n' ' ' | cut -c1-200)")" >&2
+    exit 1
+  }
+  if dpkg -s "$P" >/dev/null 2>&1; then
+    printf '%s\n' "$(msg package_still_there "$P")" >&2
+    exit 1
+  fi
+  printf '%s\n' "$(msg removed_was_gone_its)"\
+    "$P" "${V:-?}" "${SHARE:-rien}"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: confirm, type: text}

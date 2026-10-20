@@ -1,0 +1,40 @@
+tool: "blender_wm_stl_import"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Import an STL file as an object"
+machine: blender
+op: wm.stl_import
+ARGS:
+  - {name: filepath, type: text}
+  - {name: directory, type: text}
+  - {name: files, type: text}
+  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_backup, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_image, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_movie, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_python, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_font, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_sound, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_text, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_archive, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_btx, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_alembic, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_usd, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_obj, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_volume, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blenlib, type: text}          # true|false, vide pour ne rien poser
+  - {name: filemode, type: int}
+  - {name: display_type, type: text}          # un de : DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
+  - {name: sort_method, type: text}          # un de : 
+  - {name: global_scale, type: text}
+  - {name: use_scene_unit, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_facet_normal, type: text}          # true|false, vide pour ne rien poser
+  - {name: forward_axis, type: text}          # un de : X | Y | Z | NEGATIVE_X | NEGATIVE_Y | NEGATIVE_Z
+  - {name: up_axis, type: text}          # un de : X | Y | Z | NEGATIVE_X | NEGATIVE_Y | NEGATIVE_Z
+  - {name: use_mesh_validate, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_glob, type: text}
+

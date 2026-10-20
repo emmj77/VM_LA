@@ -1,0 +1,14 @@
+tool: "blender_mesh_screw"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Extrude selected vertices in screw-shaped rotation around the cursor in indicated viewport"
+machine: blender
+op: mesh.screw
+ARGS:
+  - {name: steps, type: int}
+  - {name: turns, type: int}
+  - {name: center, type: text}          # 3 valeurs separees par des virgules
+  - {name: axis, type: text}          # 3 valeurs separees par des virgules
+

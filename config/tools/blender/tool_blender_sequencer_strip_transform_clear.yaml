@@ -1,0 +1,11 @@
+tool: "blender_sequencer_strip_transform_clear"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Reset image transformation to default value"
+machine: blender
+op: sequencer.strip_transform_clear
+ARGS:
+  - {name: property, type: text}          # un de : POSITION | SCALE | ROTATION | ALL
+

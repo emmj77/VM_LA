@@ -1,0 +1,11 @@
+tool: "blender_preferences_extension_url_drop"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Handle dropping an extension URL"
+machine: blender
+op: preferences.extension_url_drop
+ARGS:
+  - {name: url, type: text}
+

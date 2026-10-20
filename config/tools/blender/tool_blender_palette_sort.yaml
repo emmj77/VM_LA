@@ -1,0 +1,11 @@
+tool: "blender_palette_sort"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Sort Palette Colors"
+machine: blender
+op: palette.sort
+ARGS:
+  - {name: type, type: text}          # un de : HSV | SVH | VHS | LUMINANCE
+

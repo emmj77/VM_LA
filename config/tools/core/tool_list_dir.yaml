@@ -1,0 +1,12 @@
+tool: "list_dir"
+date: "2026-10-17"
+tags: ["list_dir"]
+RULES:
+  enabled: true
+  timeout: 600
+DESCRIPTION: "lists a project directory, one entry per line, directories marked with a slash"
+COMMAND: |
+  LC_ALL=C ls -1p -- "$ROOT/{{path}}"
+
+ARGS:
+  - {name: path, type: path}

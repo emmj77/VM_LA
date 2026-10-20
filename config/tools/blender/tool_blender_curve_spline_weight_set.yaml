@@ -1,0 +1,11 @@
+tool: "blender_curve_spline_weight_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set softbody goal weight for selected points"
+machine: blender
+op: curve.spline_weight_set
+ARGS:
+  - {name: weight, type: text}
+

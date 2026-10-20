@@ -1,0 +1,11 @@
+tool: "blender_file_highlight"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Highlight selected file(s)"
+machine: blender
+op: file.highlight
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

@@ -1,0 +1,31 @@
+# QUI : lit une page web comme du texte, pour un agent (pas de capture, pas de pixel)
+# REFUSE : agent-browser absent ; url vide ; page injoignable
+tool: "web_read"
+date: "2026-10-20"
+tags: ["web", "lecture", "agent-browser"]
+
+RULES:
+  enabled: true
+  timeout: 120
+
+DESCRIPTION: "Ouvre une page avec agent-browser et rend son contenu lisible en texte (tronque a la taille de sortie du moteur)."
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  A=$(command -v agent-browser 2>/dev/null || echo /usr/local/bin/agent-browser)
+  [ -x "$A" ] || { echo "refuse : agent-browser introuvable (sudo npm i -g agent-browser)" >&2 ; exit 1 ; }
+  U="{{url}}"
+  [ -n "$U" ] || { echo "refuse : url vide" >&2 ; exit 1 ; }
+  OUT=$("$A" --profile /home/moussa/.agent-browser/profile read "$U" 2>&1)
+  case "$OUT" in
+    ''|✗*|*"Read request failed"*)
+      # le lecteur direct peut etre refuse par un hote : on rend la page et on lit le texte
+      "$A" --profile /home/moussa/.agent-browser/profile open "$U" >/dev/null 2>&1 || { echo "refuse : page injoignable" >&2 ; exit 1 ; }
+      OUT=$("$A" eval "document.body.innerText" 2>/dev/null | sed 's/\\n/\n/g') ;;
+  esac
+  [ -n "$OUT" ] || { echo "refuse : page vide" >&2 ; exit 1 ; }
+  # le moteur plafonne a 200 lignes ET 4000 octets : on reste sous les deux
+  printf '%s' "$OUT" | head -n 180 | head -c 3500 | iconv -c -f utf-8 -t utf-8
+
+ARGS:
+  - {name: url, type: text}

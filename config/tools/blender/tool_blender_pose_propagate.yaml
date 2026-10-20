@@ -1,0 +1,12 @@
+tool: "blender_pose_propagate"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Copy selected aspects of the current pose to subsequent poses already keyframed"
+machine: blender
+op: pose.propagate
+ARGS:
+  - {name: mode, type: text}          # un de : NEXT_KEY | LAST_KEY | BEFORE_FRAME | BEFORE_END | SELECTED_KEYS | SELECTED_MARKERS
+  - {name: end_frame, type: text}
+

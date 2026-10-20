@@ -1,0 +1,37 @@
+skill: "unity"
+date: "2026-10-18"
+tags: ["unity", "editeur", "jeu"]
+
+SUMMARY:
+  101: "Unity par quatre canaux : le CLI unity (216 commandes, arbre complet), le pipeline (upipe_, 150), Coplay (coplay_, 277) ; le Hub passe par le CLI."
+  102: "unity_tools_find 'mots' : fiche complete jusqu a 3 reponses ; unity_tools_find '' tout pour la liste par famille."
+  103: "Les 216 commandes du CLI viennent de `unity commands --format json` ; les canaux de code direct sont ecartes (shell, plugin, --execute-method)."
+RULES:
+  create_subfolder: true
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "unity_tools_find"
+  201: "tool_show"
+  202: "unity_status"
+  203: "unity_open"
+  204: "unity_close"
+  205: "unity_build"
+  206: "unity_test"
+  207: "read_file"
+  208: "list_dir"
+  209: "load_doc"
+  210: "fast_analyze_img"
+  211: "mkdir"
+DOCS:
+  300: "unity"
+PLAN:
+PERIMETER:
+  # LE PERIMETRE DE LA SKILL UNITY : le projet lui-meme.
+  workspace: "/home/moussa/Documents/SUPREME_PMC"
+  # le dossier config/tools/unity : tout son inventaire est dans le perimetre
+  tools: "unity"
+  type-file: ".cs .unity .prefab .asset .anim .json .md"
+ERROR:
+  600: "L'editeur ne repond pas : unity_status, puis le dire ; un build ou un play bloque la compilation."

@@ -1,0 +1,13 @@
+tool: "blender_wm_properties_edit_value"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Edit the value of a custom property"
+machine: blender
+op: wm.properties_edit_value
+ARGS:
+  - {name: data_path, type: text}
+  - {name: property_name, type: text}
+  - {name: eval_string, type: text}
+

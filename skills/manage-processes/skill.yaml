@@ -1,0 +1,25 @@
+skill: "manage-processes"
+date: "2026-10-17"
+tags: ["manage-processes", "process", "kill"]
+
+SUMMARY:
+  101: "Voir et arreter un processus de la machine."
+  102: "process_list filtre par motif ; kill arrete un pid (jamais le sien ni ses ancetres)."
+  103: "On NOMME le processus avant de l'arreter."
+RULES:
+  create_subfolder: false
+  execute_code: false
+  max_section_lines: 100
+APPROVAL: false              # cette skill ne modifie pas le harnais
+TOOLS:
+  200: "process_list"
+  202: "list_dir"
+  203: "load_doc"
+  204: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+PERIMETER:
+  workspace: "work/"
+ERROR:
+  600: "process_list ne repond pas, ou le pid est introuvable : le dire, ne pas forcer."

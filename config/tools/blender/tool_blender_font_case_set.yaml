@@ -1,0 +1,11 @@
+tool: "blender_font_case_set"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Set font case"
+machine: blender
+op: font.case_set
+ARGS:
+  - {name: case, type: text}          # un de : LOWER | UPPER
+

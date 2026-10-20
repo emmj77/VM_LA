@@ -1,0 +1,22 @@
+# LE ROUTEUR : UN llama-server, TROIS modeles (l embed, le reranker, le compacteur).
+# install.sh remplace @ROOT@ par la racine reelle et pose le fichier dans ~/.config/systemd/user/.
+# Le depot porte la source, le poste porte l'unite.
+#
+# POURQUOI UN SEUL : MOUSSA, 19/10 : « bascule le routeur unique » -- une unite, une porte, un
+# journal, et les reglages de chaque modele ecrits une fois (config/llama_preset.ini).
+# CE QU'IL COUTE : 305 Mo de plus que trois residents separes (chaque modele reste un processus
+# FILS avec ses bibliotheques). Mesure du 19/10 : 2 763 Mo contre 2 458 Mo.
+# CE QU'IL REND : les modeles inutilises rendent leur memoire (sleep-idle-seconds), et un modele
+# absent se charge a la premiere demande au lieu de faire echouer le tour.
+[Unit]
+Description=LA - the models (one llama.cpp router : embed, rerank, compactor -- loaded on demand, kept while used)
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=@ROOT@/config/engine/models.sh run
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

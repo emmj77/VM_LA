@@ -1,0 +1,11 @@
+tool: "blender_outliner_delete"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Delete selected objects and collections"
+machine: blender
+op: outliner.delete
+ARGS:
+  - {name: hierarchy, type: text}          # true|false, vide pour ne rien poser
+

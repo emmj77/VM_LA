@@ -1,0 +1,11 @@
+tool: "blender_graph_snap_cursor_value"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Place the cursor value on the average value of selected keyframes"
+machine: blender
+op: graph.snap_cursor_value
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+

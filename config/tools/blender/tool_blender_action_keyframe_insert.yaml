@@ -1,0 +1,11 @@
+tool: "blender_action_keyframe_insert"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Insert keyframes for the specified channels"
+machine: blender
+op: action.keyframe_insert
+ARGS:
+  - {name: type, type: text}          # un de : ALL | SEL | GROUP
+

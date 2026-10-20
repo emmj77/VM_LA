@@ -1,0 +1,12 @@
+tool: "blender_armature_extrude_forked"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Create new bones from the selected joints and move them"
+machine: blender
+op: armature.extrude_forked
+ARGS:
+  - {name: ARMATURE_OT_extrude, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}
+

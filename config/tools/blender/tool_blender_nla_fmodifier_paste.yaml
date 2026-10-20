@@ -1,0 +1,12 @@
+tool: "blender_nla_fmodifier_paste"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Add copied F-Modifiers to the selected NLA-Strips"
+machine: blender
+op: nla.fmodifier_paste
+ARGS:
+  - {name: only_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: replace, type: text}          # true|false, vide pour ne rien poser
+

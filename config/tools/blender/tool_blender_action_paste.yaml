@@ -1,0 +1,13 @@
+tool: "blender_action_paste"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Paste keyframes from the internal clipboard for the selected channels, starting on the current frame"
+machine: blender
+op: action.paste
+ARGS:
+  - {name: offset, type: text}          # un de : START | END | RELATIVE | NONE
+  - {name: merge, type: text}          # un de : MIX | OVER_ALL | OVER_RANGE | OVER_RANGE_ALL
+  - {name: flipped, type: text}          # true|false, vide pour ne rien poser
+

@@ -1,0 +1,14 @@
+tool: "blender_uv_rip"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Rip selected vertices or a selected region"
+machine: blender
+op: uv.rip
+ARGS:
+  - {name: mirror, type: text}          # true|false, vide pour ne rien poser
+  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_accurate, type: text}          # true|false, vide pour ne rien poser
+  - {name: location, type: text}          # 2 valeurs separees par des virgules
+

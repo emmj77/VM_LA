@@ -1,0 +1,11 @@
+tool: "blender_mesh_vert_connect_path"
+doc: blender
+RULES:
+  enabled: true
+  timeout: 120
+DESCRIPTION: "Connect vertices by their selection order, creating edges, splitting faces"
+machine: blender
+op: mesh.vert_connect_path
+ARGS:
+  []                    # aucun argument : cet operateur ne lit aucune propriete
+
