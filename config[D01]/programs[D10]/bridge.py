@@ -178,6 +178,25 @@ def cached(key, ttl, fn):
     return hit[1]
 
 
+def board_json():
+    """le board tel que board.py le mesure : le pont transporte, il ne calcule rien.
+    le menu (sections, ordre, icones) vient de la_config, pas d ici."""
+    prog = os.environ.get("LA_BOARD") or ""
+    if not prog or not os.path.isfile(prog):
+        return {"faults": 1, "sections": [], "error": "board.py introuvable (LA_BOARD)"}
+    try:
+        r = subprocess.run(["python3", prog, "--json"], capture_output=True, text=True, timeout=40)
+    except (OSError, subprocess.SubprocessError) as e:
+        return {"faults": 1, "sections": [], "error": str(e)[:200]}
+    out = (r.stdout or "").strip()
+    if not out:
+        return {"faults": 1, "sections": [], "error": (r.stderr or "board.py n a rien dit")[:200]}
+    try:
+        return json.loads(out)
+    except ValueError:
+        return {"faults": 1, "sections": [], "error": out[:200]}
+
+
 def _door_read(kind, tool, args, fallback):
     try:
         v = ask(kind, tool, args)
@@ -550,6 +569,9 @@ class Handler(BaseHTTPRequestHandler):
                 return self.redirect(os.environ.get("LA_DASH_URL") or "http://127.0.0.1:8771/")
             if p == "/ping":
                 return self.json({"state": "alive", "port": os.environ["LA_PORT_BRIDGE"], "ts": now()})
+            if p == "/board":
+                # une seule mesure, deux lecteurs : l applet dessine ce que board.py a trouve
+                return self.json(cached("menu", 2.0, board_json))
             if p == "/spoken":
                 return self.json(self.lines(state_file("spoken.jsonl")))
             if p.startswith("/audio/"):

@@ -260,6 +260,16 @@ INSTRUMENTS = [(i["name"], i.get("label") or i["name"], i.get("bin", ""), i.get(
 FORMS = laconf.text("board", "forms", r"[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)")
 BRICKS = {r[0]: r[2] for r in RESIDENTS}
 CARRIERS = laconf.get("board", "porteurs", [])
+# LE MENU VIENT DE LA CONFIG : les sections, leur ordre, leurs icones, et qui va ou.
+# « residents* » deplie la synthese puis chaque resident dans l'ordre declare.
+SECTIONS = laconf.get("board", "sections", []) or []
+ICONS = {str(k).lower(): str(v) for k, v in (laconf.get("board", "icons", {}) or {}).items()}
+OTHER = laconf.text("board", "other", "AUTRE")
+# ce que la barre du panneau montre en permanence : la config le dit, l applet le lit
+BAR = [str(x) for x in (laconf.get("board", "bar", []) or [])]
+REFRESH = num(laconf.text("board", "refresh", "5"), "refresh", 5) or 5
+# le port du routeur est declare une fois, sous units.models : un modele resident s y interroge
+ROUTER_PORT = _port((laconf.get("units", "models") or {}).get("port", 8091))
 
 
 def run(cmd, timeout=8):
@@ -340,6 +350,7 @@ def read_residents():
     for name, unit, port, path, mid in RESIDENTS:
         if mid:
             # a model of the router: sleeping is up (its weights stay), unloaded is a fault
+            port = port or ROUTER_PORT
             if port not in seen:
                 seen[port] = _router_models(port)
             val = seen[port].get(mid) or "unloaded"
@@ -837,6 +848,99 @@ def control(light=False):
         L.append((name, ("silent" if silent else "answers " + code) + " · :%d" % port
                      + ("" if silent else " · %d MB" % _rss), False))
     return L, faults, res, appoints, table, canon, doctor, traffic
+
+
+def _expand(lines):
+    """la liste d une section, « residents* » deplie la synthese et ses enfants"""
+    out = []
+    for t in lines or []:
+        t = str(t).strip()
+        if t == "residents*":
+            out.append("residents")
+            out.extend(r[0] for r in RESIDENTS)
+        elif t:
+            out.append(t)
+    return out
+
+
+def _ratio_of(title, verdict, total_ram):
+    """la part que porte une mesure, et son genre : n/m ou %, ou n MB sur le total ; sinon rien.
+    « health » doit valoir 1 et sanctionne ; « share » est une consommation qui chauffe."""
+    n = title.lower()
+    # un instrument sans port ne mesure pas de memoire : « 0 MB · no port » n est pas une part
+    if "no port" in verdict:
+        return None, None
+    # LA MACHINE EN FACE : « 832 MB / 46 GB » -- la part de la machine prise par LA
+    m = re.search(r"(\d+)\s*MB\s*/\s*(\d+)\s*GB", verdict)
+    if m:
+        return min(1.0, (int(m.group(1)) / 1024.0) / float(m.group(2))), "share"
+    m = re.search(r"(\d+)\s*/\s*(\d+)", verdict)
+    if m and int(m.group(2)):
+        return (min(1.0, int(m.group(1)) / float(m.group(2))),
+                "share" if n.startswith("gpu ") else "health")
+    m = re.search(r"(\d+(?:\.\d+)?)\s*%", verdict)
+    if m:
+        return min(1.0, float(m.group(1)) / 100.0), "health"
+    m = re.search(r"(\d+)\s*MB", verdict)
+    if m and total_ram:
+        return min(1.0, int(m.group(1)) / float(total_ram)), "share"
+    return None, None
+
+
+def board_object():
+    """l etat mesure, tel qu il est : ni largeur, ni colonne, ni couleur, ni langage d ecran"""
+    L, faults, *_ = control()
+    total_ram = None
+    for name, value, _fault in L:
+        if name.lower() == "ram of la":
+            m = re.search(r"(\d+)", value)
+            total_ram = int(m.group(1)) if m else None
+            break
+    by = {}
+    for i, (name, value, fault) in enumerate(L):
+        by.setdefault(name.lower(), []).append((i, name, value, fault))
+    used = set()
+
+    def row(name, value, fault):
+        r, tone = _ratio_of(name, value, total_ram)
+        return {"title": name, "verdict": value, "ok": not fault,
+                "kind": "ratio" if r is not None else "state",
+                "ratio": round(r, 3) if r is not None else None,
+                "tone": tone,
+                "icon": ICONS.get(name.lower(), "")}
+
+    out = []
+    for sec in SECTIONS:
+        rows = []
+        for t in _expand(sec.get("lines", [])):
+            for i, name, value, fault in by.get(t.lower(), []):
+                if i in used:
+                    continue
+                used.add(i)
+                rows.append(row(name, value, fault))
+        out.append({"name": sec.get("name", ""), "icon": sec.get("icon", ""), "rows": rows})
+    rest = [row(n, v, f) for i, (n, v, f) in enumerate(L) if i not in used]
+    if rest:
+        out.append({"name": OTHER, "icon": "", "rows": rest})
+    return {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "refresh": REFRESH,
+            "faults": len(faults), "bar": BAR,
+            "sections": out}
+
+
+def short(name, value):
+    """ce que le terminal montre d une valeur : des abbreviations, jamais une autre verite"""
+    n = name.lower()
+    if n == "endpoint":
+        return value.replace("https://", "").split("/")[0]
+    if n == "last_activity":
+        return value.split(" ", 1)[1] if " " in value else value
+    if n == "api":
+        return value.split(" : ")[-1]
+    if n == "sessions":
+        return value.replace("exchanges", "exch.").replace(" / last no. ", " / ")
+    if n == "git":
+        return value.replace("tracked / ", "")
+    return value
 
 
 def sections(width):
@@ -1575,7 +1679,9 @@ def main():
     ap.add_argument("--check", action="store_true",
                     help="la liste de controle seule, en colonnes (pour un terminal)")
     ap.add_argument("--menu", action="store_true",
-                    help="la liste pour un menu : « etat|etiquette|verdict », une ligne par mesure")
+                    help="la liste pour un menu : « etat|section|etiquette|verdict », une ligne par mesure")
+    ap.add_argument("--json", action="store_true",
+                    help="l etat du board en JSON : les sections de la config, leurs lignes, leurs parts")
     ap.add_argument("--cli", action="store_true", help="the cli (a stream, a state, an input)")
     ap.add_argument("--say", metavar="TEXT", help="one turn, the reply on stdout")
     ap.add_argument("--watch", type=float, default=3.0, help="seconds between two redraws")
@@ -1601,48 +1707,19 @@ def main():
         print("\n".join(line(x[0], x[1], "", width) for x in L))
         return 1 if faults else 0
 
+    if a.json:
+        print(json.dumps(board_object(), ensure_ascii=False))
+        return 0
+
     if a.menu:
-        L, faults, *_ = control()
-        def title(name):
-            n = name.lower()
-            if n in RESIDENT_NAMES or n == "residents":
-                return "RESIDENT"
-            if n.startswith("gpu ") or n == "ram of la":
-                return "GPU/RAM"
-            if n == "indra ocr" or n == "vision":
-                return "TOOLS"
-            if n.startswith("resident "):
-                return "LA"
-            if n in ("la status", "residents", "ram of la", "sessions", "last_activity"):
-                return "LA"
-            if n in ("approbation", "feu vert"):
-                return "LA"
-            if n in ("api", "endpoint", "api status", "bridge_up", "vision"):
-                return "RESEAU"
-            return "SYSTEME"
-
-        def short(name, value):
-            n = name.lower()
-            if n == "endpoint":
-                return value.replace("https://", "").split("/")[0]
-            if n == "last_activity":
-                return value.split(" ", 1)[1] if " " in value else value
-            if n == "api":
-                return value.split(" : ")[-1]
-            if n == "sessions":
-                return value.replace("exchanges", "exch.").replace(" / last no. ", " / ")
-            if n == "git":
-                return value.replace("tracked / ", "")
-            return value
-
-        rank = {"LA": 0, "RESIDENT": 1, "TOOLS": 2, "GPU/RAM": 3, "SYSTEME": 4, "RESEAU": 5}
-        # le cli se range SOUS dash : il ferme la section SYSTEME
-        _prio = {"la status": 0, "approbation": 1, "cli": 10}
-        print("\n".join("%s|%s|%s|%s" % ("ko" if x[2] else "ok", title(x[0]), x[0],
-                                        short(x[0], x[1]))
-                        for x in sorted(L, key=lambda x: (rank[title(x[0])],
-                                                         _prio.get(x[0].lower(), 9)))))
-        return 1 if faults else 0
+        obj = board_object()
+        rows = []
+        for sec in obj["sections"]:
+            for r in sec["rows"]:
+                rows.append("%s|%s|%s|%s" % ("ok" if r["ok"] else "ko", sec["name"],
+                                             r["title"], short(r["title"], r["verdict"])))
+        print("\n".join(rows))
+        return 1 if obj["faults"] else 0
 
     if a.once:
         width = a.width or int(os.environ.get("COLUMNS") or 0) or DEFAULT_WIDTH

@@ -140,7 +140,7 @@ units:
     probe: "/ping"
   models:
     resident: "models"
-    count: true
+    count: false                            # les trois modeles se comptent dans board.residents
     unit: "la-models"
     port: 8091
     probe: "/health"
@@ -158,9 +158,10 @@ units:
     probe: "/health"
   kws:
     resident: "kws"
-    count: true
+    count: false                            # l ecoute n est pas un resident : on la demande
+    mode: "on-demand"
     unit: "la-kws"
-    port: 0                                   # it opens no port: it listens
+    port: 0                                 # it opens no port: it listens
     probe: ""
   dashboard:
     resident: "dash"
@@ -647,14 +648,54 @@ schema:
 board:
   columns: 82
   lines: 50
+  refresh: 5
+  # LE MENU VIT ICI : l ordre des sections, leurs icones, et la liste ordonnee de leurs lignes.
+  # Un titre absent de ces listes ne disparait pas : il tombe dans la section « other ».
+  sections:
+    - {name: "LA", icon: "🟢", lines: ["la status", "approbation", "sessions", "last_activity"]}
+    - {name: "RESIDENT", icon: "👥", lines: ["residents*"]}
+    - {name: "TOOLS", icon: "⚙", lines: ["indra ocr", "vision"]}
+    - {name: "GPU/RAM", icon: "🧠", lines: ["ram of LA", "gpu RTX 3060", "gpu Quadro P2200"]}
+    - {name: "RESEAU", icon: "🌐", lines: ["api", "endpoint", "api status", "tailscale"]}
+    - {name: "SYSTEME", icon: "📋", lines: ["table", "canon", "git", "doctor", "errors", "bridge", "dash", "cli"]}
+  other: "AUTRE"
+  bar: ["residents", "ram of LA"]        # ce que le panneau montre sans rien ouvrir
+  icons:
+    "la status": "🟢"
+    "residents": "👥"
+    "approbation": "✍"
+    "sessions": "💬"
+    "last_activity": "⏱"
+    "embed": "🧩"
+    "rerank": "🎯"
+    "local": "✍"
+    "asr": "🎤"
+    "tts": "🔊"
+    "kws": "👂"
+    "indra ocr": "🔧"
+    "vision": "👁"
+    "ram of LA": "🧠"
+    "gpu RTX 3060": "🎮"
+    "gpu Quadro P2200": "🖥"
+    "api": "🔌"
+    "endpoint": "🌐"
+    "api status": "📡"
+    "tailscale": "🌐"
+    "bridge": "🌀"
+    "table": "📋"
+    "canon": "📖"
+    "git": "🌿"
+    "doctor": "🩺"
+    "errors": "🐞"
+    "dash": "📊"
+    "cli": "⌨"
   residents:
     # the five that stay loaded: the three models of the router (sleeping is up) plus the two voices
-    - {name: embed, unit: la-models, port: 8091, probe: health, model: "harrier-oss-v1-270M-Q8_0"}
-    - {name: rerank, unit: la-models, port: 8091, probe: health, model: "bge-reranker-v2-m3-Q4_K_M"}
-    - {name: local, unit: la-models, port: 8091, probe: health, model: "LFM2.5-1.2B-Instruct-Q4_K_M.gguf"}
+    - {name: embed, unit: la-models, model: "harrier-oss-v1-270M-Q8_0"}
+    - {name: rerank, unit: la-models, model: "bge-reranker-v2-m3-Q4_K_M"}
+    - {name: local, unit: la-models, model: "LFM2.5-1.2B-Instruct-Q4_K_M.gguf"}
     - {name: asr, unit: la-asr, port: 8080, probe: ready}
     - {name: tts, unit: la-tts, port: 8090, probe: health}
-    - {name: kws, unit: la-kws, port: 0, probe: ""}
   appoints:
     # bridge: board.py carries it itself. dash: the page, which opens and closes by itself.
     - {name: dash, port: 8771, unit: la-dash.service}

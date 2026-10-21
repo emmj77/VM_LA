@@ -1,15 +1,15 @@
 {
-    "cli": {
+    "url": {
         "type": "entry",
-        "default": "/home/moussa/Documents/VM_LA/config[D01]/programs[D10]/board.py",
-        "description": "The cli of LA",
-        "tooltip": "board.py: the table, the cli, one turn. Its own path, nothing derived."
+        "default": "http://127.0.0.1:8770/board",
+        "description": "The board, served by the bridge",
+        "tooltip": "board.py --json, transporte par le pont. L applet dessine, elle ne mesure rien."
     },
     "board": {
         "type": "entry",
         "default": "/home/moussa/Documents/VM_LA/config[D01]/engine[D07]/la.sh",
-        "description": "The board of LA",
-        "tooltip": "The single instrument: it renders state|section|title|verdict"
+        "description": "The door of LA",
+        "tooltip": "Elle ne sert plus qu a signer une approbation."
     },
     "seconds": {
         "type": "spinbutton",
