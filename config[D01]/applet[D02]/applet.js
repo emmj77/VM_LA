@@ -39,12 +39,15 @@ const EMOTICONE = {
     "asr": "\u{1F3A4}",
     "tts": "\u{1F50A}",
     "dash": "\u{1F4CA}",
+    "cli": "\u{2328}",            // le clavier : la ou on tape
+    "tailscale": "\u{1F310}",      // le globe : le reseau du tunnel
     "tesseract": "\u{1F527}",
     "ram of LA": "\u{1F9E0}",
     "sessions": "\u{1F4AC}",
     "last_activity": "\u{23F1}",
     "engine": "\u{2699}",
     "table": "\u{1F4CB}",
+    "approbation": "\u{270D}",     // la plume : ce qui attend une signature
     "canon": "\u{1F4D6}",
     "git": "\u{1F33F}",
     "doctor": "\u{1FA7A}",

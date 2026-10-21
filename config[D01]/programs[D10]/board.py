@@ -347,7 +347,8 @@ def read_appoints():
         # le port d une page est un socket, le sonder la reveille et elle ne dort plus jamais
         if unit:
             st = (_units([unit]).get(unit) or {}).get("state") or "?"
-            out.append((name, port, st, word, st != "active", unit))
+            # une page qui dort est son etat normal : seul un echec est un defaut
+            out.append((name, port, st, word, st == "failed", unit))
             continue
         code = probe(port, path)
         out.append((name, port, code, word, code == "000", ""))
@@ -1557,7 +1558,7 @@ def main():
                 return "LA"
             if n in ("la status", "residents", "ram of la", "sessions", "last_activity"):
                 return "LA"
-            if n in ("approbation", "feu vert", "cli"):
+            if n in ("approbation", "feu vert"):
                 return "LA"
             if n in ("api", "endpoint", "api status", "bridge_up", "vision"):
                 return "RESEAU"
@@ -1578,7 +1579,8 @@ def main():
             return value
 
         rank = {"LA": 0, "RESIDENT": 1, "TOOLS": 2, "GPU/RAM": 3, "SYSTEME": 4, "RESEAU": 5}
-        _prio = {"la status": 0, "approbation": 1, "cli": 2}
+        # le cli se range SOUS dash : il ferme la section SYSTEME
+        _prio = {"la status": 0, "approbation": 1, "cli": 10}
         print("\n".join("%s|%s|%s|%s" % ("ko" if x[2] else "ok", title(x[0]), x[0],
                                         short(x[0], x[1]))
                         for x in sorted(L, key=lambda x: (rank[title(x[0])],
