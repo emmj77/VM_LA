@@ -11,16 +11,13 @@ RULES:
   turn: none
   count: false
   paths: write
-DESCRIPTION: "one turn of the loop: the text in, the answer out, the residents joined and left"
+DESCRIPTION: "one turn of the loop: the text in, the answer out"
 COMMAND: |
 
   _t="{{text}}"
   _l=$(cfg abs loop) || { printf 'FAULT the loop is not in the tree\n'; exit 1; }
   . "$_l" || exit 1
-  printf 'cli:%s' "$$" | run_call engine.residents "op=join" >/dev/null 2>&1
   loop_turn "$_t"
-  _rc=$?
-  printf 'cli:%s' "$$" | run_call engine.residents "op=leave" >/dev/null 2>&1
-  exit $_rc
+  exit $?
 ARGS:
   - {name: text, type: text}

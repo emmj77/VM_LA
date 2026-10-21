@@ -56,8 +56,10 @@ COMMAND: |
       printf 'ok|LA|approval|nothing waits\n'
     fi
     printf 'ok|LA|sessions|%s exch. / %s msg\n' "${_ex:-0}" "${_w:-0}"
-    # THE RESIDENTS : one line each, what they weigh
-    _n=0; _mo=0; _tot_u=0
+    # THE RESIDENTS : one line per unit, and the total the applet shows.
+    # The count is the five: the router models that carry load-on-startup in the preset, plus
+    # asr and tts. A sleeping model is UP -- it keeps its weights and gives only its buffers back.
+    _mo=0
     # ONE TEMPORARY FILE, OVERWRITTEN AT EVERY READ (MOUSSA, 21/10): a random name
     # pushed a 99-byte file to the trash at every applet call.
     _tf="$LA_STATE/board.tmp"
@@ -65,7 +67,6 @@ COMMAND: |
     : > "$_tf"; : > "$_to"
     for _k in $(_flat | awk -F'\t' '$1 ~ /^units\.[a-z_]+\.unit$/ { k = $1; sub(/^units\./, "", k); sub(/\.unit$/, "", k); print k }' | sort -u) ; do
       _cnt=$(cfg str "units.$_k.count" false)
-      [ "$_cnt" = true ] && _tot_u=$((_tot_u + 1))
       _u=$(cfg str "units.$_k.unit" 2>/dev/null)
       _ti=$(cfg str "units.$_k.resident" "resident $_k")
       _st=$(systemctl --user is-active "$_u" 2>/dev/null)
@@ -73,15 +74,30 @@ COMMAND: |
         _mem=$(systemctl --user show -p MemoryCurrent --value "$_u" 2>/dev/null)
         _r=$(( ${_mem:-0} / 1048576 ))
         _mo=$((_mo + _r))
-        if [ "$_cnt" = true ]; then _n=$((_n + 1)); printf 'ok|POWER|%s|%s MB\n' "$_ti" "$_r" >> "$_tf"
+        if [ "$_cnt" = true ]; then printf 'ok|POWER|%s|%s MB\n' "$_ti" "$_r" >> "$_tf"
         else printf 'ok|POWER|%s|%s MB\n' "$_ti" "$_r" >> "$_to"; fi
       else
         printf 'ko|POWER|%s|absent\n' "$_ti" >> "$_tf"
       fi
     done
+    # every resident model of the preset, sleeping or loaded, is a resident that answers
+    _n=0; _tot_u=0
+    _ini=$(cfg here "$(cfg str models.preset)" 2>/dev/null) || _ini=""
+    _rp=$(cfg num models.port 8091) || _rp=8091
+    _js=$(curl -fsS -m 2 "http://127.0.0.1:$_rp/models" 2>/dev/null)
+    for _m in $(awk '/^\[/{s=substr($0,2,length($0)-2)} /^[ \t]*load-on-startup[ \t]*=[ \t]*true/{print s}' "$_ini" 2>/dev/null); do
+      _tot_u=$((_tot_u + 1))
+      case $(printf '%s' "$_js" | jq -r --arg m "$_m" '.data[] | select(.id == $m) | .status.value' 2>/dev/null) in
+        loaded|sleeping) _n=$((_n + 1)) ;;
+      esac
+    done
+    for _k in asr tts; do
+      _tot_u=$((_tot_u + 1))
+      [ "$(systemctl --user is-active "$(cfg str "units.$_k.unit")" 2>/dev/null)" = active ] && _n=$((_n + 1))
+    done
     _tot=$(awk '/MemTotal/{printf "%d", $2/1048576}' /proc/meminfo 2>/dev/null)
-    _rck=ok; [ "$_n" = "${_tot_u:-0}" ] || _rck=ko
-    { printf '%s|POWER|residents|%s/%s\n' "$_rck" "$_n" "${_tot_u:-0}"; cat "$_tf"; cat "$_to"; }
+    _rck=ok; { [ "$_tot_u" -gt 0 ] && [ "$_n" = "$_tot_u" ]; } || _rck=ko
+    { printf '%s|POWER|residents|%s/%s\n' "$_rck" "$_n" "$_tot_u"; cat "$_tf"; cat "$_to"; }
     # THE TUNNEL: its state, and the two acts live in the applet menu
     _ts=$(timeout 10 tailscale status 2>/dev/null | grep -c '^100\.')
     if timeout 10 tailscale status >/dev/null 2>&1; then

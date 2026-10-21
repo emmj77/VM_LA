@@ -357,14 +357,6 @@ def _turn_file(name):
     return os.path.join(os.environ.get("LA_STATE") or ".", name)
 
 
-def touch_session(name):
-    """a request from an open door keeps its session alive; the sweeper reads the file age."""
-    try:
-        os.utime(os.path.join(os.environ.get("LA_STATE") or ".", "sessions", name + ".pid"), None)
-    except OSError:
-        pass
-
-
 def _trace_events():
     """the events of the current turn, in the order they arrived"""
     out = []
@@ -547,7 +539,6 @@ class Handler(BaseHTTPRequestHandler):
         self.route("POST")
 
     def route(self, method):
-        touch_session("dash")
         u = urllib.parse.urlparse(self.path)
         p = u.path
         try:
@@ -1002,11 +993,6 @@ def main():
     threading.Thread(target=watch_loop, daemon=True).start()   # the automatic rest and its judge
     srv = ThreadingHTTPServer((os.environ.get("LA_BRIDGE_HOST") or os.environ["LA_HOST"], port), Handler)
     sys.stderr.write("bridge: listening on %s:%d\n" % (srv.server_address[0], port))
-    r = subprocess.run(["dash", os.environ["LA_TOOL"], "engine", "engine.residents", "op=join"],
-                       input="dash:" + str(os.getpid()), capture_output=True, text=True, timeout=60)
-    if r.returncode != 0:
-        sys.stderr.write("bridge: the session join failed (%s): %s\n"
-                         % (r.returncode, (r.stderr or r.stdout or "").strip()[:300]))
     # THE APP SPEAKS HTTPS ON THE TLS DOOR (MOUSSA, 21/10): the same service, the same page, the
     # the same door, but encrypted, with the certificate of the project.
     tls_port = int(os.environ.get("LA_PORT_TLS") or 0)
@@ -1025,9 +1011,6 @@ def main():
         srv.serve_forever()
     except KeyboardInterrupt:
         pass
-    finally:
-        subprocess.run(["dash", os.environ["LA_TOOL"], "engine", "engine.residents", "op=leave"],
-                       input="dash:" + str(os.getpid()), capture_output=True, text=True, timeout=20)
 
 
 if __name__ == "__main__":

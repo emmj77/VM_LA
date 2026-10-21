@@ -1,4 +1,4 @@
-# the residents of the machine: the three that answer the model calls, their start, their stop
+# the residents of the machine: the five that stay loaded, their state, their start and their stop
 id: "E021"
 tool: "engine.residents"
 date: "2026-10-21"
@@ -11,11 +11,10 @@ RULES:
   turn: none
   count: false
   paths: write
-DESCRIPTION: "the three residents: their state, their start and their stop, and the sessions that keep them up"
+DESCRIPTION: "the residents: their state, their start and their stop. they are permanent, asleep when idle, never unloaded"
 COMMAND: |
 
   _op=${1:-status}
-  _sd=$(cfg here "$(cfg str paths.sessions)" 2>/dev/null) || _sd="$LA_STATE/sessions"
   _names="models asr tts"
   _each() {   # $1 = start|stop
     for _k in $_names; do
@@ -23,29 +22,6 @@ COMMAND: |
       systemctl --user "$1" "$_u" 2>/dev/null
       printf '%s %s\n' "$1" "$_u"
     done
-  }
-  # a living session holds the residents; no session, they rest. dead .pid are swept here.
-  # A session dies on two counts: its pid is gone, or its file was not touched for session_ttl
-  # (an open page touches it on every request, so an idle machine goes cold on its own).
-  _sweep() {
-    _ttl=$(cfg num limits.session_ttl 300) || _ttl=300
-    _now=$(date +%s)
-    _live=0
-    if [ -d "$_sd" ]; then
-      for _f in "$_sd"/*.pid; do
-        [ -f "$_f" ] || continue
-        _p=$(cat "$_f" 2>/dev/null)
-        _age=0
-        _m=$(stat -c %Y "$_f" 2>/dev/null) && _age=$((_now - _m))
-        if [ -n "$_p" ] && kill -0 "$_p" 2>/dev/null && [ "$_age" -le "$_ttl" ]; then
-          _live=$((_live + 1))
-        else
-          rm -f -- "$_f"
-        fi
-      done
-    fi
-    if [ "$_live" -gt 0 ]; then _each start; else _each stop; fi
-    printf 'note %s live session(s)\n' "$_live"
   }
   case $_op in
   status)
@@ -59,9 +35,7 @@ COMMAND: |
         printf 'note %s down\n' "$_u"
       fi
     done
-    _ss=0
-    [ -d "$_sd" ] && _ss=$(ls -1 "$_sd" 2>/dev/null | wc -l | tr -d ' ')
-    printf 'note %s/%s resident(s) up, %s session(s) open\n' "$_up" "$_n" "$_ss"
+    printf 'note %s/%s unit(s) up\n' "$_up" "$_n"
     ;;
   up)     _each start ;;
   down)   _each stop ;;
@@ -73,30 +47,9 @@ COMMAND: |
     done
     if [ "$_up" -gt 0 ]; then _each stop; else _each start; fi
     ;;
-  join|leave)
-    _nm=${2:-}
-    [ -n "$_nm" ] || { printf 'refused: no session name\n'; exit 1; }
-    case $_nm in
-      *:*) _name=${_nm%%:*} ; _pid=${_nm#*:} ;;
-      *)   _name=$_nm ; _pid=$PPID ;;
-    esac
-    mkdir -p "$_sd" 2>/dev/null
-    if [ "$_op" = join ]; then
-      printf '%s\n' "$_pid" > "$_sd/$_name.pid"
-      printf 'joined %s, pid %s\n' "$_name" "$_pid"
-    else
-      rm -f -- "$_sd/$_nm.pid" 2>/dev/null
-      printf 'left %s\n' "$_nm"
-    fi
-    _sweep
-    ;;
-  tick)
-    _sweep
-    ;;
   *) printf 'FAULT unknown op %s\n' "$_op" ;;
   esac
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: status,up,down,toggle,join,leave,tick}
-  - {name: name, type: text, stdin: true}
+  - {name: op, type: enum, values: status,up,down,toggle}

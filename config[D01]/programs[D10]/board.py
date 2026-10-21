@@ -249,7 +249,7 @@ def _port(v):
     return int(v) if v.isdigit() else num(v, "port", 0)
 
 
-RESIDENTS = [(r["name"], r["unit"], _port(r.get("port")), r.get("probe", "health"))
+RESIDENTS = [(r["name"], r["unit"], _port(r.get("port")), r.get("probe", "health"), r.get("model", ""))
              for r in laconf.get("board", "residents", [])]
 RESIDENT_NAMES = tuple(r[0] for r in RESIDENTS)
 APPOINT = [(a["name"], _port(a.get("port")), a.get("probe", "health"), a.get("word", ""),
@@ -324,9 +324,29 @@ def line(label, verdict, note="", width=DEFAULT_WIDTH):
     return ("%s %s" % (label, verdict))[:width]
 
 
+def _router_models(port):
+    """one look at the router: the state of every model it can serve"""
+    _code, out = run(["curl", "-s", "--max-time", "2", "http://127.0.0.1:%d/models" % port], timeout=4)
+    try:
+        d = json.loads(out or "{}")
+    except ValueError:
+        return {}
+    return {m.get("id"): (m.get("status") or {}).get("value") for m in d.get("data") or []}
+
+
 def read_residents():
     out = []
-    for name, unit, port, path in RESIDENTS:
+    seen = {}
+    for name, unit, port, path, mid in RESIDENTS:
+        if mid:
+            # a model of the router: sleeping is up (its weights stay), unloaded is a fault
+            if port not in seen:
+                seen[port] = _router_models(port)
+            val = seen[port].get(mid) or "unloaded"
+            up = val in ("loaded", "sleeping")
+            out.append((name, port, "active" if up else val, "200" if up else "000", 0, not up,
+                        val, None))
+            continue
         state, mo, _, busy = alive(unit)
         code = probe(port, path) if state == "active" else "000"
         fault = state != "active" or code == "000"
@@ -769,7 +789,13 @@ def control(light=False):
     L.append(("residents", "%d/%d up" % (live, len(res)), live != len(res)))
     for name, port, state, code, mo, fault, pattern, busy in res:
         _mo = mo if mo is not None else busy
-        verdict = ("%s · :%d" % (pattern, port)) if fault else ("%d MB · :%d" % ((_mo or 0), port))
+        if fault:
+            verdict = "%s · :%d" % (pattern, port)
+        elif _mo:
+            verdict = "%d MB · :%d" % ((_mo or 0), port)
+        else:
+            # a model of the router: no weight of its own, only the state it answers in
+            verdict = "%s · :%d" % (pattern or "up", port)
         L.append((name, verdict, fault))
     for name, v, ok, what in instr:
         L.append((name, (v + " · 0 MB · no port") if ok else ("ABSENT · " + what + " · 0 MB · no port"), not ok))

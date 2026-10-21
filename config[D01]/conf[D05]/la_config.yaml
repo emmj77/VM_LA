@@ -245,7 +245,6 @@ limits:
   audio_mb: 200
   health_timeout: 3
   ping_timeout: 2
-  session_ttl: 300
   bench_timeout: 120
   tunnel_steps: 12
   db_busy_ms: 5000
@@ -642,7 +641,10 @@ board:
   columns: 82
   lines: 50
   residents:
-    - {name: models, unit: la-models, port: 8091, probe: health}
+    # the five that stay loaded: the three models of the router (sleeping is up) plus the two voices
+    - {name: embed, unit: la-models, port: 8091, probe: health, model: "harrier-oss-v1-270M-Q8_0"}
+    - {name: rerank, unit: la-models, port: 8091, probe: health, model: "bge-reranker-v2-m3-Q4_K_M"}
+    - {name: local, unit: la-models, port: 8091, probe: health, model: "LFM2.5-1.2B-Instruct-Q4_K_M.gguf"}
     - {name: asr, unit: la-asr, port: 8080, probe: ready}
     - {name: tts, unit: la-tts, port: 8090, probe: health}
   appoints:

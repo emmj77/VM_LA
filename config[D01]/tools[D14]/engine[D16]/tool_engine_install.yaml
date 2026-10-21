@@ -71,16 +71,7 @@ COMMAND: |
       printf '[Unit]\nDescription=LA - the bounds applied once\n\n'
       printf '[Service]\nType=oneshot\nExecStart=/bin/dash %s engine engine.retention op=audio\n' "$_la"
     } > "$_svc"
-    # THE SWEEPER: a living door holds the residents; no door, everything stops.
-    {
-      printf '[Unit]\nDescription=LA - the sweeper of the residents\n\n'
-      printf '[Service]\nType=oneshot\nExecStart=/bin/dash %s engine engine.residents op=tick\n' "$_la"
-    } > "$_ud/la-tick.service"
-    {
-      printf '[Unit]\nDescription=LA - the sweeper, every 30 s\n\n'
-      printf '[Timer]\nOnBootSec=20\nOnUnitActiveSec=30\nAccuracySec=5s\n\n'
-      printf '[Install]\nWantedBy=timers.target\n'
-    } > "$_ud/la-tick.timer"
+    # THE RESIDENTS ARE PERMANENT: models, asr and tts stay enabled and up, asleep when idle.
     systemctl --user daemon-reload 2>&1 || printf 'note the user manager did not reload\n'
     printf 'ok %s unit(s) written, the retention timer beside them\n' "$_n"
     ;;
