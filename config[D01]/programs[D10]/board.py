@@ -690,8 +690,14 @@ def control(light=False):
         L.append(("feu vert", "%s -- %ds" % (signal[0], signal[1]), False))
     if not rights:
         L.append(("approbation", "aucun skill ne porte APPROVAL: true", False))
-    _cli_ok = os.access(os.path.abspath(__file__), os.R_OK)
-    L.append(("cli", "ready" if _cli_ok else "absent", not _cli_ok))
+    # le cli est un programme qu on OUVRE : vert quand une session tourne, rouge quand personne ne l a ouvert
+    _cli_pid = ""
+    if os.access(os.path.abspath(__file__), os.R_OK):
+        _cli_pid = (run(["pgrep", "-f", "board.py --cli"], timeout=3)[1].split() or [""])[0]
+    else:
+        _cli_pid = ""
+    L.append(("cli", ("open · pid " + _cli_pid) if _cli_pid else ("closed" if os.access(os.path.abspath(__file__), os.R_OK) else "absent"),
+              not _cli_pid))
     if light:
         L.append(("residents", "%d/%d up" % (len([r for r in res if not r[5]]), len(res)),
                   len([r for r in res if not r[5]]) != len(res)))
