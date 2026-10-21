@@ -18,6 +18,7 @@ RULES:
   # install_program / uninstall_program set and remove packages. Every act named in GATED
   # asks for a named go, once, inside the approval.window seconds (300).
 APPROVAL: true
+PERMANENT_TODO: false
 TOOLS:
   G045: "install_program"
   G046: "uninstall_program"

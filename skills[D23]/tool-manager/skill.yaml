@@ -18,6 +18,7 @@ RULES:
   # only once (work/approve). Without the go, the act is refused -- and the loop writes the request
   # so the human can see it and sign it (approval.sh allow <tool> <act>).
 APPROVAL: true
+PERMANENT_TODO: false
 TOOLS:
   G018: "table_manage"
   G017: "skill_manage"

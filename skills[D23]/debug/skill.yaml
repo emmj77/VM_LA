@@ -13,6 +13,7 @@ RULES:
   execute_code: true
   max_section_lines: 100
 APPROVAL: false
+PERMANENT_TODO: false
 TOOLS:
   G077: "free_terminal"
   G001: "reply"

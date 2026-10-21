@@ -12,6 +12,7 @@ RULES:
   execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+PERMANENT_TODO: false
 TOOLS:
   G059: "blender_tools_find"
   G057: "tool_show"

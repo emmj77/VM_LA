@@ -13,6 +13,7 @@ RULES:
   execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+PERMANENT_TODO: false
 TOOLS:
   3D001: "image2glb"
   3D002: "mesh-convert2fbx"
