@@ -1,7 +1,7 @@
 id: "B727"
 tool: "blender_mesh_set_normals_from_faces"
 date: "2026-10-17"
-tags: ["blender_mesh_set_normals_from_faces"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

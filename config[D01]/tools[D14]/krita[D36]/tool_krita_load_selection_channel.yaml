@@ -1,7 +1,7 @@
 id: "K055"
 tool: "krita_load_selection_channel"
 date: "2026-10-18"
-tags: ["krita", "krita_load_selection_channel"]
+tags: ["krita", "krita", "img", "load"]
 
 RULES:
   enabled: true

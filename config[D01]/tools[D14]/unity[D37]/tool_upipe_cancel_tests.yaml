@@ -1,7 +1,7 @@
 id: "U022"
 tool: "upipe_cancel_tests"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "cancel_tests"]
+tags: ["unity", "unity", "project", "test"]
 
 RULES:
   enabled: true

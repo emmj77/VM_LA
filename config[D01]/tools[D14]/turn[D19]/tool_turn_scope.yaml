@@ -2,7 +2,7 @@
 id: "T006"
 tool: "turn.scope"
 date: "2026-10-20"
-tags: ["turn", "scope"]
+tags: ["manage", "local", "turn", "run"]
 RULES:
   enabled: true
   timeout: 120

@@ -2,7 +2,7 @@
 id: "E016"
 tool: "engine.update"
 date: "2026-10-21"
-tags: ["engine", "update"]
+tags: ["manage", "git", "project", "update"]
 RULES:
   enabled: true
   timeout: 600

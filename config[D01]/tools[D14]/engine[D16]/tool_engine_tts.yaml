@@ -2,7 +2,7 @@
 id: "E014"
 tool: "engine.tts"
 date: "2026-10-20"
-tags: ["engine", "tts"]
+tags: ["manage", "local", "audio", "run"]
 RULES:
   enabled: true
   timeout: 240

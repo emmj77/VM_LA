@@ -1,7 +1,7 @@
 id: "G022"
 tool: "load_doc"
 date: "2026-10-17"
-tags: ["load_doc"]
+tags: ["plan", "shell", "file", "load"]
 
 RULES:
   enabled: true

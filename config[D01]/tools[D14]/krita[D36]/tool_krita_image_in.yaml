@@ -1,7 +1,7 @@
 id: "K012"
 tool: "krita_image_in"
 date: "2026-10-17"
-tags: ["krita", "krita_image_in"]
+tags: ["krita", "krita", "img", "open"]
 
 RULES:
   enabled: true

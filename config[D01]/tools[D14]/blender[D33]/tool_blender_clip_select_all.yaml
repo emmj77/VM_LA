@@ -1,7 +1,7 @@
 id: "B166"
 tool: "blender_clip_select_all"
 date: "2026-10-17"
-tags: ["blender_clip_select_all"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

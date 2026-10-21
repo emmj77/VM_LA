@@ -1,7 +1,7 @@
 id: "G061"
 tool: "unity_tools_find"
 date: "2026-10-18"
-tags: ["unity", "tools_find", "recherche"]
+tags: ["read", "shell", "text", "find"]
 
 RULES:
   enabled: true

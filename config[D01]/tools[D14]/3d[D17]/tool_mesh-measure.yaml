@@ -1,7 +1,7 @@
 id: "3D004"
 tool: "mesh-measure"
 date: "2026-10-17"
-tags: ["3d", "mesh-measure", "measure", "inspect"]
+tags: ["image", "shell", "mesh", "run"]
 
 RULES:
   enabled: true

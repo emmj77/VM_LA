@@ -1,7 +1,7 @@
 id: "B305"
 tool: "blender_dpaint_surface_slot_add"
 date: "2026-10-17"
-tags: ["blender_dpaint_surface_slot_add"]
+tags: ["blender", "blender", "draw", "add"]
 
 RULES:
   enabled: true

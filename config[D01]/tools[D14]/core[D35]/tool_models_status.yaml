@@ -1,7 +1,7 @@
 id: "G010"
 tool: "models_status"
 date: "2026-10-17"
-tags: ["models_status"]
+tags: ["read", "local", "file", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B227"
 tool: "blender_constraint_normalize_target_weights"
 date: "2026-10-17"
-tags: ["blender_constraint_normalize_target_weights"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

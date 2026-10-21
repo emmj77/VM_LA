@@ -1,7 +1,7 @@
 id: "B1590"
 tool: "blender_view3d_zoom_camera_1_to_1"
 date: "2026-10-17"
-tags: ["blender_view3d_zoom_camera_1_to_1"]
+tags: ["blender", "blender", "render", "run"]
 
 RULES:
   enabled: true

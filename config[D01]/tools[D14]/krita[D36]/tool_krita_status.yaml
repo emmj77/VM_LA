@@ -1,7 +1,7 @@
 id: "K001"
 tool: "krita_status"
 date: "2026-10-17"
-tags: ["krita", "krita_status"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

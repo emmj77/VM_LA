@@ -2,7 +2,7 @@
 id: "E026"
 tool: "engine.wake"
 date: "2026-10-21"
-tags: ["engine", "wake"]
+tags: ["manage", "shell", "process", "run"]
 RULES:
   enabled: true
   timeout: 30

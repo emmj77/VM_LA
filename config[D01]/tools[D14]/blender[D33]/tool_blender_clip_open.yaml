@@ -1,7 +1,7 @@
 id: "B160"
 tool: "blender_clip_open"
 date: "2026-10-17"
-tags: ["blender_clip_open"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

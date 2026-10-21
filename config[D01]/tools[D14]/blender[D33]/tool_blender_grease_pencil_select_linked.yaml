@@ -1,7 +1,7 @@
 id: "B483"
 tool: "blender_grease_pencil_select_linked"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_select_linked"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

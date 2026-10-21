@@ -1,7 +1,7 @@
 id: "K003"
 tool: "krita_layers"
 date: "2026-10-17"
-tags: ["krita", "krita_layers"]
+tags: ["krita", "krita", "document", "open"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U116"
 tool: "upipe_set_active_scene"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_active_scene"]
+tags: ["unity", "unity", "object", "set"]
 
 RULES:
   enabled: true

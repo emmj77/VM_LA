@@ -1,7 +1,7 @@
 id: "B199"
 tool: "blender_clip_view_zoom"
 date: "2026-10-17"
-tags: ["blender_clip_view_zoom"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

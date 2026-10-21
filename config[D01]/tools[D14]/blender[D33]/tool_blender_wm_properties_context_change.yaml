@@ -1,7 +1,7 @@
 id: "B1643"
 tool: "blender_wm_properties_context_change"
 date: "2026-10-17"
-tags: ["blender_wm_properties_context_change"]
+tags: ["blender", "blender", "text", "run"]
 
 RULES:
   enabled: true

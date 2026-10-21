@@ -1,7 +1,7 @@
 id: "U389"
 tool: "unity_projects_export"
 date: "2026-10-18"
-tags: ["unity", "cli", "projects"]
+tags: ["unity", "unity", "project", "export"]
 
 RULES:
   enabled: true

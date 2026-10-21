@@ -1,7 +1,7 @@
 id: "U099"
 tool: "upipe_recompile"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "recompile"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U441"
 tool: "unity_vcs_uvcs_review_list"
 date: "2026-10-18"
-tags: ["unity", "cli", "vcs"]
+tags: ["unity", "unity", "text", "list"]
 
 RULES:
   enabled: true

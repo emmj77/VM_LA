@@ -2,7 +2,7 @@
 id: "D012"
 tool: "doctor.models"
 date: "2026-10-21"
-tags: ["doctor", "models", "llamacpp"]
+tags: ["manage", "local", "process", "list"]
 RULES:
   enabled: true
   timeout: 180

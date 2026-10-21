@@ -1,7 +1,7 @@
 id: "U450"
 tool: "coplay_asset_gen"
 date: "2026-10-17"
-tags: ["coplay_asset_gen"]
+tags: ["unity", "unity", "audio", "generate"]
 
 RULES:
   enabled: true

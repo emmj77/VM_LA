@@ -1,7 +1,7 @@
 id: "U037"
 tool: "upipe_create_animator_controller"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "create_animator_controller"]
+tags: ["unity", "unity", "animation", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1784"
 tool: "blender_spreadsheet_filter"
 date: "2026-10-17"
-tags: ["blender_spreadsheet_filter"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

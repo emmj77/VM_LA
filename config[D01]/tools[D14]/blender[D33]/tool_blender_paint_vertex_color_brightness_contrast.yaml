@@ -1,7 +1,7 @@
 id: "B1114"
 tool: "blender_paint_vertex_color_brightness_contrast"
 date: "2026-10-17"
-tags: ["blender_paint_vertex_color_brightness_contrast"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

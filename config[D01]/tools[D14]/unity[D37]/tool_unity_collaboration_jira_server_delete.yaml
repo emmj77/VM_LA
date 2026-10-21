@@ -1,7 +1,7 @@
 id: "U299"
 tool: "unity_collaboration_jira_server_delete"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "config", "delete"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1062"
 tool: "blender_object_vertex_weight_delete"
 date: "2026-10-17"
-tags: ["blender_object_vertex_weight_delete"]
+tags: ["blender", "blender", "object", "delete"]
 
 RULES:
   enabled: true

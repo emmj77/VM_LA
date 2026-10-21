@@ -1,7 +1,7 @@
 id: "G018"
 tool: "table_manage"
 date: "2026-10-19"
-tags: ["table_manage"]
+tags: ["manage", "shell", "table", "manage"]
 
 RULES:
   enabled: true

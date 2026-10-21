@@ -1,7 +1,7 @@
 id: "U365"
 tool: "unity_logs"
 date: "2026-10-18"
-tags: ["unity", "cli", "logs"]
+tags: ["unity", "unity", "project", "read"]
 
 RULES:
   enabled: true

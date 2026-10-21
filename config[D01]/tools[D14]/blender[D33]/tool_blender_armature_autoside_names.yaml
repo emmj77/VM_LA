@@ -1,7 +1,7 @@
 id: "B063"
 tool: "blender_armature_autoside_names"
 date: "2026-10-17"
-tags: ["blender_armature_autoside_names"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

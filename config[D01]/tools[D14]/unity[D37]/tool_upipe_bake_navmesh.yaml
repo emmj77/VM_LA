@@ -1,7 +1,7 @@
 id: "U014"
 tool: "upipe_bake_navmesh"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "bake_navmesh"]
+tags: ["unity", "unity", "scene", "open"]
 
 RULES:
   enabled: true

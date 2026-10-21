@@ -1,7 +1,7 @@
 id: "B057"
 tool: "blender_anim_start_frame_set"
 date: "2026-10-17"
-tags: ["blender_anim_start_frame_set"]
+tags: ["blender", "blender", "animation", "set"]
 
 RULES:
   enabled: true

@@ -2,7 +2,7 @@
 id: "E018"
 tool: "engine.say"
 date: "2026-10-21"
-tags: ["engine", "say"]
+tags: ["manage", "shell", "turn", "run"]
 RULES:
   enabled: true
   timeout: 60

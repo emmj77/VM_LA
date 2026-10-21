@@ -1,7 +1,7 @@
 id: "U331"
 tool: "unity_editor_module_add"
 date: "2026-10-18"
-tags: ["unity", "cli", "editor"]
+tags: ["unity", "unity", "project", "add"]
 
 RULES:
   enabled: true

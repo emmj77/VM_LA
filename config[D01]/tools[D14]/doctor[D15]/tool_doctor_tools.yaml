@@ -2,7 +2,7 @@
 id: "D010"
 tool: "doctor.tools"
 date: "2026-10-20"
-tags: ["doctor", "tools"]
+tags: ["manage", "shell", "process", "run"]
 RULES:
   enabled: true
   timeout: 300

@@ -1,7 +1,7 @@
 id: "B781"
 tool: "blender_nla_snap"
 date: "2026-10-17"
-tags: ["blender_nla_snap"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

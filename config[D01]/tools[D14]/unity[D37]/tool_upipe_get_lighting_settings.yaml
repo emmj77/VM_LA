@@ -1,7 +1,7 @@
 id: "U065"
 tool: "upipe_get_lighting_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_lighting_settings"]
+tags: ["unity", "unity", "scene", "read"]
 
 RULES:
   enabled: true

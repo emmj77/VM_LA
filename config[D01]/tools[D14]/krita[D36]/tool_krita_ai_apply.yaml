@@ -1,7 +1,7 @@
 id: "K015"
 tool: "krita_ai_apply"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_apply"]
+tags: ["krita", "krita", "img", "apply"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1447"
 tool: "blender_texture_new"
 date: "2026-10-17"
-tags: ["blender_texture_new"]
+tags: ["blender", "blender", "material", "add"]
 
 RULES:
   enabled: true

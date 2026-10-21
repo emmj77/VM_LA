@@ -1,7 +1,7 @@
 id: "B1238"
 tool: "blender_rigidbody_constraint_remove"
 date: "2026-10-17"
-tags: ["blender_rigidbody_constraint_remove"]
+tags: ["blender", "blender", "object", "remove"]
 
 RULES:
   enabled: true

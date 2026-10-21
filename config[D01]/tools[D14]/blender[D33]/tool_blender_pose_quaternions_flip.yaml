@@ -1,7 +1,7 @@
 id: "B1196"
 tool: "blender_pose_quaternions_flip"
 date: "2026-10-17"
-tags: ["blender_pose_quaternions_flip"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

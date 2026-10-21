@@ -1,7 +1,7 @@
 id: "B1152"
 tool: "blender_particle_hair_dynamics_preset_add"
 date: "2026-10-17"
-tags: ["blender_particle_hair_dynamics_preset_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

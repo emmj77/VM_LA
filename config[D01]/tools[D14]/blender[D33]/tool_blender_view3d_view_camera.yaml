@@ -1,7 +1,7 @@
 id: "B1574"
 tool: "blender_view3d_view_camera"
 date: "2026-10-17"
-tags: ["blender_view3d_view_camera"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

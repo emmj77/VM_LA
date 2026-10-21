@@ -1,7 +1,7 @@
 id: "B1449"
 tool: "blender_texture_slot_move"
 date: "2026-10-17"
-tags: ["blender_texture_slot_move"]
+tags: ["blender", "blender", "material", "move"]
 
 RULES:
   enabled: true

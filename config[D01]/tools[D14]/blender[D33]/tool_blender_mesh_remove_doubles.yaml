@@ -1,7 +1,7 @@
 id: "B694"
 tool: "blender_mesh_remove_doubles"
 date: "2026-10-17"
-tags: ["blender_mesh_remove_doubles"]
+tags: ["blender", "blender", "mesh", "remove"]
 
 RULES:
   enabled: true

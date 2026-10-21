@@ -1,7 +1,7 @@
 id: "B863"
 tool: "blender_node_node_copy_color"
 date: "2026-10-17"
-tags: ["blender_node_node_copy_color"]
+tags: ["blender", "blender", "node", "copy"]
 
 RULES:
   enabled: true

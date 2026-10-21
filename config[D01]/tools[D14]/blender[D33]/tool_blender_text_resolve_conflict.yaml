@@ -1,7 +1,7 @@
 id: "B1437"
 tool: "blender_text_resolve_conflict"
 date: "2026-10-17"
-tags: ["blender_text_resolve_conflict"]
+tags: ["blender", "blender", "text", "run"]
 
 RULES:
   enabled: true

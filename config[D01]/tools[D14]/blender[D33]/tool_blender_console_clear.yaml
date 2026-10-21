@@ -1,7 +1,7 @@
 id: "B207"
 tool: "blender_console_clear"
 date: "2026-10-17"
-tags: ["blender_console_clear"]
+tags: ["blender", "blender", "text", "clear"]
 
 RULES:
   enabled: true

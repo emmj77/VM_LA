@@ -1,7 +1,7 @@
 id: "B1403"
 tool: "blender_sequencer_swap_inputs"
 date: "2026-10-17"
-tags: ["blender_sequencer_swap_inputs"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

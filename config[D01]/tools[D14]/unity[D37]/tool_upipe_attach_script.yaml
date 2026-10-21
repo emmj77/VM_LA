@@ -1,7 +1,7 @@
 id: "U010"
 tool: "upipe_attach_script"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "attach_script"]
+tags: ["unity", "unity", "project", "add"]
 
 RULES:
   enabled: true

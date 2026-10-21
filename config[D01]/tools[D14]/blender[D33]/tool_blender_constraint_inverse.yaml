@@ -1,7 +1,7 @@
 id: "B1712"
 tool: "blender_constraint_inverse"
 date: "2026-10-17"
-tags: ["blender_constraint_inverse"]
+tags: ["blender", "blender", "object", "clear"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "G077"
 tool: "free_terminal"
 date: "2026-10-21"
-tags: ["free_terminal", "debug", "free"]
+tags: ["manage", "shell", "table", "delete"]
 RULES:
   enabled: true
   timeout: 600

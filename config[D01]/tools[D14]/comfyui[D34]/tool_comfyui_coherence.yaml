@@ -1,7 +1,7 @@
 id: "C010"
 tool: "comfyui_coherence"
 date: "2026-10-17"
-tags: ["comfyui", "comfyui_coherence"]
+tags: ["image", "comfyui", "animation", "run"]
 
 RULES:
   enabled: true

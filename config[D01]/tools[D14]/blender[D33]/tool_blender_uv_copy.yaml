@@ -1,7 +1,7 @@
 id: "B1491"
 tool: "blender_uv_copy"
 date: "2026-10-17"
-tags: ["blender_uv_copy"]
+tags: ["blender", "blender", "mesh", "copy"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "K078"
 tool: "krita_undo"
 date: "2026-10-18"
-tags: ["krita", "krita_undo"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

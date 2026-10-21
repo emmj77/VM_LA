@@ -1,7 +1,7 @@
 id: "B038"
 tool: "blender_anim_clear_useless_actions"
 date: "2026-10-17"
-tags: ["blender_anim_clear_useless_actions"]
+tags: ["blender", "blender", "animation", "clear"]
 
 RULES:
   enabled: true

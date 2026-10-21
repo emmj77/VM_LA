@@ -1,7 +1,7 @@
 id: "U358"
 tool: "unity_license_activate"
 date: "2026-10-18"
-tags: ["unity", "cli", "license"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

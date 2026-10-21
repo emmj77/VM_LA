@@ -1,7 +1,7 @@
 id: "K045"
 tool: "krita_get_color_at"
 date: "2026-10-18"
-tags: ["krita", "krita_get_color_at"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

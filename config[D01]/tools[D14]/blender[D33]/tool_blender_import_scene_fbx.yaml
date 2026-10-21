@@ -1,7 +1,7 @@
 id: "B567"
 tool: "blender_import_scene_fbx"
 date: "2026-10-17"
-tags: ["blender_import_scene_fbx"]
+tags: ["blender", "blender", "scene", "import"]
 
 RULES:
   enabled: true

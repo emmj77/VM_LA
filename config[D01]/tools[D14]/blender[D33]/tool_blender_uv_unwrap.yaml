@@ -1,7 +1,7 @@
 id: "B1536"
 tool: "blender_uv_unwrap"
 date: "2026-10-17"
-tags: ["blender_uv_unwrap"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B191"
 tool: "blender_clip_tracking_object_remove"
 date: "2026-10-17"
-tags: ["blender_clip_tracking_object_remove"]
+tags: ["blender", "blender", "object", "remove"]
 
 RULES:
   enabled: true

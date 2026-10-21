@@ -1,7 +1,7 @@
 id: "B566"
 tool: "blender_import_curve_svg"
 date: "2026-10-17"
-tags: ["blender_import_curve_svg"]
+tags: ["blender", "blender", "mesh", "import"]
 
 RULES:
   enabled: true

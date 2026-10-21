@@ -1,7 +1,7 @@
 id: "G046"
 tool: "uninstall_program"
 date: "2026-10-17"
-tags: ["uninstall_program", "retirer", "desinstaller", "apt", "program-manage"]
+tags: ["manage", "shell", "file", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U411"
 tool: "unity_templates_delete"
 date: "2026-10-18"
-tags: ["unity", "cli", "templates"]
+tags: ["unity", "unity", "project", "delete"]
 
 RULES:
   enabled: true

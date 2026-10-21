@@ -1,7 +1,7 @@
 id: "U031"
 tool: "upipe_clear_occlusion_culling"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "clear_occlusion_culling"]
+tags: ["unity", "unity", "scene", "clear"]
 
 RULES:
   enabled: true

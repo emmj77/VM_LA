@@ -1,7 +1,7 @@
 id: "U347"
 tool: "unity_editors_upgrade"
 date: "2026-10-18"
-tags: ["unity", "cli", "editors"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

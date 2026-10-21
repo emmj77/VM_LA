@@ -1,7 +1,7 @@
 id: "B331"
 tool: "blender_file_make_paths_absolute"
 date: "2026-10-17"
-tags: ["blender_file_make_paths_absolute"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

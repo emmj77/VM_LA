@@ -1,7 +1,7 @@
 id: "B1544"
 tool: "blender_view3d_clip_border"
 date: "2026-10-17"
-tags: ["blender_view3d_clip_border"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

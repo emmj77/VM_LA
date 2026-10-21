@@ -1,7 +1,7 @@
 id: "U147"
 tool: "upipe_unpack_prefab"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "unpack_prefab"]
+tags: ["unity", "unity", "object", "run"]
 
 RULES:
   enabled: true

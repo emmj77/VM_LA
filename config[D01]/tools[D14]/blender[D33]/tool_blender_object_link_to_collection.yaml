@@ -1,7 +1,7 @@
 id: "B979"
 tool: "blender_object_link_to_collection"
 date: "2026-10-17"
-tags: ["blender_object_link_to_collection"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

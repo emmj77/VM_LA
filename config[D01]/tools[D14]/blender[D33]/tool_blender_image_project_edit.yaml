@@ -1,7 +1,7 @@
 id: "B537"
 tool: "blender_image_project_edit"
 date: "2026-10-17"
-tags: ["blender_image_project_edit"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

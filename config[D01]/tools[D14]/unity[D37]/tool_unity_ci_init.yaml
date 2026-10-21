@@ -1,7 +1,7 @@
 id: "U251"
 tool: "unity_ci_init"
 date: "2026-10-18"
-tags: ["unity", "cli", "ci"]
+tags: ["unity", "unity", "project", "write"]
 
 RULES:
   enabled: true

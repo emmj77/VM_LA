@@ -1,7 +1,7 @@
 id: "B510"
 tool: "blender_grease_pencil_vertex_color_set"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_vertex_color_set"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

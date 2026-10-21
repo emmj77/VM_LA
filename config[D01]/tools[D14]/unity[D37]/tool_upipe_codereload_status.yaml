@@ -1,7 +1,7 @@
 id: "U032"
 tool: "upipe_codereload_status"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "codereload_status"]
+tags: ["unity", "unity", "text", "show"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B928"
 tool: "blender_object_drop_geometry_nodes"
 date: "2026-10-17"
-tags: ["blender_object_drop_geometry_nodes"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

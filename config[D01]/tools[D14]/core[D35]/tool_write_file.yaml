@@ -1,7 +1,7 @@
 id: "G004"
 tool: "write_file"
 date: "2026-10-17"
-tags: ["write_file", "ecriture"]
+tags: ["write", "shell", "table", "write"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "K053"
 tool: "krita_list_selection_channels"
 date: "2026-10-18"
-tags: ["krita", "krita_list_selection_channels"]
+tags: ["krita", "krita", "img", "list"]
 
 RULES:
   enabled: true

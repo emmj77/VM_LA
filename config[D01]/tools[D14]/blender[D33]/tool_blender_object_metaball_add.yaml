@@ -1,7 +1,7 @@
 id: "B987"
 tool: "blender_object_metaball_add"
 date: "2026-10-17"
-tags: ["blender_object_metaball_add"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

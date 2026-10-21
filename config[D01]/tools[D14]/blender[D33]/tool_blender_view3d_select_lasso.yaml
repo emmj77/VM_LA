@@ -1,7 +1,7 @@
 id: "B1565"
 tool: "blender_view3d_select_lasso"
 date: "2026-10-17"
-tags: ["blender_view3d_select_lasso"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

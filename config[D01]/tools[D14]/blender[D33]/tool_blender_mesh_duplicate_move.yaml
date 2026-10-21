@@ -1,7 +1,7 @@
 id: "B650"
 tool: "blender_mesh_duplicate_move"
 date: "2026-10-17"
-tags: ["blender_mesh_duplicate_move"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

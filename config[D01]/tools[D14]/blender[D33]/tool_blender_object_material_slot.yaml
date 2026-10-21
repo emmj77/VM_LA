@@ -1,7 +1,7 @@
 id: "B1748"
 tool: "blender_object_material_slot"
 date: "2026-10-17"
-tags: ["blender_object_material_slot"]
+tags: ["blender", "blender", "material", "add"]
 
 RULES:
   enabled: true

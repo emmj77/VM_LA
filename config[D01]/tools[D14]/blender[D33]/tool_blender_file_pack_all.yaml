@@ -1,7 +1,7 @@
 id: "B335"
 tool: "blender_file_pack_all"
 date: "2026-10-17"
-tags: ["blender_file_pack_all"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

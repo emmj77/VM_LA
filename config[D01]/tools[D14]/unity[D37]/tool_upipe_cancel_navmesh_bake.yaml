@@ -1,7 +1,7 @@
 id: "U020"
 tool: "upipe_cancel_navmesh_bake"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "cancel_navmesh_bake"]
+tags: ["unity", "unity", "plan", "run"]
 
 RULES:
   enabled: true

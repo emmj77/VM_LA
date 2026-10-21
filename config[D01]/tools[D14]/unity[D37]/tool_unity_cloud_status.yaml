@@ -1,7 +1,7 @@
 id: "U262"
 tool: "unity_cloud_status"
 date: "2026-10-18"
-tags: ["unity", "cli", "cloud"]
+tags: ["unity", "unity", "project", "show"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1350"
 tool: "blender_sequencer_images_separate"
 date: "2026-10-17"
-tags: ["blender_sequencer_images_separate"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

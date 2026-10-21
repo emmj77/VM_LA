@@ -1,7 +1,7 @@
 id: "B1772"
 tool: "blender_scene_freestyle_modifier"
 date: "2026-10-17"
-tags: ["blender_scene_freestyle_modifier"]
+tags: ["blender", "blender", "render", "run"]
 
 RULES:
   enabled: true

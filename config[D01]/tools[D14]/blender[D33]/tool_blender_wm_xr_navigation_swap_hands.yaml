@@ -1,7 +1,7 @@
 id: "B1690"
 tool: "blender_wm_xr_navigation_swap_hands"
 date: "2026-10-17"
-tags: ["blender_wm_xr_navigation_swap_hands"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

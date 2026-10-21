@@ -2,7 +2,7 @@
 id: "D008"
 tool: "doctor.structure"
 date: "2026-10-20"
-tags: ["doctor", "structure"]
+tags: ["manage", "python", "process", "import"]
 RULES:
   enabled: true
   timeout: 60

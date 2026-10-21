@@ -1,7 +1,7 @@
 id: "U133"
 tool: "upipe_set_runtime_pipeline_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_runtime_pipeline_settings"]
+tags: ["unity", "unity", "config", "set"]
 
 RULES:
   enabled: true

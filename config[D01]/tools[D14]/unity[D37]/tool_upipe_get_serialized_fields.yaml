@@ -1,7 +1,7 @@
 id: "U075"
 tool: "upipe_get_serialized_fields"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_serialized_fields"]
+tags: ["unity", "unity", "object", "read"]
 
 RULES:
   enabled: true

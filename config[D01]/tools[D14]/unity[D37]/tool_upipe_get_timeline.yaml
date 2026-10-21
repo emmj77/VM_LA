@@ -1,7 +1,7 @@
 id: "U079"
 tool: "upipe_get_timeline"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_timeline"]
+tags: ["unity", "unity", "project", "read"]
 
 RULES:
   enabled: true

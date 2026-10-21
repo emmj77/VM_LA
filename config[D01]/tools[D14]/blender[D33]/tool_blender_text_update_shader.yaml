@@ -1,7 +1,7 @@
 id: "B1446"
 tool: "blender_text_update_shader"
 date: "2026-10-17"
-tags: ["blender_text_update_shader"]
+tags: ["blender", "blender", "material", "update"]
 
 RULES:
   enabled: true

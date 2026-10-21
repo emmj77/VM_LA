@@ -1,7 +1,7 @@
 id: "U178"
 tool: "coplay_graphics_volume_create_profile"
 date: "2026-10-18"
-tags: ["unity", "coplay", "graphics"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

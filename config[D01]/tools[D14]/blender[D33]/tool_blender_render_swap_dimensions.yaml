@@ -1,7 +1,7 @@
 id: "B1232"
 tool: "blender_render_swap_dimensions"
 date: "2026-10-17"
-tags: ["blender_render_swap_dimensions"]
+tags: ["blender", "blender", "render", "run"]
 
 RULES:
   enabled: true

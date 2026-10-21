@@ -1,7 +1,7 @@
 id: "U245"
 tool: "unity_build"
 date: "2026-10-18"
-tags: ["unity", "cli", "build"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

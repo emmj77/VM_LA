@@ -1,7 +1,7 @@
 id: "U248"
 tool: "unity_cache_info"
 date: "2026-10-18"
-tags: ["unity", "cli", "cache"]
+tags: ["unity", "unity", "project", "show"]
 
 RULES:
   enabled: true

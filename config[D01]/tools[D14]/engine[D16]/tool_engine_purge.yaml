@@ -2,7 +2,7 @@
 id: "E027"
 tool: "engine.purge"
 date: "2026-10-21"
-tags: ["engine", "purge", "memory"]
+tags: ["manage", "systemd", "process", "run"]
 RULES:
   enabled: true
   timeout: 60

@@ -1,7 +1,7 @@
 id: "B1147"
 tool: "blender_particle_copy_particle_systems"
 date: "2026-10-17"
-tags: ["blender_particle_copy_particle_systems"]
+tags: ["blender", "blender", "object", "copy"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1217"
 tool: "blender_preferences_copy_prev"
 date: "2026-10-17"
-tags: ["blender_preferences_copy_prev"]
+tags: ["blender", "blender", "config", "copy"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U104"
 tool: "upipe_rename_asset"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "rename_asset"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

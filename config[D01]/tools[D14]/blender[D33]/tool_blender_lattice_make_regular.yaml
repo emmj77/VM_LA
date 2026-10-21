@@ -1,7 +1,7 @@
 id: "B574"
 tool: "blender_lattice_make_regular"
 date: "2026-10-17"
-tags: ["blender_lattice_make_regular"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

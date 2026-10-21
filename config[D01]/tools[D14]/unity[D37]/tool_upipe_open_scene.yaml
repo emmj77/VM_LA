@@ -1,7 +1,7 @@
 id: "U091"
 tool: "upipe_open_scene"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "open_scene"]
+tags: ["unity", "unity", "scene", "open"]
 
 RULES:
   enabled: true

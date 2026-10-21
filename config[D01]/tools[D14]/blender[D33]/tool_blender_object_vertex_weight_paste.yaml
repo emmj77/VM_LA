@@ -1,7 +1,7 @@
 id: "B1064"
 tool: "blender_object_vertex_weight_paste"
 date: "2026-10-17"
-tags: ["blender_object_vertex_weight_paste"]
+tags: ["blender", "blender", "object", "copy"]
 
 RULES:
   enabled: true

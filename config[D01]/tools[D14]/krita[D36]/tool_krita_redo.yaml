@@ -1,7 +1,7 @@
 id: "K057"
 tool: "krita_redo"
 date: "2026-10-18"
-tags: ["krita", "krita_redo"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

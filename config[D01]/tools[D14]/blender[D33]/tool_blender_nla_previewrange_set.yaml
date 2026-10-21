@@ -1,7 +1,7 @@
 id: "B776"
 tool: "blender_nla_previewrange_set"
 date: "2026-10-17"
-tags: ["blender_nla_previewrange_set"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

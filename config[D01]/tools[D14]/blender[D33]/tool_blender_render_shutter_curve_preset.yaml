@@ -1,7 +1,7 @@
 id: "B1231"
 tool: "blender_render_shutter_curve_preset"
 date: "2026-10-17"
-tags: ["blender_render_shutter_curve_preset"]
+tags: ["blender", "blender", "render", "set"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B053"
 tool: "blender_anim_replace_action"
 date: "2026-10-17"
-tags: ["blender_anim_replace_action"]
+tags: ["blender", "blender", "animation", "apply"]
 
 RULES:
   enabled: true

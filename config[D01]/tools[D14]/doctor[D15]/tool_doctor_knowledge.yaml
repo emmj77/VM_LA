@@ -2,7 +2,7 @@
 id: "D004"
 tool: "doctor.knowledge"
 date: "2026-10-20"
-tags: ["doctor", "knowledge"]
+tags: ["manage", "shell", "project", "run"]
 RULES:
   enabled: true
   timeout: 90

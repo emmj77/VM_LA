@@ -1,7 +1,7 @@
 id: "A012"
 tool: "asset_builder_add_torus"
 date: "2026-10-19"
-tags: ["asset_builder", "geom"]
+tags: ["write", "shell", "mesh", "add"]
 
 
 RULES:

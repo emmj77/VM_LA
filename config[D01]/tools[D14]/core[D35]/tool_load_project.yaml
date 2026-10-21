@@ -1,7 +1,7 @@
 id: "G034"
 tool: "load_project"
 date: "2026-10-17"
-tags: ["load_project", "project"]
+tags: ["manage", "shell", "project", "load"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U058"
 tool: "upipe_get_audio_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_audio_settings"]
+tags: ["unity", "unity", "audio", "read"]
 
 RULES:
   enabled: true

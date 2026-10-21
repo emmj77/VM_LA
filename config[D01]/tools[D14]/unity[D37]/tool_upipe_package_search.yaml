@@ -1,7 +1,7 @@
 id: "U095"
 tool: "upipe_package_search"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "package_search"]
+tags: ["unity", "unity", "text", "search"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1472"
 tool: "blender_ui_override_idtemplate_clear"
 date: "2026-10-17"
-tags: ["blender_ui_override_idtemplate_clear"]
+tags: ["blender", "blender", "table", "clear"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1392"
 tool: "blender_sequencer_strip_modifier_copy"
 date: "2026-10-17"
-tags: ["blender_sequencer_strip_modifier_copy"]
+tags: ["blender", "blender", "mesh", "copy"]
 
 RULES:
   enabled: true

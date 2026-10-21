@@ -2,7 +2,7 @@
 id: "E015"
 tool: "engine.tunnel"
 date: "2026-10-21"
-tags: ["engine", "tunnel"]
+tags: ["manage", "systemd", "process", "run"]
 RULES:
   enabled: true
   timeout: 240

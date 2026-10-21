@@ -1,7 +1,7 @@
 id: "B1677"
 tool: "blender_wm_toolbar_fallback_pie"
 date: "2026-10-17"
-tags: ["blender_wm_toolbar_fallback_pie"]
+tags: ["blender", "blender", "document", "run"]
 
 RULES:
   enabled: true

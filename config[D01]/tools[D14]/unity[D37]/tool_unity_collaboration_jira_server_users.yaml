@@ -1,7 +1,7 @@
 id: "U304"
 tool: "unity_collaboration_jira_server_users"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "config", "search"]
 
 RULES:
   enabled: true

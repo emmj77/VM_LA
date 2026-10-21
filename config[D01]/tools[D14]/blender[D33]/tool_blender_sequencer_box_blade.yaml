@@ -1,7 +1,7 @@
 id: "B1330"
 tool: "blender_sequencer_box_blade"
 date: "2026-10-17"
-tags: ["blender_sequencer_box_blade"]
+tags: ["blender", "blender", "draw", "cut"]
 
 RULES:
   enabled: true

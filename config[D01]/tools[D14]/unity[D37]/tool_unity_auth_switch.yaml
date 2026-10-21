@@ -1,7 +1,7 @@
 id: "U243"
 tool: "unity_auth_switch"
 date: "2026-10-18"
-tags: ["unity", "cli", "auth"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

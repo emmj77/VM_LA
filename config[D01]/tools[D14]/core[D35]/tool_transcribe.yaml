@@ -1,7 +1,7 @@
 id: "G021"
 tool: "transcribe"
 date: "2026-10-17"
-tags: ["transcribe"]
+tags: ["read", "local", "audio", "transcribe"]
 
 RULES:
   enabled: true

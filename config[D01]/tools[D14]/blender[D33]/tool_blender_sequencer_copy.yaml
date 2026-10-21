@@ -1,7 +1,7 @@
 id: "B1335"
 tool: "blender_sequencer_copy"
 date: "2026-10-17"
-tags: ["blender_sequencer_copy"]
+tags: ["blender", "blender", "scene", "copy"]
 
 RULES:
   enabled: true

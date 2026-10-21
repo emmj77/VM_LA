@@ -1,7 +1,7 @@
 id: "U060"
 tool: "upipe_get_build_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_build_settings"]
+tags: ["unity", "unity", "config", "read"]
 
 RULES:
   enabled: true

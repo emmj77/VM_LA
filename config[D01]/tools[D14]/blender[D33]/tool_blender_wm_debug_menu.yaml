@@ -1,7 +1,7 @@
 id: "B1605"
 tool: "blender_wm_debug_menu"
 date: "2026-10-17"
-tags: ["blender_wm_debug_menu"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

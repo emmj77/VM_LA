@@ -1,7 +1,7 @@
 id: "U424"
 tool: "unity_vcs_git_migrate_lfs"
 date: "2026-10-18"
-tags: ["unity", "cli", "vcs"]
+tags: ["unity", "unity", "project", "find"]
 
 RULES:
   enabled: true

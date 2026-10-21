@@ -1,7 +1,7 @@
 id: "B1044"
 tool: "blender_object_simulation_nodes_cache_delete"
 date: "2026-10-17"
-tags: ["blender_object_simulation_nodes_cache_delete"]
+tags: ["blender", "blender", "node", "delete"]
 
 RULES:
   enabled: true

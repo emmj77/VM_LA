@@ -1,7 +1,7 @@
 id: "A004"
 tool: "asset_builder_show"
 date: "2026-10-19"
-tags: ["asset_builder", "session"]
+tags: ["manage", "shell", "material", "show"]
 
 
 RULES:

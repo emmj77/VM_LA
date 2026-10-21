@@ -1,7 +1,7 @@
 id: "U190"
 tool: "coplay_physics_apply_force"
 date: "2026-10-18"
-tags: ["unity", "coplay", "physics"]
+tags: ["unity", "unity", "project", "apply"]
 
 RULES:
   enabled: true

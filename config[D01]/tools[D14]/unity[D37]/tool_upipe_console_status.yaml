@@ -1,7 +1,7 @@
 id: "U034"
 tool: "upipe_console_status"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "console_status"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

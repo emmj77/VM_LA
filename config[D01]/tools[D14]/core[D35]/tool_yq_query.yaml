@@ -1,7 +1,7 @@
 id: "G012"
 tool: "yq_query"
 date: "2026-10-17"
-tags: ["yq_query"]
+tags: ["read", "shell", "config", "run"]
 
 RULES:
   enabled: true

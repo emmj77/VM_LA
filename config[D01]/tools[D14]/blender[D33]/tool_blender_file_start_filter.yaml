@@ -1,7 +1,7 @@
 id: "B350"
 tool: "blender_file_start_filter"
 date: "2026-10-17"
-tags: ["blender_file_start_filter"]
+tags: ["blender", "blender", "text", "run"]
 
 RULES:
   enabled: true

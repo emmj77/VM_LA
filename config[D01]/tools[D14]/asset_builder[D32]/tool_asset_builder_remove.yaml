@@ -1,7 +1,7 @@
 id: "A006"
 tool: "asset_builder_remove"
 date: "2026-10-19"
-tags: ["asset_builder", "session"]
+tags: ["write", "shell", "mesh", "remove"]
 
 
 RULES:

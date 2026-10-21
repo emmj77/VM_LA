@@ -1,0 +1,85 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D014"
+tool: "doctor.vision"
+date: "2026-10-21"
+tags: ["manage", "shell", "img", "test"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the vision family: each tool registered and bodied, each key in the master file, each weight on the disk, the router answering, no port written by hand"
+COMMAND: |
+
+  _tc=$(cfg path tools) || exit 1
+  _reg=$(cfg path tools)/registry.yaml
+  _ko=0
+  _say() { printf '%s\n' "$1"; }
+  _bad() { _ko=$((_ko + 1)); printf 'FAULT %s\n' "$1"; }
+
+  # 1 every tool of the family: named in the register, and its body on the disk
+  for _n in api_analyze_img local_analyze_img indra_ocr_img cut_subject_img repair_zone_img read_depth_img find_objects_img comfyui_pixel_job; do
+    if grep -q "tool: \"$_n\"" "$_reg" 2>/dev/null; then _say "ok $_n is in the register"; else _bad "$_n is not in the register"; fi
+    _b=$(find "$_tc" -type f -name "tool_$_n.yaml" 2>/dev/null | head -n 1)
+    [ -n "$_b" ] && _say "ok $_n has a body" || _bad "$_n has no body"
+    if [ -n "$_b" ] && grep -qE '(^|[^0-9])127\.0\.0\.1:[0-9]{4}|\$\{?(H|_ch|_h)\}?:80[0-9][0-9][^0-9]' "$_b" 2>/dev/null; then
+      _bad "$_n writes a port by hand"
+    fi
+  done
+
+  # 2 the keys the family reads
+  for _k in machine.vision.api.base machine.vision.api.model machine.vision.api.key_env \
+            machine.llama.models.small.name machine.llama.models.big.name \
+            models.host models.port limits.vision_tokens \
+            machine.ocr.bin machine.ocr.models \
+            machine.comfyui.host machine.comfyui.port machine.comfyui.root; do
+    _v=$(cfg str "$_k") || { _bad "$_k is absent from the master file"; continue ; }
+    _say "ok $_k = $_v"
+  done
+
+  # 3 the weights each job asks for
+  _cr=$(cfg str machine.comfyui.root) || _cr=""
+  for _j in matte inpaint depth; do
+    _node=$(cfg str "machine.comfyui.jobs.$_j.node") || { _bad "job $_j has no node"; continue ; }
+    _md=$(cfg str "machine.comfyui.jobs.$_j.model") || { _bad "job $_j has no weight"; continue ; }
+    case $_node in
+      ONNXImageFilter)          _w="$_cr/models/onnx/$_md" ;;
+      INPAINT_LoadInpaintModel) _w="$_cr/models/inpaint/$_md" ;;
+      DepthAnythingV2Preprocessor) _w="$_cr/custom_nodes/comfyui_controlnet_aux/ckpts/depth-anything/Depth-Anything-V2-Base/$_md" ;;
+      *)                        _w="" ;;
+    esac
+    if [ -n "$_w" ] && [ -r "$_w" ]; then _say "ok job $_j: $_node, $(basename "$_w"), $(( $(stat -c%s "$_w") / 1048576 )) Mo"
+    else _bad "job $_j: the weight is not there ($_w)"; fi
+  done
+
+  # 4 the OCR binary of the machine
+  _ib=$(cfg str machine.ocr.bin) || _ib=""
+  [ -x "$_ib" ] && _say "ok indra is executable" || _bad "indra is not executable ($_ib)"
+  [ -d "$(cfg str machine.ocr.models)" ] && _say "ok indra has its models folder" || _bad "indra has no models folder"
+
+  # 5 the router, and the two names it must answer to
+  _h=$(cfg str models.host) || _h=127.0.0.1
+  _pt=$(cfg num models.port) || _pt=8091
+  if curl -fsS -m 4 "http://$_h:$_pt/health" >/dev/null 2>&1; then
+    _say "ok the router answers on $_h:$_pt"
+    _ms=$(curl -sS -m 6 "http://$_h:$_pt/v1/models" 2>/dev/null | jq -r '.data[]?.id' 2>/dev/null | tr '\n' ' ')
+    for _m in $(cfg str machine.llama.models.small.name) $(cfg str machine.llama.models.big.name); do
+      case " $_ms " in *" $_m "*) _say "ok the router names $_m" ;; *) _bad "the router does not name $_m" ;; esac
+    done
+  else
+    _bad "the router is silent on $_h:$_pt (start the models resident)"
+  fi
+
+  # 6 comfyui, the machine of the three pixel jobs
+  _ch=$(cfg str machine.comfyui.host) || _ch=127.0.0.1
+  _cp=$(cfg num machine.comfyui.port) || _cp=8188
+  curl -fsS -m 4 "http://$_ch:$_cp/system_stats" >/dev/null 2>&1 && _say "ok the comfyui machine answers on $_ch:$_cp" \
+    || _say "note the comfyui machine is silent on $_ch:$_cp (the three pixel jobs wait for it)"
+
+  if [ "$_ko" -gt 0 ]; then printf 'FAULT %s fault(s)\n' "$_ko" ; else printf 'ok the vision family holds\n' ; fi
+  exit 0
+
+ARGS: []

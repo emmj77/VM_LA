@@ -1,7 +1,7 @@
 id: "3D001"
 tool: "image2glb"
 date: "2026-10-17"
-tags: ["3d", "image2glb", "pixal3d", "trellis", "glb"]
+tags: ["image", "shell", "img", "run"]
 
 RULES:
   enabled: true

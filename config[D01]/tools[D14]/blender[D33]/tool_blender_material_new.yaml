@@ -1,7 +1,7 @@
 id: "B617"
 tool: "blender_material_new"
 date: "2026-10-17"
-tags: ["blender_material_new"]
+tags: ["blender", "blender", "material", "add"]
 
 RULES:
   enabled: true

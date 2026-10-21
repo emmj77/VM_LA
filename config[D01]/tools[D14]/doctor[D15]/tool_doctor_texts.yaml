@@ -2,7 +2,7 @@
 id: "D009"
 tool: "doctor.texts"
 date: "2026-10-20"
-tags: ["doctor", "texts"]
+tags: ["manage", "shell", "text", "run"]
 RULES:
   enabled: true
   timeout: 60

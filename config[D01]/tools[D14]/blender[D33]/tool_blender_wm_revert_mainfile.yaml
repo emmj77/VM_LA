@@ -1,7 +1,7 @@
 id: "B1657"
 tool: "blender_wm_revert_mainfile"
 date: "2026-10-17"
-tags: ["blender_wm_revert_mainfile"]
+tags: ["blender", "blender", "mesh", "reload"]
 
 RULES:
   enabled: true

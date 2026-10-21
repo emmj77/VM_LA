@@ -1,7 +1,7 @@
 id: "B1641"
 tool: "blender_wm_previews_ensure"
 date: "2026-10-17"
-tags: ["blender_wm_previews_ensure"]
+tags: ["blender", "blender", "material", "run"]
 
 RULES:
   enabled: true

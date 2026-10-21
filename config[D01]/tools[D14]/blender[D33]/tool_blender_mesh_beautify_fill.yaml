@@ -1,7 +1,7 @@
 id: "B623"
 tool: "blender_mesh_beautify_fill"
 date: "2026-10-17"
-tags: ["blender_mesh_beautify_fill"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

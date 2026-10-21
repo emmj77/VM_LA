@@ -1,7 +1,7 @@
 id: "B076"
 tool: "blender_armature_fill"
 date: "2026-10-17"
-tags: ["blender_armature_fill"]
+tags: ["blender", "blender", "animation", "add"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U352"
 tool: "unity_install_modules"
 date: "2026-10-18"
-tags: ["unity", "cli", "install-modules"]
+tags: ["unity", "unity", "project", "install"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "K064"
 tool: "krita_select_by_color"
 date: "2026-10-18"
-tags: ["krita", "krita_select_by_color"]
+tags: ["krita", "krita", "img", "select"]
 
 RULES:
   enabled: true

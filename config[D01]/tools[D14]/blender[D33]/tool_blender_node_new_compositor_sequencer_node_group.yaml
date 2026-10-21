@@ -1,7 +1,7 @@
 id: "B857"
 tool: "blender_node_new_compositor_sequencer_node_group"
 date: "2026-10-17"
-tags: ["blender_node_new_compositor_sequencer_node_group"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

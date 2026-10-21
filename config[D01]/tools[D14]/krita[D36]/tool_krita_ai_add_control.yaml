@@ -1,7 +1,7 @@
 id: "K014"
 tool: "krita_ai_add_control"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_add_control"]
+tags: ["krita", "krita", "animation", "add"]
 
 RULES:
   enabled: true

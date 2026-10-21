@@ -1,7 +1,7 @@
 id: "B080"
 tool: "blender_armature_parent_clear"
 date: "2026-10-17"
-tags: ["blender_armature_parent_clear"]
+tags: ["blender", "blender", "animation", "clear"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "C001"
 tool: "comfyui_generate"
 date: "2026-10-17"
-tags: ["comfyui", "comfyui_generate"]
+tags: ["image", "comfyui", "img", "generate"]
 
 RULES:
   enabled: true

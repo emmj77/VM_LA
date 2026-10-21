@@ -1,7 +1,7 @@
 id: "B1230"
 tool: "blender_render_render"
 date: "2026-10-17"
-tags: ["blender_render_render"]
+tags: ["blender", "blender", "render", "run"]
 
 RULES:
   enabled: true

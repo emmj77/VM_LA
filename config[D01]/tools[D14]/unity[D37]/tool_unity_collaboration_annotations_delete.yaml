@@ -1,7 +1,7 @@
 id: "U265"
 tool: "unity_collaboration_annotations_delete"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "project", "delete"]
 
 RULES:
   enabled: true

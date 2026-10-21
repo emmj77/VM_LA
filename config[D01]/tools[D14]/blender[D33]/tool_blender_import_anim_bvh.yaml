@@ -1,7 +1,7 @@
 id: "B565"
 tool: "blender_import_anim_bvh"
 date: "2026-10-17"
-tags: ["blender_import_anim_bvh"]
+tags: ["blender", "blender", "animation", "import"]
 
 RULES:
   enabled: true

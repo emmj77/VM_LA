@@ -1,7 +1,7 @@
 id: "B297"
 tool: "blender_curves_surface_set"
 date: "2026-10-17"
-tags: ["blender_curves_surface_set"]
+tags: ["blender", "blender", "object", "set"]
 
 RULES:
   enabled: true

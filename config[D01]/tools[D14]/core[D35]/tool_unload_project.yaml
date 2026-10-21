@@ -1,7 +1,7 @@
 id: "G042"
 tool: "unload_project"
 date: "2026-10-17"
-tags: ["unload_project", "project"]
+tags: ["manage", "shell", "project", "run"]
 
 RULES:
   enabled: true

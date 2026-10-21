@@ -1,7 +1,7 @@
 id: "B1315"
 tool: "blender_sculpt_face_sets_init"
 date: "2026-10-17"
-tags: ["blender_sculpt_face_sets_init"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

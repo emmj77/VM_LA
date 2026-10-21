@@ -1,7 +1,7 @@
 id: "B1333"
 tool: "blender_sequencer_change_scene"
 date: "2026-10-17"
-tags: ["blender_sequencer_change_scene"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "G029"
 tool: "search_sessions"
 date: "2026-10-17"
-tags: ["search_sessions"]
+tags: ["read", "shell", "text", "search"]
 
 RULES:
   enabled: true

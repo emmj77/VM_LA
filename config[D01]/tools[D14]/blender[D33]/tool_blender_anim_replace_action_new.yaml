@@ -1,7 +1,7 @@
 id: "B054"
 tool: "blender_anim_replace_action_new"
 date: "2026-10-17"
-tags: ["blender_anim_replace_action_new"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

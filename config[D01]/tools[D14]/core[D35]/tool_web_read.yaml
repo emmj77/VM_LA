@@ -1,7 +1,7 @@
 id: "G069"
 tool: "web_read"
 date: "2026-10-20"
-tags: ["web", "lecture", "agent-browser"]
+tags: ["read", "shell", "text", "read"]
 
 
 RULES:

@@ -1,7 +1,7 @@
 id: "B1693"
 tool: "blender_world_convert_volume_to_mesh"
 date: "2026-10-17"
-tags: ["blender_world_convert_volume_to_mesh"]
+tags: ["blender", "blender", "render", "convert"]
 
 RULES:
   enabled: true

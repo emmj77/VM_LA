@@ -1,7 +1,7 @@
 id: "C012"
 tool: "comfyui_find_layers"
 date: "2026-10-17"
-tags: ["comfyui", "comfyui_find_layers"]
+tags: ["image", "comfyui", "img", "find"]
 
 RULES:
   enabled: true

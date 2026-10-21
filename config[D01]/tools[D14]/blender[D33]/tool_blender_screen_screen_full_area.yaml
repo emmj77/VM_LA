@@ -1,7 +1,7 @@
 id: "B1288"
 tool: "blender_screen_screen_full_area"
 date: "2026-10-17"
-tags: ["blender_screen_screen_full_area"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

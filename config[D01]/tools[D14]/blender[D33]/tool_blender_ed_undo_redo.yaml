@@ -1,7 +1,7 @@
 id: "B313"
 tool: "blender_ed_undo_redo"
 date: "2026-10-17"
-tags: ["blender_ed_undo_redo"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

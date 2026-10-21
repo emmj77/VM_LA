@@ -1,7 +1,7 @@
 id: "B633"
 tool: "blender_mesh_customdata_custom_splitnormals_clear"
 date: "2026-10-17"
-tags: ["blender_mesh_customdata_custom_splitnormals_clear"]
+tags: ["blender", "blender", "mesh", "clear"]
 
 RULES:
   enabled: true

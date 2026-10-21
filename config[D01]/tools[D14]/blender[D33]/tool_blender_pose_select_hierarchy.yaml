@@ -1,7 +1,7 @@
 id: "B1203"
 tool: "blender_pose_select_hierarchy"
 date: "2026-10-17"
-tags: ["blender_pose_select_hierarchy"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B698"
 tool: "blender_mesh_rip_edge"
 date: "2026-10-17"
-tags: ["blender_mesh_rip_edge"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B821"
 tool: "blender_node_delete"
 date: "2026-10-17"
-tags: ["blender_node_delete"]
+tags: ["blender", "blender", "node", "delete"]
 
 RULES:
   enabled: true

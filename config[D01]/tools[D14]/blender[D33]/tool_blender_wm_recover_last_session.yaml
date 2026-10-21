@@ -1,7 +1,7 @@
 id: "B1655"
 tool: "blender_wm_recover_last_session"
 date: "2026-10-17"
-tags: ["blender_wm_recover_last_session"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

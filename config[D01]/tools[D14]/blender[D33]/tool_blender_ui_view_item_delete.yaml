@@ -1,7 +1,7 @@
 id: "B1477"
 tool: "blender_ui_view_item_delete"
 date: "2026-10-17"
-tags: ["blender_ui_view_item_delete"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

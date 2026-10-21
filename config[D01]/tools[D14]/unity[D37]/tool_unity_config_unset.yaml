@@ -1,7 +1,7 @@
 id: "U318"
 tool: "unity_config_unset"
 date: "2026-10-18"
-tags: ["unity", "cli", "config"]
+tags: ["unity", "unity", "config", "clear"]
 
 RULES:
   enabled: true

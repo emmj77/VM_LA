@@ -1,7 +1,7 @@
 id: "G025"
 tool: "speak"
 date: "2026-10-17"
-tags: ["speak"]
+tags: ["reply", "local", "audio", "speak"]
 
 RULES:
   enabled: true

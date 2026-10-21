@@ -1,7 +1,7 @@
 id: "B369"
 tool: "blender_gizmogroup_gizmo_tweak"
 date: "2026-10-17"
-tags: ["blender_gizmogroup_gizmo_tweak"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

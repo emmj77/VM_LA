@@ -1,7 +1,7 @@
 id: "B673"
 tool: "blender_mesh_knife_tool"
 date: "2026-10-17"
-tags: ["blender_mesh_knife_tool"]
+tags: ["blender", "blender", "mesh", "cut"]
 
 RULES:
   enabled: true

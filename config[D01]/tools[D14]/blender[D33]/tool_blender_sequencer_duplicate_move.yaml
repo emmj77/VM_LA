@@ -1,7 +1,7 @@
 id: "B1342"
 tool: "blender_sequencer_duplicate_move"
 date: "2026-10-17"
-tags: ["blender_sequencer_duplicate_move"]
+tags: ["blender", "blender", "scene", "move"]
 
 RULES:
   enabled: true

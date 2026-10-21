@@ -1,7 +1,7 @@
 id: "G070"
 tool: "chatgpt_ask"
 date: "2026-10-20"
-tags: ["chatgpt", "web", "agent-browser"]
+tags: ["manage", "local", "text", "run"]
 
 
 RULES:

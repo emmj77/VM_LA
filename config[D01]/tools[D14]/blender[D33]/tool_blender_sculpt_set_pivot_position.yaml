@@ -1,7 +1,7 @@
 id: "B1324"
 tool: "blender_sculpt_set_pivot_position"
 date: "2026-10-17"
-tags: ["blender_sculpt_set_pivot_position"]
+tags: ["blender", "blender", "draw", "set"]
 
 RULES:
   enabled: true

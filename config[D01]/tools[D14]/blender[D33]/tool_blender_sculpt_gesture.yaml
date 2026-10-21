@@ -1,7 +1,7 @@
 id: "B1777"
 tool: "blender_sculpt_gesture"
 date: "2026-10-17"
-tags: ["blender_sculpt_gesture"]
+tags: ["blender", "blender", "draw", "set"]
 
 RULES:
   enabled: true

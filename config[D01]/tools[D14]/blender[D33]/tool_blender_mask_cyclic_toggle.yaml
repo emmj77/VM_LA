@@ -1,7 +1,7 @@
 id: "B585"
 tool: "blender_mask_cyclic_toggle"
 date: "2026-10-17"
-tags: ["blender_mask_cyclic_toggle"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

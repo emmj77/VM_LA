@@ -1,7 +1,7 @@
 id: "B1546"
 tool: "blender_view3d_cursor3d"
 date: "2026-10-17"
-tags: ["blender_view3d_cursor3d"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

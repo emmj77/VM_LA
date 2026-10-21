@@ -1,7 +1,7 @@
 id: "B363"
 tool: "blender_font_style_toggle"
 date: "2026-10-17"
-tags: ["blender_font_style_toggle"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

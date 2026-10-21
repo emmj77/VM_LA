@@ -1,7 +1,7 @@
 id: "B1056"
 tool: "blender_object_transform_to_mouse"
 date: "2026-10-17"
-tags: ["blender_object_transform_to_mouse"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

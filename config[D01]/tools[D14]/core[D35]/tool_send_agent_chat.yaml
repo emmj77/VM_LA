@@ -1,7 +1,7 @@
 id: "G063"
 tool: "send_agent_chat"
 date: "2026-10-19"
-tags: ["send_agent_chat", "agents", "chat"]
+tags: ["manage", "shell", "file", "run"]
 
 RULES:
   enabled: true

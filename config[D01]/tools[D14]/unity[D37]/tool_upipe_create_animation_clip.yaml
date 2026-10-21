@@ -1,7 +1,7 @@
 id: "U036"
 tool: "upipe_create_animation_clip"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "create_animation_clip"]
+tags: ["unity", "unity", "animation", "run"]
 
 RULES:
   enabled: true

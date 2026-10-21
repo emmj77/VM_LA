@@ -1,7 +1,7 @@
 id: "U382"
 tool: "unity_pipeline_upgrade"
 date: "2026-10-18"
-tags: ["unity", "cli", "pipeline"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

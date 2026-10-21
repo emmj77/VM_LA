@@ -1,7 +1,7 @@
 id: "K032"
 tool: "krita_ai_status"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_status"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

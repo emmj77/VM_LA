@@ -1,7 +1,7 @@
 id: "B1156"
 tool: "blender_particle_new_target"
 date: "2026-10-17"
-tags: ["blender_particle_new_target"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B521"
 tool: "blender_image_clear_render_border"
 date: "2026-10-17"
-tags: ["blender_image_clear_render_border"]
+tags: ["blender", "blender", "render", "clear"]
 
 RULES:
   enabled: true

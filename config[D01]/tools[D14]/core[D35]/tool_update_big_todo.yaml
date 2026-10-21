@@ -1,7 +1,7 @@
 id: "G049"
 tool: "update_big_todo"
 date: "2026-10-17"
-tags: ["update_big_todo", "plan", "project"]
+tags: ["plan", "shell", "animation", "update"]
 
 RULES:
   enabled: true

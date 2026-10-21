@@ -1,7 +1,7 @@
 id: "B983"
 tool: "blender_object_make_local"
 date: "2026-10-17"
-tags: ["blender_object_make_local"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

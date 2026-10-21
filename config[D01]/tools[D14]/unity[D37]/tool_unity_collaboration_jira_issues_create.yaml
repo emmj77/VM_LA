@@ -1,7 +1,7 @@
 id: "U286"
 tool: "unity_collaboration_jira_issues_create"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

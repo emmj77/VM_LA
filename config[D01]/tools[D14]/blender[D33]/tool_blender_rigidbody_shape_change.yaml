@@ -1,7 +1,7 @@
 id: "B1241"
 tool: "blender_rigidbody_shape_change"
 date: "2026-10-17"
-tags: ["blender_rigidbody_shape_change"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

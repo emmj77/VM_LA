@@ -1,7 +1,7 @@
 id: "B520"
 tool: "blender_image_change_frame"
 date: "2026-10-17"
-tags: ["blender_image_change_frame"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

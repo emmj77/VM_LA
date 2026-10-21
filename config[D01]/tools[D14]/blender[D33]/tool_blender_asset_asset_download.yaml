@@ -1,7 +1,7 @@
 id: "B098"
 tool: "blender_asset_asset_download"
 date: "2026-10-17"
-tags: ["blender_asset_asset_download"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

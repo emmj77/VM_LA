@@ -1,7 +1,7 @@
 id: "K051"
 tool: "krita_invert_selection"
 date: "2026-10-18"
-tags: ["krita", "krita_invert_selection"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

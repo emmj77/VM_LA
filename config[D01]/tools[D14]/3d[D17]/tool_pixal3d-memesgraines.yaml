@@ -1,7 +1,7 @@
 id: "3D007"
 tool: "pixal3d-memesgraines"
 date: "2026-10-17"
-tags: ["3d", "pixal3d", "memesgraines", "reproductible", "glb"]
+tags: ["image", "shell", "img", "run"]
 
 RULES:
   enabled: true

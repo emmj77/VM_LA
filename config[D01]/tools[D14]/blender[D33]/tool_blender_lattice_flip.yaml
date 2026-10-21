@@ -1,7 +1,7 @@
 id: "B573"
 tool: "blender_lattice_flip"
 date: "2026-10-17"
-tags: ["blender_lattice_flip"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U329"
 tool: "unity_doctor"
 date: "2026-10-18"
-tags: ["unity", "cli", "doctor"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

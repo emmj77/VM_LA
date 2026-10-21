@@ -1,7 +1,7 @@
 id: "G008"
 tool: "delegate_task"
 date: "2026-10-19"
-tags: ["delegate_task", "agent", "sous-agent", "relais"]
+tags: ["manage", "shell", "turn", "run"]
 
 RULES:
   enabled: true

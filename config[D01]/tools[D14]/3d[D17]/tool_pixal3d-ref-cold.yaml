@@ -1,7 +1,7 @@
 id: "3D008"
 tool: "pixal3d-ref-cold"
 date: "2026-10-17"
-tags: ["3d", "pixal3d", "ref-cold", "glb"]
+tags: ["image", "shell", "img", "run"]
 
 RULES:
   enabled: true

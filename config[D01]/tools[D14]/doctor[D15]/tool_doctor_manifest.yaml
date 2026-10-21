@@ -2,7 +2,7 @@
 id: "D007"
 tool: "doctor.manifest"
 date: "2026-10-20"
-tags: ["doctor", "manifest"]
+tags: ["manage", "shell", "document", "run"]
 RULES:
   enabled: true
   timeout: 300

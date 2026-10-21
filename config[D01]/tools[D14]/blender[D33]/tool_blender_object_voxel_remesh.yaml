@@ -1,7 +1,7 @@
 id: "B1070"
 tool: "blender_object_voxel_remesh"
 date: "2026-10-17"
-tags: ["blender_object_voxel_remesh"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

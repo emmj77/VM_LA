@@ -1,7 +1,7 @@
 id: "B360"
 tool: "blender_font_change_spacing"
 date: "2026-10-17"
-tags: ["blender_font_change_spacing"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

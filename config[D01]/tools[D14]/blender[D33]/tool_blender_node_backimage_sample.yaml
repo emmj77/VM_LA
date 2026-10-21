@@ -1,7 +1,7 @@
 id: "B813"
 tool: "blender_node_backimage_sample"
 date: "2026-10-17"
-tags: ["blender_node_backimage_sample"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

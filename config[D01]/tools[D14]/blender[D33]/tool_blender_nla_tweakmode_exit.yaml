@@ -1,7 +1,7 @@
 id: "B786"
 tool: "blender_nla_tweakmode_exit"
 date: "2026-10-17"
-tags: ["blender_nla_tweakmode_exit"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

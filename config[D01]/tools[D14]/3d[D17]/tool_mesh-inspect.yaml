@@ -1,7 +1,7 @@
 id: "3D005"
 tool: "mesh-inspect"
 date: "2026-10-17"
-tags: ["3d", "mesh-inspect", "inspect"]
+tags: ["image", "shell", "mesh", "run"]
 
 RULES:
   enabled: true

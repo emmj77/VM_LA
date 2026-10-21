@@ -2,7 +2,7 @@
 id: "E006"
 tool: "engine.hist"
 date: "2026-10-21"
-tags: ["engine", "hist"]
+tags: ["manage", "shell", "table", "add"]
 RULES:
   enabled: true
   timeout: 120

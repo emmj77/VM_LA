@@ -1,7 +1,7 @@
 id: "B1642"
 tool: "blender_wm_properties_add"
 date: "2026-10-17"
-tags: ["blender_wm_properties_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

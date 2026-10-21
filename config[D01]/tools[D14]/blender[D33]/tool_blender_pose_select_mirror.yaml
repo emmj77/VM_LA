@@ -1,7 +1,7 @@
 id: "B1206"
 tool: "blender_pose_select_mirror"
 date: "2026-10-17"
-tags: ["blender_pose_select_mirror"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

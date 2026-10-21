@@ -1,7 +1,7 @@
 id: "B347"
 tool: "blender_file_select_walk"
 date: "2026-10-17"
-tags: ["blender_file_select_walk"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

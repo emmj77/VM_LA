@@ -1,7 +1,7 @@
 id: "B1407"
 tool: "blender_sequencer_view_all_preview"
 date: "2026-10-17"
-tags: ["blender_sequencer_view_all_preview"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

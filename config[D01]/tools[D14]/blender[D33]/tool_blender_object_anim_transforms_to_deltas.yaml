@@ -1,7 +1,7 @@
 id: "B899"
 tool: "blender_object_anim_transforms_to_deltas"
 date: "2026-10-17"
-tags: ["blender_object_anim_transforms_to_deltas"]
+tags: ["blender", "blender", "animation", "convert"]
 
 RULES:
   enabled: true

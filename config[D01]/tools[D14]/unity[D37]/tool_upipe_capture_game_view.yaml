@@ -1,7 +1,7 @@
 id: "U024"
 tool: "upipe_capture_game_view"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "capture_game_view"]
+tags: ["unity", "unity", "render", "save"]
 
 RULES:
   enabled: true

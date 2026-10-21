@@ -1,7 +1,7 @@
 id: "B791"
 tool: "blender_node_add_closure_zone"
 date: "2026-10-17"
-tags: ["blender_node_add_closure_zone"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

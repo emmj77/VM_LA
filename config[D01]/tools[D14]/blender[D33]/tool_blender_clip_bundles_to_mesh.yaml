@@ -1,7 +1,7 @@
 id: "B130"
 tool: "blender_clip_bundles_to_mesh"
 date: "2026-10-17"
-tags: ["blender_clip_bundles_to_mesh"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

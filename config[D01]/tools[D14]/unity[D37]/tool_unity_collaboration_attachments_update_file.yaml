@@ -1,7 +1,7 @@
 id: "U281"
 tool: "unity_collaboration_attachments_update_file"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "project", "update"]
 
 RULES:
   enabled: true

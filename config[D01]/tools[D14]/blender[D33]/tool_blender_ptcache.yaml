@@ -1,7 +1,7 @@
 id: "B1769"
 tool: "blender_ptcache"
 date: "2026-10-17"
-tags: ["blender_ptcache"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

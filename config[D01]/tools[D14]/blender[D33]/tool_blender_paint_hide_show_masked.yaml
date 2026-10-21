@@ -1,7 +1,7 @@
 id: "B1107"
 tool: "blender_paint_hide_show_masked"
 date: "2026-10-17"
-tags: ["blender_paint_hide_show_masked"]
+tags: ["blender", "blender", "draw", "hide"]
 
 RULES:
   enabled: true

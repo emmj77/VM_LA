@@ -1,7 +1,7 @@
 id: "B531"
 tool: "blender_image_match_movie_length"
 date: "2026-10-17"
-tags: ["blender_image_match_movie_length"]
+tags: ["blender", "blender", "img", "set"]
 
 RULES:
   enabled: true

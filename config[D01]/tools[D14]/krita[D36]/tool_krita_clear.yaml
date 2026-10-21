@@ -1,7 +1,7 @@
 id: "K035"
 tool: "krita_clear"
 date: "2026-10-18"
-tags: ["krita", "krita_clear"]
+tags: ["krita", "krita", "img", "clear"]
 
 RULES:
   enabled: true

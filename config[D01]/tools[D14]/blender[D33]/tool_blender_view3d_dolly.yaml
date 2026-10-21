@@ -1,7 +1,7 @@
 id: "B1547"
 tool: "blender_view3d_dolly"
 date: "2026-10-17"
-tags: ["blender_view3d_dolly"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

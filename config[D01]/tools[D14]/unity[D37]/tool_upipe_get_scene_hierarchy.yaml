@@ -1,7 +1,7 @@
 id: "U073"
 tool: "upipe_get_scene_hierarchy"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_scene_hierarchy"]
+tags: ["unity", "unity", "node", "open"]
 
 RULES:
   enabled: true

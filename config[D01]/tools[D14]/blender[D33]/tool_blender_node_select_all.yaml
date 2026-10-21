@@ -1,7 +1,7 @@
 id: "B869"
 tool: "blender_node_select_all"
 date: "2026-10-17"
-tags: ["blender_node_select_all"]
+tags: ["blender", "blender", "node", "select"]
 
 RULES:
   enabled: true

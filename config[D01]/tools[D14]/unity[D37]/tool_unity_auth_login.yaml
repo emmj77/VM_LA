@@ -1,7 +1,7 @@
 id: "U239"
 tool: "unity_auth_login"
 date: "2026-10-18"
-tags: ["unity", "cli", "auth"]
+tags: ["unity", "unity", "process", "run"]
 
 RULES:
   enabled: true

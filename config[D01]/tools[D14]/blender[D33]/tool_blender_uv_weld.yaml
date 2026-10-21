@@ -1,7 +1,7 @@
 id: "B1537"
 tool: "blender_uv_weld"
 date: "2026-10-17"
-tags: ["blender_uv_weld"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

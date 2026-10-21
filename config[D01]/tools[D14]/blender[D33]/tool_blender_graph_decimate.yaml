@@ -1,7 +1,7 @@
 id: "B382"
 tool: "blender_graph_decimate"
 date: "2026-10-17"
-tags: ["blender_graph_decimate"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

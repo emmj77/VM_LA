@@ -1,7 +1,7 @@
 id: "B1560"
 tool: "blender_view3d_ruler_add"
 date: "2026-10-17"
-tags: ["blender_view3d_ruler_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

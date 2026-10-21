@@ -1,7 +1,7 @@
 id: "B675"
 tool: "blender_mesh_loop_to_region"
 date: "2026-10-17"
-tags: ["blender_mesh_loop_to_region"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

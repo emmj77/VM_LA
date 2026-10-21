@@ -1,7 +1,7 @@
 id: "B736"
 tool: "blender_mesh_spin"
 date: "2026-10-17"
-tags: ["blender_mesh_spin"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

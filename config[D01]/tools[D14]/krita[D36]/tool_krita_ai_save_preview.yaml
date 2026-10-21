@@ -1,7 +1,7 @@
 id: "K026"
 tool: "krita_ai_save_preview"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_save_preview"]
+tags: ["krita", "krita", "img", "save"]
 
 RULES:
   enabled: true

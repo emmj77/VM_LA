@@ -1,7 +1,7 @@
 id: "B093"
 tool: "blender_armature_shortest_path_pick"
 date: "2026-10-17"
-tags: ["blender_armature_shortest_path_pick"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

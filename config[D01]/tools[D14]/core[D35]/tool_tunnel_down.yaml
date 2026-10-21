@@ -1,7 +1,7 @@
 id: "G066"
 tool: "tunnel_down"
 date: "2026-10-19"
-tags: ["tunnel_down", "tunnel", "wireguard", "wg0", "coucher"]
+tags: ["manage", "shell", "file", "run"]
 
 RULES:
   enabled: true

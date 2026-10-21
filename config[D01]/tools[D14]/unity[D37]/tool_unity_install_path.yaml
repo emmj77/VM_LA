@@ -1,7 +1,7 @@
 id: "U353"
 tool: "unity_install_path"
 date: "2026-10-18"
-tags: ["unity", "cli", "install-path"]
+tags: ["unity", "unity", "project", "install"]
 
 RULES:
   enabled: true

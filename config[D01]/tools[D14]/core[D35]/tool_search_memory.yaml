@@ -1,7 +1,7 @@
 id: "G019"
 tool: "search_memory"
 date: "2026-10-17"
-tags: ["search_memory"]
+tags: ["read", "local", "table", "search"]
 
 RULES:
   enabled: true

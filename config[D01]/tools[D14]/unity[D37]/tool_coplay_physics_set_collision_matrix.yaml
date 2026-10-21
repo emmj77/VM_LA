@@ -1,7 +1,7 @@
 id: "U200"
 tool: "coplay_physics_set_collision_matrix"
 date: "2026-10-18"
-tags: ["unity", "coplay", "physics"]
+tags: ["unity", "unity", "project", "set"]
 
 RULES:
   enabled: true

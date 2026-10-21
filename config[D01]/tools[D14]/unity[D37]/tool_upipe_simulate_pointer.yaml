@@ -1,7 +1,7 @@
 id: "U143"
 tool: "upipe_simulate_pointer"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "simulate_pointer"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

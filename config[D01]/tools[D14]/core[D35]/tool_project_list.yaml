@@ -1,7 +1,7 @@
 id: "G033"
 tool: "project_list"
 date: "2026-10-17"
-tags: ["project_list", "project"]
+tags: ["read", "shell", "project", "list"]
 
 RULES:
   enabled: true

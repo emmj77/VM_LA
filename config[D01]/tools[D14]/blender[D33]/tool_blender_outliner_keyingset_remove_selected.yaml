@@ -1,7 +1,7 @@
 id: "B1084"
 tool: "blender_outliner_keyingset_remove_selected"
 date: "2026-10-17"
-tags: ["blender_outliner_keyingset_remove_selected"]
+tags: ["blender", "blender", "mesh", "remove"]
 
 RULES:
   enabled: true

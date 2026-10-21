@@ -1,7 +1,7 @@
 id: "B1553"
 tool: "blender_view3d_move"
 date: "2026-10-17"
-tags: ["blender_view3d_move"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

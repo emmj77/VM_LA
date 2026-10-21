@@ -1,7 +1,7 @@
 id: "B219"
 tool: "blender_constraint_copy_to_selected"
 date: "2026-10-17"
-tags: ["blender_constraint_copy_to_selected"]
+tags: ["blender", "blender", "object", "copy"]
 
 RULES:
   enabled: true

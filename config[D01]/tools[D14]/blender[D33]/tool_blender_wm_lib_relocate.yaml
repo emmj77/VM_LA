@@ -1,7 +1,7 @@
 id: "B1622"
 tool: "blender_wm_lib_relocate"
 date: "2026-10-17"
-tags: ["blender_wm_lib_relocate"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

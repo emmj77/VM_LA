@@ -1,7 +1,7 @@
 id: "B516"
 tool: "blender_grease_pencil_weight_invert"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_weight_invert"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

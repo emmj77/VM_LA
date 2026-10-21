@@ -1,7 +1,7 @@
 id: "B552"
 tool: "blender_image_tile_remove"
 date: "2026-10-17"
-tags: ["blender_image_tile_remove"]
+tags: ["blender", "blender", "img", "remove"]
 
 RULES:
   enabled: true

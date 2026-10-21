@@ -2,7 +2,7 @@
 id: "P002"
 tool: "plan.change"
 date: "2026-10-20"
-tags: ["plan", "change"]
+tags: ["plan", "shell", "plan", "run"]
 RULES:
   enabled: true
   timeout: 30

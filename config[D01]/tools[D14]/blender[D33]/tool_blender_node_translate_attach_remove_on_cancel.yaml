@@ -1,7 +1,7 @@
 id: "B888"
 tool: "blender_node_translate_attach_remove_on_cancel"
 date: "2026-10-17"
-tags: ["blender_node_translate_attach_remove_on_cancel"]
+tags: ["blender", "blender", "node", "translate"]
 
 RULES:
   enabled: true

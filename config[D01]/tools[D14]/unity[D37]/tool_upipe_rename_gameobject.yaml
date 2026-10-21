@@ -1,7 +1,7 @@
 id: "U105"
 tool: "upipe_rename_gameobject"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "rename_gameobject"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

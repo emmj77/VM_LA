@@ -1,7 +1,7 @@
 id: "K049"
 tool: "krita_get_security_status"
 date: "2026-10-18"
-tags: ["krita", "krita_get_security_status"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

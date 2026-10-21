@@ -1,7 +1,7 @@
 id: "B1793"
 tool: "blender_view3d_ndof"
 date: "2026-10-17"
-tags: ["blender_view3d_ndof"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

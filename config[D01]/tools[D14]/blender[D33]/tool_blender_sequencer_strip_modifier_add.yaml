@@ -1,7 +1,7 @@
 id: "B1390"
 tool: "blender_sequencer_strip_modifier_add"
 date: "2026-10-17"
-tags: ["blender_sequencer_strip_modifier_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

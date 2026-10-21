@@ -1,7 +1,7 @@
 id: "B177"
 tool: "blender_clip_set_solution_scale"
 date: "2026-10-17"
-tags: ["blender_clip_set_solution_scale"]
+tags: ["blender", "blender", "object", "set"]
 
 RULES:
   enabled: true

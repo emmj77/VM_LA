@@ -1,7 +1,7 @@
 id: "U175"
 tool: "coplay_graphics_stats_debug_mode"
 date: "2026-10-18"
-tags: ["unity", "coplay", "graphics"]
+tags: ["unity", "unity", "scene", "set"]
 
 RULES:
   enabled: true

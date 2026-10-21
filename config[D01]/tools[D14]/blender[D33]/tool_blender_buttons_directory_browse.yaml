@@ -1,7 +1,7 @@
 id: "B120"
 tool: "blender_buttons_directory_browse"
 date: "2026-10-17"
-tags: ["blender_buttons_directory_browse"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

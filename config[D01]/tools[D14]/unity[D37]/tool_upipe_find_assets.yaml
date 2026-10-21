@@ -1,7 +1,7 @@
 id: "U054"
 tool: "upipe_find_assets"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "find_assets"]
+tags: ["unity", "unity", "project", "find"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1759"
 tool: "blender_particle_dupliob"
 date: "2026-10-17"
-tags: ["blender_particle_dupliob"]
+tags: ["blender", "blender", "object", "copy"]
 
 RULES:
   enabled: true

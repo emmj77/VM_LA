@@ -2,7 +2,7 @@
 id: "E017"
 tool: "engine.reload"
 date: "2026-10-20"
-tags: ["engine", "reload"]
+tags: ["manage", "shell", "process", "reload"]
 RULES:
   enabled: true
   timeout: 300

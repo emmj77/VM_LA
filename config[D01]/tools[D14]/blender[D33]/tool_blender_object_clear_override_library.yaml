@@ -1,7 +1,7 @@
 id: "B906"
 tool: "blender_object_clear_override_library"
 date: "2026-10-17"
-tags: ["blender_object_clear_override_library"]
+tags: ["blender", "blender", "object", "clear"]
 
 RULES:
   enabled: true

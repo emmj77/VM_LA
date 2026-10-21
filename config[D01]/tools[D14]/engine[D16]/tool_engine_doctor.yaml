@@ -2,7 +2,7 @@
 id: "E005"
 tool: "engine.doctor"
 date: "2026-10-20"
-tags: ["engine", "doctor"]
+tags: ["manage", "shell", "process", "run"]
 RULES:
   enabled: true
   timeout: 600

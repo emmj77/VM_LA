@@ -1,7 +1,7 @@
 id: "B879"
 tool: "blender_node_sockets_sync"
 date: "2026-10-17"
-tags: ["blender_node_sockets_sync"]
+tags: ["blender", "blender", "node", "update"]
 
 RULES:
   enabled: true

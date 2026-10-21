@@ -1,7 +1,7 @@
 id: "K059"
 tool: "krita_rollback"
 date: "2026-10-18"
-tags: ["krita", "krita_rollback"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1080"
 tool: "blender_outliner_item_activate"
 date: "2026-10-17"
-tags: ["blender_outliner_item_activate"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

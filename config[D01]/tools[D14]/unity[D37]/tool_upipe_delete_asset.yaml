@@ -1,7 +1,7 @@
 id: "U047"
 tool: "upipe_delete_asset"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "delete_asset"]
+tags: ["unity", "unity", "project", "delete"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B153"
 tool: "blender_clip_graph_view_all"
 date: "2026-10-17"
-tags: ["blender_clip_graph_view_all"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

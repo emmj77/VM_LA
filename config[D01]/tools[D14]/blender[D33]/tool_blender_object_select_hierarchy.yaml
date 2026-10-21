@@ -1,7 +1,7 @@
 id: "B1024"
 tool: "blender_object_select_hierarchy"
 date: "2026-10-17"
-tags: ["blender_object_select_hierarchy"]
+tags: ["blender", "blender", "object", "select"]
 
 RULES:
   enabled: true

@@ -2,7 +2,7 @@
 id: "T009"
 tool: "turn.effort"
 date: "2026-10-21"
-tags: ["turn", "effort"]
+tags: ["manage", "local", "turn", "run"]
 RULES:
   enabled: true
   timeout: 30

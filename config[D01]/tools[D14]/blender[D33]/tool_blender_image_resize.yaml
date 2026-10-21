@@ -1,7 +1,7 @@
 id: "B542"
 tool: "blender_image_resize"
 date: "2026-10-17"
-tags: ["blender_image_resize"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

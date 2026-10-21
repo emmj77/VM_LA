@@ -1,7 +1,7 @@
 id: "B1396"
 tool: "blender_sequencer_strip_modifier_move_to_index"
 date: "2026-10-17"
-tags: ["blender_sequencer_strip_modifier_move_to_index"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

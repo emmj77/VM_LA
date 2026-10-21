@@ -1,7 +1,7 @@
 id: "B478"
 tool: "blender_grease_pencil_select_alternate"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_select_alternate"]
+tags: ["blender", "blender", "draw", "select"]
 
 RULES:
   enabled: true

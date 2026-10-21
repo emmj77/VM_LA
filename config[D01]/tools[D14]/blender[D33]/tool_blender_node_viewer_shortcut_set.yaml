@@ -1,7 +1,7 @@
 id: "B894"
 tool: "blender_node_viewer_shortcut_set"
 date: "2026-10-17"
-tags: ["blender_node_viewer_shortcut_set"]
+tags: ["blender", "blender", "node", "set"]
 
 RULES:
   enabled: true

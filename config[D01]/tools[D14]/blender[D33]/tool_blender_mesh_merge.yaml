@@ -1,7 +1,7 @@
 id: "B682"
 tool: "blender_mesh_merge"
 date: "2026-10-17"
-tags: ["blender_mesh_merge"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

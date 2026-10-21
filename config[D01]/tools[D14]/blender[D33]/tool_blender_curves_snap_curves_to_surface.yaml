@@ -1,7 +1,7 @@
 id: "B294"
 tool: "blender_curves_snap_curves_to_surface"
 date: "2026-10-17"
-tags: ["blender_curves_snap_curves_to_surface"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1640"
 tool: "blender_wm_previews_clear"
 date: "2026-10-17"
-tags: ["blender_wm_previews_clear"]
+tags: ["blender", "blender", "material", "clear"]
 
 RULES:
   enabled: true

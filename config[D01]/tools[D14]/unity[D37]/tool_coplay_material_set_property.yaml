@@ -1,7 +1,7 @@
 id: "U187"
 tool: "coplay_material_set_property"
 date: "2026-10-18"
-tags: ["unity", "coplay", "material"]
+tags: ["unity", "unity", "material", "set"]
 
 RULES:
   enabled: true

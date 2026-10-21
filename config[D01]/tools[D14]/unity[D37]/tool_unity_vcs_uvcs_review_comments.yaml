@@ -1,7 +1,7 @@
 id: "U440"
 tool: "unity_vcs_uvcs_review_comments"
 date: "2026-10-18"
-tags: ["unity", "cli", "vcs"]
+tags: ["unity", "unity", "project", "read"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B961"
 tool: "blender_object_isolate_type_render"
 date: "2026-10-17"
-tags: ["blender_object_isolate_type_render"]
+tags: ["blender", "blender", "render", "hide"]
 
 RULES:
   enabled: true

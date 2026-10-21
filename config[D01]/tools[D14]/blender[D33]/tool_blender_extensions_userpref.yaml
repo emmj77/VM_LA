@@ -1,7 +1,7 @@
 id: "B1720"
 tool: "blender_extensions_userpref"
 date: "2026-10-17"
-tags: ["blender_extensions_userpref"]
+tags: ["blender", "blender", "mesh", "show"]
 
 RULES:
   enabled: true

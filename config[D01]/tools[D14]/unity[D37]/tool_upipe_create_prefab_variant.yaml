@@ -1,7 +1,7 @@
 id: "U043"
 tool: "upipe_create_prefab_variant"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "create_prefab_variant"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

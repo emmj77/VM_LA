@@ -1,7 +1,7 @@
 id: "B678"
 tool: "blender_mesh_mark_freestyle_edge"
 date: "2026-10-17"
-tags: ["blender_mesh_mark_freestyle_edge"]
+tags: ["blender", "blender", "render", "run"]
 
 RULES:
   enabled: true

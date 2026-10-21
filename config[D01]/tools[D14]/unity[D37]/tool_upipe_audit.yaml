@@ -1,7 +1,7 @@
 id: "U011"
 tool: "upipe_audit"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "audit"]
+tags: ["unity", "unity", "table", "run"]
 
 RULES:
   enabled: true

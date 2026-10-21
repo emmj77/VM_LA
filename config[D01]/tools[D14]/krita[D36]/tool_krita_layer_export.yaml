@@ -1,7 +1,7 @@
 id: "K007"
 tool: "krita_layer_export"
 date: "2026-10-17"
-tags: ["krita", "krita_layer_export"]
+tags: ["krita", "krita", "img", "export"]
 
 RULES:
   enabled: true

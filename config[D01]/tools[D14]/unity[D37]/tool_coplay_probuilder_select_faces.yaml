@@ -1,7 +1,7 @@
 id: "U215"
 tool: "coplay_probuilder_select_faces"
 date: "2026-10-18"
-tags: ["unity", "coplay", "probuilder"]
+tags: ["unity", "unity", "project", "select"]
 
 RULES:
   enabled: true

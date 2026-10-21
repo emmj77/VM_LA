@@ -1,7 +1,7 @@
 id: "B1090"
 tool: "blender_outliner_parent_clear"
 date: "2026-10-17"
-tags: ["blender_outliner_parent_clear"]
+tags: ["blender", "blender", "mesh", "clear"]
 
 RULES:
   enabled: true

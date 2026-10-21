@@ -1,7 +1,7 @@
 id: "B1571"
 tool: "blender_view3d_transform_gizmo_set"
 date: "2026-10-17"
-tags: ["blender_view3d_transform_gizmo_set"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

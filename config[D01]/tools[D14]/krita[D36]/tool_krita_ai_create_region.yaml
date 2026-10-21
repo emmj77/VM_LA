@@ -1,7 +1,7 @@
 id: "K017"
 tool: "krita_ai_create_region"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_create_region"]
+tags: ["krita", "krita", "draw", "run"]
 
 RULES:
   enabled: true

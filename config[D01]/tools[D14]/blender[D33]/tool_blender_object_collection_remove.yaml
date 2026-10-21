@@ -1,7 +1,7 @@
 id: "B912"
 tool: "blender_object_collection_remove"
 date: "2026-10-17"
-tags: ["blender_object_collection_remove"]
+tags: ["blender", "blender", "object", "remove"]
 
 RULES:
   enabled: true

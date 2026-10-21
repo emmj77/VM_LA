@@ -1,7 +1,7 @@
 id: "U107"
 tool: "upipe_revert_prefab_overrides"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "revert_prefab_overrides"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

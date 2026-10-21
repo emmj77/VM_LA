@@ -1,7 +1,7 @@
 id: "K027"
 tool: "krita_ai_select_region"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_select_region"]
+tags: ["krita", "krita", "img", "select"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1170"
 tool: "blender_particle_shape_cut"
 date: "2026-10-17"
-tags: ["blender_particle_shape_cut"]
+tags: ["blender", "blender", "object", "cut"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U453"
 tool: "coplay_build"
 date: "2026-10-17"
-tags: ["coplay_build"]
+tags: ["unity", "unity", "scene", "run"]
 
 RULES:
   enabled: true

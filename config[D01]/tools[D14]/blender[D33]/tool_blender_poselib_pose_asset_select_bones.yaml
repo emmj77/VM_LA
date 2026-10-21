@@ -1,7 +1,7 @@
 id: "B1212"
 tool: "blender_poselib_pose_asset_select_bones"
 date: "2026-10-17"
-tags: ["blender_poselib_pose_asset_select_bones"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

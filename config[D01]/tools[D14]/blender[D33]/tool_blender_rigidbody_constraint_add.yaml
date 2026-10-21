@@ -1,7 +1,7 @@
 id: "B1237"
 tool: "blender_rigidbody_constraint_add"
 date: "2026-10-17"
-tags: ["blender_rigidbody_constraint_add"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

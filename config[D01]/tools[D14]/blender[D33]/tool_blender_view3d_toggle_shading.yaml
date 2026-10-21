@@ -1,7 +1,7 @@
 id: "B1569"
 tool: "blender_view3d_toggle_shading"
 date: "2026-10-17"
-tags: ["blender_view3d_toggle_shading"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

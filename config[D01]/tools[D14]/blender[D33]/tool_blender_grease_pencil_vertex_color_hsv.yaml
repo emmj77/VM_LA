@@ -1,7 +1,7 @@
 id: "B507"
 tool: "blender_grease_pencil_vertex_color_hsv"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_vertex_color_hsv"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

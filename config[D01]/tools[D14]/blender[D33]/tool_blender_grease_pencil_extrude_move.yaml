@@ -1,7 +1,7 @@
 id: "B450"
 tool: "blender_grease_pencil_extrude_move"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_extrude_move"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

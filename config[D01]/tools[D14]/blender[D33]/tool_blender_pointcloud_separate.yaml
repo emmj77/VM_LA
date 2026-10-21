@@ -1,7 +1,7 @@
 id: "B1180"
 tool: "blender_pointcloud_separate"
 date: "2026-10-17"
-tags: ["blender_pointcloud_separate"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

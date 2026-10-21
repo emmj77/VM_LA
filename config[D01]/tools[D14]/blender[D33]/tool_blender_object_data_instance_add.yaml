@@ -1,7 +1,7 @@
 id: "B923"
 tool: "blender_object_data_instance_add"
 date: "2026-10-17"
-tags: ["blender_object_data_instance_add"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

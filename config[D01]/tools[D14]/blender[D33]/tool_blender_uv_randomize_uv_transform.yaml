@@ -1,7 +1,7 @@
 id: "B1506"
 tool: "blender_uv_randomize_uv_transform"
 date: "2026-10-17"
-tags: ["blender_uv_randomize_uv_transform"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

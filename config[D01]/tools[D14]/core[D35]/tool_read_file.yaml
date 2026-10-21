@@ -1,7 +1,7 @@
 id: "G002"
 tool: "read_file"
 date: "2026-10-17"
-tags: ["read_file"]
+tags: ["read", "shell", "project", "read"]
 
 RULES:
   enabled: true

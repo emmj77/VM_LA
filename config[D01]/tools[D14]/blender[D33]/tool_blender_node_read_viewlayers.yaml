@@ -1,7 +1,7 @@
 id: "B865"
 tool: "blender_node_read_viewlayers"
 date: "2026-10-17"
-tags: ["blender_node_read_viewlayers"]
+tags: ["blender", "blender", "node", "read"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B810"
 tool: "blender_node_attach"
 date: "2026-10-17"
-tags: ["blender_node_attach"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

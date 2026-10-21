@@ -1,7 +1,7 @@
 id: "B1389"
 tool: "blender_sequencer_strip_jump"
 date: "2026-10-17"
-tags: ["blender_sequencer_strip_jump"]
+tags: ["blender", "blender", "scene", "move"]
 
 RULES:
   enabled: true

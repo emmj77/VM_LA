@@ -1,7 +1,7 @@
 id: "U324"
 tool: "unity_context_use"
 date: "2026-10-18"
-tags: ["unity", "cli", "context"]
+tags: ["unity", "unity", "text", "apply"]
 
 RULES:
   enabled: true

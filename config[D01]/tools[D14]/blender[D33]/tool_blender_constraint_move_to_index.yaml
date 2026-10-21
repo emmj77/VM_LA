@@ -1,7 +1,7 @@
 id: "B225"
 tool: "blender_constraint_move_to_index"
 date: "2026-10-17"
-tags: ["blender_constraint_move_to_index"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B769"
 tool: "blender_nla_fmodifier_copy"
 date: "2026-10-17"
-tags: ["blender_nla_fmodifier_copy"]
+tags: ["blender", "blender", "mesh", "copy"]
 
 RULES:
   enabled: true

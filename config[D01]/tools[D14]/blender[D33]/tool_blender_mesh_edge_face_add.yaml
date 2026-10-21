@@ -1,7 +1,7 @@
 id: "B652"
 tool: "blender_mesh_edge_face_add"
 date: "2026-10-17"
-tags: ["blender_mesh_edge_face_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

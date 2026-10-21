@@ -1,7 +1,7 @@
 id: "B424"
 tool: "blender_graph_shear"
 date: "2026-10-17"
-tags: ["blender_graph_shear"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

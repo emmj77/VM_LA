@@ -1,7 +1,7 @@
 id: "B1251"
 tool: "blender_scene_freestyle_lineset_move"
 date: "2026-10-17"
-tags: ["blender_scene_freestyle_lineset_move"]
+tags: ["blender", "blender", "render", "move"]
 
 RULES:
   enabled: true

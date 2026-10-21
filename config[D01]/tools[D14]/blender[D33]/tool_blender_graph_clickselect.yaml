@@ -1,7 +1,7 @@
 id: "B379"
 tool: "blender_graph_clickselect"
 date: "2026-10-17"
-tags: ["blender_graph_clickselect"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

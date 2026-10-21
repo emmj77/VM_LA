@@ -1,7 +1,7 @@
 id: "G001"
 tool: "reply"
 date: "2026-10-18"
-tags: ["reply", "talk", "ask", "answer", "parole"]
+tags: ["reply", "shell", "audio", "run"]
 
 RULES:
   enabled: true

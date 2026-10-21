@@ -1,7 +1,7 @@
 id: "B1316"
 tool: "blender_sculpt_face_sets_randomize_colors"
 date: "2026-10-17"
-tags: ["blender_sculpt_face_sets_randomize_colors"]
+tags: ["blender", "blender", "render", "set"]
 
 RULES:
   enabled: true

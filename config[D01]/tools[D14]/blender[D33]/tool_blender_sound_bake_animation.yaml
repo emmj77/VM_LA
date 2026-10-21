@@ -1,7 +1,7 @@
 id: "B1412"
 tool: "blender_sound_bake_animation"
 date: "2026-10-17"
-tags: ["blender_sound_bake_animation"]
+tags: ["blender", "blender", "animation", "update"]
 
 RULES:
   enabled: true

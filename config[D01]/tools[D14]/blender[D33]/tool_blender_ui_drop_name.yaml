@@ -1,7 +1,7 @@
 id: "B1469"
 tool: "blender_ui_drop_name"
 date: "2026-10-17"
-tags: ["blender_ui_drop_name"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

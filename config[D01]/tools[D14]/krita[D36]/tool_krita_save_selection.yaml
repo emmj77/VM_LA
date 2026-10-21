@@ -1,7 +1,7 @@
 id: "K060"
 tool: "krita_save_selection"
 date: "2026-10-18"
-tags: ["krita", "krita_save_selection"]
+tags: ["krita", "krita", "img", "save"]
 
 RULES:
   enabled: true

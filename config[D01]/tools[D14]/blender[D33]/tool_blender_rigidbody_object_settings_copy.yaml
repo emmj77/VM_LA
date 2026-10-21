@@ -1,7 +1,7 @@
 id: "B1240"
 tool: "blender_rigidbody_object_settings_copy"
 date: "2026-10-17"
-tags: ["blender_rigidbody_object_settings_copy"]
+tags: ["blender", "blender", "object", "copy"]
 
 RULES:
   enabled: true

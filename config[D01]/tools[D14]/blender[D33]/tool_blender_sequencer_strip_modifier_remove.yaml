@@ -1,7 +1,7 @@
 id: "B1397"
 tool: "blender_sequencer_strip_modifier_remove"
 date: "2026-10-17"
-tags: ["blender_sequencer_strip_modifier_remove"]
+tags: ["blender", "blender", "mesh", "remove"]
 
 RULES:
   enabled: true

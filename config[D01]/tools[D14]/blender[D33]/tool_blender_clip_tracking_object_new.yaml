@@ -1,7 +1,7 @@
 id: "B190"
 tool: "blender_clip_tracking_object_new"
 date: "2026-10-17"
-tags: ["blender_clip_tracking_object_new"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

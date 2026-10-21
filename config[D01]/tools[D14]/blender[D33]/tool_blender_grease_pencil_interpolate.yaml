@@ -1,7 +1,7 @@
 id: "B455"
 tool: "blender_grease_pencil_interpolate"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_interpolate"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

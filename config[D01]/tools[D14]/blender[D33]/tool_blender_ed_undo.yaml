@@ -1,7 +1,7 @@
 id: "B310"
 tool: "blender_ed_undo"
 date: "2026-10-17"
-tags: ["blender_ed_undo"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

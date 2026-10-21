@@ -1,7 +1,7 @@
 id: "U119"
 tool: "upipe_set_autotick"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_autotick"]
+tags: ["unity", "unity", "project", "set"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B875"
 tool: "blender_node_select_linked_from"
 date: "2026-10-17"
-tags: ["blender_node_select_linked_from"]
+tags: ["blender", "blender", "node", "select"]
 
 RULES:
   enabled: true

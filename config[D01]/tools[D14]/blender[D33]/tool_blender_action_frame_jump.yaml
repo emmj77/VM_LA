@@ -1,7 +1,7 @@
 id: "B010"
 tool: "blender_action_frame_jump"
 date: "2026-10-17"
-tags: ["blender_action_frame_jump"]
+tags: ["blender", "blender", "animation", "set"]
 
 RULES:
   enabled: true

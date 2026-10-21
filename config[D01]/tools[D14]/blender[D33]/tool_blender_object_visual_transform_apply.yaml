@@ -1,7 +1,7 @@
 id: "B1067"
 tool: "blender_object_visual_transform_apply"
 date: "2026-10-17"
-tags: ["blender_object_visual_transform_apply"]
+tags: ["blender", "blender", "object", "apply"]
 
 RULES:
   enabled: true

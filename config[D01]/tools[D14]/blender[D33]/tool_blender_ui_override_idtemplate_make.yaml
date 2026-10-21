@@ -1,7 +1,7 @@
 id: "B1473"
 tool: "blender_ui_override_idtemplate_make"
 date: "2026-10-17"
-tags: ["blender_ui_override_idtemplate_make"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

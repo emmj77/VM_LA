@@ -1,7 +1,7 @@
 id: "B1006"
 tool: "blender_object_particle_system_remove"
 date: "2026-10-17"
-tags: ["blender_object_particle_system_remove"]
+tags: ["blender", "blender", "object", "remove"]
 
 RULES:
   enabled: true

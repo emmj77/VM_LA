@@ -2,7 +2,7 @@
 id: "E012"
 tool: "engine.switch"
 date: "2026-10-20"
-tags: ["engine", "switch"]
+tags: ["manage", "shell", "process", "list"]
 RULES:
   enabled: true
   timeout: 60

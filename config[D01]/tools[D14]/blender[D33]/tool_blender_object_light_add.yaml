@@ -1,7 +1,7 @@
 id: "B967"
 tool: "blender_object_light_add"
 date: "2026-10-17"
-tags: ["blender_object_light_add"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

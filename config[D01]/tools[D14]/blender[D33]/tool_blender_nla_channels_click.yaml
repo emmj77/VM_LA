@@ -1,7 +1,7 @@
 id: "B761"
 tool: "blender_nla_channels_click"
 date: "2026-10-17"
-tags: ["blender_nla_channels_click"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

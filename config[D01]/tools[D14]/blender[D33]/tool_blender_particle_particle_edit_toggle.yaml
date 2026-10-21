@@ -1,7 +1,7 @@
 id: "B1157"
 tool: "blender_particle_particle_edit_toggle"
 date: "2026-10-17"
-tags: ["blender_particle_particle_edit_toggle"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

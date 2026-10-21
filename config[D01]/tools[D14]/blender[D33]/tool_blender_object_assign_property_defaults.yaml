@@ -1,7 +1,7 @@
 id: "B901"
 tool: "blender_object_assign_property_defaults"
 date: "2026-10-17"
-tags: ["blender_object_assign_property_defaults"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

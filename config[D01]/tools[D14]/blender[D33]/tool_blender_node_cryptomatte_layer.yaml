@@ -1,7 +1,7 @@
 id: "B1743"
 tool: "blender_node_cryptomatte_layer"
 date: "2026-10-17"
-tags: ["blender_node_cryptomatte_layer"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

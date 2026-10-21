@@ -1,7 +1,7 @@
 id: "B1481"
 tool: "blender_ui_view_item_select"
 date: "2026-10-17"
-tags: ["blender_ui_view_item_select"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

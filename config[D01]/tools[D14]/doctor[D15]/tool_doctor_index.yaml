@@ -2,7 +2,7 @@
 id: "D011"
 tool: "doctor.index"
 date: "2026-10-21"
-tags: ["doctor", "index"]
+tags: ["manage", "python", "process", "run"]
 RULES:
   enabled: true
   timeout: 120

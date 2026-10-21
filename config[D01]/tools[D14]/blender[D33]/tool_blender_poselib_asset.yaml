@@ -1,7 +1,7 @@
 id: "B1764"
 tool: "blender_poselib_asset"
 date: "2026-10-17"
-tags: ["blender_poselib_asset"]
+tags: ["blender", "blender", "animation", "apply"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B963"
 tool: "blender_object_join_shapes"
 date: "2026-10-17"
-tags: ["blender_object_join_shapes"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

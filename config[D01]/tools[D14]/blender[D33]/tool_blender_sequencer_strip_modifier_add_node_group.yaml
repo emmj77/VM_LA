@@ -1,7 +1,7 @@
 id: "B1391"
 tool: "blender_sequencer_strip_modifier_add_node_group"
 date: "2026-10-17"
-tags: ["blender_sequencer_strip_modifier_add_node_group"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

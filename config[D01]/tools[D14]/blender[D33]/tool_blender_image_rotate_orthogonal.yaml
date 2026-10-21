@@ -1,7 +1,7 @@
 id: "B543"
 tool: "blender_image_rotate_orthogonal"
 date: "2026-10-17"
-tags: ["blender_image_rotate_orthogonal"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

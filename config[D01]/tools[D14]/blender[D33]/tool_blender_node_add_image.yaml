@@ -1,7 +1,7 @@
 id: "B799"
 tool: "blender_node_add_image"
 date: "2026-10-17"
-tags: ["blender_node_add_image"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

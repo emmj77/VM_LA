@@ -1,7 +1,7 @@
 id: "B973"
 tool: "blender_object_light_linking_receivers_select"
 date: "2026-10-17"
-tags: ["blender_object_light_linking_receivers_select"]
+tags: ["blender", "blender", "object", "select"]
 
 RULES:
   enabled: true

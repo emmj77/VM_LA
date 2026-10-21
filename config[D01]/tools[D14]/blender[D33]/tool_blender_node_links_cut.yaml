@@ -1,7 +1,7 @@
 id: "B851"
 tool: "blender_node_links_cut"
 date: "2026-10-17"
-tags: ["blender_node_links_cut"]
+tags: ["blender", "blender", "node", "cut"]
 
 RULES:
   enabled: true

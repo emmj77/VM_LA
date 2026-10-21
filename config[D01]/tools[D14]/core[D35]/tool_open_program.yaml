@@ -1,7 +1,7 @@
 id: "G047"
 tool: "open_program"
 date: "2026-10-17"
-tags: ["open_program", "ouvrir", "lancer", "program-manage"]
+tags: ["manage", "shell", "file", "open"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B272"
 tool: "blender_curve_vertex_add"
 date: "2026-10-17"
-tags: ["blender_curve_vertex_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

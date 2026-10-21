@@ -1,7 +1,7 @@
 id: "C018"
 tool: "sdxl-inpaint"
 date: "2026-10-17"
-tags: ["comfyui", "sdxl-inpaint", "inpaint", "image"]
+tags: ["image", "comfyui", "draw", "run"]
 
 RULES:
   enabled: true

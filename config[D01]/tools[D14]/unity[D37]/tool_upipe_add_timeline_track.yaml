@@ -1,7 +1,7 @@
 id: "U008"
 tool: "upipe_add_timeline_track"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "add_timeline_track"]
+tags: ["unity", "unity", "animation", "add"]
 
 RULES:
   enabled: true

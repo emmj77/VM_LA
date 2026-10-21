@@ -1,7 +1,7 @@
 id: "G052"
 tool: "skill_view"
 date: "2026-10-17"
-tags: ["skill_view", "skill"]
+tags: ["read", "shell", "plan", "run"]
 
 RULES:
   enabled: true

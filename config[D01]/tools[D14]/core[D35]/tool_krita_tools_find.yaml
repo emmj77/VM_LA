@@ -1,7 +1,7 @@
 id: "G060"
 tool: "krita_tools_find"
 date: "2026-10-18"
-tags: ["krita", "tools_find", "recherche"]
+tags: ["read", "shell", "text", "find"]
 
 RULES:
   enabled: true

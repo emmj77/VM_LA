@@ -1,7 +1,7 @@
 id: "B618"
 tool: "blender_material_paste"
 date: "2026-10-17"
-tags: ["blender_material_paste"]
+tags: ["blender", "blender", "material", "run"]
 
 RULES:
   enabled: true

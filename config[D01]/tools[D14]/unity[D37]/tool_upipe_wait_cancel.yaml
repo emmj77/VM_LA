@@ -1,7 +1,7 @@
 id: "U148"
 tool: "upipe_wait_cancel"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "wait_cancel"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

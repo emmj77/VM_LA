@@ -1,7 +1,7 @@
 id: "B132"
 tool: "blender_clip_change_frame"
 date: "2026-10-17"
-tags: ["blender_clip_change_frame"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

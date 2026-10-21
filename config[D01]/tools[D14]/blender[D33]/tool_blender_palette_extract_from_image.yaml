@@ -1,7 +1,7 @@
 id: "B1141"
 tool: "blender_palette_extract_from_image"
 date: "2026-10-17"
-tags: ["blender_palette_extract_from_image"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B885"
 tool: "blender_node_test_inlining_shader_nodes"
 date: "2026-10-17"
-tags: ["blender_node_test_inlining_shader_nodes"]
+tags: ["blender", "blender", "material", "test"]
 
 RULES:
   enabled: true

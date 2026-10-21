@@ -1,7 +1,7 @@
 id: "K050"
 tool: "krita_grow_selection"
 date: "2026-10-18"
-tags: ["krita", "krita_grow_selection"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "G028"
 tool: "sleep"
 date: "2026-10-17"
-tags: ["sleep"]
+tags: ["manage", "shell", "process", "run"]
 
 RULES:
   enabled: true

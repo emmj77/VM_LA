@@ -1,7 +1,7 @@
 id: "U234"
 tool: "unity_assets_import"
 date: "2026-10-18"
-tags: ["unity", "cli", "assets"]
+tags: ["unity", "unity", "project", "import"]
 
 RULES:
   enabled: true

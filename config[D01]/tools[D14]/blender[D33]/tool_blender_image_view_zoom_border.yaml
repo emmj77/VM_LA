@@ -1,7 +1,7 @@
 id: "B561"
 tool: "blender_image_view_zoom_border"
 date: "2026-10-17"
-tags: ["blender_image_view_zoom_border"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

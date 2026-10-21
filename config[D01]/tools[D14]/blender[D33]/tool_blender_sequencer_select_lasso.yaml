@@ -1,7 +1,7 @@
 id: "B1376"
 tool: "blender_sequencer_select_lasso"
 date: "2026-10-17"
-tags: ["blender_sequencer_select_lasso"]
+tags: ["blender", "blender", "scene", "select"]
 
 RULES:
   enabled: true

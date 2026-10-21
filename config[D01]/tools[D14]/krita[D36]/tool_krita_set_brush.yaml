@@ -1,7 +1,7 @@
 id: "K071"
 tool: "krita_set_brush"
 date: "2026-10-18"
-tags: ["krita", "krita_set_brush"]
+tags: ["krita", "krita", "draw", "set"]
 
 RULES:
   enabled: true

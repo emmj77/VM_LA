@@ -1,7 +1,7 @@
 id: "B1459"
 tool: "blender_transform_select_orientation"
 date: "2026-10-17"
-tags: ["blender_transform_select_orientation"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "C017"
 tool: "sdxl-img2img"
 date: "2026-10-17"
-tags: ["comfyui", "sdxl-img2img", "img2img", "image"]
+tags: ["image", "comfyui", "img", "run"]
 
 RULES:
   enabled: true

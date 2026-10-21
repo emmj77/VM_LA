@@ -1,7 +1,7 @@
 id: "B471"
 tool: "blender_grease_pencil_remove_fill_guides"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_remove_fill_guides"]
+tags: ["blender", "blender", "draw", "remove"]
 
 RULES:
   enabled: true

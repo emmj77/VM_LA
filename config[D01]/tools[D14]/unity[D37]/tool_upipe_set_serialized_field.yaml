@@ -1,7 +1,7 @@
 id: "U135"
 tool: "upipe_set_serialized_field"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_serialized_field"]
+tags: ["unity", "unity", "object", "set"]
 
 RULES:
   enabled: true

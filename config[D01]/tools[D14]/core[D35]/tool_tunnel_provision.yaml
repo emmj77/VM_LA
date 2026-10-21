@@ -1,7 +1,7 @@
 id: "G072"
 tool: "tunnel_provision"
 date: "2026-10-20"
-tags: ["tunnel_provision", "tunnel", "wireguard", "wg0", "appairage", "qrcode"]
+tags: ["manage", "shell", "text", "run"]
 
 RULES:
   enabled: true

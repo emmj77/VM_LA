@@ -2,7 +2,7 @@
 id: "E021"
 tool: "engine.residents"
 date: "2026-10-21"
-tags: ["engine", "residents", "units"]
+tags: ["manage", "systemd", "process", "run"]
 RULES:
   enabled: true
   timeout: 120

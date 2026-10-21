@@ -1,7 +1,7 @@
 id: "V007"
 tool: "find_objects_img"
 date: "2026-10-21"
-tags: ["vision", "local", "img", "boxes"]
+tags: ["vision", "local", "object", "find"]
 
 RULES:
   enabled: true

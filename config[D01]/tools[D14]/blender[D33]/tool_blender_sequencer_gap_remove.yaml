@@ -1,7 +1,7 @@
 id: "B1349"
 tool: "blender_sequencer_gap_remove"
 date: "2026-10-17"
-tags: ["blender_sequencer_gap_remove"]
+tags: ["blender", "blender", "scene", "remove"]
 
 RULES:
   enabled: true

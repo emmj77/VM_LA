@@ -1,7 +1,7 @@
 id: "B1184"
 tool: "blender_pose_blend_with_rest"
 date: "2026-10-17"
-tags: ["blender_pose_blend_with_rest"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B581"
 tool: "blender_marker_camera_bind"
 date: "2026-10-17"
-tags: ["blender_marker_camera_bind"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

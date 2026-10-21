@@ -1,7 +1,7 @@
 id: "B834"
 tool: "blender_node_group_edit"
 date: "2026-10-17"
-tags: ["blender_node_group_edit"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

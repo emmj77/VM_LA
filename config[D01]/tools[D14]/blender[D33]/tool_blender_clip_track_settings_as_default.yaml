@@ -1,7 +1,7 @@
 id: "B187"
 tool: "blender_clip_track_settings_as_default"
 date: "2026-10-17"
-tags: ["blender_clip_track_settings_as_default"]
+tags: ["blender", "blender", "config", "copy"]
 
 RULES:
   enabled: true

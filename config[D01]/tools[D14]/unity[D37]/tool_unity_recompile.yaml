@@ -1,7 +1,7 @@
 id: "U406"
 tool: "unity_recompile"
 date: "2026-10-18"
-tags: ["unity", "cli", "recompile"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

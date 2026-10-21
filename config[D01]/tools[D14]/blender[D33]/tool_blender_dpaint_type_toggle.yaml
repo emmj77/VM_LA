@@ -1,7 +1,7 @@
 id: "B307"
 tool: "blender_dpaint_type_toggle"
 date: "2026-10-17"
-tags: ["blender_dpaint_type_toggle"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

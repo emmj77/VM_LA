@@ -1,7 +1,7 @@
 id: "C023"
 tool: "comfyui_stop"
 date: "2026-10-19"
-tags: ["image"]
+tags: ["image", "comfyui", "img", "run"]
 
 
 RULES:

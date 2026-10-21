@@ -1,7 +1,7 @@
 id: "B840"
 tool: "blender_node_insert_offset"
 date: "2026-10-17"
-tags: ["blender_node_insert_offset"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

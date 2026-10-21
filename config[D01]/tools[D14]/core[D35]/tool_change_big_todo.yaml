@@ -1,7 +1,7 @@
 id: "G050"
 tool: "change_big_todo"
 date: "2026-10-17"
-tags: ["change_big_todo", "plan", "project"]
+tags: ["plan", "shell", "plan", "run"]
 
 RULES:
   enabled: true

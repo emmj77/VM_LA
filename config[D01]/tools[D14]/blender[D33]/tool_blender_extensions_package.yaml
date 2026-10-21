@@ -1,7 +1,7 @@
 id: "B1717"
 tool: "blender_extensions_package"
 date: "2026-10-17"
-tags: ["blender_extensions_package"]
+tags: ["blender", "blender", "config", "install"]
 
 RULES:
   enabled: true

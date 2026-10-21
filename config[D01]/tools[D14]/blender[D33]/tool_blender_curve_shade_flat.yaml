@@ -1,7 +1,7 @@
 id: "B261"
 tool: "blender_curve_shade_flat"
 date: "2026-10-17"
-tags: ["blender_curve_shade_flat"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

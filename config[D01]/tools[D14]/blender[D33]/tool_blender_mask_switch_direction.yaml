@@ -1,7 +1,7 @@
 id: "B615"
 tool: "blender_mask_switch_direction"
 date: "2026-10-17"
-tags: ["blender_mask_switch_direction"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

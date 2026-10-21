@@ -1,7 +1,7 @@
 id: "K025"
 tool: "krita_ai_remove_region"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_remove_region"]
+tags: ["krita", "krita", "img", "remove"]
 
 RULES:
   enabled: true

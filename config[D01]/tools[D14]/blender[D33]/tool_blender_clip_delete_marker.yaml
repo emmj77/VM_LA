@@ -1,7 +1,7 @@
 id: "B138"
 tool: "blender_clip_delete_marker"
 date: "2026-10-17"
-tags: ["blender_clip_delete_marker"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

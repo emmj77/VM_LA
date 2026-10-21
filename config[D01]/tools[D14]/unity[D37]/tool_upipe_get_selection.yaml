@@ -1,7 +1,7 @@
 id: "U074"
 tool: "upipe_get_selection"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_selection"]
+tags: ["unity", "unity", "object", "read"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U323"
 tool: "unity_context_save"
 date: "2026-10-18"
-tags: ["unity", "cli", "context"]
+tags: ["unity", "unity", "config", "save"]
 
 RULES:
   enabled: true

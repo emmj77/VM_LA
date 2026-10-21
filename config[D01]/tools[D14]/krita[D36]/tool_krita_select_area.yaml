@@ -1,7 +1,7 @@
 id: "K062"
 tool: "krita_select_area"
 date: "2026-10-18"
-tags: ["krita", "krita_select_area"]
+tags: ["krita", "krita", "img", "select"]
 
 RULES:
   enabled: true

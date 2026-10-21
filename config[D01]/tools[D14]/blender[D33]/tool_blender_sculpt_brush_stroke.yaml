@@ -1,7 +1,7 @@
 id: "B1300"
 tool: "blender_sculpt_brush_stroke"
 date: "2026-10-17"
-tags: ["blender_sculpt_brush_stroke"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "G020"
 tool: "write_spec"
 date: "2026-10-17"
-tags: ["write_spec"]
+tags: ["write", "shell", "config", "write"]
 
 RULES:
   enabled: true

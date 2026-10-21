@@ -1,7 +1,7 @@
 id: "B049"
 tool: "blender_anim_merge_animation"
 date: "2026-10-17"
-tags: ["blender_anim_merge_animation"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

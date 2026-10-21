@@ -1,7 +1,7 @@
 id: "B686"
 tool: "blender_mesh_normals_tools"
 date: "2026-10-17"
-tags: ["blender_mesh_normals_tools"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

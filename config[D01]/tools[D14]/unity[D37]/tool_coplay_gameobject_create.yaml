@@ -1,7 +1,7 @@
 id: "U169"
 tool: "coplay_gameobject_create"
 date: "2026-10-18"
-tags: ["unity", "coplay", "gameobject"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

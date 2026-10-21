@@ -1,7 +1,7 @@
 id: "B488"
 tool: "blender_grease_pencil_separate_fills"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_separate_fills"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

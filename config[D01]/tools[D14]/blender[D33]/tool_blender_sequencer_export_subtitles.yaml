@@ -1,7 +1,7 @@
 id: "B1345"
 tool: "blender_sequencer_export_subtitles"
 date: "2026-10-17"
-tags: ["blender_sequencer_export_subtitles"]
+tags: ["blender", "blender", "scene", "export"]
 
 RULES:
   enabled: true

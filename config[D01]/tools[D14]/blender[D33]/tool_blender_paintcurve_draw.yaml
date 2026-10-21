@@ -1,7 +1,7 @@
 id: "B1137"
 tool: "blender_paintcurve_draw"
 date: "2026-10-17"
-tags: ["blender_paintcurve_draw"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

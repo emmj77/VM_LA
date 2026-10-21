@@ -1,7 +1,7 @@
 id: "K073"
 tool: "krita_set_layer_opacity"
 date: "2026-10-18"
-tags: ["krita", "krita_set_layer_opacity"]
+tags: ["krita", "krita", "img", "set"]
 
 RULES:
   enabled: true

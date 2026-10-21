@@ -1,7 +1,7 @@
 id: "U332"
 tool: "unity_editor_module_list"
 date: "2026-10-18"
-tags: ["unity", "cli", "editor"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

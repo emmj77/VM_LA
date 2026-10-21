@@ -1,7 +1,7 @@
 id: "B825"
 tool: "blender_node_detach_translate_attach"
 date: "2026-10-17"
-tags: ["blender_node_detach_translate_attach"]
+tags: ["blender", "blender", "node", "translate"]
 
 RULES:
   enabled: true

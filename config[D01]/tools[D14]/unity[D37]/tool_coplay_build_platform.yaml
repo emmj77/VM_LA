@@ -1,7 +1,7 @@
 id: "U154"
 tool: "coplay_build_platform"
 date: "2026-10-18"
-tags: ["unity", "coplay", "build"]
+tags: ["unity", "unity", "project", "read"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1400"
 tool: "blender_sequencer_strip_transform_fit"
 date: "2026-10-17"
-tags: ["blender_sequencer_strip_transform_fit"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

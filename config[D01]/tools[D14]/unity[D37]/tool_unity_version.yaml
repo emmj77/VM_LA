@@ -1,7 +1,7 @@
 id: "U444"
 tool: "unity_version"
 date: "2026-10-18"
-tags: ["unity", "cli", "version"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

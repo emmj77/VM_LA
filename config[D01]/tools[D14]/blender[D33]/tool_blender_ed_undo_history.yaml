@@ -1,7 +1,7 @@
 id: "B311"
 tool: "blender_ed_undo_history"
 date: "2026-10-17"
-tags: ["blender_ed_undo_history"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

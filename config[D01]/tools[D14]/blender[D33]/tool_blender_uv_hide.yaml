@@ -1,7 +1,7 @@
 id: "B1497"
 tool: "blender_uv_hide"
 date: "2026-10-17"
-tags: ["blender_uv_hide"]
+tags: ["blender", "blender", "mesh", "hide"]
 
 RULES:
   enabled: true

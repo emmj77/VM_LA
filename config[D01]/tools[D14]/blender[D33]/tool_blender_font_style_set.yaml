@@ -1,7 +1,7 @@
 id: "B362"
 tool: "blender_font_style_set"
 date: "2026-10-17"
-tags: ["blender_font_style_set"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

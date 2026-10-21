@@ -1,7 +1,7 @@
 id: "U257"
 tool: "unity_cloud_org_set_default"
 date: "2026-10-18"
-tags: ["unity", "cli", "cloud"]
+tags: ["unity", "unity", "project", "set"]
 
 RULES:
   enabled: true

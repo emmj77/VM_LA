@@ -1,7 +1,7 @@
 id: "B1078"
 tool: "blender_outliner_hide"
 date: "2026-10-17"
-tags: ["blender_outliner_hide"]
+tags: ["blender", "blender", "object", "hide"]
 
 RULES:
   enabled: true

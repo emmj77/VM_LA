@@ -1,7 +1,7 @@
 id: "B1498"
 tool: "blender_uv_lightmap_pack"
 date: "2026-10-17"
-tags: ["blender_uv_lightmap_pack"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

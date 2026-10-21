@@ -1,7 +1,7 @@
 id: "B648"
 tool: "blender_mesh_dupli_extrude_cursor"
 date: "2026-10-17"
-tags: ["blender_mesh_dupli_extrude_cursor"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

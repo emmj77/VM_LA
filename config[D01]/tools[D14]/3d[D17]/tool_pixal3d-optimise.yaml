@@ -1,7 +1,7 @@
 id: "3D006"
 tool: "pixal3d-optimise"
 date: "2026-10-17"
-tags: ["3d", "pixal3d", "optimise", "glb"]
+tags: ["image", "shell", "img", "run"]
 
 RULES:
   enabled: true

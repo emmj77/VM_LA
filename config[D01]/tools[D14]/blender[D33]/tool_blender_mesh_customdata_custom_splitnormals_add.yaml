@@ -1,7 +1,7 @@
 id: "B632"
 tool: "blender_mesh_customdata_custom_splitnormals_add"
 date: "2026-10-17"
-tags: ["blender_mesh_customdata_custom_splitnormals_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

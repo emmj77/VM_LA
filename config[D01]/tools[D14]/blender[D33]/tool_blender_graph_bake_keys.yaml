@@ -1,7 +1,7 @@
 id: "B374"
 tool: "blender_graph_bake_keys"
 date: "2026-10-17"
-tags: ["blender_graph_bake_keys"]
+tags: ["blender", "blender", "animation", "add"]
 
 RULES:
   enabled: true

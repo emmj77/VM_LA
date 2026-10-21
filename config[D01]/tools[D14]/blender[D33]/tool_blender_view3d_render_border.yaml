@@ -1,7 +1,7 @@
 id: "B1558"
 tool: "blender_view3d_render_border"
 date: "2026-10-17"
-tags: ["blender_view3d_render_border"]
+tags: ["blender", "blender", "render", "set"]
 
 RULES:
   enabled: true

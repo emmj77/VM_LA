@@ -1,7 +1,7 @@
 id: "B1274"
 tool: "blender_screen_animation_play"
 date: "2026-10-17"
-tags: ["blender_screen_animation_play"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

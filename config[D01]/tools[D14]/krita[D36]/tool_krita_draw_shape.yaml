@@ -1,7 +1,7 @@
 id: "K041"
 tool: "krita_draw_shape"
 date: "2026-10-18"
-tags: ["krita", "krita_draw_shape"]
+tags: ["krita", "krita", "draw", "run"]
 
 RULES:
   enabled: true

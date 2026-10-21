@@ -1,7 +1,7 @@
 id: "B1709"
 tool: "blender_collection_exporter"
 date: "2026-10-17"
-tags: ["blender_collection_exporter"]
+tags: ["blender", "blender", "scene", "add"]
 
 RULES:
   enabled: true

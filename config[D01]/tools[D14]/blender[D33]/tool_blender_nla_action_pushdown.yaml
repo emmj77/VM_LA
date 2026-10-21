@@ -1,7 +1,7 @@
 id: "B756"
 tool: "blender_nla_action_pushdown"
 date: "2026-10-17"
-tags: ["blender_nla_action_pushdown"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

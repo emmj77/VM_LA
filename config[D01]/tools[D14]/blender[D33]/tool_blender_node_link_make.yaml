@@ -1,7 +1,7 @@
 id: "B849"
 tool: "blender_node_link_make"
 date: "2026-10-17"
-tags: ["blender_node_link_make"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

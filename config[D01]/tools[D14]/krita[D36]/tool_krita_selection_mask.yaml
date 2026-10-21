@@ -1,7 +1,7 @@
 id: "K008"
 tool: "krita_selection_mask"
 date: "2026-10-17"
-tags: ["krita", "krita_selection_mask"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B982"
 tool: "blender_object_make_links_scene"
 date: "2026-10-17"
-tags: ["blender_object_make_links_scene"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

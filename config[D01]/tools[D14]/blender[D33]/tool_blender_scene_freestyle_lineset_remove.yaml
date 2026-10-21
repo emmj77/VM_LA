@@ -1,7 +1,7 @@
 id: "B1253"
 tool: "blender_scene_freestyle_lineset_remove"
 date: "2026-10-17"
-tags: ["blender_scene_freestyle_lineset_remove"]
+tags: ["blender", "blender", "render", "remove"]
 
 RULES:
   enabled: true

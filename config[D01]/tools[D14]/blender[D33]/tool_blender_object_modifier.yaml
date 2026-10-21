@@ -1,7 +1,7 @@
 id: "B1749"
 tool: "blender_object_modifier"
 date: "2026-10-17"
-tags: ["blender_object_modifier"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

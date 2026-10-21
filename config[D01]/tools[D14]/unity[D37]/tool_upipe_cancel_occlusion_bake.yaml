@@ -1,7 +1,7 @@
 id: "U021"
 tool: "upipe_cancel_occlusion_bake"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "cancel_occlusion_bake"]
+tags: ["unity", "unity", "plan", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1313"
 tool: "blender_sculpt_face_set_extract"
 date: "2026-10-17"
-tags: ["blender_sculpt_face_set_extract"]
+tags: ["blender", "blender", "draw", "set"]
 
 RULES:
   enabled: true

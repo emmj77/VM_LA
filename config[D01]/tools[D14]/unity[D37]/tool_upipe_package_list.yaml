@@ -1,7 +1,7 @@
 id: "U092"
 tool: "upipe_package_list"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "package_list"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

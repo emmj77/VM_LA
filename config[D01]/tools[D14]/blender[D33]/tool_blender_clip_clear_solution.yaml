@@ -1,7 +1,7 @@
 id: "B133"
 tool: "blender_clip_clear_solution"
 date: "2026-10-17"
-tags: ["blender_clip_clear_solution"]
+tags: ["blender", "blender", "mesh", "clear"]
 
 RULES:
   enabled: true

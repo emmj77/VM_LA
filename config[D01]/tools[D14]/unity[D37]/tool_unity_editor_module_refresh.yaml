@@ -1,7 +1,7 @@
 id: "U333"
 tool: "unity_editor_module_refresh"
 date: "2026-10-18"
-tags: ["unity", "cli", "editor"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1323"
 tool: "blender_sculpt_set_persistent_base"
 date: "2026-10-17"
-tags: ["blender_sculpt_set_persistent_base"]
+tags: ["blender", "blender", "draw", "set"]
 
 RULES:
   enabled: true

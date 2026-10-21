@@ -1,7 +1,7 @@
 id: "B472"
 tool: "blender_grease_pencil_reorder"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_reorder"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

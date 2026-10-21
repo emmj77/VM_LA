@@ -1,7 +1,7 @@
 id: "B1692"
 tool: "blender_wm_xr_session_toggle"
 date: "2026-10-17"
-tags: ["blender_wm_xr_session_toggle"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

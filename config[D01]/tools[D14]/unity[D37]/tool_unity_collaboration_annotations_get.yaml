@@ -1,7 +1,7 @@
 id: "U268"
 tool: "unity_collaboration_annotations_get"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

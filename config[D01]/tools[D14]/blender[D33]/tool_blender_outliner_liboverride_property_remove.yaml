@@ -1,7 +1,7 @@
 id: "B1086"
 tool: "blender_outliner_liboverride_property_remove"
 date: "2026-10-17"
-tags: ["blender_outliner_liboverride_property_remove"]
+tags: ["blender", "blender", "mesh", "remove"]
 
 RULES:
   enabled: true

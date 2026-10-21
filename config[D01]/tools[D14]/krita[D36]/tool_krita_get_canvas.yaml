@@ -1,7 +1,7 @@
 id: "K043"
 tool: "krita_get_canvas"
 date: "2026-10-18"
-tags: ["krita", "krita_get_canvas"]
+tags: ["krita", "krita", "img", "export"]
 
 RULES:
   enabled: true

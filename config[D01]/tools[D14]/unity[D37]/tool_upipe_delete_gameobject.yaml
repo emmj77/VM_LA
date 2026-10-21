@@ -1,7 +1,7 @@
 id: "U048"
 tool: "upipe_delete_gameobject"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "delete_gameobject"]
+tags: ["unity", "unity", "scene", "delete"]
 
 RULES:
   enabled: true

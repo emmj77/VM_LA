@@ -1,7 +1,7 @@
 id: "B1451"
 tool: "blender_transform_bbone_resize"
 date: "2026-10-17"
-tags: ["blender_transform_bbone_resize"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

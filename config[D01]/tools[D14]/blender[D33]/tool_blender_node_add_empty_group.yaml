@@ -1,7 +1,7 @@
 id: "B794"
 tool: "blender_node_add_empty_group"
 date: "2026-10-17"
-tags: ["blender_node_add_empty_group"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

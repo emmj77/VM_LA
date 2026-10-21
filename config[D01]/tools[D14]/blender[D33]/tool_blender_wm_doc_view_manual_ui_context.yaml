@@ -1,7 +1,7 @@
 id: "B1608"
 tool: "blender_wm_doc_view_manual_ui_context"
 date: "2026-10-17"
-tags: ["blender_wm_doc_view_manual_ui_context"]
+tags: ["blender", "blender", "text", "run"]
 
 RULES:
   enabled: true

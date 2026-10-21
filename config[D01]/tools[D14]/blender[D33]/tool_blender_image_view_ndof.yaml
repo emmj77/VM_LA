@@ -1,7 +1,7 @@
 id: "B557"
 tool: "blender_image_view_ndof"
 date: "2026-10-17"
-tags: ["blender_image_view_ndof"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

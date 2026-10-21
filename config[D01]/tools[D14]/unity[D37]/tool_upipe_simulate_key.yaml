@@ -1,7 +1,7 @@
 id: "U142"
 tool: "upipe_simulate_key"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "simulate_key"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "K022"
 tool: "krita_ai_list_styles"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_list_styles"]
+tags: ["krita", "krita", "img", "list"]
 
 RULES:
   enabled: true

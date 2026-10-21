@@ -1,7 +1,7 @@
 id: "B320"
 tool: "blender_file_cancel"
 date: "2026-10-17"
-tags: ["blender_file_cancel"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

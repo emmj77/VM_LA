@@ -1,7 +1,7 @@
 id: "B1338"
 tool: "blender_sequencer_deinterlace_selected_movies"
 date: "2026-10-17"
-tags: ["blender_sequencer_deinterlace_selected_movies"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

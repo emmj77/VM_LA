@@ -1,7 +1,7 @@
 id: "G026"
 tool: "toolset"
 date: "2026-10-17"
-tags: ["toolset"]
+tags: ["plan", "shell", "file", "list"]
 
 RULES:
   enabled: true

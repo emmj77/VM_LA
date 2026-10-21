@@ -1,7 +1,7 @@
 id: "U241"
 tool: "unity_auth_revoke"
 date: "2026-10-18"
-tags: ["unity", "cli", "auth"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

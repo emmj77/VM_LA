@@ -1,7 +1,7 @@
 id: "K030"
 tool: "krita_ai_set_prompt"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_set_prompt"]
+tags: ["krita", "krita", "turn", "set"]
 
 RULES:
   enabled: true

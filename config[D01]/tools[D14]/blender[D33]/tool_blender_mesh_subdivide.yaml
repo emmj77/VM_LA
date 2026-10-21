@@ -1,7 +1,7 @@
 id: "B739"
 tool: "blender_mesh_subdivide"
 date: "2026-10-17"
-tags: ["blender_mesh_subdivide"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

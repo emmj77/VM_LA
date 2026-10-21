@@ -1,7 +1,7 @@
 id: "U426"
 tool: "unity_vcs_git_worktree_remove"
 date: "2026-10-18"
-tags: ["unity", "cli", "vcs"]
+tags: ["unity", "unity", "project", "remove"]
 
 RULES:
   enabled: true

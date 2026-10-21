@@ -1,7 +1,7 @@
 id: "C009"
 tool: "comfyui_style"
 date: "2026-10-17"
-tags: ["comfyui", "comfyui_style"]
+tags: ["image", "comfyui", "draw", "run"]
 
 RULES:
   enabled: true

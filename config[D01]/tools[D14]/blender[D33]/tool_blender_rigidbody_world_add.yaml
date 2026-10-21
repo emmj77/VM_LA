@@ -1,7 +1,7 @@
 id: "B1242"
 tool: "blender_rigidbody_world_add"
 date: "2026-10-17"
-tags: ["blender_rigidbody_world_add"]
+tags: ["blender", "blender", "scene", "add"]
 
 RULES:
   enabled: true

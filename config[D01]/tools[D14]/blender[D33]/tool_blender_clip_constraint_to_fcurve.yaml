@@ -1,7 +1,7 @@
 id: "B135"
 tool: "blender_clip_constraint_to_fcurve"
 date: "2026-10-17"
-tags: ["blender_clip_constraint_to_fcurve"]
+tags: ["blender", "blender", "object", "copy"]
 
 RULES:
   enabled: true

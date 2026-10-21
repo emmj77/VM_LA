@@ -1,7 +1,7 @@
 id: "B1213"
 tool: "blender_poselib_restore_previous_action"
 date: "2026-10-17"
-tags: ["blender_poselib_restore_previous_action"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

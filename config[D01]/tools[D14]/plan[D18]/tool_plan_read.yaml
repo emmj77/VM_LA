@@ -2,7 +2,7 @@
 id: "P005"
 tool: "plan.read"
 date: "2026-10-20"
-tags: ["plan", "read"]
+tags: ["plan", "shell", "plan", "read"]
 RULES:
   enabled: true
   timeout: 30

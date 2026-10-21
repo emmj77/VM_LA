@@ -1,7 +1,7 @@
 id: "B671"
 tool: "blender_mesh_intersect_boolean"
 date: "2026-10-17"
-tags: ["blender_mesh_intersect_boolean"]
+tags: ["blender", "blender", "mesh", "cut"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "A027"
 tool: "asset_builder_texture"
 date: "2026-10-19"
-tags: ["asset_builder", "material"]
+tags: ["write", "shell", "material", "run"]
 
 
 RULES:

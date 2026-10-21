@@ -1,7 +1,7 @@
 id: "B312"
 tool: "blender_ed_undo_push"
 date: "2026-10-17"
-tags: ["blender_ed_undo_push"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

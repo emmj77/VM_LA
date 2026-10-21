@@ -1,7 +1,7 @@
 id: "U077"
 tool: "upipe_get_tags_layers"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_tags_layers"]
+tags: ["unity", "unity", "project", "read"]
 
 RULES:
   enabled: true

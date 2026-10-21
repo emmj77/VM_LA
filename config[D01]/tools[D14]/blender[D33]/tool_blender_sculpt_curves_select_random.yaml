@@ -1,7 +1,7 @@
 id: "B1306"
 tool: "blender_sculpt_curves_select_random"
 date: "2026-10-17"
-tags: ["blender_sculpt_curves_select_random"]
+tags: ["blender", "blender", "draw", "select"]
 
 RULES:
   enabled: true

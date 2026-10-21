@@ -1,7 +1,7 @@
 id: "B301"
 tool: "blender_cycles_merge_images"
 date: "2026-10-17"
-tags: ["blender_cycles_merge_images"]
+tags: ["blender", "blender", "render", "run"]
 
 RULES:
   enabled: true

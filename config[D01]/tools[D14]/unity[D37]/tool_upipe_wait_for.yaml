@@ -1,7 +1,7 @@
 id: "U149"
 tool: "upipe_wait_for"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "wait_for"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

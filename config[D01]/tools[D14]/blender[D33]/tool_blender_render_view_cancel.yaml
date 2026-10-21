@@ -1,7 +1,7 @@
 id: "B1233"
 tool: "blender_render_view_cancel"
 date: "2026-10-17"
-tags: ["blender_render_view_cancel"]
+tags: ["blender", "blender", "render", "run"]
 
 RULES:
   enabled: true

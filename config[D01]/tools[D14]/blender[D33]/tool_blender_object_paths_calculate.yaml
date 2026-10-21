@@ -1,7 +1,7 @@
 id: "B1008"
 tool: "blender_object_paths_calculate"
 date: "2026-10-17"
-tags: ["blender_object_paths_calculate"]
+tags: ["blender", "blender", "object", "generate"]
 
 RULES:
   enabled: true

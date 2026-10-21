@@ -1,7 +1,7 @@
 id: "B994"
 tool: "blender_object_multires_external_save"
 date: "2026-10-17"
-tags: ["blender_object_multires_external_save"]
+tags: ["blender", "blender", "object", "save"]
 
 RULES:
   enabled: true

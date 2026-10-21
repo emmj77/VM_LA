@@ -1,7 +1,7 @@
 id: "U401"
 tool: "unity_projects_unlink_cloud"
 date: "2026-10-18"
-tags: ["unity", "cli", "projects"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

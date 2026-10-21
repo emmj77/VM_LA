@@ -1,7 +1,7 @@
 id: "U172"
 tool: "coplay_graphics_ping"
 date: "2026-10-18"
-tags: ["unity", "coplay", "graphics"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

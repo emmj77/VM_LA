@@ -1,7 +1,7 @@
 id: "B1339"
 tool: "blender_sequencer_delete"
 date: "2026-10-17"
-tags: ["blender_sequencer_delete"]
+tags: ["blender", "blender", "scene", "delete"]
 
 RULES:
   enabled: true

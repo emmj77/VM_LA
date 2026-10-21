@@ -1,7 +1,7 @@
 id: "B949"
 tool: "blender_object_grease_pencil_dash_modifier_segment_add"
 date: "2026-10-17"
-tags: ["blender_object_grease_pencil_dash_modifier_segment_add"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

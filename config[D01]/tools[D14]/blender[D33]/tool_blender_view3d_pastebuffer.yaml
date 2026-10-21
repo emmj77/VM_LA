@@ -1,7 +1,7 @@
 id: "B1557"
 tool: "blender_view3d_pastebuffer"
 date: "2026-10-17"
-tags: ["blender_view3d_pastebuffer"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

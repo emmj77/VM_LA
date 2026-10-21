@@ -1,7 +1,7 @@
 id: "B584"
 tool: "blender_mask_copy_splines"
 date: "2026-10-17"
-tags: ["blender_mask_copy_splines"]
+tags: ["blender", "blender", "img", "copy"]
 
 RULES:
   enabled: true

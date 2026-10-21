@@ -1,7 +1,7 @@
 id: "B193"
 tool: "blender_clip_update_image_from_plane_marker"
 date: "2026-10-17"
-tags: ["blender_clip_update_image_from_plane_marker"]
+tags: ["blender", "blender", "img", "update"]
 
 RULES:
   enabled: true

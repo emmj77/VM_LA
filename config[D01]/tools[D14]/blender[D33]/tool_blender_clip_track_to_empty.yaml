@@ -1,7 +1,7 @@
 id: "B189"
 tool: "blender_clip_track_to_empty"
 date: "2026-10-17"
-tags: ["blender_clip_track_to_empty"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

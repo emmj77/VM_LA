@@ -1,7 +1,7 @@
 id: "B332"
 tool: "blender_file_make_paths_relative"
 date: "2026-10-17"
-tags: ["blender_file_make_paths_relative"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

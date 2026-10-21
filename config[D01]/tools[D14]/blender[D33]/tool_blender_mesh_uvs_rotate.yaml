@@ -1,7 +1,7 @@
 id: "B748"
 tool: "blender_mesh_uvs_rotate"
 date: "2026-10-17"
-tags: ["blender_mesh_uvs_rotate"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

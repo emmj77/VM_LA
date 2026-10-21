@@ -1,7 +1,7 @@
 id: "B1534"
 tool: "blender_uv_snap_selected"
 date: "2026-10-17"
-tags: ["blender_uv_snap_selected"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

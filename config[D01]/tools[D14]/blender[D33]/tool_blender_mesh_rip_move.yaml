@@ -1,7 +1,7 @@
 id: "B700"
 tool: "blender_mesh_rip_move"
 date: "2026-10-17"
-tags: ["blender_mesh_rip_move"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1554"
 tool: "blender_view3d_navigate"
 date: "2026-10-17"
-tags: ["blender_view3d_navigate"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

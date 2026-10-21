@@ -1,7 +1,7 @@
 id: "B959"
 tool: "blender_object_instance_offset_from_object"
 date: "2026-10-17"
-tags: ["blender_object_instance_offset_from_object"]
+tags: ["blender", "blender", "object", "set"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B822"
 tool: "blender_node_delete_copy_reconnect"
 date: "2026-10-17"
-tags: ["blender_node_delete_copy_reconnect"]
+tags: ["blender", "blender", "node", "delete"]
 
 RULES:
   enabled: true

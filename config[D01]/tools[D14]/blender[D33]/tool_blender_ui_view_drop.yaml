@@ -1,7 +1,7 @@
 id: "B1476"
 tool: "blender_ui_view_drop"
 date: "2026-10-17"
-tags: ["blender_ui_view_drop"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

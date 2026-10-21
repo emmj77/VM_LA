@@ -1,7 +1,7 @@
 id: "B616"
 tool: "blender_material_copy"
 date: "2026-10-17"
-tags: ["blender_material_copy"]
+tags: ["blender", "blender", "material", "copy"]
 
 RULES:
   enabled: true

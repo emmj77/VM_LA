@@ -1,7 +1,7 @@
 id: "B780"
 tool: "blender_nla_selected_objects_add"
 date: "2026-10-17"
-tags: ["blender_nla_selected_objects_add"]
+tags: ["blender", "blender", "animation", "add"]
 
 RULES:
   enabled: true

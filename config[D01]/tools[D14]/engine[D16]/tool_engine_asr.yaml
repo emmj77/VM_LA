@@ -2,7 +2,7 @@
 id: "E002"
 tool: "engine.asr"
 date: "2026-10-20"
-tags: ["engine", "asr"]
+tags: ["manage", "local", "audio", "run"]
 RULES:
   enabled: true
   timeout: 240

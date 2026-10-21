@@ -1,7 +1,7 @@
 id: "B587"
 tool: "blender_mask_duplicate"
 date: "2026-10-17"
-tags: ["blender_mask_duplicate"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

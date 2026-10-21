@@ -1,7 +1,7 @@
 id: "B1540"
 tool: "blender_view3d_camera_background_image_remove"
 date: "2026-10-17"
-tags: ["blender_view3d_camera_background_image_remove"]
+tags: ["blender", "blender", "scene", "remove"]
 
 RULES:
   enabled: true

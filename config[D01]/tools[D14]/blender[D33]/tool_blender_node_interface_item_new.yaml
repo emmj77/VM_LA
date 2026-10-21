@@ -1,7 +1,7 @@
 id: "B842"
 tool: "blender_node_interface_item_new"
 date: "2026-10-17"
-tags: ["blender_node_interface_item_new"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

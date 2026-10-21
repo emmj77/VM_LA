@@ -1,7 +1,7 @@
 id: "U138"
 tool: "upipe_set_target_framerate"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_target_framerate"]
+tags: ["unity", "unity", "project", "set"]
 
 RULES:
   enabled: true

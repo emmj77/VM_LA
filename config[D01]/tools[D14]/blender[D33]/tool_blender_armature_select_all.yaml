@@ -1,7 +1,7 @@
 id: "B084"
 tool: "blender_armature_select_all"
 date: "2026-10-17"
-tags: ["blender_armature_select_all"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1383"
 tool: "blender_sequencer_set_range_to_strips"
 date: "2026-10-17"
-tags: ["blender_sequencer_set_range_to_strips"]
+tags: ["blender", "blender", "scene", "set"]
 
 RULES:
   enabled: true

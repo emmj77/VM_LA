@@ -1,7 +1,7 @@
 id: "U170"
 tool: "coplay_graphics_bake_reflection_probe"
 date: "2026-10-18"
-tags: ["unity", "coplay", "graphics"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "K005"
 tool: "krita_layer_pick"
 date: "2026-10-17"
-tags: ["krita", "krita_layer_pick"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

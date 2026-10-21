@@ -1,7 +1,7 @@
 id: "C013"
 tool: "comfyui_animate_background"
 date: "2026-10-17"
-tags: ["comfyui", "comfyui_animate_background"]
+tags: ["image", "comfyui", "animation", "run"]
 
 RULES:
   enabled: true

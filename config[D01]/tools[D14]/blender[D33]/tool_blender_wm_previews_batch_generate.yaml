@@ -1,7 +1,7 @@
 id: "B1639"
 tool: "blender_wm_previews_batch_generate"
 date: "2026-10-17"
-tags: ["blender_wm_previews_batch_generate"]
+tags: ["blender", "blender", "mesh", "generate"]
 
 RULES:
   enabled: true

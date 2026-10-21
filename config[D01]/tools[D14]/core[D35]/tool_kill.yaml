@@ -1,7 +1,7 @@
 id: "G023"
 tool: "kill"
 date: "2026-10-17"
-tags: ["kill"]
+tags: ["manage", "shell", "process", "run"]
 
 RULES:
   enabled: true

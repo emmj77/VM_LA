@@ -1,7 +1,7 @@
 id: "B226"
 tool: "blender_constraint_move_up"
 date: "2026-10-17"
-tags: ["blender_constraint_move_up"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1182"
 tool: "blender_pose_autoside_names"
 date: "2026-10-17"
-tags: ["blender_pose_autoside_names"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

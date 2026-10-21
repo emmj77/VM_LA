@@ -1,7 +1,7 @@
 id: "B917"
 tool: "blender_object_convert"
 date: "2026-10-17"
-tags: ["blender_object_convert"]
+tags: ["blender", "blender", "object", "convert"]
 
 RULES:
   enabled: true

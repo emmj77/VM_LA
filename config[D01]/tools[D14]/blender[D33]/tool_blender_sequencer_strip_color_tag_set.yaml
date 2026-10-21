@@ -1,7 +1,7 @@
 id: "B1388"
 tool: "blender_sequencer_strip_color_tag_set"
 date: "2026-10-17"
-tags: ["blender_sequencer_strip_color_tag_set"]
+tags: ["blender", "blender", "scene", "set"]
 
 RULES:
   enabled: true

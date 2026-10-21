@@ -1,7 +1,7 @@
 id: "B524"
 tool: "blender_image_convert_to_mesh_plane"
 date: "2026-10-17"
-tags: ["blender_image_convert_to_mesh_plane"]
+tags: ["blender", "blender", "material", "convert"]
 
 RULES:
   enabled: true

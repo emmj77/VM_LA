@@ -1,7 +1,7 @@
 id: "G017"
 tool: "skill_manage"
 date: "2026-10-17"
-tags: ["skill_manage"]
+tags: ["manage", "shell", "file", "manage"]
 
 RULES:
   enabled: true

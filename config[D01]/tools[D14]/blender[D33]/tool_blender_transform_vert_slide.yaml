@@ -1,7 +1,7 @@
 id: "B1464"
 tool: "blender_transform_vert_slide"
 date: "2026-10-17"
-tags: ["blender_transform_vert_slide"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

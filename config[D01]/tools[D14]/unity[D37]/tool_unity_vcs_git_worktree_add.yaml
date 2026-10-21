@@ -1,7 +1,7 @@
 id: "U425"
 tool: "unity_vcs_git_worktree_add"
 date: "2026-10-18"
-tags: ["unity", "cli", "vcs"]
+tags: ["unity", "unity", "project", "add"]
 
 RULES:
   enabled: true

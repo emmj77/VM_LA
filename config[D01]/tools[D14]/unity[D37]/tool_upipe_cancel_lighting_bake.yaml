@@ -1,7 +1,7 @@
 id: "U019"
 tool: "upipe_cancel_lighting_bake"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "cancel_lighting_bake"]
+tags: ["unity", "unity", "scene", "run"]
 
 RULES:
   enabled: true

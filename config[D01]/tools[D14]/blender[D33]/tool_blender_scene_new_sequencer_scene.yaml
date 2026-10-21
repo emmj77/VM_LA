@@ -1,7 +1,7 @@
 id: "B1268"
 tool: "blender_scene_new_sequencer_scene"
 date: "2026-10-17"
-tags: ["blender_scene_new_sequencer_scene"]
+tags: ["blender", "blender", "scene", "add"]
 
 RULES:
   enabled: true

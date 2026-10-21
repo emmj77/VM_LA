@@ -1,7 +1,7 @@
 id: "U025"
 tool: "upipe_capture_runtime_element"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "capture_runtime_element"]
+tags: ["unity", "unity", "render", "run"]
 
 RULES:
   enabled: true

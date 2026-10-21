@@ -1,7 +1,7 @@
 id: "B1541"
 tool: "blender_view3d_camera_to_view"
 date: "2026-10-17"
-tags: ["blender_view3d_camera_to_view"]
+tags: ["blender", "blender", "scene", "set"]
 
 RULES:
   enabled: true

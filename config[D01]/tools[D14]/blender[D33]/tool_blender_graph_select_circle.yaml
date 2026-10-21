@@ -1,7 +1,7 @@
 id: "B416"
 tool: "blender_graph_select_circle"
 date: "2026-10-17"
-tags: ["blender_graph_select_circle"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

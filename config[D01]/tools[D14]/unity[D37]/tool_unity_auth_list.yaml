@@ -1,7 +1,7 @@
 id: "U238"
 tool: "unity_auth_list"
 date: "2026-10-18"
-tags: ["unity", "cli", "auth"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

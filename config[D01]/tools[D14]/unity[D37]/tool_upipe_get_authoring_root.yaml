@@ -1,7 +1,7 @@
 id: "U059"
 tool: "upipe_get_authoring_root"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_authoring_root"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

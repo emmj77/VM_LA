@@ -1,7 +1,7 @@
 id: "B1654"
 tool: "blender_wm_recover_auto_save"
 date: "2026-10-17"
-tags: ["blender_wm_recover_auto_save"]
+tags: ["blender", "blender", "mesh", "save"]
 
 RULES:
   enabled: true

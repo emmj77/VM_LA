@@ -1,7 +1,7 @@
 id: "B1607"
 tool: "blender_wm_doc_view_manual"
 date: "2026-10-17"
-tags: ["blender_wm_doc_view_manual"]
+tags: ["blender", "blender", "mesh", "load"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B039"
 tool: "blender_anim_copy_driver_button"
 date: "2026-10-17"
-tags: ["blender_anim_copy_driver_button"]
+tags: ["blender", "blender", "animation", "copy"]
 
 RULES:
   enabled: true

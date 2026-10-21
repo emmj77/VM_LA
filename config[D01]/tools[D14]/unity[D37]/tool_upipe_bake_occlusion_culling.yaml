@@ -1,7 +1,7 @@
 id: "U016"
 tool: "upipe_bake_occlusion_culling"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "bake_occlusion_culling"]
+tags: ["unity", "unity", "scene", "open"]
 
 RULES:
   enabled: true

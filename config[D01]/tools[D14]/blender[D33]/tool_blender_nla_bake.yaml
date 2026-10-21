@@ -1,7 +1,7 @@
 id: "B760"
 tool: "blender_nla_bake"
 date: "2026-10-17"
-tags: ["blender_nla_bake"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

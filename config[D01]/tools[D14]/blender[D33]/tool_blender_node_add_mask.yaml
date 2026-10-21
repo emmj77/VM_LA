@@ -1,7 +1,7 @@
 id: "B801"
 tool: "blender_node_add_mask"
 date: "2026-10-17"
-tags: ["blender_node_add_mask"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

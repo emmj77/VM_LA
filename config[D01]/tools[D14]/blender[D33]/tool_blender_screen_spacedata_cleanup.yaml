@@ -1,7 +1,7 @@
 id: "B1294"
 tool: "blender_screen_spacedata_cleanup"
 date: "2026-10-17"
-tags: ["blender_screen_spacedata_cleanup"]
+tags: ["blender", "blender", "config", "remove"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B113"
 tool: "blender_asset_tag_remove"
 date: "2026-10-17"
-tags: ["blender_asset_tag_remove"]
+tags: ["blender", "blender", "text", "remove"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B277"
 tool: "blender_curves_cyclic_toggle"
 date: "2026-10-17"
-tags: ["blender_curves_cyclic_toggle"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

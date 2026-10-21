@@ -1,7 +1,7 @@
 id: "U412"
 tool: "unity_templates_edit"
 date: "2026-10-18"
-tags: ["unity", "cli", "templates"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

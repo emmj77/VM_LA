@@ -1,7 +1,7 @@
 id: "V006"
 tool: "read_depth_img"
 date: "2026-10-21"
-tags: ["vision", "comfyui", "img", "depth"]
+tags: ["vision", "shell", "img", "read"]
 
 RULES:
   enabled: true

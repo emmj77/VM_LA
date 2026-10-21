@@ -1,7 +1,7 @@
 id: "B950"
 tool: "blender_object_grease_pencil_dash_modifier_segment_move"
 date: "2026-10-17"
-tags: ["blender_object_grease_pencil_dash_modifier_segment_move"]
+tags: ["blender", "blender", "object", "move"]
 
 RULES:
   enabled: true

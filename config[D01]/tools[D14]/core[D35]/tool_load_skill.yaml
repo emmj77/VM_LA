@@ -1,7 +1,7 @@
 id: "G053"
 tool: "load_skill"
 date: "2026-10-17"
-tags: ["load_skill", "skill"]
+tags: ["manage", "shell", "project", "load"]
 
 RULES:
   enabled: true

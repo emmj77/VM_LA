@@ -1,7 +1,7 @@
 id: "B1448"
 tool: "blender_texture_slot_copy"
 date: "2026-10-17"
-tags: ["blender_texture_slot_copy"]
+tags: ["blender", "blender", "material", "copy"]
 
 RULES:
   enabled: true

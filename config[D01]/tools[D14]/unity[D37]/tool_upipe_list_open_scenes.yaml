@@ -1,7 +1,7 @@
 id: "U084"
 tool: "upipe_list_open_scenes"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "list_open_scenes"]
+tags: ["unity", "unity", "scene", "list"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U322"
 tool: "unity_context_list"
 date: "2026-10-18"
-tags: ["unity", "cli", "context"]
+tags: ["unity", "unity", "text", "list"]
 
 RULES:
   enabled: true

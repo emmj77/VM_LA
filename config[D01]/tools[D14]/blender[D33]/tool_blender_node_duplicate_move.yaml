@@ -1,7 +1,7 @@
 id: "B829"
 tool: "blender_node_duplicate_move"
 date: "2026-10-17"
-tags: ["blender_node_duplicate_move"]
+tags: ["blender", "blender", "node", "move"]
 
 RULES:
   enabled: true

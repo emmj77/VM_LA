@@ -1,7 +1,7 @@
 id: "U166"
 tool: "coplay_camera_screenshot_multiview"
 date: "2026-10-18"
-tags: ["unity", "coplay", "camera"]
+tags: ["unity", "unity", "scene", "run"]
 
 RULES:
   enabled: true

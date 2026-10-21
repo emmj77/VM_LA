@@ -1,7 +1,7 @@
 id: "U361"
 tool: "unity_license_server_list"
 date: "2026-10-18"
-tags: ["unity", "cli", "license"]
+tags: ["unity", "unity", "config", "list"]
 
 RULES:
   enabled: true

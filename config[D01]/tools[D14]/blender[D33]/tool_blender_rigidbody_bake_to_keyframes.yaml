@@ -1,7 +1,7 @@
 id: "B1235"
 tool: "blender_rigidbody_bake_to_keyframes"
 date: "2026-10-17"
-tags: ["blender_rigidbody_bake_to_keyframes"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

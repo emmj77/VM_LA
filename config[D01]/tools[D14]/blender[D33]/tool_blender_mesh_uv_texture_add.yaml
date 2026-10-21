@@ -1,7 +1,7 @@
 id: "B745"
 tool: "blender_mesh_uv_texture_add"
 date: "2026-10-17"
-tags: ["blender_mesh_uv_texture_add"]
+tags: ["blender", "blender", "material", "add"]
 
 RULES:
   enabled: true

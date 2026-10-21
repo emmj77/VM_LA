@@ -1,7 +1,7 @@
 id: "B1421"
 tool: "blender_surface_primitive_nurbs_surface_torus_add"
 date: "2026-10-17"
-tags: ["blender_surface_primitive_nurbs_surface_torus_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

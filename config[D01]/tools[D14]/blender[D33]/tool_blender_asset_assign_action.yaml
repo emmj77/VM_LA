@@ -1,7 +1,7 @@
 id: "B100"
 tool: "blender_asset_assign_action"
 date: "2026-10-17"
-tags: ["blender_asset_assign_action"]
+tags: ["blender", "blender", "animation", "set"]
 
 RULES:
   enabled: true

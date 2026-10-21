@@ -1,7 +1,7 @@
 id: "B431"
 tool: "blender_graph_view_frame"
 date: "2026-10-17"
-tags: ["blender_graph_view_frame"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B691"
 tool: "blender_mesh_primitive_cube_add_gizmo"
 date: "2026-10-17"
-tags: ["blender_mesh_primitive_cube_add_gizmo"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

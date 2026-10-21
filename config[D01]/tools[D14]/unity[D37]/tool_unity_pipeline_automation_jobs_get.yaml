@@ -1,7 +1,7 @@
 id: "U371"
 tool: "unity_pipeline_automation_jobs_get"
 date: "2026-10-18"
-tags: ["unity", "cli", "pipeline"]
+tags: ["unity", "unity", "project", "show"]
 
 RULES:
   enabled: true

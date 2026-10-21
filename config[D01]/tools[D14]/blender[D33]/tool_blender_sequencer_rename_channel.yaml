@@ -1,7 +1,7 @@
 id: "B1364"
 tool: "blender_sequencer_rename_channel"
 date: "2026-10-17"
-tags: ["blender_sequencer_rename_channel"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

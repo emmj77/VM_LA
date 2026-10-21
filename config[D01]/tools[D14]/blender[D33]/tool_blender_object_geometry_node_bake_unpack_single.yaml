@@ -1,7 +1,7 @@
 id: "B944"
 tool: "blender_object_geometry_node_bake_unpack_single"
 date: "2026-10-17"
-tags: ["blender_object_geometry_node_bake_unpack_single"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

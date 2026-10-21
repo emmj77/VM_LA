@@ -1,7 +1,7 @@
 id: "B437"
 tool: "blender_grease_pencil_clean_loose"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_clean_loose"]
+tags: ["blender", "blender", "mesh", "remove"]
 
 RULES:
   enabled: true

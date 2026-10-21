@@ -1,7 +1,7 @@
 id: "U055"
 tool: "upipe_find_gameobjects"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "find_gameobjects"]
+tags: ["unity", "unity", "object", "find"]
 
 RULES:
   enabled: true

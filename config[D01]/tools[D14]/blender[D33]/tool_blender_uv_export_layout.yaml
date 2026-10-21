@@ -1,7 +1,7 @@
 id: "B1495"
 tool: "blender_uv_export_layout"
 date: "2026-10-17"
-tags: ["blender_uv_export_layout"]
+tags: ["blender", "blender", "mesh", "export"]
 
 RULES:
   enabled: true

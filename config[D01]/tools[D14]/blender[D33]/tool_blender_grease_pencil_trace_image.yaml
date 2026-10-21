@@ -1,7 +1,7 @@
 id: "B504"
 tool: "blender_grease_pencil_trace_image"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_trace_image"]
+tags: ["blender", "blender", "draw", "trace"]
 
 RULES:
   enabled: true

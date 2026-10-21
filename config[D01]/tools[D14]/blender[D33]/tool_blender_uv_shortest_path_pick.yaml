@@ -1,7 +1,7 @@
 id: "B1531"
 tool: "blender_uv_shortest_path_pick"
 date: "2026-10-17"
-tags: ["blender_uv_shortest_path_pick"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

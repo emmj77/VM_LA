@@ -1,7 +1,7 @@
 id: "B1599"
 tool: "blender_wm_call_panel"
 date: "2026-10-17"
-tags: ["blender_wm_call_panel"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

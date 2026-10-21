@@ -1,7 +1,7 @@
 id: "U153"
 tool: "coplay_asset_search"
 date: "2026-10-18"
-tags: ["unity", "coplay", "asset"]
+tags: ["unity", "unity", "text", "search"]
 
 RULES:
   enabled: true

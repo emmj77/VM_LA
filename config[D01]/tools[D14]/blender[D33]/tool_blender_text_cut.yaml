@@ -1,7 +1,7 @@
 id: "B1425"
 tool: "blender_text_cut"
 date: "2026-10-17"
-tags: ["blender_text_cut"]
+tags: ["blender", "blender", "text", "cut"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B939"
 tool: "blender_object_fix_to_camera"
 date: "2026-10-17"
-tags: ["blender_object_fix_to_camera"]
+tags: ["blender", "blender", "object", "generate"]
 
 RULES:
   enabled: true

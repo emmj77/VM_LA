@@ -1,7 +1,7 @@
 id: "U164"
 tool: "coplay_camera_remove_extension"
 date: "2026-10-18"
-tags: ["unity", "coplay", "camera"]
+tags: ["unity", "unity", "scene", "remove"]
 
 RULES:
   enabled: true

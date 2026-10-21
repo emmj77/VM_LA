@@ -1,7 +1,7 @@
 id: "B538"
 tool: "blender_image_read_viewlayers"
 date: "2026-10-17"
-tags: ["blender_image_read_viewlayers"]
+tags: ["blender", "blender", "scene", "read"]
 
 RULES:
   enabled: true

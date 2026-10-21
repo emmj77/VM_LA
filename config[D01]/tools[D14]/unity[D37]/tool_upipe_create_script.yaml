@@ -1,7 +1,7 @@
 id: "U045"
 tool: "upipe_create_script"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "create_script"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "K018"
 tool: "krita_ai_generate"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_generate"]
+tags: ["krita", "krita", "img", "generate"]
 
 RULES:
   enabled: true

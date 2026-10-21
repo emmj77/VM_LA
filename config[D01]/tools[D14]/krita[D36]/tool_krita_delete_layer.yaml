@@ -1,7 +1,7 @@
 id: "K038"
 tool: "krita_delete_layer"
 date: "2026-10-18"
-tags: ["krita", "krita_delete_layer"]
+tags: ["krita", "krita", "img", "delete"]
 
 RULES:
   enabled: true

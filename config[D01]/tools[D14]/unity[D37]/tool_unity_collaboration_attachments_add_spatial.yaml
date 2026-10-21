@@ -1,7 +1,7 @@
 id: "U277"
 tool: "unity_collaboration_attachments_add_spatial"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "project", "add"]
 
 RULES:
   enabled: true

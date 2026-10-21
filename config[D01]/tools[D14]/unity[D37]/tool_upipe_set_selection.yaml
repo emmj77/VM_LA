@@ -1,7 +1,7 @@
 id: "U134"
 tool: "upipe_set_selection"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_selection"]
+tags: ["unity", "unity", "object", "set"]
 
 RULES:
   enabled: true

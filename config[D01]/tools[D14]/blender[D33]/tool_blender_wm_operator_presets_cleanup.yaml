@@ -1,7 +1,7 @@
 id: "B1632"
 tool: "blender_wm_operator_presets_cleanup"
 date: "2026-10-17"
-tags: ["blender_wm_operator_presets_cleanup"]
+tags: ["blender", "blender", "mesh", "remove"]
 
 RULES:
   enabled: true

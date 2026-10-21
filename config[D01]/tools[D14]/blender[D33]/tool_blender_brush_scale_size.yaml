@@ -1,7 +1,7 @@
 id: "B114"
 tool: "blender_brush_scale_size"
 date: "2026-10-17"
-tags: ["blender_brush_scale_size"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

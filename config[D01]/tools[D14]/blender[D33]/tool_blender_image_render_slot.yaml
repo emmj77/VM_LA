@@ -1,7 +1,7 @@
 id: "B1732"
 tool: "blender_image_render_slot"
 date: "2026-10-17"
-tags: ["blender_image_render_slot"]
+tags: ["blender", "blender", "render", "add"]
 
 RULES:
   enabled: true

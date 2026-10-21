@@ -1,7 +1,7 @@
 id: "B1493"
 tool: "blender_uv_cursor_set"
 date: "2026-10-17"
-tags: ["blender_uv_cursor_set"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

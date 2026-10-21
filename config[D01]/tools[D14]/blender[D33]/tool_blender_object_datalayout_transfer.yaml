@@ -1,7 +1,7 @@
 id: "B925"
 tool: "blender_object_datalayout_transfer"
 date: "2026-10-17"
-tags: ["blender_object_datalayout_transfer"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

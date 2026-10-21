@@ -1,7 +1,7 @@
 id: "B989"
 tool: "blender_object_mode_set_with_submode"
 date: "2026-10-17"
-tags: ["blender_object_mode_set_with_submode"]
+tags: ["blender", "blender", "object", "set"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B771"
 tool: "blender_nla_make_single_user"
 date: "2026-10-17"
-tags: ["blender_nla_make_single_user"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U405"
 tool: "unity_projects_verify"
 date: "2026-10-18"
-tags: ["unity", "cli", "projects"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

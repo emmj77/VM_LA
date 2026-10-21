@@ -2,7 +2,7 @@
 id: "D002"
 tool: "doctor.forms"
 date: "2026-10-20"
-tags: ["doctor", "forms"]
+tags: ["manage", "shell", "process", "read"]
 RULES:
   enabled: true
   timeout: 60

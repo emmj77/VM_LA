@@ -1,7 +1,7 @@
 id: "B1556"
 tool: "blender_view3d_object_mode_pie_or_toggle"
 date: "2026-10-17"
-tags: ["blender_view3d_object_mode_pie_or_toggle"]
+tags: ["blender", "blender", "document", "run"]
 
 RULES:
   enabled: true

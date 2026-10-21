@@ -1,7 +1,7 @@
 id: "3D003"
 tool: "mesh-render2png"
 date: "2026-10-17"
-tags: ["3d", "mesh-render2png", "png", "render"]
+tags: ["image", "shell", "render", "run"]
 
 RULES:
   enabled: true

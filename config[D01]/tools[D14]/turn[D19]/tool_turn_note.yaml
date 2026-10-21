@@ -2,7 +2,7 @@
 id: "T003"
 tool: "turn.note"
 date: "2026-10-20"
-tags: ["turn", "note"]
+tags: ["manage", "local", "turn", "cut"]
 RULES:
   enabled: true
   timeout: 60

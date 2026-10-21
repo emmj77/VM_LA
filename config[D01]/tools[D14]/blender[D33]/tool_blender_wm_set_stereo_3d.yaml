@@ -1,7 +1,7 @@
 id: "B1666"
 tool: "blender_wm_set_stereo_3d"
 date: "2026-10-17"
-tags: ["blender_wm_set_stereo_3d"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

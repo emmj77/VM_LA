@@ -1,7 +1,7 @@
 id: "B337"
 tool: "blender_file_parent"
 date: "2026-10-17"
-tags: ["blender_file_parent"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

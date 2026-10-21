@@ -1,7 +1,7 @@
 id: "B475"
 tool: "blender_grease_pencil_sculpt_paint"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_sculpt_paint"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

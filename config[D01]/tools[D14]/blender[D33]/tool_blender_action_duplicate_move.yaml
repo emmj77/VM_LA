@@ -1,7 +1,7 @@
 id: "B009"
 tool: "blender_action_duplicate_move"
 date: "2026-10-17"
-tags: ["blender_action_duplicate_move"]
+tags: ["blender", "blender", "animation", "move"]
 
 RULES:
   enabled: true

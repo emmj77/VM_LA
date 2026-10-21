@@ -2,7 +2,7 @@
 id: "W003"
 tool: "watch.surveil"
 date: "2026-10-21"
-tags: ["watch", "surveil"]
+tags: ["manage", "systemd", "process", "run"]
 RULES:
   enabled: true
   timeout: 60

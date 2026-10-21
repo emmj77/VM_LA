@@ -1,7 +1,7 @@
 id: "B1367"
 tool: "blender_sequencer_scene_frame_range_update"
 date: "2026-10-17"
-tags: ["blender_sequencer_scene_frame_range_update"]
+tags: ["blender", "blender", "scene", "update"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U349"
 tool: "unity_env"
 date: "2026-10-18"
-tags: ["unity", "cli", "env"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

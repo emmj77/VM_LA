@@ -2,7 +2,7 @@
 id: "D001"
 tool: "doctor.data"
 date: "2026-10-20"
-tags: ["doctor", "data"]
+tags: ["manage", "shell", "process", "run"]
 RULES:
   enabled: true
   timeout: 60

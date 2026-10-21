@@ -1,7 +1,7 @@
 id: "K056"
 tool: "krita_new_canvas"
 date: "2026-10-18"
-tags: ["krita", "krita_new_canvas"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

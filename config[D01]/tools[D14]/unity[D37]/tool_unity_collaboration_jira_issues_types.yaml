@@ -1,7 +1,7 @@
 id: "U291"
 tool: "unity_collaboration_jira_issues_types"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "config", "list"]
 
 RULES:
   enabled: true

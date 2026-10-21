@@ -1,0 +1,62 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D013"
+tool: "doctor.tags"
+date: "2026-10-21"
+tags: ["manage", "shell", "config", "test"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "every tool body carries four tags, one of each class, and every tag comes from the master file's lists"
+COMMAND: |
+
+  _tc=$(cfg path tools) || exit 1
+  _l1=$(cfg list tags.natures) || { printf 'FAULT the master file has no natures list\n' ; exit 0 ; }
+  _l2=$(cfg list tags.engines)  || { printf 'FAULT the master file has no engines list\n' ; exit 0 ; }
+  _l3=$(cfg list tags.objects)  || { printf 'FAULT the master file has no objects list\n' ; exit 0 ; }
+  _l4=$(cfg list tags.verbs)    || { printf 'FAULT the master file has no verbs list\n' ; exit 0 ; }
+
+  TD=$(mktemp -d "${TMPDIR:-/tmp}/doctor_tags.XXXXXX") || { printf 'FAULT no temp folder\n' ; exit 0 ; }
+  trap 'rm -f "$TD/list" "$TD/ko"; rmdir "$TD" 2>/dev/null' EXIT INT TERM HUP
+  find "$_tc" -type f -name 'tool_*.yaml' 2>/dev/null | sort > "$TD/list"
+  : > "$TD/ko"
+  _all=0
+  while IFS= read -r _f; do
+    [ -n "$_f" ] || continue
+    _all=$((_all + 1))
+    _nm=$(basename "$_f" .yaml); _nm=${_nm#tool_}
+    _raw=$(grep -m1 '^tags:' "$_f" 2>/dev/null | sed -e 's/^tags:[^[]*\[//' -e 's/\].*$//')
+    if [ -z "$_raw" ]; then printf '%s: no tags line\n' "$_nm" >> "$TD/ko" ; continue ; fi
+    _items=$(printf '%s' "$_raw" | tr ',' '\n' | tr -d '"' | tr -d ' ' | sed '/^$/d')
+    _n=$(printf '%s\n' "$_items" | wc -l | tr -d ' ')
+    if [ "$_n" != 4 ]; then printf '%s: %s tags, four were asked\n' "$_nm" "$_n" >> "$TD/ko" ; continue ; fi
+    _i=0
+    for _t in $_items; do
+      _i=$((_i + 1))
+      case $_i in
+        1) _l="$_l1" ; _c=natures ;;
+        2) _l="$_l2" ; _c=engines ;;
+        3) _l="$_l3" ; _c=objects ;;
+        *) _l="$_l4" ; _c=verbs ;;
+      esac
+      case " $_l " in
+        *" $_t "*) ;;
+        *) printf '%s: %s is not a %s in the master file\n' "$_nm" "$_t" "$_c" >> "$TD/ko" ;;
+      esac
+    done
+  done < "$TD/list"
+
+  _ko=$(wc -l < "$TD/ko" 2>/dev/null | tr -d ' ')
+  if [ "${_ko:-0}" -gt 0 ]; then
+    head -n 40 "$TD/ko"
+    printf 'FAULT %s fault(s) out of %s bodies\n' "$_ko" "$_all"
+  else
+    printf 'ok %s bodies carry four tags, all of them in the master file\n' "$_all"
+  fi
+  exit 0
+
+ARGS: []

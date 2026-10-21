@@ -1,7 +1,7 @@
 id: "B145"
 tool: "blender_clip_frame_jump"
 date: "2026-10-17"
-tags: ["blender_clip_frame_jump"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

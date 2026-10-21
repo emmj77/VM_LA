@@ -1,7 +1,7 @@
 id: "C008"
 tool: "comfyui_clean_lines"
 date: "2026-10-17"
-tags: ["comfyui", "comfyui_clean_lines"]
+tags: ["image", "comfyui", "draw", "run"]
 
 RULES:
   enabled: true

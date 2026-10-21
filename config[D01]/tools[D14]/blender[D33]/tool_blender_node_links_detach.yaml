@@ -1,7 +1,7 @@
 id: "B852"
 tool: "blender_node_links_detach"
 date: "2026-10-17"
-tags: ["blender_node_links_detach"]
+tags: ["blender", "blender", "node", "remove"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "G054"
 tool: "project_view"
 date: "2026-10-17"
-tags: ["project_view", "project"]
+tags: ["read", "shell", "plan", "run"]
 
 RULES:
   enabled: true

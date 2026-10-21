@@ -1,7 +1,7 @@
 id: "B372"
 tool: "blender_gpencil_annotation_add"
 date: "2026-10-17"
-tags: ["blender_gpencil_annotation_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

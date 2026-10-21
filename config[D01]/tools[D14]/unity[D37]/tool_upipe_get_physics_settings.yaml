@@ -1,7 +1,7 @@
 id: "U069"
 tool: "upipe_get_physics_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_physics_settings"]
+tags: ["unity", "unity", "config", "read"]
 
 RULES:
   enabled: true

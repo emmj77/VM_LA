@@ -2,7 +2,7 @@
 id: "E024"
 tool: "engine.map"
 date: "2026-10-21"
-tags: ["engine", "map"]
+tags: ["manage", "shell", "process", "run"]
 RULES:
   enabled: true
   timeout: 120

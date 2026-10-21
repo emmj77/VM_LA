@@ -1,7 +1,7 @@
 id: "B1701"
 tool: "blender_asset_catalog"
 date: "2026-10-17"
-tags: ["blender_asset_catalog"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

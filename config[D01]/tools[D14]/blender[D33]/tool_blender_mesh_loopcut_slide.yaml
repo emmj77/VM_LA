@@ -1,7 +1,7 @@
 id: "B677"
 tool: "blender_mesh_loopcut_slide"
 date: "2026-10-17"
-tags: ["blender_mesh_loopcut_slide"]
+tags: ["blender", "blender", "mesh", "cut"]
 
 RULES:
   enabled: true

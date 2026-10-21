@@ -1,7 +1,7 @@
 id: "U296"
 tool: "unity_collaboration_jira_project_unlink"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "config", "run"]
 
 RULES:
   enabled: true

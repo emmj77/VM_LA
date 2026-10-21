@@ -1,7 +1,7 @@
 id: "B1149"
 tool: "blender_particle_disconnect_hair"
 date: "2026-10-17"
-tags: ["blender_particle_disconnect_hair"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

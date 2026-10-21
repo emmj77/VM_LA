@@ -1,7 +1,7 @@
 id: "B380"
 tool: "blender_graph_copy"
 date: "2026-10-17"
-tags: ["blender_graph_copy"]
+tags: ["blender", "blender", "animation", "copy"]
 
 RULES:
   enabled: true

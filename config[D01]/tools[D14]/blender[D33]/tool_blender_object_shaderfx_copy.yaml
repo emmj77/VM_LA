@@ -1,7 +1,7 @@
 id: "B1037"
 tool: "blender_object_shaderfx_copy"
 date: "2026-10-17"
-tags: ["blender_object_shaderfx_copy"]
+tags: ["blender", "blender", "material", "copy"]
 
 RULES:
   enabled: true

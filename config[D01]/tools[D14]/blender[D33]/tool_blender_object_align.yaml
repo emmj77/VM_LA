@@ -1,7 +1,7 @@
 id: "B898"
 tool: "blender_object_align"
 date: "2026-10-17"
-tags: ["blender_object_align"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

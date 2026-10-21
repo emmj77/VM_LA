@@ -1,7 +1,7 @@
 id: "B101"
 tool: "blender_asset_browse_containing_blend_file"
 date: "2026-10-17"
-tags: ["blender_asset_browse_containing_blend_file"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B522"
 tool: "blender_image_clipboard_copy"
 date: "2026-10-17"
-tags: ["blender_image_clipboard_copy"]
+tags: ["blender", "blender", "img", "copy"]
 
 RULES:
   enabled: true

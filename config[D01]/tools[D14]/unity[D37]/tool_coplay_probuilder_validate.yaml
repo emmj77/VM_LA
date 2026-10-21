@@ -1,7 +1,7 @@
 id: "U217"
 tool: "coplay_probuilder_validate"
 date: "2026-10-18"
-tags: ["unity", "coplay", "probuilder"]
+tags: ["unity", "unity", "mesh", "run"]
 
 RULES:
   enabled: true

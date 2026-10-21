@@ -1,7 +1,7 @@
 id: "B045"
 tool: "blender_anim_keyframe_insert"
 date: "2026-10-17"
-tags: ["blender_anim_keyframe_insert"]
+tags: ["blender", "blender", "animation", "set"]
 
 RULES:
   enabled: true

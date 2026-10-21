@@ -1,7 +1,7 @@
 id: "U151"
 tool: "coplay_animation_controller_add_layer"
 date: "2026-10-18"
-tags: ["unity", "coplay", "animation"]
+tags: ["unity", "unity", "animation", "add"]
 
 RULES:
   enabled: true

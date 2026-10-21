@@ -1,7 +1,7 @@
 id: "U017"
 tool: "upipe_build"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "build"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

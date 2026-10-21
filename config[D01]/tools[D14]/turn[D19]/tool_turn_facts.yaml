@@ -2,7 +2,7 @@
 id: "T002"
 tool: "turn.facts"
 date: "2026-10-20"
-tags: ["turn", "facts"]
+tags: ["manage", "shell", "object", "run"]
 RULES:
   enabled: true
   timeout: 60

@@ -1,7 +1,7 @@
 id: "B1209"
 tool: "blender_poselib_asset_delete"
 date: "2026-10-17"
-tags: ["blender_poselib_asset_delete"]
+tags: ["blender", "blender", "animation", "delete"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B175"
 tool: "blender_clip_set_scale"
 date: "2026-10-17"
-tags: ["blender_clip_set_scale"]
+tags: ["blender", "blender", "scene", "set"]
 
 RULES:
   enabled: true

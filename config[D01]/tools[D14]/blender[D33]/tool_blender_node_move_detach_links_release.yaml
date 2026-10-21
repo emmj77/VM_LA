@@ -1,7 +1,7 @@
 id: "B855"
 tool: "blender_node_move_detach_links_release"
 date: "2026-10-17"
-tags: ["blender_node_move_detach_links_release"]
+tags: ["blender", "blender", "node", "move"]
 
 RULES:
   enabled: true

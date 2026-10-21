@@ -1,7 +1,7 @@
 id: "B1746"
 tool: "blender_object_clear"
 date: "2026-10-17"
-tags: ["blender_object_clear"]
+tags: ["blender", "blender", "object", "clear"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "K037"
 tool: "krita_combine_selections"
 date: "2026-10-18"
-tags: ["krita", "krita_combine_selections"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

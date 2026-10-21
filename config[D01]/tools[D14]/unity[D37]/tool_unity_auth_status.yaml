@@ -1,7 +1,7 @@
 id: "U242"
 tool: "unity_auth_status"
 date: "2026-10-18"
-tags: ["unity", "cli", "auth"]
+tags: ["unity", "unity", "project", "show"]
 
 RULES:
   enabled: true

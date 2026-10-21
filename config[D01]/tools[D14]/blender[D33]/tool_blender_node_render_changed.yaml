@@ -1,7 +1,7 @@
 id: "B866"
 tool: "blender_node_render_changed"
 date: "2026-10-17"
-tags: ["blender_node_render_changed"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

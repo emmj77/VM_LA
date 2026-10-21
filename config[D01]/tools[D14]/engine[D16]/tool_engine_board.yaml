@@ -2,7 +2,7 @@
 id: "E020"
 tool: "engine.board"
 date: "2026-10-21"
-tags: ["engine", "board"]
+tags: ["manage", "indra", "object", "run"]
 RULES:
   enabled: true
   timeout: 60

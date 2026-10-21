@@ -1,7 +1,7 @@
 id: "B036"
 tool: "blender_anim_channel_select_keys"
 date: "2026-10-17"
-tags: ["blender_anim_channel_select_keys"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

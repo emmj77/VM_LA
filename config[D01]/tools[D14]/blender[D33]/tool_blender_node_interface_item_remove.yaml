@@ -1,7 +1,7 @@
 id: "B843"
 tool: "blender_node_interface_item_remove"
 date: "2026-10-17"
-tags: ["blender_node_interface_item_remove"]
+tags: ["blender", "blender", "node", "remove"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1222"
 tool: "blender_preferences_start_filter"
 date: "2026-10-17"
-tags: ["blender_preferences_start_filter"]
+tags: ["blender", "blender", "text", "run"]
 
 RULES:
   enabled: true

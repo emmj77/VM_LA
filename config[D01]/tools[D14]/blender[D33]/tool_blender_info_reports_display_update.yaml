@@ -1,7 +1,7 @@
 id: "B569"
 tool: "blender_info_reports_display_update"
 date: "2026-10-17"
-tags: ["blender_info_reports_display_update"]
+tags: ["blender", "blender", "mesh", "update"]
 
 RULES:
   enabled: true

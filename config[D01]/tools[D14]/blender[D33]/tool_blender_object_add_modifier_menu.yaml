@@ -1,7 +1,7 @@
 id: "B896"
 tool: "blender_object_add_modifier_menu"
 date: "2026-10-17"
-tags: ["blender_object_add_modifier_menu"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

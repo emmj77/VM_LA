@@ -1,7 +1,7 @@
 id: "U083"
 tool: "upipe_list_build_targets"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "list_build_targets"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

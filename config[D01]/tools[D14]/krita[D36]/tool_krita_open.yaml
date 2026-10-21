@@ -1,7 +1,7 @@
 id: "K002"
 tool: "krita_open"
 date: "2026-10-17"
-tags: ["krita", "krita_open"]
+tags: ["krita", "krita", "draw", "open"]
 
 RULES:
   enabled: true

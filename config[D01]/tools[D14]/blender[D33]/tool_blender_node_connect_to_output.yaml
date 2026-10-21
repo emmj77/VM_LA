@@ -1,7 +1,7 @@
 id: "B818"
 tool: "blender_node_connect_to_output"
 date: "2026-10-17"
-tags: ["blender_node_connect_to_output"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

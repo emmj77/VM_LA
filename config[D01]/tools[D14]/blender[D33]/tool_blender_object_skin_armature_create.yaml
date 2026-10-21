@@ -1,7 +1,7 @@
 id: "B1045"
 tool: "blender_object_skin_armature_create"
 date: "2026-10-17"
-tags: ["blender_object_skin_armature_create"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

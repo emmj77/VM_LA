@@ -1,7 +1,7 @@
 id: "B976"
 tool: "blender_object_lightprobe_cache_bake"
 date: "2026-10-17"
-tags: ["blender_object_lightprobe_cache_bake"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

@@ -2,7 +2,7 @@
 id: "E013"
 tool: "engine.trace"
 date: "2026-10-21"
-tags: ["engine", "trace"]
+tags: ["manage", "shell", "process", "trace"]
 RULES:
   enabled: true
   timeout: 30

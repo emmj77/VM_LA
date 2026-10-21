@@ -1,7 +1,7 @@
 id: "B1019"
 tool: "blender_object_reset_override_library"
 date: "2026-10-17"
-tags: ["blender_object_reset_override_library"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

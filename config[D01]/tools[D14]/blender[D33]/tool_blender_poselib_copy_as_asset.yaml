@@ -1,7 +1,7 @@
 id: "B1211"
 tool: "blender_poselib_copy_as_asset"
 date: "2026-10-17"
-tags: ["blender_poselib_copy_as_asset"]
+tags: ["blender", "blender", "animation", "copy"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1301"
 tool: "blender_sculpt_cloth_filter"
 date: "2026-10-17"
-tags: ["blender_sculpt_cloth_filter"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

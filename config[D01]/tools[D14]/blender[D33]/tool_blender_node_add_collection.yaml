@@ -1,7 +1,7 @@
 id: "B792"
 tool: "blender_node_add_collection"
 date: "2026-10-17"
-tags: ["blender_node_add_collection"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

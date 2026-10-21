@@ -1,7 +1,7 @@
 id: "U117"
 tool: "upipe_set_animation_curve"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_animation_curve"]
+tags: ["unity", "unity", "animation", "set"]
 
 RULES:
   enabled: true

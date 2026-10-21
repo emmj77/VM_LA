@@ -1,7 +1,7 @@
 id: "K067"
 tool: "krita_select_polygon"
 date: "2026-10-18"
-tags: ["krita", "krita_select_polygon"]
+tags: ["krita", "krita", "img", "select"]
 
 RULES:
   enabled: true

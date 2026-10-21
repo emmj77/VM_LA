@@ -1,7 +1,7 @@
 id: "K031"
 tool: "krita_ai_set_workspace"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_set_workspace"]
+tags: ["krita", "krita", "img", "set"]
 
 RULES:
   enabled: true

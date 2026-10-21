@@ -1,7 +1,7 @@
 id: "B1706"
 tool: "blender_clip_marker_add"
 date: "2026-10-17"
-tags: ["blender_clip_marker_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

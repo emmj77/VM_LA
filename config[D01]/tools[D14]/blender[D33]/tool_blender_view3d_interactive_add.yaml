@@ -1,7 +1,7 @@
 id: "B1550"
 tool: "blender_view3d_interactive_add"
 date: "2026-10-17"
-tags: ["blender_view3d_interactive_add"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

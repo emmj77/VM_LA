@@ -1,7 +1,7 @@
 id: "B1224"
 tool: "blender_preferences_unassociate_blend"
 date: "2026-10-17"
-tags: ["blender_preferences_unassociate_blend"]
+tags: ["blender", "blender", "mesh", "remove"]
 
 RULES:
   enabled: true

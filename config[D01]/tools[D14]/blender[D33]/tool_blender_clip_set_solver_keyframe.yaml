@@ -1,7 +1,7 @@
 id: "B178"
 tool: "blender_clip_set_solver_keyframe"
 date: "2026-10-17"
-tags: ["blender_clip_set_solver_keyframe"]
+tags: ["blender", "blender", "animation", "set"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B013"
 tool: "blender_action_mirror"
 date: "2026-10-17"
-tags: ["blender_action_mirror"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

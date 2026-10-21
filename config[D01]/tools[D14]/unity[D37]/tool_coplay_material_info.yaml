@@ -1,7 +1,7 @@
 id: "U185"
 tool: "coplay_material_info"
 date: "2026-10-18"
-tags: ["unity", "coplay", "material"]
+tags: ["unity", "unity", "material", "run"]
 
 RULES:
   enabled: true

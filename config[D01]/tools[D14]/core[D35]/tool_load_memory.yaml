@@ -1,7 +1,7 @@
 id: "G030"
 tool: "load_memory"
 date: "2026-10-17"
-tags: ["load_memory"]
+tags: ["read", "shell", "file", "load"]
 
 RULES:
   enabled: true

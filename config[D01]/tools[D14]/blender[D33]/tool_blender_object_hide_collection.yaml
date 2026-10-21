@@ -1,7 +1,7 @@
 id: "B955"
 tool: "blender_object_hide_collection"
 date: "2026-10-17"
-tags: ["blender_object_hide_collection"]
+tags: ["blender", "blender", "object", "hide"]
 
 RULES:
   enabled: true

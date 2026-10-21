@@ -1,7 +1,7 @@
 id: "B1225"
 tool: "blender_render_clear_texture_cache"
 date: "2026-10-17"
-tags: ["blender_render_clear_texture_cache"]
+tags: ["blender", "blender", "material", "clear"]
 
 RULES:
   enabled: true

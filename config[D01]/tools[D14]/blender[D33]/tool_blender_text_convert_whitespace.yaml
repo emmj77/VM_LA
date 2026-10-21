@@ -1,7 +1,7 @@
 id: "B1423"
 tool: "blender_text_convert_whitespace"
 date: "2026-10-17"
-tags: ["blender_text_convert_whitespace"]
+tags: ["blender", "blender", "text", "convert"]
 
 RULES:
   enabled: true

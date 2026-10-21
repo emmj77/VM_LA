@@ -1,7 +1,7 @@
 id: "B1278"
 tool: "blender_screen_drivers_editor_show"
 date: "2026-10-17"
-tags: ["blender_screen_drivers_editor_show"]
+tags: ["blender", "blender", "mesh", "show"]
 
 RULES:
   enabled: true

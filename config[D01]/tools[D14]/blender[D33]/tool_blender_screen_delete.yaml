@@ -1,7 +1,7 @@
 id: "B1277"
 tool: "blender_screen_delete"
 date: "2026-10-17"
-tags: ["blender_screen_delete"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

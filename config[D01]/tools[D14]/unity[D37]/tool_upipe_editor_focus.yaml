@@ -1,7 +1,7 @@
 id: "U049"
 tool: "upipe_editor_focus"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "editor_focus"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

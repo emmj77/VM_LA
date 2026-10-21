@@ -1,7 +1,7 @@
 id: "K042"
 tool: "krita_fill_selection"
 date: "2026-10-18"
-tags: ["krita", "krita_fill_selection"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1038"
 tool: "blender_object_shaderfx_move_down"
 date: "2026-10-17"
-tags: ["blender_object_shaderfx_move_down"]
+tags: ["blender", "blender", "material", "move"]
 
 RULES:
   enabled: true

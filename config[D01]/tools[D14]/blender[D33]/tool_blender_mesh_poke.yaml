@@ -1,7 +1,7 @@
 id: "B690"
 tool: "blender_mesh_poke"
 date: "2026-10-17"
-tags: ["blender_mesh_poke"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

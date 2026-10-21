@@ -1,7 +1,7 @@
 id: "B306"
 tool: "blender_dpaint_surface_slot_remove"
 date: "2026-10-17"
-tags: ["blender_dpaint_surface_slot_remove"]
+tags: ["blender", "blender", "draw", "remove"]
 
 RULES:
   enabled: true

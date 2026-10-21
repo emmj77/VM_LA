@@ -1,7 +1,7 @@
 id: "B1227"
 tool: "blender_render_opengl"
 date: "2026-10-17"
-tags: ["blender_render_opengl"]
+tags: ["blender", "blender", "render", "run"]
 
 RULES:
   enabled: true

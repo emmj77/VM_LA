@@ -1,7 +1,7 @@
 id: "B051"
 tool: "blender_anim_previewrange_clear"
 date: "2026-10-17"
-tags: ["blender_anim_previewrange_clear"]
+tags: ["blender", "blender", "animation", "clear"]
 
 RULES:
   enabled: true

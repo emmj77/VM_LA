@@ -1,7 +1,7 @@
 id: "U430"
 tool: "unity_vcs_merge_setup"
 date: "2026-10-18"
-tags: ["unity", "cli", "vcs"]
+tags: ["unity", "unity", "scene", "run"]
 
 RULES:
   enabled: true

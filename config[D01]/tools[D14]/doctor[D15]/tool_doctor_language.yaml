@@ -2,7 +2,7 @@
 id: "D005"
 tool: "doctor.language"
 date: "2026-10-20"
-tags: ["doctor", "language"]
+tags: ["manage", "python", "text", "run"]
 RULES:
   enabled: true
   timeout: 120

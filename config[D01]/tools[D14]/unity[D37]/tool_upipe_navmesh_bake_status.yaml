@@ -1,7 +1,7 @@
 id: "U089"
 tool: "upipe_navmesh_bake_status"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "navmesh_bake_status"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

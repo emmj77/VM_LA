@@ -1,7 +1,7 @@
 id: "G051"
 tool: "skill_list"
 date: "2026-10-17"
-tags: ["skill_list", "skill"]
+tags: ["read", "shell", "project", "list"]
 
 RULES:
   enabled: true

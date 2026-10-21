@@ -1,7 +1,7 @@
 id: "B1299"
 tool: "blender_script_reload"
 date: "2026-10-17"
-tags: ["blender_script_reload"]
+tags: ["blender", "blender", "mesh", "reload"]
 
 RULES:
   enabled: true

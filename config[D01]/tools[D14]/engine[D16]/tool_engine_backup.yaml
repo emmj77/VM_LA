@@ -2,7 +2,7 @@
 id: "E003"
 tool: "engine.backup"
 date: "2026-10-20"
-tags: ["engine", "backup"]
+tags: ["manage", "shell", "process", "run"]
 RULES:
   enabled: true
   timeout: 900

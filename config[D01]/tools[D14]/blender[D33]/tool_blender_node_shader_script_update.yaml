@@ -1,7 +1,7 @@
 id: "B878"
 tool: "blender_node_shader_script_update"
 date: "2026-10-17"
-tags: ["blender_node_shader_script_update"]
+tags: ["blender", "blender", "material", "update"]
 
 RULES:
   enabled: true

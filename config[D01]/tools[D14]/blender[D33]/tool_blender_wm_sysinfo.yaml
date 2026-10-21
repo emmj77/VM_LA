@@ -1,7 +1,7 @@
 id: "B1672"
 tool: "blender_wm_sysinfo"
 date: "2026-10-17"
-tags: ["blender_wm_sysinfo"]
+tags: ["blender", "blender", "text", "generate"]
 
 RULES:
   enabled: true

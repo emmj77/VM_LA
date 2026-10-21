@@ -1,7 +1,7 @@
 id: "C005"
 tool: "comfyui_render_drawing"
 date: "2026-10-17"
-tags: ["comfyui", "comfyui_render_drawing"]
+tags: ["image", "comfyui", "render", "run"]
 
 RULES:
   enabled: true

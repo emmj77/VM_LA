@@ -1,7 +1,7 @@
 id: "G067"
 tool: "download_file"
 date: "2026-10-19"
-tags: ["download_file", "telechargement", "curl", "file", "sha256"]
+tags: ["manage", "shell", "file", "run"]
 
 RULES:
   enabled: true

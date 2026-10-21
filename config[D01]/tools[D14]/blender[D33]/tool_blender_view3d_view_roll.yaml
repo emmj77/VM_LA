@@ -1,7 +1,7 @@
 id: "B1584"
 tool: "blender_view3d_view_roll"
 date: "2026-10-17"
-tags: ["blender_view3d_view_roll"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B220"
 tool: "blender_constraint_delete"
 date: "2026-10-17"
-tags: ["blender_constraint_delete"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1265"
 tool: "blender_scene_gpencil_material_preset_add"
 date: "2026-10-17"
-tags: ["blender_scene_gpencil_material_preset_add"]
+tags: ["blender", "blender", "material", "add"]
 
 RULES:
   enabled: true

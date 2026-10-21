@@ -1,7 +1,7 @@
 id: "B453"
 tool: "blender_grease_pencil_frame_duplicate"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_frame_duplicate"]
+tags: ["blender", "blender", "mesh", "copy"]
 
 RULES:
   enabled: true

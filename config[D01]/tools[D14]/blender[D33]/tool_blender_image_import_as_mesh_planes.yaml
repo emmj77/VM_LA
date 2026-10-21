@@ -1,7 +1,7 @@
 id: "B529"
 tool: "blender_image_import_as_mesh_planes"
 date: "2026-10-17"
-tags: ["blender_image_import_as_mesh_planes"]
+tags: ["blender", "blender", "mesh", "import"]
 
 RULES:
   enabled: true

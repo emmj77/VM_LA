@@ -1,7 +1,7 @@
 id: "V004"
 tool: "cut_subject_img"
 date: "2026-10-21"
-tags: ["vision", "comfyui", "img", "cut"]
+tags: ["vision", "shell", "img", "cut"]
 
 RULES:
   enabled: true

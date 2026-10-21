@@ -1,7 +1,7 @@
 id: "U344"
 tool: "unity_editors_path"
 date: "2026-10-18"
-tags: ["unity", "cli", "editors"]
+tags: ["unity", "unity", "project", "install"]
 
 RULES:
   enabled: true

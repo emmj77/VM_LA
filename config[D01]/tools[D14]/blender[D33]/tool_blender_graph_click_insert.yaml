@@ -1,7 +1,7 @@
 id: "B378"
 tool: "blender_graph_click_insert"
 date: "2026-10-17"
-tags: ["blender_graph_click_insert"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

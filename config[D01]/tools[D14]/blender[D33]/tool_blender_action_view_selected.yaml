@@ -1,7 +1,7 @@
 id: "B034"
 tool: "blender_action_view_selected"
 date: "2026-10-17"
-tags: ["blender_action_view_selected"]
+tags: ["blender", "blender", "animation", "show"]
 
 RULES:
   enabled: true

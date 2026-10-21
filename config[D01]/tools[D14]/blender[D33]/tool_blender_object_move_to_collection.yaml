@@ -1,7 +1,7 @@
 id: "B991"
 tool: "blender_object_move_to_collection"
 date: "2026-10-17"
-tags: ["blender_object_move_to_collection"]
+tags: ["blender", "blender", "object", "move"]
 
 RULES:
   enabled: true

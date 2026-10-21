@@ -1,7 +1,7 @@
 id: "U250"
 tool: "unity_changelog"
 date: "2026-10-18"
-tags: ["unity", "cli", "changelog"]
+tags: ["unity", "unity", "project", "show"]
 
 RULES:
   enabled: true

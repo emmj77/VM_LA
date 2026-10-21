@@ -1,7 +1,7 @@
 id: "B371"
 tool: "blender_gpencil_annotation_active_frame_delete"
 date: "2026-10-17"
-tags: ["blender_gpencil_annotation_active_frame_delete"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

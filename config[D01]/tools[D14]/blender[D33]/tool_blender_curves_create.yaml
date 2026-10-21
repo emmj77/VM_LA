@@ -1,7 +1,7 @@
 id: "B1715"
 tool: "blender_curves_create"
 date: "2026-10-17"
-tags: ["blender_curves_create"]
+tags: ["blender", "blender", "draw", "add"]
 
 RULES:
   enabled: true

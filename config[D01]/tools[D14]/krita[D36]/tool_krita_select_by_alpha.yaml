@@ -1,7 +1,7 @@
 id: "K063"
 tool: "krita_select_by_alpha"
 date: "2026-10-18"
-tags: ["krita", "krita_select_by_alpha"]
+tags: ["krita", "krita", "img", "select"]
 
 RULES:
   enabled: true

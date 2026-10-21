@@ -1,7 +1,7 @@
 id: "B1455"
 tool: "blender_transform_edge_crease"
 date: "2026-10-17"
-tags: ["blender_transform_edge_crease"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "G036"
 tool: "count_lines_of_code"
 date: "2026-10-17"
-tags: ["count_lines_of_code", "tokei", "measure", "code"]
+tags: ["read", "shell", "project", "run"]
 
 RULES:
   enabled: true

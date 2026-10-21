@@ -673,8 +673,15 @@ board:
   appoints:
     # bridge: board.py carries it itself. dash: the page, which opens and closes by itself.
     - {name: dash, port: 8771, unit: la-dash.service}
-    - {name: vision, port: 1234, probe: health, word: "it wakes on demand"}
   instruments:
-    - {name: indra-ocr, label: "indra ocr", bin: "machine.ocr.bin", why: "the OCR of read_text_in_img"}
-  carriers: [micro_vision.py]
+    - {name: indra-ocr, label: "indra ocr", bin: "machine.ocr.bin", why: "the OCR of indra_ocr_img"}
+  carriers: []
   forms: '[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)'
+
+# THE TAG VOCABULARY: a tag is how a tool is found. Four words per body, one per class,
+# and every value comes from these four closed lists (doctor.tags counts them).
+tags:
+  natures: [read, write, manage, reply, plan, vision, blender, unity, krita, image]
+  engines: [shell, api, local, indra, comfyui, llama, blender, unity, krita, git, systemd, python]
+  objects: [img, document, audio, mesh, scene, project, plan, turn, process, config, table, text, file, object, node, material, texture, animation, render, draw]
+  verbs: [read, write, list, search, find, show, set, load, save, cut, repair, depth, boxes, ocr, analyze, generate, upscale, convert, run, manage, delete, remove, move, copy, open, close, speak, transcribe, translate, summarize, add, apply, clear, hide, select, install, update, reload, trace, test, import, export]

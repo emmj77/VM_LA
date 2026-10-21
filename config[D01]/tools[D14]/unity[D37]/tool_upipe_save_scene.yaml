@@ -1,7 +1,7 @@
 id: "U112"
 tool: "upipe_save_scene"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "save_scene"]
+tags: ["unity", "unity", "scene", "save"]
 
 RULES:
   enabled: true

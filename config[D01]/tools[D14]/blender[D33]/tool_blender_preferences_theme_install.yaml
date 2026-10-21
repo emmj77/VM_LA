@@ -1,7 +1,7 @@
 id: "B1223"
 tool: "blender_preferences_theme_install"
 date: "2026-10-17"
-tags: ["blender_preferences_theme_install"]
+tags: ["blender", "blender", "mesh", "install"]
 
 RULES:
   enabled: true

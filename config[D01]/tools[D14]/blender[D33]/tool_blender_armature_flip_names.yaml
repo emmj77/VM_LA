@@ -1,7 +1,7 @@
 id: "B077"
 tool: "blender_armature_flip_names"
 date: "2026-10-17"
-tags: ["blender_armature_flip_names"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

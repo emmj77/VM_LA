@@ -1,7 +1,7 @@
 id: "U400"
 tool: "unity_projects_size"
 date: "2026-10-18"
-tags: ["unity", "cli", "projects"]
+tags: ["unity", "unity", "project", "summarize"]
 
 RULES:
   enabled: true

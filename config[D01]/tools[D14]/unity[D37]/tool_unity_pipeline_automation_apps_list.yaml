@@ -1,7 +1,7 @@
 id: "U370"
 tool: "unity_pipeline_automation_apps_list"
 date: "2026-10-18"
-tags: ["unity", "cli", "pipeline"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

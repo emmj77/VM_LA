@@ -1,7 +1,7 @@
 id: "B1387"
 tool: "blender_sequencer_split_multicam"
 date: "2026-10-17"
-tags: ["blender_sequencer_split_multicam"]
+tags: ["blender", "blender", "scene", "select"]
 
 RULES:
   enabled: true

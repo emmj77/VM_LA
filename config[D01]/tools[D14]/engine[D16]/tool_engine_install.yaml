@@ -2,7 +2,7 @@
 id: "E007"
 tool: "engine.install"
 date: "2026-10-20"
-tags: ["engine", "install"]
+tags: ["manage", "local", "process", "install"]
 RULES:
   enabled: true
   timeout: 300

@@ -2,7 +2,7 @@
 id: "E025"
 tool: "engine.uninstall"
 date: "2026-10-21"
-tags: ["engine", "uninstall"]
+tags: ["manage", "systemd", "animation", "run"]
 RULES:
   enabled: true
   timeout: 120

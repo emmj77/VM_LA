@@ -1,7 +1,7 @@
 id: "K047"
 tool: "krita_get_current_brush"
 date: "2026-10-18"
-tags: ["krita", "krita_get_current_brush"]
+tags: ["krita", "krita", "draw", "run"]
 
 RULES:
   enabled: true

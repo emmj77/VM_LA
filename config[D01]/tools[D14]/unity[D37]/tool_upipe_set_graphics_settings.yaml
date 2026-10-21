@@ -1,7 +1,7 @@
 id: "U122"
 tool: "upipe_set_graphics_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_graphics_settings"]
+tags: ["unity", "unity", "render", "set"]
 
 RULES:
   enabled: true

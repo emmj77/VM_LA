@@ -1,7 +1,7 @@
 id: "B394"
 tool: "blender_graph_frame_jump"
 date: "2026-10-17"
-tags: ["blender_graph_frame_jump"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

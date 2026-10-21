@@ -1,7 +1,7 @@
 id: "B695"
 tool: "blender_mesh_reorder_vertices_spatial"
 date: "2026-10-17"
-tags: ["blender_mesh_reorder_vertices_spatial"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

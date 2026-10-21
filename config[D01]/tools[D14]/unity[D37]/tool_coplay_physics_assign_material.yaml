@@ -1,7 +1,7 @@
 id: "U191"
 tool: "coplay_physics_assign_material"
 date: "2026-10-18"
-tags: ["unity", "coplay", "physics"]
+tags: ["unity", "unity", "material", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "G068"
 tool: "gemini_image"
 date: "2026-10-20"
-tags: ["gemini", "image", "web", "agent-browser"]
+tags: ["image", "shell", "img", "run"]
 
 
 RULES:

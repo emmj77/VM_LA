@@ -1,7 +1,7 @@
 id: "B452"
 tool: "blender_grease_pencil_frame_clean_duplicate"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_frame_clean_duplicate"]
+tags: ["blender", "blender", "animation", "remove"]
 
 RULES:
   enabled: true

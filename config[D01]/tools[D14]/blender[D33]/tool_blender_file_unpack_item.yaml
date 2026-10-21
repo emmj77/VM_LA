@@ -1,7 +1,7 @@
 id: "B352"
 tool: "blender_file_unpack_item"
 date: "2026-10-17"
-tags: ["blender_file_unpack_item"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

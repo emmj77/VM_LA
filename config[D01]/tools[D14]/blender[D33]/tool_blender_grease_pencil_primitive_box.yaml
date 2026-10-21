@@ -1,7 +1,7 @@
 id: "B465"
 tool: "blender_grease_pencil_primitive_box"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_primitive_box"]
+tags: ["blender", "blender", "draw", "boxes"]
 
 RULES:
   enabled: true

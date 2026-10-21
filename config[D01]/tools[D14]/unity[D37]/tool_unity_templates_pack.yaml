@@ -1,7 +1,7 @@
 id: "U416"
 tool: "unity_templates_pack"
 date: "2026-10-18"
-tags: ["unity", "cli", "templates"]
+tags: ["unity", "unity", "table", "run"]
 
 RULES:
   enabled: true

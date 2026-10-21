@@ -1,7 +1,7 @@
 id: "B528"
 tool: "blender_image_flip"
 date: "2026-10-17"
-tags: ["blender_image_flip"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

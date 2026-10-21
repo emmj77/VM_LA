@@ -1,7 +1,7 @@
 id: "B246"
 tool: "blender_curve_pen"
 date: "2026-10-17"
-tags: ["blender_curve_pen"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

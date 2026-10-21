@@ -1,7 +1,7 @@
 id: "B890"
 tool: "blender_node_view_all"
 date: "2026-10-17"
-tags: ["blender_node_view_all"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

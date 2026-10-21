@@ -1,7 +1,7 @@
 id: "B411"
 tool: "blender_graph_samples_to_keys"
 date: "2026-10-17"
-tags: ["blender_graph_samples_to_keys"]
+tags: ["blender", "blender", "animation", "convert"]
 
 RULES:
   enabled: true

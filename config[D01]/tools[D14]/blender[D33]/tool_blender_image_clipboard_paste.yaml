@@ -1,7 +1,7 @@
 id: "B523"
 tool: "blender_image_clipboard_paste"
 date: "2026-10-17"
-tags: ["blender_image_clipboard_paste"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

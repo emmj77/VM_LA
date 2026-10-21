@@ -1,7 +1,7 @@
 id: "B1027"
 tool: "blender_object_select_mirror"
 date: "2026-10-17"
-tags: ["blender_object_select_mirror"]
+tags: ["blender", "blender", "object", "select"]
 
 RULES:
   enabled: true

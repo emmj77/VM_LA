@@ -1,7 +1,7 @@
 id: "B048"
 tool: "blender_anim_keyingset_button_remove"
 date: "2026-10-17"
-tags: ["blender_anim_keyingset_button_remove"]
+tags: ["blender", "blender", "animation", "remove"]
 
 RULES:
   enabled: true

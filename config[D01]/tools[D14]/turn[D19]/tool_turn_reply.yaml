@@ -2,7 +2,7 @@
 id: "T005"
 tool: "turn.reply"
 date: "2026-10-20"
-tags: ["turn", "reply"]
+tags: ["manage", "systemd", "turn", "run"]
 RULES:
   enabled: true
   timeout: 60

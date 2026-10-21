@@ -1,7 +1,7 @@
 id: "B1781"
 tool: "blender_sequencer_text"
 date: "2026-10-17"
-tags: ["blender_sequencer_text"]
+tags: ["blender", "blender", "scene", "move"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "G005"
 tool: "search"
 date: "2026-10-17"
-tags: ["search"]
+tags: ["read", "shell", "project", "search"]
 
 RULES:
   enabled: true

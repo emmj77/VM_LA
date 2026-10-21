@@ -1,7 +1,7 @@
 id: "K040"
 tool: "krita_deselect"
 date: "2026-10-18"
-tags: ["krita", "krita_deselect"]
+tags: ["krita", "krita", "img", "remove"]
 
 RULES:
   enabled: true

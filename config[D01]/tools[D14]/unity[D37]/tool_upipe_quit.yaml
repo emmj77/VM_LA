@@ -1,7 +1,7 @@
 id: "U097"
 tool: "upipe_quit"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "quit"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

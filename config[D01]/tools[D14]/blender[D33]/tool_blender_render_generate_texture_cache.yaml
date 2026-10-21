@@ -1,7 +1,7 @@
 id: "B1226"
 tool: "blender_render_generate_texture_cache"
 date: "2026-10-17"
-tags: ["blender_render_generate_texture_cache"]
+tags: ["blender", "blender", "material", "generate"]
 
 RULES:
   enabled: true

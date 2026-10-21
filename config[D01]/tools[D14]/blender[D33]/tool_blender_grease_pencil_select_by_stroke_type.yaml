@@ -1,7 +1,7 @@
 id: "B479"
 tool: "blender_grease_pencil_select_by_stroke_type"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_select_by_stroke_type"]
+tags: ["blender", "blender", "draw", "select"]
 
 RULES:
   enabled: true

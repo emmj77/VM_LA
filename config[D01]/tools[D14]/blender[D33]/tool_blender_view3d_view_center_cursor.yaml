@@ -1,7 +1,7 @@
 id: "B1576"
 tool: "blender_view3d_view_center_cursor"
 date: "2026-10-17"
-tags: ["blender_view3d_view_center_cursor"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

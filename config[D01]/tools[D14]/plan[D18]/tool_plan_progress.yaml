@@ -2,7 +2,7 @@
 id: "P004"
 tool: "plan.progress"
 date: "2026-10-20"
-tags: ["plan", "progress"]
+tags: ["plan", "shell", "plan", "run"]
 RULES:
   enabled: true
   timeout: 30

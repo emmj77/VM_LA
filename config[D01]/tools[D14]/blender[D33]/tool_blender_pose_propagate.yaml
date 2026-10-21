@@ -1,7 +1,7 @@
 id: "B1194"
 tool: "blender_pose_propagate"
 date: "2026-10-17"
-tags: ["blender_pose_propagate"]
+tags: ["blender", "blender", "animation", "copy"]
 
 RULES:
   enabled: true

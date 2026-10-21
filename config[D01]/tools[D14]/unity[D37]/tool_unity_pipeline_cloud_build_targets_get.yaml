@@ -1,7 +1,7 @@
 id: "U377"
 tool: "unity_pipeline_cloud_build_targets_get"
 date: "2026-10-18"
-tags: ["unity", "cli", "pipeline"]
+tags: ["unity", "unity", "project", "show"]
 
 RULES:
   enabled: true

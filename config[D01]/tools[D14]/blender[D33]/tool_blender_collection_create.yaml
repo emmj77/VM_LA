@@ -1,7 +1,7 @@
 id: "B204"
 tool: "blender_collection_create"
 date: "2026-10-17"
-tags: ["blender_collection_create"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

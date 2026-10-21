@@ -1,7 +1,7 @@
 id: "U003"
 tool: "upipe_add_animator_state"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "add_animator_state"]
+tags: ["unity", "unity", "animation", "add"]
 
 RULES:
   enabled: true

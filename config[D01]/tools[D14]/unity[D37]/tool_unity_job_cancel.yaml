@@ -1,7 +1,7 @@
 id: "U354"
 tool: "unity_job_cancel"
 date: "2026-10-18"
-tags: ["unity", "cli", "job"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

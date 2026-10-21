@@ -1,7 +1,7 @@
 id: "B1619"
 tool: "blender_wm_keyconfig_preset_add"
 date: "2026-10-17"
-tags: ["blender_wm_keyconfig_preset_add"]
+tags: ["blender", "blender", "config", "add"]
 
 RULES:
   enabled: true

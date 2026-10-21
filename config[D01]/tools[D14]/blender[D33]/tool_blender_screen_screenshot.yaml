@@ -1,7 +1,7 @@
 id: "B1290"
 tool: "blender_screen_screenshot"
 date: "2026-10-17"
-tags: ["blender_screen_screenshot"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U098"
 tool: "upipe_read_text_file"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "read_text_file"]
+tags: ["unity", "unity", "text", "read"]
 
 RULES:
   enabled: true

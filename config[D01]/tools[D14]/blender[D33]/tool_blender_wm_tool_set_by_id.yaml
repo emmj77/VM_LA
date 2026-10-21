@@ -1,7 +1,7 @@
 id: "B1674"
 tool: "blender_wm_tool_set_by_id"
 date: "2026-10-17"
-tags: ["blender_wm_tool_set_by_id"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "A001"
 tool: "asset_builder_js"
 date: "2026-10-19"
-tags: ["asset_builder", "js", "geometrie", "glb"]
+tags: ["write", "shell", "node", "run"]
 
 
 RULES:

@@ -1,7 +1,7 @@
 id: "B660"
 tool: "blender_mesh_faces_shade_flat"
 date: "2026-10-17"
-tags: ["blender_mesh_faces_shade_flat"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

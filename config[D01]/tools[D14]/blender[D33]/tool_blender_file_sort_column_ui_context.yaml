@@ -1,7 +1,7 @@
 id: "B349"
 tool: "blender_file_sort_column_ui_context"
 date: "2026-10-17"
-tags: ["blender_file_sort_column_ui_context"]
+tags: ["blender", "blender", "table", "run"]
 
 RULES:
   enabled: true

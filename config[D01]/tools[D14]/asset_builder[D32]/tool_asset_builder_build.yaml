@@ -1,7 +1,7 @@
 id: "A020"
 tool: "asset_builder_build"
 date: "2026-10-19"
-tags: ["asset_builder", "build"]
+tags: ["write", "shell", "mesh", "run"]
 
 
 RULES:

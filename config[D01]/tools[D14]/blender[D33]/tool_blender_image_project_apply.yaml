@@ -1,7 +1,7 @@
 id: "B536"
 tool: "blender_image_project_apply"
 date: "2026-10-17"
-tags: ["blender_image_project_apply"]
+tags: ["blender", "blender", "object", "apply"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1686"
 tool: "blender_wm_window_new_main"
 date: "2026-10-17"
-tags: ["blender_wm_window_new_main"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

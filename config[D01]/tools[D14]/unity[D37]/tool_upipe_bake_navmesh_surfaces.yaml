@@ -1,7 +1,7 @@
 id: "U015"
 tool: "upipe_bake_navmesh_surfaces"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "bake_navmesh_surfaces"]
+tags: ["unity", "unity", "mesh", "run"]
 
 RULES:
   enabled: true

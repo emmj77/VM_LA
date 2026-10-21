@@ -1,7 +1,7 @@
 id: "B1419"
 tool: "blender_surface_primitive_nurbs_surface_sphere_add"
 date: "2026-10-17"
-tags: ["blender_surface_primitive_nurbs_surface_sphere_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

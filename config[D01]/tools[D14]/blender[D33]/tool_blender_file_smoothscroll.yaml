@@ -1,7 +1,7 @@
 id: "B348"
 tool: "blender_file_smoothscroll"
 date: "2026-10-17"
-tags: ["blender_file_smoothscroll"]
+tags: ["blender", "blender", "table", "run"]
 
 RULES:
   enabled: true

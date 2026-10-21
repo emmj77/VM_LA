@@ -1,7 +1,7 @@
 id: "G015"
 tool: "todo"
 date: "2026-10-17"
-tags: ["todo"]
+tags: ["plan", "shell", "plan", "run"]
 
 RULES:
   enabled: true

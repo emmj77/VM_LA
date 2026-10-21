@@ -1,7 +1,7 @@
 id: "K046"
 tool: "krita_get_command_history"
 date: "2026-10-18"
-tags: ["krita", "krita_get_command_history"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "A014"
 tool: "asset_builder_duplicate"
 date: "2026-10-19"
-tags: ["asset_builder", "edit"]
+tags: ["write", "shell", "mesh", "run"]
 
 
 RULES:

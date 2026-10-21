@@ -1,7 +1,7 @@
 id: "B1126"
 tool: "blender_paint_weight_from_bones"
 date: "2026-10-17"
-tags: ["blender_paint_weight_from_bones"]
+tags: ["blender", "blender", "animation", "set"]
 
 RULES:
   enabled: true

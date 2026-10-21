@@ -1,7 +1,7 @@
 id: "B1603"
 tool: "blender_wm_context_modal_mouse"
 date: "2026-10-17"
-tags: ["blender_wm_context_modal_mouse"]
+tags: ["blender", "blender", "text", "run"]
 
 RULES:
   enabled: true

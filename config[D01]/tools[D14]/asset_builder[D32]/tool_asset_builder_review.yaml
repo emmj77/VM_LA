@@ -1,7 +1,7 @@
 id: "A025"
 tool: "asset_builder_review"
 date: "2026-10-19"
-tags: ["asset_builder", "review"]
+tags: ["manage", "shell", "render", "run"]
 
 
 RULES:

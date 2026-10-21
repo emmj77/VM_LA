@@ -1,7 +1,7 @@
 id: "U050"
 tool: "upipe_editor_pause"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "editor_pause"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B874"
 tool: "blender_node_select_link_viewer"
 date: "2026-10-17"
-tags: ["blender_node_select_link_viewer"]
+tags: ["blender", "blender", "node", "select"]
 
 RULES:
   enabled: true

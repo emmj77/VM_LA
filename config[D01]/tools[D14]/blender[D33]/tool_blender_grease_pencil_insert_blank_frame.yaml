@@ -1,7 +1,7 @@
 id: "B454"
 tool: "blender_grease_pencil_insert_blank_frame"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_insert_blank_frame"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U063"
 tool: "upipe_get_import_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_import_settings"]
+tags: ["unity", "unity", "material", "import"]
 
 RULES:
   enabled: true

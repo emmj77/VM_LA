@@ -1,7 +1,7 @@
 id: "U088"
 tool: "upipe_move_asset"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "move_asset"]
+tags: ["unity", "unity", "project", "move"]
 
 RULES:
   enabled: true

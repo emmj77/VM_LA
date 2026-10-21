@@ -1,7 +1,7 @@
 id: "B210"
 tool: "blender_console_execute"
 date: "2026-10-17"
-tags: ["blender_console_execute"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

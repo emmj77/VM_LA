@@ -1,7 +1,7 @@
 id: "B1482"
 tool: "blender_ui_view_scroll"
 date: "2026-10-17"
-tags: ["blender_ui_view_scroll"]
+tags: ["blender", "blender", "document", "run"]
 
 RULES:
   enabled: true

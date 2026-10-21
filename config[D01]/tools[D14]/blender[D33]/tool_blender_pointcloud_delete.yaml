@@ -1,7 +1,7 @@
 id: "B1175"
 tool: "blender_pointcloud_delete"
 date: "2026-10-17"
-tags: ["blender_pointcloud_delete"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

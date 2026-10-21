@@ -1,7 +1,7 @@
 id: "B281"
 tool: "blender_curves_extrude"
 date: "2026-10-17"
-tags: ["blender_curves_extrude"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

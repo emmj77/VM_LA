@@ -1,7 +1,7 @@
 id: "B872"
 tool: "blender_node_select_grouped"
 date: "2026-10-17"
-tags: ["blender_node_select_grouped"]
+tags: ["blender", "blender", "node", "select"]
 
 RULES:
   enabled: true

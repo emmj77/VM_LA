@@ -1,7 +1,7 @@
 id: "B656"
 tool: "blender_mesh_edges_select_sharp"
 date: "2026-10-17"
-tags: ["blender_mesh_edges_select_sharp"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

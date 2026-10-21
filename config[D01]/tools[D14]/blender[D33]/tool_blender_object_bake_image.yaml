@@ -1,7 +1,7 @@
 id: "B903"
 tool: "blender_object_bake_image"
 date: "2026-10-17"
-tags: ["blender_object_bake_image"]
+tags: ["blender", "blender", "material", "run"]
 
 RULES:
   enabled: true

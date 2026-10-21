@@ -1,7 +1,7 @@
 id: "G057"
 tool: "tool_show"
 date: "2026-10-18"
-tags: ["tool_show", "fiche", "arguments"]
+tags: ["read", "shell", "file", "show"]
 
 RULES:
   enabled: true

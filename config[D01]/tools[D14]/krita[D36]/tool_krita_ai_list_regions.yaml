@@ -1,7 +1,7 @@
 id: "K021"
 tool: "krita_ai_list_regions"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_list_regions"]
+tags: ["krita", "krita", "img", "list"]
 
 RULES:
   enabled: true

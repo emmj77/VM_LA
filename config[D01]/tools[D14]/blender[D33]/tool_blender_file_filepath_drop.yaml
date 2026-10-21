@@ -1,7 +1,7 @@
 id: "B327"
 tool: "blender_file_filepath_drop"
 date: "2026-10-17"
-tags: ["blender_file_filepath_drop"]
+tags: ["blender", "blender", "document", "run"]
 
 RULES:
   enabled: true

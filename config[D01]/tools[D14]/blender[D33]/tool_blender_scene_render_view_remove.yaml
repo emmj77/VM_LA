@@ -1,7 +1,7 @@
 id: "B1270"
 tool: "blender_scene_render_view_remove"
 date: "2026-10-17"
-tags: ["blender_scene_render_view_remove"]
+tags: ["blender", "blender", "render", "remove"]
 
 RULES:
   enabled: true

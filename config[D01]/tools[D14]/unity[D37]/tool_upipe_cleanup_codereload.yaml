@@ -1,7 +1,7 @@
 id: "U027"
 tool: "upipe_cleanup_codereload"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "cleanup_codereload"]
+tags: ["unity", "unity", "text", "remove"]
 
 RULES:
   enabled: true

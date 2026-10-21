@@ -1,7 +1,7 @@
 id: "G031"
 tool: "web_search"
 date: "2026-10-17"
-tags: ["web_search"]
+tags: ["read", "shell", "text", "search"]
 
 RULES:
   enabled: true

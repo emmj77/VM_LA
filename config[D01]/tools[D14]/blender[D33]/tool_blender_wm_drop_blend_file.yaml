@@ -1,7 +1,7 @@
 id: "B1609"
 tool: "blender_wm_drop_blend_file"
 date: "2026-10-17"
-tags: ["blender_wm_drop_blend_file"]
+tags: ["blender", "blender", "document", "run"]
 
 RULES:
   enabled: true

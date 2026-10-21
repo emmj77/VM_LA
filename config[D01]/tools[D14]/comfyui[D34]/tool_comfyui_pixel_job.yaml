@@ -4,7 +4,7 @@ tool: "comfyui_pixel_job"
 family: "IMAGE"
 sub_family: "vision"
 date: "2026-10-21"
-tags: ["image", "comfyui", "img", "run"]
+tags: ["image", "comfyui", "draw", "depth"]
 RULES:
   enabled: true
   timeout: 180

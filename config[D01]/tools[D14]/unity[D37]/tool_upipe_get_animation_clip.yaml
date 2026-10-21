@@ -1,7 +1,7 @@
 id: "U056"
 tool: "upipe_get_animation_clip"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_animation_clip"]
+tags: ["unity", "unity", "animation", "read"]
 
 RULES:
   enabled: true

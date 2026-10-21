@@ -1,7 +1,7 @@
 id: "B1332"
 tool: "blender_sequencer_change_path"
 date: "2026-10-17"
-tags: ["blender_sequencer_change_path"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

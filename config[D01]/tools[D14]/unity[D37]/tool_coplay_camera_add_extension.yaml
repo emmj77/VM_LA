@@ -1,7 +1,7 @@
 id: "U156"
 tool: "coplay_camera_add_extension"
 date: "2026-10-18"
-tags: ["unity", "coplay", "camera"]
+tags: ["unity", "unity", "scene", "add"]
 
 RULES:
   enabled: true

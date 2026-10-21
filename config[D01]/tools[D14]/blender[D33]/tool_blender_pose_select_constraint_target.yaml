@@ -1,7 +1,7 @@
 id: "B1201"
 tool: "blender_pose_select_constraint_target"
 date: "2026-10-17"
-tags: ["blender_pose_select_constraint_target"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

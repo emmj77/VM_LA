@@ -1,7 +1,7 @@
 id: "B752"
 tool: "blender_mesh_vert_connect_path"
 date: "2026-10-17"
-tags: ["blender_mesh_vert_connect_path"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

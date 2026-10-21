@@ -2,7 +2,7 @@
 id: "W001"
 tool: "watch.judge"
 date: "2026-10-20"
-tags: ["watch", "judge"]
+tags: ["manage", "local", "process", "run"]
 RULES:
   enabled: true
   timeout: 60

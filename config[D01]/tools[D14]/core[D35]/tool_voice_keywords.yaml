@@ -1,5 +1,6 @@
 # id: G078
 NAME: voice_keywords
+tags: ["manage", "python", "config", "write"]
 FAMILY: MANAGE
 DESCRIPTION: "regenerates the microphone's keywords from the command list (voice: true) of the master file"
 TIMEOUT: 120

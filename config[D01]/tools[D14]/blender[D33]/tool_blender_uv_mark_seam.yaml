@@ -1,7 +1,7 @@
 id: "B1499"
 tool: "blender_uv_mark_seam"
 date: "2026-10-17"
-tags: ["blender_uv_mark_seam"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

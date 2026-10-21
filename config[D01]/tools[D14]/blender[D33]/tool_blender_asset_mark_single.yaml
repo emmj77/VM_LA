@@ -1,7 +1,7 @@
 id: "B109"
 tool: "blender_asset_mark_single"
 date: "2026-10-17"
-tags: ["blender_asset_mark_single"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

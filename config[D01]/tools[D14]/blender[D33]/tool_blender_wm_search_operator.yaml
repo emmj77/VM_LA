@@ -1,7 +1,7 @@
 id: "B1664"
 tool: "blender_wm_search_operator"
 date: "2026-10-17"
-tags: ["blender_wm_search_operator"]
+tags: ["blender", "blender", "text", "search"]
 
 RULES:
   enabled: true

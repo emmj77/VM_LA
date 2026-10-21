@@ -1,7 +1,7 @@
 id: "B1094"
 tool: "blender_outliner_select_walk"
 date: "2026-10-17"
-tags: ["blender_outliner_select_walk"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

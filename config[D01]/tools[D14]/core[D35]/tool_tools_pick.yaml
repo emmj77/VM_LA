@@ -4,7 +4,7 @@ tool: "tools.pick"
 family: "core"
 sub_family: "tools"
 date: "2026-10-21"
-tags: ["tools", "pick", "vectors"]
+tags: ["manage", "local", "file", "list"]
 RULES:
   enabled: true
   timeout: 120

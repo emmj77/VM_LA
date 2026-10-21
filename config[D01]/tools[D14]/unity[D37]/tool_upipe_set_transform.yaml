@@ -1,7 +1,7 @@
 id: "U141"
 tool: "upipe_set_transform"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_transform"]
+tags: ["unity", "unity", "project", "set"]
 
 RULES:
   enabled: true

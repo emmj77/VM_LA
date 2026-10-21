@@ -1,7 +1,7 @@
 id: "C021"
 tool: "wan-t2v"
 date: "2026-10-17"
-tags: ["comfyui", "wan-t2v", "video", "t2v"]
+tags: ["image", "comfyui", "text", "run"]
 
 RULES:
   enabled: true

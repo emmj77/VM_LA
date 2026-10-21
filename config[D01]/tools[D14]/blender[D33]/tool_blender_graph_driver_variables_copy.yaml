@@ -1,7 +1,7 @@
 id: "B385"
 tool: "blender_graph_driver_variables_copy"
 date: "2026-10-17"
-tags: ["blender_graph_driver_variables_copy"]
+tags: ["blender", "blender", "mesh", "copy"]
 
 RULES:
   enabled: true

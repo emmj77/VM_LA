@@ -1,7 +1,7 @@
 id: "B029"
 tool: "blender_action_stash"
 date: "2026-10-17"
-tags: ["blender_action_stash"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

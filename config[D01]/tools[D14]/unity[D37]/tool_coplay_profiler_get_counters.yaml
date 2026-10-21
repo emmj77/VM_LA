@@ -1,7 +1,7 @@
 id: "U220"
 tool: "coplay_profiler_get_counters"
 date: "2026-10-18"
-tags: ["unity", "coplay", "profiler"]
+tags: ["unity", "unity", "project", "read"]
 
 RULES:
   enabled: true

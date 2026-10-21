@@ -1,7 +1,7 @@
 id: "B534"
 tool: "blender_image_open_images"
 date: "2026-10-17"
-tags: ["blender_image_open_images"]
+tags: ["blender", "blender", "img", "open"]
 
 RULES:
   enabled: true

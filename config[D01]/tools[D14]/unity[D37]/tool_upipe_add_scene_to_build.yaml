@@ -1,7 +1,7 @@
 id: "U006"
 tool: "upipe_add_scene_to_build"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "add_scene_to_build"]
+tags: ["unity", "unity", "scene", "add"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1612"
 tool: "blender_wm_grease_pencil_export_pdf"
 date: "2026-10-17"
-tags: ["blender_wm_grease_pencil_export_pdf"]
+tags: ["blender", "blender", "document", "export"]
 
 RULES:
   enabled: true

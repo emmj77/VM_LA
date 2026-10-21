@@ -1,7 +1,7 @@
 id: "U125"
 tool: "upipe_set_layer"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_layer"]
+tags: ["unity", "unity", "project", "set"]
 
 RULES:
   enabled: true

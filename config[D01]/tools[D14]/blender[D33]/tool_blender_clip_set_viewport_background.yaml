@@ -1,7 +1,7 @@
 id: "B179"
 tool: "blender_clip_set_viewport_background"
 date: "2026-10-17"
-tags: ["blender_clip_set_viewport_background"]
+tags: ["blender", "blender", "scene", "set"]
 
 RULES:
   enabled: true

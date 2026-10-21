@@ -1,7 +1,7 @@
 id: "B1228"
 tool: "blender_render_play_rendered_anim"
 date: "2026-10-17"
-tags: ["blender_render_play_rendered_anim"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

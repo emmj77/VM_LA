@@ -1,7 +1,7 @@
 id: "A003"
 tool: "asset_builder_list"
 date: "2026-10-19"
-tags: ["asset_builder", "session"]
+tags: ["manage", "shell", "mesh", "list"]
 
 
 RULES:

@@ -1,7 +1,7 @@
 id: "U004"
 tool: "upipe_add_animator_transition"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "add_animator_transition"]
+tags: ["unity", "unity", "animation", "add"]
 
 RULES:
   enabled: true

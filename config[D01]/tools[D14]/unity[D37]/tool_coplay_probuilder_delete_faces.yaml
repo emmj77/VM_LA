@@ -1,7 +1,7 @@
 id: "U209"
 tool: "coplay_probuilder_delete_faces"
 date: "2026-10-18"
-tags: ["unity", "coplay", "probuilder"]
+tags: ["unity", "unity", "mesh", "delete"]
 
 RULES:
   enabled: true

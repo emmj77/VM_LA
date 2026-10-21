@@ -1,7 +1,7 @@
 id: "B367"
 tool: "blender_geometry_geometry_randomization"
 date: "2026-10-17"
-tags: ["blender_geometry_geometry_randomization"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1496"
 tool: "blender_uv_follow_active_quads"
 date: "2026-10-17"
-tags: ["blender_uv_follow_active_quads"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

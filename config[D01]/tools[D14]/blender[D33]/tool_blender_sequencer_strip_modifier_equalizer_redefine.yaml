@@ -1,7 +1,7 @@
 id: "B1394"
 tool: "blender_sequencer_strip_modifier_equalizer_redefine"
 date: "2026-10-17"
-tags: ["blender_sequencer_strip_modifier_equalizer_redefine"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

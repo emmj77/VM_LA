@@ -1,7 +1,7 @@
 id: "B1101"
 tool: "blender_paint_add_texture_paint_slot"
 date: "2026-10-17"
-tags: ["blender_paint_add_texture_paint_slot"]
+tags: ["blender", "blender", "material", "add"]
 
 RULES:
   enabled: true

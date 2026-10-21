@@ -1,7 +1,7 @@
 id: "U391"
 tool: "unity_projects_info"
 date: "2026-10-18"
-tags: ["unity", "cli", "projects"]
+tags: ["unity", "unity", "project", "show"]
 
 RULES:
   enabled: true

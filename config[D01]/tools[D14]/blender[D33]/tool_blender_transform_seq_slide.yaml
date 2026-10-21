@@ -1,7 +1,7 @@
 id: "B1460"
 tool: "blender_transform_seq_slide"
 date: "2026-10-17"
-tags: ["blender_transform_seq_slide"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

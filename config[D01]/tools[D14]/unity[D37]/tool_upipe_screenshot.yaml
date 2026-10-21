@@ -1,7 +1,7 @@
 id: "U113"
 tool: "upipe_screenshot"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "screenshot"]
+tags: ["unity", "unity", "scene", "run"]
 
 RULES:
   enabled: true

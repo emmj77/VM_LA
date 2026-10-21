@@ -1,7 +1,7 @@
 id: "U132"
 tool: "upipe_set_quality_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_quality_settings"]
+tags: ["unity", "unity", "config", "set"]
 
 RULES:
   enabled: true

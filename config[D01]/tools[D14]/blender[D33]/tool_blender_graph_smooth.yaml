@@ -1,7 +1,7 @@
 id: "B425"
 tool: "blender_graph_smooth"
 date: "2026-10-17"
-tags: ["blender_graph_smooth"]
+tags: ["blender", "blender", "mesh", "apply"]
 
 RULES:
   enabled: true

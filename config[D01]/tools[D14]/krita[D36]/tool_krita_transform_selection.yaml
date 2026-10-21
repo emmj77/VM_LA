@@ -1,7 +1,7 @@
 id: "K077"
 tool: "krita_transform_selection"
 date: "2026-10-18"
-tags: ["krita", "krita_transform_selection"]
+tags: ["krita", "krita", "img", "move"]
 
 RULES:
   enabled: true

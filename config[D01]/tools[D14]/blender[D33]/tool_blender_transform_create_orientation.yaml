@@ -1,7 +1,7 @@
 id: "B1452"
 tool: "blender_transform_create_orientation"
 date: "2026-10-17"
-tags: ["blender_transform_create_orientation"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

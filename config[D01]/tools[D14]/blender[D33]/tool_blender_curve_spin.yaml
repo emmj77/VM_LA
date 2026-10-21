@@ -1,7 +1,7 @@
 id: "B265"
 tool: "blender_curve_spin"
 date: "2026-10-17"
-tags: ["blender_curve_spin"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

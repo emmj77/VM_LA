@@ -1,7 +1,7 @@
 id: "B1513"
 tool: "blender_uv_select"
 date: "2026-10-17"
-tags: ["blender_uv_select"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

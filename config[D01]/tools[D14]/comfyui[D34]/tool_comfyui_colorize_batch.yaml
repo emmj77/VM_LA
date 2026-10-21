@@ -1,7 +1,7 @@
 id: "C007"
 tool: "comfyui_colorize_batch"
 date: "2026-10-17"
-tags: ["comfyui", "comfyui_colorize_batch"]
+tags: ["image", "comfyui", "img", "run"]
 
 RULES:
   enabled: true

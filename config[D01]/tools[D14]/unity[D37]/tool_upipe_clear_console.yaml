@@ -1,7 +1,7 @@
 id: "U029"
 tool: "upipe_clear_console"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "clear_console"]
+tags: ["unity", "unity", "project", "clear"]
 
 RULES:
   enabled: true

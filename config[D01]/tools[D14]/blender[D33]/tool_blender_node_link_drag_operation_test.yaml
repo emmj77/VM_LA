@@ -1,7 +1,7 @@
 id: "B848"
 tool: "blender_node_link_drag_operation_test"
 date: "2026-10-17"
-tags: ["blender_node_link_drag_operation_test"]
+tags: ["blender", "blender", "node", "test"]
 
 RULES:
   enabled: true

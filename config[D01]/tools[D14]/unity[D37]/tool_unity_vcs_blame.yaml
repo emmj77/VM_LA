@@ -1,7 +1,7 @@
 id: "U419"
 tool: "unity_vcs_blame"
 date: "2026-10-18"
-tags: ["unity", "cli", "vcs"]
+tags: ["unity", "unity", "scene", "show"]
 
 RULES:
   enabled: true

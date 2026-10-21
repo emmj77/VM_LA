@@ -1,7 +1,7 @@
 id: "B708"
 tool: "blender_mesh_select_edge_ring_multi"
 date: "2026-10-17"
-tags: ["blender_mesh_select_edge_ring_multi"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

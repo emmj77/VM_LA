@@ -1,7 +1,7 @@
 id: "B056"
 tool: "blender_anim_separate_slots"
 date: "2026-10-17"
-tags: ["blender_anim_separate_slots"]
+tags: ["blender", "blender", "animation", "move"]
 
 RULES:
   enabled: true

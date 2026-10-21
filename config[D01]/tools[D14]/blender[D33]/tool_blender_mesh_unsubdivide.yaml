@@ -1,7 +1,7 @@
 id: "B744"
 tool: "blender_mesh_unsubdivide"
 date: "2026-10-17"
-tags: ["blender_mesh_unsubdivide"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

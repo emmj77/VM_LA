@@ -1,7 +1,7 @@
 id: "B1047"
 tool: "blender_object_skin_root_mark"
 date: "2026-10-17"
-tags: ["blender_object_skin_root_mark"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

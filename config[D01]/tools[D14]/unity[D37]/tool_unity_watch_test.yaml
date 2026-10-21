@@ -1,7 +1,7 @@
 id: "U445"
 tool: "unity_watch_test"
 date: "2026-10-18"
-tags: ["unity", "cli", "watch"]
+tags: ["unity", "unity", "project", "test"]
 
 RULES:
   enabled: true

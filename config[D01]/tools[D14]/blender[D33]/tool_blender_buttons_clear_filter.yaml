@@ -1,7 +1,7 @@
 id: "B118"
 tool: "blender_buttons_clear_filter"
 date: "2026-10-17"
-tags: ["blender_buttons_clear_filter"]
+tags: ["blender", "blender", "text", "clear"]
 
 RULES:
   enabled: true

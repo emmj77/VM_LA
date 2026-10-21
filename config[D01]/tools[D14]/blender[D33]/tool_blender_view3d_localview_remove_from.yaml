@@ -1,7 +1,7 @@
 id: "B1552"
 tool: "blender_view3d_localview_remove_from"
 date: "2026-10-17"
-tags: ["blender_view3d_localview_remove_from"]
+tags: ["blender", "blender", "object", "remove"]
 
 RULES:
   enabled: true

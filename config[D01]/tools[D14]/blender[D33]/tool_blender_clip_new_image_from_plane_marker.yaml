@@ -1,7 +1,7 @@
 id: "B159"
 tool: "blender_clip_new_image_from_plane_marker"
 date: "2026-10-17"
-tags: ["blender_clip_new_image_from_plane_marker"]
+tags: ["blender", "blender", "img", "run"]
 
 RULES:
   enabled: true

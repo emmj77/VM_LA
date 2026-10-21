@@ -1,7 +1,7 @@
 id: "U319"
 tool: "unity_config_update_check"
 date: "2026-10-18"
-tags: ["unity", "cli", "config"]
+tags: ["unity", "unity", "config", "update"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B365"
 tool: "blender_font_textbox_remove"
 date: "2026-10-17"
-tags: ["blender_font_textbox_remove"]
+tags: ["blender", "blender", "text", "remove"]
 
 RULES:
   enabled: true

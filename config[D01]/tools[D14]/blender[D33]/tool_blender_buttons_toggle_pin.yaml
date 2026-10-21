@@ -1,7 +1,7 @@
 id: "B123"
 tool: "blender_buttons_toggle_pin"
 date: "2026-10-17"
-tags: ["blender_buttons_toggle_pin"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

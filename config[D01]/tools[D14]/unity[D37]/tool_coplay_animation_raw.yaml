@@ -1,7 +1,7 @@
 id: "U152"
 tool: "coplay_animation_raw"
 date: "2026-10-18"
-tags: ["unity", "coplay", "animation"]
+tags: ["unity", "unity", "animation", "run"]
 
 RULES:
   enabled: true

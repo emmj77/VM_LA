@@ -1,7 +1,7 @@
 id: "U302"
 tool: "unity_collaboration_jira_server_test"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "project", "test"]
 
 RULES:
   enabled: true

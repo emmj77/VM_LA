@@ -1,7 +1,7 @@
 id: "U005"
 tool: "upipe_add_component"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "add_component"]
+tags: ["unity", "unity", "project", "add"]
 
 RULES:
   enabled: true

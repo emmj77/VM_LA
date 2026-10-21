@@ -1,7 +1,7 @@
 id: "B1060"
 tool: "blender_object_vertex_parent_set"
 date: "2026-10-17"
-tags: ["blender_object_vertex_parent_set"]
+tags: ["blender", "blender", "object", "set"]
 
 RULES:
   enabled: true

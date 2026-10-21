@@ -1,7 +1,7 @@
 id: "G062"
 tool: "mkdir"
 date: "2026-10-18"
-tags: ["mkdir", "ecriture", "dir"]
+tags: ["write", "shell", "table", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B330"
 tool: "blender_file_highlight"
 date: "2026-10-17"
-tags: ["blender_file_highlight"]
+tags: ["blender", "blender", "scene", "run"]
 
 RULES:
   enabled: true

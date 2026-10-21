@@ -1,7 +1,7 @@
 id: "B008"
 tool: "blender_action_duplicate"
 date: "2026-10-17"
-tags: ["blender_action_duplicate"]
+tags: ["blender", "blender", "animation", "copy"]
 
 RULES:
   enabled: true

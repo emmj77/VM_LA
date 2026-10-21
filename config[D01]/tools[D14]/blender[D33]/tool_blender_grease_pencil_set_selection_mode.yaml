@@ -1,7 +1,7 @@
 id: "B495"
 tool: "blender_grease_pencil_set_selection_mode"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_set_selection_mode"]
+tags: ["blender", "blender", "draw", "set"]
 
 RULES:
   enabled: true

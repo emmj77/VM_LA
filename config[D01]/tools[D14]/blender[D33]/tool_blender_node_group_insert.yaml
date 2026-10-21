@@ -1,7 +1,7 @@
 id: "B836"
 tool: "blender_node_group_insert"
 date: "2026-10-17"
-tags: ["blender_node_group_insert"]
+tags: ["blender", "blender", "node", "run"]
 
 RULES:
   enabled: true

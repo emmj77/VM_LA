@@ -1,7 +1,7 @@
 id: "B308"
 tool: "blender_ed_flush_edits"
 date: "2026-10-17"
-tags: ["blender_ed_flush_edits"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

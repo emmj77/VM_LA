@@ -1,7 +1,7 @@
 id: "B936"
 tool: "blender_object_empty_add"
 date: "2026-10-17"
-tags: ["blender_object_empty_add"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

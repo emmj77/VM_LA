@@ -1,7 +1,7 @@
 id: "U066"
 tool: "upipe_get_material_properties"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_material_properties"]
+tags: ["unity", "unity", "material", "read"]
 
 RULES:
   enabled: true

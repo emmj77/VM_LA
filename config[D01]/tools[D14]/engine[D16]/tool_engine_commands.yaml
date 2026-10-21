@@ -2,7 +2,7 @@
 id: "E004"
 tool: "engine.commands"
 date: "2026-10-20"
-tags: ["engine", "commands"]
+tags: ["manage", "local", "turn", "update"]
 RULES:
   enabled: true
   timeout: 600

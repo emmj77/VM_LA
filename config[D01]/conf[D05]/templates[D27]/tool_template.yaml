@@ -9,7 +9,10 @@ id: "{{id}}"                 # THE identity of this tool: the register repeats i
                              # correspondence between a line and a body is by it, and by nothing else
 tool: "{{name}}"             # the name the model calls; the file is tool_<name>.yaml
 date: "{{date}}"             # the day it was laid down
-tags: ["{{name}}"]           # the words that make this tool come to mind
+tags: ["{{nature}}", "{{engine}}", "{{object}}", "{{verb}}"]
+                             # FOUR words, one per class, and every value comes from the four closed
+                             # lists of the master file (tags: natures, engines, objects, verbs).
+                             # doctor.tags counts them: a tag outside the lists is a fault.
 
 RULES:                       # what bounds the tool, said before any effect
   enabled: true              # true | false: a disabled tool is refused, it does not disappear

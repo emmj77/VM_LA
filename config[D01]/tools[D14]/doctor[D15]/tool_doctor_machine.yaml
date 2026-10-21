@@ -2,7 +2,7 @@
 id: "D006"
 tool: "doctor.machine"
 date: "2026-10-20"
-tags: ["doctor", "machine"]
+tags: ["manage", "indra", "process", "run"]
 RULES:
   enabled: true
   timeout: 180

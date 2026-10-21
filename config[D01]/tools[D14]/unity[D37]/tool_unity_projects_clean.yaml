@@ -1,7 +1,7 @@
 id: "U384"
 tool: "unity_projects_clean"
 date: "2026-10-18"
-tags: ["unity", "cli", "projects"]
+tags: ["unity", "unity", "project", "delete"]
 
 RULES:
   enabled: true

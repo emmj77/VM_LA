@@ -1,7 +1,7 @@
 id: "U087"
 tool: "upipe_log"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "log"]
+tags: ["unity", "unity", "project", "write"]
 
 RULES:
   enabled: true

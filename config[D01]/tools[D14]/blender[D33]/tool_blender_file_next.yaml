@@ -1,7 +1,7 @@
 id: "B334"
 tool: "blender_file_next"
 date: "2026-10-17"
-tags: ["blender_file_next"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

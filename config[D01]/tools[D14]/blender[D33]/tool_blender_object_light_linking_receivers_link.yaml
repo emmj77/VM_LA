@@ -1,7 +1,7 @@
 id: "B972"
 tool: "blender_object_light_linking_receivers_link"
 date: "2026-10-17"
-tags: ["blender_object_light_linking_receivers_link"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

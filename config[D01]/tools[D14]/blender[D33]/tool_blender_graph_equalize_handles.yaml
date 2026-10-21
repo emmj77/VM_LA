@@ -1,7 +1,7 @@
 id: "B391"
 tool: "blender_graph_equalize_handles"
 date: "2026-10-17"
-tags: ["blender_graph_equalize_handles"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

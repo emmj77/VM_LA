@@ -1,7 +1,7 @@
 id: "U035"
 tool: "upipe_copy_asset"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "copy_asset"]
+tags: ["unity", "unity", "project", "copy"]
 
 RULES:
   enabled: true

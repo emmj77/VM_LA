@@ -1,7 +1,7 @@
 id: "B1638"
 tool: "blender_wm_previews_batch_clear"
 date: "2026-10-17"
-tags: ["blender_wm_previews_batch_clear"]
+tags: ["blender", "blender", "mesh", "clear"]
 
 RULES:
   enabled: true

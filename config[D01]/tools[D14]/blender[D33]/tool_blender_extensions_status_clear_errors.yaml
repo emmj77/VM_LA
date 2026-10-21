@@ -1,7 +1,7 @@
 id: "B318"
 tool: "blender_extensions_status_clear_errors"
 date: "2026-10-17"
-tags: ["blender_extensions_status_clear_errors"]
+tags: ["blender", "blender", "document", "clear"]
 
 RULES:
   enabled: true

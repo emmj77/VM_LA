@@ -1,7 +1,7 @@
 id: "B1320"
 tool: "blender_sculpt_paint_mask_slice"
 date: "2026-10-17"
-tags: ["blender_sculpt_paint_mask_slice"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

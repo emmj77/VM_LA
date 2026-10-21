@@ -1,7 +1,7 @@
 id: "B947"
 tool: "blender_object_geometry_nodes_move_to_nodes"
 date: "2026-10-17"
-tags: ["blender_object_geometry_nodes_move_to_nodes"]
+tags: ["blender", "blender", "node", "move"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1100"
 tool: "blender_paint_add_simple_uvs"
 date: "2026-10-17"
-tags: ["blender_paint_add_simple_uvs"]
+tags: ["blender", "blender", "draw", "add"]
 
 RULES:
   enabled: true

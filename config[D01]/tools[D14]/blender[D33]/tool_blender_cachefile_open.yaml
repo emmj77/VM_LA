@@ -1,7 +1,7 @@
 id: "B124"
 tool: "blender_cachefile_open"
 date: "2026-10-17"
-tags: ["blender_cachefile_open"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

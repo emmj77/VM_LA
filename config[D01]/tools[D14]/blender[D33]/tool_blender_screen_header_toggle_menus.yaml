@@ -1,7 +1,7 @@
 id: "B1281"
 tool: "blender_screen_header_toggle_menus"
 date: "2026-10-17"
-tags: ["blender_screen_header_toggle_menus"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

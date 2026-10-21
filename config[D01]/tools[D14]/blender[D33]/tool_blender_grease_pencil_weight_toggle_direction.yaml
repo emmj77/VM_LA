@@ -1,7 +1,7 @@
 id: "B518"
 tool: "blender_grease_pencil_weight_toggle_direction"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_weight_toggle_direction"]
+tags: ["blender", "blender", "draw", "add"]
 
 RULES:
   enabled: true

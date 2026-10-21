@@ -1,7 +1,7 @@
 id: "G044"
 tool: "guess_family_of_text"
 date: "2026-10-17"
-tags: ["guess_family_of_text", "fasttext", "filter", "family", "routing"]
+tags: ["read", "shell", "turn", "read"]
 
 RULES:
   enabled: true

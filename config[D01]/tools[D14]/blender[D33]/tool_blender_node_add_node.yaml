@@ -1,7 +1,7 @@
 id: "B803"
 tool: "blender_node_add_node"
 date: "2026-10-17"
-tags: ["blender_node_add_node"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

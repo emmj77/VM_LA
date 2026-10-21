@@ -1,7 +1,7 @@
 id: "B244"
 tool: "blender_curve_match_texture_space"
 date: "2026-10-17"
-tags: ["blender_curve_match_texture_space"]
+tags: ["blender", "blender", "material", "run"]
 
 RULES:
   enabled: true

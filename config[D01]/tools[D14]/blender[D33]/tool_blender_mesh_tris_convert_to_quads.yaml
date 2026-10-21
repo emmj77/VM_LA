@@ -1,7 +1,7 @@
 id: "B743"
 tool: "blender_mesh_tris_convert_to_quads"
 date: "2026-10-17"
-tags: ["blender_mesh_tris_convert_to_quads"]
+tags: ["blender", "blender", "mesh", "convert"]
 
 RULES:
   enabled: true

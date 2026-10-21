@@ -1,7 +1,7 @@
 id: "B1568"
 tool: "blender_view3d_toggle_matcap_flip"
 date: "2026-10-17"
-tags: ["blender_view3d_toggle_matcap_flip"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

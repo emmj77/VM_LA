@@ -1,7 +1,7 @@
 id: "B1096"
 tool: "blender_outliner_show_hierarchy"
 date: "2026-10-17"
-tags: ["blender_outliner_show_hierarchy"]
+tags: ["blender", "blender", "object", "show"]
 
 RULES:
   enabled: true

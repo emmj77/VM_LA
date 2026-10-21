@@ -1,7 +1,7 @@
 id: "B184"
 tool: "blender_clip_track_color_preset_add"
 date: "2026-10-17"
-tags: ["blender_clip_track_color_preset_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

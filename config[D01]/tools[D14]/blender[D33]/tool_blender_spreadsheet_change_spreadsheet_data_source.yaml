@@ -1,7 +1,7 @@
 id: "B1414"
 tool: "blender_spreadsheet_change_spreadsheet_data_source"
 date: "2026-10-17"
-tags: ["blender_spreadsheet_change_spreadsheet_data_source"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

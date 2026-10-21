@@ -1,7 +1,7 @@
 id: "B075"
 tool: "blender_armature_extrude_move"
 date: "2026-10-17"
-tags: ["blender_armature_extrude_move"]
+tags: ["blender", "blender", "animation", "move"]
 
 RULES:
   enabled: true

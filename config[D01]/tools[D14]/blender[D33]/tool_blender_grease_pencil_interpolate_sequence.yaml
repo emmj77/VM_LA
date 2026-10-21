@@ -1,7 +1,7 @@
 id: "B456"
 tool: "blender_grease_pencil_interpolate_sequence"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_interpolate_sequence"]
+tags: ["blender", "blender", "mesh", "generate"]
 
 RULES:
   enabled: true

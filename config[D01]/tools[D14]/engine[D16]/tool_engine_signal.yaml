@@ -2,7 +2,7 @@
 id: "E019"
 tool: "engine.signal"
 date: "2026-10-21"
-tags: ["engine", "signal"]
+tags: ["manage", "shell", "process", "list"]
 RULES:
   enabled: true
   timeout: 60

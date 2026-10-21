@@ -1,7 +1,7 @@
 id: "B203"
 tool: "blender_cloth_preset_add"
 date: "2026-10-17"
-tags: ["blender_cloth_preset_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

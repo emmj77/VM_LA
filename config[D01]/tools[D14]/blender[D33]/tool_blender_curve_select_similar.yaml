@@ -1,7 +1,7 @@
 id: "B259"
 tool: "blender_curve_select_similar"
 date: "2026-10-17"
-tags: ["blender_curve_select_similar"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

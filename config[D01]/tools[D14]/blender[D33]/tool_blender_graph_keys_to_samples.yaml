@@ -1,7 +1,7 @@
 id: "B403"
 tool: "blender_graph_keys_to_samples"
 date: "2026-10-17"
-tags: ["blender_graph_keys_to_samples"]
+tags: ["blender", "blender", "table", "convert"]
 
 RULES:
   enabled: true

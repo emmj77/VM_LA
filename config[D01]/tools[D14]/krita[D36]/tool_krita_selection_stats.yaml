@@ -1,7 +1,7 @@
 id: "K070"
 tool: "krita_selection_stats"
 date: "2026-10-18"
-tags: ["krita", "krita_selection_stats"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

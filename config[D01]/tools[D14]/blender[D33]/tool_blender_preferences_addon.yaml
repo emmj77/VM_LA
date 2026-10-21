@@ -1,7 +1,7 @@
 id: "B1765"
 tool: "blender_preferences_addon"
 date: "2026-10-17"
-tags: ["blender_preferences_addon"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

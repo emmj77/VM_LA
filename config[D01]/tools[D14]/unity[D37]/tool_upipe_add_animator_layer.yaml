@@ -1,7 +1,7 @@
 id: "U001"
 tool: "upipe_add_animator_layer"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "add_animator_layer"]
+tags: ["unity", "unity", "animation", "add"]
 
 RULES:
   enabled: true

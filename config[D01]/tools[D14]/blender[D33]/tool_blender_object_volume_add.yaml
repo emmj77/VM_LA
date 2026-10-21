@@ -1,7 +1,7 @@
 id: "B1068"
 tool: "blender_object_volume_add"
 date: "2026-10-17"
-tags: ["blender_object_volume_add"]
+tags: ["blender", "blender", "object", "add"]
 
 RULES:
   enabled: true

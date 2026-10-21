@@ -1,7 +1,7 @@
 id: "B1199"
 tool: "blender_pose_rotation_mode_set"
 date: "2026-10-17"
-tags: ["blender_pose_rotation_mode_set"]
+tags: ["blender", "blender", "animation", "set"]
 
 RULES:
   enabled: true

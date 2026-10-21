@@ -1,7 +1,7 @@
 id: "B377"
 tool: "blender_graph_clean"
 date: "2026-10-17"
-tags: ["blender_graph_clean"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

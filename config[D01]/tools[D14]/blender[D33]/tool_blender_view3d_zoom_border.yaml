@@ -1,7 +1,7 @@
 id: "B1589"
 tool: "blender_view3d_zoom_border"
 date: "2026-10-17"
-tags: ["blender_view3d_zoom_border"]
+tags: ["blender", "blender", "object", "run"]
 
 RULES:
   enabled: true

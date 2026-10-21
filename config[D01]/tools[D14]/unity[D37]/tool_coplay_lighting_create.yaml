@@ -1,7 +1,7 @@
 id: "U182"
 tool: "coplay_lighting_create"
 date: "2026-10-18"
-tags: ["unity", "coplay", "lighting"]
+tags: ["unity", "unity", "scene", "run"]
 
 RULES:
   enabled: true

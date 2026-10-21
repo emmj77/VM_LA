@@ -1,7 +1,7 @@
 id: "U115"
 tool: "upipe_set_active"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "set_active"]
+tags: ["unity", "unity", "project", "set"]
 
 RULES:
   enabled: true

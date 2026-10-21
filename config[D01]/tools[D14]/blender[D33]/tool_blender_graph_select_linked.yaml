@@ -1,7 +1,7 @@
 id: "B422"
 tool: "blender_graph_select_linked"
 date: "2026-10-17"
-tags: ["blender_graph_select_linked"]
+tags: ["blender", "blender", "animation", "select"]
 
 RULES:
   enabled: true

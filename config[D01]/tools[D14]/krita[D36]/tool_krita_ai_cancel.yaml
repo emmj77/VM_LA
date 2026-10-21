@@ -1,7 +1,7 @@
 id: "K016"
 tool: "krita_ai_cancel"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_cancel"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

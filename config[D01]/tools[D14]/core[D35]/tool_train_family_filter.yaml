@@ -1,7 +1,7 @@
 id: "G043"
 tool: "train_family_filter"
 date: "2026-10-17"
-tags: ["train_family_filter", "fasttext", "filter", "family", "classifier"]
+tags: ["manage", "shell", "project", "run"]
 
 RULES:
   enabled: true

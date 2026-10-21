@@ -1,7 +1,7 @@
 id: "G041"
 tool: "read_language_of_text"
 date: "2026-10-17"
-tags: ["read_language_of_text", "langue", "fasttext", "filter"]
+tags: ["read", "shell", "text", "read"]
 
 RULES:
   enabled: true

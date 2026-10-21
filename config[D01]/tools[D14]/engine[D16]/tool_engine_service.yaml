@@ -2,7 +2,7 @@
 id: "E022"
 tool: "engine.service"
 date: "2026-10-21"
-tags: ["engine", "service"]
+tags: ["manage", "python", "process", "run"]
 RULES:
   enabled: true
   timeout: 0

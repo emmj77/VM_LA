@@ -1,7 +1,7 @@
 id: "B1142"
 tool: "blender_palette_join"
 date: "2026-10-17"
-tags: ["blender_palette_join"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

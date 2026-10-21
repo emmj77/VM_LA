@@ -1,7 +1,7 @@
 id: "B139"
 tool: "blender_clip_delete_proxy"
 date: "2026-10-17"
-tags: ["blender_clip_delete_proxy"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

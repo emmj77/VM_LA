@@ -1,7 +1,7 @@
 id: "B1140"
 tool: "blender_paintcurve_slide"
 date: "2026-10-17"
-tags: ["blender_paintcurve_slide"]
+tags: ["blender", "blender", "draw", "select"]
 
 RULES:
   enabled: true

@@ -19982,3 +19982,19 @@
   guardrail: true
   enabled: true
   visible: false
+- id: "D013"
+  tool: "doctor.tags"
+  family: MANAGE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: true
+- id: "D014"
+  tool: "doctor.vision"
+  family: MANAGE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: true

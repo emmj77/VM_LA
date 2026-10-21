@@ -1,7 +1,7 @@
 id: "B1702"
 tool: "blender_boid_rule"
 date: "2026-10-17"
-tags: ["blender_boid_rule"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

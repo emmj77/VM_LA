@@ -1,7 +1,7 @@
 id: "U260"
 tool: "unity_cloud_project_list"
 date: "2026-10-18"
-tags: ["unity", "cli", "cloud"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

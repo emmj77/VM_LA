@@ -1,7 +1,7 @@
 id: "B496"
 tool: "blender_grease_pencil_set_start_point"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_set_start_point"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

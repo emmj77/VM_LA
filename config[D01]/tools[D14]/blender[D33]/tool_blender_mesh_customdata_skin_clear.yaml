@@ -1,7 +1,7 @@
 id: "B637"
 tool: "blender_mesh_customdata_skin_clear"
 date: "2026-10-17"
-tags: ["blender_mesh_customdata_skin_clear"]
+tags: ["blender", "blender", "mesh", "clear"]
 
 RULES:
   enabled: true

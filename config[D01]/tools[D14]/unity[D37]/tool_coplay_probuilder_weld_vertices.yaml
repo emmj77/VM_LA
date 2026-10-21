@@ -1,7 +1,7 @@
 id: "U218"
 tool: "coplay_probuilder_weld_vertices"
 date: "2026-10-18"
-tags: ["unity", "coplay", "probuilder"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

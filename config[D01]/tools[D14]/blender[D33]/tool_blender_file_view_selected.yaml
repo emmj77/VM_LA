@@ -1,7 +1,7 @@
 id: "B354"
 tool: "blender_file_view_selected"
 date: "2026-10-17"
-tags: ["blender_file_view_selected"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1564"
 tool: "blender_view3d_select_circle"
 date: "2026-10-17"
-tags: ["blender_view3d_select_circle"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

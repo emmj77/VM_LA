@@ -1,7 +1,7 @@
 id: "B268"
 tool: "blender_curve_split"
 date: "2026-10-17"
-tags: ["blender_curve_split"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U042"
 tool: "upipe_create_prefab"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "create_prefab"]
+tags: ["unity", "unity", "project", "save"]
 
 RULES:
   enabled: true

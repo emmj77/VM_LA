@@ -1,7 +1,7 @@
 id: "U199"
 tool: "coplay_physics_remove_joint"
 date: "2026-10-18"
-tags: ["unity", "coplay", "physics"]
+tags: ["unity", "unity", "project", "remove"]
 
 RULES:
   enabled: true

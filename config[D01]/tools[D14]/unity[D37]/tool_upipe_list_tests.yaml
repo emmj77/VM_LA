@@ -1,7 +1,7 @@
 id: "U086"
 tool: "upipe_list_tests"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "list_tests"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B279"
 tool: "blender_curves_duplicate"
 date: "2026-10-17"
-tags: ["blender_curves_duplicate"]
+tags: ["blender", "blender", "mesh", "copy"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U070"
 tool: "upipe_get_player_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_player_settings"]
+tags: ["unity", "unity", "config", "read"]
 
 RULES:
   enabled: true

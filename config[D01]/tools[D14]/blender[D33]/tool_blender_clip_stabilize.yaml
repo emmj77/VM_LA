@@ -1,7 +1,7 @@
 id: "B1707"
 tool: "blender_clip_stabilize"
 date: "2026-10-17"
-tags: ["blender_clip_stabilize"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

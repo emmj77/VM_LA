@@ -1,7 +1,7 @@
 id: "B1787"
 tool: "blender_transform_modal"
 date: "2026-10-17"
-tags: ["blender_transform_modal"]
+tags: ["blender", "blender", "mesh", "translate"]
 
 RULES:
   enabled: true

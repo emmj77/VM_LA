@@ -1,7 +1,7 @@
 id: "U367"
 tool: "unity_modules_list"
 date: "2026-10-18"
-tags: ["unity", "cli", "modules"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

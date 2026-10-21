@@ -1,7 +1,7 @@
 id: "B1258"
 tool: "blender_scene_freestyle_module_add"
 date: "2026-10-17"
-tags: ["blender_scene_freestyle_module_add"]
+tags: ["blender", "blender", "render", "add"]
 
 RULES:
   enabled: true

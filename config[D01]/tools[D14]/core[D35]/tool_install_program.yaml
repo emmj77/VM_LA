@@ -1,7 +1,7 @@
 id: "G045"
 tool: "install_program"
 date: "2026-10-17"
-tags: ["install_program", "installer", "apt", "paquet", "program-manage"]
+tags: ["manage", "shell", "file", "install"]
 
 RULES:
   enabled: true

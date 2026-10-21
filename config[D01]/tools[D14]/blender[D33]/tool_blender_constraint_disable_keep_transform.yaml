@@ -1,7 +1,7 @@
 id: "B221"
 tool: "blender_constraint_disable_keep_transform"
 date: "2026-10-17"
-tags: ["blender_constraint_disable_keep_transform"]
+tags: ["blender", "blender", "object", "set"]
 
 RULES:
   enabled: true

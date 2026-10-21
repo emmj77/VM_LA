@@ -2,7 +2,7 @@
 id: "E009"
 tool: "engine.retention"
 date: "2026-10-20"
-tags: ["engine", "retention"]
+tags: ["manage", "shell", "audio", "run"]
 RULES:
   enabled: true
   timeout: 300

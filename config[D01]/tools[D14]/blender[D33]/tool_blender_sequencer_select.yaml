@@ -1,7 +1,7 @@
 id: "B1369"
 tool: "blender_sequencer_select"
 date: "2026-10-17"
-tags: ["blender_sequencer_select"]
+tags: ["blender", "blender", "scene", "select"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "3D002"
 tool: "mesh-convert2fbx"
 date: "2026-10-17"
-tags: ["3d", "mesh-convert2fbx", "fbx", "convert"]
+tags: ["image", "shell", "mesh", "run"]
 
 RULES:
   enabled: true

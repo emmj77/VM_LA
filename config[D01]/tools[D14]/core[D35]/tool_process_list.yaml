@@ -1,7 +1,7 @@
 id: "G013"
 tool: "process_list"
 date: "2026-10-17"
-tags: ["process_list"]
+tags: ["read", "shell", "process", "list"]
 
 RULES:
   enabled: true

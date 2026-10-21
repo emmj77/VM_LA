@@ -1,7 +1,7 @@
 id: "U230"
 tool: "unity_analytics_opt_in"
 date: "2026-10-18"
-tags: ["unity", "cli", "analytics"]
+tags: ["unity", "unity", "scene", "run"]
 
 RULES:
   enabled: true

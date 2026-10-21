@@ -1,7 +1,7 @@
 id: "G032"
 tool: "web_extract"
 date: "2026-10-17"
-tags: ["web_extract"]
+tags: ["read", "shell", "document", "run"]
 
 RULES:
   enabled: true

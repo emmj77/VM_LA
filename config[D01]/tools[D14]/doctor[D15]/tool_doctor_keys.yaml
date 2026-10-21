@@ -2,7 +2,7 @@
 id: "D003"
 tool: "doctor.keys"
 date: "2026-10-20"
-tags: ["doctor", "keys"]
+tags: ["manage", "shell", "config", "run"]
 RULES:
   enabled: true
   timeout: 120

@@ -1,7 +1,7 @@
 id: "B1216"
 tool: "blender_preferences_clear_filter"
 date: "2026-10-17"
-tags: ["blender_preferences_clear_filter"]
+tags: ["blender", "blender", "text", "clear"]
 
 RULES:
   enabled: true

@@ -2,7 +2,7 @@
 id: "P003"
 tool: "plan.done"
 date: "2026-10-20"
-tags: ["plan", "done"]
+tags: ["plan", "shell", "plan", "run"]
 RULES:
   enabled: true
   timeout: 30

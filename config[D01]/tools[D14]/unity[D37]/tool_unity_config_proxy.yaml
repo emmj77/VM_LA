@@ -1,7 +1,7 @@
 id: "U315"
 tool: "unity_config_proxy"
 date: "2026-10-18"
-tags: ["unity", "cli", "config"]
+tags: ["unity", "unity", "config", "run"]
 
 RULES:
   enabled: true

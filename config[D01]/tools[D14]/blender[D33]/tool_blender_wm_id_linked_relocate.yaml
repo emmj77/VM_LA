@@ -1,7 +1,7 @@
 id: "B1615"
 tool: "blender_wm_id_linked_relocate"
 date: "2026-10-17"
-tags: ["blender_wm_id_linked_relocate"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

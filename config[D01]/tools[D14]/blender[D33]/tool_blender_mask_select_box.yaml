@@ -1,7 +1,7 @@
 id: "B606"
 tool: "blender_mask_select_box"
 date: "2026-10-17"
-tags: ["blender_mask_select_box"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B059"
 tool: "blender_anim_version_bone_hide_property"
 date: "2026-10-17"
-tags: ["blender_anim_version_bone_hide_property"]
+tags: ["blender", "blender", "animation", "hide"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1234"
 tool: "blender_render_view_show"
 date: "2026-10-17"
-tags: ["blender_render_view_show"]
+tags: ["blender", "blender", "render", "show"]
 
 RULES:
   enabled: true

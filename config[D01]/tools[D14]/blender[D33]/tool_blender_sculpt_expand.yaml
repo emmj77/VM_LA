@@ -1,7 +1,7 @@
 id: "B1310"
 tool: "blender_sculpt_expand"
 date: "2026-10-17"
-tags: ["blender_sculpt_expand"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

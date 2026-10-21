@@ -1,7 +1,7 @@
 id: "B1484"
 tool: "blender_uilist_entry_add"
 date: "2026-10-17"
-tags: ["blender_uilist_entry_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

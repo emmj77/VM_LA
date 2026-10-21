@@ -1,7 +1,7 @@
 id: "U193"
 tool: "coplay_physics_get_collision_matrix"
 date: "2026-10-18"
-tags: ["unity", "coplay", "physics"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

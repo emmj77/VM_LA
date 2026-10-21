@@ -2,7 +2,7 @@
 id: "E001"
 tool: "engine.approve"
 date: "2026-10-20"
-tags: ["engine", "approve"]
+tags: ["manage", "shell", "process", "run"]
 RULES:
   enabled: true
   timeout: 60

@@ -1,7 +1,7 @@
 id: "B1081"
 tool: "blender_outliner_item_openclose"
 date: "2026-10-17"
-tags: ["blender_outliner_item_openclose"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

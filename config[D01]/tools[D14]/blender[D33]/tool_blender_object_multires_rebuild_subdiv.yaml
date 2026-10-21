@@ -1,7 +1,7 @@
 id: "B996"
 tool: "blender_object_multires_rebuild_subdiv"
 date: "2026-10-17"
-tags: ["blender_object_multires_rebuild_subdiv"]
+tags: ["blender", "blender", "object", "generate"]
 
 RULES:
   enabled: true

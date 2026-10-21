@@ -1,7 +1,7 @@
 id: "U267"
 tool: "unity_collaboration_annotations_export"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "project", "export"]
 
 RULES:
   enabled: true

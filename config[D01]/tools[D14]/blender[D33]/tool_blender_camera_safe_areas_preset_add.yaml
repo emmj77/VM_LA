@@ -1,7 +1,7 @@
 id: "B127"
 tool: "blender_camera_safe_areas_preset_add"
 date: "2026-10-17"
-tags: ["blender_camera_safe_areas_preset_add"]
+tags: ["blender", "blender", "scene", "add"]
 
 RULES:
   enabled: true

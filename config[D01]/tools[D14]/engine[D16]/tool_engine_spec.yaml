@@ -2,7 +2,7 @@
 id: "E010"
 tool: "engine.spec"
 date: "2026-10-20"
-tags: ["engine", "spec"]
+tags: ["manage", "shell", "process", "add"]
 RULES:
   enabled: true
   timeout: 60

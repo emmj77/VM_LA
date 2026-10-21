@@ -1,7 +1,7 @@
 id: "B064"
 tool: "blender_armature_bone_primitive_add"
 date: "2026-10-17"
-tags: ["blender_armature_bone_primitive_add"]
+tags: ["blender", "blender", "animation", "add"]
 
 RULES:
   enabled: true

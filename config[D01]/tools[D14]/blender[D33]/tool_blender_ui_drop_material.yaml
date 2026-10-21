@@ -1,7 +1,7 @@
 id: "B1468"
 tool: "blender_ui_drop_material"
 date: "2026-10-17"
-tags: ["blender_ui_drop_material"]
+tags: ["blender", "blender", "material", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B442"
 tool: "blender_grease_pencil_delete_breakdown"
 date: "2026-10-17"
-tags: ["blender_grease_pencil_delete_breakdown"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

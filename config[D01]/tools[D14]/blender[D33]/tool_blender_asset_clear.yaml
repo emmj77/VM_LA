@@ -1,7 +1,7 @@
 id: "B104"
 tool: "blender_asset_clear"
 date: "2026-10-17"
-tags: ["blender_asset_clear"]
+tags: ["blender", "blender", "mesh", "clear"]
 
 RULES:
   enabled: true

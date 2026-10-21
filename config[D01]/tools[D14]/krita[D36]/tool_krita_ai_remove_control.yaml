@@ -1,7 +1,7 @@
 id: "K024"
 tool: "krita_ai_remove_control"
 date: "2026-10-18"
-tags: ["krita", "krita_ai_remove_control"]
+tags: ["krita", "krita", "img", "remove"]
 
 RULES:
   enabled: true

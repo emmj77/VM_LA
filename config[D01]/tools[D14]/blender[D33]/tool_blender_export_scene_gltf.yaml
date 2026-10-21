@@ -1,7 +1,7 @@
 id: "B316"
 tool: "blender_export_scene_gltf"
 date: "2026-10-17"
-tags: ["blender_export_scene_gltf"]
+tags: ["blender", "blender", "scene", "export"]
 
 RULES:
   enabled: true

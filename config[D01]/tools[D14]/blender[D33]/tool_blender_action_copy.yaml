@@ -1,7 +1,7 @@
 id: "B006"
 tool: "blender_action_copy"
 date: "2026-10-17"
-tags: ["blender_action_copy"]
+tags: ["blender", "blender", "animation", "copy"]
 
 RULES:
   enabled: true

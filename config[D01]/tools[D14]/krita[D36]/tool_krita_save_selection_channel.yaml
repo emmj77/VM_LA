@@ -1,7 +1,7 @@
 id: "K061"
 tool: "krita_save_selection_channel"
 date: "2026-10-18"
-tags: ["krita", "krita_save_selection_channel"]
+tags: ["krita", "krita", "document", "save"]
 
 RULES:
   enabled: true

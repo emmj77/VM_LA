@@ -1,7 +1,7 @@
 id: "B759"
 tool: "blender_nla_apply_scale"
 date: "2026-10-17"
-tags: ["blender_nla_apply_scale"]
+tags: ["blender", "blender", "mesh", "apply"]
 
 RULES:
   enabled: true

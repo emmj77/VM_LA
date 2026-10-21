@@ -1,7 +1,7 @@
 id: "C004"
 tool: "comfyui_colorize_under_lines"
 date: "2026-10-17"
-tags: ["comfyui", "comfyui_colorize_under_lines"]
+tags: ["image", "comfyui", "img", "run"]
 
 RULES:
   enabled: true

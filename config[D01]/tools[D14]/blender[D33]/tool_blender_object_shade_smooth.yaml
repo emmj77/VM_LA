@@ -1,7 +1,7 @@
 id: "B1034"
 tool: "blender_object_shade_smooth"
 date: "2026-10-17"
-tags: ["blender_object_shade_smooth"]
+tags: ["blender", "blender", "render", "run"]
 
 RULES:
   enabled: true

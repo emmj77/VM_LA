@@ -1,7 +1,7 @@
 id: "B276"
 tool: "blender_curves_curve_type_set"
 date: "2026-10-17"
-tags: ["blender_curves_curve_type_set"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

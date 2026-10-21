@@ -1,7 +1,7 @@
 id: "B275"
 tool: "blender_curves_convert_to_particle_system"
 date: "2026-10-17"
-tags: ["blender_curves_convert_to_particle_system"]
+tags: ["blender", "blender", "object", "convert"]
 
 RULES:
   enabled: true

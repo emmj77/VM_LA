@@ -1,7 +1,7 @@
 id: "B410"
 tool: "blender_graph_reveal"
 date: "2026-10-17"
-tags: ["blender_graph_reveal"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

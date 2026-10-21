@@ -1,7 +1,7 @@
 id: "B162"
 tool: "blender_clip_rebuild_proxy"
 date: "2026-10-17"
-tags: ["blender_clip_rebuild_proxy"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

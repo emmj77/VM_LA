@@ -2,7 +2,7 @@
 id: "E011"
 tool: "engine.stat"
 date: "2026-10-20"
-tags: ["engine", "stat"]
+tags: ["manage", "shell", "table", "run"]
 RULES:
   enabled: true
   timeout: 60

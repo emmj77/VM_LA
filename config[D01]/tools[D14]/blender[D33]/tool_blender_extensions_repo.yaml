@@ -1,7 +1,7 @@
 id: "B1719"
 tool: "blender_extensions_repo"
 date: "2026-10-17"
-tags: ["blender_extensions_repo"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

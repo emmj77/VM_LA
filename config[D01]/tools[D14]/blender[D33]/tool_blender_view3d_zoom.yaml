@@ -1,7 +1,7 @@
 id: "B1588"
 tool: "blender_view3d_zoom"
 date: "2026-10-17"
-tags: ["blender_view3d_zoom"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

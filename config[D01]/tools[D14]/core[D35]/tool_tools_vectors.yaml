@@ -4,7 +4,7 @@ tool: "tools.vectors"
 family: "core"
 sub_family: "tools"
 date: "2026-10-21"
-tags: ["tools", "vectors", "embedding"]
+tags: ["manage", "local", "table", "run"]
 RULES:
   enabled: true
   timeout: 600

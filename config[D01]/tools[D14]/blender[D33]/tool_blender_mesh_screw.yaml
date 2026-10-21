@@ -1,7 +1,7 @@
 id: "B701"
 tool: "blender_mesh_screw"
 date: "2026-10-17"
-tags: ["blender_mesh_screw"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

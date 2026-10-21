@@ -1,7 +1,7 @@
 id: "B1160"
 tool: "blender_particle_remove_doubles"
 date: "2026-10-17"
-tags: ["blender_particle_remove_doubles"]
+tags: ["blender", "blender", "mesh", "remove"]
 
 RULES:
   enabled: true

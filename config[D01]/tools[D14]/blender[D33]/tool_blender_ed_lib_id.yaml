@@ -1,7 +1,7 @@
 id: "B1716"
 tool: "blender_ed_lib_id"
 date: "2026-10-17"
-tags: ["blender_ed_lib_id"]
+tags: ["blender", "blender", "table", "generate"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B1327"
 tool: "blender_sculpt_uv_sculpt_pinch"
 date: "2026-10-17"
-tags: ["blender_sculpt_uv_sculpt_pinch"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

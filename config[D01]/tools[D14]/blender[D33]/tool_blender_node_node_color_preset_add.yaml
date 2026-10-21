@@ -1,7 +1,7 @@
 id: "B862"
 tool: "blender_node_node_color_preset_add"
 date: "2026-10-17"
-tags: ["blender_node_node_color_preset_add"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

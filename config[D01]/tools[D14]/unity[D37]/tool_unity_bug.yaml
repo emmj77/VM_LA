@@ -1,7 +1,7 @@
 id: "U244"
 tool: "unity_bug"
 date: "2026-10-18"
-tags: ["unity", "cli", "bug"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

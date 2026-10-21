@@ -1,7 +1,7 @@
 id: "G014"
 tool: "shell_run"
 date: "2026-10-17"
-tags: ["shell_run"]
+tags: ["manage", "shell", "file", "run"]
 
 RULES:
   enabled: true

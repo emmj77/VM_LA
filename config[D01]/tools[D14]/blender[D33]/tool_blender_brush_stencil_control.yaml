@@ -1,7 +1,7 @@
 id: "B115"
 tool: "blender_brush_stencil_control"
 date: "2026-10-17"
-tags: ["blender_brush_stencil_control"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

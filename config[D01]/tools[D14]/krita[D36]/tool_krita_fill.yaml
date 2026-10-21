@@ -1,7 +1,7 @@
 id: "K010"
 tool: "krita_fill"
 date: "2026-10-17"
-tags: ["krita", "krita_fill"]
+tags: ["krita", "krita", "img", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "B428"
 tool: "blender_graph_sound_to_samples"
 date: "2026-10-17"
-tags: ["blender_graph_sound_to_samples"]
+tags: ["blender", "blender", "audio", "run"]
 
 RULES:
   enabled: true

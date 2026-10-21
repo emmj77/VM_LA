@@ -1,7 +1,7 @@
 id: "B833"
 tool: "blender_node_gltf_settings_node_operator"
 date: "2026-10-17"
-tags: ["blender_node_gltf_settings_node_operator"]
+tags: ["blender", "blender", "node", "add"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U071"
 tool: "upipe_get_quality_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_quality_settings"]
+tags: ["unity", "unity", "config", "read"]
 
 RULES:
   enabled: true

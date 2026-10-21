@@ -1,7 +1,7 @@
 id: "B290"
 tool: "blender_curves_select_more"
 date: "2026-10-17"
-tags: ["blender_curves_select_more"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

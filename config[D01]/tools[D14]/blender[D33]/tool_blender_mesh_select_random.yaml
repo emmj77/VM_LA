@@ -1,7 +1,7 @@
 id: "B722"
 tool: "blender_mesh_select_random"
 date: "2026-10-17"
-tags: ["blender_mesh_select_random"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

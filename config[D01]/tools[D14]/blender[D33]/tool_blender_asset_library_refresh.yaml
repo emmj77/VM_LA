@@ -1,7 +1,7 @@
 id: "B106"
 tool: "blender_asset_library_refresh"
 date: "2026-10-17"
-tags: ["blender_asset_library_refresh"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

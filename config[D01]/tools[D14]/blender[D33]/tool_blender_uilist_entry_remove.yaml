@@ -1,7 +1,7 @@
 id: "B1486"
 tool: "blender_uilist_entry_remove"
 date: "2026-10-17"
-tags: ["blender_uilist_entry_remove"]
+tags: ["blender", "blender", "mesh", "remove"]
 
 RULES:
   enabled: true

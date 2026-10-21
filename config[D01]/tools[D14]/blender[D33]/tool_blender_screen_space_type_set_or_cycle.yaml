@@ -1,7 +1,7 @@
 id: "B1293"
 tool: "blender_screen_space_type_set_or_cycle"
 date: "2026-10-17"
-tags: ["blender_screen_space_type_set_or_cycle"]
+tags: ["blender", "blender", "mesh", "set"]
 
 RULES:
   enabled: true

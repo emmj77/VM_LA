@@ -1,7 +1,7 @@
 id: "U325"
 tool: "unity_diagnose_accelerator"
 date: "2026-10-18"
-tags: ["unity", "cli", "diagnose"]
+tags: ["unity", "unity", "config", "show"]
 
 RULES:
   enabled: true

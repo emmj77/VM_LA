@@ -1,7 +1,7 @@
 id: "B768"
 tool: "blender_nla_fmodifier_add"
 date: "2026-10-17"
-tags: ["blender_nla_fmodifier_add"]
+tags: ["blender", "blender", "mesh", "add"]
 
 RULES:
   enabled: true

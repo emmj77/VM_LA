@@ -1,7 +1,7 @@
 id: "B1129"
 tool: "blender_paint_weight_paint_toggle"
 date: "2026-10-17"
-tags: ["blender_paint_weight_paint_toggle"]
+tags: ["blender", "blender", "draw", "run"]
 
 RULES:
   enabled: true

@@ -1,7 +1,7 @@
 id: "U357"
 tool: "unity_language"
 date: "2026-10-18"
-tags: ["unity", "cli", "language"]
+tags: ["unity", "unity", "project", "show"]
 
 RULES:
   enabled: true

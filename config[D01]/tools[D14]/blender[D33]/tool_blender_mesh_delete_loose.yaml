@@ -1,7 +1,7 @@
 id: "B641"
 tool: "blender_mesh_delete_loose"
 date: "2026-10-17"
-tags: ["blender_mesh_delete_loose"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

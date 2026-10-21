@@ -1,7 +1,7 @@
 id: "A021"
 tool: "asset_builder_validate"
 date: "2026-10-19"
-tags: ["asset_builder", "build"]
+tags: ["manage", "shell", "mesh", "run"]
 
 
 RULES:

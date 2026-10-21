@@ -1,7 +1,7 @@
 id: "B1134"
 tool: "blender_paintcurve_add_point_slide"
 date: "2026-10-17"
-tags: ["blender_paintcurve_add_point_slide"]
+tags: ["blender", "blender", "draw", "add"]
 
 RULES:
   enabled: true

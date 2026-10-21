@@ -1,7 +1,7 @@
 id: "C019"
 tool: "upscale-4x"
 date: "2026-10-17"
-tags: ["comfyui", "upscale-4x", "upscale", "image"]
+tags: ["image", "comfyui", "img", "upscale"]
 
 RULES:
   enabled: true

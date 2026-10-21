@@ -1,7 +1,7 @@
 id: "B1627"
 tool: "blender_wm_open_mainfile"
 date: "2026-10-17"
-tags: ["blender_wm_open_mainfile"]
+tags: ["blender", "blender", "mesh", "open"]
 
 RULES:
   enabled: true

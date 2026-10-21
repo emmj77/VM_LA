@@ -1,7 +1,7 @@
 id: "B300"
 tool: "blender_cycles_denoise_animation"
 date: "2026-10-17"
-tags: ["blender_cycles_denoise_animation"]
+tags: ["blender", "blender", "animation", "run"]
 
 RULES:
   enabled: true

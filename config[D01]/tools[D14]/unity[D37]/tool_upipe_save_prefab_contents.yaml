@@ -1,7 +1,7 @@
 id: "U111"
 tool: "upipe_save_prefab_contents"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "save_prefab_contents"]
+tags: ["unity", "unity", "project", "save"]
 
 RULES:
   enabled: true

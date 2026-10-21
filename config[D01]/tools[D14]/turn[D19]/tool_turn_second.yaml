@@ -2,7 +2,7 @@
 id: "T007"
 tool: "turn.second"
 date: "2026-10-20"
-tags: ["turn", "second"]
+tags: ["manage", "local", "audio", "run"]
 RULES:
   enabled: true
   timeout: 60

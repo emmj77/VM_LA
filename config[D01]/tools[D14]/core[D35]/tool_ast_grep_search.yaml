@@ -1,7 +1,7 @@
 id: "G011"
 tool: "ast_grep_search"
 date: "2026-10-17"
-tags: ["ast_grep_search"]
+tags: ["read", "shell", "project", "search"]
 
 RULES:
   enabled: true

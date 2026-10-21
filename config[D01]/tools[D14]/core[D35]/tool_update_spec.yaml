@@ -1,7 +1,7 @@
 id: "G055"
 tool: "update_spec"
 date: "2026-10-17"
-tags: ["update_spec", "spec"]
+tags: ["plan", "shell", "config", "update"]
 
 RULES:
   enabled: true

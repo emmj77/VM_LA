@@ -1,7 +1,7 @@
 id: "C016"
 tool: "flux-txt2img"
 date: "2026-10-17"
-tags: ["comfyui", "flux-txt2img", "txt2img", "flux", "image"]
+tags: ["image", "comfyui", "img", "run"]
 
 RULES:
   enabled: true

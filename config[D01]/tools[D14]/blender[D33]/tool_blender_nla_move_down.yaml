@@ -1,7 +1,7 @@
 id: "B773"
 tool: "blender_nla_move_down"
 date: "2026-10-17"
-tags: ["blender_nla_move_down"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

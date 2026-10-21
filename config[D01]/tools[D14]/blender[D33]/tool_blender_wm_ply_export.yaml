@@ -1,7 +1,7 @@
 id: "B1636"
 tool: "blender_wm_ply_export"
 date: "2026-10-17"
-tags: ["blender_wm_ply_export"]
+tags: ["blender", "blender", "scene", "export"]
 
 RULES:
   enabled: true

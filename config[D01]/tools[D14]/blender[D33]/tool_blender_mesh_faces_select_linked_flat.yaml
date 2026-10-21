@@ -1,7 +1,7 @@
 id: "B659"
 tool: "blender_mesh_faces_select_linked_flat"
 date: "2026-10-17"
-tags: ["blender_mesh_faces_select_linked_flat"]
+tags: ["blender", "blender", "mesh", "select"]
 
 RULES:
   enabled: true

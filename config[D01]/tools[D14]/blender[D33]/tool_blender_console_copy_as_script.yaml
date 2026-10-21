@@ -1,7 +1,7 @@
 id: "B209"
 tool: "blender_console_copy_as_script"
 date: "2026-10-17"
-tags: ["blender_console_copy_as_script"]
+tags: ["blender", "blender", "mesh", "copy"]
 
 RULES:
   enabled: true

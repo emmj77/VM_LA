@@ -1,7 +1,7 @@
 id: "K006"
 tool: "krita_layer_set"
 date: "2026-10-17"
-tags: ["krita", "krita_layer_set"]
+tags: ["krita", "krita", "img", "set"]
 
 RULES:
   enabled: true

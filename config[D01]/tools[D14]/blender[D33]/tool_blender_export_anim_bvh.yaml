@@ -1,7 +1,7 @@
 id: "B314"
 tool: "blender_export_anim_bvh"
 date: "2026-10-17"
-tags: ["blender_export_anim_bvh"]
+tags: ["blender", "blender", "animation", "export"]
 
 RULES:
   enabled: true

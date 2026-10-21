@@ -1,7 +1,7 @@
 id: "B280"
 tool: "blender_curves_duplicate_move"
 date: "2026-10-17"
-tags: ["blender_curves_duplicate_move"]
+tags: ["blender", "blender", "mesh", "move"]
 
 RULES:
   enabled: true

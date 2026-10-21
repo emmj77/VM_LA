@@ -1,7 +1,7 @@
 id: "U407"
 tool: "unity_releases"
 date: "2026-10-18"
-tags: ["unity", "cli", "releases"]
+tags: ["unity", "unity", "project", "list"]
 
 RULES:
   enabled: true

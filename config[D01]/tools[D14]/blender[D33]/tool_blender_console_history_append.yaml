@@ -1,7 +1,7 @@
 id: "B211"
 tool: "blender_console_history_append"
 date: "2026-10-17"
-tags: ["blender_console_history_append"]
+tags: ["blender", "blender", "mesh", "run"]
 
 RULES:
   enabled: true

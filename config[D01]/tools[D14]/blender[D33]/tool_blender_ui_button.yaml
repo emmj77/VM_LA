@@ -1,7 +1,7 @@
 id: "B1788"
 tool: "blender_ui_button"
 date: "2026-10-17"
-tags: ["blender_ui_button"]
+tags: ["blender", "blender", "mesh", "copy"]
 
 RULES:
   enabled: true

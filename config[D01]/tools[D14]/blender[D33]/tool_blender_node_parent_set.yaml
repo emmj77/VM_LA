@@ -1,7 +1,7 @@
 id: "B864"
 tool: "blender_node_parent_set"
 date: "2026-10-17"
-tags: ["blender_node_parent_set"]
+tags: ["blender", "blender", "node", "set"]
 
 RULES:
   enabled: true

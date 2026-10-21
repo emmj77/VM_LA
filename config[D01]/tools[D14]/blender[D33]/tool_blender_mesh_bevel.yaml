@@ -1,7 +1,7 @@
 id: "B624"
 tool: "blender_mesh_bevel"
 date: "2026-10-17"
-tags: ["blender_mesh_bevel"]
+tags: ["blender", "blender", "mesh", "cut"]
 
 RULES:
   enabled: true

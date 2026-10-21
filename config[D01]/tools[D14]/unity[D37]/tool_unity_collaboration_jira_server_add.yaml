@@ -1,7 +1,7 @@
 id: "U298"
 tool: "unity_collaboration_jira_server_add"
 date: "2026-10-18"
-tags: ["unity", "cli", "collaboration"]
+tags: ["unity", "unity", "config", "add"]
 
 RULES:
   enabled: true

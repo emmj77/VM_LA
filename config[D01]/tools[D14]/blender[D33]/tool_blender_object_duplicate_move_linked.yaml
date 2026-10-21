@@ -1,7 +1,7 @@
 id: "B932"
 tool: "blender_object_duplicate_move_linked"
 date: "2026-10-17"
-tags: ["blender_object_duplicate_move_linked"]
+tags: ["blender", "blender", "object", "move"]
 
 RULES:
   enabled: true

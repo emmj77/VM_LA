@@ -1,7 +1,7 @@
 id: "U062"
 tool: "upipe_get_graphics_settings"
 date: "2026-10-18"
-tags: ["unity", "pipeline", "get_graphics_settings"]
+tags: ["unity", "unity", "render", "read"]
 
 RULES:
   enabled: true

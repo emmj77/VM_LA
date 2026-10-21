@@ -1,7 +1,7 @@
 id: "U431"
 tool: "unity_vcs_providers"
 date: "2026-10-18"
-tags: ["unity", "cli", "vcs"]
+tags: ["unity", "unity", "project", "run"]
 
 RULES:
   enabled: true

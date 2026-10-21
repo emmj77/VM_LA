@@ -1,7 +1,7 @@
 id: "3D009"
 tool: "pixal3d-texture2048"
 date: "2026-10-17"
-tags: ["3d", "pixal3d", "texture2048", "glb"]
+tags: ["image", "shell", "material", "run"]
 
 RULES:
   enabled: true

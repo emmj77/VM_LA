@@ -1,7 +1,7 @@
 id: "B107"
 tool: "blender_asset_library_reload_listing"
 date: "2026-10-17"
-tags: ["blender_asset_library_reload_listing"]
+tags: ["blender", "blender", "mesh", "reload"]
 
 RULES:
   enabled: true

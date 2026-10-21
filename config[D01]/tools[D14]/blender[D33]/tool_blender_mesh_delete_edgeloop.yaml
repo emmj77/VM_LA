@@ -1,7 +1,7 @@
 id: "B640"
 tool: "blender_mesh_delete_edgeloop"
 date: "2026-10-17"
-tags: ["blender_mesh_delete_edgeloop"]
+tags: ["blender", "blender", "mesh", "delete"]
 
 RULES:
   enabled: true

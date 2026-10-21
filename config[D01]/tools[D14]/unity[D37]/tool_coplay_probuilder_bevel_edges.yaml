@@ -1,7 +1,7 @@
 id: "U207"
 tool: "coplay_probuilder_bevel_edges"
 date: "2026-10-18"
-tags: ["unity", "coplay", "probuilder"]
+tags: ["unity", "unity", "mesh", "run"]
 
 RULES:
   enabled: true

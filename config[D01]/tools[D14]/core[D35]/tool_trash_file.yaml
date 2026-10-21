@@ -1,7 +1,7 @@
 id: "G006"
 tool: "trash_file"
 date: "2026-10-17"
-tags: ["trash_file"]
+tags: ["write", "shell", "file", "run"]
 
 RULES:
   enabled: true

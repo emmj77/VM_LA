@@ -1,7 +1,7 @@
 id: "B1614"
 tool: "blender_wm_grease_pencil_import_svg"
 date: "2026-10-17"
-tags: ["blender_wm_grease_pencil_import_svg"]
+tags: ["blender", "blender", "mesh", "import"]
 
 RULES:
   enabled: true

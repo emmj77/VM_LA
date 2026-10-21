@@ -1,7 +1,7 @@
 id: "B918"
 tool: "blender_object_copy_global_transform"
 date: "2026-10-17"
-tags: ["blender_object_copy_global_transform"]
+tags: ["blender", "blender", "animation", "copy"]
 
 RULES:
   enabled: true

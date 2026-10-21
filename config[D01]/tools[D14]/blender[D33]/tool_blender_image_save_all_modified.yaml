@@ -1,7 +1,7 @@
 id: "B547"
 tool: "blender_image_save_all_modified"
 date: "2026-10-17"
-tags: ["blender_image_save_all_modified"]
+tags: ["blender", "blender", "img", "save"]
 
 RULES:
   enabled: true
