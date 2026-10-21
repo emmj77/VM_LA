@@ -42,10 +42,29 @@ shell_cmd() {
         "$(args_word "$_b")" "$(args_word "$_pre")" "$_mx" "$_p" "$_h" "$_gl" "$_t" "$_c"
       ;;
     llama.health)
-      _p=$(cfg num models.port) || return 1
+      if [ -n "${1:-}" ]; then
+        _p=$(cfg num machine.llama.models.$1.port) || return 1
+      else
+        _p=$(cfg num models.port) || return 1
+      fi
       _h=$(cfg str models.host) || _h=127.0.0.1
       _ht=$(cfg num limits.health_timeout) || _ht=3
       printf 'curl -fsS -m %s http://%s:%s/health' "$_ht" "$_h" "$_p"
+      ;;
+    # one declared vision model, its own door, its own projector: llama.model small|big
+    llama.model)
+      _n=${1:-} || return 1
+      [ -n "$_n" ] || return 1
+      _b=$(shell_bin llama) || return 1
+      _g=$(shell_addr llama gguf) || return 1
+      _md=$(cfg str machine.llama.models.$_n.model) || return 1
+      _mp=$(cfg str machine.llama.models.$_n.mmproj) || return 1
+      _p=$(cfg num machine.llama.models.$_n.port) || return 1
+      _c=$(cfg num machine.llama.models.$_n.ctx) || _c=4096
+      _gp=$(cfg num machine.llama.models.$_n.gpu) || _gp=0
+      _h=$(cfg str models.host) || _h=127.0.0.1
+      printf '%s -m %s --mmproj %s --host %s --port %s -ngl 99 -sm none --main-gpu %s -c %s --no-webui' \
+        "$(args_word "$_b")" "$(args_word "$_g/$_md")" "$(args_word "$_g/$_mp")" "$_h" "$_p" "$_gp" "$_c"
       ;;
     blender.script)
       _b=$(shell_bin blender) || return 1
