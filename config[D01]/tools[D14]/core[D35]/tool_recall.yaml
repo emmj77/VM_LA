@@ -1,5 +1,6 @@
 id: "G056"
 tool: "recall"
+with_skill: true
 date: "2026-10-18"
 tags: ["read", "shell", "file", "read"]
 

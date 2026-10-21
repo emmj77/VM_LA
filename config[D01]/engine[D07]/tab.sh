@@ -85,24 +85,53 @@ table_ids() {
   awk '/^[ \t]*- id:[ \t]*/ { v = $0; sub(/^[ \t]*- id:[ \t]*/, "", v); gsub(/["\047]/, "", v); sub(/[ \t].*$/, "", v); print v }' "$1"
 }
 
-# table_index : the whole table as id|tool|family|guardrail|description, kept once in TABLE_INDEX
+# table_index : the whole table as id|tool|family|guardrail|description|permanent|with_skill|with_project
 table_index() {
   [ -n "${TABLE_INDEX+x}" ] && return 0
   TABLE_INDEX=
-  [ -f "${TABLE:-}" ] || return 1
+  # the register is found here when TABLE is not carried: one source, no caller has to pose it
+  _tix=${TABLE:-$(cfg abs registry 2>/dev/null)}
+  [ -f "${_tix:-}" ] || return 1
   TABLE_INDEX=$(awk '
     function emit() {
       if (id == "") return
-      printf "%s|%s|%s|%s|%s\n", id, tool, fam, gu, d
+      printf "%s|%s|%s|%s|%s|%s|%s|%s\n", id, tool, fam, gu, d, pm, ws, wp
     }
-    /^[ \t]*- id:[ \t]*/ { emit() ; id = $0 ; sub(/^[ \t]*- id:[ \t]*/, "", id) ; gsub(/["\047]/, "", id) ; sub(/[ \t].*$/, "", id) ; tool = "" ; fam = "" ; gu = "" ; d = "" ; next }
+    /^[ \t]*- id:[ \t]*/ { emit() ; id = $0 ; sub(/^[ \t]*- id:[ \t]*/, "", id) ; gsub(/["\047]/, "", id) ; sub(/[ \t].*$/, "", id) ; tool = "" ; fam = "" ; gu = "" ; d = "" ; pm = "" ; ws = "" ; wp = "" ; next }
     /^[ \t]*(name|tool):[ \t]*/      { tool = $0 ; sub(/^[ \t]*(name|tool):[ \t]*/, "", tool) ; gsub(/"/, "", tool) ; next }
     /^[ \t]*family:[ \t]*/    { fam = $0 ; sub(/^[ \t]*family:[ \t]*/, "", fam) ; gsub(/"/, "", fam) ; next }
     /^[ \t]*guardrail:[ \t]*/ { gu = $0 ; sub(/^[ \t]*guardrail:[ \t]*/, "", gu) ; gsub(/"/, "", gu) ; next }
+    /^[ \t]*permanent:[ \t]*/ { pm = $0 ; sub(/^[ \t]*permanent:[ \t]*/, "", pm) ; gsub(/"/, "", pm) ; next }
+    /^[ \t]*with_skill:[ \t]*/ { ws = $0 ; sub(/^[ \t]*with_skill:[ \t]*/, "", ws) ; gsub(/"/, "", ws) ; next }
+    /^[ \t]*with_project:[ \t]*/ { wp = $0 ; sub(/^[ \t]*with_project:[ \t]*/, "", wp) ; gsub(/"/, "", wp) ; next }
     /^[ \t]*(description|desc):[ \t]*/ { d = $0 ; sub(/^[ \t]*(description|desc):[ \t]*/, "", d) ; sub(/^"/, "", d) ; sub(/"$/, "", d) ; next }
     END { emit() }
-  ' "$TABLE" 2>/dev/null)
+  ' "$_tix" 2>/dev/null)
   return 0
+}
+
+# table_perm <name> : the TOOL says it rides every turn, in the register - the one source
+table_perm() {
+  table_index || return 1
+  printf '%s\n' "$TABLE_INDEX" | awk -F'|' -v n="${1:-}" '$2 == n && $6 == "true" { f = 1 } END { exit !f }'
+}
+
+# table_with_skill <name> : allowed as soon as ANY skill is armed
+table_with_skill() {
+  table_index || return 1
+  printf '%s\n' "$TABLE_INDEX" | awk -F'|' -v n="${1:-}" '$2 == n && $7 == "true" { f = 1 } END { exit !f }'
+}
+
+# table_with_project <name> : allowed as soon as a project is loaded
+table_with_project() {
+  table_index || return 1
+  printf '%s\n' "$TABLE_INDEX" | awk -F'|' -v n="${1:-}" '$2 == n && $8 == "true" { f = 1 } END { exit !f }'
+}
+
+# table_permanents : the names that ride every turn, one per line, in the register's order
+table_permanents() {
+  table_index || return 1
+  printf '%s\n' "$TABLE_INDEX" | awk -F'|' '$6 == "true" { print $2 }'
 }
 
 # block_by_id <id> : the block of an id in the table carried by TABLE, one pass, no temp file

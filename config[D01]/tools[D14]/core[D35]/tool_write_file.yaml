@@ -1,5 +1,6 @@
 id: "G004"
 tool: "write_file"
+permanent: true
 date: "2026-10-17"
 tags: ["write", "shell", "table", "write"]
 

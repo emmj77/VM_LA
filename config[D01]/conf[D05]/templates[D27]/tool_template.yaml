@@ -14,6 +14,11 @@ tags: ["{{nature}}", "{{engine}}", "{{object}}", "{{verb}}"]
                              # lists of the master file (tags: natures, engines, objects, verbs).
                              # doctor.tags counts them: a tag outside the lists is a fault.
 
+permanent: false            # true: the tool rides EVERY turn, without any skill (reply, read_file)
+                             # the turn toolset is built from this register, never from a list
+with_skill: false            # true: also allowed as soon as ANY skill is armed (recall)
+with_project: false          # true: also allowed as soon as a project is loaded (unload_project)
+
 RULES:                       # what bounds the tool, said before any effect
   enabled: true              # true | false: a disabled tool is refused, it does not disappear
   timeout: "{{timeout}}"     # the engine reads limits.engine_timeout; this field only overrides it

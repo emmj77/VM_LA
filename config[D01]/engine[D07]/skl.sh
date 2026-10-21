@@ -151,17 +151,13 @@ skl_toolset() {
   skl_tools_map "$_n" | awk -F'\t' '{ print $2 }'
 }
 
-# skl_permanent <name> : allowed whatever the skill, because the master file says so
+# skl_permanent <name> : allowed whatever the skill, because the TOOL says so in the register
 skl_permanent() {
   _n=${1:-}
   [ -n "$_n" ] || return 1
-  for _t in $(cfg list permanent); do [ "$_t" = "$_n" ] && return 0; done
-  if [ -n "$(skl_skill)" ]; then
-    for _t in $(cfg list with_skill); do [ "$_t" = "$_n" ] && return 0; done
-  fi
-  if [ -n "$(skl_project)" ]; then
-    for _t in $(cfg list with_project); do [ "$_t" = "$_n" ] && return 0; done
-  fi
+  table_perm "$_n" && return 0
+  if [ -n "$(skl_skill)" ] && table_with_skill "$_n"; then return 0; fi
+  if [ -n "$(skl_project)" ] && table_with_project "$_n"; then return 0; fi
   return 1
 }
 

@@ -1,5 +1,6 @@
 id: "G073"
 tool: "sticky_note"
+permanent: true
 date: "2026-10-20"
 tags: ["manage", "shell", "table", "run"]
 

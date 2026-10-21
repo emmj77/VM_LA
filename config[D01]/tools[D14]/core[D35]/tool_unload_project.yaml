@@ -1,5 +1,6 @@
 id: "G042"
 tool: "unload_project"
+with_project: true
 date: "2026-10-17"
 tags: ["manage", "shell", "project", "run"]
 

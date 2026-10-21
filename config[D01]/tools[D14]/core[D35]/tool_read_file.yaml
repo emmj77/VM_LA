@@ -1,5 +1,6 @@
 id: "G002"
 tool: "read_file"
+permanent: true
 date: "2026-10-17"
 tags: ["read", "shell", "project", "read"]
 

@@ -1,5 +1,6 @@
 id: "G015"
 tool: "todo"
+permanent: true
 date: "2026-10-17"
 tags: ["plan", "shell", "plan", "run"]
 

@@ -14846,6 +14846,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G002"
   tool: "read_file"
   family: READ
@@ -14854,6 +14855,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G003"
   tool: "list_dir"
   family: READ
@@ -14862,6 +14864,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G004"
   tool: "write_file"
   family: WRITE
@@ -14870,6 +14873,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G005"
   tool: "search"
   family: READ
@@ -14894,6 +14898,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G008"
   tool: "delegate_task"
   family: MANAGE
@@ -14958,6 +14963,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G016"
   tool: "update_todo"
   family: PLAN
@@ -15006,6 +15012,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G022"
   tool: "load_doc"
   family: PLAN
@@ -15014,6 +15021,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G023"
   tool: "kill_proc"
   family: MANAGE
@@ -15022,6 +15030,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G025"
   tool: "speak"
   family: REPLY
@@ -15046,6 +15055,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G029"
   tool: "search_sessions"
   family: READ
@@ -15118,6 +15128,7 @@
   guardrail: true
   enabled: true
   visible: true
+  with_project: true
 - id: "G043"
   tool: "train_family_filter"
   family: MANAGE
@@ -15190,6 +15201,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G052"
   tool: "skill_view"
   family: READ
@@ -15198,6 +15210,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G053"
   tool: "load_skill"
   family: MANAGE
@@ -15206,6 +15219,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G054"
   tool: "project_view"
   family: READ
@@ -15230,6 +15244,7 @@
   guardrail: true
   enabled: true
   visible: true
+  with_skill: true
 - id: "G057"
   tool: "tool_show"
   family: READ
@@ -19902,6 +19917,7 @@
   guardrail: false
   enabled: true
   visible: false
+  permanent: true
 - id: "G078"
   tool: "voice_keywords"
   family: MANAGE

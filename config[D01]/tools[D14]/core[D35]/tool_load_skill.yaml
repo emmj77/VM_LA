@@ -1,5 +1,6 @@
 id: "G053"
 tool: "load_skill"
+permanent: true
 date: "2026-10-17"
 tags: ["manage", "shell", "project", "load"]
 

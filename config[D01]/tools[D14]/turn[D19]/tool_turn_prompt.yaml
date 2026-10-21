@@ -30,10 +30,12 @@ COMMAND: |
       _prj=$_prj$_n' '
     done
   fi
-  _head=$(_flat | awk -F'\t' -v P="$_prj" '$1 ~ /^head\.[A-Z_]+\.[0-9]+$/ {
+  _pe=$(table_permanents | tr "\n" " " | sed "s/ $//")
+  _head=$(_flat | awk -F'\t' -v PE="$_pe" -v P="$_prj" '$1 ~ /^head\.[A-Z_]+\.[0-9]+$/ {
       z = $1; sub(/\.[0-9]+$/, "", z); sub(/^head\./, "", z)
       if (z != last) { printf "\n%s\n", z; last = z }
       if ($2 == "@PROJECTS@") { sub(/[ ]+$/, "", P); printf "%s\n", P; next }
+      if (index($2, "@PERMANENTS@")) { gsub(/@PERMANENTS@/, PE, $2); printf "%s\n", $2; next }
       printf "%s\n", $2
     }')
   _sys=$(printf '%s, you answer in %s.%s' "$_who" "$_lang" "$_head")

@@ -1,5 +1,6 @@
 id: "G028"
 tool: "sleep"
+permanent: true
 date: "2026-10-17"
 tags: ["manage", "shell", "process", "run"]
 

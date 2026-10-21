@@ -22,7 +22,7 @@ COMMAND: |
   T="$(cfg path tools)/registry.yaml"
   W="${TMPDIR:-/tmp}/toolset.$$"
   SK=$(sed -n '/^TOOLS:/,/^[^[:space:]]/p' "$K" | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' | sed -e 's/^"//' -e 's/"$//' | grep -v '^$' | sort -u)
-  PN=$(sed -n '/^permanent:/,/^[^[:space:]]/p' "$(dirname "$(dirname "$LA_CONFIG")")/la_config.yaml" | sed -n 's/^[[:space:]]*-[[:space:]]*//p' | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | sed 's/:.*$//' | grep -v '^$')
+  PN=$(table_permanents)
   WIDE=0
   if [ -n "$SK" ]; then
     printf '%s\n%s\n' "$SK" "$PN" | grep -v '^$' | sort -u > "$W.names"

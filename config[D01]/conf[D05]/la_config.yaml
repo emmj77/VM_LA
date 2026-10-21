@@ -209,30 +209,6 @@ families:
   TURN:
     base: none
     register: engine
-# what a skill or a project does not have to ask for
-permanent:
-  - sticky_note
-  - reply
-  - kill_proc
-  - tools_list
-  - sleep
-  - skill_list
-  - load_skill
-  - vision.image
-  - skill_view
-  - transcribe
-  - search_web
-  - fetch_url
-  - load_doc
-  - list_dir
-  - read_file
-  - write_file
-  - todo
-with_skill:
-  - recall
-with_project:
-  - unload_project
-
 # the turn, measured in numbers
 loop:
   feed_turns: 12
@@ -311,8 +287,6 @@ owners:                                       # who reads what: one fact, one ow
   - {fact: units, owner: engine.install}
   - {fact: families, owner: engine.reload}
   - {fact: permanent, owner: skl}
-  - {fact: with_skill, owner: skl}
-  - {fact: with_project, owner: skl}
   - {fact: loop, owner: la}
   - {fact: limits, owner: run}
   - {fact: forms, owner: turn.reply}
@@ -462,9 +436,7 @@ head:
     104: '[{"type":"function","function":{"name":"reply","description":"the only tool the human hears","parameters":{"type":"object","properties":{"mode":{"type":"string","enum":["talk","ask","answer"]},"form":{"type":"string","enum":["text","list","table","code"]},"text":{"type":"string"}},"required":["mode","form","text"]}}}]'
     105: "The same shape, another tool: read_file {path:work/note.md}."
   PERMANENTS:
-    101: "Injected every turn by the loop, never loaded: reply (talk/ask/answer) and kill_proc, the safeguards, always there."
-    102: "tools_list, todo, update_todo, big_todo, update_big_todo, change_big_todo."
-    103: "skill_list, skill_view, load_skill, project_list, project_view, unload_project: separate tools, not skill_manage actions."
+    101: "Injected every turn by the loop, never loaded: @PERMANENTS@."
   MECHANISM:
     101: "ONE TURN: la(g, a) -> the engine runs line g -> the result comes back -> I continue."
     102: "The engine checks BEFORE the effect: id, line, arguments, scope. A refusal comes back as is."

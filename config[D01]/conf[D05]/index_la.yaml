@@ -48,7 +48,6 @@ files:
   - {id: "B02", name: "sessions.db", role: "messages, returns, vectors, usage, meta"}
   - {id: "B03", name: "terminal_return.db", role: "what a terminal call returned, kept whole"}
   - {id: "B04", name: "tool_vec.db", role: "the vectors of the tools, for the scope"}
-  - {id: "B05", name: "agent_chat.jsonl", role: "the chat between the agents: from, to, body, one line per message"}
   - {id: "B06", name: "usage.jsonl", role: "what each call cost: tokens per session and turn"}
   - {id: "C01", name: ".env", role: "API keys and tokens, 0600. it lives in the project, never in the vault"}
   - {id: "C03", name: "la_config.yaml", role: "the names: ports units models lists caps thresholds. never text"}
