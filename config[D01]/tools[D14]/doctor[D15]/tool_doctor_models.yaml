@@ -19,7 +19,7 @@ COMMAND: |
   _pt=$(cfg num models.port 8091) || _pt=8091
   _ini=$(cfg str models.preset) || _ini="$(cfg str machine.llama.gguf)/models.ini"
   [ -r "$_ini" ] || _ini="$(cfg str models.dir)/models.ini"
-  _bin=$(cfg str machine.llama.bin) || _bin=$(cfg str models.cli)
+  _bin=$(cfg str machine.llama.bin) || exit 0
 
   case $_op in
   files)

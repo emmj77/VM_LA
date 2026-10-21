@@ -1,4 +1,6 @@
 # id: G078
+id: "G078"
+tool: "voice_keywords"
 NAME: voice_keywords
 tags: ["manage", "python", "config", "write"]
 FAMILY: MANAGE

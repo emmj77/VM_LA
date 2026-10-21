@@ -241,6 +241,11 @@ loop:
   msg_max: 8000
   msg_budget: 32000
   max_turns: 400
+  autosleep: 580
+  memory_keep: 500
+  purge_margin: 150
+  retry: 1
+  surveil_max: 12
   max_tokens: 0
   max_calls: 0
   max_seconds: 0
@@ -260,6 +265,8 @@ limits:
   live_lines: 40
   return_keep: 200
   vision_tokens: 1024
+  effort_timeout: 8
+  scope_timeout: 10
   audio_min_minutes: 60
   audio_keep: 20
   audio_mb: 200

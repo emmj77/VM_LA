@@ -60,4 +60,4 @@ COMMAND: |
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: [all]}
+  - {name: op, type: enum, values: all}

@@ -94,13 +94,13 @@ COMMAND: |
     _tv=$(timeout 10 "$_ib" --version 2>/dev/null | head -n 1 | awk '{print $2}')
     if [ -n "$_tv" ]; then printf 'ok|TOOLS|indra ocr|%s . no port\n' "$_tv"
     else printf 'ko|TOOLS|indra ocr|absent\n'; fi
-    _vp=$(cfg num machine.llama.models.small.port 2>/dev/null); _vp=${_vp:-8091}
+    _vp=$(cfg num models.port 2>/dev/null); _vp=${_vp:-8091}
     if ss -ltn 2>/dev/null | awk -v p=":$_vp$" '$4 ~ p { n++ } END { exit !n }'; then
       printf 'ok|TOOLS|vision small|listening . :%s\n' "$_vp"
     else
       printf 'note|TOOLS|vision small|silent . :%s . 0 MB\n' "$_vp"
     fi
-    _v2=$(cfg num machine.llama.models.big.port 2>/dev/null); _v2=${_v2:-8092}
+    _v2=$(cfg num models.port 2>/dev/null); _v2=${_v2:-8091}
     if ss -ltn 2>/dev/null | awk -v p=":$_v2$" '$4 ~ p { n++ } END { exit !n }'; then
       printf 'ok|TOOLS|vision big|listening . :%s\n' "$_v2"
     else
