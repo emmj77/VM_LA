@@ -17,4 +17,4 @@ COMMAND: |
   [ -f "$S" ] || { printf '%s\n' "refused: the generator is missing ($S)" >&2 ; exit 1 ; }
   "$P" "$S" "$M" "$R/bpe.model" "$(dirname "$M")/voice_keywords.txt"
 
-ARGS: []                    # aucun argument : la liste des commandes est la source
+ARGS: []                    # no argument: the command list of the master file is the source

@@ -134,3 +134,107 @@ count() {
   if [ -s "$_f" ] && [ -n "$(tail -c 1 "$_f" 2>/dev/null)" ]; then _l=$((_l + 1)); fi
   printf '%s %s' "$_o" "$_l"
 }
+
+# ----- the command table: one list in the master file, one dispatcher for every door -----
+
+cmd_ids() {
+  table_ids "${1:-$LA_CONF}"
+}
+
+cmd_get() {
+  table_field "${3:-$LA_CONF}" "$1" "$2" 2>/dev/null
+}
+
+# cmd_usage : the list as it is written in the master file
+cmd_usage() {
+  printf '%s\n' \
+    "la <tool> [key=value ...]     call a tool through the door" \
+    "la engine <tool> [k=v ...]    the same, as the engine" \
+    "" \
+    "the commands (master file, commands:):"
+  for _id in $(cmd_ids); do
+    _n=$(cmd_get "$_id" name); [ -n "$_n" ] || continue
+    _ag=$(cmd_get "$_id" arg)
+    _tc=$(cmd_get "$_id" tool)
+    printf '  %-18s %s%s\n' "$_n" "${_ag:+<$_ag> }" "${_tc:+(tool $_tc)}"
+  done
+}
+
+# cmd_slash : the first word of every command, once, in order: the page legend
+cmd_slash() {
+  for _id in $(cmd_ids); do
+    _n=$(cmd_get "$_id" name); [ -n "$_n" ] || continue
+    printf '/%s\n' "${_n%% *}"
+  done | awk '!seen[$0]++'
+}
+
+# cmd_has <first word> : is it the first word of a command?
+cmd_has() {
+  _h="$1"
+  for _id in $(cmd_ids); do
+    _n=$(cmd_get "$_id" name); [ -n "$_n" ] || continue
+    [ "${_n%% *}" = "$_h" ] && return 0
+  done
+  return 1
+}
+
+cmd_new_turn() {
+  _s=$(cfg path state) || return 1
+  _t=$(date +%s)
+  for _f in note.txt request.txt reply.stream board.tmp; do
+    [ -f "$_s/$_f" ] || continue
+    mv "$_s/$_f" "$_s/new.$_t.$_f" || return 1
+  done
+  printf 'new turn : the state of the last one is put aside (%s)\n' "$_t"
+}
+
+# cmd_run <word ...> : the longest command name wins, the rest is its argument; an unknown word is a tool
+cmd_run() {
+  _line="$*"
+  _best=""; _bw=0
+  for _id in $(cmd_ids); do
+    _n=$(cmd_get "$_id" name); [ -n "$_n" ] || continue
+    case $_line in
+      "$_n"|"$_n "*) ;;
+      *) continue ;;
+    esac
+    _w=$(printf '%s' "$_n" | wc -w)
+    [ "$_w" -gt "$_bw" ] && { _bw=$_w; _best=$_id; }
+  done
+  if [ -z "$_best" ]; then
+    run_call "$@"
+    return $?
+  fi
+  _act=$(cmd_get "$_best" act)
+  _tool=$(cmd_get "$_best" tool)
+  _argn=$(cmd_get "$_best" arg)
+  [ "$_bw" -gt 0 ] && shift "$_bw"
+  if [ -n "$_tool" ]; then
+    LA_FROM=human; export LA_FROM
+    if [ -n "$_argn" ]; then
+      run_call "$_tool" "$_argn=${1:-}"
+    else
+      run_call "$_tool"
+    fi
+    return $?
+  fi
+  LA_FROM=engine; export LA_FROM
+  case $_act in
+    usage)        cmd_usage ;;
+    version)      printf 'LA %s, master %s\n' "$(cfg str date)" "$LA_CONF" ;;
+    map)          run_call engine.map op=rebuild | jq -r '.result // .' 2>/dev/null || : ;;
+    new)          cmd_new_turn ;;
+    stop)         printf 'stop\n' | write_atomic "$(cfg abs stop)" && printf 'ok the turn is asked to stop\n' ;;
+    start)        gio trash -- "$(cfg abs stop)" 2>/dev/null; printf 'ok the stop is lifted\n' ;;
+    skill_unload) skl_disarm && printf 'no skill loaded\n' ;;
+    service)      run_call engine.service "name=${1:-}" ;;
+    model)        if [ -n "${1:-}" ]; then
+                    printf '%s' "$1" | run_call engine.switch op=take | jq -r '.result // .' 2>/dev/null
+                  else
+                    run_call engine.switch op=list | jq -r '.result // .' 2>/dev/null
+                  fi ;;
+    doctor)       run_call engine.doctor "op=${1:-short}" ;;
+    tool_call)    LA_FROM=human; export LA_FROM; run_call "$@" ;;
+    *)            printf 'no act: %s\n' "$_act" >&2; return 1 ;;
+  esac
+}

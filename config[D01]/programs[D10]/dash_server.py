@@ -23,7 +23,8 @@ IDLE = int(os.environ.get("LA_DASH_IDLE") or 120)
 PAGE_ROUTES = ("/", "/m", "/chat", "/doctor", "/plan", "/models")
 MASTER = os.environ.get("LA_CONF") or os.path.join(ROOT, "conf[D05]", "la_config.yaml")
 ENGINE = os.environ.get("LA_ENGINE") or os.path.join(ROOT, "engine[D07]", "la.sh")
-MARK = "<!-- les commandes -->"
+MARK = "<!-- the commands -->"
+MARK_G = "<!-- the gestures -->"
 TOUCH = [time.time()]
 
 
@@ -83,6 +84,20 @@ def commands_html():
     return "".join(h)
 
 
+def gestures_html():
+    # the legend of the chat box: the first word of every command, once, in order
+    seen, words = set(), []
+    for c in commands():
+        w = c["name"].split()[0]
+        if w in seen:
+            continue
+        seen.add(w)
+        words.append("/" + w)
+    if not words:
+        return ""
+    return "<br>".join(" ".join(words[i:i + 5]) for i in range(0, len(words), 5))
+
+
 def run_command(name, arg):
     # the door does the work: one path, whatever the surface
     cmd = ["sh", ENGINE] + name.split()
@@ -126,6 +141,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(500, b"the page is not in the tree", "text/plain; charset=utf-8")
         if MARK.encode() in data:
             data = data.replace(MARK.encode(), commands_html().encode(), 1)
+        if MARK_G.encode() in data:
+            data = data.replace(MARK_G.encode(), gestures_html().encode(), 1)
         return self.reply(200, data, "text/html; charset=utf-8")
 
     def reply(self, code, data, ctype):
