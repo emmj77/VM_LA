@@ -213,7 +213,7 @@ families:
 permanent:
   - sticky_note
   - reply
-  - kill
+  - kill_proc
   - tools_list
   - sleep
   - skill_list
@@ -221,8 +221,6 @@ permanent:
   - vision.image
   - skill_view
   - transcribe
-  - vision.read
-  - read_text_in_img
   - search_web
   - fetch_url
   - load_doc
@@ -457,7 +455,7 @@ head:
     104: '[{"type":"function","function":{"name":"reply","description":"the only tool the human hears","parameters":{"type":"object","properties":{"mode":{"type":"string","enum":["talk","ask","answer"]},"form":{"type":"string","enum":["text","list","table","code"]},"text":{"type":"string"}},"required":["mode","form","text"]}}}]'
     105: "The same shape, another tool: read_file {path:work/note.md}."
   PERMANENTS:
-    101: "Injected every turn by the loop, never loaded: reply (talk/ask/answer) and kill, the safeguards, always there."
+    101: "Injected every turn by the loop, never loaded: reply (talk/ask/answer) and kill_proc, the safeguards, always there."
     102: "tools_list, todo, update_todo, big_todo, update_big_todo, change_big_todo."
     103: "skill_list, skill_view, load_skill, project_list, project_view, unload_project: separate tools, not skill_manage actions."
   MECHANISM:

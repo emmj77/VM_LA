@@ -1,5 +1,5 @@
 # one control of the doctor. it names what it sees, it never decides the verdict.
-id: "D013"
+id: "D015"
 tool: "doctor.tags"
 date: "2026-10-21"
 tags: ["manage", "shell", "config", "test"]
@@ -59,4 +59,5 @@ COMMAND: |
   fi
   exit 0
 
-ARGS: []
+ARGS:
+  - {name: op, type: enum, values: [all]}

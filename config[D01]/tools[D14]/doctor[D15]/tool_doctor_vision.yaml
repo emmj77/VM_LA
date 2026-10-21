@@ -1,5 +1,5 @@
 # one control of the doctor. it names what it sees, it never decides the verdict.
-id: "D014"
+id: "D016"
 tool: "doctor.vision"
 date: "2026-10-21"
 tags: ["manage", "shell", "img", "test"]
@@ -82,4 +82,5 @@ COMMAND: |
   if [ "$_ko" -gt 0 ]; then printf 'FAULT %s fault(s)\n' "$_ko" ; else printf 'ok the vision family holds\n' ; fi
   exit 0
 
-ARGS: []
+ARGS:
+  - {name: op, type: enum, values: [all]}

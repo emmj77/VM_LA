@@ -406,3 +406,19 @@
   guardrail: false
   enabled: true
   visible: false
+- id: "D015"
+  tool: "doctor.tags"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: "D016"
+  tool: "doctor.vision"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false

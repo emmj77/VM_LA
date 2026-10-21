@@ -1,5 +1,5 @@
 id: "G023"
-tool: "kill"
+tool: "kill_proc"
 date: "2026-10-17"
 tags: ["manage", "shell", "process", "run"]
 
