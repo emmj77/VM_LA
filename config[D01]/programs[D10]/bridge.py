@@ -621,8 +621,9 @@ class Handler(BaseHTTPRequestHandler):
                 {"thinking": [], "journal": [], "reply": {}}))
             return self.json(got)
         if name == "history":
+            # the enum arg goes in positionally: "op=turns" is a word the body never knows
             got = cached("hist", 5.0, lambda: as_json(
-                door("engine", "engine.hist", ["op=turns"]), {"turns": []}))
+                door("engine", "engine.hist", ["turns"]), {"turns": []}))
             return self.json(got)
         if name == "cmd":
             line = str(payload.get("line") or urllib.parse.parse_qs(query).get("line", [""])[0]).strip()
