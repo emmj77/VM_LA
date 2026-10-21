@@ -345,9 +345,11 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `bridge` · `/widget` | the bridge serves this address |
 
 ## the agents
-An agent id is `agent_<NNN>_<name>`: three digits, then the first name, lowercase, one word.
-`NNN` starts at `000` for the principal -- the one that carries the head -- and runs `001`, `002`, ...
-for the sub-agents, contiguous, no gap. Two digits are not an id: `agent_01_x` does not exist.
+An agent is named by its NAME alone: `la`, `jarvis`, `paul`, `albert`, `eleonore`, `claire`.
+No number, no prefix: the name IS the id.
+The name is a file name: lowercase, `a-z 0-9 _ -`, one word. A name that does not fit is refused.
+`human` and `voice` are the two turns of the station, not agents.
+The LAUNCHER poses it (`LA_FROM`), the model never chooses it (law 206); it signs the chat (`from`, `to`).
 `agents.names` in the master file is the ONLY list; `agents.main` names the principal and is one of them.
 
 ## the environment

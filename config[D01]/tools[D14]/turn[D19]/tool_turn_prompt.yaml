@@ -18,9 +18,22 @@ COMMAND: |
   # the stable prefix: the head, zone by zone, in the order the config holds them
   _who=$(cfg str head.name "LA")
   _lang=$(cfg str head.language_response "french")
-  _head=$(_flat | awk -F'\t' '$1 ~ /^head\.[A-Z_]+\.[0-9]+$/ {
+  # the projects are READ from the machine, never written in the master file
+  _prj=""
+  _pdir=$(ls -d "${LA_ROOT:-.}"/projects\[D*\] 2>/dev/null | head -n 1)
+  if [ -n "$_pdir" ]; then
+    for _f in "$_pdir"/*/project.yml; do
+      [ -f "$_f" ] || continue
+      _n=$(sed -n 's/^project:[[:space:]]*//p' "$_f" | head -n 1 | tr -d '"')
+      [ -n "$_n" ] || continue
+      _s=$(sed -n '/^SUMMARY:/,$p' "$_f" | sed -n 's/^[[:space:]]*101:[[:space:]]*//p' | head -n 1 | tr -d '"')
+      _prj=$_prj$(printf '%s: %s|' "$_n" "${_s:-no summary}")
+    done
+  fi
+  _head=$(_flat | awk -F'\t' -v P="$_prj" '$1 ~ /^head\.[A-Z_]+\.[0-9]+$/ {
       z = $1; sub(/\.[0-9]+$/, "", z); sub(/^head\./, "", z)
       if (z != last) { printf "\n%s\n", z; last = z }
+      if ($2 == "@PROJECTS@") { sub(/\|+$/, "", P); gsub(/\|/, "\n", P); printf "%s\n", P; next }
       printf "%s\n", $2
     }')
   _sys=$(printf '%s, you answer in %s.%s' "$_who" "$_lang" "$_head")
@@ -31,7 +44,7 @@ COMMAND: |
   _second=$(
     printf '== THE HUMAN ==\n'
     printf 'you are talking with the human (%s) ; the agent answering is %s\n' \
-      "$(cfg str agents.human user)" "$(cfg str agents.main agent_000_la)"
+      "$(cfg str agents.human user)" "$(cfg str agents.main la)"
     printf '== THE ACTIVE PROJECT ==\n'
     _pr=$(skl_project 2>/dev/null)
     if [ -n "$_pr" ]; then printf 'project : %s\n' "$_pr"; else printf 'no project loaded : every skill is reachable\n'; fi
@@ -69,7 +82,7 @@ COMMAND: |
     _sn=$(cfg abs note 2>/dev/null)
     if [ -n "$_sn" ] && [ -s "$_sn" ]; then head -c 1200 "$_sn"; printf '\n'; else printf 'the note is empty\n'; fi
     printf '== THE AGENTS ==\n'
-    _main=$(cfg str agents.main agent_000_la)
+    _main=$(cfg str agents.main la)
     _st=$(jq -r '.status // "idle"' "$_t" 2>/dev/null)
     for _a in $(cfg str agents.names "$_main"); do
       if [ "$_a" = "$_main" ] && [ "$_st" = running ]; then

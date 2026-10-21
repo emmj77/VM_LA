@@ -142,7 +142,7 @@ COMMAND: |
           printf '%s\t%s\t%s\n' "$_k" "$(cfg str "engines.$_k.model")" "$(cfg str "engines.$_k.provider")"
         done | jq -R -s 'split("\n") | map(select(length > 0) | split("\t") | {alias: .[0], model: .[1], provider: .[2]})')
     printf '{"feed_turns":%s,"names":{"user":"%s","main":"%s"},"tokens":{"session":%s,"session_tokens":%s,"last_turn":%s},"turn":{"running":%s,"pid":%s},"stop":%s,"words":%s,"exchanges":%s,"model":{"alias":"%s","model":"%s","provider":"%s","engine":"%s"},"engines":%s,"skill":"%s","project":"%s","poll_ms":%s,"doctor":"%s"}\n' \
-      "${_ft:-12}" "$(cfg str agents.human user)" "$(cfg str agents.main agent_000_la)" \
+      "${_ft:-12}" "$(cfg str agents.human user)" "$(cfg str agents.main la)" \
       "${_tk:-0}" "${_tk:-0}" "${_tl:-0}" "$_run" "${_pid:-0}" "$_stop" "${_w:-0}" "${_ex:-0}" \
       "$_ae" "$(cfg str "engines.$_ae.model" 2>/dev/null)" "$(cfg str "engines.$_ae.provider" 2>/dev/null)" "$_ae" "${_eng:-[]}" \
       "$(cfg str active_skill 2>/dev/null)" "$(cfg str active_project 2>/dev/null)" \

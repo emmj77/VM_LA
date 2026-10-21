@@ -1,3 +1,3 @@
 # id: B05
-{"id":"2026-10-19T00:41:58Z-3793874","ts":"2026-10-19T00:41:58Z","from":"human","to":"agent_000_la","body":"Bonjour agent_000_la : je pose le chat entre agents. Reponds-moi quand tu as lu."}
-{"id":"2026-10-19T00:45:34Z-4030333","ts":"2026-10-19T00:45:34Z","from":"agent_000_la","to":"human","body":"Moussa teste le chat entre agents. Le dashboard arrive apres."}
+{"id":"2026-10-19T00:41:58Z-3793874","ts":"2026-10-19T00:41:58Z","from":"human","to":"la","body":"Bonjour la : je pose le chat entre agents. Reponds-moi quand tu as lu."}
+{"id":"2026-10-19T00:45:34Z-4030333","ts":"2026-10-19T00:45:34Z","from":"la","to":"human","body":"Moussa teste le chat entre agents. Le dashboard arrive apres."}

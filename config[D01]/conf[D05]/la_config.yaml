@@ -111,8 +111,8 @@ machine:
 
 # who speaks, and how wide the board is
 agents:
-  main: "agent_000_la"
-  names: "agent_000_la agent_001_jarvis agent_002_paul agent_003_albert agent_004_eleonore agent_005_claire"
+  main: "la"
+  names: "la jarvis paul albert eleonore claire"
   chat: "config[D01]/data[D06]/agent_chat.jsonl"   # the chat between agents, one line per message
   human: "Moussa"
   voice: "voice"
@@ -491,8 +491,7 @@ head:
     102: "Every tool leaves one log line on the human channel; it never enters my context."
     103: "No key or token in memory/: it is readable. A secret lives in the launcher environment."
   PROJECTS:
-    101: "MODELE_RA: deterministic AI architecture. DESTIN: narrative universe."
-    102: "SUPREME PMC: Unity game. LA: this project, the voice harness."
+    101: "@PROJECTS@"
 
 # where the install puts its pieces, and the two names the bridge and the backup answer to
 paths:
@@ -624,12 +623,12 @@ schema:
     key: main
     kind: choice
     choices:
-    - agent_000_la
-    - agent_001_jarvis
-    - agent_002_paul
-    - agent_003_albert
-    - agent_004_eleonore
-    - agent_005_claire
+    - la
+    - jarvis
+    - paul
+    - albert
+    - eleonore
+    - claire
     why: 'l agent principal : l auteur d un tour quand le lanceur n en pose pas'
   - section: agents
     key: board_lines

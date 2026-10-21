@@ -1369,12 +1369,10 @@ function sectionBox(name, sec, s) {
 }
 
 /* ------------------------------------------------------------------ the agents */
-/* AN AGENT NAME IS READ: agent_00N_name. 000 is the principal (it carries the head and answers
-   here), 001 and up are the sub-agents. Three digits, always. The dashboard renames nothing. */
+/* THE NAME IS THE ID: `paul` is paul, `la` carries the head. No number, no prefix.
+   The principal badge comes from the API, not from the name. */
 function agentParts(name) {
-  const m = /^agent_(\d{3})_(.+)$/.exec(name || '');
-  if (m) return { tag: '#' + m[1], label: m[2], sub: true };
-  return { tag: null, label: name || '', sub: false };
+  return { tag: null, label: (name || '').trim(), sub: false };
 }
 
 async function loadAgents() {

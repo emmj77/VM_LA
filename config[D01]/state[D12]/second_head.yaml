@@ -1,5 +1,5 @@
 == THE HUMAN ==
-you are talking with the human (Moussa) ; the agent answering is agent_000_la
+you are talking with the human (Moussa) ; the agent answering is la
 == THE ACTIVE PROJECT ==
 no project loaded : every skill is reachable
 == THE ACTIVE SKILL ==
@@ -12,11 +12,11 @@ no open plan
 == THE STICKY NOTE ==
 the note is empty
 == THE AGENTS ==
-agent_000_la  idle : no turn runs
-agent_001_jarvis  idle : no turn runs
-agent_002_paul  idle : no turn runs
-agent_003_albert  idle : no turn runs
-agent_004_eleonore  idle : no turn runs
-agent_005_claire  idle : no turn runs
+la  idle : no turn runs
+jarvis  idle : no turn runs
+paul  idle : no turn runs
+albert  idle : no turn runs
+eleonore  idle : no turn runs
+claire  idle : no turn runs
 == THE CHAT ==
 the chat is empty
