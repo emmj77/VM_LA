@@ -690,13 +690,22 @@ def control(light=False):
         L.append(("feu vert", "%s -- %ds" % (signal[0], signal[1]), False))
     if not rights:
         L.append(("approbation", "aucun skill ne porte APPROVAL: true", False))
-    # le cli est un programme qu on OUVRE : vert quand une session tourne, rouge quand personne ne l a ouvert
+    # le cli est un programme qu on OUVRE : vert quand une session tourne, rouge quand personne ne l a ouvert.
+    # on lit les arguments exacts dans /proc : un pgrep -f se prendrait pour lui-meme.
     _cli_pid = ""
-    if os.access(os.path.abspath(__file__), os.R_OK):
-        _cli_pid = (run(["pgrep", "-f", "board.py --cli"], timeout=3)[1].split() or [""])[0]
-    else:
-        _cli_pid = ""
-    L.append(("cli", ("open · pid " + _cli_pid) if _cli_pid else ("closed" if os.access(os.path.abspath(__file__), os.R_OK) else "absent"),
+    for _d in os.listdir("/proc"):
+        if not _d.isdigit():
+            continue
+        try:
+            with open("/proc/%s/cmdline" % _d, "rb") as _f:
+                _a = [x.decode("utf-8", "replace") for x in _f.read().split(b"\0") if x]
+        except OSError:
+            continue
+        if len(_a) >= 3 and _a[1].endswith("board.py") and "--cli" in _a[2:]:
+            _cli_pid = _d
+            break
+    _cli_ok = os.access(os.path.abspath(__file__), os.R_OK)
+    L.append(("cli", ("open · pid " + _cli_pid) if _cli_pid else ("closed" if _cli_ok else "absent"),
               not _cli_pid))
     if light:
         L.append(("residents", "%d/%d up" % (len([r for r in res if not r[5]]), len(res)),
