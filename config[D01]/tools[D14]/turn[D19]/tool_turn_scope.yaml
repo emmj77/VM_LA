@@ -43,16 +43,16 @@ COMMAND: |
       '{type:"function",function:{name:$n,description:$d,parameters:{type:"object",properties:$pr,required:$rq}}}')
     _arr=$(printf '%s' "$_arr" | jq --argjson o "$_obj" '. + [$o]')
   done
-  # le reranker coupe la palette : chaque outil est note contre la demande du tour
+  # the reranker cuts the toolset: every tool is scored against the turn's request
   _n=$(printf '%s' "$_arr" | jq 'length')
-  # la coupe garde le haut du classement : 30% de la palette, jamais moins de trois.
-  # dans un tunnel elle ne s applique pas : l outil de l etape ne se discute pas.
+  # the cut keeps the top of the ranking: 30% of the toolset, never fewer than three.
+  # inside a closed plan it does not apply: the step's tool is not up for discussion.
   _pct=$(cfg num loop.share 30) || _pct=30
   _top=$(( (_n * _pct + 99) / 100 ))
   [ "$_top" -lt 3 ] && _top=3
-  _tun=0
-  skl_plan_step 2>/dev/null && _tun=1
-  if [ "$_tun" != 1 ] && [ "${_n:-0}" -gt "$_top" ]; then
+  _closed=0
+  skl_plan_step 2>/dev/null && _closed=1
+  if [ "$_closed" != 1 ] && [ "${_n:-0}" -gt "$_top" ]; then
     _q=$(jq -r '.prompt // ""' "$(cfg abs turn)" 2>/dev/null)
     _m=$(cfg str models.rerank) || _m=""
     _h=$(cfg str models.host 127.0.0.1)
