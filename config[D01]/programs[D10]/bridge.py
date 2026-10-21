@@ -238,7 +238,7 @@ def warm():
             ("board", "engine", "engine.board", ["op=json"], {}),
             ("trace", "engine", "engine.trace", ["op=json"],
              {"thinking": [], "journal": [], "reply": {}}),
-            ("hist", "engine", "engine.hist", ["op=turns"], {"turns": []})):
+            ("hist", "engine", "engine.hist", ["turns"], {"turns": []})):
         try:
             _CACHE[key] = [time.time(), _door_read(kind, tool, args, fb)]
         except Exception:
