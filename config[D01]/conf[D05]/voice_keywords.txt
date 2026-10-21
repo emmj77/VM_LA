@@ -1,0 +1,9 @@
+# id: C11
+# the voice keywords: one command name per line, said as it is written.
+# each line: <bpe pieces> :<score> #<threshold> @<tag>  (model kws-en, int8 6.8 Mo)
+▁S K I LL ▁LO AD :1.0 #0.2 @skill_load
+▁S K I LL ▁UN LO AD :1.0 #0.2 @skill_unload
+▁S K I LL ▁LI S T :1.0 #0.2 @skill_list
+▁NEW :1.0 #0.1 @new
+▁ST O P :1.0 #0.2 @stop
+▁HELP :1.0 #0.1 @help
