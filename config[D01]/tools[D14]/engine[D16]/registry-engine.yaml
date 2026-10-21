@@ -278,6 +278,14 @@
   guardrail: true
   enabled: true
   visible: false
+- id: "T009"
+  tool: "turn.effort"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
 - id: "W001"
   tool: "watch.judge"
   family: WATCH

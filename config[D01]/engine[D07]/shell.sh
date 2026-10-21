@@ -34,8 +34,12 @@ shell_cmd() {
       _c=$(cfg num models.context) || _c=8192
       _gl=$(cfg num models.gpu_layers) || _gl=0
       _h=$(cfg str models.host) || _h=127.0.0.1
-      printf '%s -m %s -c %s --port %s --host %s --n-gpu-layers %s -t %s' \
-        "$(args_word "$_b")" "$(args_word "$_g/${1:-}")" "$_c" "$_p" "$_h" "$_gl" "$_t"
+      # ONE server for every model: router mode, one loaded at a time, rerank and embed on
+      _d=$(cfg str models.dir) || return 1
+      _pre=$(cfg str models.preset) || _pre="$_d/models.ini"
+      _mx=$(cfg num models.max 1) || _mx=1
+      printf '%s --models-preset %s --models-max %s --reranking --embeddings --port %s --host %s --n-gpu-layers %s -t %s -c %s' \
+        "$(args_word "$_b")" "$(args_word "$_pre")" "$_mx" "$_p" "$_h" "$_gl" "$_t" "$_c"
       ;;
     llama.health)
       _p=$(cfg num models.port) || return 1

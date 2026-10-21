@@ -4,6 +4,7 @@ api: 1
 steps:
   - facts
   - second
+  - effort
   - scope
   - prompt
   - call

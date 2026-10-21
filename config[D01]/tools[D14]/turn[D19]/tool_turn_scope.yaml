@@ -16,7 +16,8 @@ COMMAND: |
   _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _reg=$(cfg abs registry) || { printf 'FAULT no register\n'; exit 0; }
-  _ids=$( { for _n in $(cfg list permanent); do table_field "$_reg" "$_n" id; done
+  _perm=$(cfg list permanent)
+  _ids=$( { for _n in $_perm; do table_field "$_reg" "$_n" id; done
             skl_toolset 2>/dev/null; } | sort -u | grep -v '^$' )
   _arr='[]'
   for _i in $_ids; do
@@ -42,8 +43,41 @@ COMMAND: |
       '{type:"function",function:{name:$n,description:$d,parameters:{type:"object",properties:$pr,required:$rq}}}')
     _arr=$(printf '%s' "$_arr" | jq --argjson o "$_obj" '. + [$o]')
   done
+  # le reranker coupe la palette : chaque outil est note contre la demande du tour
+  _n=$(printf '%s' "$_arr" | jq 'length')
+  # la coupe garde le haut du classement : 30% de la palette, jamais moins de trois
+  _pct=$(cfg num loop.share 30) || _pct=30
+  _top=$(( (_n * _pct + 99) / 100 ))
+  [ "$_top" -lt 3 ] && _top=3
+  if [ "${_n:-0}" -gt "$_top" ]; then
+    _q=$(jq -r '.prompt // ""' "$(cfg abs turn)" 2>/dev/null)
+    _m=$(cfg str models.rerank) || _m=""
+    _h=$(cfg str models.host 127.0.0.1)
+    _pt=$(cfg num models.port 8091) || _pt=8091
+    _t=$(cfg num limits.scope_timeout 10) || _t=10
+    if [ -n "$_m" ] && [ -n "$_q" ]; then
+      _body=$(printf '%s' "$_arr" | jq -c --arg m "$_m" --arg q "$_q" \
+        '{model:$m,query:$q,documents:[.[] | (.function.name + " : " + (.function.description // ""))]}')
+      _r=$(printf '%s' "$_body" | curl -sS -m "$_t" -H 'Content-Type: application/json' \
+        -d @- "http://$_h:$_pt/v1/rerank" 2>/dev/null)
+      _ix=$(printf '%s' "$_r" | jq -c --argjson k "$_top" \
+        '.results | sort_by(-.relevance_score) | .[:$k] | map(.index)' 2>/dev/null)
+      if [ -n "$_ix" ] && [ "$_ix" != "null" ]; then
+        # les noms gardes, un par un, puis le filtre : chaque etape se verifie
+        _names=""
+        for _k in $(printf '%s' "$_ix" | jq -r '.[]' 2>/dev/null); do
+          _nm=$(printf '%s' "$_arr" | jq -r --argjson q "$_k" '.[$q].function.name // empty' 2>/dev/null)
+          [ -n "$_nm" ] && _names="$_names $_nm"
+        done
+        # seul reply est intouchable : la boucle doit pouvoir dire sa phrase
+        _names="$_names reply"
+        _arr=$(printf '%s' "$_arr" | jq -c --arg n "$_names" \
+          'map(select(.function.name as $x | ($n | split(" ") | index($x)) != null))' 2>/dev/null) || _arr=$_arr
+      fi
+    fi
+  fi
   _turn_set_json '(.tools = $v)' "$_arr"
-  _tr scope "$(printf '%s' "$_arr" | jq 'length') tools"
+  _tr scope "$(printf '%s' "$_arr" | jq 'length') of $_n tools"
   exit 0
 
 ARGS: []

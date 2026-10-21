@@ -1,0 +1,48 @@
+# one step of the turn: how much effort the work deserves, asked to the reranker.
+id: "T009"
+tool: "turn.effort"
+date: "2026-10-21"
+tags: ["turn", "effort"]
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the effort of the turn: low, medium or high, measured on the request"
+COMMAND: |
+
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
+  _h=$(cfg str models.host 127.0.0.1)
+  _pt=$(cfg num models.port 8091) || _pt=8091
+  _m=$(cfg str models.rerank) || _m=""
+  _q=$(jq -r '.prompt // ""' "$(cfg abs turn)" 2>/dev/null)
+  _t=$(cfg num limits.effort_timeout 8) || _t=8
+  _e=""
+  if [ -n "$_m" ] && [ -n "$_q" ]; then
+    _body=$(jq -cn --arg m "$_m" --arg q "$_q" '{model:$m,query:$q,top_n:4,documents:[
+      "bonjour, merci, salut, ok, oui, une phrase de politesse",
+      "ouvre le document, lis ce fichier, affiche la table, montre le dossier",
+      "corrige cette fonction, ajoute une ligne, renomme le fichier, explique un point",
+      "trouve pourquoi le pont plante, repare la boucle, fais une revue complete du projet et corrige ce qui casse"]}')
+    _r=$(printf '%s' "$_body" | curl -sS -m "$_t" -H 'Content-Type: application/json' -d @- \
+      "http://$_h:$_pt/v1/rerank" 2>/dev/null)
+    _b=$(printf '%s' "$_r" | jq -r '.results | sort_by(-.relevance_score) | .[0].index // empty' 2>/dev/null)
+    case ${_b:-} in
+      0) _e=none ;;
+      1) _e=low ;;
+      2) _e=medium ;;
+      3) _e=high ;;
+    esac
+  fi
+  # the reranker silent: the engine profile still says what it wants
+  [ -n "$_e" ] || _e=$(cfg str "engines.$(cfg str active_engine).reasoning_effort") || _e=medium
+  _turn_set "(.effort = \"$_e\")"
+  _tr effort "$_e"
+  printf 'ok effort %s\n' "$_e"
+  exit 0
+
+ARGS: []
