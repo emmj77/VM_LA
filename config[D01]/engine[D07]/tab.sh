@@ -230,6 +230,8 @@ cmd_run() {
     map)          run_call engine.map op=rebuild | jq -r '.result // .' 2>/dev/null || : ;;
     new)          cmd_new_turn ;;
     stop)         printf 'stop\n' | write_atomic "$(cfg abs stop)" && printf 'ok the turn is asked to stop\n' ;;
+    listen_on)    run_call engine.residents op=listen-on | jq -r '.result // .' 2>/dev/null ;;
+    listen_off)   run_call engine.residents op=listen-off | jq -r '.result // .' 2>/dev/null ;;
     start)        gio trash -- "$(cfg abs stop)" 2>/dev/null; printf 'ok the stop is lifted\n' ;;
     skill_unload) skl_disarm && printf 'no skill loaded\n' ;;
     service)      run_call engine.service "name=${1:-}" ;;

@@ -39,15 +39,22 @@ COMMAND: |
     ;;
   up)     _each start ;;
   down)   _each stop ;;
-  listen)
-    # L OREILLE N EST PAS UN RESIDENT : elle s ouvre sur demande, et se referme pareil
+  listen|listen-on|listen-off)
+    # L OREILLE N EST PAS UN MODELE : elle s ouvre sur demande, et se referme pareil.
+    # listen bascule ; listen-on et listen-off obeissent (le bouton de l app dit son etat).
     _k=$(cfg str units.kws.unit 2>/dev/null) || _k=""
     [ -n "$_k" ] || { printf 'FAULT units.kws.unit is not in the config\n'; exit 0; }
-    if systemctl --user is-active --quiet "$_k" 2>/dev/null; then
-      systemctl --user stop "$_k" 2>/dev/null; printf 'listen off\n'
-    else
-      systemctl --user start "$_k" 2>/dev/null; printf 'listen on\n'
-    fi
+    case $_op in
+      listen-on)  systemctl --user start "$_k" 2>/dev/null; printf 'listen on\n' ;;
+      listen-off) systemctl --user stop "$_k" 2>/dev/null; printf 'listen off\n' ;;
+      *)
+        if systemctl --user is-active --quiet "$_k" 2>/dev/null; then
+          systemctl --user stop "$_k" 2>/dev/null; printf 'listen off\n'
+        else
+          systemctl --user start "$_k" 2>/dev/null; printf 'listen on\n'
+        fi
+        ;;
+    esac
     ;;
   toggle)
     _up=0
@@ -62,4 +69,4 @@ COMMAND: |
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: status,up,down,toggle,listen}
+  - {name: op, type: enum, values: status,up,down,toggle,listen,listen-on,listen-off}

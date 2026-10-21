@@ -919,7 +919,9 @@ class Handler(BaseHTTPRequestHandler):
             line = str(payload.get("line") or query or "").strip()
             if not line:
                 return self.json({"error": "a line is expected"}, 400)
-            return self.json(delegate("engine_commands", [line]))
+            # la ligne se lit sur l entree, par la porte du moteur : elle ne passe pas par
+            # la porte humaine, qui ne connait pas les gestes du moteur (l oreille, par exemple)
+            return self.json(ask("engine", "engine.commands", ["op=line"], feed=line, secs=180))
         if p == "/delegate":
             tool = str(payload.get("tool") or "").strip()
             if not tool:

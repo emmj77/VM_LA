@@ -77,7 +77,12 @@ COMMAND: |
         if [ "$_cnt" = true ]; then printf 'ok|POWER|%s|%s MB\n' "$_ti" "$_r" >> "$_tf"
         else printf 'ok|POWER|%s|%s MB\n' "$_ti" "$_r" >> "$_to"; fi
       else
-        printf 'ko|POWER|%s|absent\n' "$_ti" >> "$_tf"
+        # un resident on-demand qui dort n est pas absent : il est en veille, et ce n est pas une faute
+        if [ "$(cfg str "units.$_k.mode" "")" = "on-demand" ]; then
+          printf 'ok|POWER|%s|veille\n' "$_ti" >> "$_tf"
+        else
+          printf 'ko|POWER|%s|absent\n' "$_ti" >> "$_tf"
+        fi
       fi
     done
     # every resident model of the preset, sleeping or loaded, is a resident that answers
@@ -93,7 +98,12 @@ COMMAND: |
     done
     for _k in $(_flat | awk -F'\t' '$1 ~ /^units\.[a-z_]+\.count$/ && $2 == "true" { k = $1; sub(/^units\./, "", k); sub(/\.count$/, "", k); if (k != "models") print k }'); do
       _tot_u=$((_tot_u + 1))
-      [ "$(systemctl --user is-active "$(cfg str "units.$_k.unit")" 2>/dev/null)" = active ] && _n=$((_n + 1))
+      _u=$(cfg str "units.$_k.unit")
+      # un resident « on-demand » en veille n est pas absent : il dort, et il compte
+      if [ "$(systemctl --user is-active "$_u" 2>/dev/null)" = active ] \
+         || [ "$(cfg str "units.$_k.mode" "")" = "on-demand" ]; then
+        _n=$((_n + 1))
+      fi
     done
     _tot=$(awk '/MemTotal/{printf "%d", $2/1048576}' /proc/meminfo 2>/dev/null)
     _rck=ok; { [ "$_tot_u" -gt 0 ] && [ "$_n" = "$_tot_u" ]; } || _rck=ko

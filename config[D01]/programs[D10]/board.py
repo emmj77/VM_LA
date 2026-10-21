@@ -249,7 +249,8 @@ def _port(v):
     return int(v) if v.isdigit() else num(v, "port", 0)
 
 
-RESIDENTS = [(r["name"], r["unit"], _port(r.get("port")), r.get("probe", "health"), r.get("model", ""))
+RESIDENTS = [(r["name"], r["unit"], _port(r.get("port")), r.get("probe", "health"), r.get("model", ""),
+             bool(r.get("idle", False)))
              for r in laconf.get("board", "residents", [])]
 RESIDENT_NAMES = tuple(r[0] for r in RESIDENTS)
 APPOINT = [(a["name"], _port(a.get("port")), a.get("probe", "health"), a.get("word", ""),
@@ -347,7 +348,7 @@ def _router_models(port):
 def read_residents():
     out = []
     seen = {}
-    for name, unit, port, path, mid in RESIDENTS:
+    for name, unit, port, path, mid, idle in RESIDENTS:
         if mid:
             # a model of the router: sleeping is up (its weights stay), unloaded is a fault
             port = port or ROUTER_PORT
@@ -359,6 +360,10 @@ def read_residents():
                         val, None))
             continue
         state, mo, _, busy = alive(unit)
+        if idle and state != "active":
+            # il dort tant qu on ne l a pas demande : la veille n est pas une faute
+            out.append((name, 0, "idle", "200", 0, False, "veille", None))
+            continue
         # a resident that opens no port is up with its process alone
         code = (probe(port, path) if port else "200") if state == "active" else "000"
         fault = state != "active" or code == "000"
