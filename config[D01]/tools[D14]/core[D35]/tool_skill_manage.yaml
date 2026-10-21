@@ -18,7 +18,7 @@ COMMAND: |
   LC_ALL=C; export LC_ALL
   A="{{action}}"
   NAME="{{name}}"
-  SK="$ROOT/skills"
+  SK=$(cfg path skills)
   SM="$ROOT/config/templates/skill_template.yaml"
   [ -d "$SK" ] || { printf '%s\n' "$(msg skills_dir_missing "$SK")" >&2; exit 1; }
   SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//')

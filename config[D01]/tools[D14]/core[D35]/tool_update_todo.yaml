@@ -21,8 +21,8 @@ COMMAND: |
     progress|complete) ;;
     *) printf '%s\n' "$(msg unknown_state_st_progress "$ST")" >&2 ; exit 1 ;;
   esac
-  [ -x "$PROCS/plan.sh" ] || { echo "refused: the plan brick is missing ($PROCS/plan.sh)" >&2 ; exit 1 ; }
-  "$PROCS/plan.sh" progress "$ST"
+  PB=$(cfg path plan 2>/dev/null) ; [ -n "$PB" ] && [ -x "$PB/plan.sh" ] || { printf '%s\n' "refused: the plan brick is missing (plan/plan.sh)" >&2 ; exit 1 ; }
+  "$PB/plan.sh" progress "$ST"
 
 ARGS:
   - {name: state, type: text}

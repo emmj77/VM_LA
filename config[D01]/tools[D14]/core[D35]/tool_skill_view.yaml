@@ -16,7 +16,7 @@ DESCRIPTION: "shows a skill as it is written, WITHOUT loading it : the plan stay
 
 COMMAND: |
   NAME="{{name}}"
-  SK="$ROOT/skills"
+  SK=$(cfg path skills)
   [ -d "$SK" ] || { printf '%s\n' "$(msg skills_dir_missing "$SK")" >&2 ; exit 1 ; }
   SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//')
   [ -n "$SLUG" ] || { printf '%s\n' "$(msg name_no_slug "${NAME:-absent}")" >&2 ; exit 1 ; }

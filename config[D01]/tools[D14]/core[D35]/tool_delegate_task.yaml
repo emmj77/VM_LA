@@ -21,7 +21,7 @@ COMMAND: |
   B="${LA_LOOP:-$(dirname "${LA_CONFIG:?la table est inconnue}")/engine/loop.sh}"
   [ -f "$B" ] || { printf '%s\n' "$(msg loop_missing "$B")" >&2; exit 1; }
 
-  SECT=$(sed -n '/^agents:/,/^[^[:space:]]/p' "$ROOT/config/la_config.yaml" 2>/dev/null)
+  SECT=$(sed -n '/^agents:/,/^[^[:space:]]/p' "$(dirname "$(dirname "$LA_CONFIG")")/la_config.yaml" 2>/dev/null)
   NAMES=$(printf '%s\n' "$SECT" | sed -n 's/^[[:space:]]*names:[[:space:]]*//p' | head -n 1 \
           | sed -e 's/[[:space:]]*#.*$//' -e 's/^"//' -e 's/"$//')
   MAIN=$(printf '%s\n' "$SECT" | sed -n 's/^[[:space:]]*main:[[:space:]]*//p' | head -n 1 \
@@ -68,15 +68,15 @@ COMMAND: |
              | sed -n 's/^  [0-9][0-9]*:[[:space:]]*"\([a-z0-9_-]*\)".*/\1/p')
     fi
     if [ -z "$DECL" ]; then
-      DECL=$(ls -1 "$ROOT/skills" 2>/dev/null | while read -r _d ; do
-               [ -f "$ROOT/skills/$_d/skill.yaml" ] && printf '%s\n' "$_d" ; done)
+      DECL=$(ls -1 "$(cfg path skills)" 2>/dev/null | while read -r _d ; do
+               [ -f "$(cfg path skills)/$_d/skill.yaml" ] && printf '%s\n' "$_d" ; done)
     fi
     for S in $(printf '%s' "$WANT_SK" | tr ',' ' ') ; do
       [ -n "$S" ] || continue
       case "$S" in
         ''|*[!a-z0-9_-]*) printf '%s\n' "$(msg skill_name_not_lowercase "$S")" >&2 ; exit 1 ;;
       esac
-      [ -f "$ROOT/skills/$S/skill.yaml" ] || { printf '%s\n' "$(msg skill_not_found "$S")" >&2 ; exit 1 ; }
+      [ -f "$(cfg path skills)/$S/skill.yaml" ] || { printf '%s\n' "$(msg skill_not_found "$S")" >&2 ; exit 1 ; }
       printf '%s\n' "$DECL" | grep -qxF -- "$S" || {
         printf '%s\n' "$(msg skill_not_in_project "$S" "${PNAME:-aucun}")" >&2
         printf '%s\n' "$DECL" | sed -e 's/^/  /' >&2
@@ -87,7 +87,7 @@ COMMAND: |
     SET=${SET%,}
   fi
 
-  for PA in "$ROOT/skills/.active:$ROOT/config/$FROM.skill" \
+  for PA in "$(cfg path skills)/.active:$ROOT/config/$FROM.skill" \
             "$ROOT/projects/.active:$ROOT/config/$FROM.project" ; do
     SRC=${PA%%:*} ; DST=${PA#*:}
     [ -f "$SRC" ] || continue

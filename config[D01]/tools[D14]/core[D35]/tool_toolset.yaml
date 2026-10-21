@@ -15,14 +15,14 @@ RULES:
 DESCRIPTION: "shows the COMPLETE list of the tour's tools (the active skill's palette, plus the permanent tools)"
 
 COMMAND: |
-  A=$(sed -n '1p' "${LA_STATE_SKILL:-$ROOT/skills/.active}" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  A=$(sed -n '1p' "${LA_STATE_SKILL:-$(cfg path skills)/.active}" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   case "$A" in ''|*/*|*..*) A=la ;; esac
-  K="$ROOT/skills/$A/skill.yaml"
+  K="$(cfg path skills)/$A/skill.yaml"
   [ -f "$K" ] || { printf '%s\n' "$(msg active_skill_missing "$K")" >&2; exit 1; }
-  T="$ROOT/config/la_tools.yaml"
+  T="$(cfg path tools)/registry.yaml"
   W="${TMPDIR:-/tmp}/toolset.$$"
   SK=$(sed -n '/^TOOLS:/,/^[^[:space:]]/p' "$K" | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' | sed -e 's/^"//' -e 's/"$//' | grep -v '^$' | sort -u)
-  PN=$(sed -n '/^permanent:/,/^[^[:space:]]/p' "$ROOT/config/la_config.yaml" | sed -n 's/^[[:space:]]*-[[:space:]]*//p' | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | sed 's/:.*$//' | grep -v '^$')
+  PN=$(sed -n '/^permanent:/,/^[^[:space:]]/p' "$(dirname "$(dirname "$LA_CONFIG")")/la_config.yaml" | sed -n 's/^[[:space:]]*-[[:space:]]*//p' | sed -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' | sed 's/:.*$//' | grep -v '^$')
   WIDE=0
   if [ -n "$SK" ]; then
     printf '%s\n%s\n' "$SK" "$PN" | grep -v '^$' | sort -u > "$W.names"
@@ -32,12 +32,11 @@ COMMAND: |
   fi
   awk -v NAMES="$W.names" '
     BEGIN { while ((getline n < NAMES) > 0) keep[n] = 1 }
-    /^  - id: /{ i = $3 }
-    /^    tool: /{ t = $2 }
-    /^    description:/{
-      d = $0; sub(/^    description: */, "", d); gsub(/"/, "", d);
-      if (keep[t]) printf "%s  %s  %s\n", i, t, d
-    }' "$T" > "$W"
+    /^- id: /{ i = $3; f = ""; d = "" }
+    /^  tool: /{ t = $2 }
+    /^  family: /{ f = $2 }
+    /^  doc: /{ d = $2 }
+    /^  visible: /{ if (keep[t]) { gsub(/"/, "", d); gsub(/"/, "", f); printf "%s  %s  %s\n", i, t, (d == "" ? f : d) } }' "$T" > "$W"
   RC=0
   [ "$WIDE" = 1 ] && printf '%s\n' "$(msg tool_registry_too_wide)"
   if [ -s "$W" ]; then cat "$W"; else printf '%s\n' "$(msg no_tool_for_this_turn)" >&2; RC=1; fi

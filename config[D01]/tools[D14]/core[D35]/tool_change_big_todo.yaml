@@ -17,8 +17,8 @@ DESCRIPTION: "REWRITES the big plan of the project (it REPLACES every point) ; t
 COMMAND: |
   [ -n "{{name}}" ] || { printf '%s\n' "$(msg workstream_name_required)" >&2 ; exit 1 ; }
   [ -n "{{goal}}" ] || { printf '%s\n' "$(msg workstream_goal_required)" >&2 ; exit 1 ; }
-  [ -x "$PROCS/plan.sh" ] || { echo "refused: the plan brick is missing ($PROCS/plan.sh)" >&2 ; exit 1 ; }
-  "$PROCS/plan.sh" big change "{{name}}" "{{goal}}"
+  PB=$(cfg path plan 2>/dev/null) ; [ -n "$PB" ] && [ -x "$PB/plan.sh" ] || { printf '%s\n' "refused: the plan brick is missing (plan/plan.sh)" >&2 ; exit 1 ; }
+  "$PB/plan.sh" big change "{{name}}" "{{goal}}"
 
 ARGS:
   - {name: name, type: text}

@@ -19,10 +19,10 @@ COMMAND: |
   case "$T" in
     ''|*[!a-zA-Z0-9_.-]*) [ -n "$T" ] && printf '%s\n' "$(msg topic_malformed "$T")" >&2 ; T= ;;
   esac
-  A=$(sed -n '1p' "${LA_STATE_SKILL:-$ROOT/skills/.active}" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  A=$(sed -n '1p' "${LA_STATE_SKILL:-$(cfg path skills)/.active}" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   case "$A" in ''|*/*|*..*) A= ;; esac
   [ -n "$A" ] || { printf '%s\n' "$(msg no_active_skill)" >&2 ; exit 1; }
-  S="$ROOT/skills/$A/skill.yaml"
+  S="$(cfg path skills)/$A/skill.yaml"
   [ -f "$S" ] || { printf '%s\n' "$(msg active_manifest_missing "$S")" >&2 ; exit 1; }
   RES=$(sed -n '/^DOCS:/,/^[^[:space:]]/p' "$S" \
         | sed -n 's/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
@@ -47,7 +47,7 @@ COMMAND: |
         printf '%s\n' "$(msg seek_official)"
         continue ;;
     esac
-    PERIM=
+    WWS=
     PAC=$(sed -n '1p' "${LA_STATE_PROJECT:-$ROOT/projects/.active}" 2>/dev/null | tr -d '\r')
     PJL="$ROOT/projects/*/project.yml"
     if [ -n "$PAC" ] && [ -f "$ROOT/projects/$PAC/project.yml" ]; then
@@ -58,12 +58,12 @@ COMMAND: |
       PP=$(sed -n 's/^path:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' "$PJ" | head -n 1)
       [ -n "$PP" ] || continue
       for D in "$ROOT/$PP" "$HOME/$PP" "$ROOT/../$PP"; do
-        [ -d "$D/$R" ] && { PERIM="$D/$R" ; break; }
+        [ -d "$D/$R" ] && { WWS="$D/$R" ; break; }
       done
-      [ -n "$PERIM" ] && break
+      [ -n "$WWS" ] && break
     done
     P=
-    for C in "$ROOT/config/tools/$R" "$PERIM" "$ROOT/$R" "$ROOT/skills/$A/$R" "$ROOT/skills/$R" \
+    for C in "$(cfg path tools)/$R" "$WWS" "$ROOT/$R" "$(cfg path skills)/$A/$R" "$(cfg path skills)/$R" \
              ${WS:+"$ROOT/$WS/$R"}; do
       case "$C" in *..*) continue ;; esac
       [ -e "$C" ] || continue

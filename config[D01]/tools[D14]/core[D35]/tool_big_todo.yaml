@@ -17,8 +17,8 @@ DESCRIPTION: "opens the BIG plan in the active project's PROJECT_PLAN section (t
 COMMAND: |
   [ -n "{{name}}" ] || { printf '%s\n' "$(msg big_todo_name_empty)" >&2 ; exit 1 ; }
   [ -n "{{goal}}" ] || { printf '%s\n' "$(msg big_todo_goal_empty)" >&2 ; exit 1 ; }
-  [ -x "$PROCS/plan.sh" ] || { echo "refused: the plan brick is missing ($PROCS/plan.sh)" >&2 ; exit 1 ; }
-  "$PROCS/plan.sh" big todo "{{name}}" "{{goal}}"
+  PB=$(cfg path plan 2>/dev/null) ; [ -n "$PB" ] && [ -x "$PB/plan.sh" ] || { printf '%s\n' "refused: the plan brick is missing (plan/plan.sh)" >&2 ; exit 1 ; }
+  "$PB/plan.sh" big todo "{{name}}" "{{goal}}"
 
 ARGS:
   - {name: name, type: text}

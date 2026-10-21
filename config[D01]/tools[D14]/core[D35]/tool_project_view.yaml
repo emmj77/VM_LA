@@ -18,8 +18,13 @@ COMMAND: |
   NAME="{{name}}"
   D="$ROOT/projects"
   [ -d "$D" ] || { printf '%s\n' "$(msg projects_not_found "$D")" >&2 ; exit 1 ; }
-  [ -f "$PROCS/lib.sh" ] || { printf '%s\n' "$(msg shared_library_missing_procs "$PROCS")" >&2 ; exit 1 ; }
-  . "$PROCS/lib.sh"
+  PROCS=${PROCS:-$(cfg path programs 2>/dev/null)}
+  if [ -n "$PROCS" ] && [ -f "$PROCS/lib.sh" ]; then
+    . "$PROCS/lib.sh"
+  else
+    active_project() { PNAME=""; PROJECT=""; }
+    project_skills() { :; }
+  fi
   active_project
   [ -n "$NAME" ] || NAME=$PNAME
   [ -n "$NAME" ] || { printf '%s\n' "$(msg active_project_name_given)" >&2 ; exit 1 ; }
