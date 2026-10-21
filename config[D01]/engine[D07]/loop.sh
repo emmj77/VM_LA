@@ -122,6 +122,7 @@ loop_turn() {
     }
   done
 
+  skl_turn_end
   loop_release
   _ltr step "turn done in $(( $(date +%s) - _t0 ))s, $_calls calls, $_status"
   [ "$_status" = ok ] || return 1

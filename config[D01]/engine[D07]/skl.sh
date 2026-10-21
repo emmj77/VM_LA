@@ -91,6 +91,18 @@ skl_disarm() {
   return 0
 }
 
+# skl_turn_end : the turn is over. A step still open keeps the skill armed (the task goes on);
+# the plan closed, or a journal (no route at all), and the skill goes. The MODEL never unloads:
+# the motor does, here, at the end of the turn. The human keeps his own word (`skill unload`).
+skl_turn_end() {
+  [ -n "$(skl_skill)" ] || return 0
+  skl_plan_step >/dev/null 2>&1
+  case $? in
+    0) return 0 ;;
+  esac
+  skl_disarm
+}
+
 # skl_project_arm <name> : a project exists before it is armed
 skl_project_arm() {
   _n=${1:-}
