@@ -26,6 +26,8 @@ COMMAND: |
   _sys=$(printf '%s, you answer in %s.%s' "$_who" "$_lang" "$_head")
 
   # the second head: what moves, after the stable prefix
+  _req=$(_turn_get '.prompt' 2>/dev/null)
+  [ -n "$_req" ] || _req=${PROMPT:-}
   _second=$(
     printf '== THE HUMAN ==\n'
     printf 'you are talking with the human (%s) ; the agent answering is %s\n' \
@@ -36,6 +38,17 @@ COMMAND: |
     printf '== THE ACTIVE SKILL ==\n'
     _sk=$(skl_skill 2>/dev/null)
     if [ -n "$_sk" ]; then printf 'skill : %s\n' "$_sk"; else printf 'no skill loaded : no skill is active\n'; fi
+    # rien de charge : trois skills probables, une ligne bornee, c'est tout
+    if [ -z "$_sk" ] && [ -n "$_req" ]; then
+      _fd=$(find "$(dirname "$(dirname "$LA_CONFIG")")" -maxdepth 1 -type d -name 'filter\[D*\]' -print 2>/dev/null | head -n 1)
+      _fm="$_fd/skills.bin"
+      if [ -r "$_fm" ]; then
+        _pp=$(printf '%s\n' "$_req" | tr 'A-Z' 'a-z' | fasttext predict-prob "$_fm" - 3 2>/dev/null \
+          | sed 's/__label__//g' \
+          | awk '{ o = ""; for (i = 1; i <= NF; i += 2) o = o (i > 1 ? " · " : "") $i " " sprintf("%.2f", $(i+1)); print o }')
+        [ -n "$_pp" ] && printf 'skills probables : %s\n' "$_pp"
+      fi
+    fi
     printf '== THE LOCAL MODEL SUMMARY ==\n'
     _sf=$(cfg abs second 2>/dev/null)
     _sm=""; _ex=none; _sy=none

@@ -181,6 +181,7 @@ permanent:
   - tools_list
   - sleep
   - skill_list
+  - load_skill
   - vision.image
   - skill_view
   - transcribe

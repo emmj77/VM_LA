@@ -7,7 +7,7 @@ RULES:
   enabled: true
   timeout: 600
   writable_workspace: "work"
-  approval: none
+  approval: required
   turn: none
   count: false
   paths: write
@@ -23,6 +23,10 @@ COMMAND: |
   C="$SK/$SLUG/skill.yaml"
   if [ -L "$SK/$SLUG" ]; then printf '%s\n' "$(msg target_symlink "$SLUG")" >&2 ; exit 1 ; fi
   [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { printf '%s\n' "$(msg skill_absent_file "$SLUG")" >&2 ; exit 1 ; }
+  H=$(sed -n 's/^HUMAN_ONLY:[[:space:]]*//p' "$C" | head -n 1 | sed -e 's/#.*$//' | tr -d ' ')
+  if [ "$H" = true ] && [ "${LA_FROM:-model}" != engine ]; then
+    printf '%s\n' "$(msg human_only_skill "$SLUG")" >&2 ; exit 1
+  fi
   [ -f "$PROCS/lib.sh" ] || { printf '%s\n' "$(msg shared_library_missing "$PROCS")" >&2 ; exit 1 ; }
   . "$PROCS/lib.sh"
   active_project ; PSK=

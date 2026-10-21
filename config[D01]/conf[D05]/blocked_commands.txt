@@ -1,0 +1,17 @@
+# id: C10
+# la liste de blocage du terminal libre : un nom de commande par ligne.
+# chaque ligne presente sur le disque est masquee a /dev/null dans la cage bubblewrap :
+# le binaire ne peut plus s'executer (noyau, pas un filtre de texte).
+# un nom absent de la machine est ignore sans bruit.
+rm
+rmdir
+shred
+wipefs
+mkfs.ext4
+mkfs.vfat
+mkfs.xfs
+mkfs.btrfs
+fdisk
+parted
+sgdisk
+hdparm

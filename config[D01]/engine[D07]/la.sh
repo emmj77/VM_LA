@@ -13,6 +13,7 @@ la_usage() {
   printf '%s\n' \
     "la <tool> [key=value ...]     call a tool through the door" \
     "la engine <tool> [k=v ...]    the same, as the engine" \
+    "la skill load|unload|list     the active skill, by the human door" \
     "la service <name>             one of the services, in the foreground" \
     "la map                        rebuild the map of the names" \
     "la version                    what this is" \
@@ -28,6 +29,21 @@ case ${1:-} in
   service)       shift; LA_FROM=engine; export LA_FROM
                  run_call engine.service "name=${1:-}" ;;
   tool)          shift; run_call "$@" ;;
+  skill)         shift
+                 _d=$(cfg path skills)
+                 case ${1:-list} in
+                   load)   shift
+                           skl_arm "${1:-}" && printf 'skill loaded: %s\n' "${1:-}" ;;
+                   unload) skl_disarm && printf 'no skill loaded\n' ;;
+                   list|"")
+                           for _s in "$_d"/*/skill.yaml; do
+                             [ -f "$_s" ] || continue
+                             _n=$(basename "$(dirname "$_s")")
+                             _t=$(sed -n 's/^tags:[[:space:]]*//p' "$_s" | head -n 1 | tr -d '[]"' | tr ',' ' ')
+                             printf '%-24s %s\n' "$_n" "$_t"
+                           done ;;
+                   *)      printf 'la skill load <name> | unload | list\n' >&2; exit 1 ;;
+                 esac ;;
   engine)        LA_FROM=engine; export LA_FROM; shift; run_call "$@" ;;
   "")            LA_FROM=engine; export LA_FROM; run_call engine.turn "text=$(cat)" ;;
   *)             run_call "$@" ;;

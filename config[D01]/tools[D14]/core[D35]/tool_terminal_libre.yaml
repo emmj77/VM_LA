@@ -1,0 +1,31 @@
+id: "G077"
+tool: "terminal_libre"
+date: "2026-10-21"
+tags: ["terminal_libre", "debug", "free"]
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "a free shell on the host: bubblewrap, the whole disk writable, and every binary of the blocklist masked to /dev/null so it cannot run. every command is logged."
+COMMAND: |
+  C="$*"; [ -n "$C" ] || C=$(cat); [ -n "$C" ] || { printf '%s\n' "$(msg empty_missing_command)" >&2; exit 1; }
+  T=600
+  B=$(command -v bwrap) || { printf '%s\n' "$(msg bwrap_missing)" >&2; exit 1; }
+  HD=$(dirname "$(dirname "$LA_CONFIG")")
+  CD=$(find "$HD" -maxdepth 1 -type d -name 'conf\[D*\]' -print 2>/dev/null | head -n 1)
+  BL="$CD/blocked_commands.txt"
+  [ -r "$BL" ] || { printf '%s\n' "$(msg blocklist_missing "$BL")" >&2; exit 1; }
+  M=""
+  while read -r c; do
+    case $c in ''|\#*) continue ;; esac
+    p=$(command -v "$c" 2>/dev/null); [ -n "$p" ] && M="$M --ro-bind /dev/null $p"
+  done < "$BL"
+  L="${LA_STATE:-$HD/state}/terminal_libre.log"
+  printf '{"ts":%s,"cmd":"%s"}\n' "$(date +%s)" "$(fs_json "$C")" >> "$L" 2>/dev/null
+  timeout "$T" "$B" --bind / / --dev /dev --proc /proc $M -- /bin/sh -c "$C"
+ARGS:
+  - {name: command, type: text, stdin: true}

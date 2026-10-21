@@ -1,0 +1,25 @@
+id: "K35"
+skill: "debug"
+date: "2026-10-21"
+tags: ["debug", "terminal", "host"]
+HUMAN_ONLY: true
+
+SUMMARY:
+  101: "Le terminal libre : toute la machine, sous bubblewrap, avec la liste de blocage des binaires (rm et la famille disque)."
+  102: "Le chargement est HUMAIN seulement : la porte refuse le modele ; 'la skill load debug' passe."
+  103: "Chaque commande part dans state/terminal_libre.log ; la sortie est brute, code de sortie compris."
+RULES:
+  create_subfolder: false
+  execute_code: true
+  max_section_lines: 100
+APPROVAL: false
+TOOLS:
+  200: "terminal_libre"
+  201: "reply"
+DOCS:
+PLAN:
+WRITABLE_WORKSPACE:
+  workspace: "/"
+  type-file: "tout ce que la machine accepte"
+ERROR:
+  600: "Un binaire de la liste de blocage n existe pas dans la cage : ne pas le rappeler, il est masque."

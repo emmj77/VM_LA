@@ -62,7 +62,7 @@ skl_workspace() {
   _d=$(cfg path skills) || return 1
   _f="$_d/$_n/skill.yaml"
   [ -r "$_f" ] || return 1
-  _w=$(_flat "$_f" | awk -F'\t' '$1 == "PERIMETER.workspace" { print $2; exit }')
+  _w=$(_flat "$_f" | awk -F'\t' '$1 == "WRITABLE_WORKSPACE.workspace" { print $2; exit }')
   [ -n "$_w" ] || return 1
   printf '%s\n' "$_w"
 }
@@ -90,10 +90,22 @@ skl_permanent() {
   return 1
 }
 
+# skl_carries <name> <id> : the armed skill carries that tool, by name (the value) or by key (200..)
+skl_carries() {
+  _n=${1:-}; _i=${2:-}
+  _d=$(cfg path skills) || return 1
+  _s=$(skl_skill) || return 1
+  _f="$_d/$_s/skill.yaml"
+  [ -r "$_f" ] || return 1
+  _flat "$_f" | awk -F'\t' -v n="$_n" -v i="$_i" '
+    $1 ~ /^TOOLS\./ { k = $1; sub(/^TOOLS\./, "", k); if (k == i || $2 == n) f = 1 }
+    END { exit(f ? 0 : 1) }'
+}
+
 # tool_allowed <name> <id> : the two doors at once, the name for the master file, the id for the skill
 tool_allowed() {
   skl_permanent "$1" && return 0
-  skl_in_toolset "$2"
+  skl_carries "$1" "$2"
 }
 
 # approval_of <body> : what the body says a human must carry, empty when nothing
