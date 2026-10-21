@@ -29,7 +29,13 @@ COMMAND: |
   printf '%s\n' "$_r" | write_atomic "$(cfg abs reply_stream)"
   printf '%s\n' "$_r"
   _tr reply "$(printf '%s' "$_r" | wc -c) bytes"
-  # apres avoir repondu la session se met au repos : le repos automatique s arme (loi 1544)
+  # la reponse finale arme le sommeil automatique : 580 s, puis le timer reveille le modele (loi 1577)
+  _as=$(cfg num loop.autosleep 580) || _as=580
+  systemctl --user stop la-autosleep.timer >/dev/null 2>&1
+  _c="'${LA_TOOL:-}' engine engine.turn 'text=reveil: le sommeil de $_as secondes est arrive a son terme'"
+  systemd-run --user --unit=la-autosleep --on-active="${_as}s" \
+    --timer-property=AccuracySec=1s --collect /bin/dash -c "$_c" >/dev/null 2>&1 \
+    && _tr reply "sommeil auto ${_as}s arme"
   _d=$(cfg path state) && : > "$_d/watch.armed" 2>/dev/null
   exit 0
 

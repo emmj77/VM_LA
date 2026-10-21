@@ -53,8 +53,6 @@ COMMAND: |
   fi
   # le noyau reprend la page cache des residents : la memoire ne grossit pas sans fin
   run_call engine.purge "op=all" >/dev/null 2>&1
-  # une surveillance en cours reprend son souffle apres le tour, jusqu a son dernier tour
-  run_call watch.surveil "op=tick" >/dev/null 2>&1
   _turn_set '(.status = "done")'
   _tr note "turn closed"
   exit 0

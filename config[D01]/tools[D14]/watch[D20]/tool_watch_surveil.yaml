@@ -1,4 +1,4 @@
-# la surveillance : un sommeil programme qui reveille le modele avec sa mission.
+# la surveillance : un sommeil qui se repete tout seul et reveille le modele avec sa mission.
 id: "W003"
 tool: "watch.surveil"
 date: "2026-10-21"
@@ -11,64 +11,43 @@ RULES:
   turn: none
   count: false
   paths: write
-DESCRIPTION: "a sleep that repeats: it wakes the session every N seconds with its mission to keep watching a target, twelve times at most"
+DESCRIPTION: "arms one repeating systemd timer: every N seconds it wakes the session with its mission, twelve times at most, and stops itself"
 COMMAND: |
   _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _op=${1:-status}
   _d=$(cfg path state) || { printf 'FAULT no state in the tree\n'; exit 0; }
   _j="$_d/surveil.json"
+  _x="$_d/surveil.sh"
   _max=$(cfg num loop.surveil_max 12) || _max=12
-
-  # l echeance depose le texte de la mission : c est lui que le modele lira au reveil
-  _arm() {
-    _every=$1
-    _target=$2
-    _count=$3
-    _tot=$4
-    _u="la-surveil-$(date +%s)"
-    systemd-run --user --unit="$_u" --on-active="${_every}s" \
-      --timer-property=AccuracySec=1s --collect \
-      /bin/dash -c "printf 'process finished: la surveillance continue (%s/%s) : %s\n' '$_count' '$_tot' '$_target' > '$_d/watch.event'" \
-      >/dev/null 2>&1
-  }
 
   case $_op in
   arm*)
     _every=${_op#arm}
-    [ "${_every:-0}" -gt 0 ] 2>/dev/null || { printf 'FAULT the pace is not a number\n'; exit 0; }
     _target=$(cat | tr '\n' ' ' | cut -c1-400)
     [ -n "$_target" ] || { printf 'FAULT the mission wants its target on the input\n'; exit 0; }
-    jq -cn --arg t "$_target" --argjson e "$_every" --argjson m "$_max" \
-      '{target:$t,every:$e,max:$m,count:1,state:"running"}' | write_atomic "$_j"
-    _arm "$_every" "$_target" 1 "$_max" || { printf 'FAULT the watch was not armed\n'; exit 0; }
-    _tr surveil "arme toutes les ${_every}s, $_max fois : $_target"
-    printf 'ok la surveillance de %s est armee toutes les %s s, %s fois au plus\n' "$_target" "$_every" "$_max"
-    ;;
-  tick)
-    [ -r "$_j" ] || { printf 'note aucune surveillance en cours\n'; exit 0; }
-    _e=$(jq -r '.every' "$_j" 2>/dev/null) || _e=180
-    _m=$(jq -r '.max' "$_j" 2>/dev/null) || _m=$_max
-    _c=$(jq -r '.count' "$_j" 2>/dev/null) || _c=0
-    _t=$(jq -r '.target // ""' "$_j" 2>/dev/null)
-    if [ "${_c:-0}" -ge "${_m:-12}" ]; then
-      jq '.state = "done"' "$_j" | write_atomic "$_j"
-      printf 'ok la surveillance est terminee apres %s tours\n' "$_c"
-      exit 0
-    fi
-    _c=$(( _c + 1 ))
-    jq --argjson c "$_c" '.count = $c' "$_j" | write_atomic "$_j"
-    _arm "$_e" "$_t" "$_c" "$_m"
-    printf 'ok la surveillance continue (%s/%s), prochain reveil dans %s s\n' "$_c" "$_m" "$_e"
+    _u="la-surveil-$(date +%s)"
+
+    jq -cn --arg t "$_target" --argjson e "$_every" --argjson m "$_max" --arg u "$_u" \
+      '{target:$t,every:$e,max:$m,count:0,state:"running",unit:$u}' | write_atomic "$_j"
+
+    # une commande en ligne, construite ici : systemd la repete, le compte se fait dedans
+    _cmd="c=\$(( \$(jq -r '.count // 0' '$_j' 2>/dev/null) + 1 )); jq --argjson c \"\$c\" '.count = \$c' '$_j' > '$_j.t' && mv -f '$_j.t' '$_j'; printf 'le reveil de surveillance %s/%s : %s\\n' \"\$c\" '$_max' '$_target' >> '$_d/request.txt'; '${LA_TOOL:-}' engine engine.turn 'text=reveil: continue la surveillance : $_target'; [ \"\$c\" -ge '$_max' ] && systemctl --user stop '$_u.timer'"
+    systemd-run --user --unit="$_u" --on-active="${_every}s" \
+      --timer-property=AccuracySec=1s --timer-property=OnUnitActiveSec="${_every}s" \
+      --collect /bin/dash -c "$_cmd" >/dev/null 2>&1 \
+      || { printf 'FAULT the watch was not armed\n'; exit 0; }
+    _tr surveil "programmee une fois, toutes les ${_every}s, $_max fois : $_target"
+    printf 'ok la surveillance de %s est programmee une fois pour toutes, toutes les %s s, %s reveils au plus\n' \
+      "$_target" "$_every" "$_max"
     ;;
   status)
     [ -r "$_j" ] || { printf 'note aucune surveillance en cours\n'; exit 0; }
     jq -r '"ok \(.state) : \(.target) toutes les \(.every)s, tour \(.count)/\(.max)"' "$_j" 2>/dev/null
     ;;
   stop)
-    for _u in $(systemctl --user list-units 'la-surveil*' --all --no-legend 2>/dev/null | awk '{print $1}'); do
-      systemctl --user stop "$_u" >/dev/null 2>&1
-    done
+    _u=$(jq -r '.unit // ""' "$_j" 2>/dev/null)
+    [ -n "$_u" ] && systemctl --user stop "$_u.timer" >/dev/null 2>&1
     [ -r "$_j" ] && jq '.state = "stopped"' "$_j" | write_atomic "$_j"
     printf 'ok la surveillance est arretee\n'
     ;;
@@ -79,4 +58,4 @@ COMMAND: |
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: [arm15,arm30,arm60,arm180,arm300,arm580,tick,status,stop]}
+  - {name: op, type: enum, values: [arm15,arm30,arm60,arm180,arm300,arm580,status,stop]}

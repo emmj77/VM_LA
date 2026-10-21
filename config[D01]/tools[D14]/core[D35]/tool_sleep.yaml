@@ -12,21 +12,20 @@ RULES:
   count: false
   paths: write
 
-DESCRIPTION: "puts the session to rest: a systemd timer of its own that cancels itself, and its return is what wakes the model"
+DESCRIPTION: "puts the session to rest in systemd; when the wait is over the timer wakes the model itself, with no judge in between"
 
 COMMAND: |
   _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   S={{seconds}}
-  _d=$(cfg path state) || { printf 'FAULT no state in the tree\n'; exit 0; }
   _u="la-sleep-$(date +%s)"
-  # le sommeil vit dans systemd, pas dans le tour : le tour rend la main tout de suite
+  # tout tient dans le corps : systemd execute la commande, aucun fichier de plus
+  _c="'${LA_TOOL:-}' engine engine.turn 'text=reveil: le sommeil de $S secondes est arrive a son terme'"
   systemd-run --user --unit="$_u" --on-active="${S}s" \
-    --timer-property=AccuracySec=1s --collect \
-    /bin/dash -c "printf 'process finished: le sommeil de %s secondes est arrive a son terme\n' '$S' > '$_d/watch.event'" \
-    >/dev/null 2>&1 || { printf 'FAULT the rest was not armed\n'; exit 0; }
-  _tr sleep "arme ${S}s sous $_u"
-  printf 'ok le sommeil est arme pour %s s ; a l echeance le systeme rend la main et le juge decide\n' "$S"
+    --timer-property=AccuracySec=1s --collect /bin/dash -c "$_c" >/dev/null 2>&1 \
+    || { printf 'FAULT the rest was not armed\n'; exit 0; }
+  _tr sleep "arme ${S}s sous $_u, reveil direct"
+  printf 'ok le sommeil est arme pour %s s ; a l echeance le timer reveille le modele lui-meme\n' "$S"
   exit 0
 
 ARGS:
