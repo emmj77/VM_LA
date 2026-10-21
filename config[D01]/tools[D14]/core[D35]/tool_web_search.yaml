@@ -1,5 +1,6 @@
 id: "G031"
 tool: "web_search"
+permanent: true
 date: "2026-10-17"
 tags: ["read", "shell", "text", "search"]
 

@@ -15080,6 +15080,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G032"
   tool: "web_extract"
   family: READ
@@ -15088,6 +15089,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G033"
   tool: "project_list"
   family: READ
@@ -15349,6 +15351,7 @@
   guardrail: true
   enabled: true
   visible: true
+  permanent: true
 - id: "G070"
   tool: "chatgpt_ask"
   family: MANAGE
