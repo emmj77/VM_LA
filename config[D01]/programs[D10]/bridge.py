@@ -205,6 +205,34 @@ def _thinking_keep(text):
     return t
 
 
+def _keep_turn(prompt, reply):
+    """one exchange into the base: the user's words and the answer, the thinking beside them."""
+    try:
+        with open(_turn_file("turn.json"), encoding="utf-8", errors="replace") as f:
+            t = json.load(f)
+    except (OSError, ValueError):
+        t = {}
+    ex = "".join(c for c in str(t.get("id") or "") if c.isdigit())
+    if not ex:
+        return
+    msg = t.get("reply_msg") or {}
+    said = " ".join(str(prompt or t.get("prompt") or "").split())
+    answer = " ".join(str(reply or msg.get("content") or "").split())
+    thought = str(msg.get("reasoning") or "").strip()
+    for role, content in (("user", said), ("assistant", answer)):
+        if not content:
+            continue
+        body = json.dumps({"exchange": ex, "role": role, "content": content,
+                           "reasoning": thought if role == "assistant" else ""})
+        try:
+            r = subprocess.run(["dash", os.environ["LA_TOOL"], "engine", "engine.hist", "op=add"],
+                               input=body, capture_output=True, text=True, timeout=20)
+            if r.returncode or '"status":"ok"' not in (r.stdout or ""):
+                sys.stderr.write("hist add %s: %s\n" % (role, (r.stdout or r.stderr or "")[:160]))
+        except Exception as e:
+            sys.stderr.write("hist add %s: %s\n" % (role, e))
+
+
 def _turn_file(name):
     return os.path.join(os.environ.get("LA_STATE") or ".", name)
 
@@ -238,7 +266,7 @@ def warm():
             ("board", "engine", "engine.board", ["op=json"], {}),
             ("trace", "engine", "engine.trace", ["op=json"],
              {"thinking": [], "journal": [], "reply": {}}),
-            ("hist", "engine", "engine.hist", ["turns"], {"turns": []})):
+            ("hist", "engine", "engine.hist", ["op=turns"], {"turns": []})):
         try:
             _CACHE[key] = [time.time(), _door_read(kind, tool, args, fb)]
         except Exception:
@@ -623,7 +651,7 @@ class Handler(BaseHTTPRequestHandler):
         if name == "history":
             # the enum arg goes in positionally: "op=turns" is a word the body never knows
             got = cached("hist", 5.0, lambda: as_json(
-                door("engine", "engine.hist", ["turns"]), {"turns": []}))
+                door("engine", "engine.hist", ["op=turns"]), {"turns": []}))
             return self.json(got)
         if name == "cmd":
             line = str(payload.get("line") or urllib.parse.parse_qs(query).get("line", [""])[0]).strip()
@@ -743,6 +771,7 @@ class Handler(BaseHTTPRequestHandler):
                     rep = f.read().strip()
             except OSError:
                 rep = ""
+            _keep_turn(text, rep)
             return self.json({"response": rep, "code": 0, "queued": False})
         if p == "/command":
             line = str(payload.get("line") or query or "").strip()

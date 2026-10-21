@@ -260,3 +260,36 @@
 {"ts":1792562702,"kind":"reply","text":"9 bytes"}
 {"ts":1792562705,"kind":"note","text":"turn closed"}
 {"ts":1792562706,"kind":"step","text":"turn done in 24s, 0 calls, ok"}
+{"ts":1792563853,"kind":"turn","text":"start"}
+{"ts":1792563855,"kind":"facts","text":"20261021-062414"}
+{"ts":1792563856,"kind":"second","text":"agent"}
+{"ts":1792563859,"kind":"scope","text":"16 tools"}
+{"ts":1792563861,"kind":"prompt","text":"21 bytes"}
+{"ts":1792563864,"kind":"call","text":"2791 tokens"}
+{"ts":1792563867,"kind":"tool","text":"reply: ok"}
+{"ts":1792563869,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792563871,"kind":"reply","text":"8 bytes"}
+{"ts":1792563873,"kind":"note","text":"turn closed"}
+{"ts":1792563875,"kind":"step","text":"turn done in 21s, 0 calls, ok"}
+{"ts":1792563965,"kind":"turn","text":"start"}
+{"ts":1792563968,"kind":"facts","text":"20261021-062606"}
+{"ts":1792563969,"kind":"second","text":"agent"}
+{"ts":1792563974,"kind":"scope","text":"16 tools"}
+{"ts":1792563976,"kind":"prompt","text":"21 bytes"}
+{"ts":1792563980,"kind":"call","text":"2791 tokens"}
+{"ts":1792563983,"kind":"tool","text":"reply: ok"}
+{"ts":1792563984,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792563986,"kind":"reply","text":"8 bytes"}
+{"ts":1792563989,"kind":"note","text":"turn closed"}
+{"ts":1792563990,"kind":"step","text":"turn done in 24s, 0 calls, ok"}
+{"ts":1792564088,"kind":"turn","text":"start"}
+{"ts":1792564090,"kind":"facts","text":"20261021-062809"}
+{"ts":1792564092,"kind":"second","text":"agent"}
+{"ts":1792564097,"kind":"scope","text":"16 tools"}
+{"ts":1792564100,"kind":"prompt","text":"21 bytes"}
+{"ts":1792564104,"kind":"call","text":"2860 tokens"}
+{"ts":1792564108,"kind":"tool","text":"reply: ok"}
+{"ts":1792564109,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792564111,"kind":"reply","text":"8 bytes"}
+{"ts":1792564114,"kind":"note","text":"turn closed"}
+{"ts":1792564115,"kind":"step","text":"turn done in 26s, 0 calls, ok"}

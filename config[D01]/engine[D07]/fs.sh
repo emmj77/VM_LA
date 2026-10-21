@@ -25,9 +25,10 @@ state_paths() {
   esac
 }
 
-# tmpfile [prefix] : a fresh file in the state directory, its name already made
+# tmpfile [prefix] : a fresh file, all of them under state/tmp so the state stays readable
 tmpfile() {
   _d=$(cfg path state) || return 1
+  _d="$_d/tmp"
   [ -d "$_d" ] || mkdir -p -- "$_d" || return 1
   mktemp "$_d/${1:-tmp}.XXXXXX"
 }

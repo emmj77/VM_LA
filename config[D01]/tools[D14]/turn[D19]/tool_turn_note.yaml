@@ -17,8 +17,18 @@ COMMAND: |
 
   _f=$(cfg abs memory) || { printf 'FAULT no memory in the tree\n'; exit 0; }
   mkdir -p -- "$(dirname -- "$_f")" || exit 0
-  jq -c '{id:.id,ts:.started,prompt:.prompt,reply:(.reply_msg.content // ""),calls:(.calls|length),tokens:.tokens,skill:.skill,project:.project}' \
+  # the answer is what the voice said, not the tool call that carried it
+  _rs=$(cat "$(cfg path state)/reply.stream" 2>/dev/null | tr '\n' ' ' | cut -c1-600)
+  _rc=$(jq -r '.reply_msg.content // ""' "$(cfg abs turn)" 2>/dev/null)
+  [ -n "$_rc" ] || _rc=$_rs
+  jq -c --arg rep "$_rc" '{id:.id,ts:.started,prompt:.prompt,reply:$rep,calls:(.calls|length),tokens:.tokens,skill:.skill,project:.project}' \
     "$(cfg abs turn)" >> "$_f" 2>/dev/null || { printf 'FAULT the memory refuses\n'; exit 0; }
+  # compaction: the memory keeps the last notes, it is not an archive
+  _keep=$(cfg num loop.memory_keep 500) || _keep=500
+  _n=$(wc -l < "$_f" 2>/dev/null) || _n=0
+  if [ "$_n" -gt "$_keep" ]; then
+    _t=$(tmpfile memory) && tail -n "$_keep" "$_f" > "$_t" 2>/dev/null && mv -f -- "$_t" "$_f"
+  fi
   _turn_set '(.status = "done")'
   _tr note "turn closed"
   exit 0
