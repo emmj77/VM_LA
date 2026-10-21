@@ -1369,10 +1369,10 @@ function sectionBox(name, sec, s) {
 }
 
 /* ------------------------------------------------------------------ the agents */
-/* AN AGENT NAME IS READ: agent_001_jarvis = sub-agent no.1, first name jarvis. `agent_one` is
-   the main one: it carries the head and answers here. The dashboard renames nothing, it unfolds. */
+/* AN AGENT NAME IS READ: agent_00N_name. 000 is the principal (it carries the head and answers
+   here), 001 and up are the sub-agents. Three digits, always. The dashboard renames nothing. */
 function agentParts(name) {
-  const m = /^agent_(\d{2,3})_(.+)$/.exec(name || '');
+  const m = /^agent_(\d{3})_(.+)$/.exec(name || '');
   if (m) return { tag: '#' + m[1], label: m[2], sub: true };
   return { tag: null, label: name || '', sub: false };
 }

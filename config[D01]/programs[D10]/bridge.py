@@ -394,7 +394,7 @@ def warm():
 
 
 def first_name(name):
-    """agent_001_jarvis -> jarvis"""
+    """agent_001_jarvis -> jarvis ; agent_000_la -> la"""
     tail = str(name).rsplit("_", 1)[-1]
     return tail or str(name)
 

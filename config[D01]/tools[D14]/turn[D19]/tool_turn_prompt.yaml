@@ -31,7 +31,7 @@ COMMAND: |
   _second=$(
     printf '== THE HUMAN ==\n'
     printf 'you are talking with the human (%s) ; the agent answering is %s\n' \
-      "$(cfg str agents.human user)" "$(cfg str agents.main agent_one)"
+      "$(cfg str agents.human user)" "$(cfg str agents.main agent_000_la)"
     printf '== THE ACTIVE PROJECT ==\n'
     _pr=$(skl_project 2>/dev/null)
     if [ -n "$_pr" ]; then printf 'project : %s\n' "$_pr"; else printf 'no project loaded : every skill is reachable\n'; fi
@@ -69,7 +69,7 @@ COMMAND: |
     _sn=$(cfg abs note 2>/dev/null)
     if [ -n "$_sn" ] && [ -s "$_sn" ]; then head -c 1200 "$_sn"; printf '\n'; else printf 'the note is empty\n'; fi
     printf '== THE AGENTS ==\n'
-    _main=$(cfg str agents.main agent_one)
+    _main=$(cfg str agents.main agent_000_la)
     _st=$(jq -r '.status // "idle"' "$_t" 2>/dev/null)
     for _a in $(cfg str agents.names "$_main"); do
       if [ "$_a" = "$_main" ] && [ "$_st" = running ]; then

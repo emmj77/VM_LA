@@ -344,6 +344,12 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `bridge` · `/voice` | the bridge serves this address |
 | `bridge` · `/widget` | the bridge serves this address |
 
+## the agents
+An agent id is `agent_<NNN>_<name>`: three digits, then the first name, lowercase, one word.
+`NNN` starts at `000` for the principal -- the one that carries the head -- and runs `001`, `002`, ...
+for the sub-agents, contiguous, no gap. Two digits are not an id: `agent_01_x` does not exist.
+`agents.names` in the master file is the ONLY list; `agents.main` names the principal and is one of them.
+
 ## the environment
 
 Every `LA_*` name the code carries as a whole word, 99 of them: exported by boot.sh, owned by the door, or read by one body. Two rules: a name is written once, in boot.sh; a program reads the environment and never builds a path.

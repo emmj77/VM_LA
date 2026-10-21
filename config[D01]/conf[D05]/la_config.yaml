@@ -111,8 +111,8 @@ machine:
 
 # who speaks, and how wide the board is
 agents:
-  main: "agent_one"
-  names: "agent_one agent_001_jarvis agent_002_paul agent_003_albert agent_004_eleonore"
+  main: "agent_000_la"
+  names: "agent_000_la agent_001_jarvis agent_002_paul agent_003_albert agent_004_eleonore agent_005_claire"
   chat: "config[D01]/data[D06]/agent_chat.jsonl"   # the chat between agents, one line per message
   human: "Moussa"
   voice: "voice"
@@ -461,8 +461,8 @@ head:
     101: "Each tool is one function of the API: the NAME is the tool name (reply, read_file, list_dir), and its arguments are named. No number, no line."
     102: "I fill only the declared argument names; free text goes to the argument the tool declares for it."
     103: "G077, T001, U03 are the ids of the master file lines, not what I call."
-    104: "EXAMPLE: reply {mode:talk, form:text, text:two words}."
-    105: "EXAMPLE: read_file {path:work/note.md}."
+    104: '[{"type":"function","function":{"name":"reply","description":"the only tool the human hears","parameters":{"type":"object","properties":{"mode":{"type":"string","enum":["talk","ask","answer"]},"form":{"type":"string","enum":["text","list","table","code"]},"text":{"type":"string"}},"required":["mode","form","text"]}}}]'
+    105: "The same shape, another tool: read_file {path:work/note.md}."
   PERMANENTS:
     101: "Injected every turn by the loop, never loaded: reply (talk/ask/answer) and kill, the safeguards, always there."
     102: "tools_list, todo, update_todo, big_todo, update_big_todo, change_big_todo."
@@ -624,7 +624,7 @@ schema:
     key: main
     kind: choice
     choices:
-    - agent_one
+    - agent_000_la
     - agent_001_jarvis
     - agent_002_paul
     - agent_003_albert
