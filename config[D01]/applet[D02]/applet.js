@@ -152,6 +152,10 @@ class LAInfoApplet extends Applet.TextIconApplet {
         // la cle a la place envoie la fonction de retour dans la case du nom de propriete.
         this._settings.bind("board", "board", () => { if (this._ready) { this._read(); } });
         this._settings.bind("seconds", "seconds", () => { if (this._ready) { this._restartWatch(); } });
+        // LE BOARD DOIT ETRE LA, MEME SI LE BIND N A RIEN VERSE : sans lui, l applet reste muette
+        if (!this.board) {
+            try { this.board = this._settings.getValue("board"); } catch (e) { this.board = ""; }
+        }
 
         // LE MENU : dessine par nous, avec St.
         this._menu = new Applet.AppletPopupMenu(this, orientation);
@@ -203,6 +207,8 @@ class LAInfoApplet extends Applet.TextIconApplet {
         } catch (e) {
             this._reading = false;
             global.logError("LA_Info : le board n'a pas pu etre lance : " + e.message);
+            this._lines = [{ state: "ko", section: "LA", title: "board", verdict: "ne se lance pas" }];
+            this._paint();
             return;
         }
 
@@ -224,6 +230,11 @@ class LAInfoApplet extends Applet.TextIconApplet {
             } catch (e) { text = ""; }
             parseRows(text).forEach((r) => rows.push(r));
 
+            if (rows.length === 0 && !this._lines.length) {
+                this._lines = [{ state: "ko", section: "LA", title: "board", verdict: "muet (" + (this.board.split("/").pop() || "?") + ")" }];
+                this._paint();
+                return;
+            }
             if (rows.length === 0 && this._lines.length > 0) {
                 this._stale = true;
                 this._paint();
