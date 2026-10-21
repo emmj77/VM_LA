@@ -242,7 +242,8 @@ def _port(v):
 RESIDENTS = [(r["name"], r["unit"], _port(r.get("port")), r.get("probe", "health"))
              for r in laconf.get("board", "residents", [])]
 RESIDENT_NAMES = tuple(r[0] for r in RESIDENTS)
-APPOINT = [(a["name"], _port(a.get("port")), a.get("probe", "health"), a.get("word", ""))
+APPOINT = [(a["name"], _port(a.get("port")), a.get("probe", "health"), a.get("word", ""),
+            a.get("unit", ""))
            for a in laconf.get("board", "appoints", [])]
 INSTRUMENTS = [(i["name"], i.get("why", "")) for i in laconf.get("board", "instruments", [])]
 FORMS = laconf.text("board", "forms", r"[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)")
@@ -341,9 +342,15 @@ def _rss_port(port):
 
 def read_appoints():
     out = []
-    for name, port, path, word in APPOINT:
+    for name, port, path, word, unit in APPOINT:
+        # une ligne qui porte une unite lit son etat, elle ne sonde pas son port :
+        # le port d une page est un socket, le sonder la reveille et elle ne dort plus jamais
+        if unit:
+            st = (_units([unit]).get(unit) or {}).get("state") or "?"
+            out.append((name, port, st, word, st != "active", unit))
+            continue
         code = probe(port, path)
-        out.append((name, port, code, word, code == "000"))
+        out.append((name, port, code, word, code == "000", ""))
     return out
 
 
@@ -681,13 +688,20 @@ def control(light=False):
         L.append(("feu vert", "%s -- %ds" % (signal[0], signal[1]), False))
     if not rights:
         L.append(("approbation", "aucun skill ne porte APPROVAL: true", False))
+    _cli_ok = os.access(os.path.abspath(__file__), os.R_OK)
+    L.append(("cli", "ready" if _cli_ok else "absent", not _cli_ok))
     if light:
         L.append(("residents", "%d/%d up" % (len([r for r in res if not r[5]]), len(res)),
                   len([r for r in res if not r[5]]) != len(res)))
         L.append(("table", "absente" if table is None else "%d/%d" % (table[0], table[1]),
                   table is None or bool(table[2] or table[3])))
-        for name, port, code, word, silent in appoints:
-            L.append((name, ("silent" if silent else "answers " + code) + " · :%d · %d MB" % (port, _rss_port(port)),
+        for name, port, code, word, silent, unit in appoints:
+            if unit:
+                L.append((name, code + (" · :%d" % port if port else ""), silent))
+                continue
+            _rss = 0 if silent else _rss_port(port)
+            L.append((name, ("silent" if silent else "answers " + code) + " · :%d" % port
+                         + ("" if silent else " · %d MB" % _rss),
                       False))
         for name, v, ok, what in instr:
             L.append((name,
@@ -755,9 +769,15 @@ def control(light=False):
         L.append(("journal", "%s / %s failed" % (weight(size), failures), failures not in ("0", "")))
     elif "journal_absent" in traffic:
         up = bridge_ping()
-        L.append(("bridge", "repond" if up else "silence", not up))
-    for name, port, code, word, silent in appoints:
-        L.append((name, ("silent" if silent else "answers " + code) + " · :%d · %d MB" % (port, _rss_port(port)), False))
+        _ena = run(["systemctl", "--user", "is-enabled", "la-bridge"], timeout=4)[1].strip() or "disabled"
+        L.append(("bridge", _ena, _ena != "enabled"))
+    for name, port, code, word, silent, unit in appoints:
+        if unit:
+            L.append((name, code + (" · :%d" % port if port else ""), silent))
+            continue
+        _rss = 0 if silent else _rss_port(port)
+        L.append((name, ("silent" if silent else "answers " + code) + " · :%d" % port
+                     + ("" if silent else " · %d MB" % _rss), False))
     return L, faults, res, appoints, table, canon, doctor, traffic
 
 
@@ -1537,7 +1557,7 @@ def main():
                 return "LA"
             if n in ("la status", "residents", "ram of la", "sessions", "last_activity"):
                 return "LA"
-            if n in ("approbation", "feu vert"):
+            if n in ("approbation", "feu vert", "cli"):
                 return "LA"
             if n in ("api", "endpoint", "api status", "bridge_up", "vision"):
                 return "RESEAU"
@@ -1558,10 +1578,11 @@ def main():
             return value
 
         rank = {"LA": 0, "RESIDENT": 1, "TOOLS": 2, "GPU/RAM": 3, "SYSTEME": 4, "RESEAU": 5}
+        _prio = {"la status": 0, "approbation": 1, "cli": 2}
         print("\n".join("%s|%s|%s|%s" % ("ko" if x[2] else "ok", title(x[0]), x[0],
-                                           short(x[0], x[1]))
+                                        short(x[0], x[1]))
                         for x in sorted(L, key=lambda x: (rank[title(x[0])],
-                                                         0 if x[0].lower() == "la status" else 1))))
+                                                         _prio.get(x[0].lower(), 9)))))
         return 1 if faults else 0
 
     if a.once:

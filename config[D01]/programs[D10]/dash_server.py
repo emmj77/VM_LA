@@ -70,10 +70,12 @@ class Handler(BaseHTTPRequestHandler):
                               "application/json")
 
     def do_GET(self):
-        TOUCH[0] = time.time()
         p = urlsplit(self.path).path
+        # un ping n est pas une visite : la table sonde la page toutes les quinze secondes,
+        # et ce sondage la tenait eveillee pour toujours.
         if p == "/ping":
             return self.reply(200, b'{"state": "alive", "door": "dashboard"}', "application/json")
+        TOUCH[0] = time.time()
         if p in PAGE_ROUTES:
             return self.send_page()
         if p.startswith("/static/"):

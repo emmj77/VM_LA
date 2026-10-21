@@ -125,10 +125,6 @@ function parseRows(text) {
         const c = l.split("|");
         rows.push({ state: c[0], section: c[1], title: c[2], verdict: c.slice(3).join("|") });
     });
-    // LA LIGNE DU CLI : elle ferme la section LA, sans deplacer une seule rangee existante
-    let at = -1;
-    rows.forEach((r, i) => { if (r.section === "LA") { at = i; } });
-    rows.splice(at + 1, 0, { state: "ok", section: "LA", title: "cli", verdict: "board.py --cli" });
     return rows;
 }
 
@@ -153,6 +149,8 @@ class LAInfoApplet extends Applet.TextIconApplet {
         this._settings.bind("board", "board", () => { if (this._ready) { this._read(); } });
         this._settings.bind("seconds", "seconds", () => { if (this._ready) { this._restartWatch(); } });
         // LE BOARD DOIT ETRE LA, MEME SI LE BIND N A RIEN VERSE : sans lui, l applet reste muette
+        this._settings.bind("cli", "cli", () => { if (this._ready) { this._read(); } });
+        if (!this.cli) { try { this.cli = this._settings.getValue("cli"); } catch (e) { this.cli = ""; } }
         if (!this.board) {
             try { this.board = this._settings.getValue("board"); } catch (e) { this.board = ""; }
         }
@@ -188,13 +186,6 @@ class LAInfoApplet extends Applet.TextIconApplet {
     }
 
     // ---- la lecture
-    // board.py vit a cote de la porte : la porte est dans config[D01]/engine[D07]/la.sh
-    _cliPath() {
-        const engine = GLib.path_get_dirname(this.board);      // engine[D07]
-        const conf = GLib.path_get_dirname(engine);            // config[D01]
-        return GLib.build_filenamev([conf, "programs[D10]", "board.py"]);
-    }
-
     _read() {
         if (this._reading || !this.board) { return; }
         this._reading = true;
@@ -202,7 +193,7 @@ class LAInfoApplet extends Applet.TextIconApplet {
         let proc;
         try {
             // LA TABLE EST board.py : un seul tableau, le sien. On le lance, on ne le double pas.
-            proc = Gio.Subprocess.new(["python3", this._cliPath(), "--menu"],
+            proc = Gio.Subprocess.new(["python3", this.cli, "--menu"],
                 Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE);
         } catch (e) {
             this._reading = false;
@@ -261,10 +252,32 @@ class LAInfoApplet extends Applet.TextIconApplet {
             this._when = new Date();
             this._paint();
             this._dessinerLeMenu();
+            this._updateNet();
         });
     }
 
     // ---- ce qui se voit sans rien ouvrir : la pastille de l'state, et deux chiffres qui bougent
+    // TAILSCALE : UN ETAT, PAS DES BOUTONS. Il se lit et s ecrit comme une rangee du tableau.
+    _updateNet() {
+        let proc;
+        try {
+            proc = Gio.Subprocess.new(["tailscale", "status", "--json"],
+                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE);
+        } catch (e) { return; }
+        proc.communicate_utf8_async(null, null, (p, res) => {
+            let d = {};
+            try { d = JSON.parse(p.communicate_utf8_finish(res)[1] || "{}"); } catch (e) { return; }
+            const up = (d.BackendState || "") === "Running";
+            const peers = Object.keys(d.Peer || {}).length;
+            const row = { state: up ? "ok" : "ko", section: "RESEAU", title: "tailscale",
+                          verdict: up ? ("up " + peers + " peer") : ("down " + (d.BackendState || "?")) };
+            const i = this._lines.findIndex((l) => l.title === "tailscale");
+            if (i > -1) { this._lines[i] = row; } else { this._lines.push(row); }
+            this._paint();
+            this._dessinerLeMenu();
+        });
+    }
+
     _paint() {
         if (this._lines.length === 0) {
             this.set_applet_icon_path(ICON_DIR + "/la-unknown.svg");
@@ -454,27 +467,6 @@ class LAInfoApplet extends Applet.TextIconApplet {
             this._menu.addMenuItem(approve);
         }
 
-        // LE CLI S OUVRE ICI : ta table, dans un terminal, telle quelle
-        const cli = new PopupMenu.PopupMenuItem("\u2328  Ouvrir le CLI (board.py)");
-        cli.connect("activate", () => {
-            try {
-                Gio.Subprocess.new(["x-terminal-emulator", "-e", "python3", this._cliPath(), "--cli"],
-                    Gio.SubprocessFlags.NONE);
-            } catch (e) {
-                global.logError("LA_Info : le cli ne s ouvre pas : " + e.message);
-            }
-        });
-        this._menu.addMenuItem(cli);
-
-        // LE TUNNEL, DEUX GESTES : ils vivent ici et pas dans la barre, et ils passent par la
-        // porte du projet comme tout le reste -- l applet n a jamais de commande a elle.
-        const tsUp = new PopupMenu.PopupMenuItem("\u25b2  Tailscale up");
-        tsUp.connect("activate", () => { this._tunnel("up"); });
-        this._menu.addMenuItem(tsUp);
-        const tsDown = new PopupMenu.PopupMenuItem("\u25bc  Tailscale down");
-        tsDown.connect("activate", () => { this._tunnel("down"); });
-        this._menu.addMenuItem(tsDown);
-
         // Une seule vraie entree de menu, tout en bas : elle seule a le droit d etre cliquee,
         // et tant qu il n y en a qu une, ses colonnes ne genent personne.
         const rafraichir = new PopupMenu.PopupMenuItem("\u21bb  Relire le board, maintenant");
@@ -483,15 +475,6 @@ class LAInfoApplet extends Applet.TextIconApplet {
     }
 
     // le tunnel : un geste, une porte, puis on relit le board pour voir l etat
-    _tunnel(op) {
-        try {
-            const proc = Gio.Subprocess.new(["dash", this.board, "engine", "engine.tunnel", "op=" + op],
-                Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE);
-            proc.wait_async(null, () => { this._read(); });
-        } catch (e) {
-            global.logError("tailscale " + op + " : " + e.message);
-        }
-    }
 
     // le clic d'approbation : une commande, deux mots, et on relit le board pour voir le resultat
     _approve(outil, geste) {

@@ -1,4 +1,10 @@
 {
+    "cli": {
+        "type": "entry",
+        "default": "/home/moussa/Documents/VM_LA/config[D01]/programs[D10]/board.py",
+        "description": "The cli of LA",
+        "tooltip": "board.py: the table, the cli, one turn. Its own path, nothing derived."
+    },
     "board": {
         "type": "entry",
         "default": "/home/moussa/Documents/VM_LA/config[D01]/engine[D07]/la.sh",
