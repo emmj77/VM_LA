@@ -84,7 +84,7 @@ code{font-family:var(--mono);font-size:12px;background:#0a0e13;border:1px solid 
 .grow{flex:1}
 .hid{display:none !important}
 
-/* ---------- l en-tete : une seule ligne, jamais repliee ---------- */
+/* ---------- the header: one line, never folded ---------- */
 header#head{grid-area:head;display:flex;align-items:center;gap:var(--s4);
   padding:0 var(--s4);background:linear-gradient(180deg,#131820,#0f141a);
   border-bottom:1px solid var(--line);min-width:0;overflow:hidden;
@@ -103,7 +103,7 @@ header#head{grid-area:head;display:flex;align-items:center;gap:var(--s4);
 .live-head .dot{background:var(--warn);margin-right:6px;vertical-align:1px;animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
 
-/* ---------- le rail ---------- */
+/* ---------- the rail ---------- */
 nav#rail{grid-area:rail;display:flex;flex-direction:column;gap:2px;padding:var(--s2);
   background:#0d1116;border-right:1px solid var(--line);width:176px;overflow:auto;
 }
@@ -117,7 +117,7 @@ nav#rail .hint{margin-top:var(--s2);padding:var(--s2);border-top:1px solid var(-
   font-family:var(--mono);font-size:10.5px;line-height:1.8;color:var(--dim2);
 }
 
-/* ---------- les pages ---------- */
+/* ---------- the pages ---------- */
 main{grid-area:main;overflow:hidden;display:flex;min-height:0;min-width:0}
 .page{display:none;flex:1;min-height:0;overflow:auto;padding:var(--s5)}
 .page.on{display:block}
@@ -138,7 +138,7 @@ h2{
 h2:first-child{margin-top:0}
 h2 .dim{font-size:11px;letter-spacing:0;text-transform:none}
 
-/* ---------- le chat ---------- */
+/* ---------- the chat ---------- */
 .feed{flex:1;overflow:auto;padding:var(--s4) max(var(--s5),calc((100% - 920px)/2)) var(--s3);
       display:flex;flex-direction:column;gap:var(--s3);scroll-behavior:smooth}
 .turn-sep{display:flex;align-items:center;gap:var(--s2);margin:30px 0 12px;
@@ -200,7 +200,7 @@ details.think pre{margin:6px 0 0;white-space:pre-wrap;font-family:var(--mono);fo
 .msg .meta{margin-top:var(--s2);font-family:var(--mono);font-size:10.5px;color:var(--dim2)}
 .empty{color:var(--dim2);font-size:13px;text-align:center;margin:auto;max-width:430px;line-height:1.8}
 
-/* le tour en cours : une LISTE structuree, pas un mur de texte */
+/* the turn in progress: a STRUCTURED list, not a wall of text */
 .live{border-top:1px solid var(--line);background:#0c1015;max-height:30vh;display:flex;
       flex-direction:column;flex:0 0 auto}
 .live.hid{display:none}
@@ -221,7 +221,7 @@ details.think pre{margin:6px 0 0;white-space:pre-wrap;font-family:var(--mono);fo
 .dot{width:7px;height:7px;border-radius:50%;background:var(--warn);display:inline-block;
      animation:pulse 1.6s infinite}
 
-/* ---------- la barre d envoi ---------- */
+/* ---------- the send bar ---------- */
 .saybar{display:flex;gap:var(--s3);padding:var(--s3) var(--s5) var(--s4);
         border-top:1px solid var(--line);background:var(--panel)}
 .say-wrap{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
@@ -233,7 +233,7 @@ details.think pre{margin:6px 0 0;white-space:pre-wrap;font-family:var(--mono);fo
 .saybar-side{display:flex;flex-direction:column;gap:6px;width:104px}
 .saybar-side button{width:100%;justify-content:center}
 
-/* ---------- le head secondaire, en direct ---------- */
+/* ---------- the secondary head, live ---------- */
 aside#head-panel{border-left:1px solid var(--line);background:var(--bg2);min-height:0;resize:horizontal;overflow:hidden}
 .hp-head{display:flex;align-items:center;gap:var(--s2);padding:0 var(--s3);height:38px;
   border-bottom:1px solid var(--line);background:var(--panel);flex:0 0 auto}
@@ -302,7 +302,7 @@ aside#head-panel{border-left:1px solid var(--line);background:var(--bg2);min-hei
   border:1px solid var(--line);border-radius:var(--r2);padding:var(--s3);overflow:auto;
   max-height:34vh;white-space:pre;color:#a9b6c4;margin:0;width:100%;max-width:1180px}
 
-/* ---------- la config : une valeur, sa regle ---------- */
+/* ---------- the config: one value, its rule ---------- */
 .cfg{display:flex;align-items:center;gap:var(--s3);padding:5px 0;
      border-bottom:1px solid #151a20;min-height:36px;max-width:860px}
 .cfg .k{font-family:var(--mono);font-size:12.5px;min-width:190px;color:var(--fg2)}
@@ -349,7 +349,7 @@ aside#head-panel{border-left:1px solid var(--line);background:var(--bg2);min-hei
 .sec-msg.ok{color:var(--ok)} .sec-msg.ko{color:var(--bad)}
 .hidden-head{margin-bottom:var(--s3)}
 
-/* ---------- les agents ---------- */
+/* ---------- the agents ---------- */
 .ag{display:grid;grid-template-columns:170px 96px 96px minmax(0,1fr);gap:var(--s3);
     padding:0 10px;height:38px;border-bottom:1px solid #151a20;font-size:12.5px;align-items:center}
 .ag:hover{background:var(--panel3)}
@@ -369,7 +369,7 @@ aside#head-panel{border-left:1px solid var(--line);background:var(--bg2);min-hei
 .bmsg .body{white-space:pre-wrap;word-break:break-word}
 
 /* ---------- toast ---------- */
-/* ---------- toast et menu du clic droit ---------- */
+/* ---------- toast and right-click menu ---------- */
 .ctx{position:fixed;z-index:80;min-width:200px;padding:4px;background:#161c23;
   border:1px solid var(--line3);border-radius:var(--r2);box-shadow:var(--sh2);font-size:12.5px}
 .ctx button{display:flex;width:100%;height:28px;justify-content:flex-start;border:none;
@@ -390,7 +390,7 @@ aside#head-panel{border-left:1px solid var(--line);background:var(--bg2);min-hei
   animation:sk 1.4s linear infinite}
 @keyframes sk{from{background-position:200% 0}to{background-position:-200% 0}}
 
-/* ---------- fenetre etroite : le rail se reduit, le head passe dessous ---------- */
+/* ---------- narrow window: the rail shrinks, the head goes below ---------- */
 @media (max-width:1400px){
   .kv.opt{display:none}
 }
@@ -403,14 +403,14 @@ aside#head-panel{border-left:1px solid var(--line);background:var(--bg2);min-hei
   .cols,.cols.wide{grid-template-columns:1fr}
 }
 
-/* LA VOIX DANS LE FIL : un bouton par message, discret, jamais devant le texte. */
+/* THE VOICE IN THE THREAD: one button per message, discreet, never in front of the text. */
 .msg .who .sp{margin-left:auto;height:18px;min-width:22px;padding:0 5px;font-size:11px;
   line-height:16px;background:transparent;border:1px solid transparent;color:var(--dim);
   border-radius:5px;opacity:.45;flex:0 0 auto}
 .msg .who:hover .sp{opacity:.95}
 .msg .who .sp:hover{border-color:var(--line3);color:var(--acc);background:var(--acc-soft)}
 .msg .who .sp.busy{opacity:1;color:var(--acc);border-color:var(--acc-line)}
-/* LES NOMS D AGENTS : le numero en pastille, le principal nomme. */
+/* THE AGENT NAMES: the number in a pill, the main one named. */
 .ag .nm{display:flex;align-items:center;gap:6px;min-width:0}
 .ag .nm .tg{font-size:10px;padding:1px 5px;border-radius:4px;border:1px solid var(--line2);
   color:var(--dim);font-variant-numeric:tabular-nums;flex:0 0 auto}
@@ -419,10 +419,10 @@ aside#head-panel{border-left:1px solid var(--line);background:var(--bg2);min-hei
 .hp-who{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;
   text-overflow:ellipsis;max-width:32ch}
 
-/* le chat : flux et head secondaire cote a cote */
+/* the chat: thread and secondary head side by side */
 #page-chat.on{display:flex;align-items:stretch;overflow:hidden}
 aside#head-panel{width:360px;min-width:220px;max-width:52%;flex:0 0 auto;display:flex;flex-direction:column}
-/* icones du rail : contour, jamais de pate noire */
+/* rail icons: outline, never a black blob */
 nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
 </style>
 </head>
@@ -431,7 +431,7 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
 <!-- the commands -->
 
 
-<!-- ===================== L EN-TETE : l etat, sur toutes les pages ===================== -->
+<!-- ===================== THE HEADER: the state, on every page ===================== -->
 <header id="head">
   <div class="brand">LA<span class="dim">· tableau de bord</span></div>
 
@@ -463,7 +463,7 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
   <div class="kv dim" id="clock" title="heure locale">—</div>
 </header>
 
-<!-- ===================== LE RAIL : les étagères ===================== -->
+<!-- ===================== THE RAIL: the shelves ===================== -->
 <nav id="rail">
   <button data-page="chat" class="on" title="Ctrl+1">
     <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H8l-4 3v-5.5A8 8 0 0 1 13 4a8 8 0 0 1 8 8z"/></svg>
@@ -493,7 +493,7 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
 
 <main>
 
-<!-- ===================== 1. LE CHAT ===================== -->
+<!-- ===================== 1. THE CHAT ===================== -->
 <section id="page-chat" class="page on">
   <div class="chat-main">
     <div id="feed" class="feed"></div>
@@ -530,7 +530,7 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
     </form>
   </div>
 
-  <!-- LE HEAD SECONDAIRE, EN DIRECT : ce que le modèle lit de la machine, section par section -->
+  <!-- THE SECONDARY HEAD, LIVE: what the model reads of the machine, section by section -->
   <aside id="head-panel">
     <div class="hp-head">
       <span class="hp-title">head secondaire</span>
@@ -553,7 +553,7 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
   <button type="button" id="hp-open" class="hp-open hid" title="déplier le head secondaire">‹ head</button>
 </section>
 
-<!-- ===================== 2. LA CONFIG ===================== -->
+<!-- ===================== 2. THE CONFIG ===================== -->
 <section id="page-config" class="page">
   <div class="cols">
     <div class="col">
@@ -582,7 +582,7 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
   </div>
 </section>
 
-<!-- ===================== 3. LES SKILLS ===================== -->
+<!-- ===================== 3. THE SKILLS ===================== -->
 <section id="page-skills" class="page">
   <div class="cols wide">
     <div class="col narrow">
@@ -600,8 +600,8 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
   </div>
 </section>
 
-<!-- ===================== 4. LES PROJETS ===================== -->
-<!-- ===================== 5. LES AGENTS ===================== -->
+<!-- ===================== 4. THE PROJECTS ===================== -->
+<!-- ===================== 5. THE AGENTS ===================== -->
 <section id="page-agents" class="page">
   <div class="cols">
     <div class="col">
@@ -627,10 +627,10 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
   </div>
 </section>
 
-<!-- ===================== 6. LES TOOLS ===================== -->
-<!-- ===================== 7. LA MEMOIRE ===================== -->
-<!-- ===================== 8. LE DIFF ===================== -->
-<!-- ===================== 9. LA MISE A JOUR ===================== -->
+<!-- ===================== 6. THE TOOLS ===================== -->
+<!-- ===================== 7. THE MEMORY ===================== -->
+<!-- ===================== 8. THE DIFF ===================== -->
+<!-- ===================== 9. THE UPDATE ===================== -->
 <section id="page-maj" class="page">
   <div class="cols">
     <div class="col">
@@ -659,7 +659,7 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
 <div id="ctx" class="ctx hid" role="menu"></div>
 <script>
 // id: H02
-/* LA — le tableau de bord, le geste. Aucune dependance, aucune ressource externe. */
+/* LA — the dashboard. No dependency, no external resource. */
 'use strict';
 const $ = (s) => document.querySelector(s);
 const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c;
@@ -721,14 +721,14 @@ function doctorBadge(d) {
 
 function agentsMini(ags) {
   if (S.page === 'agents') return;
-  // dans l entete on ne montre que le nombre d agents actifs
+  // the header shows only the number of active agents
   const n = (ags || []).filter((a) => a.status === 'active').length;
   const b = $('#turn').parentElement;
   b.title = 'tour ' + (S.state.turn.running ? 'en cours (pid ' + S.state.turn.pid + ')' : 'libre') +
             ' — ' + n + ' agent(s) actif(s)';
 }
 
-/* ------------------------------------------------------------------ le chat */
+/* ------------------------------------------------------------------ the chat */
 const GLYPH = { toi: 'V', la: 'L', refus: '!', tableau: 'i', agent: 'A', doctor: 'D', frontière: '·' };
 
 function glyph(who) {
@@ -754,7 +754,7 @@ function bubble(kind, who, text, extra, ts) {
   }
   if (text) {
     m.appendChild(el('div', 'body', text));
-    // LIRE CE MESSAGE : la voix de LA (le resident la-tts), pas celle du navigateur.
+    // READ THIS MESSAGE: the voice of LA (the la-tts resident), not the browser one.
     const sp = el('button', 'sp', '♪');
     sp.type = 'button';
     sp.title = 'lire ce message à voix haute';
@@ -872,7 +872,7 @@ function drawLive() {
   const running = !!(st && st.running);
   const th = (L.thinking || []).slice(-8);
   const j = (L.journal || []).slice(-14);
-  // le bloc ne vit QUE pendant le tour : un tour fini se relit dans le fil, pas ici
+  // the block lives ONLY during the turn: a finished turn is re-read in the thread, not here
   if (!running) { box.classList.add('hid'); return; }
   box.classList.remove('hid');
   $('#live-pid').textContent = 'pid ' + st.pid;
@@ -886,8 +886,8 @@ function drawLive() {
     b.appendChild(liveRow({ tm: shortTime(x.ts), body: String(x.line || x.args || x.result || '').slice(0, 200) },
       'tool', x.tool || x.name || '?'));
   });
-  // LA PHRASE PROVISOIRE : le modele parle en flux, sse.py l ecrit, on la montre AVANT la
-  // validation du tour. Provisoire se dit : le message peut etre refuse et rejoue.
+  // THE PROVISIONAL SENTENCE: the model speaks in a stream, sse.py writes it, it is shown BEFORE the
+  // validation of the turn. Provisional is said: the message may be refused and replayed.
   const rep = ((L.reply || {}).text || '').trim();
   if (rep) b.appendChild(liveRow({ tm: shortTime((L.reply || {}).ts), body: rep.slice(0, 900) }, 'reply', 'provisoire'));
   $('#live-count').textContent = th.length + ' raisonnement(s) · ' + j.length + ' outil(s)';
@@ -903,7 +903,7 @@ async function loadLive() {
   S.live = await api('/api/live'); drawLive();
 }
 
-/* --- envoyer : une demande au modele, ou une commande --- */
+/* --- send: a request to the model, or a command --- */
 async function send(text) {
   text = (text || '').trim();
   if (!text || S.busy) return;
@@ -940,7 +940,7 @@ async function send(text) {
   refresh(true);
 }
 
-/* --- le head secondaire, en direct --- */
+/* --- the secondary head, live --- */
 const FOLD = new Set();
 
 function headSection(sec) {
@@ -977,13 +977,13 @@ function relAge(d) {
   return 'écrit il y a ' + Math.floor(s / 3600) + ' h';
 }
 
-/* LE HEAD VIENT DU PIPELINE. Le tableau ne le fabrique pas : il lit le fichier que la boucle
-   dépose à chaque tour, et il le dit franchement quand le dépôt n'existe pas encore. */
+/* THE HEAD COMES FROM THE PIPELINE. The dashboard does not build it: it reads the file the loop
+   drops at every turn, and says it plainly when the drop does not exist yet. */
 async function loadHead() {
   if (!$('#head-panel') || $('#head-panel').classList.contains('hid')) return;
   const d = await api('/api/head');
   S.head = d;
-  // LE HEAD EST CELUI DE L AGENT PRINCIPAL, ET L HUMAIN Y PORTE SON NOM (loi 2006).
+  // THE HEAD IS THE MAIN AGENT ONE, AND THE HUMAN CARRIES HIS NAME IN IT (law 2006).
   const nm = (S.state && S.state.names) || {};
   const who = $('#hp-who');
   if (who) {
@@ -1012,9 +1012,9 @@ async function loadHead() {
   if (!keep.length) b.appendChild(el('div', 'hp-none', 'aucune section ne porte « ' + q + ' ».'));
 }
 
-/* ------------------------------------------------------------------ la voix */
-/* LIRE UN MESSAGE. Le wav est fabriqué par le resident la-tts (via /api/tts du tableau), puis joué
-   par le navigateur. Aucun tour n'est ouvert : lire n'est pas demander. */
+/* ------------------------------------------------------------------ the voice */
+/* READ A MESSAGE. The wav is made by the la-tts resident (via /api/tts of the dashboard), then played
+   by the browser. No turn is opened: reading is not asking. */
 let _AUDIO = null, _TTS = false, _TTS_URL = null;
 
 async function speak(text, btn) {
@@ -1031,7 +1031,7 @@ async function speak(text, btn) {
     });
     if (!r.ok) {
       let m = 'la voix a refusé (' + r.status + ')';
-      try { const d = await r.json(); if (d && d.error) m = d.error; } catch (e) { /* wav ou rien */ }
+      try { const d = await r.json(); if (d && d.error) m = d.error; } catch (e) { /* wav or nothing */ }
       toast(m, 'ko');
       return;
     }
@@ -1048,7 +1048,7 @@ async function speak(text, btn) {
   }
 }
 
-/* LE DERNIER MESSAGE DE L AGENT, tel qu il est à l écran. */
+/* THE LAST MESSAGE OF THE AGENT, as it is on screen. */
 function lastAgentText() {
   const feed = $('#feed');
   if (!feed) return '';
@@ -1056,7 +1056,7 @@ function lastAgentText() {
   return items.length ? msgText(items[items.length - 1]) : '';
 }
 
-/* LA VOIX AUTOMATIQUE : on ne relit pas l historique, seulement ce qui arrive APRÈS l allumage. */
+/* THE AUTOMATIC VOICE: the history is not re-read, only what arrives AFTER it is switched on. */
 function maybeRead() {
   if (!S.autoAudio) return;
   const t = lastAgentText();
@@ -1158,7 +1158,7 @@ document.addEventListener('click', closeCtx);
 document.addEventListener('scroll', closeCtx, true);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCtx(); });
 
-/* ------------------------------------------------------------------ la config */
+/* ------------------------------------------------------------------ the config */
 function cfgRow(s, val) {
   const row = el('div', 'cfg');
   row.appendChild(el('div', 'k', s.key));
@@ -1198,7 +1198,7 @@ function mkBtn(txt, fn, cls) {
 }
 
 function orderCtl(s, val) {
-  // L ORDRE EST UNE LISTE FERMEE : on ne tape rien, on MONTE et on DESCEND les onze sections.
+  // THE ORDER IS A CLOSED LIST: nothing is typed, the eleven sections are moved UP and DOWN.
   const box = el('div', 'val');
   const cur = (val || '').split(/\s+/).filter(Boolean);
   const rest = s.choices.filter((c) => !cur.includes(c));
@@ -1276,7 +1276,7 @@ async function loadConfig() {
   put($('#cfg-bridge'), ['bridge']);
 }
 
-/* ------------------------------------------------------------------ les skills */
+/* ------------------------------------------------------------------ the skills */
 async function loadSkills() {
   const d = await api('/api/skills');
   const box = $('#skill-list'); box.innerHTML = '';
@@ -1292,7 +1292,7 @@ async function loadSkills() {
     it.addEventListener('click', () => openSkill(s.name));
     box.appendChild(it);
   });
-  // #skills/<nom> : on peut viser une skill par l adresse, comme le reste du tableau
+  // #skills/<name>: a skill can be reached by the address, like the rest of the dashboard
   const parts = location.hash.slice(1).split('/');
   if (parts[0] === 'skills' && parts[1] && parts[1] !== S.skill) openSkill(decodeURIComponent(parts[1]));
 }
@@ -1337,7 +1337,7 @@ function sectionBox(name, sec, s) {
       const id = el('input'); id.value = r.id; id.style.textAlign = 'right';
       id.addEventListener('input', () => { rows[i].id = id.value.trim(); });
       line.appendChild(id);
-      // (ici vivait le champ en trois morceaux des STEPS : ils n existent plus, le 19/10.)
+      // (the three-part STEPS field lived here: it no longer exists, 19/10.)
       body.appendChild(line);
     });
     const actions = el('div', 'sec-actions');
@@ -1368,9 +1368,9 @@ function sectionBox(name, sec, s) {
   return box;
 }
 
-/* ------------------------------------------------------------------ les agents */
-/* UN NOM D AGENT SE LIT : agent_001_jarvis = le sous-agent n°1, du prénom jarvis. `agent_one` est
-   le principal : il porte le head et il répond ici. Le tableau ne renomme rien, il déplie. */
+/* ------------------------------------------------------------------ the agents */
+/* AN AGENT NAME IS READ: agent_001_jarvis = sub-agent no.1, first name jarvis. `agent_one` is
+   the main one: it carries the head and answers here. The dashboard renames nothing, it unfolds. */
 function agentParts(name) {
   const m = /^agent_(\d{2,3})_(.+)$/.exec(name || '');
   if (m) return { tag: '#' + m[1], label: m[2], sub: true };
@@ -1418,7 +1418,7 @@ async function loadAgents() {
   if (!(d.board || []).length) b.appendChild(el('p', 'dim', 'le tableau est vide.'));
 }
 
-/* ------------------------------------------------------------------ la mise à jour */
+/* ------------------------------------------------------------------ the update */
 async function loadMaj() {
   const d = await api('/api/update/check');
   const v = await api('/api/version');
@@ -1453,7 +1453,7 @@ async function majApply() {
   }
 }
 
-/* ------------------------------------------------------------------ la navigation */
+/* ------------------------------------------------------------------ the navigation */
 const LOAD = { config: loadConfig, skills: loadSkills, agents: loadAgents, maj: loadMaj };
 
 function goto(page) {
@@ -1466,7 +1466,7 @@ function goto(page) {
   else if (LOAD[page]) LOAD[page]();
 }
 
-/* ------------------------------------------------------------------ le pouls */
+/* ------------------------------------------------------------------ the pulse */
 async function refresh(force) {
   const before = S.state && S.state.tokens && S.state.tokens.session;
   S.state = await api('/api/state');
@@ -1475,10 +1475,10 @@ async function refresh(force) {
   if (S.page === 'chat') {
     await loadLive();
     if (force || before !== now || !S.hist) await loadHistory();
-    // LA VOIX : si le bouton est allumé, la dernière réponse arrivée se dit à voix haute.
+    // THE VOICE: if the button is on, the last answer that arrived is said aloud.
     maybeRead();
-    // LE HEAD SECONDAIRE ARRIVE : le pipeline le dépose à chaque tour, et le tableau guette le
-    // dépôt (mtime dans /api/state). Rien n'est relu tant que le fichier n'a pas changé.
+    // THE SECONDARY HEAD ARRIVES: the pipeline drops it at every turn, and the dashboard watches the
+    // drop (mtime in /api/state). Nothing is re-read until the file has changed.
     const st = S.state || {};
     const sig = [st.tokens && st.tokens.session, st.model, st.skill, st.project,
                  st.turn && st.turn.pid, st.head && st.head.mtime].join('|');
@@ -1495,7 +1495,7 @@ function startPoll() {
   S.timer = setInterval(() => { refresh(false).catch(() => {}); }, S.pollMs || 1500);
 }
 
-/* ------------------------------------------------------------------ le demarrage */
+/* ------------------------------------------------------------------ the startup */
 function bind() {
   document.querySelectorAll('#rail button').forEach((b) => {
     b.addEventListener('click', () => goto(b.dataset.page));
@@ -1526,7 +1526,7 @@ function bind() {
     toast(d.text || '', d.ok ? 'ok' : 'ko');
   });
   $('#clear').addEventListener('click', () => { S.hist = { turns: [] }; renderFeed(); });
-  // LA VOIX AUTOMATIQUE : un interrupteur, retenu d une visite a l autre.
+  // THE AUTOMATIC VOICE: a switch, kept from one visit to the next.
   const au = $('#say-audio');
   if (au) {
     S.autoAudio = localStorage.getItem('la.audio') === '1';
@@ -1545,7 +1545,7 @@ function bind() {
                         : 'lecture automatique coupée', S.autoAudio ? 'ok' : '');
     });
   }
-  // LE HEAD SECONDAIRE : on le relit a la main, on le replie, on le deplie. Son etat se retient.
+  // THE SECONDARY HEAD: re-read by hand, folded, unfolded. Its state is kept.
   const foldHead = (off) => {
     $('#head-panel').classList.toggle('hid', off);
     $('#hp-open').classList.toggle('hid', !off);
@@ -1563,7 +1563,7 @@ function bind() {
   $('#hp-open').addEventListener('click', () => foldHead(false));
   try { if (localStorage.getItem('la.head.folded') === '1') foldHead(true); } catch (e) {}
 
-  // le compteur de la demande : des octets, comme les bornes du harnais
+  // the request counter: bytes, like the bounds of the harness
   const sayBox = $('#say');
   const countSay = () => {
     const v = sayBox.value;
