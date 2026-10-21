@@ -94,11 +94,17 @@ COMMAND: |
     _tv=$(timeout 10 "$_ib" --version 2>/dev/null | head -n 1 | awk '{print $2}')
     if [ -n "$_tv" ]; then printf 'ok|TOOLS|indra ocr|%s . no port\n' "$_tv"
     else printf 'ko|TOOLS|indra ocr|absent\n'; fi
-    _vp=$(cfg num ports.vision 2>/dev/null); _vp=${_vp:-1234}
+    _vp=$(cfg num machine.llama.models.small.port 2>/dev/null); _vp=${_vp:-8091}
     if ss -ltn 2>/dev/null | awk -v p=":$_vp$" '$4 ~ p { n++ } END { exit !n }'; then
-      printf 'ok|TOOLS|vision|listening . :%s\n' "$_vp"
+      printf 'ok|TOOLS|vision small|listening . :%s\n' "$_vp"
     else
-      printf 'note|TOOLS|vision|silent . :%s . 0 MB\n' "$_vp"
+      printf 'note|TOOLS|vision small|silent . :%s . 0 MB\n' "$_vp"
+    fi
+    _v2=$(cfg num machine.llama.models.big.port 2>/dev/null); _v2=${_v2:-8092}
+    if ss -ltn 2>/dev/null | awk -v p=":$_v2$" '$4 ~ p { n++ } END { exit !n }'; then
+      printf 'ok|TOOLS|vision big|listening . :%s\n' "$_v2"
+    else
+      printf 'note|TOOLS|vision big|silent . :%s . 0 MB\n' "$_v2"
     fi
     # THE CARDS AND THE MEMORY OF THE STATION
     printf 'ok|MEMORY|ram of LA|%s MB / %s GB\n' "$_mo" "${_tot:-0}"

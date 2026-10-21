@@ -38,6 +38,26 @@ machine:
   llama:
     bin: "/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-server"
     gguf: "/home/moussa/LLM_GGUF"
+    models:                                   # one entry per vision model: the file, its projector, its door
+      small:
+        name: "smolvlm-256m"
+        model: "SmolVLM-256M-Instruct-Q8_0.gguf"
+        mmproj: "mmproj-SmolVLM-256M-Instruct-Q8_0.gguf"
+        port: 8091
+        ctx: 4096
+        gpu: 0
+      big:
+        name: "qwen3-vl-8b"
+        model: "Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf"
+        mmproj: "mmproj-Qwen3VL-8B-Instruct-Q8_0.gguf"
+        port: 8092
+        ctx: 4096
+        gpu: 0
+  vision:                                     # what reads an image through an API
+    api:
+      base: "https://ollama.com/v1"
+      model: "deepseek-v4.1-flash"
+      key_env: "OLLAMA_API_KEY"
   blender:
     bin: "/home/moussa/Applications/blender-5.2.2-linux-x64/blender"
     timeout: 110
@@ -45,6 +65,22 @@ machine:
     host: "127.0.0.1"
     port: 8188
     root: "/home/moussa/Applications/ComfyUI"
+    # the folder under models/onnx that holds the jobs' weights
+    onnx: "vision"
+    # one pixel job = one weight, one scale, one output
+    jobs:
+      matte:
+        model: "u2netp.onnx"
+        scale: 320
+        out: "png"
+      inpaint:
+        model: "lama-inpaint.onnx"
+        scale: 0
+        out: "png"
+      depth:
+        model: "depth-anything-v2-small.onnx"
+        scale: 518
+        out: "png"
   krita:
     host: "127.0.0.1"
     port: 5678
@@ -104,7 +140,6 @@ ports:                                        # the named ports of the document,
   bridge: 8770
   dash: 8771
   tls: 8766
-  vision: 1234
 
 units:
   bridge:
@@ -423,9 +458,9 @@ head:
     102: "Root VM_LA/. I write only in the ACTIVE SKILL space, and the ACTIVE SKILL sets the scope."
     103: "The station holds the VM; the VM runs the tools. Debian, dash, jq, coreutils."
   TOOLS_SCHEMA:
-    101: [{"type":"function","function":{"name":"la","description":"Name ONE tool: g = the line NUMBER, a = its arguments in the declared order. Free text goes on standard input.","parameters":{"type":"object","properties":{"g":{"type":"integer","description":"the tool number in the table"},"a":{"type":"array","items":{"type":"string"},"description":"its arguments, in the declared order"}},"required":["g"]}}}]
-    102: "One schema for ALL tools: la(g, a). The table is never sent."
-    103: "EXAMPLE: la(g=103, a=[\"WORKSPACE.workspace/note.md\"]) -> 103 = read_file."
+    101: "Each tool is one function of the API: the NAME is the tool name (reply, read_file, list_dir), and its arguments are named. No number, no line."
+    102: "I fill only the declared argument names; free text goes to the argument the tool declares for it."
+    103: "G077, T001, U03 are the ids of the master file lines, not what I call."
   PERMANENTS:
     101: "Injected every turn by the loop, never loaded: reply (talk/ask/answer) and kill, the safeguards, always there."
     102: "tools_list, todo, update_todo, big_todo, update_big_todo, change_big_todo."
