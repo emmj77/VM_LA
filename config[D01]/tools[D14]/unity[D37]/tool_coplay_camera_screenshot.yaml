@@ -1,0 +1,47 @@
+id: "U165"
+tool: "coplay_camera_screenshot"
+date: "2026-10-18"
+tags: ["unity", "coplay", "camera"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Capture a screenshot from a camera."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- camera screenshot
+  case "{{include_image}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'include_image')" >&2; exit 1 ;; esac
+  [ -n "{{camera_ref}}" ] && set -- "$@" --camera-ref "{{camera_ref}}"
+  [ -n "{{file_name}}" ] && set -- "$@" --file-name "{{file_name}}"
+  [ -n "{{super_size}}" ] && set -- "$@" --super-size "{{super_size}}"
+  [ "{{include_image}}" = true ] && set -- "$@" --include-image
+  [ -n "{{max_resolution}}" ] && set -- "$@" --max-resolution "{{max_resolution}}"
+  [ -n "{{capture_source}}" ] && set -- "$@" --capture-source "{{capture_source}}"
+  [ -n "{{batch}}" ] && set -- "$@" --batch "{{batch}}"
+  [ -n "{{view_target}}" ] && set -- "$@" --view-target "{{view_target}}"
+  [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: camera_ref, type: text}
+  - {name: file_name, type: text}
+  - {name: super_size, type: int}
+  - {name: include_image, type: text}          # true pour poser le drapeau, vide sinon
+  - {name: max_resolution, type: int}
+  - {name: capture_source, type: text}          # un de : game_view | scene_view
+  - {name: batch, type: text}          # un de : surround | orbit
+  - {name: view_target, type: text}
+  - {name: output_folder, type: text}

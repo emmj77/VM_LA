@@ -1,0 +1,20 @@
+id: "B1453"
+tool: "blender_transform_delete_orientation"
+date: "2026-10-17"
+tags: ["blender_transform_delete_orientation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete transformation orientation"
+
+machine: "blender"
+op: "transform.delete_orientation"
+
+ARGS: []

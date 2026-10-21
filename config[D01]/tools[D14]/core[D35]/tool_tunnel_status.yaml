@@ -1,0 +1,52 @@
+id: "G064"
+tool: "tunnel_status"
+date: "2026-10-19"
+tags: ["tunnel_status", "tunnel", "wireguard", "wg0", "etat"]
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "tells whether the wireguard tunnel is up, with its address, its udp port and its peers"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  SECT=$(sed -n '/^tunnel:/,/^[a-z_]/p' "$ROOT/config/la_config.yaml" 2>/dev/null)
+  IFACE=$(printf '%s\n' "$SECT" | sed -n 's/^  iface:[[:space:]]*//p' | head -n 1 \
+          | sed -e 's/#.*//' -e 's/[[:space:]]*$//')
+  [ -n "$IFACE" ] || IFACE=wg0
+  PORT=$(printf '%s\n' "$SECT" | sed -n 's/^  port:[[:space:]]*//p' | head -n 1 \
+          | sed -e 's/#.*//' -e 's/[[:space:]]*$//')
+  [ -n "$PORT" ] || PORT='?'
+  command -v ip >/dev/null 2>&1 || { printf '%s\n' "$(msg ip_missing)" >&2 ; exit 1 ; }
+
+  if ip link show "$IFACE" >/dev/null 2>&1; then STATE=up ; else STATE=down ; fi
+  ADR=$(ip -4 -o addr show dev "$IFACE" 2>/dev/null | awk '{print $4}' | head -n 1)
+  [ -n "$ADR" ] || ADR='-'
+
+  if command -v ss >/dev/null 2>&1; then
+    if ss -lun 2>/dev/null | grep -q ":$PORT "; then ECOUTE="$PORT/UDP ecoute"
+    else ECOUTE="$PORT/UDP muet" ; fi
+  else
+    ECOUTE="$PORT/UDP non verifie (ss absent)"
+  fi
+
+  if sudo -n true >/dev/null 2>&1; then WG=$(sudo -n wg show "$IFACE" 2>/dev/null) ; else WG='' ; fi
+  if [ -n "$WG" ]; then
+    N=$(printf '%s\n' "$WG" | grep -c '^peer:')
+    case "$N" in ''|*[!0-9]*) N=0 ;; esac
+    HS=$(printf '%s\n' "$WG" | sed -n 's/^  latest handshake:[[:space:]]*//p' | head -n 1)
+    if [ "$N" = 0 ]; then PAIRS='aucun pair'
+    elif [ -n "$HS" ]; then PAIRS="$N pair(s), dernier echange $HS"
+    else PAIRS="$N pair(s), aucun echange encore" ; fi
+  else
+    PAIRS='pairs illisibles (wg veut root et sudo -n a refuse)'
+  fi
+  printf 'tunnel %s : %s | adresse %s | %s | %s\n' "$IFACE" "$STATE" "$ADR" "$ECOUTE" "$PAIRS"
+
+ARGS: []

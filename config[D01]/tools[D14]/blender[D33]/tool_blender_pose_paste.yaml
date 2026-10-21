@@ -1,0 +1,22 @@
+id: "B1193"
+tool: "blender_pose_paste"
+date: "2026-10-17"
+tags: ["blender_pose_paste"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Paste the stored pose on to the current pose"
+
+machine: "blender"
+op: "pose.paste"
+
+ARGS:
+  - {name: flipped, type: text}          # true|false, vide pour ne rien poser
+  - {name: selected_mask, type: text}          # true|false, vide pour ne rien poser

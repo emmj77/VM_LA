@@ -1,0 +1,21 @@
+id: "B149"
+tool: "blender_clip_graph_disable_markers"
+date: "2026-10-17"
+tags: ["blender_clip_graph_disable_markers"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Disable/enable selected markers"
+
+machine: "blender"
+op: "clip.graph_disable_markers"
+
+ARGS:
+  - {name: action, type: text}          # un de : DISABLE | ENABLE | TOGGLE

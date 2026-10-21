@@ -1,0 +1,20 @@
+id: "B1351"
+tool: "blender_sequencer_lock"
+date: "2026-10-17"
+tags: ["blender_sequencer_lock"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Lock strips so they cannot be transformed"
+
+machine: "blender"
+op: "sequencer.lock"
+
+ARGS: []

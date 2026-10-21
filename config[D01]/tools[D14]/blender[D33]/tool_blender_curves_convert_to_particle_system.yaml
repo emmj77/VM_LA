@@ -1,0 +1,20 @@
+id: "B275"
+tool: "blender_curves_convert_to_particle_system"
+date: "2026-10-17"
+tags: ["blender_curves_convert_to_particle_system"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a new or update an existing hair particle system on the surface object"
+
+machine: "blender"
+op: "curves.convert_to_particle_system"
+
+ARGS: []

@@ -1,0 +1,32 @@
+id: "B1687"
+tool: "blender_wm_xr_navigation_fly"
+date: "2026-10-17"
+tags: ["blender_wm_xr_navigation_fly"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move/turn relative to the VR viewer or controller"
+
+machine: "blender"
+op: "wm.xr_navigation_fly"
+
+ARGS:
+  - {name: mode, type: text}          # un de : FORWARD | BACK | LEFT | RIGHT | UP | DOWN | TURNLEFT | TURNRIGHT | VIEWER_FORWARD | VIEWER_BACK | VIEWER_LEFT | VIEWER_RIGHT | CONTROLLER_FORWARD
+  - {name: snap_turn_threshold, type: text}
+  - {name: lock_location_z, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_direction, type: text}          # true|false, vide pour ne rien poser
+  - {name: speed_frame_based, type: text}          # true|false, vide pour ne rien poser
+  - {name: turn_speed_factor, type: text}
+  - {name: fly_speed_factor, type: text}
+  - {name: speed_interpolation0, type: text}          # 2 valeurs separees par des virgules
+  - {name: speed_interpolation1, type: text}          # 2 valeurs separees par des virgules
+  - {name: alt_mode, type: text}          # un de : FORWARD | BACK | LEFT | RIGHT | UP | DOWN | TURNLEFT | TURNRIGHT | VIEWER_FORWARD | VIEWER_BACK | VIEWER_LEFT | VIEWER_RIGHT | CONTROLLER_FORWARD
+  - {name: alt_lock_location_z, type: text}          # true|false, vide pour ne rien poser
+  - {name: alt_lock_direction, type: text}          # true|false, vide pour ne rien poser

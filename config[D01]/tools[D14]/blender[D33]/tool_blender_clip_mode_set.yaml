@@ -1,0 +1,21 @@
+id: "B158"
+tool: "blender_clip_mode_set"
+date: "2026-10-17"
+tags: ["blender_clip_mode_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the clip interaction mode"
+
+machine: "blender"
+op: "clip.mode_set"
+
+ARGS:
+  - {name: mode, type: text}          # un de : TRACKING | MASK

@@ -1,0 +1,21 @@
+id: "B1295"
+tool: "blender_screen_userpref_show"
+date: "2026-10-17"
+tags: ["blender_screen_userpref_show"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Edit user preferences and system settings"
+
+machine: "blender"
+op: "screen.userpref_show"
+
+ARGS:
+  - {name: section, type: text}          # un de : INTERFACE | VIEWPORT | LIGHTS | EDITING | ANIMATION | EXTENSIONS | ADDONS | THEMES | ASSETS | INPUT | NAVIGATION | KEYMAP | SYSTEM | SAVE_LOAD | FILE_PATHS | DEVELOPER_TOOLS | EXPERIMENTAL

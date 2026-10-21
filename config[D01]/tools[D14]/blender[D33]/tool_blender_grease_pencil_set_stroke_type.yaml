@@ -1,0 +1,21 @@
+id: "B497"
+tool: "blender_grease_pencil_set_stroke_type"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_set_stroke_type"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the stroke type (stroke, fill, or both) of the selected strokes"
+
+machine: "blender"
+op: "grease_pencil.set_stroke_type"
+
+ARGS:
+  - {name: type, type: text}          # un de : STROKE | FILL | BOTH

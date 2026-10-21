@@ -1,0 +1,20 @@
+id: "B521"
+tool: "blender_image_clear_render_border"
+date: "2026-10-17"
+tags: ["blender_image_clear_render_border"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Clear the boundaries of the render region and disable render region"
+
+machine: "blender"
+op: "image.clear_render_border"
+
+ARGS: []

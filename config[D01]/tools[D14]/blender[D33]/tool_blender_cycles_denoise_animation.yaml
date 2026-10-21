@@ -1,0 +1,22 @@
+id: "B300"
+tool: "blender_cycles_denoise_animation"
+date: "2026-10-17"
+tags: ["blender_cycles_denoise_animation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Denoise rendered animation sequence using current scene and view layer settings. Requires denoising data passes and output to OpenEXR multilayer files"
+
+machine: "blender"
+op: "cycles.denoise_animation"
+
+ARGS:
+  - {name: input_filepath, type: text}
+  - {name: output_filepath, type: text}

@@ -1,0 +1,20 @@
+id: "B1483"
+tool: "blender_ui_view_start_filter"
+date: "2026-10-17"
+tags: ["blender_ui_view_start_filter"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Start entering filter text for the data-set in focus"
+
+machine: "blender"
+op: "ui.view_start_filter"
+
+ARGS: []

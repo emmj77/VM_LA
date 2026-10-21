@@ -1,0 +1,20 @@
+id: "B651"
+tool: "blender_mesh_edge_collapse"
+date: "2026-10-17"
+tags: ["blender_mesh_edge_collapse"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Collapse isolated edge and face regions, merging data such as UVs and color attributes. This can collapse edge-rings as well as regions of connected f"
+
+machine: "blender"
+op: "mesh.edge_collapse"
+
+ARGS: []

@@ -1,0 +1,43 @@
+id: "U135"
+tool: "upipe_set_serialized_field"
+date: "2026-10-18"
+tags: ["unity", "pipeline", "set_serialized_field"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set a serialized field on a component/asset. Supports primitives, enums, Vector/Color/Rect/Bounds, object references (value = an ObjectRef: asset by guid/fileId/path or scene object by instanceId/hier"
+
+COMMAND: |
+  PROJ=$(sed -n '1p' "$ROOT/projects/.active" 2>/dev/null | tr -d '\r')
+  P=
+  [ -n "$PROJ" ] && P=$(sed -n 's/^path:[[:space:]]*//p' "$ROOT/projects/$PROJ/project.yml" 2>/dev/null | head -1 | tr -d '"')
+  [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
+  case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
+  [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'set_serialized_field')" >&2; exit 1; }
+  [ -n "{{field}}" ] || { printf '%s\n' "$(msg argument_required 'field' 'set_serialized_field')" >&2; exit 1; }
+  [ -n "{{value}}" ] || { printf '%s\n' "$(msg argument_required 'value' 'set_serialized_field')" >&2; exit 1; }
+  set -- command --project-path "$P" set_serialized_field
+  [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+  [ -n "{{field}}" ] && set -- "$@" --field "{{field}}"
+  [ -n "{{value}}" ] && set -- "$@" --value "{{value}}"
+  [ -n "{{component}}" ] && set -- "$@" --component "{{component}}"
+
+  OUT=$(timeout 90 "$CLI" --no-banner --no-pager --non-interactive --format json "$@" </dev/null 2>&1)
+  printf '%s' "$OUT" | jq -e '.success == true' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | jq -r '.errors[0].message // .errors[0].code // "reponse illisible du CLI"' 2>/dev/null || printf '%s' "$OUT")" >&2; exit 1; }
+  printf '%s\n' "$OUT" | jq -c '.data'
+
+ARGS:
+  - {name: target, type: text}
+  - {name: field, type: text}
+  - {name: value, type: text}
+  - {name: component, type: text}

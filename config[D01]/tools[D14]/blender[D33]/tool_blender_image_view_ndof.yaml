@@ -1,0 +1,20 @@
+id: "B557"
+tool: "blender_image_view_ndof"
+date: "2026-10-17"
+tags: ["blender_image_view_ndof"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use a 3D mouse device to pan/zoom the view"
+
+machine: "blender"
+op: "image.view_ndof"
+
+ARGS: []

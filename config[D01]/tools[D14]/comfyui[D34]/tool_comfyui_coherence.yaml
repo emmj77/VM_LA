@@ -1,0 +1,134 @@
+id: "C010"
+tool: "comfyui_coherence"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_coherence"]
+
+RULES:
+  enabled: true
+  timeout: 700
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "draws one recurring character and holds it : identity from a face, clothes from a full sheet, silhouette from a controlnet, pose from a reference"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:8188
+  T=$(cat)
+  [ -n "$T" ] || { printf '%s\n' "$(msg free_text_missing)" >&2; exit 1; }
+  PERSON="$W/{{character}}"
+  [ -f "$PERSO" ] || { printf '%s\n' "$(msg face_reference_missing '%s')""$PERSO" >&2; exit 1; }
+  COS=
+  [ -n "{{costume}}" ] && { COS="$W/{{costume}}"; [ -f "$COS" ] || { printf '%s\n' "$(msg costume_sheet_missing '%s')""$COS" >&2; exit 1; }; }
+  POSE=
+  [ -n "{{pose}}" ] && { POSE="$W/{{pose}}"; [ -f "$POSE" ] || { printf '%s\n' "$(msg pose_reference_missing '%s')""$POSE" >&2; exit 1; }; }
+  curl -sf "$SERVICE/system_stats" >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg comfy_service_no_answer)""$SERVICE" >&2; exit 1; }
+  envoie() {  # $1 = un fichier ; rend le nom distant, ou rien
+    curl -s -F "image=@$1" -F "type=input" -F "subfolder=" -F "overwrite=true" "$SERVICE/upload/image" \
+      | jq -r '.name // empty'
+  }
+  PERSONA_NAME=$(envoie "$PERSO")
+  [ -n "$PERSONA_NAME" ] || { printf '%s\n' "$(msg face_upload_refused '%s')""$PERSO" >&2; exit 1; }
+  COS_NAME=
+  [ -n "$COS" ] && { COS_NAME=$(envoie "$COS"); [ -n "$COS_NAME" ] || { printf '%s\n' "$(msg costume_upload_refused '%s')""$COS" >&2; exit 1; }; }
+  POSE_FILE=
+  [ -n "$POSE" ] && { POSE_FILE=$(envoie "$POSE"); [ -n "$POSE_FILE" ] || { printf '%s\n' "$(msg pose_upload_refused '%s')""$POSE" >&2; exit 1; }; }
+  LORA=${LA_COMFY_LORA:-}
+  if [ -n "$LORA" ]; then REF_M='["10",0]'; REF_C='["10",1]'; else REF_M='["1",0]'; REF_C='["1",1]'; fi
+  GRAINE=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
+  G=$(jq -cn \
+    --arg ck "${LA_COMFY_CKPT:-juggernautXL_version2.safetensors}" \
+    --arg ipa_face "${LA_COMFY_IPA_FACE:-ip-adapter-plus-face_sdxl_vit-h.safetensors}" \
+    --arg ipa_cos "${LA_COMFY_IPA_COSTUME:-ip-adapter-plus_sdxl_vit-h.safetensors}" \
+    --arg cvi "${LA_COMFY_CLIP_VISION:-clip-vision_vit-h.safetensors}" \
+    --arg lora "$LORA" \
+    --arg cn_couleur "${LA_COMFY_CONTROLNET:-}" \
+    --arg cn_pose "${LA_COMFY_CONTROLNET_POSE:-openpose-sdxl.safetensors}" \
+    --arg t "$T" --arg perso "$PERSONA_NAME" --arg cos "$COS_NAME" --arg pose "$POSE_FILE" \
+    --argjson m0 "$REF_M" --argjson c0 "$REF_C" --argjson sd "$GRAINE" \
+    --argjson fl "${LA_COMFY_FORCE_LORA:-0.7}" --argjson flc "${LA_COMFY_FORCE_LORA_CLIP:-0.7}" \
+    --argjson p_face "${LA_COMFY_WEIGHT_FACE:-0.8}" --argjson p_cos "${LA_COMFY_WEIGHT_COSTUME:-0.7}" \
+    --argjson f_cn "${LA_COMFY_FORCE_CONTROLNET:-0.45}" --argjson f_pose "${LA_COMFY_FORCE_POSE:-0.8}" \
+    --argjson larg "${LA_COMFY_WIDTH:-832}" --argjson haut "${LA_COMFY_HEIGHT:-1216}" \
+    --argjson etapes "${LA_COMFY_STEPS:-28}" --argjson cfg "${LA_COMFY_CFG:-6.5}" \
+    --arg sm "${LA_COMFY_SAMPLER:-dpmpp_2m}" --arg sch "${LA_COMFY_SCHEDULER:-karras}" '
+    { "1":{"class_type":"CheckpointLoaderSimple","inputs":{"ckpt_name":$ck}},
+      "3":{"class_type":"CLIPVisionLoader","inputs":{"clip_name":$cvi}},
+      "6":{"class_type":"CLIPTextEncode","inputs":{"text":$t,"clip":$c0}},
+      "7":{"class_type":"CLIPTextEncode","inputs":{"text":"worst quality, low quality, blurry, jpeg artifacts, EasyNegative, deformed, bad anatomy, bad hands, extra limbs, extra fingers, text, watermark, signature, multiple people","clip":$c0}},
+      "8":{"class_type":"EmptyLatentImage","inputs":{"width":$larg,"height":$haut,"batch_size":1}} }
+    | (if $lora != "" then . + { "10":{"class_type":"LoraLoader","inputs":{"model":["1",0],"clip":["1",1],
+         "lora_name":$lora,"strength_model":$fl,"strength_clip":$flc}} } else . end)
+    | (if $cos != "" then . + {
+         "2":{"class_type":"IPAdapterModelLoader","inputs":{"ipadapter_file":$ipa_cos}},
+         "5":{"class_type":"LoadImage","inputs":{"image":$cos}},
+         "4":{"class_type":"IPAdapterAdvanced","inputs":{"model":$m0,"ipadapter":["2",0],"clip_vision":["3",0],
+              "image":["5",0],"weight":$p_cos,"weight_type":"linear","combine_embeds":"concat",
+              "start_at":0.0,"end_at":1.0,"embeds_scaling":"V only"}} } else . end)
+    | . + {
+        "20":{"class_type":"IPAdapterModelLoader","inputs":{"ipadapter_file":$ipa_face}},
+        "25":{"class_type":"LoadImage","inputs":{"image":$perso}},
+        "24":{"class_type":"IPAdapterAdvanced","inputs":{"model":(if $cos != "" then ["4",0] else $m0 end),
+              "ipadapter":["20",0],"clip_vision":["3",0],"image":["25",0],"weight":$p_face,
+              "weight_type":"linear","combine_embeds":"concat","start_at":0.0,"end_at":1.0,
+              "embeds_scaling":"V only"}} }
+    | (if $cn_couleur != "" then . + {
+         "31":{"class_type":"Canny","inputs":{"image":(if $cos != "" then ["5",0] else ["25",0] end),
+               "low_threshold":0.3,"high_threshold":0.7}},
+         "32":{"class_type":"ControlNetLoader","inputs":{"control_net_name":$cn_couleur}},
+         "33":{"class_type":"ControlNetApplyAdvanced","inputs":{"positive":["6",0],"negative":["7",0],
+               "control_net":["32",0],"image":["31",0],"strength":$f_cn,"start_percent":0.0,
+               "end_percent":0.6}} } else . end)
+    | (if $pose != "" then . + {
+         "15":{"class_type":"LoadImage","inputs":{"image":$pose}},
+         "16":{"class_type":"OpenposePreprocessor","inputs":{"image":["15",0],"detect_hand":false,
+               "detect_body":true,"detect_face":false,"resolution":512}},
+         "17":{"class_type":"ControlNetLoader","inputs":{"control_net_name":$cn_pose}},
+         "18":{"class_type":"ControlNetApplyAdvanced","inputs":{
+               "positive":(if $cn_couleur != "" then ["33",0] else ["6",0] end),
+               "negative":(if $cn_couleur != "" then ["33",1] else ["7",0] end),
+               "control_net":["17",0],"image":["16",0],"strength":$f_pose,"start_percent":0.0,
+               "end_percent":0.8}} } else . end)
+    | . + {
+        "9":{"class_type":"KSampler","inputs":{"seed":$sd,"steps":$etapes,"cfg":$cfg,
+             "sampler_name":$sm,"scheduler":$sch,"denoise":1.0,"model":["24",0],
+             "positive":(if $pose != "" then ["18",0] elif $cn_couleur != "" then ["33",0] else ["6",0] end),
+             "negative":(if $pose != "" then ["18",1] elif $cn_couleur != "" then ["33",1] else ["7",0] end),
+             "latent_image":["8",0]}},
+        "11":{"class_type":"VAEDecode","inputs":{"samples":["9",0],"vae":["1",2]}},
+        "12":{"class_type":"SaveImage","inputs":{"filename_prefix":"la_coherence","images":["11",0]}} }')
+  R=$(jq -cn --argjson p "$G" '{prompt:$p,client_id:"la"}' \
+      | curl -s -H 'Content-Type: application/json' --data-binary @- "$SERVICE/prompt")
+  PID=$(printf '%s' "$R" | jq -r '.prompt_id // empty')
+  [ -n "$PID" ] || { printf '%s\n' "$(msg graph_rejected)"\
+      "$(printf '%s' "$R" | jq -c '.error // .node_errors // .' | cut -c1-400)" >&2; exit 1; }
+  i=0
+  while [ "$i" -lt 300 ]; do
+    H=$(curl -s "$SERVICE/history/$PID")
+    printf '%s' "$H" | jq -e --arg p "$PID" 'has($p)' >/dev/null 2>&1 && break
+    sleep 2
+    i=$((i + 1))
+  done
+  [ "$i" -lt 300 ] || { printf '%s\n' "$(msg drawing_timeout '600')""$PID" >&2; exit 1; }
+  ECHEC=$(printf '%s' "$H" | jq -r --arg p "$PID" \
+      '.[$p].status.messages[]? | select(.[0]=="execution_error") | ((.[1].exception_type // "erreur") + " : " + (.[1].exception_message // ""))' \
+      | head -n 1)
+  [ -z "$ECHEC" ] || { printf '%s\n' "$(msg machine_failed)""$ECHEC" >&2; exit 1; }
+  IMG=$(printf '%s' "$H" | jq -r --arg p "$PID" '.[$p].outputs[]?.images[]? | [.filename, (.subfolder // ""), (.type // "output")] | @tsv' | head -n 1)
+  [ -n "$IMG" ] || { printf '%s\n' "$(msg drawing_no_image)" >&2; exit 1; }
+  OUTPUT="$W/coherence-$(date +%Y%m%d-%H%M%S).png"
+  curl -s -G --data-urlencode "filename=$(printf '%s' "$IMG" | cut -f1)" \
+       --data-urlencode "subfolder=$(printf '%s' "$IMG" | cut -f2)" \
+       --data-urlencode "type=$(printf '%s' "$IMG" | cut -f3)" "$SERVICE/view" -o "$OUTPUT"
+  [ -s "$OUTPUT" ] || { printf '%s\n' "$(msg image_not_downloaded '%s')""$OUTPUT" >&2; exit 1; }
+  printf "image : %s (%s octets, graine %s, noeuds %s)\n" "$OUTPUT" "$(wc -c < "$OUTPUT")" "$GRAINE" \
+    "$(printf '%s' "$G" | jq -r 'length')"
+
+ARGS:
+  - {name: character, type: path}             # le VISAGE de reference (l'identite)
+  - {name: costume, type: path}                # la planche entiere du costume (vide : pas de costume)
+  - {name: pose, type: path}                   # la POSE de reference (vide : pose libre)
+  - {name: subject, type: text, stdin: true}     # le texte libre : par l'ENTREE STANDARD

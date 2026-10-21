@@ -1,0 +1,71 @@
+id: "B1787"
+tool: "blender_transform_modal"
+date: "2026-10-17"
+tags: ["blender_transform_modal"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a modal transform: bend | mirror | push_pull | resize | rotate | shear | shrink_fatten | tosphere | trackball | transform | translate | vertex_random | vertex_warp (op picks which)"
+
+machine: "blender"
+op: "transform.{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [bend, mirror, push_pull, resize, rotate, shear, shrink_fatten, tosphere, trackball, transform, translate, vertex_random, vertex_warp]}
+  - {name: release_confirm, type: text}
+  - {name: use_accurate, type: text}
+  - {name: mirror, type: text}
+  - {name: proportional_edit_falloff, type: text}
+  - {name: proportional_size, type: text}
+  - {name: snap, type: text}
+  - {name: use_proportional_connected, type: text}
+  - {name: use_proportional_edit, type: text}
+  - {name: use_proportional_projected, type: text}
+  - {name: gpencil_strokes, type: text}
+  - {name: value, type: text}
+  - {name: center_override, type: text}
+  - {name: orient_matrix, type: text}
+  - {name: orient_matrix_type, type: text}
+  - {name: orient_type, type: text}
+  - {name: constraint_axis, type: text}
+  - {name: snap_elements, type: text}
+  - {name: snap_point, type: text}
+  - {name: snap_target, type: text}
+  - {name: use_snap_edit, type: text}
+  - {name: use_snap_nonedit, type: text}
+  - {name: use_snap_project, type: text}
+  - {name: use_snap_selectable, type: text}
+  - {name: use_snap_self, type: text}
+  - {name: orient_axis, type: text}
+  - {name: remove_on_cancel, type: text}
+  - {name: texture_space, type: text}
+  - {name: use_duplicated_keyframes, type: text}
+  - {name: snap_align, type: text}
+  - {name: snap_normal, type: text}
+  - {name: use_automerge_and_split, type: text}
+  - {name: angle, type: text}
+  - {name: center, type: text}
+  - {name: cursor_transform, type: text}
+  - {name: max, type: text}
+  - {name: min, type: text}
+  - {name: mode, type: text}
+  - {name: mouse_dir_constraint, type: text}
+  - {name: normal, type: text}
+  - {name: offset, type: text}
+  - {name: offset_angle, type: text}
+  - {name: orient_axis_ortho, type: text}
+  - {name: seed, type: int}
+  - {name: translate_origin, type: text}
+  - {name: uniform, type: text}
+  - {name: use_even_offset, type: text}
+  - {name: view2d_edge_pan, type: text}
+  - {name: viewmat, type: text}
+  - {name: wait_for_input, type: text}
+  - {name: warp_angle, type: text}

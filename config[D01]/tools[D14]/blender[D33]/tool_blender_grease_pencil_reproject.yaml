@@ -1,0 +1,23 @@
+id: "B473"
+tool: "blender_grease_pencil_reproject"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_reproject"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reproject the selected strokes from the current viewpoint as if they had been newly drawn (e.g. to fix problems from accidental 3D cursor movement or "
+
+machine: "blender"
+op: "grease_pencil.reproject"
+
+ARGS:
+  - {name: type, type: text}          # un de : FRONT | SIDE | TOP | VIEW | SURFACE | CURSOR
+  - {name: keep_original, type: text}          # true|false, vide pour ne rien poser
+  - {name: offset, type: text}

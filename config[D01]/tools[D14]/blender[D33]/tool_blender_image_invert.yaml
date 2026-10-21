@@ -1,0 +1,24 @@
+id: "B530"
+tool: "blender_image_invert"
+date: "2026-10-17"
+tags: ["blender_image_invert"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Invert image's channels"
+
+machine: "blender"
+op: "image.invert"
+
+ARGS:
+  - {name: invert_r, type: text}          # true|false, vide pour ne rien poser
+  - {name: invert_g, type: text}          # true|false, vide pour ne rien poser
+  - {name: invert_b, type: text}          # true|false, vide pour ne rien poser
+  - {name: invert_a, type: text}          # true|false, vide pour ne rien poser

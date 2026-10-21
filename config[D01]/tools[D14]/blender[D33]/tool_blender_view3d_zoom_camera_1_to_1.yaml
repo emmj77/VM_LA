@@ -1,0 +1,20 @@
+id: "B1590"
+tool: "blender_view3d_zoom_camera_1_to_1"
+date: "2026-10-17"
+tags: ["blender_view3d_zoom_camera_1_to_1"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Match the camera to 1:1 to the render output"
+
+machine: "blender"
+op: "view3d.zoom_camera_1_to_1"
+
+ARGS: []

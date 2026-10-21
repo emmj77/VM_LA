@@ -1,0 +1,20 @@
+id: "B061"
+tool: "blender_armature_align"
+date: "2026-10-17"
+tags: ["blender_armature_align"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Align selected bones to the active bone (or to their parent)"
+
+machine: "blender"
+op: "armature.align"
+
+ARGS: []

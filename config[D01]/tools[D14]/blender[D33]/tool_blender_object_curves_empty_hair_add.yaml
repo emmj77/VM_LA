@@ -1,0 +1,24 @@
+id: "B921"
+tool: "blender_object_curves_empty_hair_add"
+date: "2026-10-17"
+tags: ["blender_object_curves_empty_hair_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add an empty curve object to the scene with the selected mesh as surface"
+
+machine: "blender"
+op: "object.curves_empty_hair_add"
+
+ARGS:
+  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 valeurs separees par des virgules
+  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
+  - {name: scale, type: text}          # 3 valeurs separees par des virgules

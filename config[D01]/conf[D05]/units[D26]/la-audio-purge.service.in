@@ -1,0 +1,9 @@
+# id: U05
+# UN MODELE, PAS UNE UNITE VIVANTE : install.sh remplace @ROOT@ par la racine reelle et
+# pose le fichier dans ~/.config/systemd/user/. Le depot porte la source, le poste porte l'unite.
+[Unit]
+Description=LA - audio purge (config/audio/)
+
+[Service]
+Type=oneshot
+ExecStart=@ROOT@/config/engine/audio_purge.sh once

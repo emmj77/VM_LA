@@ -1,0 +1,21 @@
+id: "B687"
+tool: "blender_mesh_offset_edge_loops"
+date: "2026-10-17"
+tags: ["blender_mesh_offset_edge_loops"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create offset edge loop from the current selection"
+
+machine: "blender"
+op: "mesh.offset_edge_loops"
+
+ARGS:
+  - {name: use_cap_endpoint, type: text}          # true|false, vide pour ne rien poser

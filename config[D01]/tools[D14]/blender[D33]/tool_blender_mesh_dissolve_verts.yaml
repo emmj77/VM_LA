@@ -1,0 +1,22 @@
+id: "B647"
+tool: "blender_mesh_dissolve_verts"
+date: "2026-10-17"
+tags: ["blender_mesh_dissolve_verts"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Dissolve vertices, merge edges and faces"
+
+machine: "blender"
+op: "mesh.dissolve_verts"
+
+ARGS:
+  - {name: use_face_split, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_boundary_tear, type: text}          # true|false, vide pour ne rien poser

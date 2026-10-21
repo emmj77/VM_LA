@@ -1,0 +1,20 @@
+id: "B1352"
+tool: "blender_sequencer_meta_make"
+date: "2026-10-17"
+tags: ["blender_sequencer_meta_make"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Group selected strips into a meta-strip"
+
+machine: "blender"
+op: "sequencer.meta_make"
+
+ARGS: []

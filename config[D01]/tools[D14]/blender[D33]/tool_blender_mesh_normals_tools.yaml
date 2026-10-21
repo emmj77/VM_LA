@@ -1,0 +1,22 @@
+id: "B686"
+tool: "blender_mesh_normals_tools"
+date: "2026-10-17"
+tags: ["blender_mesh_normals_tools"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Custom normals tools using Normal Vector of UI"
+
+machine: "blender"
+op: "mesh.normals_tools"
+
+ARGS:
+  - {name: mode, type: text}          # un de : COPY | PASTE | ADD | MULTIPLY | RESET
+  - {name: absolute, type: text}          # true|false, vide pour ne rien poser

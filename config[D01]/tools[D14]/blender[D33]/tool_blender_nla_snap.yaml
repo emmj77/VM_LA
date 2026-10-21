@@ -1,0 +1,21 @@
+id: "B781"
+tool: "blender_nla_snap"
+date: "2026-10-17"
+tags: ["blender_nla_snap"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move start of strips to specified time"
+
+machine: "blender"
+op: "nla.snap"
+
+ARGS:
+  - {name: type, type: text}          # un de : CFRA | NEAREST_FRAME | NEAREST_SECOND | NEAREST_MARKER

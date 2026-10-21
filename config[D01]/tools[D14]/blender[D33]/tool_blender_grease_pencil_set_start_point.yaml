@@ -1,0 +1,20 @@
+id: "B496"
+tool: "blender_grease_pencil_set_start_point"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_set_start_point"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select which point is the beginning of the curve"
+
+machine: "blender"
+op: "grease_pencil.set_start_point"
+
+ARGS: []

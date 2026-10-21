@@ -1,0 +1,20 @@
+id: "B364"
+tool: "blender_font_textbox_add"
+date: "2026-10-17"
+tags: ["blender_font_textbox_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a new text box"
+
+machine: "blender"
+op: "font.textbox_add"
+
+ARGS: []

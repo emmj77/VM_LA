@@ -1,0 +1,21 @@
+id: "B707"
+tool: "blender_mesh_select_edge_loop_multi"
+date: "2026-10-17"
+tags: ["blender_mesh_select_edge_loop_multi"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select loops of connected edges from each selected edge"
+
+machine: "blender"
+op: "mesh.select_edge_loop_multi"
+
+ARGS:
+  - {name: delimit_edge_loop, type: text}          # un de : SEAM | SHARP | NGONS | INNER_CORNERS | OUTER_CORNERS

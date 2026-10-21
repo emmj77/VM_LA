@@ -1,0 +1,20 @@
+id: "B1249"
+tool: "blender_scene_freestyle_lineset_add"
+date: "2026-10-17"
+tags: ["blender_scene_freestyle_lineset_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a line set into the list of line sets"
+
+machine: "blender"
+op: "scene.freestyle_lineset_add"
+
+ARGS: []

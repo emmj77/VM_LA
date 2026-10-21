@@ -1,0 +1,21 @@
+id: "B028"
+tool: "blender_action_snap"
+date: "2026-10-17"
+tags: ["blender_action_snap"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Snap selected keyframes to the times specified"
+
+machine: "blender"
+op: "action.snap"
+
+ARGS:
+  - {name: type, type: text}          # un de : CFRA | NEAREST_FRAME | NEAREST_SECOND | NEAREST_MARKER

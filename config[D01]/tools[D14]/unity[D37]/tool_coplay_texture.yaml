@@ -1,0 +1,138 @@
+id: "U478"
+tool: "coplay_texture"
+date: "2026-10-17"
+tags: ["coplay_texture"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a texture: create | delete | modify | set-import-settings | sprite (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  create)
+    set -f
+    set -- texture create
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'texture create')" >&2; exit 1; }
+    [ -n "{{width}}" ] && set -- "$@" --width "{{width}}"
+    [ -n "{{height}}" ] && set -- "$@" --height "{{height}}"
+    [ -n "{{image_path}}" ] && set -- "$@" --image-path "{{image_path}}"
+    [ -n "{{color}}" ] && set -- "$@" --color "{{color}}"
+    [ -n "{{pattern}}" ] && set -- "$@" --pattern "{{pattern}}"
+    [ -n "{{palette}}" ] && set -- "$@" --palette "{{palette}}"
+    [ -n "{{import_settings}}" ] && set -- "$@" --import-settings "{{import_settings}}"
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  delete)
+    set -f
+    set -- texture delete
+    case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'force')" >&2; exit 1 ;; esac
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'texture delete')" >&2; exit 1; }
+    [ "{{force}}" = true ] && set -- "$@" --force
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  modify)
+    set -f
+    set -- texture modify
+    case "{{generate_mipmaps}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'generate_mipmaps')" >&2; exit 1 ;; esac
+    case "{{srgb}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'srgb')" >&2; exit 1 ;; esac
+    case "{{readable}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'readable')" >&2; exit 1 ;; esac
+    case "{{as_sprite}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'as_sprite')" >&2; exit 1 ;; esac
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'texture modify')" >&2; exit 1; }
+    [ -n "{{set_pixels}}" ] && set -- "$@" --set-pixels "{{set_pixels}}"
+    [ -n "{{texture_type}}" ] && set -- "$@" --texture-type "{{texture_type}}"
+    [ -n "{{sprite_mode}}" ] && set -- "$@" --sprite-mode "{{sprite_mode}}"
+    [ -n "{{sprite_ppu}}" ] && set -- "$@" --sprite-ppu "{{sprite_ppu}}"
+    [ -n "{{max_size}}" ] && set -- "$@" --max-size "{{max_size}}"
+    [ -n "{{compression}}" ] && set -- "$@" --compression "{{compression}}"
+    [ "{{generate_mipmaps}}" = true ] && set -- "$@" --generate-mipmaps
+    [ "{{srgb}}" = true ] && set -- "$@" --srgb
+    [ "{{readable}}" = true ] && set -- "$@" --readable
+    [ "{{as_sprite}}" = true ] && set -- "$@" --as-sprite
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  set-import-settings)
+    set -f
+    set -- texture set-import-settings
+    case "{{generate_mipmaps}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'generate_mipmaps')" >&2; exit 1 ;; esac
+    case "{{srgb}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'srgb')" >&2; exit 1 ;; esac
+    case "{{readable}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'readable')" >&2; exit 1 ;; esac
+    case "{{as_sprite}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'as_sprite')" >&2; exit 1 ;; esac
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'texture set-import-settings')" >&2; exit 1; }
+    [ -n "{{texture_type}}" ] && set -- "$@" --texture-type "{{texture_type}}"
+    [ -n "{{sprite_mode}}" ] && set -- "$@" --sprite-mode "{{sprite_mode}}"
+    [ -n "{{sprite_ppu}}" ] && set -- "$@" --sprite-ppu "{{sprite_ppu}}"
+    [ -n "{{max_size}}" ] && set -- "$@" --max-size "{{max_size}}"
+    [ -n "{{compression}}" ] && set -- "$@" --compression "{{compression}}"
+    [ "{{generate_mipmaps}}" = true ] && set -- "$@" --generate-mipmaps
+    [ "{{srgb}}" = true ] && set -- "$@" --srgb
+    [ "{{readable}}" = true ] && set -- "$@" --readable
+    [ "{{as_sprite}}" = true ] && set -- "$@" --as-sprite
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  sprite)
+    set -f
+    set -- texture sprite
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'texture sprite')" >&2; exit 1; }
+    [ -n "{{width}}" ] && set -- "$@" --width "{{width}}"
+    [ -n "{{height}}" ] && set -- "$@" --height "{{height}}"
+    [ -n "{{image_path}}" ] && set -- "$@" --image-path "{{image_path}}"
+    [ -n "{{color}}" ] && set -- "$@" --color "{{color}}"
+    [ -n "{{pattern}}" ] && set -- "$@" --pattern "{{pattern}}"
+    [ -n "{{ppu}}" ] && set -- "$@" --ppu "{{ppu}}"
+    [ -n "{{pivot}}" ] && set -- "$@" --pivot "{{pivot}}"
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [create, delete, modify, set-import-settings, sprite]}
+  - {name: path, type: text}
+  - {name: color, type: text}
+  - {name: compression, type: text}
+  - {name: height, type: int}
+  - {name: image_path, type: text}
+  - {name: import_settings, type: text}
+  - {name: max_size, type: text}
+  - {name: palette, type: text}
+  - {name: pattern, type: text}
+  - {name: pivot, type: text}
+  - {name: ppu, type: text}
+  - {name: set_pixels, type: text}
+  - {name: sprite_mode, type: text}
+  - {name: sprite_ppu, type: text}
+  - {name: texture_type, type: text}
+  - {name: width, type: int}
+  - {name: as_sprite, type: text}
+  - {name: force, type: text}
+  - {name: generate_mipmaps, type: text}
+  - {name: readable, type: text}
+  - {name: srgb, type: text}

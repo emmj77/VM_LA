@@ -1,0 +1,23 @@
+id: "B352"
+tool: "blender_file_unpack_item"
+date: "2026-10-17"
+tags: ["blender_file_unpack_item"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Unpack this file to an external file"
+
+machine: "blender"
+op: "file.unpack_item"
+
+ARGS:
+  - {name: method, type: text}          # un de : USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL
+  - {name: id_name, type: text}
+  - {name: id_type, type: int}

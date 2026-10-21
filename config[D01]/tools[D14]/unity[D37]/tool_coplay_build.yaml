@@ -1,0 +1,101 @@
+id: "U453"
+tool: "coplay_build"
+date: "2026-10-17"
+tags: ["coplay_build"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a build: batch | cancel | profiles | scenes | settings | status (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  batch)
+    set -f
+    set -- build batch
+    case "{{development}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'development')" >&2; exit 1 ;; esac
+    [ -n "{{targets}}" ] && set -- "$@" --targets "{{targets}}"
+    [ -n "{{profile_paths}}" ] && set -- "$@" --profiles "{{profile_paths}}"
+    [ -n "{{output_dir}}" ] && set -- "$@" --output-dir "{{output_dir}}"
+    [ "{{development}}" = true ] && set -- "$@" --development
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  cancel)
+    set -f
+    set -- build cancel
+    [ -n "{{job_id}}" ] || { printf '%s\n' "$(msg argument_required 'job_id' 'build cancel')" >&2; exit 1; }
+    [ -n "{{job_id}}" ] && set -- "$@" "{{job_id}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  profiles)
+    set -f
+    set -- build profiles
+    case "{{activate}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'activate')" >&2; exit 1 ;; esac
+    [ -n "{{profile}}" ] || { printf '%s\n' "$(msg argument_required 'profile' 'build profiles')" >&2; exit 1; }
+    [ "{{activate}}" = true ] && set -- "$@" --activate
+    [ -n "{{profile}}" ] && set -- "$@" "{{profile}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  scenes)
+    set -f
+    set -- build scenes
+    [ -n "{{scene_paths}}" ] && set -- "$@" --set "{{scene_paths}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  settings)
+    set -f
+    set -- build settings
+    [ -n "{{property_name}}" ] || { printf '%s\n' "$(msg argument_required 'property_name' 'build settings')" >&2; exit 1; }
+    [ -n "{{value}}" ] && set -- "$@" --value "{{value}}"
+    [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+    [ -n "{{property_name}}" ] && set -- "$@" "{{property_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  status)
+    set -f
+    set -- build status
+    [ -n "{{job_id}}" ] || { printf '%s\n' "$(msg argument_required 'job_id' 'build status')" >&2; exit 1; }
+    [ -n "{{job_id}}" ] && set -- "$@" "{{job_id}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [batch, cancel, profiles, scenes, settings, status]}
+  - {name: property_name, type: text}
+  - {name: profile, type: text}
+  - {name: job_id, type: text}
+  - {name: output_dir, type: text}
+  - {name: profile_paths, type: text}
+  - {name: scene_paths, type: text}
+  - {name: target, type: text}
+  - {name: targets, type: text}
+  - {name: value, type: text}
+  - {name: activate, type: text}
+  - {name: development, type: text}

@@ -1,0 +1,20 @@
+id: "B1208"
+tool: "blender_pose_visual_transform_apply"
+date: "2026-10-17"
+tags: ["blender_pose_visual_transform_apply"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Apply final constrained position of pose bones to their transform"
+
+machine: "blender"
+op: "pose.visual_transform_apply"
+
+ARGS: []

@@ -1,0 +1,24 @@
+id: "B1313"
+tool: "blender_sculpt_face_set_extract"
+date: "2026-10-17"
+tags: ["blender_sculpt_face_set_extract"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a new mesh object from the selected face set"
+
+machine: "blender"
+op: "sculpt.face_set_extract"
+
+ARGS:
+  - {name: add_boundary_loop, type: text}          # true|false, vide pour ne rien poser
+  - {name: smooth_iterations, type: int}
+  - {name: apply_shrinkwrap, type: text}          # true|false, vide pour ne rien poser
+  - {name: add_solidify, type: text}          # true|false, vide pour ne rien poser

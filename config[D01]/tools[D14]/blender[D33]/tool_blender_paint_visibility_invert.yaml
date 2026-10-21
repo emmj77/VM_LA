@@ -1,0 +1,20 @@
+id: "B1125"
+tool: "blender_paint_visibility_invert"
+date: "2026-10-17"
+tags: ["blender_paint_visibility_invert"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Invert the visibility of all vertices"
+
+machine: "blender"
+op: "paint.visibility_invert"
+
+ARGS: []

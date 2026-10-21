@@ -1,0 +1,37 @@
+id: "U187"
+tool: "coplay_material_set_property"
+date: "2026-10-18"
+tags: ["unity", "coplay", "material"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Set a shader property on a material."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- material set-property
+  [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'material set-property')" >&2; exit 1; }
+  [ -n "{{property_name}}" ] || { printf '%s\n' "$(msg argument_required 'property_name' 'material set-property')" >&2; exit 1; }
+  [ -n "{{value}}" ] || { printf '%s\n' "$(msg argument_required 'value' 'material set-property')" >&2; exit 1; }
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ -n "{{property_name}}" ] && set -- "$@" "{{property_name}}"
+  [ -n "{{value}}" ] && set -- "$@" "{{value}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: path, type: text}
+  - {name: property_name, type: text}
+  - {name: value, type: text}

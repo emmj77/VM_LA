@@ -1,0 +1,20 @@
+id: "B1262"
+tool: "blender_scene_freestyle_stroke_material_create"
+date: "2026-10-17"
+tags: ["blender_scene_freestyle_stroke_material_create"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create Freestyle stroke material for testing"
+
+machine: "blender"
+op: "scene.freestyle_stroke_material_create"
+
+ARGS: []

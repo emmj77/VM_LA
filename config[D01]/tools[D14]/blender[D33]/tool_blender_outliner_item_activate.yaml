@@ -1,0 +1,24 @@
+id: "B1080"
+tool: "blender_outliner_item_activate"
+date: "2026-10-17"
+tags: ["blender_outliner_item_activate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Handle mouse clicks to select and activate items"
+
+machine: "blender"
+op: "outliner.item_activate"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend_range, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: recurse, type: text}          # true|false, vide pour ne rien poser

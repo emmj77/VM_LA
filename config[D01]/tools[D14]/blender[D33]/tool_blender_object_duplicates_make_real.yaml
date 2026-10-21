@@ -1,0 +1,22 @@
+id: "B933"
+tool: "blender_object_duplicates_make_real"
+date: "2026-10-17"
+tags: ["blender_object_duplicates_make_real"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make instanced objects attached to this object real"
+
+machine: "blender"
+op: "object.duplicates_make_real"
+
+ARGS:
+  - {name: use_base_parent, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_hierarchy, type: text}          # true|false, vide pour ne rien poser

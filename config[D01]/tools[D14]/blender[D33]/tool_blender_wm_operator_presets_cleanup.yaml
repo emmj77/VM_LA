@@ -1,0 +1,22 @@
+id: "B1632"
+tool: "blender_wm_operator_presets_cleanup"
+date: "2026-10-17"
+tags: ["blender_wm_operator_presets_cleanup"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove outdated operator properties from presets that may cause problems"
+
+machine: "blender"
+op: "wm.operator_presets_cleanup"
+
+ARGS:
+  - {name: operator, type: text}
+  - {name: properties, type: text}

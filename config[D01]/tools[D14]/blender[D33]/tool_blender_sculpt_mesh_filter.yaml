@@ -1,0 +1,33 @@
+id: "B1317"
+tool: "blender_sculpt_mesh_filter"
+date: "2026-10-17"
+tags: ["blender_sculpt_mesh_filter"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Applies a filter to modify the current mesh"
+
+machine: "blender"
+op: "sculpt.mesh_filter"
+
+ARGS:
+  - {name: start_mouse, type: int}
+  - {name: area_normal_radius, type: text}
+  - {name: strength, type: text}
+  - {name: iteration_count, type: int}
+  - {name: event_history, type: text}
+  - {name: type, type: text}          # un de : SMOOTH | SCALE | INFLATE | SPHERE | RANDOM | RELAX | RELAX_FACE_SETS | SURFACE_SMOOTH | SHARPEN | ENHANCE_DETAILS | ERASE_DISPLACEMENT
+  - {name: deform_axis, type: text}          # un de : X | Y | Z
+  - {name: orientation, type: text}          # un de : LOCAL | WORLD | VIEW
+  - {name: surface_smooth_shape_preservation, type: text}
+  - {name: surface_smooth_current_vertex, type: text}
+  - {name: sharpen_smooth_ratio, type: text}
+  - {name: sharpen_intensify_detail_strength, type: text}
+  - {name: sharpen_curvature_smooth_iterations, type: int}

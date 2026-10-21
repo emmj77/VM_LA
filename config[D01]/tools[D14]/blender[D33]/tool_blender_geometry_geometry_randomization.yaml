@@ -1,0 +1,21 @@
+id: "B367"
+tool: "blender_geometry_geometry_randomization"
+date: "2026-10-17"
+tags: ["blender_geometry_geometry_randomization"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle geometry randomization for debugging purposes"
+
+machine: "blender"
+op: "geometry.geometry_randomization"
+
+ARGS:
+  - {name: value, type: text}          # true|false, vide pour ne rien poser

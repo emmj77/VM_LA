@@ -1,0 +1,20 @@
+id: "B810"
+tool: "blender_node_attach"
+date: "2026-10-17"
+tags: ["blender_node_attach"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Attach active node to a frame"
+
+machine: "blender"
+op: "node.attach"
+
+ARGS: []

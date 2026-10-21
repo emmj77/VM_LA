@@ -1,0 +1,20 @@
+id: "B774"
+tool: "blender_nla_move_up"
+date: "2026-10-17"
+tags: ["blender_nla_move_up"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move selected strips up a track if there's room"
+
+machine: "blender"
+op: "nla.move_up"
+
+ARGS: []

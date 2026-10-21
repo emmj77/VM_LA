@@ -1,0 +1,167 @@
+id: "U476"
+tool: "coplay_scene"
+date: "2026-10-17"
+tags: ["coplay_scene"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a scene: active | build-settings | close | create | hierarchy | load | loaded | move-to | open-additive | save | set-active | validate (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  active)
+    set -f
+    set -- scene active
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  build-settings)
+    set -f
+    set -- scene build-settings
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  close)
+    set -f
+    set -- scene close
+    case "{{remove}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'remove')" >&2; exit 1 ;; esac
+    [ -n "{{scene_name}}" ] || { printf '%s\n' "$(msg argument_required 'scene_name' 'scene close')" >&2; exit 1; }
+    [ "{{remove}}" = true ] && set -- "$@" --remove
+    [ -n "{{scene_name}}" ] && set -- "$@" "{{scene_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  create)
+    set -f
+    set -- scene create
+    [ -n "{{name}}" ] || { printf '%s\n' "$(msg argument_required 'name' 'scene create')" >&2; exit 1; }
+    [ -n "{{path}}" ] && set -- "$@" --path "{{path}}"
+    [ -n "{{template}}" ] && set -- "$@" --template "{{template}}"
+    [ -n "{{name}}" ] && set -- "$@" "{{name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  hierarchy)
+    set -f
+    set -- scene hierarchy
+    case "{{include_transform}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'include_transform')" >&2; exit 1 ;; esac
+    [ -n "{{parent}}" ] && set -- "$@" --parent "{{parent}}"
+    [ -n "{{max_depth}}" ] && set -- "$@" --max-depth "{{max_depth}}"
+    [ "{{include_transform}}" = true ] && set -- "$@" --include-transform
+    [ -n "{{limit}}" ] && set -- "$@" --limit "{{limit}}"
+    [ -n "{{cursor}}" ] && set -- "$@" --cursor "{{cursor}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  load)
+    set -f
+    set -- scene load
+    case "{{by_index}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'by_index')" >&2; exit 1 ;; esac
+    [ -n "{{scene}}" ] || { printf '%s\n' "$(msg argument_required 'scene' 'scene load')" >&2; exit 1; }
+    [ "{{by_index}}" = true ] && set -- "$@" --by-index
+    [ -n "{{scene}}" ] && set -- "$@" "{{scene}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  loaded)
+    set -f
+    set -- scene loaded
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  move-to)
+    set -f
+    set -- scene move-to
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'scene move-to')" >&2; exit 1; }
+    [ -n "{{scene_name}}" ] || { printf '%s\n' "$(msg argument_required 'scene_name' 'scene move-to')" >&2; exit 1; }
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{scene_name}}" ] && set -- "$@" "{{scene_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  open-additive)
+    set -f
+    set -- scene open-additive
+    [ -n "{{scene_path}}" ] || { printf '%s\n' "$(msg argument_required 'scene_path' 'scene open-additive')" >&2; exit 1; }
+    [ -n "{{scene_path}}" ] && set -- "$@" "{{scene_path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  save)
+    set -f
+    set -- scene save
+    [ -n "{{path}}" ] && set -- "$@" --path "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  set-active)
+    set -f
+    set -- scene set-active
+    [ -n "{{scene_name}}" ] || { printf '%s\n' "$(msg argument_required 'scene_name' 'scene set-active')" >&2; exit 1; }
+    [ -n "{{scene_name}}" ] && set -- "$@" "{{scene_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  validate)
+    set -f
+    set -- scene validate
+    case "{{repair}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'repair')" >&2; exit 1 ;; esac
+    [ "{{repair}}" = true ] && set -- "$@" --repair
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [active, build-settings, close, create, hierarchy, load, loaded, move-to, open-additive, save, set-active, validate]}
+  - {name: scene_path, type: text}
+  - {name: target, type: text}
+  - {name: scene, type: text}
+  - {name: name, type: text}
+  - {name: scene_name, type: text}
+  - {name: cursor, type: int}
+  - {name: limit, type: int}
+  - {name: max_depth, type: int}
+  - {name: parent, type: text}
+  - {name: path, type: text}
+  - {name: template, type: text}
+  - {name: by_index, type: text}
+  - {name: include_transform, type: text}
+  - {name: remove, type: text}
+  - {name: repair, type: text}

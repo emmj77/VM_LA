@@ -1,0 +1,24 @@
+id: "B694"
+tool: "blender_mesh_remove_doubles"
+date: "2026-10-17"
+tags: ["blender_mesh_remove_doubles"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Merge vertices based on their proximity"
+
+machine: "blender"
+op: "mesh.remove_doubles"
+
+ARGS:
+  - {name: threshold, type: text}
+  - {name: use_centroid, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_unselected, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_sharp_edge_from_normals, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,23 @@
+id: "B1124"
+tool: "blender_paint_visibility_filter"
+date: "2026-10-17"
+tags: ["blender_paint_visibility_filter"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Edit the visibility of the current mesh"
+
+machine: "blender"
+op: "paint.visibility_filter"
+
+ARGS:
+  - {name: action, type: text}          # un de : GROW | SHRINK
+  - {name: iterations, type: int}
+  - {name: auto_iteration_count, type: text}          # true|false, vide pour ne rien poser

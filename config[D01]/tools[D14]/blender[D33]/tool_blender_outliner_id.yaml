@@ -1,0 +1,25 @@
+id: "B1754"
+tool: "blender_outliner_id"
+date: "2026-10-17"
+tags: ["blender_outliner_id"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a datablock in the outliner: copy | delete | linked_relocate | operation | paste | remap (op picks which)"
+
+machine: "blender"
+op: "outliner.id_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [copy, delete, linked_relocate, operation, paste, remap]}
+  - {name: id_type, type: text}
+  - {name: new_id, type: int}
+  - {name: old_id, type: int}
+  - {name: type, type: text}

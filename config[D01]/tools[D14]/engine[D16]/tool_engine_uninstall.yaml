@@ -1,0 +1,48 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E025"
+tool: "engine.uninstall"
+date: "2026-10-21"
+tags: ["engine", "uninstall"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "what the installation posed, removed: units, command, desktop entry, applet. the data stays"
+COMMAND: |
+
+  _op=${1:-units}
+  _ud=$(cfg str paths.user_units "$HOME/.config/systemd/user") || _ud="$HOME/.config/systemd/user"
+  _bin=$(cfg str paths.user_bin "$HOME/.local/bin") || _bin="$HOME/.local/bin"
+  _apps=$(cfg str paths.user_apps "$HOME/.local/share/applications") || _apps="$HOME/.local/share/applications"
+  case $_op in
+  units)
+    _n=0
+    for _f in "$_ud"/la-*.service "$_ud"/la-*.timer ; do
+      [ -f "$_f" ] || continue
+      _u=${_f##*/}
+      systemctl --user disable --now "$_u" 2>/dev/null || :
+      gio trash -- "$_f" 2>/dev/null || printf 'note %s is not removable\n' "$_f"
+      _n=$((_n + 1))
+    done
+    systemctl --user daemon-reload 2>/dev/null || :
+    printf 'ok %s unit file(s) removed, the data stays\n' "$_n" ;;
+  command)
+    gio trash -- "$_bin/la" 2>/dev/null || :
+    printf 'ok the la command is removed from %s\n' "$_bin" ;;
+  desktop)
+    gio trash -- "$_apps/la.desktop" 2>/dev/null || :
+    printf 'ok the desktop entry is removed\n' ;;
+  applet)
+    gio trash -- "$HOME/.local/share/cinnamon/applets/LA_Info@moussa" 2>/dev/null || :
+    printf 'ok the applet is removed\n' ;;
+  certs)
+    printf 'REFUSED: the certificate of the bridge is not removed by the installer\n' ;;
+  *)
+    printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+ARGS:
+  - {name: op, type: enum, values: units,command,desktop,applet,certs}

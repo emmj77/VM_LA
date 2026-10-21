@@ -1,0 +1,28 @@
+id: "B1768"
+tool: "blender_preferences_studiolight"
+date: "2026-10-17"
+tags: ["blender_preferences_studiolight"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a studio light: copy_settings | install | new | uninstall (op picks which)"
+
+machine: "blender"
+op: "preferences.studiolight_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [copy_settings, install, new, uninstall]}
+  - {name: index, type: int}
+  - {name: directory, type: text}
+  - {name: filename, type: text}
+  - {name: files, type: text}
+  - {name: type, type: text}
+  - {name: filter_folder, type: text}
+  - {name: filter_glob, type: text}

@@ -1,0 +1,23 @@
+id: "B1094"
+tool: "blender_outliner_select_walk"
+date: "2026-10-17"
+tags: ["blender_outliner_select_walk"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use walk navigation to select tree elements"
+
+machine: "blender"
+op: "outliner.select_walk"
+
+ARGS:
+  - {name: direction, type: text}          # un de : UP | DOWN | LEFT | RIGHT
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle_all, type: text}          # true|false, vide pour ne rien poser

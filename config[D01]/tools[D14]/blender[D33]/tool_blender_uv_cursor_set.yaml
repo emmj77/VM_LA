@@ -1,0 +1,21 @@
+id: "B1493"
+tool: "blender_uv_cursor_set"
+date: "2026-10-17"
+tags: ["blender_uv_cursor_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set 2D cursor location"
+
+machine: "blender"
+op: "uv.cursor_set"
+
+ARGS:
+  - {name: location, type: text}          # 2 valeurs separees par des virgules

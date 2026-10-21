@@ -1,0 +1,20 @@
+id: "B1130"
+tool: "blender_paint_weight_sample"
+date: "2026-10-17"
+tags: ["blender_paint_weight_sample"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use the mouse to sample a weight in the 3D view"
+
+machine: "blender"
+op: "paint.weight_sample"
+
+ARGS: []

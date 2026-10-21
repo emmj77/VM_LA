@@ -1,0 +1,21 @@
+id: "B327"
+tool: "blender_file_filepath_drop"
+date: "2026-10-17"
+tags: ["blender_file_filepath_drop"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(undocumented operator)"
+
+machine: "blender"
+op: "file.filepath_drop"
+
+ARGS:
+  - {name: filepath, type: text}

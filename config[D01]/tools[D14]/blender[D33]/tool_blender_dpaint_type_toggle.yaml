@@ -1,0 +1,21 @@
+id: "B307"
+tool: "blender_dpaint_type_toggle"
+date: "2026-10-17"
+tags: ["blender_dpaint_type_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle whether given type is active or not"
+
+machine: "blender"
+op: "dpaint.type_toggle"
+
+ARGS:
+  - {name: type, type: text}          # un de : CANVAS | BRUSH

@@ -1,0 +1,21 @@
+id: "B1141"
+tool: "blender_palette_extract_from_image"
+date: "2026-10-17"
+tags: ["blender_palette_extract_from_image"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Extract all colors used in Image and create a Palette"
+
+machine: "blender"
+op: "palette.extract_from_image"
+
+ARGS:
+  - {name: threshold, type: int}

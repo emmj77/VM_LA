@@ -1,0 +1,23 @@
+id: "B1573"
+tool: "blender_view3d_view_axis"
+date: "2026-10-17"
+tags: ["blender_view3d_view_axis"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use a preset viewpoint"
+
+machine: "blender"
+op: "view3d.view_axis"
+
+ARGS:
+  - {name: type, type: text}          # un de : LEFT | RIGHT | BOTTOM | TOP | FRONT | BACK
+  - {name: align_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: relative, type: text}          # true|false, vide pour ne rien poser

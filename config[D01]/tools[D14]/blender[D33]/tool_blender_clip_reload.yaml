@@ -1,0 +1,20 @@
+id: "B164"
+tool: "blender_clip_reload"
+date: "2026-10-17"
+tags: ["blender_clip_reload"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reload clip"
+
+machine: "blender"
+op: "clip.reload"
+
+ARGS: []

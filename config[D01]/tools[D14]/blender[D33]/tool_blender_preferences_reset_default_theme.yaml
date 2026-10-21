@@ -1,0 +1,20 @@
+id: "B1221"
+tool: "blender_preferences_reset_default_theme"
+date: "2026-10-17"
+tags: ["blender_preferences_reset_default_theme"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset to the default theme colors"
+
+machine: "blender"
+op: "preferences.reset_default_theme"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B1403"
+tool: "blender_sequencer_swap_inputs"
+date: "2026-10-17"
+tags: ["blender_sequencer_swap_inputs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Swap the two inputs of the effect strip"
+
+machine: "blender"
+op: "sequencer.swap_inputs"
+
+ARGS: []

@@ -1,0 +1,34 @@
+id: "A025"
+tool: "asset_builder_review"
+date: "2026-10-19"
+tags: ["asset_builder", "review"]
+
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "records the visual verdict of one rendered view in the manifest"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{shot}}"
+  A3="{{verdict}}"
+  case "$A3" in ok|defaut) ;; *) printf '%s\n' "$(msg verdict_outside_list)" >&2 ; exit 1 ;; esac
+  A4="{{note}}"
+  AB_HOME="$W/asset_builder" "$B" review --name "$A1" --shot "$A2" --verdict "$A3" --note "$A4"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: shot, type: text}
+  - {name: verdict, type: text}
+  - {name: note, type: text}

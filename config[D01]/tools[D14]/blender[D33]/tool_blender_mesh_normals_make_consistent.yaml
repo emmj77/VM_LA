@@ -1,0 +1,21 @@
+id: "B685"
+tool: "blender_mesh_normals_make_consistent"
+date: "2026-10-17"
+tags: ["blender_mesh_normals_make_consistent"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make face and vertex normals point either outside or inside the mesh"
+
+machine: "blender"
+op: "mesh.normals_make_consistent"
+
+ARGS:
+  - {name: inside, type: text}          # true|false, vide pour ne rien poser

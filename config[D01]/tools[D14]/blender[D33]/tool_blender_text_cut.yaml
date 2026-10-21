@@ -1,0 +1,20 @@
+id: "B1425"
+tool: "blender_text_cut"
+date: "2026-10-17"
+tags: ["blender_text_cut"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cut selected text to clipboard"
+
+machine: "blender"
+op: "text.cut"
+
+ARGS: []

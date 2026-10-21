@@ -1,0 +1,105 @@
+id: "U470"
+tool: "coplay_prefab"
+date: "2026-10-17"
+tags: ["coplay_prefab"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a prefab: close | create | hierarchy | info | open | save (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  close)
+    set -f
+    set -- prefab close
+    case "{{save}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'save')" >&2; exit 1 ;; esac
+    [ "{{save}}" = true ] && set -- "$@" --save
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  create)
+    set -f
+    set -- prefab create
+    case "{{overwrite}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'overwrite')" >&2; exit 1 ;; esac
+    case "{{include_inactive}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'include_inactive')" >&2; exit 1 ;; esac
+    case "{{unlink_if_instance}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'unlink_if_instance')" >&2; exit 1 ;; esac
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'prefab create')" >&2; exit 1; }
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'prefab create')" >&2; exit 1; }
+    [ "{{overwrite}}" = true ] && set -- "$@" --overwrite
+    [ "{{include_inactive}}" = true ] && set -- "$@" --include-inactive
+    [ "{{unlink_if_instance}}" = true ] && set -- "$@" --unlink-if-instance
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  hierarchy)
+    set -f
+    set -- prefab hierarchy
+    case "{{compact}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'compact')" >&2; exit 1 ;; esac
+    case "{{show_prefab_info}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'show_prefab_info')" >&2; exit 1 ;; esac
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'prefab hierarchy')" >&2; exit 1; }
+    [ "{{compact}}" = true ] && set -- "$@" --compact
+    [ "{{show_prefab_info}}" = true ] && set -- "$@" --show-prefab-info
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  info)
+    set -f
+    set -- prefab info
+    case "{{compact}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'compact')" >&2; exit 1 ;; esac
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'prefab info')" >&2; exit 1; }
+    [ "{{compact}}" = true ] && set -- "$@" --compact
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  open)
+    set -f
+    set -- prefab open
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'prefab open')" >&2; exit 1; }
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  save)
+    set -f
+    set -- prefab save
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [close, create, hierarchy, info, open, save]}
+  - {name: target, type: text}
+  - {name: path, type: text}
+  - {name: compact, type: text}
+  - {name: include_inactive, type: text}
+  - {name: overwrite, type: text}
+  - {name: save, type: text}
+  - {name: show_prefab_info, type: text}
+  - {name: unlink_if_instance, type: text}

@@ -1,0 +1,22 @@
+id: "B224"
+tool: "blender_constraint_move_down"
+date: "2026-10-17"
+tags: ["blender_constraint_move_down"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move constraint down in constraint stack"
+
+machine: "blender"
+op: "constraint.move_down"
+
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE

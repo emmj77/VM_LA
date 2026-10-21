@@ -1,0 +1,21 @@
+id: "B1607"
+tool: "blender_wm_doc_view_manual"
+date: "2026-10-17"
+tags: ["blender_wm_doc_view_manual"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Load online manual"
+
+machine: "blender"
+op: "wm.doc_view_manual"
+
+ARGS:
+  - {name: doc_id, type: text}

@@ -1,0 +1,39 @@
+id: "U243"
+tool: "unity_auth_switch"
+date: "2026-10-18"
+tags: ["unity", "cli", "auth"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Make a stored account the active account"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- auth switch --no-banner --no-pager --non-interactive
+  [ -n "{{account}}" ] || { printf '%s\n' "$(msg argument_required 'account' 'unity auth switch')" >&2; exit 1; }
+
+  [ -n "{{account}}" ] && set -- "$@" "{{account}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_auth_switch_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: account, type: text}

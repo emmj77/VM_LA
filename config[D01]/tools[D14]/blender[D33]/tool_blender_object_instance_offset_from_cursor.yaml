@@ -1,0 +1,20 @@
+id: "B958"
+tool: "blender_object_instance_offset_from_cursor"
+date: "2026-10-17"
+tags: ["blender_object_instance_offset_from_cursor"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set offset used for collection instances based on cursor position"
+
+machine: "blender"
+op: "object.instance_offset_from_cursor"
+
+ARGS: []

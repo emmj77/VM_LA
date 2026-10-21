@@ -1,0 +1,21 @@
+id: "B818"
+tool: "blender_node_connect_to_output"
+date: "2026-10-17"
+tags: ["blender_node_connect_to_output"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Connect active node to the active output node of the node tree"
+
+machine: "blender"
+op: "node.connect_to_output"
+
+ARGS:
+  - {name: run_in_geometry_nodes, type: text}          # true|false, vide pour ne rien poser

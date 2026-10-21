@@ -1,0 +1,135 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E004"
+tool: "engine.commands"
+date: "2026-10-20"
+tags: ["engine", "commands"]
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the surfaces of la: board, once, app, cli, say, turn, doctor, tool, new, update, help"
+COMMAND: |
+
+  _op=${1:-help}
+  _in=$(cat)
+  case $_op in
+  board|once)
+    _d=$(cfg abs run) || { printf 'FAULT no door in the tree\n'; exit 0; }
+    _b=once
+    [ "$_op" = once ] && _b=line
+    LA_FROM=engine "$_d" board "$_b" 2>&1
+    ;;
+  line)
+    _l=$(printf '%s' "$_in" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    [ -n "$_l" ] || { printf 'FAULT line wants a command on the input\n'; exit 0; }
+    _c=$(printf '%s' "$_l" | awk '{ print $1 }')
+    _a=$(printf '%s' "$_l" | sed 's/^[^ ]*[ ]*//')
+    case $_c in
+    /doctor)  run_call engine.doctor "op=${_a:-short}" ;;
+    /stop)    printf 'stop\n' | write_atomic "$(cfg abs stop)"; printf 'ok the turn is asked to stop\n' ;;
+    /start)   gio trash -- "$(cfg abs stop)" 2>/dev/null; printf 'ok the stop is lifted\n' ;;
+    /model)   if [ -n "$_a" ]; then printf '%s' "$_a" | run_call engine.switch op=take | jq -r '.result // .' 2>/dev/null
+              else run_call engine.switch op=list | jq -r '.result // .' 2>/dev/null; fi ;;
+    /to)      printf '%s' "$_l" | run_call engine.commands op=say ;;
+    /say)     printf '%s' "$_a" | run_call engine.commands op=say ;;
+    /update)  run_call engine.update "op=${_a:-check}" ;;
+    /doctor*) run_call engine.doctor "op=${_a:-short}" ;;
+    /help|/|"") printf 'ok commands: /doctor /doctor <op> /stop /start /model <alias> /to <name> <text> /update /help\n' ;;
+    *)        printf 'note %s is not a command the engine knows\n' "$_c" ;;
+    esac
+    ;;
+  app)
+    # the page in its own window, as before: probe, wake the unit, then chromium --app
+    _h=${LA_HOST:-$(cfg str models.host 127.0.0.1)}
+    _pt=${LA_PORT_DASH:-$(cfg num units.dashboard.port 8770)}
+    _un=$(cfg str units.dashboard.unit la-dash)
+    _base="http://$_h:$_pt"
+    _mt=$(cfg num limits.ping_timeout 2)
+    _alive() { [ "$(curl -s -m "$_mt" -o /dev/null -w '%{http_code}' "$_base/ping" 2>/dev/null)" = 200 ]; }
+    _alive || {
+      systemctl --user start "$_un" >/dev/null 2>&1 || :
+      _i=0; _n=$(cfg num limits.boot_tries 40)
+      while [ "$_i" -lt "$_n" ]; do _alive && break; sleep 0.25; _i=$((_i + 1)); done
+    }
+    if ! _alive; then printf 'note the page is silent on %s\n' "$_pt"; exit 0; fi
+    _b=$(cfg str machine.browser.bin)
+    if [ ! -x "$_b" ]; then printf 'note no browser at %s\n' "${_b:-nowhere}"; exit 0; fi
+    _pf=$(cfg str machine.browser.profile)
+    _cl=$(cfg str machine.browser.class LA-Dashboard)
+    _wn=$(cfg str machine.browser.window 1500,950)
+    mkdir -p "$_pf" 2>/dev/null || :
+    setsid "$_b" "--app=$_base/" "--user-data-dir=$_pf" "--class=$_cl" \
+      --no-first-run --no-default-browser-check "--window-size=$_wn" >/dev/null 2>&1 &
+    printf 'ok the page is open in its window on %s\n' "$_pt"
+    ;;
+  cli)
+    printf 'ok reading on the input\n'
+    while IFS= read -r _l; do
+      [ -n "$_l" ] || continue
+      loop_turn "$_l"
+    done
+    ;;
+  say|turn)
+    [ -n "$_in" ] || { printf 'FAULT say wants the text on the input\n'; exit 0; }
+    loop_turn "$_in"
+    ;;
+  doctor)
+    _o=$(printf '%s' "$_in" | sed 's/^--//')
+    [ -n "$_o" ] || _o=short
+    run_call engine.doctor "op=$_o"
+    ;;
+  tool)
+    _n=$(printf '%s' "$_in" | awk '{ print $1 }')
+    _a=$(printf '%s' "$_in" | sed 's/^[^ ]*[ ]*//')
+    [ -n "$_n" ] || { printf 'FAULT tool wants a name on the input\n'; exit 0; }
+    run_call "$_n" $_a
+    ;;
+  new)
+    _w=$(printf '%s' "$_in" | awk '{ print $1 }')
+    _n=$(printf '%s' "$_in" | awk '{ print $2 }')
+    [ -n "$_w" ] && [ -n "$_n" ] || { printf 'FAULT new wants a kind and a name on the input\n'; exit 0; }
+    case $_w in
+    skill)
+      _d=$(cfg path skills) || exit 0
+      [ -e "$_d/$_n" ] && { printf 'FAULT the skill %s already exists\n' "$_n"; exit 0; }
+      mkdir -p "$_d/$_n" || { printf 'FAULT cannot create\n'; exit 0; }
+      printf 'tool: "%s"\ndate: "%s"\nPERIMETER:\n  workspace: "%s"\n  tools: ""\nTOOLS: []\nSUMMARY:\n  1: "%s"\n' \
+        "$_n" "$(date +%%Y-%%m-%%d)" "$_n" "$_n" > "$_d/$_n/skill.yaml"
+      printf 'ok skill %s written\n' "${_d#$ROOT/}/$_n"
+      ;;
+    project)
+      _d=$(cfg path projects) || exit 0
+      [ -e "$_d/$_n" ] && { printf 'FAULT the project %s already exists\n' "$_n"; exit 0; }
+      mkdir -p "$_d/$_n" || { printf 'FAULT cannot create\n'; exit 0; }
+      printf 'path: "%s"\nSKILLS: [];\nSUMMARY:\n  1: "%s"\nERROR:\n  1: ""\n' "$_n" "$_n" > "$_d/$_n/project.yml"
+      printf 'ok project %s written\n' "${_d#$ROOT/}/$_n"
+      ;;
+    tool)
+      _d=$(cfg path tools) || exit 0
+      mkdir -p "$_d/core" || { printf 'FAULT cannot create\n'; exit 0; }
+      [ -e "$_d/core/tool_$_n.yaml" ] && { printf 'FAULT the body %s already exists\n' "$_n"; exit 0; }
+      printf 'tool: "%s"\ndate: "%s"\nRULES:\n  enabled: false\n  timeout: 30\n  writable_workspace: ""\n  approval: none\n  turn: none\n  count: true\n  paths: read\nDESCRIPTION: "..."\nARGS: []\nCOMMAND: |\n  printf "not written yet\\n"\n' \
+        "$_n" "$(date +%%Y-%%m-%%d)" > "$_d/core/tool_$_n.yaml"
+      printf 'ok body %s written, disabled; the register takes it at the next build\n' "${_d#$ROOT/}/core/tool_$_n.yaml"
+      ;;
+    *) printf 'FAULT kind must be skill, project or tool\n' ;;
+    esac
+    ;;
+  update)
+    _o=$(printf '%s' "$_in" | sed 's/^--//')
+    [ -n "$_o" ] || _o=check
+    run_call engine.update "op=$_o"
+    ;;
+  help|*)
+    printf 'la board | once | app | cli | say <text> | turn <text> | doctor [--short|--light|--json|--all]\n'
+    printf 'la tool <name> [k=v ...] | new skill|project|tool <name> | update [--check|--apply|--rollback] | help\n'
+    ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: board,once,app,cli,say,turn,doctor,tool,new,update,help,line}

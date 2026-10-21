@@ -1,0 +1,60 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D004"
+tool: "doctor.knowledge"
+date: "2026-10-20"
+tags: ["doctor", "knowledge"]
+RULES:
+  enabled: true
+  timeout: 90
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the skills, the armed skill and project, the canon"
+COMMAND: |
+
+  _op=${1:-skills}
+  case $_op in
+  skills)
+    _d=$(cfg path skills) || { printf 'FAULT no skills directory\n'; exit 0; }
+    _n=0
+    for _s in "$_d"/*/skill.yaml; do
+      [ -f "$_s" ] || continue
+      _n=$((_n + 1))
+      _nm=$(basename -- "$(dirname -- "$_s")")
+      grep -q '^PERIMETER:' "$_s" || printf 'FAULT skill %s carries no PERIMETER\n' "$_nm"
+      grep -q '^  workspace:' "$_s" || printf 'FAULT skill %s carries no workspace\n' "$_nm"
+      grep -q '^TOOLS:' "$_s" || printf 'FAULT skill %s carries no TOOLS\n' "$_nm"
+    done
+    [ "$_n" -gt 0 ] && printf 'ok %s skill(s) read\n' "$_n" || printf 'FAULT no skill in skills\n'
+    ;;
+  active)
+    _s=$(skl_skill 2>/dev/null)
+    _p=$(skl_project 2>/dev/null)
+    _d=$(cfg path skills) || exit 0
+    if [ -n "$_s" ]; then
+      [ -f "$_d/$_s/skill.yaml" ] && printf 'ok the armed skill is %s, and it exists\n' "$_s" \
+        || printf 'FAULT skills/.active names %s, which does not exist\n' "$_s"
+    else
+      printf 'ok no armed skill\n'
+    fi
+    [ -n "$_p" ] && printf 'ok the armed project is %s\n' "$_p" || printf 'ok no armed project\n'
+    ;;
+  canon)
+    _ap=$(cfg str active_project 2>/dev/null)
+    [ -n "$_ap" ] || { printf 'ok no armed project, so no canon to hold\n'; exit 0; }
+    _f=$(canon_path 2>/dev/null) || { printf 'FAULT no canon: the armed project names none\n'; exit 0; }
+    [ -s "$_f" ] || { printf 'FAULT the canon %s is empty\n' "${_f#$ROOT/}"; exit 0; }
+    _d=$(grep -oE '^  [0-9]+:' "$_f" | sort | uniq -d | tr '\n' ' ')
+    [ -z "$_d" ] || printf 'FAULT law used twice:%s\n' "$_d"
+    _l=$(awk 'length($0) > 100' "$_f" | wc -l | tr -d ' ')
+    [ "$_l" = 0 ] || printf 'FAULT %s line(s) of the canon pass 100 bytes\n' "$_l"
+    printf 'ok canon %s, %s law(s)\n' "${_f#$ROOT/}" "$(grep -cE '^  [0-9]+:' "$_f")"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: skills,active,canon}

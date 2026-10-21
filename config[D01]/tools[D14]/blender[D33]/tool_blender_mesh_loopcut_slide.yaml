@@ -1,0 +1,22 @@
+id: "B677"
+tool: "blender_mesh_loopcut_slide"
+date: "2026-10-17"
+tags: ["blender_mesh_loopcut_slide"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cut mesh loop and slide it"
+
+machine: "blender"
+op: "mesh.loopcut_slide"
+
+ARGS:
+  - {name: MESH_OT_loopcut, type: text}
+  - {name: TRANSFORM_OT_edge_slide, type: text}

@@ -1,0 +1,21 @@
+id: "B129"
+tool: "blender_clip_apply_solution_scale"
+date: "2026-10-17"
+tags: ["blender_clip_apply_solution_scale"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Apply scale on solution itself to make distance between selected tracks equals to desired"
+
+machine: "blender"
+op: "clip.apply_solution_scale"
+
+ARGS:
+  - {name: distance, type: text}

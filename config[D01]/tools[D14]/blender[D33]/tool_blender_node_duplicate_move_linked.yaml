@@ -1,0 +1,22 @@
+id: "B831"
+tool: "blender_node_duplicate_move_linked"
+date: "2026-10-17"
+tags: ["blender_node_duplicate_move_linked"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate selected nodes, but not their node trees, and move them"
+
+machine: "blender"
+op: "node.duplicate_move_linked"
+
+ARGS:
+  - {name: NODE_OT_duplicate, type: text}
+  - {name: NODE_OT_translate_attach, type: text}

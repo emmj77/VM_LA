@@ -1,0 +1,74 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D010"
+tool: "doctor.tools"
+date: "2026-10-20"
+tags: ["doctor", "tools"]
+RULES:
+  enabled: true
+  timeout: 300
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the register against the bodies by id, and every path they cite"
+COMMAND: |
+  _op=${1:-table}
+  # LA TABLE DES CORPS SE COMPARE AU REGISTRE DES OUTILS (MOUSSA, 21/10) : _door_register
+  # rend le registre du moteur quand la porte appelle un outil moteur, donc 41 identifiants
+  # contre 2535 corps, et 2494 faux etrangers.
+  _reg=$(cfg abs registry 2>/dev/null) || _reg=$(_door_register) || { printf 'FAULT no register\n'; exit 0; }
+  [ -r "$_reg" ] || { printf 'FAULT the register is not on the disk\n'; exit 0; }
+  _td=$(cfg path tools) || { printf 'FAULT no tools directory\n'; exit 0; }
+  _t=$(tmpfile doctor_tools) || exit 0
+  case $_op in
+  table)
+    awk '
+      /^[ \t]*- id:[ \t]*/ { id = $0; sub(/.*id:[ \t]*/, "", id); gsub(/[^0-9A-Za-z]/, "", id)
+                              if (id in seen) dup = dup " " id; seen[id] = 1; next }
+      /^[ \t]*family:[ \t]*/ { v = $0; sub(/.*family:[ \t]*/, "", v); gsub(/"/, "", v)
+                                if (id != "") printf "%s\t%s\n", id, v }
+      END { if (dup != "") printf "FAULT the register uses an id twice:%s\n", dup }
+    ' "$_reg" > "$_t.reg"
+    # the body says its own id: the file name is not the identity.
+    # UN SEUL awk POUR LES 2500 CORPS (MOUSSA, 21/10) : un awk par fichier prenait 26 s.
+    awk '
+      FNR == 1 {
+        if (name != "" && id == "") printf "MISSING\t%s\n", name
+        name = FILENAME ; id = "" ; taken = 0
+        d = FILENAME ; sub(/\/[^\/]*$/, "", d) ; sub(/.*\//, "", d) ; sub(/\[.*/, "", d)
+        fam = toupper(d)
+      }
+      !taken && /^id:[ \t]*/ { v = $0 ; sub(/^id:[ \t]*/, "", v) ; gsub(/[^0-9A-Za-z]/, "", v) ; id = v ; taken = 1 ; next }
+      taken == 1 { if (id != "") printf "%s\t%s\n", id, fam ; taken = 2 }
+      END { if (name != "" && id == "") printf "MISSING\t%s\n", name }
+    ' "$_td"/*/tool_*.yaml > "$_t.all"
+    grep '^MISSING' "$_t.all" | cut -f2 | while IFS= read -r _m; do printf 'FAULT %s carries no id\n' "${_m#$LA_HOME/}"; done
+    grep -v '^MISSING' "$_t.all" | sort > "$_t.bodies"
+    cut -f1 "$_t.reg" | sort > "$_t.rid"
+    # LE DOCTEUR EST UN OUTIL MOTEUR (MOUSSA, 21/10) : ses corps portent des identifiants
+    # ranges dans registry-engine.yaml, pas dans registry.yaml. On reunit les deux.
+    _re=$(cfg abs registry_engine 2>/dev/null)
+    [ -n "$_re" ] && awk '/^[ \t]*- id:/ { v = $0 ; sub(/.*- id:[ \t]*/, "", v) ; gsub(/[^0-9A-Za-z]/, "", v) ; print v }' "$_re" >> "$_t.rid"
+    sort -u "$_t.rid" > "$_t.rid2" && mv "$_t.rid2" "$_t.rid"
+    cut -f1 "$_t.bodies" | sort > "$_t.bid"
+    _x=$(comm -13 "$_t.rid" "$_t.bid" | head -n 6 | tr '\n' ' ')
+    _y=$(comm -23 "$_t.rid" "$_t.bid" | head -n 6 | tr '\n' ' ')
+    [ -z "$_x" ] || printf 'FAULT id in a body and not in the register: %s\n' "$_x"
+    [ -z "$_y" ] || printf 'FAULT id in the register and in no body: %s\n' "$_y"
+    printf 'ok %s id(s) in the register, %s in the bodies\n' "$(wc -l < "$_t.rid" | tr -d ' ')" "$(wc -l < "$_t.bid" | tr -d ' ')"
+    ;;
+  paths)
+    _n=0
+    for _p in $(grep -ohE '(/home/[A-Za-z0-9_./+-]+)' "$_td"/*/tool_*.yaml 2>/dev/null | sort -u); do
+      _n=$((_n + 1))
+      [ -e "$_p" ] || printf 'FAULT cited and absent: %s\n' "$_p"
+    done
+    printf 'ok %s path(s) cited by the bodies, all there\n' "$_n"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  rm -f "$_t".*
+  exit 0
+ARGS:
+  - {name: op, type: enum, values: table,paths}

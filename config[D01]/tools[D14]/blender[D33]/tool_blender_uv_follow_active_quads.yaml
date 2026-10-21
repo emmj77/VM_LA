@@ -1,0 +1,21 @@
+id: "B1496"
+tool: "blender_uv_follow_active_quads"
+date: "2026-10-17"
+tags: ["blender_uv_follow_active_quads"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Follow UVs from active quads along continuous face loops"
+
+machine: "blender"
+op: "uv.follow_active_quads"
+
+ARGS:
+  - {name: mode, type: text}          # un de : EVEN | LENGTH | LENGTH_AVERAGE

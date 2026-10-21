@@ -1,0 +1,45 @@
+id: "U186"
+tool: "coplay_material_set_color"
+date: "2026-10-18"
+tags: ["unity", "coplay", "material"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Set a material's color."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- material set-color
+  [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'material set-color')" >&2; exit 1; }
+  [ -n "{{r}}" ] || { printf '%s\n' "$(msg argument_required 'r' 'material set-color')" >&2; exit 1; }
+  [ -n "{{g}}" ] || { printf '%s\n' "$(msg argument_required 'g' 'material set-color')" >&2; exit 1; }
+  [ -n "{{b}}" ] || { printf '%s\n' "$(msg argument_required 'b' 'material set-color')" >&2; exit 1; }
+  [ -n "{{a}}" ] || { printf '%s\n' "$(msg argument_required 'a' 'material set-color')" >&2; exit 1; }
+  [ -n "{{property}}" ] && set -- "$@" --property "{{property}}"
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ -n "{{r}}" ] && set -- "$@" "{{r}}"
+  [ -n "{{g}}" ] && set -- "$@" "{{g}}"
+  [ -n "{{b}}" ] && set -- "$@" "{{b}}"
+  [ -n "{{a}}" ] && set -- "$@" "{{a}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: property, type: text}
+  - {name: path, type: text}
+  - {name: r, type: text}
+  - {name: g, type: text}
+  - {name: b, type: text}
+  - {name: a, type: text}

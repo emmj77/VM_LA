@@ -1,0 +1,27 @@
+id: "B1014"
+tool: "blender_object_quick_explode"
+date: "2026-10-17"
+tags: ["blender_object_quick_explode"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make selected objects explode"
+
+machine: "blender"
+op: "object.quick_explode"
+
+ARGS:
+  - {name: style, type: text}          # un de : EXPLODE | BLEND
+  - {name: amount, type: int}
+  - {name: frame_duration, type: int}
+  - {name: frame_start, type: int}
+  - {name: frame_end, type: int}
+  - {name: velocity, type: text}
+  - {name: fade, type: text}          # true|false, vide pour ne rien poser

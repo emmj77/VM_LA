@@ -1,0 +1,20 @@
+id: "B1447"
+tool: "blender_texture_new"
+date: "2026-10-17"
+tags: ["blender_texture_new"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a new texture"
+
+machine: "blender"
+op: "texture.new"
+
+ARGS: []

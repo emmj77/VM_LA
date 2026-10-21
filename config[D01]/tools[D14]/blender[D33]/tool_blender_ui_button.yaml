@@ -1,0 +1,23 @@
+id: "B1788"
+tool: "blender_ui_button"
+date: "2026-10-17"
+tags: ["blender_ui_button"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "the button of an interface field: assign_default | copy_as_driver | copy_data_path | copy_driver_to_selected | copy_python_command | copy_to_selected | jump_to_target | override_add | override_remove | reset_default | unset_property (op picks which)"
+
+machine: "blender"
+op: "ui.{{op}}_button"
+
+ARGS:
+  - {name: op, type: enum, values: [assign_default, copy_as_driver, copy_data_path, copy_driver_to_selected, copy_python_command, copy_to_selected, jump_to_target, override_add, override_remove, reset_default, unset_property]}
+  - {name: all, type: text}
+  - {name: full_path, type: text}

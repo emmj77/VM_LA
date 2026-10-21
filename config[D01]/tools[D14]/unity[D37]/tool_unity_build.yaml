@@ -1,0 +1,105 @@
+id: "U245"
+tool: "unity_build"
+date: "2026-10-18"
+tags: ["unity", "cli", "build"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Build a Unity project from the command line. Spawns the editor in batch mode and forwards conventional CI flags"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- build --no-banner --no-pager --non-interactive
+  case "{{list_targets}}" in ''|true|false) ;; *) printf '%s\n' "$(msg list_targets_true_false)" >&2; exit 1 ;; esac
+  case "{{list_profiles}}" in ''|true|false) ;; *) printf '%s\n' "$(msg list_profiles_true_false)" >&2; exit 1 ;; esac
+  case "{{no_tail}}" in ''|true|false) ;; *) printf '%s\n' "$(msg tail_true_false)" >&2; exit 1 ;; esac
+  case "{{allow_install}}" in ''|true|false) ;; *) printf '%s\n' "$(msg allow_install_true_false)" >&2; exit 1 ;; esac
+  case "{{allow_dirty_build}}" in ''|true|false) ;; *) printf '%s\n' "$(msg allow_dirty_build_true)" >&2; exit 1 ;; esac
+  case "{{no_provenance}}" in ''|true|false) ;; *) printf '%s\n' "$(msg provenance_true_false)" >&2; exit 1 ;; esac
+  case "{{no_accelerator}}" in ''|true|false) ;; *) printf '%s\n' "$(msg accelerator_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{project}}" ] && set -- "$@" "{{project}}"
+  [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+  [ "{{list_targets}}" = true ] && set -- "$@" --list-targets
+  [ -n "{{profile}}" ] && set -- "$@" --profile "{{profile}}"
+  [ -n "{{create_profile}}" ] && set -- "$@" --create-profile "{{create_profile}}"
+  [ "{{list_profiles}}" = true ] && set -- "$@" --list-profiles
+  [ -n "{{build_target_group}}" ] && set -- "$@" --build-target-group "{{build_target_group}}"
+  [ -n "{{output_path}}" ] && set -- "$@" --output-path "{{output_path}}"
+  [ -n "{{log_file}}" ] && set -- "$@" --log-file "{{log_file}}"
+  [ -n "{{editor_version}}" ] && set -- "$@" --editor-version "{{editor_version}}"
+  [ -n "{{editor_path}}" ] && set -- "$@" --editor-path "{{editor_path}}"
+  [ -n "{{architecture}}" ] && set -- "$@" --architecture "{{architecture}}"
+  [ -n "{{args}}" ] && set -- "$@" --args "{{args}}"
+  [ "{{no_tail}}" = true ] && set -- "$@" --no-tail
+  [ "{{allow_install}}" = true ] && set -- "$@" --allow-install
+  [ -n "{{android_export_type}}" ] && set -- "$@" --android-export-type "{{android_export_type}}"
+  [ -n "{{android_keystore_base64}}" ] && set -- "$@" --android-keystore-base64 "{{android_keystore_base64}}"
+  [ -n "{{android_keystore_password}}" ] && set -- "$@" --android-keystore-password "{{android_keystore_password}}"
+  [ -n "{{android_key_alias}}" ] && set -- "$@" --android-key-alias "{{android_key_alias}}"
+  [ -n "{{android_key_alias_password}}" ] && set -- "$@" --android-key-alias-password "{{android_key_alias_password}}"
+  [ -n "{{android_target_sdk_version}}" ] && set -- "$@" --android-target-sdk-version "{{android_target_sdk_version}}"
+  [ -n "{{android_symbol_type}}" ] && set -- "$@" --android-symbol-type "{{android_symbol_type}}"
+  [ -n "{{android_version_code}}" ] && set -- "$@" --android-version-code "{{android_version_code}}"
+  [ -n "{{versioning_strategy}}" ] && set -- "$@" --versioning-strategy "{{versioning_strategy}}"
+  [ -n "{{build_version}}" ] && set -- "$@" --build-version "{{build_version}}"
+  [ "{{allow_dirty_build}}" = true ] && set -- "$@" --allow-dirty-build
+  [ -n "{{timeout}}" ] && set -- "$@" --timeout "{{timeout}}"
+  [ -n "{{provenance_path}}" ] && set -- "$@" --provenance-path "{{provenance_path}}"
+  [ "{{no_provenance}}" = true ] && set -- "$@" --no-provenance
+  [ -n "{{accelerator}}" ] && set -- "$@" --accelerator "{{accelerator}}"
+  [ "{{no_accelerator}}" = true ] && set -- "$@" --no-accelerator
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_build_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: project, type: text}   # facultatif
+  - {name: target, type: text}   # Build target (e.g. StandaloneWindows64, Android, iOS, WebGL). Required
+  - {name: list_targets, type: text}   # true pour poser --list-targets ; List every valid --target value, then exit
+  - {name: profile, type: text}   # Build profile to build with: a path to a .asset file, or a profile nam
+  - {name: create_profile, type: text}   # Create a build profile for a target (e.g. WebGL, Android), then exit —
+  - {name: list_profiles, type: text}   # true pour poser --list-profiles ; List a project's build profile assets, then exit. Build profiles are t
+  - {name: build_target_group, type: text}   # Optional build target group, forwarded to Unity as -buildTargetGroup
+  - {name: output_path, type: text}   # Output path for the build. Forwarded as -buildOutput with --execute-me
+  - {name: log_file, type: text}   # Log file path (default: <project>/Logs/build-<target>-<timestamp>.log)
+  - {name: editor_version, type: text}   # Override editor version (default: from ProjectVersion.txt)
+  - {name: editor_path, type: text}   # Path to a specific editor binary
+  - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
+  - {name: args, type: text}   # Extra arguments passed to Unity (shell-split)
+  - {name: no_tail, type: text}   # true pour poser --no-tail ; Do not stream the log to stdout in real time
+  - {name: allow_install, type: text}   # true pour poser --allow-install ; Install the project's editor version if it is not already installed
+  - {name: android_export_type, type: text}   # Android export type: apk, aab, or android-studio-project (Android targ
+  - {name: android_keystore_base64, type: text}   # Base64-encoded keystore file contents — decoded to a temp file before 
+  - {name: android_keystore_password, type: text}   # Password for the keystore (Android targets only, required with --andro
+  - {name: android_key_alias, type: text}   # Key alias inside the keystore (Android targets only, required with --a
+  - {name: android_key_alias_password, type: text}   # Password for the key alias (Android targets only, defaults to --androi
+  - {name: android_target_sdk_version, type: text}   # Android SDK target version integer, e.g. 34 (Android targets only)
+  - {name: android_symbol_type, type: text}   # Debug symbol export type: none, public, or debugging (Android targets 
+  - {name: android_version_code, type: text}   # Explicit Android versionCode integer (Android targets only)
+  - {name: versioning_strategy, type: text}   # Versioning strategy to apply to the build (semantic, tag, custom, none
+  - {name: build_version, type: text}   # Explicit version string to stamp on the build. Only used when --versio
+  - {name: allow_dirty_build, type: text}   # true pour poser --allow-dirty-build ; Skip the uncommitted-changes guard (default: false)
+  - {name: timeout, type: text}   # Abort the build if it runs longer than this many seconds (disabled by 
+  - {name: provenance_path, type: text}   # Where to write the build provenance manifest (default: beside the buil
+  - {name: no_provenance, type: text}   # true pour poser --no-provenance ; Do not write the build provenance manifest
+  - {name: accelerator, type: text}   # Unity Accelerator endpoint for this invocation. A bare host defaults t
+  - {name: no_accelerator, type: text}   # true pour poser --no-accelerator ; Ignore any configured Unity Accelerator for this invocation

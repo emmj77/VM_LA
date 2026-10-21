@@ -1,0 +1,23 @@
+id: "B220"
+tool: "blender_constraint_delete"
+date: "2026-10-17"
+tags: ["blender_constraint_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove constraint from constraint stack"
+
+machine: "blender"
+op: "constraint.delete"
+
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE
+  - {name: report, type: text}          # true|false, vide pour ne rien poser

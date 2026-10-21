@@ -1,0 +1,41 @@
+id: "K065"
+tool: "krita_select_ellipse"
+date: "2026-10-18"
+tags: ["krita", "krita_select_ellipse"]
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select an elliptical area"
+
+COMMAND: |
+  SERVICE=$(krita_url) || exit 1
+  num() { case "$1" in ''|*[!0-9.-]*) printf 'null' ;; *) printf '%s' "$1" ;; esac; }
+  tab() { case "$1" in '') printf 'null' ;; *) printf '%s' "$1" | jq -c . 2>/dev/null || printf 'null' ;; esac; }
+  A_cx=$(num "{{cx}}")
+  A_cy=$(num "{{cy}}")
+  A_rx=$(num "{{rx}}")
+  A_ry=$(num "{{ry}}")
+
+  D=$(jq -cn \
+    --argjson cx "$A_cx" \
+    --argjson cy "$A_cy" \
+    --argjson rx "$A_rx" \
+    --argjson ry "$A_ry" \
+    '{action:"select_ellipse", params:({ cx:$cx, cy:$cy, rx:$rx, ry:$ry } | with_entries(select(.value != null and .value != "")))}')
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: cx, type: int}
+  - {name: cy, type: int}
+  - {name: rx, type: int}
+  - {name: ry, type: int}

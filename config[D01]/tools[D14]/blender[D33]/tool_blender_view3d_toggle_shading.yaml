@@ -1,0 +1,21 @@
+id: "B1569"
+tool: "blender_view3d_toggle_shading"
+date: "2026-10-17"
+tags: ["blender_view3d_toggle_shading"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle shading type in 3D viewport"
+
+machine: "blender"
+op: "view3d.toggle_shading"
+
+ARGS:
+  - {name: type, type: text}          # un de : WIREFRAME | SOLID | MATERIAL | RENDERED

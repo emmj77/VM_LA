@@ -1,0 +1,20 @@
+id: "B1412"
+tool: "blender_sound_bake_animation"
+date: "2026-10-17"
+tags: ["blender_sound_bake_animation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Update the audio animation cache"
+
+machine: "blender"
+op: "sound.bake_animation"
+
+ARGS: []

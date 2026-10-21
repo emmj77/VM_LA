@@ -1,0 +1,20 @@
+id: "B1164"
+tool: "blender_particle_select_linked"
+date: "2026-10-17"
+tags: ["blender_particle_select_linked"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all keys linked to already selected ones"
+
+machine: "blender"
+op: "particle.select_linked"
+
+ARGS: []

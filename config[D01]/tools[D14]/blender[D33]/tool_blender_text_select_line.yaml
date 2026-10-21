@@ -1,0 +1,20 @@
+id: "B1443"
+tool: "blender_text_select_line"
+date: "2026-10-17"
+tags: ["blender_text_select_line"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select text by line"
+
+machine: "blender"
+op: "text.select_line"
+
+ARGS: []

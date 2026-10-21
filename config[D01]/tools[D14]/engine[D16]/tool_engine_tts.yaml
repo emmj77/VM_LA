@@ -1,0 +1,51 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E014"
+tool: "engine.tts"
+date: "2026-10-20"
+tags: ["engine", "tts"]
+RULES:
+  enabled: true
+  timeout: 240
+  writable_workspace: "read"
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the voice: start, stop, status"
+COMMAND: |
+
+  _op=${1:-status}
+  _u=$(cfg str "units.tts.unit") || { printf 'FAULT no unit named in units.tts\n' ; exit 0 ; }
+  _pt=$(cfg num "units.tts.port") || { printf 'FAULT no port for tts\n' ; exit 0 ; }
+  _pb=$(cfg str "units.tts.probe") || _pb=/
+  _h=$(cfg str models.host 127.0.0.1)
+  _ht=$(cfg num limits.health_timeout) || _ht=3
+  _code=$(curl -s -o /dev/null -w '%{http_code}' --max-time "$_ht" "http://$_h:$_pt$_pb" 2>/dev/null)
+  case $_op in
+  start)
+    if [ "$_code" = 200 ]; then printf 'ok %s already answers on %s\n' "$_u" "$_pt" ; exit 0 ; fi
+    systemctl --user start "$_u" 2>&1 || { printf 'FAULT %s does not start\n' "$_u" ; exit 0 ; }
+    _i=0
+    while [ "$_i" -lt "$(cfg num limits.boot_tries 40)" ]; do
+      _code=$(curl -s -o /dev/null -w '%{http_code}' --max-time "$_ht" "http://$_h:$_pt$_pb" 2>/dev/null)
+      [ "$_code" = 200 ] && break
+      sleep 0.5
+      _i=$((_i + 1))
+    done
+    [ "$_code" = 200 ] && printf 'ok %s holds %s%s\n' "$_u" "$_pt" "$_pb" \
+      || printf 'FAULT %s is up and %s does not answer\n' "$_u" "$_pt"
+    ;;
+  stop)
+    systemctl --user stop "$_u" 2>&1 || { printf 'FAULT %s does not stop\n' "$_u" ; exit 0 ; }
+    printf 'ok %s stopped\n' "$_u"
+    ;;
+  status)
+    if [ "$_code" = 200 ]; then printf 'ok %s answers on %s%s\n' "$_u" "$_pt" "$_pb"
+    else printf 'note %s silent on %s (%s)\n' "$_u" "$_pt" "${_code:-000}" ; fi
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: start,stop,status}

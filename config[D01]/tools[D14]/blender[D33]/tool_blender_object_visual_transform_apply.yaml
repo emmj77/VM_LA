@@ -1,0 +1,20 @@
+id: "B1067"
+tool: "blender_object_visual_transform_apply"
+date: "2026-10-17"
+tags: ["blender_object_visual_transform_apply"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Apply the object's visual transformation to its data"
+
+machine: "blender"
+op: "object.visual_transform_apply"
+
+ARGS: []

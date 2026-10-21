@@ -1,0 +1,21 @@
+id: "B1383"
+tool: "blender_sequencer_set_range_to_strips"
+date: "2026-10-17"
+tags: ["blender_sequencer_set_range_to_strips"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the frame range to the selected strips start and end"
+
+machine: "blender"
+op: "sequencer.set_range_to_strips"
+
+ARGS:
+  - {name: preview, type: text}          # true|false, vide pour ne rien poser

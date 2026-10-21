@@ -1,0 +1,50 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D011"
+tool: "doctor.index"
+date: "2026-10-21"
+tags: ["doctor", "index"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the disk against the index: what the index names and the disk lost, what the disk holds and no index names"
+COMMAND: |
+
+  _op=${1:-tree}
+  _ix=$(cfg abs index_la) || { printf 'FAULT no index in the tree\n'; exit 0; }
+  case $_op in
+  tree)
+    _n=0; _miss=0
+    _tf=$(tmpfile idxmiss) || exit 0
+    : > "$_tf"
+    # les entrees d etat (id N..) naissent a l usage : elles ne sont pas un defaut absentes
+    grep -oE '\{id: "[^"]+", name: "[^"]+"' "$_ix" \
+      | sed 's/^{id: "//; s/", name: "/\t/; s/"$//' | while IFS="$(printf '\t')" read -r _id _p; do
+      case $_id in N[0-9]*) continue ;; esac
+      _a=$(cfg where "$_p")
+      [ -e "$_a" ] || printf 'FAULT the index names %s and the disk holds nothing\n' "$_p"
+    done > "$_tf"
+    cat "$_tf"
+    _miss=$(grep -c . "$_tf")
+    _n=$(grep -cE 'name: "' "$_ix")
+    printf 'note %s path(s) in the index, %s absent from the disk\n' "$_n" "${_miss:-0}"
+    _tf=$(tmpfile idxextra)
+    ( cd "$ROOT" && find . -type f \( -name '*.yaml' -o -name '*.yml' -o -name '*.sh' -o -name '*.py' -o -name '*.md' -o -name '*.txt' -o -name '*.json' -o -name '*.html' -o -name '*.css' -o -name '*.js' \) \
+        -not -path './.git*' -not -path './work*' -not -path './skills*' -not -path './projects*' -not -path './docs*' \
+        -not -path './config*/state*' -not -path './config*/audio*' -not -path './config*/data*' \
+        -not -name 'tool_*.yaml' -not -path '*/__pycache__/*' ) | sed 's|^\./||' | sort | while IFS= read -r _f; do
+      grep -qF "name: \"$(basename -- "$_f")\"" "$_ix" || printf 'note %s is on the disk and the index does not name it\n' "$_f"
+    done > "$_tf"
+    cat "$_tf"
+    printf 'note %s file(s) on the disk and outside the index\n' "$(grep -c . "$_tf")"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: tree}

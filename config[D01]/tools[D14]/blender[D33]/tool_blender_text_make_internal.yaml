@@ -1,0 +1,20 @@
+id: "B1431"
+tool: "blender_text_make_internal"
+date: "2026-10-17"
+tags: ["blender_text_make_internal"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make active text file internal"
+
+machine: "blender"
+op: "text.make_internal"
+
+ARGS: []

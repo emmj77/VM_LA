@@ -1,0 +1,23 @@
+id: "B015"
+tool: "blender_action_paste"
+date: "2026-10-17"
+tags: ["blender_action_paste"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Paste keyframes from the internal clipboard for the selected channels, starting on the current frame"
+
+machine: "blender"
+op: "action.paste"
+
+ARGS:
+  - {name: offset, type: text}          # un de : START | END | RELATIVE | NONE
+  - {name: merge, type: text}          # un de : MIX | OVER_ALL | OVER_RANGE | OVER_RANGE_ALL
+  - {name: flipped, type: text}          # true|false, vide pour ne rien poser

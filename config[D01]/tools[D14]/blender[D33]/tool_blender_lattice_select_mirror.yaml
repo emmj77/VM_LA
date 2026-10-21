@@ -1,0 +1,22 @@
+id: "B577"
+tool: "blender_lattice_select_mirror"
+date: "2026-10-17"
+tags: ["blender_lattice_select_mirror"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select mirrored lattice points"
+
+machine: "blender"
+op: "lattice.select_mirror"
+
+ARGS:
+  - {name: axis, type: text}          # un de : X | Y | Z
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

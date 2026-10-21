@@ -1,0 +1,24 @@
+id: "B1109"
+tool: "blender_paint_image_paint"
+date: "2026-10-17"
+tags: ["blender_paint_image_paint"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Paint a stroke into the image"
+
+machine: "blender"
+op: "paint.image_paint"
+
+ARGS:
+  - {name: stroke, type: text}
+  - {name: mode, type: text}          # un de : NORMAL | INVERT
+  - {name: brush_toggle, type: text}          # un de : None | SMOOTH | ERASE | MASK
+  - {name: pen_flip, type: text}          # true|false, vide pour ne rien poser

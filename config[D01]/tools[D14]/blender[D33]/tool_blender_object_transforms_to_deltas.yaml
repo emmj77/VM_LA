@@ -1,0 +1,22 @@
+id: "B1057"
+tool: "blender_object_transforms_to_deltas"
+date: "2026-10-17"
+tags: ["blender_object_transforms_to_deltas"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Convert normal object transforms to delta transforms, any existing delta transforms will be included as well"
+
+machine: "blender"
+op: "object.transforms_to_deltas"
+
+ARGS:
+  - {name: mode, type: text}          # un de : ALL | LOC | ROT | SCALE
+  - {name: reset_values, type: text}          # true|false, vide pour ne rien poser

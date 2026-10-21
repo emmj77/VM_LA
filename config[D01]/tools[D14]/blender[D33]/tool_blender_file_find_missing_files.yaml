@@ -1,0 +1,43 @@
+id: "B328"
+tool: "blender_file_find_missing_files"
+date: "2026-10-17"
+tags: ["blender_file_find_missing_files"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Try to find missing external files"
+
+machine: "blender"
+op: "file.find_missing_files"
+
+ARGS:
+  - {name: find_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: directory, type: text}
+  - {name: hide_props_region, type: text}          # true|false, vide pour ne rien poser
+  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_backup, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_image, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_movie, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_python, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_font, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_sound, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_text, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_archive, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_btx, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_alembic, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_usd, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_obj, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_volume, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blenlib, type: text}          # true|false, vide pour ne rien poser
+  - {name: filemode, type: int}
+  - {name: display_type, type: text}          # un de : DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
+  - {name: sort_method, type: text}          # un de :

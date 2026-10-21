@@ -1,0 +1,22 @@
+id: "B1023"
+tool: "blender_object_select_grouped"
+date: "2026-10-17"
+tags: ["blender_object_select_grouped"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all visible objects grouped by various properties"
+
+machine: "blender"
+op: "object.select_grouped"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : CHILDREN_RECURSIVE | CHILDREN | PARENT | SIBLINGS | TYPE | COLLECTION | HOOK | PASS | COLOR | KEYINGSET | LIGHT_TYPE

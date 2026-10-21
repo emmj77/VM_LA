@@ -1,0 +1,110 @@
+id: "U463"
+tool: "coplay_graphics_skybox_set"
+date: "2026-10-17"
+tags: ["coplay_graphics_skybox_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "the skybox: ambient | fog | material | properties | reflection | sun (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  ambient)
+    set -f
+    set -- graphics skybox-set-ambient
+    [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+    [ -n "{{intensity}}" ] && set -- "$@" --intensity "{{intensity}}"
+    [ -n "{{color}}" ] && set -- "$@" --color "{{color}}"
+    [ -n "{{equator_color}}" ] && set -- "$@" --equator-color "{{equator_color}}"
+    [ -n "{{ground_color}}" ] && set -- "$@" --ground-color "{{ground_color}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  fog)
+    set -f
+    set -- graphics skybox-set-fog
+    case "{{fog_enabled}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'fog_enabled')" >&2; exit 1 ;; esac
+    [ "{{fog_enabled}}" = true ] && set -- "$@" --enable
+    [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+    [ -n "{{color}}" ] && set -- "$@" --color "{{color}}"
+    [ -n "{{density}}" ] && set -- "$@" --density "{{density}}"
+    [ -n "{{start}}" ] && set -- "$@" --start "{{start}}"
+    [ -n "{{end}}" ] && set -- "$@" --end "{{end}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  material)
+    set -f
+    set -- graphics skybox-set-material
+    [ -n "{{material}}" ] && set -- "$@" --material "{{material}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  properties)
+    set -f
+    set -- graphics skybox-set-properties
+    T=$(printf '%s' "{{prop}}" | tr -d '0123456789. -')
+    [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'prop' '2' '%s')""{{prop}}" >&2; exit 1; }
+    unset T
+    [ -n "{{prop}}" ] && set -- "$@" --prop {{prop}}
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  reflection)
+    set -f
+    set -- graphics skybox-set-reflection
+    [ -n "{{intensity}}" ] && set -- "$@" --intensity "{{intensity}}"
+    [ -n "{{bounces}}" ] && set -- "$@" --bounces "{{bounces}}"
+    [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+    [ -n "{{resolution}}" ] && set -- "$@" --resolution "{{resolution}}"
+    [ -n "{{cubemap}}" ] && set -- "$@" --cubemap "{{cubemap}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  sun)
+    set -f
+    set -- graphics skybox-set-sun
+    [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [ambient, fog, material, properties, reflection, sun]}
+  - {name: bounces, type: int}
+  - {name: color, type: text}
+  - {name: cubemap, type: text}
+  - {name: density, type: text}
+  - {name: end, type: text}
+  - {name: equator_color, type: text}
+  - {name: ground_color, type: text}
+  - {name: intensity, type: text}
+  - {name: material, type: text}
+  - {name: mode, type: text}
+  - {name: resolution, type: int}
+  - {name: start, type: text}
+  - {name: target, type: text}
+  - {name: fog_enabled, type: text}
+  - {name: prop, type: text}

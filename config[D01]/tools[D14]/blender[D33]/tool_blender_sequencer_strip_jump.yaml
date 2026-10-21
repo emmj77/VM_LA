@@ -1,0 +1,22 @@
+id: "B1389"
+tool: "blender_sequencer_strip_jump"
+date: "2026-10-17"
+tags: ["blender_sequencer_strip_jump"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move playhead to the next or previous edit point, which may be a strip handle or its center"
+
+machine: "blender"
+op: "sequencer.strip_jump"
+
+ARGS:
+  - {name: next, type: text}          # true|false, vide pour ne rien poser
+  - {name: center, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,41 @@
+id: "K068"
+tool: "krita_select_rect"
+date: "2026-10-18"
+tags: ["krita", "krita_select_rect"]
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select a rectangular area"
+
+COMMAND: |
+  SERVICE=$(krita_url) || exit 1
+  num() { case "$1" in ''|*[!0-9.-]*) printf 'null' ;; *) printf '%s' "$1" ;; esac; }
+  tab() { case "$1" in '') printf 'null' ;; *) printf '%s' "$1" | jq -c . 2>/dev/null || printf 'null' ;; esac; }
+  A_x=$(num "{{x}}")
+  A_y=$(num "{{y}}")
+  A_width=$(num "{{width}}")
+  A_height=$(num "{{height}}")
+
+  D=$(jq -cn \
+    --argjson x "$A_x" \
+    --argjson y "$A_y" \
+    --argjson width "$A_width" \
+    --argjson height "$A_height" \
+    '{action:"select_rect", params:({ x:$x, y:$y, width:$width, height:$height } | with_entries(select(.value != null and .value != "")))}')
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: x, type: int}
+  - {name: y, type: int}
+  - {name: width, type: int}
+  - {name: height, type: int}

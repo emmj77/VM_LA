@@ -1,0 +1,22 @@
+id: "B992"
+tool: "blender_object_multires_base_apply"
+date: "2026-10-17"
+tags: ["blender_object_multires_base_apply"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Modify the base mesh to conform to the displaced mesh"
+
+machine: "blender"
+op: "object.multires_base_apply"
+
+ARGS:
+  - {name: modifier, type: text}
+  - {name: apply_heuristic, type: text}          # true|false, vide pour ne rien poser

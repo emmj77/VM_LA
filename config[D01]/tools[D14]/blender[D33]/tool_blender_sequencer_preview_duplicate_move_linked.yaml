@@ -1,0 +1,22 @@
+id: "B1359"
+tool: "blender_sequencer_preview_duplicate_move_linked"
+date: "2026-10-17"
+tags: ["blender_sequencer_preview_duplicate_move_linked"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate selected strips, but not their data, and move them"
+
+machine: "blender"
+op: "sequencer.preview_duplicate_move_linked"
+
+ARGS:
+  - {name: SEQUENCER_OT_duplicate, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}

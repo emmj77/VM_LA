@@ -1,0 +1,143 @@
+# id: I01
+# THE INDEX OF LA. The only list: every folder and every file, its id and its role.
+# Tool bodies are not here: their id lives in their header, the register projects it.
+# The doctor checks the disk against this document. Nothing else says it again.
+api: 1
+date: "2026-10-21"
+
+# each line: the id, the name, the role. the path is nowhere: the disk holds the tree.
+dirs:
+  - {id: "D01", name: "config[D01]", role: "the one directory the engine owns: code, names, state. the root stays the project"}
+  - {id: "D02", name: "applet[D02]", role: "the Cinnamon applet: it reads the doctor short output, keeps it, paints"}
+  - {id: "D03", name: "audio[D03]", role: "the sound material, runtime"}
+  - {id: "D04", name: "certs[D04]", role: "the TLS of the bridge, runtime"}
+  - {id: "D05", name: "conf[D05]", role: "the names and the installation: master file, pipeline, texts, secrets, units, templates, index"}
+  - {id: "D06", name: "data[D06]", role: "the databases, one writer each"}
+  - {id: "D07", name: "engine[D07]", role: "the engine: sixteen bricks, one sourced line"}
+  - {id: "D08", name: "filter[D08]", role: "the family filter"}
+  - {id: "D09", name: "page[D09]", role: "the page and the phone"}
+  - {id: "D10", name: "programs[D10]", role: "the four servers, never sourced"}
+  - {id: "D12", name: "state[D12]", role: "the running state, one turn at a time"}
+  - {id: "D13", name: "returns[D13]", role: "what a call returns beyond the bound"}
+  - {id: "D14", name: "tools[D14]", role: "every tool body, one file per tool. the only catalogue of the door"}
+  - {id: "D15", name: "doctor[D15]", role: "the controls: one body per control"}
+  - {id: "D16", name: "engine[D16]", role: "the engine bodies: what the engine does by itself"}
+  - {id: "D17", name: "3d[D17]", role: "3d family: pixal3d and mesh inspection"}
+  - {id: "D18", name: "plan[D18]", role: "the plan, in five bodies"}
+  - {id: "D19", name: "turn[D19]", role: "the eight steps of the turn"}
+  - {id: "D20", name: "watch[D20]", role: "the judge: one event, wake or sleep"}
+  - {id: "D21", name: "projects[D21]", role: "one directory per project"}
+  - {id: "D22", name: "la[D22]", role: "the project LA: its project file and its canon"}
+  - {id: "D23", name: "skills[D23]", role: "the skills of the world"}
+  - {id: "D25", name: "work[D25]", role: "the workshop: what is built, outside the engine"}
+  - {id: "D26", name: "units[D26]", role: "the systemd units, as templates. engine.install poses them"}
+  - {id: "D27", name: "templates[D27]", role: "the six gabarits: tool, skill, project, specs, registry, code"}
+  - {id: "D28", name: "docs[D28]", role: "the notes of the station: one dated file per subject"}
+  - {id: "D32", name: "asset_builder[D32]", role: "asset builder family"}
+  - {id: "D33", name: "blender[D33]", role: "blender family: the largest, one body per operator"}
+  - {id: "D34", name: "comfyui[D34]", role: "comfyui family: workflows and images"}
+  - {id: "D35", name: "core[D35]", role: "core family: read, write, search, process"}
+  - {id: "D36", name: "krita[D36]", role: "krita family: the drawings"}
+  - {id: "D37", name: "unity[D37]", role: "unity family: the editor"}
+
+files:
+  - {id: "A01", name: "ARCHITECTURE_LA.txt", role: "the architecture: how the machine is put together"}
+  - {id: "A02", name: "DECISION.txt", role: "the decisions that shaped the engine"}
+  - {id: "A03", name: "LA-CONVENTIONS.md", role: "every name of the engine, one line each"}
+  - {id: "B01", name: "memory.db", role: "the durable memory: one note per turn"}
+  - {id: "B02", name: "sessions.db", role: "messages, returns, vectors, usage, meta"}
+  - {id: "B03", name: "terminal_return.db", role: "what a terminal call returned, kept whole"}
+  - {id: "B04", name: "tool_vec.db", role: "the vectors of the tools, for the scope"}
+  - {id: "B05", name: "agent_chat.jsonl", role: "the chat between the agents: from, to, body, one line per message"}
+  - {id: "B06", name: "usage.jsonl", role: "what each call cost: tokens per session and turn"}
+  - {id: "C01", name: ".env", role: "API keys and tokens, 0600. it lives in the project, never in the vault"}
+  - {id: "C03", name: "la_config.yaml", role: "the names: ports units models lists caps thresholds. never text"}
+  - {id: "C04", name: "pipeline.yaml", role: "the turn as ordered steps: facts second scope prompt call tools reply note"}
+  - {id: "C05", name: "second.head", role: "the second head: its prompt"}
+  - {id: "C06", name: "texts.yaml", role: "every phrase: refusals, turn, board, bridge, voice, doctor"}
+  - {id: "C08", name: "second.yaml", role: "the second head kinds and bounds"}
+  - {id: "C09", name: "llama_preset.ini", role: "the llama.cpp preset of the local engine"}
+  - {id: "E01", name: "approval.sh", role: "the human door: a signed go is checked here, never asked by a tool"}
+  - {id: "E02", name: "args.sh", role: "declared arguments to a command line: path enum int bool text"}
+  - {id: "E03", name: "boot.sh", role: "the only sourced line: it finds the master file, loads cfg, then every brick by its key"}
+  - {id: "E04", name: "canon.sh", role: "the canon: where the root is, what is forbidden, what is said instead"}
+  - {id: "E05", name: "cap.sh", role: "the bounds: what comes back is cut here and nowhere else, a big return becomes a handle"}
+  - {id: "E06", name: "cfg.sh", role: "the only reader of the master file: every value the code uses comes from here"}
+  - {id: "E07", name: "fs.sh", role: "paths, atomic writes, temp files. nothing here names the tree: cfg answers"}
+  - {id: "E08", name: "la.sh", role: "the entry: it finds the root, loads the engine, reads the first word, hands over"}
+  - {id: "E09", name: "loop.sh", role: "the turn: one at a time, the steps of the pipeline in order"}
+  - {id: "E10", name: "msg.sh", role: "the phrases of texts.yaml: one reader, a missing key says its own name"}
+  - {id: "E11", name: "run.sh", role: "the door: reads the register, reads the body, checks the call, runs it, shapes what comes back"}
+  - {id: "E12", name: "shape.sh", role: "the single form every call returns: six fields, always in this order"}
+  - {id: "E13", name: "shell.sh", role: "the machine layer: a machine, an operation, arguments, one command line"}
+  - {id: "E14", name: "skl.sh", role: "the active skill, the active project, the tools a skill allows, what is always allowed"}
+  - {id: "E15", name: "step.sh", role: "one step of the turn: the order is conf/pipeline.yaml, the work is a body"}
+  - {id: "E16", name: "tab.sh", role: "the register: block_by_id table_block table_entry body_of count, on the table it is given"}
+  - {id: "F01", name: "family.bin", role: "the trained family filter"}
+  - {id: "F02", name: "families.txt", role: "the training corpus of the family filter: one line, one label, one request"}
+  - {id: "F03", name: "clean.txt", role: "the same corpus, cleaned of what repeats"}
+  - {id: "F04", name: "learned.txt", role: "what the filter learned from the corpus, one line per example"}
+  - {id: "F05", name: "requests.txt", role: "the requests written by hand: they feed the corpus"}
+  - {id: "F06", name: "judge.txt", role: "the judging set: hand written requests over the ten families"}
+  - {id: "F07", name: "family.vec", role: "the vectors of the training corpus"}
+  - {id: "F08", name: "family_test.bin", role: "the test model, trained apart from the model in use"}
+  - {id: "F09", name: "family_test.vec", role: "the vectors of the test set"}
+  - {id: "F10", name: "test.txt", role: "the test requests, bare"}
+  - {id: "F11", name: "test_raw.txt", role: "the test requests with their labels, as written"}
+  - {id: "F12", name: "test_expected.txt", role: "the expected answer of every test line"}
+  - {id: "F13", name: "test_seen.txt", role: "what the model answered on the test set"}
+  - {id: "G01", name: "applet.js", role: "reads the doctor short output, keeps it, paints"}
+  - {id: "G02", name: "metadata.json", role: "the applet identity: uuid, name, version"}
+  - {id: "G03", name: "settings-schema.json", role: "what the applet lets you set"}
+  - {id: "G04", name: "stylesheet.css", role: "the applet look"}
+  - {id: "G05", name: "la-active.svg", role: "the icon when LA is up"}
+  - {id: "G06", name: "la-disabled.svg", role: "the icon when LA is down"}
+  - {id: "G07", name: "la-unknown.svg", role: "the icon when LA says nothing"}
+  - {id: "H01", name: "page.html", role: "everything inside: style, client, flux. served on / and on /m"}
+  - {id: "H05", name: "widget.html", role: "the phone page: the widget alone"}
+  - {id: "H06", name: "widget-sw.js", role: "the service worker: it is what lets the phone update itself"}
+  - {id: "H07", name: "widget.webmanifest", role: "the phone manifest: name, icons, start url"}
+  - {id: "H08", name: "la.svg", role: "the page icon"}
+  - {id: "H09", name: "widget-icon.svg", role: "the phone icon, served on /icon.svg"}
+  - {id: "I01", name: "index_la.yaml", role: "this document: every folder, every file, its id, its role. the doctor checks the disk against it"}
+  - {id: "J02", name: "project.yml", role: "the project LA"}
+  - {id: "J03", name: "spec.yaml", role: "its canon"}
+  - {id: "N01", name: "approve", role: "the signed go: tool, digest, ts, sig"}
+  - {id: "N02", name: "approve.request", role: "the pending request, waiting for a human signature"}
+  - {id: "N03", name: "doctor.cache", role: "the last count the doctor wrote"}
+  - {id: "N04", name: "reply.stream", role: "the answer as it is being written"}
+  - {id: "N05", name: "say.queue", role: "what waits to be said"}
+  - {id: "N06", name: "second_head.yaml", role: "the product of the second head"}
+  - {id: "N07", name: "stop", role: "the stop mark of a turn"}
+  - {id: "N08", name: "trace.jsonl", role: "the live channel, one line per event"}
+  - {id: "N09", name: "turn.pid", role: "the pid of the turn in progress"}
+  - {id: "N11", name: "say.done", role: "what was already said, one line each"}
+  - {id: "N12", name: "signal", role: "task signals: name and seconds, one line each"}
+  - {id: "N13", name: "phone.conf", role: "the wireguard profile of the phone"}
+  - {id: "N14", name: "phone.png", role: "the qr image the phone scans"}
+  - {id: "N15", name: "note.txt", role: "the postit: a short note the agent writes for itself"}
+  - {id: "N16", name: "turn.json", role: "the object of the turn, passed from step to step"}
+  - {id: "P01", name: "board.py", role: "the panel and the cli: the board in a terminal, one line, one pass, one turn"}
+  - {id: "P02", name: "bridge.py", role: "the bridge: API, audio, delegate. transport only, it decides nothing"}
+  - {id: "P07", name: "dash_server.py", role: "the dashboard's own door: the page only, it exits when nobody looks"}
+  - {id: "P03", name: "tts_daemon.py", role: "the voice: sherpa-onnx loads once, POST /say answers a wav"}
+  - {id: "P04", name: "watch.py", role: "the watch: onnxruntime, the word passes, it signs what waits"}
+  - {id: "Q01", name: "tool_template.yaml", role: "the gabarit of a tool body"}
+  - {id: "Q02", name: "skill_template.yaml", role: "the gabarit of a skill"}
+  - {id: "Q03", name: "project_template.yml", role: "the gabarit of a project file"}
+  - {id: "Q04", name: "specs_template.yaml", role: "the gabarit of a spec"}
+  - {id: "Q05", name: "registry_template.yaml", role: "the gabarit of the register"}
+  - {id: "Q06", name: "code_template.yaml", role: "the gabarit of a code file: its header, and what it never does"}
+  - {id: "R02", name: ".gitignore", role: "what never enters git: keys, databases, audio, state, work"}
+  - {id: "S01", name: "install.sh", role: "poses units, the la command, the desktop entry, the applet, the certificates"}
+  - {id: "S02", name: "uninstall.sh", role: "removes what was posed, keeps the data"}
+  - {id: "T01", name: "registry-engine.yaml", role: "the engine own register: called by name, never sent to the model"}
+  - {id: "T02", name: "registry.yaml", role: "the model channel: id tool family sub_family guardrail description"}
+  - {id: "U01", name: "la-models.service.in", role: "the models and the reranker, as a unit"}
+  - {id: "U02", name: "la-asr.service.in", role: "the speech recognition unit"}
+  - {id: "U03", name: "la-tts.service.in", role: "the voice unit: sherpa-onnx"}
+  - {id: "U04", name: "la-dash.service.in", role: "the dashboard and the bridge unit"}
+  - {id: "U05", name: "la-audio-purge.service.in", role: "the audio purge job"}
+  - {id: "U06", name: "la-audio-purge.timer.in", role: "its timer"}
+  - {id: "Z01", name: "bridge-cert.pem", role: "the bridge certificate"}
+  - {id: "Z02", name: "bridge-key.pem", role: "its private key, 0600"}

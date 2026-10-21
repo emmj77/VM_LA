@@ -1,0 +1,20 @@
+id: "B964"
+tool: "blender_object_join_uvs"
+date: "2026-10-17"
+tags: ["blender_object_join_uvs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Transfer UV Maps from active to selected objects (needs matching geometry)"
+
+machine: "blender"
+op: "object.join_uvs"
+
+ARGS: []

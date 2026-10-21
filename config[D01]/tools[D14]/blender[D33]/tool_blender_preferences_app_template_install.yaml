@@ -1,0 +1,24 @@
+id: "B1214"
+tool: "blender_preferences_app_template_install"
+date: "2026-10-17"
+tags: ["blender_preferences_app_template_install"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Install an application template"
+
+machine: "blender"
+op: "preferences.app_template_install"
+
+ARGS:
+  - {name: overwrite, type: text}          # true|false, vide pour ne rien poser
+  - {name: filepath, type: text}
+  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_glob, type: text}

@@ -1,0 +1,22 @@
+id: "B1761"
+tool: "blender_pose_clear"
+date: "2026-10-17"
+tags: ["blender_pose_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "values cleared on a pose: constraints | ik | loc | rot | scale | transforms | user_transforms (op picks which)"
+
+machine: "blender"
+op: "pose.{{op}}_clear"
+
+ARGS:
+  - {name: op, type: enum, values: [constraints, ik, loc, rot, scale, transforms, user_transforms]}
+  - {name: only_selected, type: text}

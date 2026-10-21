@@ -1,0 +1,20 @@
+id: "B749"
+tool: "blender_mesh_vert_connect"
+date: "2026-10-17"
+tags: ["blender_mesh_vert_connect"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Connect selected vertices of faces, splitting the face"
+
+machine: "blender"
+op: "mesh.vert_connect"
+
+ARGS: []

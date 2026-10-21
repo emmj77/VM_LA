@@ -1,0 +1,22 @@
+id: "B1346"
+tool: "blender_sequencer_fades_add"
+date: "2026-10-17"
+tags: ["blender_sequencer_fades_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Adds or updates a fade animation for either visual or audio strips"
+
+machine: "blender"
+op: "sequencer.fades_add"
+
+ARGS:
+  - {name: duration_seconds, type: text}
+  - {name: type, type: text}          # un de : IN_OUT | IN | OUT | CURSOR_FROM | CURSOR_TO

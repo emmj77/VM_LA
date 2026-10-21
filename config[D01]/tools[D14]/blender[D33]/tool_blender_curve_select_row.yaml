@@ -1,0 +1,20 @@
+id: "B258"
+tool: "blender_curve_select_row"
+date: "2026-10-17"
+tags: ["blender_curve_select_row"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select a row of control points including active one. Successive use on the same point switches between U/V directions"
+
+machine: "blender"
+op: "curve.select_row"
+
+ARGS: []

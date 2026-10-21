@@ -1,0 +1,26 @@
+id: "B545"
+tool: "blender_image_sample_line"
+date: "2026-10-17"
+tags: ["blender_image_sample_line"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Sample a line and show it in Scope panels"
+
+machine: "blender"
+op: "image.sample_line"
+
+ARGS:
+  - {name: xstart, type: int}
+  - {name: xend, type: int}
+  - {name: ystart, type: int}
+  - {name: yend, type: int}
+  - {name: flip, type: text}          # true|false, vide pour ne rien poser
+  - {name: cursor, type: int}

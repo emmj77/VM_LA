@@ -1,0 +1,20 @@
+id: "B1578"
+tool: "blender_view3d_view_center_pick"
+date: "2026-10-17"
+tags: ["blender_view3d_view_center_pick"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Center the view to the Z-depth position under the mouse cursor"
+
+machine: "blender"
+op: "view3d.view_center_pick"
+
+ARGS: []

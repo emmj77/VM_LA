@@ -1,0 +1,21 @@
+id: "B751"
+tool: "blender_mesh_vert_connect_nonplanar"
+date: "2026-10-17"
+tags: ["blender_mesh_vert_connect_nonplanar"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Split non-planar faces that exceed the angle threshold"
+
+machine: "blender"
+op: "mesh.vert_connect_nonplanar"
+
+ARGS:
+  - {name: angle_limit, type: text}

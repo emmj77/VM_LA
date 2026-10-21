@@ -1,0 +1,21 @@
+id: "B1160"
+tool: "blender_particle_remove_doubles"
+date: "2026-10-17"
+tags: ["blender_particle_remove_doubles"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove selected particles close enough to others"
+
+machine: "blender"
+op: "particle.remove_doubles"
+
+ARGS:
+  - {name: threshold, type: text}

@@ -1,0 +1,22 @@
+id: "B602"
+tool: "blender_mask_primitive_circle_add"
+date: "2026-10-17"
+tags: ["blender_mask_primitive_circle_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add new circle-shaped spline"
+
+machine: "blender"
+op: "mask.primitive_circle_add"
+
+ARGS:
+  - {name: size, type: text}
+  - {name: location, type: text}          # 2 valeurs separees par des virgules

@@ -1,0 +1,21 @@
+id: "B856"
+tool: "blender_node_new_compositing_node_group"
+date: "2026-10-17"
+tags: ["blender_node_new_compositing_node_group"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a new compositing node group and initialize it with default nodes"
+
+machine: "blender"
+op: "node.new_compositing_node_group"
+
+ARGS:
+  - {name: name, type: text}

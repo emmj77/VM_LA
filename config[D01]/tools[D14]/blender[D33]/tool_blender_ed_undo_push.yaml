@@ -1,0 +1,21 @@
+id: "B312"
+tool: "blender_ed_undo_push"
+date: "2026-10-17"
+tags: ["blender_ed_undo_push"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add an undo state (internal use only)"
+
+machine: "blender"
+op: "ed.undo_push"
+
+ARGS:
+  - {name: message, type: text}

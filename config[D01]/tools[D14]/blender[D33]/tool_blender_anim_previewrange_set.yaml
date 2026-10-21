@@ -1,0 +1,25 @@
+id: "B052"
+tool: "blender_anim_previewrange_set"
+date: "2026-10-17"
+tags: ["blender_anim_previewrange_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Interactively define frame range used for playback"
+
+machine: "blender"
+op: "anim.previewrange_set"
+
+ARGS:
+  - {name: xmin, type: int}
+  - {name: xmax, type: int}
+  - {name: ymin, type: int}
+  - {name: ymax, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,22 @@
+id: "B1017"
+tool: "blender_object_quick_smoke"
+date: "2026-10-17"
+tags: ["blender_object_quick_smoke"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use selected objects as smoke emitters"
+
+machine: "blender"
+op: "object.quick_smoke"
+
+ARGS:
+  - {name: style, type: text}          # un de : SMOKE | FIRE | BOTH
+  - {name: show_flows, type: text}          # true|false, vide pour ne rien poser

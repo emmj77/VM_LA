@@ -1,0 +1,21 @@
+id: "B508"
+tool: "blender_grease_pencil_vertex_color_invert"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_vertex_color_invert"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Invert RGB values"
+
+machine: "blender"
+op: "grease_pencil.vertex_color_invert"
+
+ARGS:
+  - {name: mode, type: text}          # un de : STROKE | FILL | BOTH

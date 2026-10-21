@@ -1,0 +1,23 @@
+id: "B395"
+tool: "blender_graph_gaussian_smooth"
+date: "2026-10-17"
+tags: ["blender_graph_gaussian_smooth"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Smooth the curve using a Gaussian filter"
+
+machine: "blender"
+op: "graph.gaussian_smooth"
+
+ARGS:
+  - {name: factor, type: text}
+  - {name: sigma, type: text}
+  - {name: filter_width, type: int}

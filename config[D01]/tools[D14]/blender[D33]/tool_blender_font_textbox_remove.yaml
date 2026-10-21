@@ -1,0 +1,21 @@
+id: "B365"
+tool: "blender_font_textbox_remove"
+date: "2026-10-17"
+tags: ["blender_font_textbox_remove"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove the text box"
+
+machine: "blender"
+op: "font.textbox_remove"
+
+ARGS:
+  - {name: index, type: int}

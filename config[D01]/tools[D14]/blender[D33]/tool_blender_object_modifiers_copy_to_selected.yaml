@@ -1,0 +1,20 @@
+id: "B990"
+tool: "blender_object_modifiers_copy_to_selected"
+date: "2026-10-17"
+tags: ["blender_object_modifiers_copy_to_selected"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy modifiers to other selected objects"
+
+machine: "blender"
+op: "object.modifiers_copy_to_selected"
+
+ARGS: []

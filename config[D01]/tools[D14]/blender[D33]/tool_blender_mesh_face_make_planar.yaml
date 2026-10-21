@@ -1,0 +1,22 @@
+id: "B657"
+tool: "blender_mesh_face_make_planar"
+date: "2026-10-17"
+tags: ["blender_mesh_face_make_planar"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Flatten selected faces"
+
+machine: "blender"
+op: "mesh.face_make_planar"
+
+ARGS:
+  - {name: factor, type: text}
+  - {name: repeat, type: int}

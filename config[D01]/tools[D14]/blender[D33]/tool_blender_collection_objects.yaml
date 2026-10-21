@@ -1,0 +1,22 @@
+id: "B1710"
+tool: "blender_collection_objects"
+date: "2026-10-17"
+tags: ["blender_collection_objects"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "the objects linked to a collection: add_active | remove | remove_active | remove_all (op picks which)"
+
+machine: "blender"
+op: "collection.objects_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add_active, remove, remove_active, remove_all]}
+  - {name: collection, type: text}

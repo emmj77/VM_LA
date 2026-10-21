@@ -1,0 +1,20 @@
+id: "B264"
+tool: "blender_curve_smooth"
+date: "2026-10-17"
+tags: ["blender_curve_smooth"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Flatten angles of selected points"
+
+machine: "blender"
+op: "curve.smooth"
+
+ARGS: []

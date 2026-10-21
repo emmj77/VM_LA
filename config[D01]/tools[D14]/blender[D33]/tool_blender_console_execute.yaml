@@ -1,0 +1,21 @@
+id: "B210"
+tool: "blender_console_execute"
+date: "2026-10-17"
+tags: ["blender_console_execute"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Execute the current console line as a Python expression"
+
+machine: "blender"
+op: "console.execute"
+
+ARGS:
+  - {name: interactive, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,20 @@
+id: "B1066"
+tool: "blender_object_visual_geometry_to_objects"
+date: "2026-10-17"
+tags: ["blender_object_visual_geometry_to_objects"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Convert geometry and instances into editable objects and collections"
+
+machine: "blender"
+op: "object.visual_geometry_to_objects"
+
+ARGS: []

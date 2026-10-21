@@ -1,0 +1,83 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E009"
+tool: "engine.retention"
+date: "2026-10-20"
+tags: ["engine", "retention"]
+RULES:
+  enabled: true
+  timeout: 300
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the bounds applied: audio, returns, logs, bases"
+COMMAND: |
+
+  _op=${1:-audio}
+  _st=$(cfg path state) || exit 0
+  _rt=$(cfg path returns 2>/dev/null)
+  case $_op in
+  audio)
+    _d=$(cfg path audio) || { printf 'FAULT no audio directory\n'; exit 0; }
+    [ -d "$_d" ] || { printf 'note the audio directory is not there yet\n'; exit 0; }
+    _keep=$(cfg num limits.audio_keep 20) || _keep=20
+    _mb=$(cfg num limits.audio_mb 200) || _mb=200
+    _min=$(cfg num limits.audio_min_minutes 0) || _min=0
+    _pats=$(conf_list lists.audio_patterns)
+    [ -n "$_pats" ] || _pats="*.wav *.mp3"
+    _age=
+    [ "$_min" -gt 0 ] && _age="-mmin +$_min"
+    set --
+    for _p in $_pats; do set -- "$@" -o -name "$_p"; done
+    shift
+    _all=$(find "$_d" -maxdepth 1 -type f \( "$@" \) $_age -printf '%T@ %p\n' 2>/dev/null | sort -rn)
+    _n=$(printf '%s\n' "$_all" | grep -c . 2>/dev/null)
+    _t=0
+    for _f in $(printf '%s\n' "$_all" | awk '{ $1=""; sub(/^ /,""); print }' | tail -n "+$((_keep + 1))"); do
+      gio trash -- "$_f" 2>/dev/null && _t=$((_t + 1))
+    done
+    _left=$(du -sm "$_d" 2>/dev/null | cut -f1)
+    if [ "${_left:-0}" -gt "$_mb" ]; then
+      for _f in $(printf '%s\n' "$_all" | sort -n | awk '{ $1=""; sub(/^ /,""); print }'); do
+        [ "$(du -sm "$_d" | cut -f1)" -gt "$_mb" ] || break
+        gio trash -- "$_f" 2>/dev/null && _t=$((_t + 1))
+      done
+    fi
+    printf 'ok %s file(s) older than %s min, %s to the trash, %s MB left\n' "${_n:-0}" "$_min" "$_t" "$(du -sm "$_d" 2>/dev/null | cut -f1)"
+    ;;
+  returns)
+    [ -n "$_rt" ] && [ -d "$_rt" ] || { printf 'note no returns directory\n'; exit 0; }
+    _keep=$(cfg num limits.return_keep 200) || _keep=200
+    _n=$(find "$_rt" -type f | wc -l | tr -d ' ')
+    _t=0
+    for _f in $(find "$_rt" -type f -printf '%T@ %p\n' | sort -rn | awk '{ $1=""; sub(/^ /,""); print }' | tail -n "+$((_keep + 1))"); do
+      gio trash -- "$_f" 2>/dev/null && _t=$((_t + 1))
+    done
+    printf 'ok %s return(s) read, %s to the trash\n' "$_n" "$_t"
+    ;;
+  logs)
+    _n=0
+    _t=0
+    _max=$(cfg num limits.trace_bytes 200000) || _max=200000
+    _keep=$(cfg num limits.trace_keep 5000) || _keep=5000
+    _ch=$(cfg abs trace 2>/dev/null)
+    if [ -n "$_ch" ] && [ -f "$_ch" ]; then
+      _n=1
+      [ "$(wc -c < "$_ch")" -gt "$_max" ] && { tail -n "$_keep" -- "$_ch" > "$_ch.rot" && mv -f -- "$_ch.rot" "$_ch" && _t=1; }
+    fi
+    printf 'ok %s log(s) read, %s cut to its bound\n' "$_n" "$_t"
+    ;;
+  bases)
+    _f=$(cfg abs sessions 2>/dev/null)
+    [ -f "$_f" ] || { printf 'note no sessions base\n'; exit 0; }
+    _n=$(sqlite3 "$_f" 'pragma wal_checkpoint(truncate);' 2>&1 | tail -n 1)
+    sqlite3 "$_f" 'vacuum;' 2>/dev/null
+    printf 'ok sessions.db checkpointed (%s)\n' "${_n:-done}"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: audio,returns,logs,bases}

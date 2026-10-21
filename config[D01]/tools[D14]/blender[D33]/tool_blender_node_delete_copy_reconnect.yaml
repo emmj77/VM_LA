@@ -1,0 +1,22 @@
+id: "B822"
+tool: "blender_node_delete_copy_reconnect"
+date: "2026-10-17"
+tags: ["blender_node_delete_copy_reconnect"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy nodes to clipboard, remove and reconnect them."
+
+machine: "blender"
+op: "node.delete_copy_reconnect"
+
+ARGS:
+  - {name: NODE_OT_clipboard_copy, type: text}
+  - {name: NODE_OT_delete_reconnect, type: text}

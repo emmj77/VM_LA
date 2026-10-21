@@ -1,0 +1,52 @@
+id: "B529"
+tool: "blender_image_import_as_mesh_planes"
+date: "2026-10-17"
+tags: ["blender_image_import_as_mesh_planes"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create mesh plane(s) from image files with the appropriate aspect ratio"
+
+machine: "blender"
+op: "image.import_as_mesh_planes"
+
+ARGS:
+  - {name: interpolation, type: text}          # un de : Linear | Closest | Cubic | Smart
+  - {name: extension, type: text}          # un de : CLIP | EXTEND | REPEAT
+  - {name: use_auto_refresh, type: text}          # true|false, vide pour ne rien poser
+  - {name: relative, type: text}          # true|false, vide pour ne rien poser
+  - {name: shader, type: text}          # un de : PRINCIPLED | SHADELESS | EMISSION
+  - {name: emit_strength, type: text}
+  - {name: use_transparency, type: text}          # true|false, vide pour ne rien poser
+  - {name: render_method, type: text}          # un de : DITHERED | BLENDED
+  - {name: use_backface_culling, type: text}          # true|false, vide pour ne rien poser
+  - {name: show_transparent_back, type: text}          # true|false, vide pour ne rien poser
+  - {name: overwrite_material, type: text}          # true|false, vide pour ne rien poser
+  - {name: filepath, type: text}
+  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 valeurs separees par des virgules
+  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
+  - {name: files, type: text}
+  - {name: directory, type: text}
+  - {name: filter_image, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_movie, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
+  - {name: force_reload, type: text}          # true|false, vide pour ne rien poser
+  - {name: image_sequence, type: text}          # true|false, vide pour ne rien poser
+  - {name: offset, type: text}          # true|false, vide pour ne rien poser
+  - {name: offset_axis, type: text}          # un de : +X | +Y | +Z | -X | -Y | -Z
+  - {name: offset_amount, type: text}
+  - {name: align_axis, type: text}          # un de : +X | +Y | +Z | -X | -Y | -Z | CAM | CAM_AX
+  - {name: prev_align_axis, type: text}          # un de : +X | +Y | +Z | -X | -Y | -Z | CAM | CAM_AX | NONE
+  - {name: align_track, type: text}          # true|false, vide pour ne rien poser
+  - {name: size_mode, type: text}          # un de : ABSOLUTE | CAMERA | DPI | DPBU
+  - {name: fill_mode, type: text}          # un de : FILL | FIT
+  - {name: height, type: text}
+  - {name: factor, type: text}

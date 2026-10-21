@@ -1,0 +1,22 @@
+id: "B988"
+tool: "blender_object_mode_set"
+date: "2026-10-17"
+tags: ["blender_object_mode_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Sets the object interaction mode"
+
+machine: "blender"
+op: "object.mode_set"
+
+ARGS:
+  - {name: mode, type: text}          # un de : OBJECT | EDIT | POSE | SCULPT | VERTEX_PAINT | WEIGHT_PAINT | TEXTURE_PAINT | PARTICLE_EDIT | EDIT_GPENCIL | SCULPT_GREASE_PENCIL | PAINT_GREASE_PENCIL | WEIGHT_GREASE_PENCIL | VERTEX_GREASE_PENCIL | SCULPT_CURVES
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser

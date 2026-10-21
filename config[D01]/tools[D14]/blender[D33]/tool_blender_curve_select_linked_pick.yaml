@@ -1,0 +1,21 @@
+id: "B252"
+tool: "blender_curve_select_linked_pick"
+date: "2026-10-17"
+tags: ["blender_curve_select_linked_pick"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all control points linked to already selected ones"
+
+machine: "blender"
+op: "curve.select_linked_pick"
+
+ARGS:
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,21 @@
+id: "B1606"
+tool: "blender_wm_doc_view"
+date: "2026-10-17"
+tags: ["blender_wm_doc_view"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open online reference docs in a web browser"
+
+machine: "blender"
+op: "wm.doc_view"
+
+ARGS:
+  - {name: doc_id, type: text}

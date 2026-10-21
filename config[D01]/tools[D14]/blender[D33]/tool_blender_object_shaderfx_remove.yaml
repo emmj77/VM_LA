@@ -1,0 +1,22 @@
+id: "B1041"
+tool: "blender_object_shaderfx_remove"
+date: "2026-10-17"
+tags: ["blender_object_shaderfx_remove"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove a effect from the active Grease Pencil object"
+
+machine: "blender"
+op: "object.shaderfx_remove"
+
+ARGS:
+  - {name: shaderfx, type: text}
+  - {name: report, type: text}          # true|false, vide pour ne rien poser

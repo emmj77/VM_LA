@@ -1,0 +1,22 @@
+id: "B1572"
+tool: "blender_view3d_view_all"
+date: "2026-10-17"
+tags: ["blender_view3d_view_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "View all objects in scene"
+
+machine: "blender"
+op: "view3d.view_all"
+
+ARGS:
+  - {name: use_all_regions, type: text}          # true|false, vide pour ne rien poser
+  - {name: center, type: text}          # true|false, vide pour ne rien poser

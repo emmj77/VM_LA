@@ -1,0 +1,20 @@
+id: "B1537"
+tool: "blender_uv_weld"
+date: "2026-10-17"
+tags: ["blender_uv_weld"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Weld selected UV vertices together"
+
+machine: "blender"
+op: "uv.weld"
+
+ARGS: []

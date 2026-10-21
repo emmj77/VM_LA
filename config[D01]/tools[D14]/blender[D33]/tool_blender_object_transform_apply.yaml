@@ -1,0 +1,26 @@
+id: "B1054"
+tool: "blender_object_transform_apply"
+date: "2026-10-17"
+tags: ["blender_object_transform_apply"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Apply the object's transformation to its data"
+
+machine: "blender"
+op: "object.transform_apply"
+
+ARGS:
+  - {name: location, type: text}          # true|false, vide pour ne rien poser
+  - {name: rotation, type: text}          # true|false, vide pour ne rien poser
+  - {name: scale, type: text}          # true|false, vide pour ne rien poser
+  - {name: properties, type: text}          # true|false, vide pour ne rien poser
+  - {name: corrective_flip_normals, type: text}          # true|false, vide pour ne rien poser
+  - {name: isolate_users, type: text}          # true|false, vide pour ne rien poser

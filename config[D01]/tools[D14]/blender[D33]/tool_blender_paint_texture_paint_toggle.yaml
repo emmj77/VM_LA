@@ -1,0 +1,20 @@
+id: "B1113"
+tool: "blender_paint_texture_paint_toggle"
+date: "2026-10-17"
+tags: ["blender_paint_texture_paint_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle texture paint mode in 3D view"
+
+machine: "blender"
+op: "paint.texture_paint_toggle"
+
+ARGS: []

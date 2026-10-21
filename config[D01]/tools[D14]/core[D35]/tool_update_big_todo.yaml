@@ -1,0 +1,28 @@
+id: "G049"
+tool: "update_big_todo"
+date: "2026-10-17"
+tags: ["update_big_todo", "plan", "project"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "advances the BIG plan of the active project : the CURRENT point is done (an imposed call may pass its state)"
+
+COMMAND: |
+  ST="{{state}}"
+  [ -n "$ST" ] || ST=complete
+  case "$ST" in
+    progress|complete) ;;
+    *) printf '%s\n' "$(msg unknown_state_st_progress "$ST")" >&2 ; exit 1 ;;
+  esac
+  [ -x "$PROCS/plan.sh" ] || { echo "refused: the plan brick is missing ($PROCS/plan.sh)" >&2 ; exit 1 ; }
+  "$PROCS/plan.sh" big progress "$ST"
+
+ARGS:
+  - {name: state, type: text}

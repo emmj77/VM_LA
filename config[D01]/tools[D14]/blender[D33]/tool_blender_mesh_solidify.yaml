@@ -1,0 +1,21 @@
+id: "B733"
+tool: "blender_mesh_solidify"
+date: "2026-10-17"
+tags: ["blender_mesh_solidify"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a solid skin by extruding, compensating for sharp angles"
+
+machine: "blender"
+op: "mesh.solidify"
+
+ARGS:
+  - {name: thickness, type: text}

@@ -1,0 +1,85 @@
+# the entry of the family: it walks every control, runs it, and counts. the verdict is the count.
+id: "E005"
+tool: "engine.doctor"
+date: "2026-10-20"
+tags: ["engine", "doctor"]
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "runs every control of the doctor family and counts: one fault makes it red"
+COMMAND: |
+  _op=${1:-short}
+  _reg=$(cfg abs registry_engine) || { printf 'FAULT no engine register\n'; exit 0; }
+  _f=0
+  _n=0
+  _k=0
+  _j='[]'
+  _names=$(awk '
+    /^[[:space:]]*- id:/ { name = "" ; fam = "" }
+    /^[[:space:]]*tool:/   { v = $0 ; sub(/.*tool:[[:space:]]*/, "", v) ; gsub(/"/, "", v) ; name = v }
+    /^[[:space:]]*family:/ { v = $0 ; sub(/.*family:[[:space:]]*/, "", v) ; gsub(/"/, "", v) ; fam = v
+                        if (fam == "DOCTOR" && name != "") print name }
+  ' "$_reg")
+  case $_op in
+  json|short|light|all)
+  # LES CONTROLES TOURNENT ENSEMBLE (MOUSSA, 21/10) : chacun paie le demarrage du moteur, un par
+  # un ils prenaient 34 s. On les lance tous, puis on lit les reponses dans l ordre du plan.
+  _pf=$(tmpfile plan) || exit 0
+  : > "$_pf"
+  _i=0
+  for _c in $_names; do
+    _fn=$(printf '%s' "$_c" | tr '.' '_')
+    _body=""
+    for _x in "$(cfg path tools)"/*/tool_"$_fn".yaml; do
+      [ -f "$_x" ] && { _body=$_x ; break ; }
+    done
+    [ -n "$_body" ] || { printf 'FAULT %s has no body\n' "$_c" ; _f=$((_f + 1)) ; continue ; }
+    _ops=$(awk '
+      /^[ \t]*ARGS:/ { a = 1 ; next }
+      a && /values:/  { v = $0 ; sub(/.*values:[ \t]*/, "", v) ; sub(/}.*/, "", v) ; gsub(/[ \t]/, "", v) ; print v ; exit }
+      a && /^[^ \t]/   { exit }
+    ' "$_body" | tr ',' ' ')
+    for _o in $_ops; do
+      [ "$_op" = light ] && [ "$_o" = benches ] && continue
+      _i=$((_i + 1))
+      printf '%s\t%s\t%s\n' "$_i" "$_c" "$_o" >> "$_pf"
+      ( run_call "$_c" "op=$_o" > "$_pf.$_i" 2>/dev/null ) &
+    done
+  done
+  wait
+  while IFS="$(printf '\t')" read -r _i _c _o; do
+    _line=$(cat "$_pf.$_i" 2>/dev/null)
+    _st=$(shape_get "$_line" status)
+    _res=$(shape_get "$_line" result)
+    case $_st in
+      ok) ;;
+      *) printf 'FAULT %s %s: the control did not run (%s)\n' "$_c" "$_o" "$_st" ; _f=$((_f + 1)) ; continue ;;
+    esac
+    _j=$(printf '%s' "$_j" | jq --arg c "$_c.$_o" --arg r "$_res" '. + [{control:$c, said:$r}]' 2>/dev/null)
+    while IFS= read -r _l; do
+      case $_l in
+        FAULT*) _f=$((_f + 1)) ; [ "$_op" = all ] && printf '  %s\n' "$_l" ;;
+        note*)  _n=$((_n + 1)) ; [ "$_op" = all ] && printf '  %s\n' "$_l" ;;
+        ok*)    _k=$((_k + 1)) ; [ "$_op" = all ] && printf '  %s\n' "$_l" ;;
+      esac
+    done <<EOF
+  $_res
+  EOF
+  done < "$_pf"
+  rm -f "$_pf" "$_pf".* 2>/dev/null
+  ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  printf '%s fault(s), %s note(s), %s ok\n' "$_f" "$_n" "$_k"
+  _c=$(cfg abs doctor_cache 2>/dev/null)
+  [ -n "$_c" ] && printf '%s fault(s), %s note(s)\n' "$_f" "$_n" | write_atomic "$_c" 2>/dev/null
+  [ "$_f" = 0 ]
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: short,light,json,all}

@@ -1,0 +1,20 @@
+id: "B1693"
+tool: "blender_world_convert_volume_to_mesh"
+date: "2026-10-17"
+tags: ["blender_world_convert_volume_to_mesh"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Convert the volume of a world to a mesh. The world's volume used to be rendered by EEVEE Legacy. Conversion is needed for it to render properly"
+
+machine: "blender"
+op: "world.convert_volume_to_mesh"
+
+ARGS: []

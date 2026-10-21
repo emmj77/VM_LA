@@ -1,0 +1,25 @@
+id: "B376"
+tool: "blender_graph_butterworth_smooth"
+date: "2026-10-17"
+tags: ["blender_graph_butterworth_smooth"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Smooth an F-Curve while maintaining the general shape of the curve"
+
+machine: "blender"
+op: "graph.butterworth_smooth"
+
+ARGS:
+  - {name: cutoff_frequency, type: text}
+  - {name: filter_order, type: int}
+  - {name: samples_per_frame, type: int}
+  - {name: blend, type: text}
+  - {name: blend_in_out, type: int}

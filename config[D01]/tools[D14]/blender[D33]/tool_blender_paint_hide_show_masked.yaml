@@ -1,0 +1,21 @@
+id: "B1107"
+tool: "blender_paint_hide_show_masked"
+date: "2026-10-17"
+tags: ["blender_paint_hide_show_masked"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Hide/show all masked vertices above a threshold"
+
+machine: "blender"
+op: "paint.hide_show_masked"
+
+ARGS:
+  - {name: action, type: text}          # un de : HIDE | SHOW

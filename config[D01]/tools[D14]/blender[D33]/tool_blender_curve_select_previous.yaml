@@ -1,0 +1,20 @@
+id: "B256"
+tool: "blender_curve_select_previous"
+date: "2026-10-17"
+tags: ["blender_curve_select_previous"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select control points preceding already selected ones along the curves"
+
+machine: "blender"
+op: "curve.select_previous"
+
+ARGS: []

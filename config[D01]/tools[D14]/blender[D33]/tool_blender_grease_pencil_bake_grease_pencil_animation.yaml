@@ -1,0 +1,26 @@
+id: "B434"
+tool: "blender_grease_pencil_bake_grease_pencil_animation"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_bake_grease_pencil_animation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Bake Grease Pencil object transform to Grease Pencil keyframes"
+
+machine: "blender"
+op: "grease_pencil.bake_grease_pencil_animation"
+
+ARGS:
+  - {name: frame_start, type: int}
+  - {name: frame_end, type: int}
+  - {name: step, type: int}
+  - {name: only_selected, type: text}          # true|false, vide pour ne rien poser
+  - {name: frame_target, type: int}
+  - {name: project_type, type: text}          # un de : KEEP | FRONT | SIDE | TOP | VIEW | CURSOR

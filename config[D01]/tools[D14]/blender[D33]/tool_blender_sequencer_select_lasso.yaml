@@ -1,0 +1,25 @@
+id: "B1376"
+tool: "blender_sequencer_select_lasso"
+date: "2026-10-17"
+tags: ["blender_sequencer_select_lasso"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select strips using lasso selection"
+
+machine: "blender"
+op: "sequencer.select_lasso"
+
+ARGS:
+  - {name: path, type: text}
+  - {name: use_smooth_stroke, type: text}          # true|false, vide pour ne rien poser
+  - {name: smooth_stroke_factor, type: text}
+  - {name: smooth_stroke_radius, type: int}
+  - {name: mode, type: text}          # un de : SET | ADD | SUB

@@ -1,0 +1,20 @@
+id: "B191"
+tool: "blender_clip_tracking_object_remove"
+date: "2026-10-17"
+tags: ["blender_clip_tracking_object_remove"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove object for tracking"
+
+machine: "blender"
+op: "clip.tracking_object_remove"
+
+ARGS: []

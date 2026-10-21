@@ -1,0 +1,20 @@
+id: "B221"
+tool: "blender_constraint_disable_keep_transform"
+date: "2026-10-17"
+tags: ["blender_constraint_disable_keep_transform"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the influence of this constraint to zero while trying to maintain the object's transformation. Other active constraints can still influence the fi"
+
+machine: "blender"
+op: "constraint.disable_keep_transform"
+
+ARGS: []

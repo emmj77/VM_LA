@@ -1,0 +1,21 @@
+id: "B1198"
+tool: "blender_pose_reveal"
+date: "2026-10-17"
+tags: ["blender_pose_reveal"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reveal all bones hidden in Pose Mode"
+
+machine: "blender"
+op: "pose.reveal"
+
+ARGS:
+  - {name: select, type: text}          # true|false, vide pour ne rien poser

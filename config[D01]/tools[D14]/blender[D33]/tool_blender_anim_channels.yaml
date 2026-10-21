@@ -1,0 +1,44 @@
+id: "B1696"
+tool: "blender_anim_channels"
+date: "2026-10-17"
+tags: ["blender_anim_channels"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "an animation channel: bake | clean_empty | click | collapse | delete | editable_toggle | expand | fcurves_enable | group | move | rename | select_all | select_box | select_filter | setting_disable | setting_enable | setting_toggle | ungroup | view_selected (op picks which)"
+
+machine: "blender"
+op: "anim.channels_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [bake, clean_empty, click, collapse, delete, editable_toggle, expand, fcurves_enable, group, move, rename, select_all, select_box, select_filter, setting_disable, setting_enable, setting_toggle, ungroup, view_selected]}
+  - {name: mode, type: text}
+  - {name: type, type: text}
+  - {name: all, type: text}
+  - {name: extend, type: text}
+  - {name: action, type: text}
+  - {name: bake_modifiers, type: text}
+  - {name: children_only, type: text}
+  - {name: deselect, type: text}
+  - {name: direction, type: text}
+  - {name: extend_range, type: text}
+  - {name: include_handles, type: text}
+  - {name: interpolation_type, type: text}
+  - {name: name, type: text}
+  - {name: range, type: int}
+  - {name: remove_outside_range, type: text}
+  - {name: step, type: text}
+  - {name: use_preview_range, type: text}
+  - {name: use_scene_range, type: text}
+  - {name: wait_for_input, type: text}
+  - {name: xmax, type: int}
+  - {name: xmin, type: int}
+  - {name: ymax, type: int}
+  - {name: ymin, type: int}

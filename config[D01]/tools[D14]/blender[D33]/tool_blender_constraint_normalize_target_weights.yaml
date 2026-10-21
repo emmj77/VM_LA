@@ -1,0 +1,20 @@
+id: "B227"
+tool: "blender_constraint_normalize_target_weights"
+date: "2026-10-17"
+tags: ["blender_constraint_normalize_target_weights"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Normalize weights of all target bones"
+
+machine: "blender"
+op: "constraint.normalize_target_weights"
+
+ARGS: []

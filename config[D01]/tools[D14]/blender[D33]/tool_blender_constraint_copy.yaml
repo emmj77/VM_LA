@@ -1,0 +1,23 @@
+id: "B218"
+tool: "blender_constraint_copy"
+date: "2026-10-17"
+tags: ["blender_constraint_copy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate constraint at the same position in the stack"
+
+machine: "blender"
+op: "constraint.copy"
+
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE
+  - {name: report, type: text}          # true|false, vide pour ne rien poser

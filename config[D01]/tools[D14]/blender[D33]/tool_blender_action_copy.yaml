@@ -1,0 +1,20 @@
+id: "B006"
+tool: "blender_action_copy"
+date: "2026-10-17"
+tags: ["blender_action_copy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy selected keyframes to the internal clipboard"
+
+machine: "blender"
+op: "action.copy"
+
+ARGS: []

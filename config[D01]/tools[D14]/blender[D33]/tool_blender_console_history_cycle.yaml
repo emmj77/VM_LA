@@ -1,0 +1,21 @@
+id: "B212"
+tool: "blender_console_history_cycle"
+date: "2026-10-17"
+tags: ["blender_console_history_cycle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cycle through history"
+
+machine: "blender"
+op: "console.history_cycle"
+
+ARGS:
+  - {name: reverse, type: text}          # true|false, vide pour ne rien poser

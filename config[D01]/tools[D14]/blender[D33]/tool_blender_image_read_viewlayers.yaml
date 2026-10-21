@@ -1,0 +1,20 @@
+id: "B538"
+tool: "blender_image_read_viewlayers"
+date: "2026-10-17"
+tags: ["blender_image_read_viewlayers"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Read all the current scene's view layers from cache, as needed"
+
+machine: "blender"
+op: "image.read_viewlayers"
+
+ARGS: []

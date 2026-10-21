@@ -1,0 +1,23 @@
+id: "B665"
+tool: "blender_mesh_flatten"
+date: "2026-10-17"
+tags: ["blender_mesh_flatten"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Flatten vertices on a best-fitting plane"
+
+machine: "blender"
+op: "mesh.flatten"
+
+ARGS:
+  - {name: factor, type: text}
+  - {name: method, type: text}          # un de : BEST_FIT | NORMAL | VIEW
+  - {name: lock, type: text}          # 3 valeurs separees par des virgules

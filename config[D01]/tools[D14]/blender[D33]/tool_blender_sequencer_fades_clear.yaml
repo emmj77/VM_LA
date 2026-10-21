@@ -1,0 +1,20 @@
+id: "B1347"
+tool: "blender_sequencer_fades_clear"
+date: "2026-10-17"
+tags: ["blender_sequencer_fades_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Removes fade animation from selected strips"
+
+machine: "blender"
+op: "sequencer.fades_clear"
+
+ARGS: []

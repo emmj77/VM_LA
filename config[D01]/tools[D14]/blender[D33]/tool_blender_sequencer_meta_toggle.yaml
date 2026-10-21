@@ -1,0 +1,20 @@
+id: "B1354"
+tool: "blender_sequencer_meta_toggle"
+date: "2026-10-17"
+tags: ["blender_sequencer_meta_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle a meta-strip (to edit enclosed strips)"
+
+machine: "blender"
+op: "sequencer.meta_toggle"
+
+ARGS: []

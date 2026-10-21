@@ -1,0 +1,21 @@
+id: "B1148"
+tool: "blender_particle_delete"
+date: "2026-10-17"
+tags: ["blender_particle_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete selected particles or keys"
+
+machine: "blender"
+op: "particle.delete"
+
+ARGS:
+  - {name: type, type: text}          # un de : PARTICLE | KEY

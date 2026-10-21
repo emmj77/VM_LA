@@ -1,0 +1,20 @@
+id: "B190"
+tool: "blender_clip_tracking_object_new"
+date: "2026-10-17"
+tags: ["blender_clip_tracking_object_new"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add new object for tracking"
+
+machine: "blender"
+op: "clip.tracking_object_new"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B919"
+tool: "blender_object_copy_relative_transform"
+date: "2026-10-17"
+tags: ["blender_object_copy_relative_transform"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copies the matrix of the currently active object or pose bone to the clipboard. Uses matrices relative to a specific object or the active scene camera"
+
+machine: "blender"
+op: "object.copy_relative_transform"
+
+ARGS: []

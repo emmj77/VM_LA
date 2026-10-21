@@ -1,0 +1,20 @@
+id: "B012"
+tool: "blender_action_markers_make_local"
+date: "2026-10-17"
+tags: ["blender_action_markers_make_local"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move selected scene markers to the active Action as local 'pose' markers"
+
+machine: "blender"
+op: "action.markers_make_local"
+
+ARGS: []

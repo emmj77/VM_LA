@@ -1,0 +1,21 @@
+id: "B659"
+tool: "blender_mesh_faces_select_linked_flat"
+date: "2026-10-17"
+tags: ["blender_mesh_faces_select_linked_flat"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select linked faces by angle"
+
+machine: "blender"
+op: "mesh.faces_select_linked_flat"
+
+ARGS:
+  - {name: sharpness, type: text}

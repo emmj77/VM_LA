@@ -1,0 +1,21 @@
+id: "B648"
+tool: "blender_mesh_dupli_extrude_cursor"
+date: "2026-10-17"
+tags: ["blender_mesh_dupli_extrude_cursor"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate and extrude selected vertices, edges or faces towards the mouse cursor"
+
+machine: "blender"
+op: "mesh.dupli_extrude_cursor"
+
+ARGS:
+  - {name: rotate_source, type: text}          # true|false, vide pour ne rien poser

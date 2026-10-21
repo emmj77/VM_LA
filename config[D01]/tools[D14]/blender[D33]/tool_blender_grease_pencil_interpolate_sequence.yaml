@@ -1,0 +1,32 @@
+id: "B456"
+tool: "blender_grease_pencil_interpolate_sequence"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_interpolate_sequence"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Generate 'in-betweens' to smoothly interpolate between Grease Pencil frames"
+
+machine: "blender"
+op: "grease_pencil.interpolate_sequence"
+
+ARGS:
+  - {name: step, type: int}
+  - {name: layers, type: text}          # un de : ACTIVE | ALL
+  - {name: exclude_breakdowns, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_selection, type: text}          # true|false, vide pour ne rien poser
+  - {name: flip, type: text}          # un de : NONE | FLIP | AUTO
+  - {name: smooth_steps, type: int}
+  - {name: smooth_factor, type: text}
+  - {name: type, type: text}          # un de : LINEAR | CUSTOM | SINE | QUAD | CUBIC | QUART | QUINT | EXPO | CIRC | BACK | BOUNCE | ELASTIC
+  - {name: easing, type: text}          # un de : AUTO | EASE_IN | EASE_OUT | EASE_IN_OUT
+  - {name: back, type: text}
+  - {name: amplitude, type: text}
+  - {name: period, type: text}

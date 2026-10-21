@@ -1,0 +1,21 @@
+id: "B573"
+tool: "blender_lattice_flip"
+date: "2026-10-17"
+tags: ["blender_lattice_flip"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Mirror all control points without inverting the lattice deform"
+
+machine: "blender"
+op: "lattice.flip"
+
+ARGS:
+  - {name: axis, type: text}          # un de : U | V | W

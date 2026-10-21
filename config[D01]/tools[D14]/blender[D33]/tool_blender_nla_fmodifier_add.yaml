@@ -1,0 +1,22 @@
+id: "B768"
+tool: "blender_nla_fmodifier_add"
+date: "2026-10-17"
+tags: ["blender_nla_fmodifier_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add F-Modifier to the active/selected NLA-Strips"
+
+machine: "blender"
+op: "nla.fmodifier_add"
+
+ARGS:
+  - {name: type, type: text}          # un de : NULL | GENERATOR | FNGENERATOR | ENVELOPE | CYCLES | NOISE | LIMITS | STEPPED | SMOOTH
+  - {name: only_active, type: text}          # true|false, vide pour ne rien poser

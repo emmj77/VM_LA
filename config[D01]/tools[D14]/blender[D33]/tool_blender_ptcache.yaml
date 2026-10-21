@@ -1,0 +1,22 @@
+id: "B1769"
+tool: "blender_ptcache"
+date: "2026-10-17"
+tags: ["blender_ptcache"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a point cache: add | bake | bake_all | bake_from_cache | free_bake | free_bake_all | remove (op picks which)"
+
+machine: "blender"
+op: "ptcache.{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, bake, bake_all, bake_from_cache, free_bake, free_bake_all, remove]}
+  - {name: bake, type: text}

@@ -1,0 +1,20 @@
+id: "B330"
+tool: "blender_file_highlight"
+date: "2026-10-17"
+tags: ["blender_file_highlight"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Highlight selected file(s)"
+
+machine: "blender"
+op: "file.highlight"
+
+ARGS: []

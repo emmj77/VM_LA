@@ -1,0 +1,20 @@
+id: "B1430"
+tool: "blender_text_line_number"
+date: "2026-10-17"
+tags: ["blender_text_line_number"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "The current line number"
+
+machine: "blender"
+op: "text.line_number"
+
+ARGS: []

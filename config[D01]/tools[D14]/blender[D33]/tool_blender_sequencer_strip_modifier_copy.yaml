@@ -1,0 +1,22 @@
+id: "B1392"
+tool: "blender_sequencer_strip_modifier_copy"
+date: "2026-10-17"
+tags: ["blender_sequencer_strip_modifier_copy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy modifiers of the active strip to all selected strips"
+
+machine: "blender"
+op: "sequencer.strip_modifier_copy"
+
+ARGS:
+  - {name: type, type: text}          # un de : REPLACE | APPEND
+  - {name: modifier, type: text}

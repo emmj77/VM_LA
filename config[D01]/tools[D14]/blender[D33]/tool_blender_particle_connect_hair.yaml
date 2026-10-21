@@ -1,0 +1,21 @@
+id: "B1146"
+tool: "blender_particle_connect_hair"
+date: "2026-10-17"
+tags: ["blender_particle_connect_hair"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Connect hair to the emitter mesh"
+
+machine: "blender"
+op: "particle.connect_hair"
+
+ARGS:
+  - {name: all, type: text}          # true|false, vide pour ne rien poser

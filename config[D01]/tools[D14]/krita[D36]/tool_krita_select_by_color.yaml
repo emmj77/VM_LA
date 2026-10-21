@@ -1,0 +1,39 @@
+id: "K064"
+tool: "krita_select_by_color"
+date: "2026-10-18"
+tags: ["krita", "krita_select_by_color"]
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select pixels by color similarity (magic wand or global)"
+
+COMMAND: |
+  SERVICE=$(krita_url) || exit 1
+  num() { case "$1" in ''|*[!0-9.-]*) printf 'null' ;; *) printf '%s' "$1" ;; esac; }
+  tab() { case "$1" in '') printf 'null' ;; *) printf '%s' "$1" | jq -c . 2>/dev/null || printf 'null' ;; esac; }
+  A_x=$(num "{{x}}")
+  A_y=$(num "{{y}}")
+
+  D=$(jq -cn \
+    --arg tolerance "{{tolerance}}" \
+    --arg contiguous "{{contiguous}}" \
+    --argjson x "$A_x" \
+    --argjson y "$A_y" \
+    '{action:"select_by_color", params:({ tolerance:$tolerance, contiguous:(if $contiguous=="" then null else $contiguous=="true" end), x:$x, y:$y } | with_entries(select(.value != null and .value != "")))}')
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: tolerance, type: text}
+  - {name: contiguous, type: bool}
+  - {name: x, type: int}
+  - {name: y, type: int}

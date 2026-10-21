@@ -1,0 +1,23 @@
+id: "B1029"
+tool: "blender_object_select_pattern"
+date: "2026-10-17"
+tags: ["blender_object_select_pattern"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select objects matching a naming pattern"
+
+machine: "blender"
+op: "object.select_pattern"
+
+ARGS:
+  - {name: pattern, type: text}
+  - {name: case_sensitive, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

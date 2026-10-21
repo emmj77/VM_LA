@@ -1,0 +1,20 @@
+id: "B784"
+tool: "blender_nla_tracks_delete"
+date: "2026-10-17"
+tags: ["blender_nla_tracks_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete selected NLA-Tracks and the strips they contain"
+
+machine: "blender"
+op: "nla.tracks_delete"
+
+ARGS: []

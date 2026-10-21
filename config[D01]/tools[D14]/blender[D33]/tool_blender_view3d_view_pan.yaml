@@ -1,0 +1,21 @@
+id: "B1582"
+tool: "blender_view3d_view_pan"
+date: "2026-10-17"
+tags: ["blender_view3d_view_pan"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Pan the view in a given direction"
+
+machine: "blender"
+op: "view3d.view_pan"
+
+ARGS:
+  - {name: type, type: text}          # un de : PANLEFT | PANRIGHT | PANUP | PANDOWN

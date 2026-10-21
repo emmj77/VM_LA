@@ -1,0 +1,27 @@
+id: "B754"
+tool: "blender_mesh_vertices_smooth_laplacian"
+date: "2026-10-17"
+tags: ["blender_mesh_vertices_smooth_laplacian"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Laplacian smooth of selected vertices"
+
+machine: "blender"
+op: "mesh.vertices_smooth_laplacian"
+
+ARGS:
+  - {name: repeat, type: int}
+  - {name: lambda_factor, type: text}
+  - {name: lambda_border, type: text}
+  - {name: use_x, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_y, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_z, type: text}          # true|false, vide pour ne rien poser
+  - {name: preserve_volume, type: text}          # true|false, vide pour ne rien poser

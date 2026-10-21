@@ -1,0 +1,62 @@
+id: "U477"
+tool: "coplay_shader"
+date: "2026-10-17"
+tags: ["coplay_shader"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a shader: delete | read | update (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  delete)
+    set -f
+    set -- shader delete
+    case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'force')" >&2; exit 1 ;; esac
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'shader delete')" >&2; exit 1; }
+    [ "{{force}}" = true ] && set -- "$@" --force
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  read)
+    set -f
+    set -- shader read
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'shader read')" >&2; exit 1; }
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  update)
+    set -f
+    set -- shader update
+    [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'shader update')" >&2; exit 1; }
+    [ -n "{{contents}}" ] && set -- "$@" --contents "{{contents}}"
+    [ -n "{{file_path}}" ] && set -- "$@" --file "{{file_path}}"
+    [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [delete, read, update]}
+  - {name: path, type: text}
+  - {name: contents, type: text}
+  - {name: file_path, type: text}
+  - {name: force, type: text}

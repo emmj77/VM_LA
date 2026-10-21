@@ -1,0 +1,25 @@
+id: "B368"
+tool: "blender_gizmogroup_gizmo_select"
+date: "2026-10-17"
+tags: ["blender_gizmogroup_gizmo_select"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select the currently highlighted gizmo"
+
+machine: "blender"
+op: "gizmogroup.gizmo_select"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: select_passthrough, type: text}          # true|false, vide pour ne rien poser

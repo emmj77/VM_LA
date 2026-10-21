@@ -1,0 +1,21 @@
+id: "B1062"
+tool: "blender_object_vertex_weight_delete"
+date: "2026-10-17"
+tags: ["blender_object_vertex_weight_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete this weight from the vertex (disabled if vertex group is locked)"
+
+machine: "blender"
+op: "object.vertex_weight_delete"
+
+ARGS:
+  - {name: weight_group, type: int}

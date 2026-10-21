@@ -1,0 +1,22 @@
+id: "B490"
+tool: "blender_grease_pencil_set_corner_type"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_set_corner_type"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the corner type of the selected points"
+
+machine: "blender"
+op: "grease_pencil.set_corner_type"
+
+ARGS:
+  - {name: corner_type, type: text}          # un de : ROUND | FLAT | SHARP
+  - {name: miter_angle, type: text}

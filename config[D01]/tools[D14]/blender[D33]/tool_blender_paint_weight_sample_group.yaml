@@ -1,0 +1,20 @@
+id: "B1131"
+tool: "blender_paint_weight_sample_group"
+date: "2026-10-17"
+tags: ["blender_paint_weight_sample_group"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select one of the vertex groups available under current mouse position"
+
+machine: "blender"
+op: "paint.weight_sample_group"
+
+ARGS: []

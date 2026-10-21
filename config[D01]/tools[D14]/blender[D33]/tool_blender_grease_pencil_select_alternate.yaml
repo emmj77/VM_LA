@@ -1,0 +1,21 @@
+id: "B478"
+tool: "blender_grease_pencil_select_alternate"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_select_alternate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select alternated points in strokes with already selected points"
+
+machine: "blender"
+op: "grease_pencil.select_alternate"
+
+ARGS:
+  - {name: deselect_ends, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,22 @@
+id: "B851"
+tool: "blender_node_links_cut"
+date: "2026-10-17"
+tags: ["blender_node_links_cut"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use the mouse to cut (remove) some links"
+
+machine: "blender"
+op: "node.links_cut"
+
+ARGS:
+  - {name: path, type: text}
+  - {name: cursor, type: int}

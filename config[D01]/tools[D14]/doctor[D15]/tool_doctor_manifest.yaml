@@ -1,0 +1,49 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D007"
+tool: "doctor.manifest"
+date: "2026-10-20"
+tags: ["doctor", "manifest"]
+RULES:
+  enabled: true
+  timeout: 300
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the document against the disk, both ways"
+COMMAND: |
+
+  _op=${1:-manifest}
+  _st=$(cfg path state) || exit 0
+  _rt=$(cfg path returns 2>/dev/null)
+  _td=$(cfg path tools) || exit 0
+  _t=$(tmpfile doctor_manifest) || exit 0
+  cfg tree > "$_t.decl" || { printf 'FAULT the tree cannot be read\n'; exit 0; }
+  : > "$_t.miss"
+  _n=0
+  while IFS="$(printf '\t')" read -r _k _p _id; do
+    _n=$((_n + 1))
+    # les entrees d etat naissent a l usage : leur absence au repos n est pas un defaut
+    case $_id in N[0-9]*) continue ;; esac
+    case $_k in dir) _a=$(cfg where "$_p") ;; *) _a=$(cfg where "$_p") ;; esac
+    [ -e "$_a" ] || printf '%s\t%s\n' "$_k" "$_p" >> "$_t.miss"
+  done < "$_t.decl"
+  _m=$(wc -l < "$_t.miss" | tr -d ' ')
+  [ "$_m" = 0 ] && printf 'ok %s entrie(s) declared, all on the disk\n' "$_n" \
+    || { printf 'FAULT %s entrie(s) declared and absent\n' "$_m"; sed -n '1,8p' "$_t.miss" | sed 's/^/    /'; }
+  cut -f2 "$_t.decl" > "$_t.paths"
+  : > "$_t.und"
+  find "$ROOT" -type f ! -path "$ROOT/.git/*" ! -path "$_td"/* ! -path "$_st"/* \
+       ! -path "$ROOT/work"/* ! -path "$ROOT/docs"/* ! -name '.*' 2>/dev/null | while read -r _x; do
+    _r=${_x#$ROOT/}
+    grep -qxF "$_r" "$_t.paths" || printf '%s\n' "$_r" >> "$_t.und"
+  done
+  _u=$(wc -l < "$_t.und" | tr -d ' ')
+  [ "$_u" = 0 ] && printf 'ok no file is a stranger to the document\n' \
+    || { printf 'FAULT %s file(s) exist and the document names none of them\n' "$_u"; sed -n '1,8p' "$_t.und" | sed 's/^/    /'; }
+  rm -f "$_t".*
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: manifest}

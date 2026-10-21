@@ -1,0 +1,22 @@
+id: "B446"
+tool: "blender_grease_pencil_duplicate_move"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_duplicate_move"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make copies of the selected Grease Pencil strokes and move them"
+
+machine: "blender"
+op: "grease_pencil.duplicate_move"
+
+ARGS:
+  - {name: GREASE_PENCIL_OT_duplicate, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}

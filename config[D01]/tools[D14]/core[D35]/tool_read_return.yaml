@@ -1,0 +1,46 @@
+id: "G058"
+tool: "read_return"
+date: "2026-10-18"
+tags: ["read_return"]
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "reads a past tool return kept in terminal_return.db : an id, a tool name, or nothing for the last one"
+
+COMMAND: |
+  DB=${LA_RETURN_DB:-$ROOT/config/terminal_return.db}
+  Q=$(cat)
+  command -v sqlite3 >/dev/null 2>&1 || { printf '%s\n' "$(msg sqlite3_missing_machine)" >&2 ; exit 1 ; }
+  [ -f "$DB" ] || { printf '%s\n' "$(msg no_return_kept_yet)""$DB" >&2 ; exit 1 ; }
+  case "$Q" in
+    "") W="ORDER BY id DESC LIMIT 1" ;;
+    *[!0-9]*) W="WHERE tool = '$(printf '%s' "$Q" | sed "s/'/''/g")' ORDER BY id DESC LIMIT 1" ;;
+    *) W="WHERE id = $Q" ;;
+  esac
+  M=$(sqlite3 -readonly "$DB" "SELECT id || '|' || tool || '|' || bytes || '|' || lines || '|' || coalesce(path,'') || '|' || coalesce(CAST(exchange AS TEXT),'') FROM terminal_return $W ;" 2>/dev/null)
+  [ -n "$M" ] || { printf '%s\n' "$(msg kept_return_answers_demand)""$Q" >&2 ; exit 1 ; }
+  RID=${M%%|*} ; REST=${M#*|}
+  RT=${REST%%|*} ; REST=${REST#*|}
+  RB=${REST%%|*} ; REST=${REST#*|}
+  RL=${REST%%|*} ; REST=${REST#*|}
+  RP=${REST%%|*} ; RE=${REST#*|}
+  printf 'return %s of %s : %s byte(s), %s line(s), exchange %s\n' "$RID" "$RT" "$RB" "$RL" "${RE:-?}"
+  BODY=$(sqlite3 -readonly "$DB" "SELECT coalesce(body,'') FROM terminal_return WHERE id = $RID ;" 2>/dev/null)
+  if [ -n "$BODY" ] ; then
+    printf '%s\n' "$BODY"
+  elif [ -n "$RP" ] ; then
+    printf 'the complete text is in %s (read it with read_file)\n' "$RP"
+  else
+    printf '%s\n' "$(msg return_carries_neither_body)""$RID" >&2
+    exit 1
+  fi
+
+ARGS:
+  - {name: want, type: text, stdin: true}

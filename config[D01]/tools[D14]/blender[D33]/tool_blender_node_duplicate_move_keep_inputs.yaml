@@ -1,0 +1,22 @@
+id: "B830"
+tool: "blender_node_duplicate_move_keep_inputs"
+date: "2026-10-17"
+tags: ["blender_node_duplicate_move_keep_inputs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate selected nodes keeping input links and move them"
+
+machine: "blender"
+op: "node.duplicate_move_keep_inputs"
+
+ARGS:
+  - {name: NODE_OT_duplicate, type: text}
+  - {name: NODE_OT_translate_attach, type: text}

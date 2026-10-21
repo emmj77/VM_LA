@@ -1,0 +1,26 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E023"
+tool: "engine.turn"
+date: "2026-10-21"
+tags: ["engine", "turn"]
+RULES:
+  enabled: true
+  timeout: 900
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "one turn of the loop: the text in, the answer out, the residents joined and left"
+COMMAND: |
+
+  _t="{{text}}"
+  _l=$(cfg abs loop) || { printf 'FAULT the loop is not in the tree\n'; exit 1; }
+  . "$_l" || exit 1
+  printf 'cli:%s' "$$" | run_call engine.residents "op=join" >/dev/null 2>&1
+  loop_turn "$_t"
+  _rc=$?
+  printf 'cli:%s' "$$" | run_call engine.residents "op=leave" >/dev/null 2>&1
+  exit $_rc
+ARGS:
+  - {name: text, type: text}

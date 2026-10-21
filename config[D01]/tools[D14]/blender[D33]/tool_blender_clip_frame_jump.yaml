@@ -1,0 +1,21 @@
+id: "B145"
+tool: "blender_clip_frame_jump"
+date: "2026-10-17"
+tags: ["blender_clip_frame_jump"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Jump to special frame"
+
+machine: "blender"
+op: "clip.frame_jump"
+
+ARGS:
+  - {name: position, type: text}          # un de : PATHSTART | PATHEND | FAILEDPREV | FAILNEXT

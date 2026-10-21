@@ -1,0 +1,20 @@
+id: "B1172"
+tool: "blender_particle_unify_length"
+date: "2026-10-17"
+tags: ["blender_particle_unify_length"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make selected hair the same length"
+
+machine: "blender"
+op: "particle.unify_length"
+
+ARGS: []

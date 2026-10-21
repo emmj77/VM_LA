@@ -1,0 +1,21 @@
+id: "B114"
+tool: "blender_brush_scale_size"
+date: "2026-10-17"
+tags: ["blender_brush_scale_size"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change brush size by a scalar"
+
+machine: "blender"
+op: "brush.scale_size"
+
+ARGS:
+  - {name: scalar, type: text}

@@ -1,0 +1,29 @@
+id: "B1795"
+tool: "blender_wm_context"
+date: "2026-10-17"
+tags: ["blender_wm_context"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a context value: cycle_array | cycle_enum | cycle_int | menu_enum | pie_enum | scale_float | scale_int | set_boolean | set_enum | set_float | set_id | set_int | set_string | set_value | toggle_enum (op picks which)"
+
+machine: "blender"
+op: "wm.context_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [cycle_array, cycle_enum, cycle_int, menu_enum, pie_enum, scale_float, scale_int, set_boolean, set_enum, set_float, set_id, set_int, set_string, set_value, toggle_enum]}
+  - {name: data_path, type: text}
+  - {name: value, type: text}
+  - {name: reverse, type: text}
+  - {name: relative, type: text}
+  - {name: wrap, type: text}
+  - {name: always_step, type: text}
+  - {name: value_1, type: text}
+  - {name: value_2, type: text}

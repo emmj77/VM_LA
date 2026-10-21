@@ -1,0 +1,24 @@
+id: "B734"
+tool: "blender_mesh_sort_elements"
+date: "2026-10-17"
+tags: ["blender_mesh_sort_elements"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "The order of selected vertices/edges/faces is modified, based on a given method"
+
+machine: "blender"
+op: "mesh.sort_elements"
+
+ARGS:
+  - {name: type, type: text}          # un de : VIEW_ZAXIS | VIEW_XAXIS | CURSOR_DISTANCE | MATERIAL | SELECTED | RANDOMIZE | REVERSE
+  - {name: elements, type: text}          # un de : VERT | EDGE | FACE
+  - {name: reverse, type: text}          # true|false, vide pour ne rien poser
+  - {name: seed, type: int}

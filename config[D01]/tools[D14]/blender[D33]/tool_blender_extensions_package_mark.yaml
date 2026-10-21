@@ -1,0 +1,23 @@
+id: "B1718"
+tool: "blender_extensions_package_mark"
+date: "2026-10-17"
+tags: ["blender_extensions_package_mark"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "the mark on an extension package: clear | clear_all | set | set_all (op picks which)"
+
+machine: "blender"
+op: "extensions.package_mark_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [clear, clear_all, set, set_all]}
+  - {name: pkg_id, type: text}
+  - {name: repo_index, type: int}

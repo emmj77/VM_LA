@@ -1,0 +1,20 @@
+id: "B1475"
+tool: "blender_ui_reloadtranslation"
+date: "2026-10-17"
+tags: ["blender_ui_reloadtranslation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Force a full reload of UI translation"
+
+machine: "blender"
+op: "ui.reloadtranslation"
+
+ARGS: []

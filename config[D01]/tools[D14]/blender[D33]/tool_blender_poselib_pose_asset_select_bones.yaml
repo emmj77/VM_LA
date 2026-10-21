@@ -1,0 +1,22 @@
+id: "B1212"
+tool: "blender_poselib_pose_asset_select_bones"
+date: "2026-10-17"
+tags: ["blender_poselib_pose_asset_select_bones"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select those bones that are used in this pose"
+
+machine: "blender"
+op: "poselib.pose_asset_select_bones"
+
+ARGS:
+  - {name: select, type: text}          # true|false, vide pour ne rien poser
+  - {name: flipped, type: text}          # true|false, vide pour ne rien poser

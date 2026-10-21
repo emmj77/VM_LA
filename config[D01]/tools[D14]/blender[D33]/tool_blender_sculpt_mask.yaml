@@ -1,0 +1,38 @@
+id: "B1778"
+tool: "blender_sculpt_mask"
+date: "2026-10-17"
+tags: ["blender_sculpt_mask"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a sculpt mask: by_color | filter | from_boundary | from_cavity | init (op picks which)"
+
+machine: "blender"
+op: "sculpt.mask_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [by_color, filter, from_boundary, from_cavity, init]}
+  - {name: invert, type: text}
+  - {name: mix_factor, type: text}
+  - {name: mix_mode, type: text}
+  - {name: settings_source, type: text}
+  - {name: auto_iteration_count, type: text}
+  - {name: blur_steps, type: int}
+  - {name: boundary_mode, type: text}
+  - {name: contiguous, type: text}
+  - {name: factor, type: text}
+  - {name: filter_type, type: text}
+  - {name: iterations, type: int}
+  - {name: location, type: int}
+  - {name: mode, type: text}
+  - {name: preserve_previous_mask, type: text}
+  - {name: propagation_steps, type: int}
+  - {name: threshold, type: text}
+  - {name: use_curve, type: text}

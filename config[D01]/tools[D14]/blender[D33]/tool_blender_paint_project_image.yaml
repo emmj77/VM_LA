@@ -1,0 +1,21 @@
+id: "B1111"
+tool: "blender_paint_project_image"
+date: "2026-10-17"
+tags: ["blender_paint_project_image"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Project an edited render from the active camera back onto the object"
+
+machine: "blender"
+op: "paint.project_image"
+
+ARGS:
+  - {name: image, type: text}          # un de :

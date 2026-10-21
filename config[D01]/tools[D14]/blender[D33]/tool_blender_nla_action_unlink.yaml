@@ -1,0 +1,21 @@
+id: "B758"
+tool: "blender_nla_action_unlink"
+date: "2026-10-17"
+tags: ["blender_nla_action_unlink"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Unlink this action from the active action slot (and/or exit Tweak Mode)"
+
+machine: "blender"
+op: "nla.action_unlink"
+
+ARGS:
+  - {name: force_delete, type: text}          # true|false, vide pour ne rien poser

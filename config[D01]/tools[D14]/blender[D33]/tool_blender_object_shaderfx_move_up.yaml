@@ -1,0 +1,21 @@
+id: "B1040"
+tool: "blender_object_shaderfx_move_up"
+date: "2026-10-17"
+tags: ["blender_object_shaderfx_move_up"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move effect up in the stack"
+
+machine: "blender"
+op: "object.shaderfx_move_up"
+
+ARGS:
+  - {name: shaderfx, type: text}

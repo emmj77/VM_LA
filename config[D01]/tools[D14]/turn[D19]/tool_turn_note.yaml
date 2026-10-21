@@ -1,0 +1,26 @@
+# one step of the turn. it reads state/turn.json, does its work, writes it back.
+id: "T003"
+tool: "turn.note"
+date: "2026-10-20"
+tags: ["turn", "note"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the turn kept: memory, compaction, the cut"
+COMMAND: |
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
+  _f=$(cfg abs memory) || { printf 'FAULT no memory in the tree\n'; exit 0; }
+  mkdir -p -- "$(dirname -- "$_f")" || exit 0
+  jq -c '{id:.id,ts:.started,prompt:.prompt,reply:(.reply_msg.content // ""),calls:(.calls|length),tokens:.tokens,skill:.skill,project:.project}' \
+    "$(cfg abs turn)" >> "$_f" 2>/dev/null || { printf 'FAULT the memory refuses\n'; exit 0; }
+  _turn_set '(.status = "done")'
+  _tr note "turn closed"
+  exit 0
+
+ARGS: []

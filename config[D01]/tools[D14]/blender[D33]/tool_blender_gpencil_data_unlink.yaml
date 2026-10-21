@@ -1,0 +1,20 @@
+id: "B373"
+tool: "blender_gpencil_data_unlink"
+date: "2026-10-17"
+tags: ["blender_gpencil_data_unlink"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Unlink active Annotation data-block"
+
+machine: "blender"
+op: "gpencil.data_unlink"
+
+ARGS: []

@@ -1,0 +1,43 @@
+id: "B1728"
+tool: "blender_gp_stroke"
+date: "2026-10-17"
+tags: ["blender_gp_stroke"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a grease pencil stroke: material_set | merge_by_distance | reset_vertex_color | simplify | smooth | split | subdivide | subdivide_smooth | switch_direction | trim (op picks which)"
+
+machine: "blender"
+op: "grease_pencil.stroke_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [material_set, merge_by_distance, reset_vertex_color, simplify, smooth, split, subdivide, subdivide_smooth, switch_direction, trim]}
+  - {name: factor, type: text}
+  - {name: mode, type: text}
+  - {name: GREASE_PENCIL_OT_stroke_smooth, type: text}
+  - {name: GREASE_PENCIL_OT_stroke_subdivide, type: text}
+  - {name: distance, type: text}
+  - {name: iterations, type: int}
+  - {name: keep_shape, type: text}
+  - {name: length, type: text}
+  - {name: material, type: text}
+  - {name: number_cuts, type: int}
+  - {name: only_selected, type: text}
+  - {name: path, type: text}
+  - {name: smooth_ends, type: text}
+  - {name: smooth_opacity, type: text}
+  - {name: smooth_position, type: text}
+  - {name: smooth_radius, type: text}
+  - {name: smooth_stroke_factor, type: text}
+  - {name: smooth_stroke_radius, type: int}
+  - {name: steps, type: int}
+  - {name: threshold, type: text}
+  - {name: use_smooth_stroke, type: text}
+  - {name: use_unselected, type: text}

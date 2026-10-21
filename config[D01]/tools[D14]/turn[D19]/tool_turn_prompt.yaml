@@ -1,0 +1,89 @@
+# one step of the turn. it reads state/turn.json, does its work, writes it back.
+id: "T004"
+tool: "turn.prompt"
+date: "2026-10-20"
+tags: ["turn", "prompt"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: doc
+  count: false
+  paths: write
+DESCRIPTION: "the messages: the head first, then what the human asked"
+COMMAND: |
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
+  # the stable prefix: the head, zone by zone, in the order the config holds them
+  _who=$(cfg str head.name "LA")
+  _lang=$(cfg str head.language_response "french")
+  _head=$(_flat | awk -F'\t' '$1 ~ /^head\.[A-Z_]+\.[0-9]+$/ {
+      z = $1; sub(/\.[0-9]+$/, "", z); sub(/^head\./, "", z)
+      if (z != last) { printf "\n%s\n", z; last = z }
+      printf "%s\n", $2
+    }')
+  _sys=$(printf '%s, you answer in %s.%s' "$_who" "$_lang" "$_head")
+
+  # the second head: what moves, after the stable prefix
+  _second=$(
+    printf '== THE HUMAN ==\n'
+    printf 'you are talking with the human (%s) ; the agent answering is %s\n' \
+      "$(cfg str agents.human user)" "$(cfg str agents.main agent_one)"
+    printf '== THE ACTIVE PROJECT ==\n'
+    _pr=$(skl_project 2>/dev/null)
+    if [ -n "$_pr" ]; then printf 'project : %s\n' "$_pr"; else printf 'no project loaded : every skill is reachable\n'; fi
+    printf '== THE ACTIVE SKILL ==\n'
+    _sk=$(skl_skill 2>/dev/null)
+    if [ -n "$_sk" ]; then printf 'skill : %s\n' "$_sk"; else printf 'no skill loaded : no skill is active\n'; fi
+    printf '== THE LOCAL MODEL SUMMARY ==\n'
+    _sf=$(cfg abs second 2>/dev/null)
+    _sm=""; _ex=none; _sy=none
+    if [ -n "$_sf" ] && [ -f "$_sf" ]; then
+      _sm=$(_flat "$_sf" | awk -F'\t' '$1 ~ /^summary\./ { print $2; exit }')
+      _ex=$(_flat "$_sf" | awk -F'\t' '$1 == "exchanges" { print $2; exit }')
+      _sy=$(_flat "$_sf" | awk -F'\t' '$1 == "stamp" { print $2; exit }')
+    fi
+    if [ -n "$_sm" ]; then
+      printf 'exchanges %s ; written %s\n%s\n' "${_ex:-none}" "${_sy:-none}" "$_sm"
+    else
+      printf 'no summary yet\n'
+    fi
+    printf '== THE LOADED SKILL PLAN ==\n'
+    _pl=$(plan_status 2>/dev/null | head -n 8)
+    if [ -n "$_pl" ]; then printf '%s\n' "$_pl"; else printf 'no open plan\n'; fi
+    printf '== THE STICKY NOTE ==\n'
+    _sn=$(cfg abs note 2>/dev/null)
+    if [ -n "$_sn" ] && [ -s "$_sn" ]; then head -c 1200 "$_sn"; printf '\n'; else printf 'the note is empty\n'; fi
+    printf '== THE AGENTS ==\n'
+    _main=$(cfg str agents.main agent_one)
+    _st=$(jq -r '.status // "idle"' "$_t" 2>/dev/null)
+    for _a in $(cfg str agents.names "$_main"); do
+      if [ "$_a" = "$_main" ] && [ "$_st" = running ]; then
+        printf '%s  active : a turn runs\n' "$_a"
+      else
+        printf '%s  idle : no turn runs\n' "$_a"
+      fi
+    done
+    printf '== THE CHAT ==\n'
+    _cf=$(cfg str agents.chat 2>/dev/null)
+    case $_cf in ""|/*) ;; *) _cf="$LA_ROOT/$_cf" ;; esac
+    if [ -n "$_cf" ] && [ -s "$_cf" ]; then
+      grep '^{' "$_cf" | tail -n 6 | jq -r '(.from // "?") + " -> " + (.to // "?") + " : " + ((.body // "") | .[0:120])' 2>/dev/null
+    else
+      printf 'the chat is empty\n'
+    fi
+  )
+
+  _sys=$(printf '%s\n\n%s' "$_sys" "$_second")
+  _shf=$(cfg abs second_head 2>/dev/null)
+  [ -n "$_shf" ] && printf '%s\n' "$_second" | write_atomic "$_shf" 2>/dev/null
+
+  _u=$(_turn_get '.prompt')
+  [ -n "$_u" ] || _u=${PROMPT:-}
+  _msgs=$(jq -n --arg s "$_sys" --arg u "$_u" '[{role:"system",content:$s},{role:"user",content:$u}]')
+  _turn_set_json '(.messages = $v)' "$_msgs"
+  _tr prompt "$(printf '%s' "$_u" | wc -c) bytes"
+  exit 0
+
+ARGS: []

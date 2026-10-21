@@ -1,0 +1,21 @@
+id: "B294"
+tool: "blender_curves_snap_curves_to_surface"
+date: "2026-10-17"
+tags: ["blender_curves_snap_curves_to_surface"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move curves so that the first point is exactly on the surface mesh"
+
+machine: "blender"
+op: "curves.snap_curves_to_surface"
+
+ARGS:
+  - {name: attach_mode, type: text}          # un de : NEAREST | DEFORM

@@ -1,0 +1,24 @@
+id: "B716"
+tool: "blender_mesh_select_mode"
+date: "2026-10-17"
+tags: ["blender_mesh_select_mode"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change selection mode"
+
+machine: "blender"
+op: "mesh.select_mode"
+
+ARGS:
+  - {name: use_extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_expand, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : VERT | EDGE | FACE
+  - {name: action, type: text}          # un de : DISABLE | ENABLE | TOGGLE

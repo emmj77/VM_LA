@@ -1,0 +1,24 @@
+id: "B706"
+tool: "blender_mesh_select_by_pole_count"
+date: "2026-10-17"
+tags: ["blender_mesh_select_by_pole_count"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select vertices at poles by the number of connected edges. In edge and face mode the geometry connected to the vertices is selected"
+
+machine: "blender"
+op: "mesh.select_by_pole_count"
+
+ARGS:
+  - {name: pole_count, type: int}
+  - {name: type, type: text}          # un de : LESS | EQUAL | GREATER | NOTEQUAL
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: exclude_nonmanifold, type: text}          # true|false, vide pour ne rien poser

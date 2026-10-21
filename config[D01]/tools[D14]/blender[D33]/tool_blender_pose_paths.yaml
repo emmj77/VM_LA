@@ -1,0 +1,25 @@
+id: "B1762"
+tool: "blender_pose_paths"
+date: "2026-10-17"
+tags: ["blender_pose_paths"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "the motion paths of a pose: calculate | clear | range_update | update (op picks which)"
+
+machine: "blender"
+op: "pose.paths_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [calculate, clear, range_update, update]}
+  - {name: bake_location, type: text}
+  - {name: only_selected, type: text}
+  - {name: range, type: text}
+  - {name: display_type, type: text}

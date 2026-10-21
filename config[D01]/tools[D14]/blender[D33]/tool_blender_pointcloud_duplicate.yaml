@@ -1,0 +1,20 @@
+id: "B1176"
+tool: "blender_pointcloud_duplicate"
+date: "2026-10-17"
+tags: ["blender_pointcloud_duplicate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy selected points"
+
+machine: "blender"
+op: "pointcloud.duplicate"
+
+ARGS: []

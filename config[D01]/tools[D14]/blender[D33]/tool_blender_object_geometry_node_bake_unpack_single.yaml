@@ -1,0 +1,24 @@
+id: "B944"
+tool: "blender_object_geometry_node_bake_unpack_single"
+date: "2026-10-17"
+tags: ["blender_object_geometry_node_bake_unpack_single"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Unpack baked data from the .blend file to disk"
+
+machine: "blender"
+op: "object.geometry_node_bake_unpack_single"
+
+ARGS:
+  - {name: session_uid, type: int}
+  - {name: modifier_name, type: text}
+  - {name: bake_id, type: int}
+  - {name: method, type: text}          # un de : USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL

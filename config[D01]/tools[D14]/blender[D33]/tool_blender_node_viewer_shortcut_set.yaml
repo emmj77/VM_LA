@@ -1,0 +1,21 @@
+id: "B894"
+tool: "blender_node_viewer_shortcut_set"
+date: "2026-10-17"
+tags: ["blender_node_viewer_shortcut_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a viewer shortcut for the selected node by pressing ctrl+1,2,..9"
+
+machine: "blender"
+op: "node.viewer_shortcut_set"
+
+ARGS:
+  - {name: viewer_index, type: int}

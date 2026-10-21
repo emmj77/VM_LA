@@ -1,0 +1,20 @@
+id: "B820"
+tool: "blender_node_default_group_width_set"
+date: "2026-10-17"
+tags: ["blender_node_default_group_width_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the width based on the parent group node in the current context"
+
+machine: "blender"
+op: "node.default_group_width_set"
+
+ARGS: []

@@ -1,0 +1,43 @@
+id: "U304"
+tool: "unity_collaboration_jira_server_users"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Search users in a Jira server configuration"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration jira server users --no-banner --no-pager --non-interactive
+  [ -n "{{serverconfigid}}" ] || { printf '%s\n' "$(msg argument_required 'serverconfigid' 'unity collaboration jira server users')" >&2; exit 1; }
+
+  [ -n "{{serverconfigid}}" ] && set -- "$@" "{{serverconfigid}}"
+  [ -n "{{organization_id}}" ] && set -- "$@" --organization-id "{{organization_id}}"
+  [ -n "{{query}}" ] && set -- "$@" --query "{{query}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_jira_server_6)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: serverconfigid, type: text}
+  - {name: organization_id, type: text}   # Unity organization ID
+  - {name: query, type: text}   # Search query text

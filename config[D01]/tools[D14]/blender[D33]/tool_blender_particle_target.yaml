@@ -1,0 +1,21 @@
+id: "B1760"
+tool: "blender_particle_target"
+date: "2026-10-17"
+tags: ["blender_particle_target"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a target of a particle system: move_down | move_up | remove (op picks which)"
+
+machine: "blender"
+op: "particle.target_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [move_down, move_up, remove]}

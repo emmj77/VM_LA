@@ -1,0 +1,26 @@
+id: "C002"
+tool: "comfyui_status"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_status"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "says whether the service answers on 127.0.0.1:8188 and its queue"
+
+COMMAND: |
+  A=http://127.0.0.1:8188
+  S=$(curl -sS -m 5 "$A/system_stats" 2>/dev/null || true)
+  [ -n "$S" ] || { printf '%s\n' "$(msg comfy_reachable_no "$A")"; exit 0; }
+  Q=$(curl -sS -m 5 "$A/queue" 2>/dev/null || true)
+  R=$(printf '%s' "$Q" | jq -r '.queue_running|length' 2>/dev/null); P=$(printf '%s' "$Q" | jq -r '.queue_pending|length' 2>/dev/null)
+  case "$R" in ''|*[!0-9]*) R=0 ;; esac; case "$P" in ''|*[!0-9]*) P=0 ;; esac
+  printf '%s\n' "$(msg comfy_queue)""$R" "$P"
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

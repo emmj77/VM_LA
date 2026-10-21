@@ -1,0 +1,26 @@
+id: "G034"
+tool: "load_project"
+date: "2026-10-17"
+tags: ["load_project", "project"]
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "loads a project : writes projects/.active, then its SKILLS become the skills the model may load"
+
+COMMAND: |
+  N=$(cat | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  D="$ROOT/projects"
+  case "$N" in ''|*/*|*..*) printf '%s\n' "$(msg project_name_required)" >&2; exit 1;; esac
+  [ -f "$D/$N/project.yml" ] || { printf '%s\n' "$(msg project_yml_not_found "$D" "$N")" >&2; exit 1; }
+  printf '%s\n' "$N" > "${LA_STATE_PROJECT:-$D/.active}" || { printf '%s\n' "$(msg write_failed "$D")" >&2; exit 1; }
+  printf '%s\n' "$(msg project_loaded)""$N"
+
+ARGS:
+  - {name: name, type: text, stdin: true}

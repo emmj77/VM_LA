@@ -1,0 +1,21 @@
+id: "B1003"
+tool: "blender_object_parent_no_inverse_set"
+date: "2026-10-17"
+tags: ["blender_object_parent_no_inverse_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the object's parenting without setting the inverse parent correction"
+
+machine: "blender"
+op: "object.parent_no_inverse_set"
+
+ARGS:
+  - {name: keep_transform, type: text}          # true|false, vide pour ne rien poser

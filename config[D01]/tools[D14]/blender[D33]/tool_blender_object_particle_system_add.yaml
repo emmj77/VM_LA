@@ -1,0 +1,20 @@
+id: "B1005"
+tool: "blender_object_particle_system_add"
+date: "2026-10-17"
+tags: ["blender_object_particle_system_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a particle system"
+
+machine: "blender"
+op: "object.particle_system_add"
+
+ARGS: []

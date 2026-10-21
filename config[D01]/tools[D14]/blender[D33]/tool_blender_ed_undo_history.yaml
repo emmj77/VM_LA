@@ -1,0 +1,21 @@
+id: "B311"
+tool: "blender_ed_undo_history"
+date: "2026-10-17"
+tags: ["blender_ed_undo_history"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Undo or redo specific action in history"
+
+machine: "blender"
+op: "ed.undo_history"
+
+ARGS:
+  - {name: item, type: int}

@@ -1,0 +1,20 @@
+id: "B1552"
+tool: "blender_view3d_localview_remove_from"
+date: "2026-10-17"
+tags: ["blender_view3d_localview_remove_from"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move selected objects out of local view"
+
+machine: "blender"
+op: "view3d.localview_remove_from"
+
+ARGS: []

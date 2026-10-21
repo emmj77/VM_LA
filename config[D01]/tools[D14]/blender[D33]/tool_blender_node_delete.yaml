@@ -1,0 +1,20 @@
+id: "B821"
+tool: "blender_node_delete"
+date: "2026-10-17"
+tags: ["blender_node_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove selected nodes"
+
+machine: "blender"
+op: "node.delete"
+
+ARGS: []

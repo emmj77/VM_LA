@@ -1,0 +1,21 @@
+id: "B1459"
+tool: "blender_transform_select_orientation"
+date: "2026-10-17"
+tags: ["blender_transform_select_orientation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select transformation orientation"
+
+machine: "blender"
+op: "transform.select_orientation"
+
+ARGS:
+  - {name: orientation, type: text}          # un de :

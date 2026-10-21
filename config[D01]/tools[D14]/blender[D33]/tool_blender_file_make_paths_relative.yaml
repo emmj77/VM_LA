@@ -1,0 +1,20 @@
+id: "B332"
+tool: "blender_file_make_paths_relative"
+date: "2026-10-17"
+tags: ["blender_file_make_paths_relative"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make all paths to external files relative to current .blend"
+
+machine: "blender"
+op: "file.make_paths_relative"
+
+ARGS: []

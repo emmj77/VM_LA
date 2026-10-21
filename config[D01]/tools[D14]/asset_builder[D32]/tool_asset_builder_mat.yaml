@@ -1,0 +1,39 @@
+id: "A018"
+tool: "asset_builder_mat"
+date: "2026-10-19"
+tags: ["asset_builder", "material"]
+
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "creates or updates a material: colour #rrggbb, roughness, metalness"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{id}}"
+  case "$A2" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_id_a2 "$A2")" >&2 ; exit 1 ;; esac
+  A3="{{color}}"
+  case "$A3" in '#'[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]) ;; *) printf '%s\n' "$(msg colour_shape "$A3")" >&2 ; exit 1 ;; esac
+  A4="{{rough}}"
+  case "$A4" in ''|*[!0-9.-]*) printf '%s\n' "$(msg rough_number_a4 "$A4")" >&2 ; exit 1 ;; esac
+  A5="{{metal}}"
+  case "$A5" in ''|*[!0-9.-]*) printf '%s\n' "$(msg metal_number_a5 "$A5")" >&2 ; exit 1 ;; esac
+  AB_HOME="$W/asset_builder" "$B" mat --name "$A1" --id "$A2" --color "$A3" --rough "$A4" --metal "$A5"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: id, type: text}
+  - {name: color, type: text}
+  - {name: rough, type: text}
+  - {name: metal, type: text}

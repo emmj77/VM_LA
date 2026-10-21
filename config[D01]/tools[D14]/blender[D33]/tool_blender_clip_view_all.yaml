@@ -1,0 +1,21 @@
+id: "B194"
+tool: "blender_clip_view_all"
+date: "2026-10-17"
+tags: ["blender_clip_view_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "View whole image with markers"
+
+machine: "blender"
+op: "clip.view_all"
+
+ARGS:
+  - {name: fit_view, type: text}          # true|false, vide pour ne rien poser

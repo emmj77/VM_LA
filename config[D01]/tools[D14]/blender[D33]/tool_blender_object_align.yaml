@@ -1,0 +1,24 @@
+id: "B898"
+tool: "blender_object_align"
+date: "2026-10-17"
+tags: ["blender_object_align"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Align objects"
+
+machine: "blender"
+op: "object.align"
+
+ARGS:
+  - {name: bb_quality, type: text}          # true|false, vide pour ne rien poser
+  - {name: align_mode, type: text}          # un de : OPT_1 | OPT_2 | OPT_3
+  - {name: relative_to, type: text}          # un de : OPT_1 | OPT_2 | OPT_3 | OPT_4
+  - {name: align_axis, type: text}          # un de : X | Y | Z

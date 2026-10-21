@@ -1,0 +1,22 @@
+id: "B024"
+tool: "blender_action_select_leftright"
+date: "2026-10-17"
+tags: ["blender_action_select_leftright"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select keyframes to the left or the right of the current frame"
+
+machine: "blender"
+op: "action.select_leftright"
+
+ARGS:
+  - {name: mode, type: text}          # un de : CHECK | LEFT | RIGHT
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,23 @@
+id: "B663"
+tool: "blender_mesh_fill_grid"
+date: "2026-10-17"
+tags: ["blender_mesh_fill_grid"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Fill grid from two loops"
+
+machine: "blender"
+op: "mesh.fill_grid"
+
+ARGS:
+  - {name: span, type: int}
+  - {name: offset, type: int}
+  - {name: use_interp_simple, type: text}          # true|false, vide pour ne rien poser

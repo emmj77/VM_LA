@@ -1,0 +1,21 @@
+id: "B1699"
+tool: "blender_anim_slot"
+date: "2026-10-17"
+tags: ["blender_anim_slot"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "an animation slot: channels_move_to_new_action | new_for_id | unassign_from_constraint | unassign_from_id | unassign_from_nla_strip (op picks which)"
+
+machine: "blender"
+op: "anim.slot_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [channels_move_to_new_action, new_for_id, unassign_from_constraint, unassign_from_id, unassign_from_nla_strip]}

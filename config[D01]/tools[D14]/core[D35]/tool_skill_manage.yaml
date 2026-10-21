@@ -1,0 +1,313 @@
+id: "G017"
+tool: "skill_manage"
+date: "2026-10-17"
+tags: ["skill_manage"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: "work"
+  approval: write
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "manages a skill : creation, one tool per field, remove"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  A="{{action}}"
+  NAME="{{name}}"
+  SK="$ROOT/skills"
+  SM="$ROOT/config/templates/skill_template.yaml"
+  [ -d "$SK" ] || { printf '%s\n' "$(msg skills_dir_missing "$SK")" >&2; exit 1; }
+  SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//')
+  if [ -z "$SLUG" ]; then printf '%s\n' "$(msg name_no_slug "${NAME:-absent}")" >&2; exit 1; fi
+  CH=$(sed -n 's/^[[:space:]]*chars:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' -- "$SM" | head -n 1)
+  case "$CH" in ''|*[!0-9]*) CH=100 ;; esac
+  CL=$(sed -n 's/^[[:space:]]*lines:[[:space:]]*\([0-9][0-9]*\).*$/\1/p' -- "$SM" | head -n 1)
+  case "$CL" in ''|*[!0-9]*) CL=50 ;; esac
+  env_name() {   # pose ENV_NAME : le projet actif, vide quand il n y en a pas (ou pas de manifeste)
+    PAF="${LA_STATE_PROJECT:-$ROOT/projects/.active}"
+    ENV_NAME=
+    if [ -f "$PAF" ] && [ ! -L "$PAF" ]; then
+      ENV_NAME=$(sed -n '1p' "$PAF" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+      case "$ENV_NAME" in ''|*/*|*..*) ENV_NAME= ;; esac
+    fi
+    [ -n "$ENV_NAME" ] || return 0
+    [ -f "$ROOT/projects/$ENV_NAME/project.yml" ] || ENV_NAME=
+    return 0
+  }
+  envelope() {   # rend les skills que le projet ENV_NAME ouvre, une par ligne ; vide = large
+    [ -n "$ENV_NAME" ] || return 0
+    sed -n '/^SKILLS:/,/^[^[:space:]]/p' "$ROOT/projects/$ENV_NAME/project.yml" \
+      | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
+      | sed -e 's/^"//' -e 's/"$//' | grep -v '^$'
+  }
+  MARK=agent
+  D="$SK/$SLUG"
+  C="$D/skill.yaml"
+  bytes() { printf '%s' "$1" | wc -c | tr -d ' '; }
+  foldv() {
+    set -f
+    L="$1"; P=non
+    for W in $3; do
+      if [ "$P" = non ]; then L="$L$W"; P=oui; continue; fi
+      if [ $(( ${#L} + 1 + ${#W} )) -le "$CH" ]; then L="$L $W"; continue; fi
+      printf '%s\n' "$L"; L="$2$W"
+    done
+    printf '%s\n' "$L"
+    set +f
+  }
+  pose() {
+    I=0
+    printf '%s\n' "$1" | while IFS= read -r V; do
+      V=$(printf '%s' "$V" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+      [ -n "$V" ] || continue
+      I=$((I+1))
+      foldv "  $((100+I)): " "    " "$V"
+    done
+  }
+  relit() {
+    FL=; NO=0
+    while IFS= read -r L; do
+      NO=$((NO+1))
+      if [ "$(bytes "$L")" -gt "$CH" ]; then FL=$NO; break; fi
+    done < "$1"
+    printf '%s' "$FL"
+  }
+  block() {
+    F="$1"; K="$2"; R="$3"
+    DEB=; END=; NO=0; VU=non
+    while IFS= read -r L; do
+      NO=$((NO+1))
+      if [ "$VU" = non ]; then
+        case "$L" in "$K":*) DEB=$NO; VU=oui ;; esac
+        continue
+      fi
+      case "$L" in ' '*) ;; *) END=$NO; break ;; esac
+    done < "$F"
+    [ -n "$DEB" ] || return 1
+    [ -n "$END" ] || END=$((NO+1))
+    T="$F.$$.tmp"
+    { head -n "$((DEB-1))" -- "$F"; printf '%s\n' "$R"; tail -n "+$END" -- "$F"; } > "$T" || return 1
+    [ -s "$T" ] || { rm -f "$T"; return 1; }
+    FL=$(relit "$T")
+    [ -z "$FL" ] || { rm -f "$T"; printf '%s\n' "$(msg line_too_long "$FL" "$CH")" >&2; exit 1; }
+    mv -f "$T" "$F" || { rm -f "$T"; return 1; }
+    return 0
+  }
+  place() {
+    if [ -L "$D" ]; then printf '%s\n' "$(msg target_symlink "$SLUG")" >&2; exit 1; fi
+    [ -d "$D" ] || { printf '%s\n' "$(msg skill_missing_loud "$SLUG")" >&2; exit 1; }
+    if [ -L "$C" ]; then printf '%s\n' "$(msg target_symlink_file "$SLUG")" >&2; exit 1; fi
+    [ -f "$C" ] || { printf '%s\n' "$(msg skill_missing_loud "$SLUG")" >&2; exit 1; }
+    [ -n "$MARK" ] || { printf '%s\n' "$(msg template_no_mark "$SM")" >&2; exit 1; }
+    SRC_OWNER=$(sed -n 's/^source: *//p' -- "$C" | head -n 1 | tr -d '"' | sed -e 's/[[:space:]]*$//')
+    if [ -z "$SRC_OWNER" ] || [ "$SRC_OWNER" != "$MARK" ]; then printf '%s\n' "$(msg human_skill_readonly "$MARK")" >&2; exit 1; fi
+  }
+  approve() {
+    if [ "${LA_APPROVED:-0}" != 1 ]; then printf '%s\n' "approbation requise : $1"; exit 3; fi
+  }
+  words() { printf '%s' "$1" | tr ',' '\n' | tr -s '[:space:]' '\n' | sed -e '/^[[:space:]]*$/d'; }
+  a_tool() {
+    [ -f "$LA_CONFIG" ] || return 1
+    if jq -e . "$LA_CONFIG" >/dev/null 2>&1; then
+      jq -e --arg g "$1" 'any(.tools[]?; ((.tool // .name) == $g))' "$LA_CONFIG" >/dev/null 2>&1
+    else
+      PAT="^[[:space:]]*tool:[[:space:]]*${1}[[:space:]]*\$"
+      grep -q -- "$PAT" "$LA_CONFIG"
+    fi
+  }
+  line_write() {   # $1 fichier  $2 id  $3 la ligne montee : ecrit UNE ligne, par son id
+    F="$1"; ID="$2"; R="$3"
+    case "$ID" in
+      1[0-9][0-9])      SEC=SUMMARY ; SUB=0 ;;
+      2[0-9][0-9])      SEC=TOOLS  ; SUB=0 ;;
+      3[0-9][0-9])      SEC=DOCS   ; SUB=0 ;;
+      4[0-9][0-9])      SEC=PLAN   ; SUB=0 ;;
+      6[0-9][0-9])      SEC=ERROR  ; SUB=0 ;;
+      1[0-9][0-9][0-9]) SEC=SECTIONS ; SUB=1 ;;
+      2[0-9][0-9][0-9]) SEC=SECTIONS ; SUB=2 ;;
+      *) printf '%s\n' "$(msg id_outside_sections "$ID")" >&2 ; exit 1 ;;
+    esac
+    T="$F.$$.tmp"
+    awk -v id="$ID" -v new="$R" -v sec="$SEC" -v nth="$SUB" '
+      function idof(s,  a) { if (match(s, /[0-9]+/)) return substr(s, RSTART, RLENGTH) + 0; return -1 }
+      BEGIN { placed = 0 ; insec = 0 ; nsub = 0 }
+      $0 ~ "^" sec ":" { if (insec && !placed) { print new ; placed = 1 } insec = 1 ; nsub = 0 ; print ; next }
+      /^[A-Za-z_]+:/ { if (insec && !placed) { print new ; placed = 1 } insec = 0 ; print ; next }
+      insec && nth > 0 && $0 ~ /^  SECTION:/ { nsub++ ; print ; next }
+      insec && $0 ~ /^[[:space:]]*[0-9]+:/ {
+        cur = idof($0)
+        if (cur == id) { print new ; placed = 1 ; next }
+        if (!placed && (nth == 0 || nsub == nth) && cur > id) { print new ; placed = 1 }
+        print ; next
+      }
+      { print }
+      END { if (!placed) print new }
+    ' "$F" > "$T" || return 1
+    [ -s "$T" ] || { rm -f "$T" ; return 1 ; }
+    FL=$(relit "$T")
+    [ -z "$FL" ] || { rm -f "$T" ; printf '%s\n' "$(msg line_too_long "$FL" "$CH")" >&2 ; exit 1 ; }
+    mv -f "$T" "$F" || { rm -f "$T" ; return 1 ; }
+    return 0
+  }
+  case "$A" in
+  set_line)   # UNE ligne, par son ID. Jamais le fichier, jamais deux lignes.
+    place
+    LINE_ID="{{id}}"
+    case "$LINE_ID" in ''|*[!0-9]*) printf '%s\n' "$(msg line_id_required "${LINE_ID:-rien}")" >&2 ; exit 1 ;; esac
+    VALUE=$(cat)
+    VALUE=$(printf '%s' "$VALUE" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    [ -n "$VALUE" ] || { printf '%s\n' "$(msg value_empty_id)" >&2 ; exit 1 ; }
+    R="  $LINE_ID: \"$VALUE\""
+    [ "$(bytes "$R")" -le "$CH" ] || { printf '%s\n' "$(msg line_over_bound_detail "$LINE_ID" "$CH" "$(bytes "$R")")"$R"))" >&2 ; exit 1 ; }
+    line_write "$C" "$LINE_ID" "$R" || { printf '%s\n' "$(msg skill_file_write_failed "$SLUG")" >&2 ; exit 1 ; }
+    printf '%s\n' "$(msg line_set "$LINE_ID" "$(bytes "$R")")"
+    ;;
+  create_skill)
+    approve "creer le skill $SLUG ; skills/$SLUG/ nait du moule, ses champs restent vides"
+    [ -f "$SM" ] || { printf '%s\n' "$(msg template_missing "$SM")" >&2; exit 1; }
+    [ -n "$MARK" ] || { printf '%s\n' "$(msg template_no_mark "$SM")" >&2; exit 1; }
+    if [ -e "$D" ] || [ -L "$D" ]; then printf '%s\n' "$(msg skill_exists "$SLUG")" >&2; exit 1; fi
+    mkdir "$D" || { printf '%s\n' "$(msg creation_impossible "$SLUG")" >&2; exit 1; }
+    DATE=$(date -u +%Y-%m-%d)
+    OB=$(printf '\173\173'); CB=$(printf '\175\175')
+    HN="${OB}name${CB}"; HD="${OB}date${CB}"
+    sed -e "s|$HN|$SLUG|g" -e "s|$HD|$DATE|g" -- "$SM" > "$C" || { rm -f "$C"; rmdir "$D"; printf '%s\n' "$(msg mount_wrote_nothing "$SLUG")" >&2; exit 1; }
+    [ -s "$C" ] || { rm -f "$C"; rmdir "$D"; printf '%s\n' "$(msg mount_wrote_nothing "$SLUG")" >&2; exit 1; }
+    FL=$(relit "$C")
+    [ -z "$FL" ] || { rm -f "$C"; rmdir "$D"; printf '%s\n' "$(msg line_over_bound_undo "$FL" "$CH")" >&2; exit 1; }
+    printf '%s\n' "$(msg skill_created "$SLUG")"
+    ;;
+  set_tags)
+    place
+    VALUE=$(cat)
+    TAGS=$(words "$VALUE")
+    [ -n "$TAGS" ] || { printf '%s\n' "$(msg tags_empty)" >&2; exit 1; }
+    NL=$(printf '%s\n' "$TAGS" | wc -l | tr -d ' ')
+    [ "$NL" -le "$CL" ] || { printf '%s\n' "$(msg too_many_section "$NL" "$CL")" >&2; exit 1; }
+    JOIN=; BAD=
+    for T in $TAGS; do
+      case "$T" in *[!A-Za-z0-9_.-]*) BAD=$T; break ;; esac
+      if [ -z "$JOIN" ]; then JOIN="$T"; else JOIN="$JOIN, $T"; fi
+    done
+    [ -z "$BAD" ] || { printf '%s\n' "$(msg tag_malformed "$BAD")" >&2; exit 1; }
+    R="tags: [$JOIN]"
+    [ "$(bytes "$R")" -le "$CH" ] || { printf '%s\n' "$(msg line_tags_over_bound "$CH" "$(bytes "$R")")"$R"))" >&2; exit 1; }
+    block "$C" "tags" "$R" || { printf '%s\n' "$(msg skill_file_write_failed "$SLUG")" >&2; exit 1; }
+    echo "skills/$SLUG/skill.yaml : tags posees ($JOIN)"
+    ;;
+  set_tools)
+    place
+    approve "changer les tools du skill $SLUG ; cela ouvre ou ferme des tools"
+    VALUE=$(cat)
+    TO=$(words "$VALUE")
+    [ -n "$TO" ] || { printf '%s\n' "$(msg tools_empty)" >&2; exit 1; }
+    [ -n "${LA_CONFIG:-}" ] && [ -f "$LA_CONFIG" ] || { printf '%s\n' "$(msg tools_table_missing "${LA_CONFIG:-inconnue}")" >&2; exit 1; }
+    for G in $TO; do
+      case "$G" in *[!a-z0-9_]*) printf '%s\n' "$(msg tool_name_malformed "$G")" >&2; exit 1 ;; esac
+      a_tool "$G" || { printf '%s\n' "$(msg tool_not_in_table "$G")" >&2; exit 1; }
+    done
+    NL=$(printf '%s\n' "$TO" | wc -l | tr -d ' ')
+    [ "$NL" -le "$CL" ] || { printf '%s\n' "$(msg too_many_section "$NL" "$CL")" >&2; exit 1; }
+    R=$(printf 'tools:\n%s' "$(pose "$(printf '%s\n' $TO)")")
+    block "$C" "tools" "$R" || { printf '%s\n' "$(msg skill_file_write_failed "$SLUG")" >&2; exit 1; }
+    M=$(printf '%s ' $TO); M=$(printf '%s' "$M" | sed -e 's/[[:space:]]*$//')
+    echo "skills/$SLUG/skill.yaml : tools poses ($M)"
+    ;;
+  set_steps)
+    printf '%s\n' "$(msg steps_gone)" >&2
+    exit 1
+    ;;
+  set_plan)
+    place
+    VALUE=$(cat)
+    V=$(printf '%s\n' "$VALUE" | sed -e '/^[[:space:]]*$/d')
+    NL=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+    [ "$NL" -ge 1 ] || { printf '%s\n' "$(msg plan_empty)" >&2; exit 1; }
+    [ "$NL" -le "$CL" ] || { printf '%s\n' "$(msg too_many_section "$NL" "$CL")" >&2; exit 1; }
+    R=$(printf 'plan:\n%s' "$(pose "$V")")
+    block "$C" "plan" "$R" || { printf '%s\n' "$(msg skill_file_write_failed "$SLUG")" >&2; exit 1; }
+    printf '%s\n' "$(msg section_written 'plan')"
+    ;;
+  set_dirs)
+    place
+    VALUE=$(cat)
+    V=$(printf '%s\n' "$VALUE" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
+    NL=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+    [ "$NL" -ge 1 ] || { printf '%s\n' "$(msg dirs_empty)" >&2; exit 1; }
+    [ "$NL" -le "$CL" ] || { printf '%s\n' "$(msg too_many_section "$NL" "$CL")" >&2; exit 1; }
+    BAD=$(printf '%s\n' "$V" | grep -vE '^[^ :]+/ : [^ :]+( [^ :]+)*$' | head -n 1)
+    [ -z "$BAD" ] || { printf '%s\n' "$(msg dir_malformed "$BAD")" >&2; exit 1; }
+    R=$(printf 'dirs:\n%s' "$(pose "$V")")
+    block "$C" "dirs" "$R" || { printf '%s\n' "$(msg skill_file_write_failed "$SLUG")" >&2; exit 1; }
+    printf '%s\n' "$(msg dirs_set "$SLUG" "$NL")"
+    ;;
+  set_error)
+    place
+    VALUE=$(cat)
+    V=$(printf '%s\n' "$VALUE" | sed -e '/^[[:space:]]*$/d')
+    NL=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+    [ "$NL" -ge 1 ] || { printf '%s\n' "$(msg error_empty)" >&2; exit 1; }
+    [ "$NL" -le "$CL" ] || { printf '%s\n' "$(msg too_many_section "$NL" "$CL")" >&2; exit 1; }
+    R=$(printf 'error:\n%s' "$(pose "$V")")
+    block "$C" "error" "$R" || { printf '%s\n' "$(msg skill_file_write_failed "$SLUG")" >&2; exit 1; }
+    printf '%s\n' "$(msg section_written 'error')"
+    ;;
+  set_paths)
+    place
+    approve "changer les chemins du skill $SLUG ; paths EST la portee lue par le engine"
+    VALUE=$(cat)
+    ROT=$(printf '%s\n' "$VALUE" | sed -n 's/^[[:space:]]*root[[:space:]]*:[[:space:]]*//p' | head -n 1)
+    WOK=$(printf '%s\n' "$VALUE" | sed -n 's/^[[:space:]]*work[[:space:]]*:[[:space:]]*//p' | head -n 1)
+    SPK=$(printf '%s\n' "$VALUE" | sed -n 's/^[[:space:]]*specs[[:space:]]*:[[:space:]]*//p' | head -n 1)
+    if [ -z "$ROT" ] || [ -z "$WOK" ] || [ -z "$SPK" ]; then printf '%s\n' "$(msg paths_three_lines)" >&2; exit 1; fi
+    for P in "$ROT" "$WOK" "$SPK"; do
+      case "$P" in /*) printf '%s\n' "$(msg paths_absolute "$P")" >&2; exit 1 ;; esac
+      case "$P" in *..*) printf '%s\n' "$(msg paths_goes_up "$P")" >&2; exit 1 ;; esac
+      case "$P" in *'$'*) printf '%s\n' "$(msg paths_dollar "$P")" >&2; exit 1 ;; esac
+      case "$P" in *'"'*) printf '%s\n' "$(msg paths_quote "$P")" >&2; exit 1 ;; esac
+      case "$P" in *\\*) printf '%s\n' "$(msg paths_backslash "$P")" >&2; exit 1 ;; esac
+    done
+    R=$(printf 'paths:\n  root: %s\n  work: %s\n  specs: %s' "$ROT" "$WOK" "$SPK")
+    block "$C" "paths" "$R" || { printf '%s\n' "$(msg skill_file_write_failed "$SLUG")" >&2; exit 1; }
+    printf '%s\n' "$(msg paths_set "$SLUG" "$ROT" "$WOK" "$SPK")"
+    ;;
+  set_resume)
+    place
+    VALUE=$(cat)
+    V=$(printf '%s\n' "$VALUE" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
+    NL=$(printf '%s\n' "$V" | wc -l | tr -d ' ')
+    [ "$NL" -ge 1 ] || { printf '%s\n' "$(msg resume_empty)" >&2; exit 1; }
+    [ "$NL" -le "$CL" ] || { printf '%s\n' "$(msg too_many_section "$NL" "$CL")" >&2; exit 1; }
+    LENGTH=$(printf '%s\n' "$V" | awk -v ch="$CH" '{ if (length("  " (100+NR) ": " $0) > ch) { print NR; exit } }')
+    [ -z "$LENGTH" ] || { printf '%s\n' "$(msg resume_line_too_long "$LENGTH" "$CH")" >&2; exit 1; }
+    R=$(printf 'resume:\n%s' "$(pose "$V")")
+    block "$C" "resume" "$R" || { printf '%s\n' "$(msg skill_file_write_failed "$SLUG")" >&2; exit 1; }
+    printf '%s\n' "$(msg section_written 'resume')"
+    ;;
+  remove_skill)
+    if [ -L "$D" ]; then printf '%s\n' "$(msg remove_through_symlink "$SLUG")" >&2; exit 1; fi
+    [ -d "$D" ] || { printf '%s\n' "$(msg skill_absent "$SLUG")" >&2; exit 1; }
+    if [ -L "$C" ]; then printf '%s\n' "$(msg target_symlink_file "$SLUG")" >&2; exit 1; fi
+    if [ -d "$C" ]; then printf '%s\n' "$(msg target_is_dir "$SLUG")" >&2; exit 1; fi
+    [ -f "$C" ] || { printf '%s\n' "$(msg skill_absent_file "$SLUG")" >&2; exit 1; }
+    [ -n "$MARK" ] || { printf '%s\n' "$(msg template_no_mark "$SM")" >&2; exit 1; }
+    SRC_OWNER=$(sed -n 's/^source: *//p' -- "$C" | head -n 1 | tr -d '"' | sed -e 's/[[:space:]]*$//')
+    if [ -z "$SRC_OWNER" ] || [ "$SRC_OWNER" != "$MARK" ]; then printf '%s\n' "$(msg skill_not_agent_written "$MARK")" >&2; exit 1; fi
+    approve "retirer le skill $SLUG ; skills/$SLUG/ part vers la corbeille du systeme, jamais efface"
+    gio trash -- "$D" >/dev/null 2>&1 || { printf '%s\n' "$(msg trash_refused "$SLUG")" >&2; exit 1; }
+    if [ -e "$C" ]; then printf '%s\n' "$(msg skill_still_there "$SLUG")" >&2; exit 1; fi
+    printf '%s\n' "$(msg skill_trashed "$SLUG")"
+    ;;
+  *)
+    printf '%s\n' "$(msg action_unknown "$A")" >&2; exit 1 ;;
+  esac
+
+ARGS:
+  - {name: action, type: enum, values: [create_skill, set_line, set_tags, set_tools, set_steps, set_plan, set_dirs, set_error, set_paths, set_resume, remove_skill]}
+  - {name: name, type: text}
+  - {name: value, type: text, stdin: true}
+  - {name: id, type: int}

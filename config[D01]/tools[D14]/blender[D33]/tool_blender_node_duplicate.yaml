@@ -1,0 +1,22 @@
+id: "B826"
+tool: "blender_node_duplicate"
+date: "2026-10-17"
+tags: ["blender_node_duplicate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate selected nodes"
+
+machine: "blender"
+op: "node.duplicate"
+
+ARGS:
+  - {name: keep_inputs, type: text}          # true|false, vide pour ne rien poser
+  - {name: linked, type: text}          # true|false, vide pour ne rien poser

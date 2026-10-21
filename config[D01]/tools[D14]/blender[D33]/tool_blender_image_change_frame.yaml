@@ -1,0 +1,21 @@
+id: "B520"
+tool: "blender_image_change_frame"
+date: "2026-10-17"
+tags: ["blender_image_change_frame"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Interactively change the current frame number"
+
+machine: "blender"
+op: "image.change_frame"
+
+ARGS:
+  - {name: frame, type: int}

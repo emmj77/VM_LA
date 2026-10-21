@@ -1,0 +1,21 @@
+id: "B417"
+tool: "blender_graph_select_column"
+date: "2026-10-17"
+tags: ["blender_graph_select_column"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all keyframes on the specified frame(s)"
+
+machine: "blender"
+op: "graph.select_column"
+
+ARGS:
+  - {name: mode, type: text}          # un de : KEYS | CFRA | MARKERS_COLUMN | MARKERS_BETWEEN

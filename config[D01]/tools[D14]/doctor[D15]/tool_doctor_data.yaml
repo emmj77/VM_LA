@@ -1,0 +1,44 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D001"
+tool: "doctor.data"
+date: "2026-10-20"
+tags: ["doctor", "data"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the bases and the memory, one writer each"
+COMMAND: |
+
+  _op=${1:-bases}
+  case $_op in
+  bases)
+    for _k in sessions memory; do
+      _f=$(cfg abs "$_k" 2>/dev/null)
+      if [ -z "$_f" ] || [ ! -f "$_f" ]; then printf 'note no base %s (it is born at the first use)\n' "$_k"; continue; fi
+      _v=$(sqlite3 "$_f" 'pragma quick_check;' 2>&1 | head -n 1)
+      [ "$_v" = ok ] && printf 'ok %s holds\n' "$_k" || printf 'FAULT %s is malformed: %s\n' "$_k" "$_v"
+    done
+    _f=$(cfg abs sessions 2>/dev/null)
+    [ -f "$_f" ] || exit 0
+    _m=$(sqlite3 "$_f" 'pragma journal_mode;' 2>/dev/null)
+    [ "$_m" = wal ] || printf 'note sessions.db runs in %s: a reader cannot live beside the writer\n' "${_m:-?}"
+    ;;
+  memory)
+    _f=$(cfg abs memory 2>/dev/null)
+    [ -f "$_f" ] || { printf 'note no memory base (it is born at the first turn)\n'; exit 0; }
+    _n=$(sqlite3 "$_f" 'select count(*) from memory;' 2>/dev/null)
+    _v=$(sqlite3 "$_f" 'select count(vec) from memory;' 2>/dev/null)
+    printf 'ok memory %s entrie(s), %s with a vector\n' "${_n:-0}" "${_v:-0}"
+    [ "${_n:-0}" = "${_v:-0}" ] || printf 'note %s entrie(s) read by words only\n' "$(( ${_n:-0} - ${_v:-0} ))"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: bases,memory}

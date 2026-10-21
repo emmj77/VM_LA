@@ -1,0 +1,22 @@
+id: "B377"
+tool: "blender_graph_clean"
+date: "2026-10-17"
+tags: ["blender_graph_clean"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Simplify F-Curves by removing closely spaced keyframes"
+
+machine: "blender"
+op: "graph.clean"
+
+ARGS:
+  - {name: threshold, type: text}
+  - {name: channels, type: text}          # true|false, vide pour ne rien poser

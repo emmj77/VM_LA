@@ -1,0 +1,20 @@
+id: "B171"
+tool: "blender_clip_set_active_clip"
+date: "2026-10-17"
+tags: ["blender_clip_set_active_clip"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(undocumented operator)"
+
+machine: "blender"
+op: "clip.set_active_clip"
+
+ARGS: []

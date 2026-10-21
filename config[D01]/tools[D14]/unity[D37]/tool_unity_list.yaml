@@ -1,0 +1,43 @@
+id: "U364"
+tool: "unity_list"
+date: "2026-10-18"
+tags: ["unity", "cli", "list"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "List tools available on the connected Unity Editor (commands registered by the Pipeline package)"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- list --no-banner --no-pager --non-interactive
+
+
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  [ -n "{{runtime}}" ] && set -- "$@" --runtime "{{runtime}}"
+  [ -n "{{runtime_path}}" ] && set -- "$@" --runtime-path "{{runtime_path}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_list_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: project_path, type: text}   # Path to Unity project (auto-detected if not specified)
+  - {name: runtime, type: text}   # Connect to a Unity Player runtime instance (search by process name)
+  - {name: runtime_path, type: text}   # Connect to a Unity Player by path to its runtime port file

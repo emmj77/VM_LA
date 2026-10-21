@@ -1,0 +1,21 @@
+id: "B476"
+tool: "blender_grease_pencil_sculptmode_toggle"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_sculptmode_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Enter/Exit sculpt mode for Grease Pencil strokes"
+
+machine: "blender"
+op: "grease_pencil.sculptmode_toggle"
+
+ARGS:
+  - {name: back, type: text}          # true|false, vide pour ne rien poser

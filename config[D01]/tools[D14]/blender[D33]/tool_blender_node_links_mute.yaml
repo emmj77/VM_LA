@@ -1,0 +1,22 @@
+id: "B853"
+tool: "blender_node_links_mute"
+date: "2026-10-17"
+tags: ["blender_node_links_mute"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use the mouse to mute links"
+
+machine: "blender"
+op: "node.links_mute"
+
+ARGS:
+  - {name: path, type: text}
+  - {name: cursor, type: int}

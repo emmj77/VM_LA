@@ -1,0 +1,25 @@
+id: "B064"
+tool: "blender_armature_bone_primitive_add"
+date: "2026-10-17"
+tags: ["blender_armature_bone_primitive_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a new bone located at the 3D cursor"
+
+machine: "blender"
+op: "armature.bone_primitive_add"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: space, type: text}          # un de : OBJECT | WORLD
+  - {name: align, type: text}          # un de : UP | AXES | 3D_CURSOR | 3D_VIEW
+  - {name: length, type: text}
+  - {name: use_deform, type: text}          # true|false, vide pour ne rien poser

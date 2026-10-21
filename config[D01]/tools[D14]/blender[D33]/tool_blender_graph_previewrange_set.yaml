@@ -1,0 +1,20 @@
+id: "B408"
+tool: "blender_graph_previewrange_set"
+date: "2026-10-17"
+tags: ["blender_graph_previewrange_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set Preview Range based on range of selected keyframes"
+
+machine: "blender"
+op: "graph.previewrange_set"
+
+ARGS: []

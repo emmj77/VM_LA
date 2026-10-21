@@ -1,0 +1,22 @@
+id: "B1630"
+tool: "blender_wm_operator_pie_enum"
+date: "2026-10-17"
+tags: ["blender_wm_operator_pie_enum"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(undocumented operator)"
+
+machine: "blender"
+op: "wm.operator_pie_enum"
+
+ARGS:
+  - {name: data_path, type: text}
+  - {name: prop_string, type: text}

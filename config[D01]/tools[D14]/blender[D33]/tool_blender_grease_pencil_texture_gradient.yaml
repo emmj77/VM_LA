@@ -1,0 +1,26 @@
+id: "B503"
+tool: "blender_grease_pencil_texture_gradient"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_texture_gradient"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Draw a line to set the fill material gradient for the selected strokes"
+
+machine: "blender"
+op: "grease_pencil.texture_gradient"
+
+ARGS:
+  - {name: xstart, type: int}
+  - {name: xend, type: int}
+  - {name: ystart, type: int}
+  - {name: yend, type: int}
+  - {name: flip, type: text}          # true|false, vide pour ne rien poser
+  - {name: cursor, type: int}

@@ -1,0 +1,23 @@
+id: "B1602"
+tool: "blender_wm_context_collection_boolean_set"
+date: "2026-10-17"
+tags: ["blender_wm_context_collection_boolean_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set boolean values for a collection of items"
+
+machine: "blender"
+op: "wm.context_collection_boolean_set"
+
+ARGS:
+  - {name: data_path_iter, type: text}
+  - {name: data_path_item, type: text}
+  - {name: type, type: text}          # un de : TOGGLE | ENABLE | DISABLE

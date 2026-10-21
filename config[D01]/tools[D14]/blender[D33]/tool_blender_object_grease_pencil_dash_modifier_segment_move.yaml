@@ -1,0 +1,22 @@
+id: "B950"
+tool: "blender_object_grease_pencil_dash_modifier_segment_move"
+date: "2026-10-17"
+tags: ["blender_object_grease_pencil_dash_modifier_segment_move"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move the active dash segment up or down"
+
+machine: "blender"
+op: "object.grease_pencil_dash_modifier_segment_move"
+
+ARGS:
+  - {name: modifier, type: text}
+  - {name: type, type: text}          # un de : UP | DOWN

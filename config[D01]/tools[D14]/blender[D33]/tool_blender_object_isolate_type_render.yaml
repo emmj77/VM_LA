@@ -1,0 +1,20 @@
+id: "B961"
+tool: "blender_object_isolate_type_render"
+date: "2026-10-17"
+tags: ["blender_object_isolate_type_render"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Hide unselected render objects of same type as active by setting the hide render flag"
+
+machine: "blender"
+op: "object.isolate_type_render"
+
+ARGS: []

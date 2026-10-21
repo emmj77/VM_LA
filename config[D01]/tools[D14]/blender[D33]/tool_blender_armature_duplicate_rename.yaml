@@ -1,0 +1,23 @@
+id: "B072"
+tool: "blender_armature_duplicate_rename"
+date: "2026-10-17"
+tags: ["blender_armature_duplicate_rename"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make copies of the selected bones within the same armature and replace a part of their name"
+
+machine: "blender"
+op: "armature.duplicate_rename"
+
+ARGS:
+  - {name: do_flip_names, type: text}          # true|false, vide pour ne rien poser
+  - {name: search, type: text}
+  - {name: replace, type: text}

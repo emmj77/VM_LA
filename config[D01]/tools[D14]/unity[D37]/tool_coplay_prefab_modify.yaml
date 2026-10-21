@@ -1,0 +1,60 @@
+id: "U205"
+tool: "coplay_prefab_modify"
+date: "2026-10-18"
+tags: ["unity", "coplay", "prefab"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Modify a prefab's contents (headless, no UI)."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- prefab modify
+  case "{{active}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'active')" >&2; exit 1 ;; esac
+  [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'prefab modify')" >&2; exit 1; }
+  [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+  [ -n "{{position}}" ] && set -- "$@" --position "{{position}}"
+  [ -n "{{rotation}}" ] && set -- "$@" --rotation "{{rotation}}"
+  [ -n "{{scale}}" ] && set -- "$@" --scale "{{scale}}"
+  [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+  [ -n "{{tag}}" ] && set -- "$@" --tag "{{tag}}"
+  [ -n "{{layer}}" ] && set -- "$@" --layer "{{layer}}"
+  [ "{{active}}" = true ] && set -- "$@" --active
+  [ -n "{{parent}}" ] && set -- "$@" --parent "{{parent}}"
+  [ -n "{{add_component}}" ] && set -- "$@" --add-component "{{add_component}}"
+  [ -n "{{remove_component}}" ] && set -- "$@" --remove-component "{{remove_component}}"
+  [ -n "{{set_property}}" ] && set -- "$@" --set-property "{{set_property}}"
+  [ -n "{{delete_child}}" ] && set -- "$@" --delete-child "{{delete_child}}"
+  [ -n "{{create_child}}" ] && set -- "$@" --create-child "{{create_child}}"
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: target, type: text}
+  - {name: position, type: text}
+  - {name: rotation, type: text}
+  - {name: scale, type: text}
+  - {name: name, type: text}
+  - {name: tag, type: text}
+  - {name: layer, type: text}
+  - {name: active, type: text}          # true pour poser le drapeau, vide sinon
+  - {name: parent, type: text}
+  - {name: add_component, type: text}
+  - {name: remove_component, type: text}
+  - {name: set_property, type: text}
+  - {name: delete_child, type: text}
+  - {name: create_child, type: text}
+  - {name: path, type: text}

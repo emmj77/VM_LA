@@ -1,0 +1,20 @@
+id: "B1457"
+tool: "blender_transform_from_gizmo"
+date: "2026-10-17"
+tags: ["blender_transform_from_gizmo"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Transform selected items by mode type"
+
+machine: "blender"
+op: "transform.from_gizmo"
+
+ARGS: []

@@ -1,0 +1,34 @@
+id: "C001"
+tool: "comfyui_generate"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_generate"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "posts an image to ComfyUI and files it in the workspace, returns its path"
+
+COMMAND: |
+  P=$(cat); [ -n "$P" ] || { printf '%s\n' "$(msg empty_missing_prompt)" >&2; exit 1; }; N() { case "$1" in ''|*[!0-9]*) echo "$2" ;; *) echo "$1" ;; esac; }; W=$(N "{{width}}" 512); H=$(N "{{height}}" 512); S=$(N "{{steps}}" 25)
+  { [ "$W" -ge 64 ] && [ "$W" -le 2048 ] && [ "$H" -ge 64 ] && [ "$H" -le 2048 ] && [ "$S" -ge 1 ] && [ "$S" -le 100 ]; } || { printf '%s\n' "$(msg width_height_outside_range)" >&2; exit 1; }
+  A=http://127.0.0.1:8188; curl -sS -m 5 "$A/system_stats" >/dev/null 2>&1 || { printf '%s\n' "$(msg comfy_service_down "$A")" >&2; exit 1; }
+  Q=$(jq -cn --arg pr "$P" --argjson w "$W" --argjson h "$H" --argjson s "$S" --argjson sd "$(date +%s)" '{prompt:{"4":{class_type:"CheckpointLoaderSimple",inputs:{ckpt_name:"dreamshaper_8.safetensors"}},"5":{class_type:"EmptyLatentImage",inputs:{width:$w,height:$h,batch_size:1}},"6":{class_type:"CLIPTextEncode",inputs:{text:$pr,clip:["4",1]}},"7":{class_type:"CLIPTextEncode",inputs:{text:"",clip:["4",1]}},"3":{class_type:"KSampler",inputs:{seed:$sd,steps:$s,cfg:7,sampler_name:"euler",scheduler:"normal",denoise:1,model:["4",0],positive:["6",0],negative:["7",0],latent_image:["5",0]}},"8":{class_type:"VAEDecode",inputs:{samples:["3",0],vae:["4",2]}},"9":{class_type:"SaveImage",inputs:{filename_prefix:"la",images:["8",0]}}},client_id:"la"}')
+  ID=$(curl -sS -m 30 -H 'Content-Type: application/json' -d "$Q" "$A/prompt" | jq -r '.prompt_id // empty'); [ -n "$ID" ] || { printf '%s\n' "$(msg workflow_refused)" >&2; exit 1; }
+  i=0; while [ "$i" -lt 300 ] && ! curl -sS -m 5 "$A/history/$ID" | jq -e --arg p "$ID" 'has($p)' >/dev/null 2>&1; do sleep 1; i=$((i+1)); done
+  IM=$(curl -sS -m 5 "$A/history/$ID" | jq -r --arg p "$ID" '.[$p].outputs|to_entries[]|select(.value.images)|.value.images[0]|[.filename,.subfolder,(.type//"output")]|@tsv' 2>/dev/null | head -1); [ -n "$IM" ] || { printf '%s\n' "$(msg no_image_produced "$ID")" >&2; exit 1; }
+  D="$W/images/comfyui_$(date -u +%Y%m%d_%H%M%S).png"; [ -e "$D" ] && { printf '%s\n' "$(msg target_exists "$D")" >&2; exit 1; }
+  curl -sS -m 60 -G "$A/view" --data-urlencode "filename=$(printf '%s' "$IM" | cut -f1)" --data-urlencode "subfolder=$(printf '%s' "$IM" | cut -f2)" --data-urlencode "type=$(printf '%s' "$IM" | cut -f3)" -o "$D" || { printf '%s\n' "$(msg image_fetch_failed "$D")" >&2; exit 1; }
+  [ "$(head -c 4 "$D" | od -An -tx1 | tr -d ' \n')" = 89504e47 ] || { printf '%s\n' "$(msg not_a_png "$D")" >&2; exit 1; }
+  printf '%s\n' "$D"
+
+ARGS:
+  - {name: prompt, type: text, stdin: true}
+  - {name: width, type: int}
+  - {name: height, type: int}
+  - {name: steps, type: int}

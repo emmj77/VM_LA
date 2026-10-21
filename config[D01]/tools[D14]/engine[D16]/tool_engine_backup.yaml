@@ -1,0 +1,84 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E003"
+tool: "engine.backup"
+date: "2026-10-20"
+tags: ["engine", "backup"]
+RULES:
+  enabled: true
+  timeout: 900
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the net outside the disk: now, verify, restore"
+COMMAND: |
+
+  _op=${1:-verify}
+  _sup=$(cat)
+  [ -n "$_sup" ] || _sup=$(cfg str backup.support)
+  _stamp=$(date -u +%Y-%m-%d_%H%M%S)
+  _dev_root=$(df --output=source "$ROOT" 2>/dev/null | tail -1 | tr -d ' ')
+  [ -n "$_dev_root" ] || { printf 'FAULT I do not know which device carries the project\n'; exit 0; }
+  _size() { du -sb "$1" 2>/dev/null | cut -f1; }
+  _disk() { lsblk -no PKNAME "$1" 2>/dev/null | head -1 | tr -d ' '; }
+  case $_op in
+  now)
+    [ -n "$_sup" ] && [ -d "$_sup" ] || { printf 'FAULT no support to write to\n'; exit 0; }
+    _d=$(df --output=source "$_sup" 2>/dev/null | tail -1 | tr -d ' ')
+    [ -n "$_d" ] || { printf 'FAULT I do not know which device carries the support\n'; exit 0; }
+    [ "$_d" != "$_dev_root" ] || { printf 'FAULT the support is on the SAME device as the project: a tar that dies with what it protects is not a net\n'; exit 0; }
+    _dc=$(_disk "$_dev_root")
+    _ds=$(_disk "$_d")
+    if [ -n "$_dc" ] && [ -n "$_ds" ] && [ "$_dc" = "$_ds" ]; then
+      printf 'FAULT the support is another partition of the same disk: it dies with the project\n'; exit 0
+    fi
+    findmnt -rno TARGET,SOURCE | grep -qF " $_d" \
+      || { printf 'FAULT the support is not a mount point: an ordinary folder is not a support\n'; exit 0; }
+    _tar="$_sup/project-$_stamp.tar.gz"
+    tar czf "$_tar" -C "$(dirname -- "$ROOT")" "$(basename -- "$ROOT")" 2>/dev/null \
+      || { printf 'FAULT the tar failed\n'; exit 0; }
+    [ -s "$_tar" ] || { printf 'FAULT the tar is empty\n'; exit 0; }
+    jq -cn --arg p "$ROOT" --arg t "$_tar" --arg d "$_dev_root" --arg m "$_sup" \
+      --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson s "$(_size "$ROOT")" \
+      '{project:$p,tar:$t,device:$d,mount:$m,date:$date,project_size:$s,restored:"",restored_size:0,compare:false}' \
+      > "$_sup/.backup.json" || { printf 'FAULT the imprint cannot be written\n'; exit 0; }
+    printf 'ok placed %s (%s bytes), the imprint is written\n' "${_tar}" "$(_size "$_tar")"
+    ;;
+  restore)
+    [ -n "$_sup" ] || { printf 'FAULT no support to restore from\n'; exit 0; }
+    _f="$_sup/.backup.json"
+    [ -f "$_f" ] || { printf 'FAULT no net placed here: %s is missing\n' "$_f"; exit 0; }
+    _tar=$(jq -r '.tar' "$_f")
+    _at=$(jq -r '.project_size' "$_f")
+    [ -f "$_tar" ] || { printf 'FAULT the net tar has disappeared\n'; exit 0; }
+    _d="$_sup/log-$_stamp"
+    mkdir -p "$_d" || { printf 'FAULT I cannot create the restore folder\n'; exit 0; }
+    tar xzf "$_tar" -C "$_d" 2>/dev/null || { printf 'FAULT the restore failed\n'; exit 0; }
+    _dr=$(find "$_d" -maxdepth 1 -mindepth 1 | head -1)
+    [ -n "$_dr" ] || { printf 'FAULT the tar restored EMPTY\n'; exit 0; }
+    _n=$(_size "$_dr")
+    jq -c --arg d "$_dr" --argjson n "$_n" --argjson a "$_at" \
+      '.restored=$d | .restored_size=$n | .compare=($n==$a)' "$_f" > "$_f.tmp" && mv -f "$_f.tmp" "$_f"
+    [ "$_n" = "$_at" ] && printf 'ok restored and compared: %s bytes on both sides\n' "$_n" \
+      || printf 'FAULT the sizes differ: project %s, restored %s\n' "$_at" "$_n"
+    ;;
+  verify)
+    _f=
+    for _s in $(cfg list backup.supports 2>/dev/null); do
+      [ -f "$_s/.backup.json" ] && _f="$_s/.backup.json"
+    done
+    [ -z "$_f" ] && _f="${_sup:-}/.backup.json"
+    [ -f "$_f" ] || { printf 'FAULT no net placed on any support: the project is not protected\n'; exit 0; }
+    printf 'ok %s\n' "$(jq -r '"\(.date)  \(.tar)  restored=\(.restored|if .=="" then "no" else "yes" end)  compare=\(.compare)"' "$_f")"
+    [ "$(jq -r '.compare' "$_f")" = true ] || printf 'FAULT the net is placed but NOT compared: it is not yet a net\n'
+    _t=$(_size "$ROOT")
+    _a=$(jq -r '.project_size' "$_f")
+    [ "$_t" = "$_a" ] || printf 'FAULT the project moved since the tar (%s -> %s): the net is stale\n' "$_a" "$_t"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: now,verify,restore}

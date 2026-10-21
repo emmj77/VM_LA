@@ -1,0 +1,21 @@
+id: "B771"
+tool: "blender_nla_make_single_user"
+date: "2026-10-17"
+tags: ["blender_nla_make_single_user"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make linked action local to each strip"
+
+machine: "blender"
+op: "nla.make_single_user"
+
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser

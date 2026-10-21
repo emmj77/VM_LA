@@ -1,0 +1,20 @@
+id: "B1336"
+tool: "blender_sequencer_crossfade_sounds"
+date: "2026-10-17"
+tags: ["blender_sequencer_crossfade_sounds"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Do cross-fading volume animation of two selected sound strips"
+
+machine: "blender"
+op: "sequencer.crossfade_sounds"
+
+ARGS: []

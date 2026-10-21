@@ -1,0 +1,20 @@
+id: "B1028"
+tool: "blender_object_select_more"
+date: "2026-10-17"
+tags: ["blender_object_select_more"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select connected parent/child objects"
+
+machine: "blender"
+op: "object.select_more"
+
+ARGS: []

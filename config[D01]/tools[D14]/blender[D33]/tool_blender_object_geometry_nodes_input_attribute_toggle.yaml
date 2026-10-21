@@ -1,0 +1,22 @@
+id: "B946"
+tool: "blender_object_geometry_nodes_input_attribute_toggle"
+date: "2026-10-17"
+tags: ["blender_object_geometry_nodes_input_attribute_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Switch between an attribute and a single value to define the data for every element"
+
+machine: "blender"
+op: "object.geometry_nodes_input_attribute_toggle"
+
+ARGS:
+  - {name: input_name, type: text}
+  - {name: modifier_name, type: text}

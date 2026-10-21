@@ -1,0 +1,57 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D008"
+tool: "doctor.structure"
+date: "2026-10-20"
+tags: ["doctor", "structure"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the root, the syntax of the bricks, the syntax and the import of the programs"
+COMMAND: |
+
+  _op=${1:-root}
+  case $_op in
+  root)
+    [ -d "$ROOT" ] && printf 'ok root %s\n' "$ROOT" || printf 'FAULT root absent: %s\n' "$ROOT"
+    for _k in la_config texts registry; do
+      _f=$(cfg abs "$_k" 2>/dev/null)
+      if [ -n "$_f" ] && [ -f "$_f" ]; then printf 'ok %s %s\n' "$_k" "${_f#$ROOT/}"
+      else printf 'FAULT %s is not on the disk\n' "$_k"; fi
+    done
+    _n=$(cfg tree | wc -l | tr -d ' ')
+    [ "$_n" -gt 0 ] && printf 'ok the tree is read, %s entries\n' "$_n" \
+      || printf 'FAULT the tree of la_config is empty: nothing is declared\n'
+    ;;
+  scripts)
+    _n=0
+    for _f in "$(cfg path engine)"/*.sh; do
+      [ -f "$_f" ] || continue
+      _n=$((_n + 1))
+      dash -n "$_f" 2>/dev/null || printf 'FAULT dash cannot read %s\n' "${_f##*/}"
+    done
+    [ "$_n" -gt 0 ] && printf 'ok %s brick(s), syntax held\n' "$_n" \
+      || printf 'FAULT no brick in the engine\n'
+    ;;
+  programs)
+    _d=$(cfg path programs) || { printf 'FAULT no programs directory\n'; exit 0; }
+    _n=0
+    for _f in "$_d"/*.py; do
+      [ -f "$_f" ] || continue
+      _n=$((_n + 1))
+      python3 -B -c 'import ast,sys;ast.parse(open(sys.argv[1],encoding="utf-8").read())' "$_f" 2>/dev/null \
+        || printf 'FAULT python cannot read %s\n' "${_f##*/}"
+    done
+    [ "$_n" -gt 0 ] && printf 'ok %s program(s), syntax held\n' "$_n" \
+      || printf 'FAULT no program in programs\n'
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: root,scripts,programs}

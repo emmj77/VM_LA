@@ -1,0 +1,150 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E020"
+tool: "engine.board"
+date: "2026-10-21"
+tags: ["engine", "board"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the state of the machine: one line, every section, or the object the page reads"
+COMMAND: |
+
+  _op=${1:-line}
+  _t=$(cfg abs turn 2>/dev/null) || { printf 'FAULT no turn object in the tree\n'; exit 0; }
+  _sp=$(cfg abs stop 2>/dev/null)
+  _c=$(cfg abs doctor_cache 2>/dev/null)
+  _se=$(cfg abs sessions 2>/dev/null)
+  _u=$(cfg abs usage 2>/dev/null)
+  _ae=$(cfg str active_engine)
+  _ft=$(cfg num loop.feed_turns)
+  [ -n "$_ft" ] || _ft=12
+  case $_op in
+  line)
+    _s=$(jq -r '.status // "idle"' "$_t" 2>/dev/null) || _s=idle
+    _st=free; [ -f "$_sp" ] && _st="stop asked"
+    _w=$(sqlite3 "$_se" 'select count(*) from messages;' 2>/dev/null)
+    _d=$(head -n 1 "$_c" 2>/dev/null)
+    printf 'ok %s | %s | %s word(s) | %s\n' "$_s" "$_st" "${_w:-0}" "${_d:-no doctor}"
+    ;;
+  once)
+    printf '  THE ENGINE\n'
+    printf '  %-14s %s\n' active "$(cfg str active_engine)"
+    printf '  %-14s %s\n' model "$(cfg str "engines.$_ae.model")"
+    printf '\n  THE TURN\n'
+    printf '  %-14s %s\n' state "$(jq -r '.status // "idle"' "$_t" 2>/dev/null)${_sp:+$([ -f "$_sp" ] && printf ', stop asked')}"
+    printf '  %-14s %s\n' words "$(sqlite3 "$_se" 'select count(*) from messages;' 2>/dev/null)"
+    printf '  %-14s %s\n' said "$(grep -c . "$(cfg abs say_done 2>/dev/null)" 2>/dev/null)"
+    printf '\n  THE DOCTOR\n'
+    printf '  %-14s %s\n' cached "$(head -n 1 "$_c" 2>/dev/null)"
+    ;;
+  menu)
+    # one row per line for the applet: state|section|title|verdict
+    _s=$(jq -r '.status // "idle"' "$_t" 2>/dev/null) || _s=idle
+    _w=$(sqlite3 "$_se" 'select count(*) from messages;' 2>/dev/null) || _w=0
+    _ex=$(sqlite3 "$_se" 'select count(distinct exchange) from messages;' 2>/dev/null) || _ex=0
+    # LA : what waits for a yes, what has been said, when we last worked
+    _ap=$(cfg abs approve_request 2>/dev/null)
+    if [ -n "$_ap" ] && [ -s "$_ap" ]; then
+      _an=$(head -n 1 "$_ap" | sed 's/^tool: *//; s/ .*//')
+      printf 'ko|LA|approval|%s waits\n' "${_an:-one request}"
+    else
+      printf 'ok|LA|approval|nothing waits\n'
+    fi
+    printf 'ok|LA|sessions|%s exch. / %s msg\n' "${_ex:-0}" "${_w:-0}"
+    # THE RESIDENTS : one line each, what they weigh
+    _n=0; _mo=0; _tot_u=0
+    # UN SEUL FICHIER TEMPORAIRE, ECRASE A CHAQUE LECTURE (MOUSSA, 21/10) : un nom aleatoire
+    # poussait un fichier de 99 octets a la corbeille a chaque appel de l applet.
+    _tf="$LA_STATE/board.tmp"
+    _to="$LA_STATE/board2.tmp"
+    : > "$_tf"; : > "$_to"
+    for _k in $(_flat | awk -F'\t' '$1 ~ /^units\.[a-z_]+\.unit$/ { k = $1; sub(/^units\./, "", k); sub(/\.unit$/, "", k); print k }' | sort -u) ; do
+      _cnt=$(cfg str "units.$_k.count" false)
+      [ "$_cnt" = true ] && _tot_u=$((_tot_u + 1))
+      _u=$(cfg str "units.$_k.unit" 2>/dev/null)
+      _ti=$(cfg str "units.$_k.resident" "resident $_k")
+      _st=$(systemctl --user is-active "$_u" 2>/dev/null)
+      if [ "$_st" = active ]; then
+        _mem=$(systemctl --user show -p MemoryCurrent --value "$_u" 2>/dev/null)
+        _r=$(( ${_mem:-0} / 1048576 ))
+        _mo=$((_mo + _r))
+        if [ "$_cnt" = true ]; then _n=$((_n + 1)); printf 'ok|POWER|%s|%s MB\n' "$_ti" "$_r" >> "$_tf"
+        else printf 'ok|POWER|%s|%s MB\n' "$_ti" "$_r" >> "$_to"; fi
+      else
+        printf 'ko|POWER|%s|absent\n' "$_ti" >> "$_tf"
+      fi
+    done
+    _tot=$(awk '/MemTotal/{printf "%d", $2/1048576}' /proc/meminfo 2>/dev/null)
+    _rck=ok; [ "$_n" = "${_tot_u:-0}" ] || _rck=ko
+    { printf '%s|POWER|residents|%s/%s\n' "$_rck" "$_n" "${_tot_u:-0}"; cat "$_tf"; cat "$_to"; }
+    # LE TUNNEL : son etat, et les deux gestes vivent dans le menu de l applet
+    _ts=$(timeout 10 tailscale status 2>/dev/null | grep -c '^100\.')
+    if timeout 10 tailscale status >/dev/null 2>&1; then
+      printf 'ok|POWER|tailscale|up, %s pair(s)\n' "${_ts:-0}"
+    else
+      printf 'note|POWER|tailscale|down\n'
+    fi
+    # THE INSTRUMENTS : what reads a page, what looks at an image
+    _tv=$(timeout 10 tesseract --version 2>/dev/null | head -n 1 | awk '{print $2}')
+    if [ -n "$_tv" ]; then printf 'ok|TOOLS|tesseract|%s . no port\n' "$_tv"
+    else printf 'ko|TOOLS|tesseract|absent\n'; fi
+    _vp=$(cfg num ports.vision 2>/dev/null); _vp=${_vp:-1234}
+    if ss -ltn 2>/dev/null | awk -v p=":$_vp$" '$4 ~ p { n++ } END { exit !n }'; then
+      printf 'ok|TOOLS|vision|listening . :%s\n' "$_vp"
+    else
+      printf 'note|TOOLS|vision|silent . :%s . 0 MB\n' "$_vp"
+    fi
+    # THE CARDS AND THE MEMORY OF THE STATION
+    printf 'ok|MEMORY|ram of LA|%s MB / %s GB\n' "$_mo" "${_tot:-0}"
+    if command -v nvidia-smi >/dev/null 2>&1; then
+      nvidia-smi --query-gpu=name,memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null \
+        | while IFS=, read -r _gn _gu _gt; do
+            _gn=$(printf '%s' "$_gn" | sed 's/^ *//; s/ *$//' | awk '{print $(NF-1), $NF}')
+            printf 'ok|GPU|gpu %s|%s / %s MB\n' "$_gn" "$(echo $_gu | tr -d ' ')" "$(echo $_gt | tr -d ' ')"
+          done
+    fi
+    # THE ENGINE, THE TURN, THE DOCTOR
+    printf 'ok|ENGINE|engine|%s\n' "$_ae"
+    printf 'ok|ENGINE|model|%s\n' "$(cfg str "engines.$_ae.model")"
+    _ck=ok; _txt=$_s; [ -f "$_sp" ] && { _txt="$_s, stop asked"; _ck=ko; }
+    printf '%s|TURN|turn|%s\n' "$_ck" "$_txt"
+    printf 'ok|TURN|messages|%s\n' "${_w:-0}"
+    _d=$(head -n 1 "$_c" 2>/dev/null)
+    case ${_d:-} in *FAULT*|"") _dck=ko ;; *) _dck=ok ;; esac
+    printf '%s|DOCTOR|doctor|%s\n' "$_dck" "${_d:-no doctor}"
+    ;;
+  json)
+    _s=$(jq -r '.status // "idle"' "$_t" 2>/dev/null) || _s=idle
+    _pid=$(jq -r '.pid // 0' "$_t" 2>/dev/null) || _pid=0
+    _run=false; [ "$_s" = running ] && _run=true
+    _stop=false; [ -f "$_sp" ] && _stop=true
+    _w=$(sqlite3 "$_se" 'select count(*) from messages;' 2>/dev/null) || _w=0
+    _ex=$(sqlite3 "$_se" 'select count(distinct exchange) from messages;' 2>/dev/null) || _ex=0
+    _sess=$(grep -v '^#' "$_u" 2>/dev/null | tail -n 200 | jq -s 'max_by(.session) | .session // 0' 2>/dev/null)
+    _tk=$(grep -v '^#' "$_u" 2>/dev/null | tail -n 500 | jq -s --argjson s "${_sess:-0}" '[.[] | select(.session == $s) | .tokens] | add // 0' 2>/dev/null)
+    # LE MODELE ET SES FRERES (MOUSSA, 21/10) : la page remplit sa liste avec engines,
+    # et coche l alias actif. Sans ces deux champs l entete tombait sur du vide.
+    _ae=$(cfg str active_engine 2>/dev/null)
+    _eng=$(_flat | awk -F'\t' '$1 ~ /^engines\.[a-z_0-9]+\.model$/ { a = $1 ; sub(/^engines\./, "", a) ; sub(/\.model$/, "", a) ; print a }' \
+      | while IFS= read -r _k; do
+          printf '%s\t%s\t%s\n' "$_k" "$(cfg str "engines.$_k.model")" "$(cfg str "engines.$_k.provider")"
+        done | jq -R -s 'split("\n") | map(select(length > 0) | split("\t") | {alias: .[0], model: .[1], provider: .[2]})')
+    printf '{"feed_turns":%s,"names":{"user":"%s","main":"%s"},"tokens":{"session":%s,"session_tokens":%s,"last_turn":%s},"turn":{"running":%s,"pid":%s},"stop":%s,"words":%s,"exchanges":%s,"model":{"alias":"%s","model":"%s","provider":"%s","engine":"%s"},"engines":%s,"skill":"%s","project":"%s","poll_ms":%s,"doctor":"%s"}\n' \
+      "${_ft:-12}" "$(cfg str agents.human user)" "$(cfg str agents.main agent)" \
+      "${_tk:-0}" "${_tk:-0}" "${_tl:-0}" "$_run" "${_pid:-0}" "$_stop" "${_w:-0}" "${_ex:-0}" \
+      "$_ae" "$(cfg str "engines.$_ae.model" 2>/dev/null)" "$(cfg str "engines.$_ae.provider" 2>/dev/null)" "$_ae" "${_eng:-[]}" \
+      "$(cfg str active_skill 2>/dev/null)" "$(cfg str active_project 2>/dev/null)" \
+      "$(cfg num limits.poll_ms 1500)" \
+      "$(head -n 1 "$_c" 2>/dev/null | sed 's/"/\\"/g')"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: line,once,json,menu}

@@ -1,0 +1,21 @@
+id: "B1350"
+tool: "blender_sequencer_images_separate"
+date: "2026-10-17"
+tags: ["blender_sequencer_images_separate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "On image sequence strips, it returns a strip for each image"
+
+machine: "blender"
+op: "sequencer.images_separate"
+
+ARGS:
+  - {name: length, type: int}

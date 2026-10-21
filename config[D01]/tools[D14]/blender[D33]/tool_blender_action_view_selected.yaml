@@ -1,0 +1,20 @@
+id: "B034"
+tool: "blender_action_view_selected"
+date: "2026-10-17"
+tags: ["blender_action_view_selected"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset viewable area to show selected keyframes range"
+
+machine: "blender"
+op: "action.view_selected"
+
+ARGS: []

@@ -1,0 +1,21 @@
+id: "B949"
+tool: "blender_object_grease_pencil_dash_modifier_segment_add"
+date: "2026-10-17"
+tags: ["blender_object_grease_pencil_dash_modifier_segment_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a segment to the dash modifier"
+
+machine: "blender"
+op: "object.grease_pencil_dash_modifier_segment_add"
+
+ARGS:
+  - {name: modifier, type: text}

@@ -1,0 +1,20 @@
+id: "B244"
+tool: "blender_curve_match_texture_space"
+date: "2026-10-17"
+tags: ["blender_curve_match_texture_space"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Match texture space to object's bounding box"
+
+machine: "blender"
+op: "curve.match_texture_space"
+
+ARGS: []

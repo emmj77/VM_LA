@@ -1,0 +1,22 @@
+id: "B223"
+tool: "blender_constraint_limitdistance_reset"
+date: "2026-10-17"
+tags: ["blender_constraint_limitdistance_reset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset limiting distance for Limit Distance Constraint"
+
+machine: "blender"
+op: "constraint.limitdistance_reset"
+
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE

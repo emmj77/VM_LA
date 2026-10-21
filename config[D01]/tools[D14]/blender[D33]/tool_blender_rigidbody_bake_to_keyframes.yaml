@@ -1,0 +1,23 @@
+id: "B1235"
+tool: "blender_rigidbody_bake_to_keyframes"
+date: "2026-10-17"
+tags: ["blender_rigidbody_bake_to_keyframes"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Bake rigid body transformations of selected objects to keyframes"
+
+machine: "blender"
+op: "rigidbody.bake_to_keyframes"
+
+ARGS:
+  - {name: frame_start, type: int}
+  - {name: frame_end, type: int}
+  - {name: step, type: int}

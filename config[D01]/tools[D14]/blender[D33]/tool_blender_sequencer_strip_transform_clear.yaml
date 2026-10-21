@@ -1,0 +1,21 @@
+id: "B1399"
+tool: "blender_sequencer_strip_transform_clear"
+date: "2026-10-17"
+tags: ["blender_sequencer_strip_transform_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset image transformation to default value"
+
+machine: "blender"
+op: "sequencer.strip_transform_clear"
+
+ARGS:
+  - {name: property, type: text}          # un de : POSITION | SCALE | ROTATION | ALL

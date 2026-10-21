@@ -1,0 +1,21 @@
+id: "B471"
+tool: "blender_grease_pencil_remove_fill_guides"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_remove_fill_guides"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove all the strokes that were created from the fill tool as guides"
+
+machine: "blender"
+op: "grease_pencil.remove_fill_guides"
+
+ARGS:
+  - {name: mode, type: text}          # un de : ACTIVE_FRAME | ALL_FRAMES

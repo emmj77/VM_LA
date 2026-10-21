@@ -1,0 +1,24 @@
+id: "B566"
+tool: "blender_import_curve_svg"
+date: "2026-10-17"
+tags: ["blender_import_curve_svg"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Load a SVG file"
+
+machine: "blender"
+op: "import_curve.svg"
+
+ARGS:
+  - {name: filepath, type: text}
+  - {name: filter_glob, type: text}
+  - {name: directory, type: text}
+  - {name: files, type: text}

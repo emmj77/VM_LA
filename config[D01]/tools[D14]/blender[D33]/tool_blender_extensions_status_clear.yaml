@@ -1,0 +1,20 @@
+id: "B317"
+tool: "blender_extensions_status_clear"
+date: "2026-10-17"
+tags: ["blender_extensions_status_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(undocumented operator)"
+
+machine: "blender"
+op: "extensions.status_clear"
+
+ARGS: []

@@ -1,0 +1,24 @@
+id: "B1719"
+tool: "blender_extensions_repo"
+date: "2026-10-17"
+tags: ["blender_extensions_repo"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "an extension repository: enable_from_drop | lock_all | refresh_all | sync | sync_all | unlock | unlock_all (op picks which)"
+
+machine: "blender"
+op: "extensions.repo_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [enable_from_drop, lock_all, refresh_all, sync, sync_all, unlock, unlock_all]}
+  - {name: repo_index, type: int}
+  - {name: use_active_only, type: text}
+  - {name: repo_directory, type: text}

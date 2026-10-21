@@ -1,0 +1,20 @@
+id: "B875"
+tool: "blender_node_select_linked_from"
+date: "2026-10-17"
+tags: ["blender_node_select_linked_from"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select nodes linked from the selected ones"
+
+machine: "blender"
+op: "node.select_linked_from"
+
+ARGS: []

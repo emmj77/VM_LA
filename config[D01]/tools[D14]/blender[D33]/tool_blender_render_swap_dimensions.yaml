@@ -1,0 +1,20 @@
+id: "B1232"
+tool: "blender_render_swap_dimensions"
+date: "2026-10-17"
+tags: ["blender_render_swap_dimensions"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Flip X and Y resolutions"
+
+machine: "blender"
+op: "render.swap_dimensions"
+
+ARGS: []

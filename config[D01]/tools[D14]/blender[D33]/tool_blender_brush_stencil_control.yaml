@@ -1,0 +1,22 @@
+id: "B115"
+tool: "blender_brush_stencil_control"
+date: "2026-10-17"
+tags: ["blender_brush_stencil_control"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Control the stencil brush"
+
+machine: "blender"
+op: "brush.stencil_control"
+
+ARGS:
+  - {name: mode, type: text}          # un de : TRANSLATION | SCALE | ROTATION
+  - {name: texmode, type: text}          # un de : PRIMARY | SECONDARY

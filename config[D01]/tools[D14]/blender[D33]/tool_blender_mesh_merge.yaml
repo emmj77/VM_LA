@@ -1,0 +1,22 @@
+id: "B682"
+tool: "blender_mesh_merge"
+date: "2026-10-17"
+tags: ["blender_mesh_merge"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Merge selected vertices"
+
+machine: "blender"
+op: "mesh.merge"
+
+ARGS:
+  - {name: type, type: text}          # un de : CENTER | CURSOR | COLLAPSE | FIRST | LAST
+  - {name: uvs, type: text}          # true|false, vide pour ne rien poser

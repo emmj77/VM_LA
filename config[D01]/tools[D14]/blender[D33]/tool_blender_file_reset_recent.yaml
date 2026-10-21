@@ -1,0 +1,20 @@
+id: "B342"
+tool: "blender_file_reset_recent"
+date: "2026-10-17"
+tags: ["blender_file_reset_recent"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset recent files"
+
+machine: "blender"
+op: "file.reset_recent"
+
+ARGS: []

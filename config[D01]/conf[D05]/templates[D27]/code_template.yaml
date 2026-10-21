@@ -1,0 +1,17 @@
+# id: Q06
+# LE GABARIT D UN FICHIER DE CODE. pas de code hors de ce gabarit.
+#
+# l en-tete, deux lignes avant tout le reste :
+#   # id: Xnn                     l identite, la meme que dans setup[D11]/index_la.yaml
+#   # role: <une ligne anglaise>  ce que le fichier fait, pas ce qu il raconte
+#
+# ce qu un fichier de code ne fait jamais :
+#   aucun mot francais          ni nom, ni variable, ni commentaire : le francais vit dans les messages
+#   aucun chemin en dur         une brique passe par cfg, un serveur par l environnement
+#   aucun acces direct au maitre  cfg.sh, et programs/laconf.py. un corps ne parse jamais la_config
+#   aucun recit en commentaire  une ligne utile, sinon rien
+#
+# shell   dash. une brique est une fonction, pas un programme. set -eu a la racine seulement.
+# python  les serveurs se lancent, ils ne sont jamais sources.
+#
+# l id se pose une fois : le fichier le porte, index_la.yaml le liste et le cite.

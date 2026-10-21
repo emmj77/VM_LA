@@ -1,0 +1,52 @@
+id: "U366"
+tool: "unity_mcp_configure"
+date: "2026-10-18"
+tags: ["unity", "cli", "mcp"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Write MCP server config for an AI agent client"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- mcp configure --no-banner --no-pager --non-interactive
+  case "{{list}}" in ''|true|false) ;; *) printf '%s\n' "$(msg list_true_false)" >&2; exit 1 ;; esac
+  case "{{local}}" in ''|true|false) ;; *) printf '%s\n' "$(msg local_true_false)" >&2; exit 1 ;; esac
+  case "{{yes}}" in ''|true|false) ;; *) printf '%s\n' "$(msg yes_true_false)" >&2; exit 1 ;; esac
+  case "{{dry_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg dry_run_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{client}}" ] && set -- "$@" "{{client}}"
+  [ "{{list}}" = true ] && set -- "$@" --list
+  [ "{{local}}" = true ] && set -- "$@" --local
+  [ "{{yes}}" = true ] && set -- "$@" --yes
+  [ "{{dry_run}}" = true ] && set -- "$@" --dry-run
+  [ -n "{{server}}" ] && set -- "$@" --server "{{server}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_mcp_configure_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: client, type: text}   # facultatif
+  - {name: list, type: text}   # true pour poser --list ; List all supported clients and their config paths
+  - {name: local, type: text}   # true pour poser --local ; Write project-local config (for clients that support it, e.g. cursor, 
+  - {name: yes, type: text}   # true pour poser --yes ; Skip the 'already exists, update?' confirmation prompt
+  - {name: dry_run, type: text}   # true pour poser --dry-run ; Print the entry that would be added or changed, without modifying any 
+  - {name: server, type: text}   # Which Unity MCP server to target (default: editor)

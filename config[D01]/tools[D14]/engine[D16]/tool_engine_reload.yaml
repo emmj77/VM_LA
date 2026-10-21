@@ -1,0 +1,46 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E017"
+tool: "engine.reload"
+date: "2026-10-20"
+tags: ["engine", "reload"]
+RULES:
+  enabled: true
+  timeout: 300
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the register rebuilt from the bodies: the body carries its id, the line repeats it"
+COMMAND: |
+  _op=${1:-build}
+  _td=$(cfg path tools) || { printf 'FAULT no tools directory\n'; exit 0; }
+  _reg=$(cfg abs registry) || { printf 'FAULT no register in the tree\n'; exit 0; }
+  _rege=$(cfg abs registry_engine) || { printf 'FAULT no engine register in the tree\n'; exit 0; }
+  _t=$(tmpfile reload) || exit 0
+  for _b in "$_td"/*/tool_*.yaml; do
+    [ -f "$_b" ] || continue
+    _i=$(awk '/^id:[ \t]*/ { v = $0; sub(/^id:[ \t]*/, "", v); gsub(/[^0-9A-Za-z]/, "", v); print v; exit }' "$_b")
+    _n=$(awk '/^[ \t]*tool:[ \t]*/ { v = $0; sub(/^[ \t]*tool:[ \t]*/, "", v); gsub(/"/, "", v); print v; exit }' "$_b")
+    _en=$(awk '/^[ \t]*enabled:[ \t]*/ { v = $0; sub(/.*enabled:[ \t]*/, "", v); gsub(/[ \t]/, "", v); print v; exit }' "$_b")
+    [ -n "$_n" ] || continue
+    _d=$(basename -- "$(dirname -- "$_b")")
+    _d=${_d%%\[*}
+    printf '%s\t%s\t%s\t%s\n' "${_i:-0}" "$_n" "$(printf '%s' "$_d" | tr 'a-z' 'A-Z')" "${_en:-true}"
+  done > "$_t.bodies"
+  for _ch in model engine; do
+    awk -F'\t' -v ch="$_ch" '
+      function engine_fam(f) { return (f == "ENGINE" || f == "DOCTOR" || f == "WATCH" || f == "TURN") }
+      { if (engine_fam($3) ? (ch == "engine") : (ch == "model"))
+          printf "%s\t- id: %s\n  tool: \"%s\"\n  family: %s\n  sub_family: \"\"\n  doc: \"\"\n  guardrail: true\n  enabled: %s\n  visible: %s\n", $1, $1, $2, $3, $4, (ch == "model" ? "true" : "false") }
+    ' "$_t.bodies" | sort -n | cut -f2- > "$_t.$_ch"
+    _out=$( [ "$_ch" = model ] && printf '%s' "$_reg" || printf '%s' "$_rege" )
+    [ "$(grep -c '^- id:' "$_t.$_ch")" -gt 0 ] && cp -f "$_t.$_ch" "$_out" \
+      && printf 'ok %s: %s line(s)\n' "$_ch" "$(grep -c '^- id:' "$_out")"
+  done
+  _z=$(awk -F'\t' '$1 == 0 { print $2 }' "$_t.bodies" | tr '\n' ' ')
+  [ -z "$_z" ] || printf 'FAULT these bodies carry no id: %s\n' "$_z"
+  rm -f "$_t" "$_t.bodies" "$_t.model" "$_t.engine"
+  exit 0
+ARGS:
+  - {name: op, type: enum, values: build}

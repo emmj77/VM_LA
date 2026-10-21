@@ -1,0 +1,20 @@
+id: "B1683"
+tool: "blender_wm_window_close"
+date: "2026-10-17"
+tags: ["blender_wm_window_close"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Close the current window"
+
+machine: "blender"
+op: "wm.window_close"
+
+ARGS: []

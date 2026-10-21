@@ -1,0 +1,20 @@
+id: "B048"
+tool: "blender_anim_keyingset_button_remove"
+date: "2026-10-17"
+tags: ["blender_anim_keyingset_button_remove"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove current UI-active property from current keying set"
+
+machine: "blender"
+op: "anim.keyingset_button_remove"
+
+ARGS: []

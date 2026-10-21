@@ -1,0 +1,23 @@
+id: "B116"
+tool: "blender_brush_stencil_fit_image_aspect"
+date: "2026-10-17"
+tags: ["blender_brush_stencil_fit_image_aspect"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "When using an image texture, adjust the stencil size to fit the image aspect ratio"
+
+machine: "blender"
+op: "brush.stencil_fit_image_aspect"
+
+ARGS:
+  - {name: use_repeat, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_scale, type: text}          # true|false, vide pour ne rien poser
+  - {name: mask, type: text}          # true|false, vide pour ne rien poser

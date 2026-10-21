@@ -1,0 +1,23 @@
+id: "G042"
+tool: "unload_project"
+date: "2026-10-17"
+tags: ["unload_project", "project"]
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "unloads the project : removes projects/.active, so the whole skillset reopens"
+
+COMMAND: |
+  F="$ROOT/projects/.active"
+  if [ -L "$F" ]; then printf '%s\n' "$(msg symlink_forbidden "$F")" >&2; exit 1; fi
+  if [ -e "$F" ]; then rm -f "$F"; fi
+  printf '%s\n' "$(msg project_unloaded_whole_skillset)"
+
+ARGS: []

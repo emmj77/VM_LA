@@ -1,0 +1,20 @@
+id: "B1070"
+tool: "blender_object_voxel_remesh"
+date: "2026-10-17"
+tags: ["blender_object_voxel_remesh"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Calculates a new manifold mesh based on the volume of the current mesh. All data layers will be lost"
+
+machine: "blender"
+op: "object.voxel_remesh"
+
+ARGS: []

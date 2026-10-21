@@ -1,0 +1,43 @@
+id: "U392"
+tool: "unity_projects_link_cloud"
+date: "2026-10-18"
+tags: ["unity", "cli", "projects"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Enable Unity Cloud for a local project (creates a Unity Cloud project, or uses an existing one with --cloud-project)"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- projects link cloud --no-banner --no-pager --non-interactive
+  [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'unity projects link cloud')" >&2; exit 1; }
+
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ -n "{{cloud_org}}" ] && set -- "$@" --cloud-org "{{cloud_org}}"
+  [ -n "{{cloud_project}}" ] && set -- "$@" --cloud-project "{{cloud_project}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_projects_link_cloud)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: path, type: text}
+  - {name: cloud_org, type: text}   # Organization for the Unity Cloud project (id or name); overrides UNITY
+  - {name: cloud_project, type: text}   # Use an existing Unity Cloud project (id or name) instead of creating o

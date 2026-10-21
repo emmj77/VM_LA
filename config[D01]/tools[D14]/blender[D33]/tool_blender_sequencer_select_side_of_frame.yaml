@@ -1,0 +1,22 @@
+id: "B1382"
+tool: "blender_sequencer_select_side_of_frame"
+date: "2026-10-17"
+tags: ["blender_sequencer_select_side_of_frame"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select strips relative to the current frame"
+
+machine: "blender"
+op: "sequencer.select_side_of_frame"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: side, type: text}          # un de : LEFT | RIGHT | CURRENT

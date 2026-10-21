@@ -1,0 +1,30 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E022"
+tool: "engine.service"
+date: "2026-10-21"
+tags: ["engine", "service"]
+RULES:
+  enabled: true
+  timeout: 0
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "one of the four services, in the foreground: it hands its process over and never comes back"
+COMMAND: |
+
+  # une borne de 0 veut dire aucune borne : le service prend la main et la garde
+  _n="{{name}}"
+  case $_n in
+    models)    exec dash -c "$(shell_cmd llama serve "$(cfg str models.local)")" ;;
+    asr)       exec dash -c "$(shell_cmd asr serve)" ;;
+    tts)       _py=$(cfg str machine.tts.python 2>/dev/null)
+               [ -x "$_py" ] || _py=python3
+               exec "$_py" "$(cfg abs tts_daemon)" ;;
+    bridge)    exec python3 "$(cfg abs bridge)" ;;
+    dashboard) exec python3 "$(cfg abs dash_server)" ;;
+    *)         printf 'FAULT no service named %s\n' "${_n:-}" ; exit 2 ;;
+  esac
+ARGS:
+  - {name: name, type: enum, values: models,asr,tts,bridge,dashboard}

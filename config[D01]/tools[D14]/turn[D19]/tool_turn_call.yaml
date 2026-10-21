@@ -1,0 +1,50 @@
+# one step of the turn. it reads state/turn.json, does its work, writes it back.
+id: "T001"
+tool: "turn.call"
+date: "2026-10-20"
+tags: ["turn", "call"]
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "one exchange with the provider, bounded"
+COMMAND: |
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
+  _al=$(cfg str active_engine) || { printf 'FAULT no active engine\n'; exit 0; }
+  _post=$(cfg str "engines.$_al.post") || { printf 'FAULT engine %s carries no address\n' "$_al"; exit 0; }
+  _hdr=$(cfg str "engines.$_al.header") || _hdr=Authorization
+  _var=$(cfg str "engines.$_al.variable") || { printf 'FAULT no key variable\n'; exit 0; }
+  _key=$(env_get "$_var")
+  [ -n "$_key" ] || { _tr call "no key for $_var"; printf 'FAULT the key %s is empty\n' "$_var"; exit 0; }
+  _model=$(cfg str "engines.$_al.model")
+  _mt=$(cfg num "engines.$_al.max_tokens") || _mt=4096
+  _tc=$(cfg str "engines.$_al.tool_choice") || _tc=auto
+  _to=$(cfg num loop.timeout) || _to=600
+  # -n : sans entree, jq ne lançait pas le filtre et le corps partait vide (reponse vide, 21/10)
+  _body=$(jq -nc --arg m "$_model" --argjson mt "$_mt" --arg tc "$_tc" \
+    --slurpfile t "$(cfg abs turn)" '
+      {model:$m,messages:$t[0].messages,max_tokens:$mt,tool_choice:$tc,stream:false}
+      + (if ($t[0].tools // [] | length) > 0 then {tools:$t[0].tools} else {} end)' /dev/null)
+  _resp=$(printf '%s' "$_body" | curl -sS -m "$_to" -H "$_hdr: Bearer $_key" \
+    -H 'Content-Type: application/json' -d @- "$_post" 2>&1)
+  _rc=$?
+  if [ "$_rc" -ne 0 ]; then
+    _tr call "curl rc=$_rc"
+    _turn_set '(.status = "failed")'
+    printf 'FAULT the provider did not answer (rc=%s)\n' "$_rc"
+    exit 0
+  fi
+  printf '%s' "$_resp" | jq -e . >/dev/null 2>&1 || { _tr call "answer is not json"; printf 'FAULT the answer is not json\n'; exit 0; }
+  _msg=$(printf '%s' "$_resp" | jq -c '.choices[0].message // {}')
+  _tk=$(printf '%s' "$_resp" | jq -r '.usage.total_tokens // 0')
+  _turn_set_json '(.reply_msg = $v)' "$_msg"
+  _turn_set "(.tokens = (.tokens + $_tk))"
+  _tr call "$_tk tokens"
+  exit 0
+
+ARGS: []

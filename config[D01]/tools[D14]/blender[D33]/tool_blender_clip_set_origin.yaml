@@ -1,0 +1,21 @@
+id: "B173"
+tool: "blender_clip_set_origin"
+date: "2026-10-17"
+tags: ["blender_clip_set_origin"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set active marker as origin by moving camera (or its parent if present) in 3D space"
+
+machine: "blender"
+op: "clip.set_origin"
+
+ARGS:
+  - {name: use_median, type: text}          # true|false, vide pour ne rien poser

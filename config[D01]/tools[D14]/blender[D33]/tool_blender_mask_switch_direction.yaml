@@ -1,0 +1,20 @@
+id: "B615"
+tool: "blender_mask_switch_direction"
+date: "2026-10-17"
+tags: ["blender_mask_switch_direction"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Switch direction of selected splines"
+
+machine: "blender"
+op: "mask.switch_direction"
+
+ARGS: []

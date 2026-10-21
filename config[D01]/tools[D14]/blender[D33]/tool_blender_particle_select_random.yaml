@@ -1,0 +1,24 @@
+id: "B1167"
+tool: "blender_particle_select_random"
+date: "2026-10-17"
+tags: ["blender_particle_select_random"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select a randomly distributed set of hair or points"
+
+machine: "blender"
+op: "particle.select_random"
+
+ARGS:
+  - {name: ratio, type: text}
+  - {name: seed, type: int}
+  - {name: action, type: text}          # un de : SELECT | DESELECT
+  - {name: type, type: text}          # un de : HAIR | POINTS

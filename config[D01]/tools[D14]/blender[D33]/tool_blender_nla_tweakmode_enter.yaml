@@ -1,0 +1,22 @@
+id: "B785"
+tool: "blender_nla_tweakmode_enter"
+date: "2026-10-17"
+tags: ["blender_nla_tweakmode_enter"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Enter tweaking mode for the action referenced by the active strip to edit its keyframes"
+
+machine: "blender"
+op: "nla.tweakmode_enter"
+
+ARGS:
+  - {name: isolate_action, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_upper_stack_evaluation, type: text}          # true|false, vide pour ne rien poser

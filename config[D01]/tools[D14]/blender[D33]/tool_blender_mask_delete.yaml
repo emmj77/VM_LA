@@ -1,0 +1,21 @@
+id: "B586"
+tool: "blender_mask_delete"
+date: "2026-10-17"
+tags: ["blender_mask_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete selected control points or splines"
+
+machine: "blender"
+op: "mask.delete"
+
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser

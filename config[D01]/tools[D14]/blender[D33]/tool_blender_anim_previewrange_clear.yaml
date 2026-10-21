@@ -1,0 +1,20 @@
+id: "B051"
+tool: "blender_anim_previewrange_clear"
+date: "2026-10-17"
+tags: ["blender_anim_previewrange_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Clear preview range"
+
+machine: "blender"
+op: "anim.previewrange_clear"
+
+ARGS: []

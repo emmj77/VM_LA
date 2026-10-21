@@ -1,0 +1,20 @@
+id: "B866"
+tool: "blender_node_render_changed"
+date: "2026-10-17"
+tags: ["blender_node_render_changed"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Render current scene, when input node's layer has been changed"
+
+machine: "blender"
+op: "node.render_changed"
+
+ARGS: []

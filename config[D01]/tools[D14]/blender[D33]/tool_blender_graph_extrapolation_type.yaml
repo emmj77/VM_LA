@@ -1,0 +1,21 @@
+id: "B393"
+tool: "blender_graph_extrapolation_type"
+date: "2026-10-17"
+tags: ["blender_graph_extrapolation_type"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set extrapolation mode for selected F-Curves"
+
+machine: "blender"
+op: "graph.extrapolation_type"
+
+ARGS:
+  - {name: type, type: text}          # un de : CONSTANT | LINEAR | MAKE_CYCLIC | CLEAR_CYCLIC

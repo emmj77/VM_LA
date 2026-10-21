@@ -1,0 +1,20 @@
+id: "B1470"
+tool: "blender_ui_editsource"
+date: "2026-10-17"
+tags: ["blender_ui_editsource"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Edit UI source code of the active button"
+
+machine: "blender"
+op: "ui.editsource"
+
+ARGS: []

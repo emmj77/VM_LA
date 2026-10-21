@@ -1,0 +1,22 @@
+id: "B1134"
+tool: "blender_paintcurve_add_point_slide"
+date: "2026-10-17"
+tags: ["blender_paintcurve_add_point_slide"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add new curve point and slide it"
+
+machine: "blender"
+op: "paintcurve.add_point_slide"
+
+ARGS:
+  - {name: PAINTCURVE_OT_add_point, type: text}
+  - {name: PAINTCURVE_OT_slide, type: text}

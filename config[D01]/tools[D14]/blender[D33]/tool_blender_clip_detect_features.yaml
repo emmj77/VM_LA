@@ -1,0 +1,24 @@
+id: "B141"
+tool: "blender_clip_detect_features"
+date: "2026-10-17"
+tags: ["blender_clip_detect_features"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Automatically detect features and place markers to track"
+
+machine: "blender"
+op: "clip.detect_features"
+
+ARGS:
+  - {name: placement, type: text}          # un de : FRAME | INSIDE_GPENCIL | OUTSIDE_GPENCIL
+  - {name: margin, type: int}
+  - {name: threshold, type: text}
+  - {name: min_distance, type: int}

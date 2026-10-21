@@ -1,0 +1,21 @@
+id: "B893"
+tool: "blender_node_viewer_shortcut_get"
+date: "2026-10-17"
+tags: ["blender_node_viewer_shortcut_get"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle a specific viewer node using 1,2,..,9 keys"
+
+machine: "blender"
+op: "node.viewer_shortcut_get"
+
+ARGS:
+  - {name: viewer_index, type: int}

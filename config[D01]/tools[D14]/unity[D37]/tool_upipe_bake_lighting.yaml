@@ -1,0 +1,38 @@
+id: "U013"
+tool: "upipe_bake_lighting"
+date: "2026-10-18"
+tags: ["unity", "pipeline", "bake_lighting"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Trigger an async lightmap bake of the open scene(s) via Lightmapping.BakeAsync(). Returns immediately; poll `lighting_bake_status` until completed."
+
+COMMAND: |
+  PROJ=$(sed -n '1p' "$ROOT/projects/.active" 2>/dev/null | tr -d '\r')
+  P=
+  [ -n "$PROJ" ] && P=$(sed -n 's/^path:[[:space:]]*//p' "$ROOT/projects/$PROJ/project.yml" 2>/dev/null | head -1 | tr -d '"')
+  [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
+  case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
+  [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  case "{{confirm}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'confirm' 'bake_lighting')""{{confirm}}" >&2; exit 1 ;; esac
+  case "{{dry_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'dry_run' 'bake_lighting')""{{dry_run}}" >&2; exit 1 ;; esac
+  set -- command --project-path "$P" bake_lighting
+  [ -n "{{confirm}}" ] && set -- "$@" --confirm "{{confirm}}"
+  [ -n "{{dry_run}}" ] && set -- "$@" --dry_run "{{dry_run}}"
+
+  OUT=$(timeout 90 "$CLI" --no-banner --no-pager --non-interactive --format json "$@" </dev/null 2>&1)
+  printf '%s' "$OUT" | jq -e '.success == true' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | jq -r '.errors[0].message // .errors[0].code // "reponse illisible du CLI"' 2>/dev/null || printf '%s' "$OUT")" >&2; exit 1; }
+  printf '%s\n' "$OUT" | jq -c '.data'
+
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: dry_run, type: text}          # true|false, vide pour ne rien poser

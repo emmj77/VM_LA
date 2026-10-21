@@ -1,0 +1,21 @@
+id: "B1288"
+tool: "blender_screen_screen_full_area"
+date: "2026-10-17"
+tags: ["blender_screen_screen_full_area"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle display selected area as fullscreen/maximized"
+
+machine: "blender"
+op: "screen.screen_full_area"
+
+ARGS:
+  - {name: use_hide_panels, type: text}          # true|false, vide pour ne rien poser

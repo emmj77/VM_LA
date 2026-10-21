@@ -1,0 +1,45 @@
+id: "U182"
+tool: "coplay_lighting_create"
+date: "2026-10-18"
+tags: ["unity", "coplay", "lighting"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Create a new light."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- lighting create
+  T=$(printf '%s' "{{position}}" | tr -d '0123456789. -')
+  [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'position' '3' '%s')""{{position}}" >&2; exit 1; }
+  unset T
+  T=$(printf '%s' "{{color}}" | tr -d '0123456789. -')
+  [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'color' '3' '%s')""{{color}}" >&2; exit 1; }
+  unset T
+  [ -n "{{name}}" ] || { printf '%s\n' "$(msg argument_required 'name' 'lighting create')" >&2; exit 1; }
+  [ -n "{{light_type}}" ] && set -- "$@" --type "{{light_type}}"
+  [ -n "{{position}}" ] && set -- "$@" --position {{position}}
+  [ -n "{{color}}" ] && set -- "$@" --color {{color}}
+  [ -n "{{intensity}}" ] && set -- "$@" --intensity "{{intensity}}"
+  [ -n "{{name}}" ] && set -- "$@" "{{name}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: light_type, type: text}          # un de : Directional | Point | Spot | Area
+  - {name: position, type: text}          # 3 nombres : x y z
+  - {name: color, type: text}          # 3 nombres : x y z
+  - {name: intensity, type: text}
+  - {name: name, type: text}

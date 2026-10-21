@@ -1,0 +1,21 @@
+id: "B304"
+tool: "blender_dpaint_output_toggle"
+date: "2026-10-17"
+tags: ["blender_dpaint_output_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add or remove Dynamic Paint output data layer"
+
+machine: "blender"
+op: "dpaint.output_toggle"
+
+ARGS:
+  - {name: output, type: text}          # un de : A | B

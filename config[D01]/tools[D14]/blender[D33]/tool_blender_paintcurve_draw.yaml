@@ -1,0 +1,20 @@
+id: "B1137"
+tool: "blender_paintcurve_draw"
+date: "2026-10-17"
+tags: ["blender_paintcurve_draw"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Draw curve"
+
+machine: "blender"
+op: "paintcurve.draw"
+
+ARGS: []

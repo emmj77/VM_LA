@@ -1,0 +1,24 @@
+id: "B1770"
+tool: "blender_render_preset"
+date: "2026-10-17"
+tags: ["blender_render_preset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a render preset group: color_management_white_balance | cycles_integrator | cycles_performance | cycles_sampling | cycles_viewport_sampling | eevee_raytracing (op picks which)"
+
+machine: "blender"
+op: "render.{{op}}_preset_add"
+
+ARGS:
+  - {name: op, type: enum, values: [color_management_white_balance, cycles_integrator, cycles_performance, cycles_sampling, cycles_viewport_sampling, eevee_raytracing]}
+  - {name: name, type: text}
+  - {name: remove_active, type: text}
+  - {name: remove_name, type: text}

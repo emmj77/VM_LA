@@ -1,0 +1,21 @@
+id: "B999"
+tool: "blender_object_multires_unsubdivide"
+date: "2026-10-17"
+tags: ["blender_object_multires_unsubdivide"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Rebuild a lower subdivision level of the current base mesh"
+
+machine: "blender"
+op: "object.multires_unsubdivide"
+
+ARGS:
+  - {name: modifier, type: text}

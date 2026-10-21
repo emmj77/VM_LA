@@ -1,0 +1,43 @@
+id: "U424"
+tool: "unity_vcs_git_migrate_lfs"
+date: "2026-10-18"
+tags: ["unity", "cli", "vcs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Find binaries already committed to git history and print the LFS migration command for them"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- vcs git migrate-lfs --no-banner --no-pager --non-interactive
+
+
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ -n "{{min_size}}" ] && set -- "$@" --min-size "{{min_size}}"
+  [ -n "{{since}}" ] && set -- "$@" --since "{{since}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_vcs_git_migrate)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: path, type: text}   # facultatif
+  - {name: min_size, type: text}   # Blob size floor, such as 500KB or 5MB. Defaults to 1MB.
+  - {name: since, type: text}   # Scan only commits newer than this git date, to bound the cost on a lar

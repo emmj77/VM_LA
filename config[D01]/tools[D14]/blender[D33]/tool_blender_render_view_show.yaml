@@ -1,0 +1,20 @@
+id: "B1234"
+tool: "blender_render_view_show"
+date: "2026-10-17"
+tags: ["blender_render_view_show"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle show render view"
+
+machine: "blender"
+op: "render.view_show"
+
+ARGS: []

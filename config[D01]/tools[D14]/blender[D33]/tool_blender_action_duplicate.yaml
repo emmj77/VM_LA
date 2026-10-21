@@ -1,0 +1,20 @@
+id: "B008"
+tool: "blender_action_duplicate"
+date: "2026-10-17"
+tags: ["blender_action_duplicate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make a copy of all selected keyframes"
+
+machine: "blender"
+op: "action.duplicate"
+
+ARGS: []

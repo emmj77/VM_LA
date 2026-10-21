@@ -1,0 +1,21 @@
+id: "B883"
+tool: "blender_node_swap_typed_bundle"
+date: "2026-10-17"
+tags: ["blender_node_swap_typed_bundle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Swap existing node with a Combine Bundle node with a type input"
+
+machine: "blender"
+op: "node.swap_typed_bundle"
+
+ARGS:
+  - {name: settings, type: text}

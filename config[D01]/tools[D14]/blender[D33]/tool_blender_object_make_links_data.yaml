@@ -1,0 +1,21 @@
+id: "B981"
+tool: "blender_object_make_links_data"
+date: "2026-10-17"
+tags: ["blender_object_make_links_data"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Transfer data from active object to selected objects"
+
+machine: "blender"
+op: "object.make_links_data"
+
+ARGS:
+  - {name: type, type: text}          # un de : OBDATA | MATERIAL | ANIMATION | GROUPS | DUPLICOLLECTION | FONTS | MODIFIERS | CONSTRAINTS | EFFECTS | LIGHT_LINKING | SHADOW_LINKING

@@ -1,0 +1,857 @@
+# id: P02
+# role: the bridge. page, API, audio, delegate. transport only: it decides nothing,
+# it holds no address, and it reads the environment instead of a file or a path.
+import json
+import os
+import re
+import subprocess
+import tempfile
+import sys
+import ssl
+import threading
+import time
+import urllib.parse
+import urllib.request
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+NEEDED = ("LA_HOST", "LA_PORT_BRIDGE", "LA_PAGE", "LA_STATE", "LA_AUDIO", "LA_TOOL")
+
+TYPES = {
+    ".html": "text/html; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+    ".ico": "image/x-icon",
+    ".json": "application/json",
+    ".webmanifest": "application/manifest+json",
+    ".wav": "audio/wav",
+    ".webm": "audio/webm",
+    ".ogg": "audio/ogg",
+    ".mp4": "audio/mp4",
+    ".apk": "application/vnd.android.package-archive",
+}
+
+
+def env(name):
+    v = os.environ.get(name, "").strip()
+    if not v:
+        die("%s is not set" % name)
+    return v
+
+
+def die(message):
+    sys.stderr.write("bridge: %s\n" % message)
+    raise SystemExit(1)
+
+
+def state_file(name):
+    return os.path.join(os.environ["LA_STATE"], name)
+
+
+def kind_of(path):
+    return TYPES.get(os.path.splitext(path)[1].lower(), "application/octet-stream")
+
+
+def now():
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+
+def ask(kind, tool, args, feed=None, secs=240):
+    """one round trip to the door, unwrapped: the bridge never decides anything itself"""
+    run = subprocess.run(["dash", os.environ["LA_TOOL"], kind, tool] + args,
+                         input=feed, capture_output=True, text=True, timeout=secs)
+    txt = (run.stdout or "").strip()
+    try:
+        d = json.loads(txt)
+    except Exception:
+        return {"error": txt or (run.stderr or "").strip()}
+    v = d.get("result", d) if isinstance(d, dict) else d
+    if isinstance(v, str):
+        try:
+            v = json.loads(v)
+        except Exception:
+            pass
+    return v
+
+
+def delegate(tool, args):
+    """the only thing this file does besides transport: it hands the work to the door"""
+    cmd = ["dash", os.environ["LA_TOOL"], "tool", tool] + args
+    p = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    return {"tool": tool, "rc": p.returncode, "out": (p.stdout or "").strip(),
+            "err": (p.stderr or "").strip()}
+
+
+CONF = {"mt": None, "raw": {}}
+
+
+def conf(section=None):
+    """the master file as a dict, reread when it moves. never written here."""
+    path = os.environ.get("LA_CONFIG", "")
+    try:
+        mt = os.stat(path).st_mtime_ns
+    except OSError:
+        return {}
+    if CONF["mt"] != mt:
+        try:
+            import yaml
+            with open(path, encoding="utf-8") as f:
+                CONF["raw"] = yaml.safe_load(f) or {}
+        except Exception:
+            CONF["raw"] = {}
+        CONF["mt"] = mt
+    raw = CONF["raw"] or {}
+    if section:
+        node = raw.get(section)
+        return node if isinstance(node, dict) else {}
+    return raw
+
+
+def conf_section(name):
+    """a section that moved to its own file sits beside the master: conf/<name>.yaml"""
+    node = conf(name)
+    if isinstance(node, dict) and node:
+        return node
+    path = os.path.join(os.path.dirname(os.environ.get("LA_CONFIG", "")), "%s.yaml" % name)
+    try:
+        import yaml
+        with open(path, encoding="utf-8") as f:
+            return yaml.safe_load(f) or {}
+    except Exception:
+        return {}
+
+
+def root_file(rel):
+    return os.path.join(os.environ.get("LA_ROOT", "."), rel)
+
+
+def active_name(kind):
+    rel = "skills[D23]/.active" if kind == "skill" else "projects[D21]/.active"
+    try:
+        with open(root_file(rel), encoding="utf-8") as f:
+            return f.read().strip()
+    except OSError:
+        return ""
+
+
+def agents_list():
+    c = conf_section("agents")
+    names = str(c.get("names") or "").split()
+    main = str(c.get("main") or "")
+    try:
+        with open(state_file("turn.pid"), encoding="utf-8") as f:
+            pid = int(f.read().strip() or 0)
+    except Exception:
+        pid = 0
+    out = []
+    for n in names:
+        out.append({"name": n, "main": n == main, "role": "main" if n == main else "sub",
+                    "status": "running" if (n == main and pid) else "idle",
+                    "pid": pid if n == main else 0})
+    return out
+
+
+_CACHE = {}
+_BUSY = set()
+CACHE_TTL = 2.0
+
+
+def cached(key, ttl, fn):
+    """the last answer is served at once; a thread refreshes it when it ages.
+    the door stays the only source: the bridge just stops making the page wait for it."""
+    hit = _CACHE.get(key)
+    if hit is None:
+        _CACHE[key] = [time.time(), fn()]
+        return _CACHE[key][1]
+    if (time.time() - hit[0]) > ttl and key not in _BUSY:
+        _BUSY.add(key)
+
+        def work():
+            try:
+                _CACHE[key] = [time.time(), fn()]
+            except Exception:
+                pass
+            finally:
+                _BUSY.discard(key)
+        threading.Thread(target=work, daemon=True).start()
+    return hit[1]
+
+
+def _door_read(kind, tool, args, fallback):
+    try:
+        v = ask(kind, tool, args)
+    except Exception:
+        return fallback
+    if isinstance(v, dict) and "error" in v:
+        return fallback
+    if isinstance(v, str):
+        try:
+            v = json.loads(v)
+        except ValueError:
+            return fallback
+    return v if isinstance(v, (dict, list)) else fallback
+
+
+def _turn_file(name):
+    return os.path.join(os.environ.get("LA_STATE") or ".", name)
+
+
+def _trace_events():
+    """les evenements du tour courant, dans l ordre ou ils sont arrives"""
+    out = []
+    try:
+        with open(_turn_file("trace.jsonl"), "r", errors="replace") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    out.append(json.loads(line))
+                except ValueError:
+                    pass
+    except OSError:
+        pass
+    # le bandeau ne montre que le tour courant : la derniere borne "turn start" ouvre la fenetre
+    for i in range(len(out) - 1, -1, -1):
+        e = out[i]
+        if e.get("kind") == "turn" and str(e.get("text") or "").startswith("start"):
+            return out[i + 1:]
+    return out
+
+
+def warm():
+    """the three reads the page asks for at once, warmed at boot so opening is instant"""
+    for key, kind, tool, args, fb in (
+            ("board", "engine", "engine.board", ["op=json"], {}),
+            ("trace", "engine", "engine.trace", ["op=json"],
+             {"thinking": [], "journal": [], "reply": {}}),
+            ("hist", "engine", "engine.hist", ["op=turns"], {"turns": []})):
+        try:
+            _CACHE[key] = [time.time(), _door_read(kind, tool, args, fb)]
+        except Exception:
+            pass
+
+
+def first_name(name):
+    """agent_001_jarvis -> jarvis"""
+    tail = str(name).rsplit("_", 1)[-1]
+    return tail or str(name)
+
+
+def summary_text():
+    """C08 second.yaml: the micro-summary the local model rewrites each turn"""
+    import yaml
+    f = os.path.join(os.path.dirname(os.environ.get("LA_CONFIG", "")), "second.yaml")
+    try:
+        with open(f, encoding="utf-8") as fh:
+            d = yaml.safe_load(fh) or {}
+    except (OSError, yaml.YAMLError):
+        return ""
+    if not isinstance(d, dict):
+        return ""
+    sm = d.get("summary") or {}
+    if isinstance(sm, dict):
+        txt = " ".join(str(v) for _, v in sorted(sm.items(), key=lambda kv: str(kv[0])))
+    else:
+        txt = str(sm or "")
+    txt = txt.strip()
+    if not txt:
+        return "no summary yet"
+    st = str(d.get("stamp") or "")
+    try:
+        import calendar
+        when = calendar.timegm(time.strptime(st, "%Y-%m-%dT%H:%M:%SZ"))
+        if (time.time() - when) > 86400:      # plus vieux qu un jour : il ne dit plus rien
+            return "no summary yet"
+    except (ValueError, TypeError):
+        pass
+    return "exchanges %s ; written %s\n%s" % (d.get("exchanges") or "none",
+                                               d.get("stamp") or "none", txt)
+
+
+def short_agent_line(line, main=""):
+    """THE AGENTS: the first name only, but the main agent keeps its full name"""
+    if "  " in line:
+        head, rest = line.split("  ", 1)
+        if head.strip() == main:
+            return line
+        return first_name(head) + "  " + rest
+    return line
+
+
+def head_snapshot():
+    f = state_file("second_head.yaml")
+    try:
+        st = os.stat(f)
+    except OSError:
+        return {"file": f, "present": False, "sections": [], "raw_bytes": 0, "written": None,
+                "age_s": None, "why": "no head deposited"}
+    try:
+        with open(f, encoding="utf-8", errors="replace") as fh:
+            raw = fh.read()
+    except OSError:
+        raw = ""
+    out = []
+    label, buf, started = None, [], False
+
+    def flush():
+        body = "\n".join(buf).strip("\n")
+        if label is None and not body.strip():
+            return
+        out.append({"label": label or "(untitled)", "body": body,
+                    "bytes": len(body.encode()),
+                    "lines": len([x for x in body.splitlines() if x.strip()])})
+
+    for line in raw.splitlines():
+        ln = line.strip()
+        if len(ln) > 4 and ln.startswith("==") and ln.endswith("=="):
+            flush()
+            label, buf, started = ln.strip("=").strip(), [], True
+            continue
+        if not started:          # the file header before the first section
+            continue
+        buf.append(line)
+    flush()
+    out = [x for x in out if x["label"].strip().lower() != "the human"]   # pas de section Human
+    main = str((conf().get("agents") or {}).get("main") or "")
+    summ = summary_text()
+    for x in out:
+        lab = x["label"].strip().lower()
+        if lab == "the local model summary" and summ:
+            x["body"] = summ
+        if lab == "the agents":
+            x["body"] = "\n".join(short_agent_line(y, main) for y in x["body"].splitlines())
+        x["bytes"] = len(x["body"].encode())
+        x["lines"] = len([y for y in x["body"].splitlines() if y.strip()])
+    return {"file": f, "present": True, "sections": out, "raw_bytes": st.st_size,
+            "written": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(st.st_mtime)),
+            "age_s": int(time.time() - st.st_mtime), "why": ""}
+
+
+def config_page():
+    """what the settings page reads: the engines, their choices, the form, the values"""
+    c = conf()
+    sch = c.get("schema") or {}
+    out = {"ok": True, "engines": [], "engine_choices": sch.get("engine_choices") or {},
+           "schema": sch.get("fields") or [], "values": {}}
+    act = str(c.get("active_engine") or "")
+    for alias, e in (c.get("engines") or {}).items():
+        d = {"alias": alias, "active": alias == act}
+        if isinstance(e, dict):
+            d.update(e)
+        out["engines"].append(d)
+    for f in out["schema"]:
+        sec, key = f.get("section"), f.get("key")
+        if not sec or not key:
+            continue
+        node = conf_section(sec)
+        if isinstance(node, dict) and key in node:
+            out["values"]["%s.%s" % (sec, key)] = node[key]
+    return out
+
+
+def voice(text):
+    """the voice resident answers a wav; the bridge only carries it"""
+    port = int(os.environ.get("LA_PORT_TTS") or 8090)
+    req = urllib.request.Request("http://127.0.0.1:%d/say" % port,
+                                 data=json.dumps({"text": text}).encode("utf-8"),
+                                 headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=120) as r:
+            said = r.read().decode("utf-8", "replace").strip()
+    except Exception as e:
+        return {"error": "%s: %s" % (type(e).__name__, e), "audio": ""}
+    name = said.split("speech : ")[-1].split(" ")[0] if "speech : " in said else ""
+    return {"audio": os.path.basename(name), "path": name, "said": said}
+
+
+class Handler(BaseHTTPRequestHandler):
+    server_version = "la-bridge"
+
+    def log_message(self, format, *args):
+        sys.stderr.write("%s %s\n" % (now(), format % args))
+
+    def do_GET(self):
+        self.route("GET")
+
+    def do_POST(self):
+        self.route("POST")
+
+    def route(self, method):
+        u = urllib.parse.urlparse(self.path)
+        p = u.path
+        try:
+            body = self.body()
+            if p.startswith("/api/") or p == "/doctor":
+                return self.api(p, u.query, method, body)
+            if p in ("/", "/m", "/chat", "/doctor", "/plan", "/models"):
+                # la page a sa propre porte : le pont ne la sert plus, il l indique
+                return self.redirect(os.environ.get("LA_DASH_URL") or "http://127.0.0.1:8771/")
+            if p == "/ping":
+                return self.json({"state": "alive", "port": os.environ["LA_PORT_BRIDGE"], "ts": now()})
+            if p == "/spoken":
+                return self.json(self.lines(state_file("spoken.jsonl")))
+            if p.startswith("/audio/"):
+                return self.file(self.inside(os.environ["LA_AUDIO"], p[len("/audio/"):]))
+            if p in ("/apk", "/LA-app.apk"):
+                f = os.environ.get("LA_APK_FILE", "")
+                if not f or not os.path.isfile(f):
+                    return self.json({"error": "the apk is not built here"}, 404)
+                return self.file(f, TYPES[".apk"], download="LA-app.apk")
+            # LE MODELE, LU DANS la_config (MOUSSA, 21/10) : l app demande sa liste ici et
+            # change d adresse ici ; sans ces routes elle restait sans modele.
+            if p == "/engine":
+                if method == "POST":
+                    alias = ""
+                    try:
+                        alias = (json.loads(body or b"{}") or {}).get("alias") or ""
+                    except Exception:
+                        alias = ""
+                    if not alias:
+                        return self.json({"error": "alias expected"}, 400)
+                    # la ligne arrive sur l entree du corps, jamais en argument
+                    said = ask("engine", "engine.commands", ["op=line"], feed="/model " + alias)
+                    if isinstance(said, dict):
+                        said = said.get("result") or said.get("line") or said
+                    return self.json({"ok": True, "alias": alias, "said": said})
+                st = ask("engine", "engine.board", ["op=json"])
+                cur = (st.get("model") or {}).get("alias", "") if isinstance(st, dict) else ""
+                engines = []
+                for e in (st.get("engines") or []) if isinstance(st, dict) else []:
+                    engines.append({"alias": e.get("alias", ""), "model": e.get("model", ""),
+                                    "provider": e.get("provider", ""),
+                                    "active": e.get("alias", "") == cur})
+                return self.json({"engines": engines, "model": st.get("model") if isinstance(st, dict) else {}})
+            # LA VOIX (MOUSSA, 21/10) : l app demande /tts pour lire une phrase et /transcribe
+            # pour ecouter ; ces deux routes manquaient, d ou l absence de son et de micro.
+            if p == "/tts":
+                text = ""
+                try:
+                    text = (json.loads(body or b"{}") or {}).get("text") or ""
+                except Exception:
+                    text = ""
+                if not text.strip():
+                    return self.json({"error": "text expected", "audio": ""}, 400)
+                got = voice(text)
+                if "error" in got:
+                    return self.json(got, 502)
+                return self.json(got)
+            if p == "/transcribe":
+                if method != "POST" or not body:
+                    return self.json({"error": "POST with audio expected", "text": ""}, 405)
+                tmp = tempfile.mkdtemp()
+                try:
+                    raw = os.path.join(tmp, "in.raw")
+                    with open(raw, "wb") as f:
+                        f.write(body)
+                    wav = os.path.join(tmp, "in.wav")
+                    ff = subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw,
+                                         "-ac", "1", "-ar", "16000", "-c:a", "pcm_s16le", wav],
+                                        capture_output=True, text=True)
+                    if ff.returncode != 0 or not os.path.isfile(wav):
+                        return self.json({"error": "audio unreadable", "text": ""}, 400)
+                    port = int(os.environ.get("LA_PORT_ASR") or 8080)
+                    out = subprocess.run(["curl", "-s", "--max-time", "90", "-F", "file=@" + wav,
+                                          "-F", "response_format=json",
+                                          "http://127.0.0.1:%d/v1/audio/transcriptions" % port],
+                                         capture_output=True, text=True)
+                    try:
+                        return self.json(json.loads(out.stdout or "{}"))
+                    except Exception:
+                        return self.json({"text": ""})
+                finally:
+                    for f in os.listdir(tmp):
+                        try:
+                            os.unlink(os.path.join(tmp, f))
+                        except OSError:
+                            pass
+                    try:
+                        os.rmdir(tmp)
+                    except OSError:
+                        pass
+            # LES ROUTES QUE L APP DEMANDE SANS PREFIXE (MOUSSA, 21/10) : elle lit /state,
+            # /agents, /history, /skills, /projects, /toolmap. Elles rendent le meme JSON que
+            # /api/*, jamais une page : du HTML la casse (JSONObject sur une chaine).
+            if p in ("/state", "/agents", "/history", "/skills", "/projects", "/toolmap"):
+                return self.api("/api" + p, u.query, method, body)
+            if p == "/journal":
+                # le bandeau des outils : une entree par geste, dans l ordre
+                return self.json([str(e.get("text") or "") for e in _trace_events()
+                                  if e.get("kind") == "tool" and (e.get("text") or "").strip()])
+            if p == "/thinking":
+                # le thinking depliable : ce que le modele a pense, puis les pas du tour
+                lines = []
+                try:
+                    with open(_turn_file("turn.json"), "r", errors="replace") as f:
+                        _t = json.load(f)
+                    _r = str((_t.get("reply_msg") or {}).get("reasoning") or "").strip()
+                    if _r:
+                        lines += [x.strip() for x in _r.split("\n\n") if x.strip()]
+                except (OSError, ValueError):
+                    pass
+                lines += [str(e.get("text")) for e in _trace_events()
+                          if e.get("kind") in ("step", "call", "reply", "note") and e.get("text")]
+                return self.json(lines)
+            if p == "/approval":
+                # un OBJET, jamais une chaine : l app le passe a JSONObject et casse sinon
+                _said = ask("engine", "engine.approve", ["op=status"])
+                if isinstance(_said, dict):
+                    _said = _said.get("result") or ""
+                _wait = os.path.isfile(os.path.join(os.environ.get("LA_STATE", "."), "approve.request"))
+                return self.json({"signed": str(_said), "waiting": _wait})
+            if p in ("/approve", "/deny"):
+                # le corps lit le geste sur son entree : /approve signe celui qui attend
+                _g = ""
+                try:
+                    _b = json.loads(body or b"{}")
+                    _g = str(_b.get("tool") or _b.get("gesture") or "")
+                except Exception:
+                    _g = (body or b"").decode("utf-8", "replace").strip()
+                if not _g:
+                    # sans corps : on signe le geste qui attend
+                    try:
+                        with open(state_file("approve.request"), "r", errors="replace") as f:
+                            for line in f:
+                                if line.startswith("tool:"):
+                                    _g = line.split(":", 1)[1].strip()
+                                    break
+                    except OSError:
+                        pass
+                _op = "allow" if p == "/approve" else "deny"
+                said = ask("engine", "engine.approve", ["op=" + _op], feed=_g)
+                return self.json({"ok": True, "op": _op, "said": said})
+            if p.startswith("/audio/"):
+                return self.file(self.inside(os.environ["LA_AUDIO"], p[len("/audio/"):]))
+            if p == "/stop":
+                open(state_file("stop"), "w").close()
+                return self.json({"state": "stopped", "ts": now()})
+            if p.startswith("/static/"):
+                return self.file(self.inside(os.environ["LA_PAGE"], p[len("/static/"):]))
+            # le telephone : son app, son icone et le service worker qui la met a jour
+            if p in ("/widget", "/widget.html"):
+                return self.file(os.path.join(os.environ["LA_PAGE"], "widget.html"), "text/html; charset=utf-8")
+            if p == "/manifest.webmanifest":
+                return self.file(os.path.join(os.environ["LA_PAGE"], "widget.webmanifest"), "application/manifest+json")
+            if p == "/icon.svg":
+                return self.file(os.path.join(os.environ["LA_PAGE"], "widget-icon.svg"), "image/svg+xml")
+            if p == "/sw.js":
+                return self.file(os.path.join(os.environ["LA_PAGE"], "widget-sw.js"), "text/javascript; charset=utf-8")
+            # LES PANNEAUX DE LA PAGE : ils appartiennent a la page, pas au pont.
+            if p in ("/say", "/command", "/voice", "/image", "/delegate"):
+                if method != "POST":
+                    return self.json({"error": "POST expected for %s" % p}, 405)
+                return self.work(p, body, u.query)
+            return self.json({"error": "no such address: %s" % p}, 404)
+        except SystemExit:
+            raise
+        except Exception as e:  # one bad request never takes the server down
+            return self.json({"error": "%s: %s" % (type(e).__name__, e)}, 500)
+
+    def api(self, path, query, method, body):
+        """the page and the phone ask here; every answer comes from the door, never from here"""
+        parts = [x for x in urllib.parse.urlparse(path).path.strip("/").split("/") if x]
+        if path.rstrip("/") == "/doctor":
+            name = "doctor"
+        else:
+            name = parts[1] if len(parts) > 1 else ""
+        rest = parts[2:]
+        payload = {}
+        if body:
+            try:
+                payload = self.object(body)
+            except Exception:
+                payload = {}
+
+        if name in ("skills", "projects", "toolmap", "agents"):
+            return self.json(self.panels(name))
+
+        def door(kind, tool, args, feed=None, secs=200):
+            return subprocess.run(["dash", os.environ["LA_TOOL"], kind, tool] + args,
+                                  input=feed, capture_output=True, text=True, timeout=secs)
+
+        def as_json(run, fallback=None):
+            txt = (run.stdout or "").strip()
+            if not txt:
+                return fallback if fallback is not None else {"error": (run.stderr or "no answer").strip()}
+            try:
+                d = json.loads(txt)
+            except ValueError:
+                return {"text": txt, "ok": run.returncode == 0}
+            # the door answers with its own envelope: the body speaks inside "result"
+            if isinstance(d, dict) and "status" in d and "result" in d:
+                inner = str(d.get("result") or "").strip()
+                if inner[:1] in ("{", "["):
+                    try:
+                        return json.loads(inner)
+                    except ValueError:
+                        return {"text": inner, "ok": d.get("status") == "ok"}
+                return {"text": inner, "ok": d.get("status") == "ok"}
+            return d
+
+        if name == "state":
+            got = cached("board", 1.5, lambda: as_json(door("engine", "engine.board", ["op=json"]), {}))
+            if not isinstance(got, dict):
+                got = {}
+            got["agents"] = agents_list()
+            nm = got.get("names")
+            nm = dict(nm) if isinstance(nm, dict) else {}
+            nm["list"] = [a["name"] for a in got["agents"]]
+            got["names"] = nm
+            got["skill"] = got.get("skill") or active_name("skill")
+            got["project"] = got.get("project") or active_name("project")
+            return self.json(got)
+        if name == "live":
+            got = cached("trace", 5.0, lambda: as_json(
+                door("engine", "engine.trace", ["op=json"]),
+                {"thinking": [], "journal": [], "reply": {}}))
+            return self.json(got)
+        if name == "history":
+            got = cached("hist", 5.0, lambda: as_json(
+                door("engine", "engine.hist", ["op=turns"]), {"turns": []}))
+            return self.json(got)
+        if name == "cmd":
+            line = str(payload.get("line") or urllib.parse.parse_qs(query).get("line", [""])[0]).strip()
+            if not line:
+                return self.json({"ok": False, "error": "a line is expected"}, 400)
+            r = door("engine", "engine.commands", ["op=line"], feed=line, secs=600)
+            got = as_json(r, {"ok": r.returncode == 0, "text": (r.stderr or "").strip()})
+            if "text" not in got:
+                got = {"ok": got.get("ok", True), "text": json.dumps(got)[:400]}
+            return self.json(got)
+        if name == "say":
+            text = str(payload.get("text") or "").strip()
+            if not text:
+                return self.json({"ok": False, "error": "a text is expected"}, 400)
+            r = door("engine", "engine.commands", ["op=say"], feed=text, secs=600)
+            got = as_json(r, {"text": (r.stdout or r.stderr or "").strip()})
+            out = str(got.get("text") or "").strip()
+            ok = r.returncode == 0 and not out.startswith("FAULT")
+            return self.json({"ok": ok, "bridge": {"queued": False,
+                                                   "response": out if ok else "",
+                                                   "note": "" if ok else out,
+                                                   "error": "" if ok else out}})
+        if name == "doctor":
+            r = door("engine", "engine.doctor", ["op=json"], secs=300)
+            got = as_json(r, {"text": (r.stdout or "").strip()})
+            if "rc" not in got:
+                got["rc"] = 0 if (r.stdout or "").startswith("ok") else 1
+            return self.json(got)
+        if name == "residents":
+            what = str(payload.get("op") or "status")
+            if what not in ("status", "up", "down", "toggle"):
+                what = "status"
+            r = door("engine", "engine.residents", ["op=" + what], secs=240)
+            got = as_json(r, {"text": (r.stdout or r.stderr or "").strip()})
+            return self.json({"ok": r.returncode == 0, "op": what,
+                              "text": str(got.get("text") or (r.stdout or "").strip())})
+        if name == "version":
+            r = subprocess.run(["dash", os.environ["LA_TOOL"], "version"],
+                               capture_output=True, text=True, timeout=60)
+            return self.json({"ok": r.returncode == 0, "version": (r.stdout or "").strip()})
+        if name == "update":
+            what = rest[0] if rest else "check"
+            r = door("engine", "engine.update", ["op=" + what], secs=600)
+            got = as_json(r, {})
+            txt = got.get("text") if isinstance(got, dict) else ""
+            return self.json({"ok": r.returncode == 0,
+                              "text": str(txt or (r.stdout or r.stderr or "").strip())})
+        if name == "head":
+            return self.json(head_snapshot())
+        if name == "skills":
+            return self.json(self.panels("skills"))
+        if name == "skill":
+            return self.json({"skill": active_name("skill"), "project": active_name("project")})
+        if name == "agents":
+            return self.json({"agents": agents_list()})
+        if name == "config":
+            if method == "POST":
+                return self.json({"ok": False,
+                                  "text": "the master file has no writer here yet"}, 400)
+            return self.json(config_page())
+        if name == "tts":
+            text = str(payload.get("text") or "").strip()
+            if not text:
+                return self.json({"ok": False, "error": "a text is expected", "audio": ""}, 400)
+            got = voice(text)
+            out = dict({"ok": "error" not in got})
+            out.update(got)
+            return self.json(out)
+        return self.json({"error": "no such api: %s" % path}, 404)
+
+    def panels(self, name):
+        """the four lists the phone shows, read from the tree: no tool owns them yet"""
+        root = os.environ.get("LA_ROOT") or "."
+        def inner(rel):
+            p = os.path.join(root, rel)
+            out = []
+            if os.path.isdir(p):
+                for d in sorted(os.listdir(p))[:120]:
+                    q = os.path.join(p, d)
+                    if os.path.isdir(q):
+                        out.append({"name": d, "path": os.path.relpath(q, root)})
+            return out
+        if name == "skills":
+            act = active_name("skill")
+            items = inner("skills[D23]")
+            for it in items:
+                it["active"] = it.get("name") == act
+            return {"skills": items}
+        if name == "projects":
+            act = active_name("project")
+            items = inner("projects[D21]")
+            for it in items:
+                it["active"] = it.get("name") == act
+            return {"projects": items}
+        if name == "agents":
+            return {"agents": agents_list()}
+        fam, cur = {}, None
+        reg = os.path.join(root, "config[D01]", "tools[D14]", "registry.yaml")
+        if os.path.isfile(reg):
+            for line in open(reg, errors="ignore"):
+                m = re.match(r'\s*family:\s*"?([A-Za-z_0-9]+)"?', line)
+                if m:
+                    cur = m.group(1)
+                    fam[cur] = fam.get(cur, 0) + 1
+        return {"toolmap": [{"family": k, "count": v} for k, v in sorted(fam.items())]}
+
+    def work(self, p, body, query):
+        payload = self.object(body)
+        if p == "/say":
+            # une phrase de l app fait le tour MAINTENANT : l app attend la reponse, pas une file
+            text = str(payload.get("text") or body.decode("utf-8", "replace")).strip()
+            if not text:
+                return self.json({"error": "a text is expected"}, 400)
+            ask("engine", "engine.turn", ["text=" + text], secs=600)
+            try:
+                with open(state_file("reply.stream"), "r", encoding="utf-8", errors="replace") as f:
+                    rep = f.read().strip()
+            except OSError:
+                rep = ""
+            return self.json({"response": rep, "code": 0, "queued": False})
+        if p == "/command":
+            line = str(payload.get("line") or query or "").strip()
+            if not line:
+                return self.json({"error": "a line is expected"}, 400)
+            return self.json(delegate("engine_commands", [line]))
+        if p == "/delegate":
+            tool = str(payload.get("tool") or "").strip()
+            if not tool:
+                return self.json({"error": "a tool name is expected"}, 400)
+            return self.json(delegate(tool, [str(a) for a in payload.get("args", [])]))
+        ext = self.extension(p, body)
+        if not ext:
+            return self.json({"error": "unknown audio or image type"}, 415)
+        name = "%s-%d%s" % (time.strftime("%Y%m%d-%H%M%S", time.gmtime()), os.getpid(), ext)
+        path = os.path.join(os.environ["LA_AUDIO"], name)
+        with open(path, "wb") as f:
+            f.write(body)
+        tool = "asr" if p == "/voice" else "vision"
+        out = delegate(tool, [os.path.basename(path)])
+        out["file"] = name
+        return self.json(out)
+
+    def inside(self, root, name):
+        n = os.path.basename(urllib.parse.unquote(name))
+        if not n or n.startswith("."):
+            raise ValueError("refused name")
+        return os.path.join(root, n)
+
+    def extension(self, p, body):
+        if p == "/voice":
+            ctype = (self.headers.get("Content-Type") or "").lower()
+            for ext, kind in ((".wav", "wav"), (".webm", "webm"), (".ogg", "ogg"), (".mp4", "mp4")):
+                if kind in ctype:
+                    return ext
+            return ""
+        for magic, ext in ((b"\x89PNG", ".png"), (b"\xff\xd8", ".jpg"), (b"RIFF", ".wav")):
+            if body.startswith(magic):
+                return ext
+        return ""
+
+    def body(self):
+        n = int(self.headers.get("Content-Length") or 0)
+        return self.rfile.read(n) if n > 0 else b""
+
+    def object(self, body):
+        try:
+            v = json.loads(body.decode("utf-8", "replace") or "{}")
+        except ValueError:
+            return {}
+        return v if isinstance(v, dict) else {}
+
+    def lines(self, path):
+        try:
+            with open(path, encoding="utf-8", errors="replace") as f:
+                return [ln.strip() for ln in f if ln.strip()]
+        except OSError:
+            return []
+
+    def json(self, obj, code=200):
+        return self.send(code, json.dumps(obj, ensure_ascii=False).encode("utf-8"),
+                         "application/json; charset=utf-8")
+
+    def redirect(self, url):
+        """the page has its own door: the bridge says where, it does not serve it"""
+        self.send_response(302)
+        self.send_header("Location", url)
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
+    def file(self, path, kind=None, download=None):
+        if not path or not os.path.isfile(path):
+            return self.json({"error": "not there: %s" % os.path.basename(path or "")}, 404)
+        with open(path, "rb") as f:
+            data = f.read()
+        head = {}
+        if download:
+            head["Content-Disposition"] = 'attachment; filename="%s"' % download
+        return self.send(200, data, kind or kind_of(path), head)
+
+    def send(self, code, data, kind, head=None):
+        self.send_response(code)
+        self.send_header("Content-Type", kind)
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Cache-Control", "no-store")
+        for k, v in (head or {}).items():
+            self.send_header(k, v)
+        self.end_headers()
+        self.wfile.write(data)
+
+
+def main():
+    for name in NEEDED:
+        env(name)
+    for d in ("LA_STATE", "LA_AUDIO"):
+        os.makedirs(os.environ[d], exist_ok=True)
+    port = int(os.environ["LA_PORT_BRIDGE"])
+    threading.Thread(target=warm, daemon=True).start()   # la page ouvre sans attendre
+    srv = ThreadingHTTPServer((os.environ.get("LA_BRIDGE_HOST") or os.environ["LA_HOST"], port), Handler)
+    sys.stderr.write("bridge: listening on %s:%d\n" % (srv.server_address[0], port))
+    subprocess.run(["dash", os.environ["LA_TOOL"], "engine", "engine.residents", "op=join"],
+                   input="dash:" + str(os.getpid()), capture_output=True, text=True, timeout=20)
+    # L APP PARLE HTTPS SUR LA PORTE TLS (MOUSSA, 21/10) : le meme service, la meme page, la
+    # meme porte, mais chiffre, avec le certificat du projet.
+    tls_port = int(os.environ.get("LA_PORT_TLS") or 0)
+    cert, key = os.environ.get("LA_CERT"), os.environ.get("LA_KEY")
+    if tls_port and cert and key and os.path.isfile(cert) and os.path.isfile(key):
+        try:
+            ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+            ctx.load_cert_chain(cert, key)
+            tsrv = ThreadingHTTPServer((srv.server_address[0], tls_port), Handler)
+            tsrv.socket = ctx.wrap_socket(tsrv.socket, server_side=True)
+            threading.Thread(target=tsrv.serve_forever, daemon=True).start()
+            sys.stderr.write("bridge: tls on %s:%d\n" % (srv.server_address[0], tls_port))
+        except Exception as e:
+            sys.stderr.write("bridge: no tls (%s)\n" % e)
+    try:
+        srv.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        subprocess.run(["dash", os.environ["LA_TOOL"], "engine", "engine.residents", "op=leave"],
+                       input="dash:" + str(os.getpid()), capture_output=True, text=True, timeout=20)
+
+
+if __name__ == "__main__":
+    main()

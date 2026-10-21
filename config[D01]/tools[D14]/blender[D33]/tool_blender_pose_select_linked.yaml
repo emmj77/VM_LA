@@ -1,0 +1,20 @@
+id: "B1204"
+tool: "blender_pose_select_linked"
+date: "2026-10-17"
+tags: ["blender_pose_select_linked"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all bones linked by connected parent/child relationships from the current selection"
+
+machine: "blender"
+op: "pose.select_linked"
+
+ARGS: []

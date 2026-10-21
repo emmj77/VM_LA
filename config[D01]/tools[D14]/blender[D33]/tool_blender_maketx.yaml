@@ -1,0 +1,20 @@
+id: "B002"
+tool: "blender_maketx"
+date: "2026-10-17"
+tags: ["blender", "blender_maketx"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "generate cycles texture cache (.tx) files."
+
+machine: "blender-cli"
+op: "maketx"
+
+ARGS: []

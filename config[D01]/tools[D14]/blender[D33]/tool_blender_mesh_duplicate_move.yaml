@@ -1,0 +1,22 @@
+id: "B650"
+tool: "blender_mesh_duplicate_move"
+date: "2026-10-17"
+tags: ["blender_mesh_duplicate_move"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate mesh and move"
+
+machine: "blender"
+op: "mesh.duplicate_move"
+
+ARGS:
+  - {name: MESH_OT_duplicate, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}

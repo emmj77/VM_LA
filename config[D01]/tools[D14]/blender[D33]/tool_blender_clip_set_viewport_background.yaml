@@ -1,0 +1,20 @@
+id: "B179"
+tool: "blender_clip_set_viewport_background"
+date: "2026-10-17"
+tags: ["blender_clip_set_viewport_background"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set current movie clip as a camera background in 3D Viewport (works only when a 3D Viewport is visible)"
+
+machine: "blender"
+op: "clip.set_viewport_background"
+
+ARGS: []

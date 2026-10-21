@@ -1,0 +1,20 @@
+id: "B305"
+tool: "blender_dpaint_surface_slot_add"
+date: "2026-10-17"
+tags: ["blender_dpaint_surface_slot_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a new Dynamic Paint surface slot"
+
+machine: "blender"
+op: "dpaint.surface_slot_add"
+
+ARGS: []

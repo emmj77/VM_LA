@@ -1,0 +1,21 @@
+id: "B1020"
+tool: "blender_object_select_all"
+date: "2026-10-17"
+tags: ["blender_object_select_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change selection of all visible objects in scene"
+
+machine: "blender"
+op: "object.select_all"
+
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT

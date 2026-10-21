@@ -1,0 +1,20 @@
+id: "B1647"
+tool: "blender_wm_quit_blender"
+date: "2026-10-17"
+tags: ["blender_wm_quit_blender"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Quit Blender"
+
+machine: "blender"
+op: "wm.quit_blender"
+
+ARGS: []

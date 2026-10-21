@@ -1,0 +1,21 @@
+id: "B1334"
+tool: "blender_sequencer_connect"
+date: "2026-10-17"
+tags: ["blender_sequencer_connect"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Link selected strips together for simplified group selection"
+
+machine: "blender"
+op: "sequencer.connect"
+
+ARGS:
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser

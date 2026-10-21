@@ -1,0 +1,55 @@
+id: "U340"
+tool: "unity_editors_module_add"
+date: "2026-10-18"
+tags: ["unity", "cli", "editors"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Add modules to an installed editor"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- editors module add --no-banner --no-pager --non-interactive
+  [ -n "{{version}}" ] || { printf '%s\n' "$(msg argument_required 'version' 'unity editors module add')" >&2; exit 1; }
+  case "{{all}}" in ''|true|false) ;; *) printf '%s\n' "$(msg all_true_false)" >&2; exit 1 ;; esac
+  case "{{child_modules}}" in ''|true|false) ;; *) printf '%s\n' "$(msg child_modules_true_false)" >&2; exit 1 ;; esac
+  case "{{no_child_modules}}" in ''|true|false) ;; *) printf '%s\n' "$(msg child_modules_true_false_2)" >&2; exit 1 ;; esac
+  case "{{accept_eula}}" in ''|true|false) ;; *) printf '%s\n' "$(msg accept_eula_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{version}}" ] && set -- "$@" "{{version}}"
+  [ -n "{{module}}" ] && set -- "$@" --module "{{module}}"
+  [ "{{all}}" = true ] && set -- "$@" --all
+  [ -n "{{architecture}}" ] && set -- "$@" --architecture "{{architecture}}"
+  [ "{{child_modules}}" = true ] && set -- "$@" --child-modules
+  [ "{{no_child_modules}}" = true ] && set -- "$@" --no-child-modules
+  [ "{{accept_eula}}" = true ] && set -- "$@" --accept-eula
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_editors_module_add)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: version, type: text}
+  - {name: module, type: text}   # Module ID(s) to add
+  - {name: all, type: text}   # true pour poser --all ; Add all available modules
+  - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
+  - {name: child_modules, type: text}   # true pour poser --child-modules ; Install all child modules automatically
+  - {name: no_child_modules, type: text}   # true pour poser --no-child-modules ; Do not install child modules automatically
+  - {name: accept_eula, type: text}   # true pour poser --accept-eula ; Accept all module license agreements automatically

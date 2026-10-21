@@ -1,0 +1,20 @@
+id: "B100"
+tool: "blender_asset_assign_action"
+date: "2026-10-17"
+tags: ["blender_asset_assign_action"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set this pose Action as active Action on the active Object"
+
+machine: "blender"
+op: "asset.assign_action"
+
+ARGS: []

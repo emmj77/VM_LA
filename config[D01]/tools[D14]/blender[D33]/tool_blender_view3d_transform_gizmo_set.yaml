@@ -1,0 +1,22 @@
+id: "B1571"
+tool: "blender_view3d_transform_gizmo_set"
+date: "2026-10-17"
+tags: ["blender_view3d_transform_gizmo_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the current transform gizmo"
+
+machine: "blender"
+op: "view3d.transform_gizmo_set"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : TRANSLATE | ROTATE | SCALE

@@ -1,0 +1,21 @@
+id: "B175"
+tool: "blender_clip_set_scale"
+date: "2026-10-17"
+tags: ["blender_clip_set_scale"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set scale of scene by scaling camera (or its parent if present)"
+
+machine: "blender"
+op: "clip.set_scale"
+
+ARGS:
+  - {name: distance, type: text}

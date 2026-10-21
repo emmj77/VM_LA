@@ -1,0 +1,27 @@
+id: "B1515"
+tool: "blender_uv_select_box"
+date: "2026-10-17"
+tags: ["blender_uv_select_box"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select UV vertices using box selection"
+
+machine: "blender"
+op: "uv.select_box"
+
+ARGS:
+  - {name: pinned, type: text}          # true|false, vide pour ne rien poser
+  - {name: xmin, type: int}
+  - {name: xmax, type: int}
+  - {name: ymin, type: int}
+  - {name: ymax, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # un de : SET | ADD | SUB

@@ -1,0 +1,20 @@
+id: "B907"
+tool: "blender_object_collection_add"
+date: "2026-10-17"
+tags: ["blender_object_collection_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add an object to a new collection"
+
+machine: "blender"
+op: "object.collection_add"
+
+ARGS: []

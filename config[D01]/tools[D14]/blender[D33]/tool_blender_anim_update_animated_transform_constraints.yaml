@@ -1,0 +1,21 @@
+id: "B058"
+tool: "blender_anim_update_animated_transform_constraints"
+date: "2026-10-17"
+tags: ["blender_anim_update_animated_transform_constraints"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Update f-curves/drivers affecting Transform constraints (use it with files from 2.70 and earlier)"
+
+machine: "blender"
+op: "anim.update_animated_transform_constraints"
+
+ARGS:
+  - {name: use_convert_to_radians, type: text}          # true|false, vide pour ne rien poser

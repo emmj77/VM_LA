@@ -1,0 +1,20 @@
+id: "B1651"
+tool: "blender_wm_read_history"
+date: "2026-10-17"
+tags: ["blender_wm_read_history"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reloads history and bookmarks"
+
+machine: "blender"
+op: "wm.read_history"
+
+ARGS: []

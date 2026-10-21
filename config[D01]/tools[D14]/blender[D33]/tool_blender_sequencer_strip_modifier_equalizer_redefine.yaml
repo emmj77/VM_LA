@@ -1,0 +1,22 @@
+id: "B1394"
+tool: "blender_sequencer_strip_modifier_equalizer_redefine"
+date: "2026-10-17"
+tags: ["blender_sequencer_strip_modifier_equalizer_redefine"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Redefine equalizer graphs"
+
+machine: "blender"
+op: "sequencer.strip_modifier_equalizer_redefine"
+
+ARGS:
+  - {name: graphs, type: text}          # un de : SIMPLE | DOUBLE | TRIPLE
+  - {name: name, type: text}

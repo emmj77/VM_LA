@@ -1,0 +1,22 @@
+id: "B1297"
+tool: "blender_script_execute_preset"
+date: "2026-10-17"
+tags: ["blender_script_execute_preset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Load a preset"
+
+machine: "blender"
+op: "script.execute_preset"
+
+ARGS:
+  - {name: filepath, type: text}
+  - {name: menu_idname, type: text}

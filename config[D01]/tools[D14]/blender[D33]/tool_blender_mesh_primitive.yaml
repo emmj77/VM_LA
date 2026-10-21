@@ -1,0 +1,49 @@
+id: "B1741"
+tool: "blender_mesh_primitive"
+date: "2026-10-17"
+tags: ["blender_mesh_primitive"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a mesh primitive: circle | cone | cube | cylinder | grid | ico_sphere | monkey | plane | torus | uv_sphere (op picks which)"
+
+machine: "blender"
+op: "mesh.primitive_{{op}}_add"
+
+ARGS:
+  - {name: op, type: enum, values: [circle, cone, cube, cylinder, grid, ico_sphere, monkey, plane, torus, uv_sphere]}
+  - {name: align, type: text}
+  - {name: location, type: text}
+  - {name: rotation, type: text}
+  - {name: calc_uvs, type: text}
+  - {name: enter_editmode, type: text}
+  - {name: scale, type: text}
+  - {name: radius, type: text}
+  - {name: size, type: text}
+  - {name: vertices, type: int}
+  - {name: depth, type: text}
+  - {name: end_fill_type, type: text}
+  - {name: abso_major_rad, type: text}
+  - {name: abso_minor_rad, type: text}
+  - {name: fill_type, type: text}
+  - {name: generate_uvs, type: text}
+  - {name: major_radius, type: text}
+  - {name: major_segments, type: int}
+  - {name: matrix, type: text}
+  - {name: minor_radius, type: text}
+  - {name: minor_segments, type: int}
+  - {name: mode, type: text}
+  - {name: radius1, type: text}
+  - {name: radius2, type: text}
+  - {name: ring_count, type: int}
+  - {name: segments, type: int}
+  - {name: subdivisions, type: int}
+  - {name: x_subdivisions, type: int}
+  - {name: y_subdivisions, type: int}

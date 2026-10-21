@@ -1,0 +1,26 @@
+id: "B936"
+tool: "blender_object_empty_add"
+date: "2026-10-17"
+tags: ["blender_object_empty_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add an empty object to the scene"
+
+machine: "blender"
+op: "object.empty_add"
+
+ARGS:
+  - {name: type, type: text}          # un de : PLAIN_AXES | ARROWS | SINGLE_ARROW | CIRCLE | CUBE | SPHERE | CONE | IMAGE
+  - {name: radius, type: text}
+  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 valeurs separees par des virgules
+  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
+  - {name: scale, type: text}          # 3 valeurs separees par des virgules

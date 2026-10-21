@@ -1,0 +1,21 @@
+id: "B642"
+tool: "blender_mesh_dissolve_degenerate"
+date: "2026-10-17"
+tags: ["blender_mesh_dissolve_degenerate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Dissolve zero area faces and zero length edges"
+
+machine: "blender"
+op: "mesh.dissolve_degenerate"
+
+ARGS:
+  - {name: threshold, type: text}

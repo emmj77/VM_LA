@@ -1,0 +1,21 @@
+id: "B1333"
+tool: "blender_sequencer_change_scene"
+date: "2026-10-17"
+tags: ["blender_sequencer_change_scene"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change Scene assigned to Strip"
+
+machine: "blender"
+op: "sequencer.change_scene"
+
+ARGS:
+  - {name: scene, type: text}          # un de :

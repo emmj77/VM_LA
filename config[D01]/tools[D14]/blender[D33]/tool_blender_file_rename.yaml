@@ -1,0 +1,20 @@
+id: "B340"
+tool: "blender_file_rename"
+date: "2026-10-17"
+tags: ["blender_file_rename"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Rename file or file directory"
+
+machine: "blender"
+op: "file.rename"
+
+ARGS: []

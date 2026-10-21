@@ -1,0 +1,72 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E006"
+tool: "engine.hist"
+date: "2026-10-21"
+tags: ["engine", "hist"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "sessions.db: init, add a message as json, window of the last exchanges"
+COMMAND: |
+
+  _op=${1:-window}
+  _f=$(cfg abs sessions 2>/dev/null) || { printf 'FAULT no sessions base in the tree\n'; exit 0; }
+  [ -f "$_f" ] || { printf 'FAULT the base is not on the disk\n'; exit 0; }
+  _busy=$(cfg num limits.db_busy_ms 5000) || _busy=5000
+  _win=$(cfg num loop.window 4) || _win=4
+  _in=$(cat)
+  _g() { printf '%s' "$_in" | jq -r --arg k "$1" '.[$k] // empty | if type == "array" or type == "object" then tojson else . end' 2>/dev/null; }
+  _q() { printf '%s' "$1" | sed "s/'/''/g"; }
+  case $_op in
+  init)
+    sqlite3 "$_f" 'create table if not exists messages(id integer primary key autoincrement, exchange integer not null, ts text not null, role text not null, content text, tool_calls text, tool_call_id text, name text, reasoning text);' 2>&1 \
+      || { printf 'FAULT the base refuses the table\n'; exit 0; }
+    sqlite3 "$_f" 'create index if not exists messages_exchange on messages(exchange, id);' 2>/dev/null
+    printf 'ok the base is ready\n'
+    ;;
+  add)
+    _role=$(_g role)
+    _txt=$(_g content)
+    _tc=$(_g tool_calls)
+    _ti=$(_g tool_call_id)
+    _nm=$(_g name)
+    _rs=$(_g reasoning)
+    _ex=$(_g exchange)
+    case ${_ex:-} in ''|*[!0-9]*) _ex=$(date +%Y%m%d%H%M%S) ;; esac
+    [ -n "$_role" ] || { printf 'FAULT add wants a json object with a role\n'; exit 0; }
+    sqlite3 -cmd ".timeout $_busy" "$_f" "insert into messages(exchange, ts, role, content, tool_calls, tool_call_id, name, reasoning) select $_ex, datetime('now'), '$(_q "$_role")', '$(_q "$_txt")', '$(_q "$_tc")', '$(_q "$_ti")', '$(_q "$_nm")', '$(_q "$_rs")' where not exists (select 1 from messages where exchange = $_ex and role = '$(_q "$_role")' and coalesce(content,'') = '$(_q "$_txt")' and coalesce(tool_call_id,'') = '$(_q "$_ti")');" 2>&1 \
+      || { printf 'FAULT the base refuses the message\n'; exit 0; }
+    _n=$(sqlite3 "$_f" "select count(*) from messages where exchange = $_ex;" 2>/dev/null)
+    printf 'ok %s kept, %s line(s) in exchange %s\n' "$_role" "${_n:-0}" "$_ex"
+    ;;
+  turns)
+    _n=$(cfg num loop.feed_turns)
+    [ -n "$_n" ] || _n=$_win
+    sqlite3 -json "$_f" "select min(ts) as ts, json_group_array(json_object('role', role, 'text', coalesce(content,''))) as thread from messages group by exchange order by max(id) desc limit $_n;" 2>/dev/null \
+      | jq '{turns: [.[] | {ts: .ts, thread: (.thread | fromjson)}]}' 2>/dev/null \
+      || printf '{"turns":[],"error":"the base refused the question"}\n'
+    ;;
+  window)
+    sqlite3 "$_f" "select json_object('id', id, 'role', role, 'content', coalesce(content,''), 'tool_calls', coalesce(tool_calls,''), 'tool_call_id', coalesce(tool_call_id,''), 'name', coalesce(name,''), 'exchange', exchange) from messages where exchange in (select distinct exchange from messages order by exchange desc limit $_win) order by id;" 2>&1
+    ;;
+  apply)
+    _ex=$(_g exchange)
+    case ${_ex:-} in ''|*[!0-9]*) _ex=$(date +%Y%m%d%H%M%S) ;; esac
+    _n=$(sqlite3 "$_f" "select count(*) from messages where exchange = $_ex;" 2>/dev/null)
+    printf 'ok %s line(s) in exchange %s\n' "${_n:-0}" "$_ex"
+    ;;
+  result)
+    _n=$(sqlite3 "$_f" "select count(*) from messages where role = 'tool';" 2>/dev/null)
+    printf 'ok %s tool return(s) in the base\n' "${_n:-0}"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: init,add,window,turns,apply,result}

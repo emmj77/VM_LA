@@ -1,0 +1,41 @@
+id: "U215"
+tool: "coplay_probuilder_select_faces"
+date: "2026-10-18"
+tags: ["unity", "coplay", "probuilder"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Select faces by criteria (direction, grow,..."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- probuilder select-faces
+  [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'probuilder select-faces')" >&2; exit 1; }
+  [ -n "{{direction}}" ] && set -- "$@" --direction "{{direction}}"
+  [ -n "{{tolerance}}" ] && set -- "$@" --tolerance "{{tolerance}}"
+  [ -n "{{grow_from}}" ] && set -- "$@" --grow-from "{{grow_from}}"
+  [ -n "{{grow_angle}}" ] && set -- "$@" --grow-angle "{{grow_angle}}"
+  [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+  [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: direction, type: text}          # un de : up | down | forward | back | left | right
+  - {name: tolerance, type: text}
+  - {name: grow_from, type: text}
+  - {name: grow_angle, type: text}
+  - {name: search_method, type: text}          # un de : by_name | by_path | by_id | by_tag | by_layer
+  - {name: target, type: text}

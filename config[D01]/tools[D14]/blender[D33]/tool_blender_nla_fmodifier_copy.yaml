@@ -1,0 +1,20 @@
+id: "B769"
+tool: "blender_nla_fmodifier_copy"
+date: "2026-10-17"
+tags: ["blender_nla_fmodifier_copy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy the F-Modifier(s) of the active NLA-Strip"
+
+machine: "blender"
+op: "nla.fmodifier_copy"
+
+ARGS: []

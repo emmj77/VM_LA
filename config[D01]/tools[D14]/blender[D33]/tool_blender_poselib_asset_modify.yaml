@@ -1,0 +1,21 @@
+id: "B1210"
+tool: "blender_poselib_asset_modify"
+date: "2026-10-17"
+tags: ["blender_poselib_asset_modify"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Update the selected pose asset in the asset library from the currently selected bones. The mode defines how the asset is updated"
+
+machine: "blender"
+op: "poselib.asset_modify"
+
+ARGS:
+  - {name: mode, type: text}          # un de : ADJUST | REPLACE | ADD | REMOVE

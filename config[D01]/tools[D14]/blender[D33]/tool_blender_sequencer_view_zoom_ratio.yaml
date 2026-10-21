@@ -1,0 +1,21 @@
+id: "B1411"
+tool: "blender_sequencer_view_zoom_ratio"
+date: "2026-10-17"
+tags: ["blender_sequencer_view_zoom_ratio"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change zoom ratio of sequencer preview"
+
+machine: "blender"
+op: "sequencer.view_zoom_ratio"
+
+ARGS:
+  - {name: ratio, type: text}

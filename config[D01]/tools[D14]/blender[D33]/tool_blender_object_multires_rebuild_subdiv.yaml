@@ -1,0 +1,21 @@
+id: "B996"
+tool: "blender_object_multires_rebuild_subdiv"
+date: "2026-10-17"
+tags: ["blender_object_multires_rebuild_subdiv"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Rebuilds all possible subdivisions levels to generate a lower resolution base mesh"
+
+machine: "blender"
+op: "object.multires_rebuild_subdiv"
+
+ARGS:
+  - {name: modifier, type: text}

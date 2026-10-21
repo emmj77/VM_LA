@@ -1,0 +1,21 @@
+id: "B611"
+tool: "blender_mask_select_linked_pick"
+date: "2026-10-17"
+tags: ["blender_mask_select_linked_pick"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(De)select all points linked to the curve under the mouse cursor"
+
+machine: "blender"
+op: "mask.select_linked_pick"
+
+ARGS:
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser

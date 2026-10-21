@@ -1,0 +1,31 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D002"
+tool: "doctor.forms"
+date: "2026-10-20"
+tags: ["doctor", "forms"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the forms of a return: their bounds are written and read"
+COMMAND: |
+
+  _op=${1:-forms}
+  _n=0
+  for _k in head_bytes form_queue_bytes form_judge_bytes form_demand_chars; do
+    _v=$(cfg num "limits.$_k") || { printf 'FAULT limits.%s is read by a body and is not written\n' "$_k"; continue; }
+    [ "$_v" -gt 0 ] && _n=$((_n + 1)) || printf 'FAULT limits.%s is %s: a bound of zero refuses everything\n' "$_k" "$_v"
+  done
+  _r=$(cfg num limits.head_bytes 2>/dev/null) || printf 'note limits.head_bytes is not written\n'
+  printf 'ok %s bound(s) of forms held\n' "$_n"
+  _f=$(cfg abs reply_stream 2>/dev/null)
+  [ -n "$_f" ] && printf 'ok the reply has a stream: %s\n' "${_f#$ROOT/}" \
+    || printf 'FAULT no reply stream in the tree\n'
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: forms}

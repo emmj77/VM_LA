@@ -1,0 +1,20 @@
+id: "B1555"
+tool: "blender_view3d_object_as_camera"
+date: "2026-10-17"
+tags: ["blender_view3d_object_as_camera"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the active object as the active camera for this view or scene"
+
+machine: "blender"
+op: "view3d.object_as_camera"
+
+ARGS: []

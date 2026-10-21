@@ -1,0 +1,22 @@
+id: "B1424"
+tool: "blender_text_cursor_set"
+date: "2026-10-17"
+tags: ["blender_text_cursor_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set cursor position"
+
+machine: "blender"
+op: "text.cursor_set"
+
+ARGS:
+  - {name: x, type: int}
+  - {name: y, type: int}

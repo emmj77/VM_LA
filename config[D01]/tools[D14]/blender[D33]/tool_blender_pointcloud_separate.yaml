@@ -1,0 +1,20 @@
+id: "B1180"
+tool: "blender_pointcloud_separate"
+date: "2026-10-17"
+tags: ["blender_pointcloud_separate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Separate selected geometry into a new point cloud"
+
+machine: "blender"
+op: "pointcloud.separate"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B1433"
+tool: "blender_text_new"
+date: "2026-10-17"
+tags: ["blender_text_new"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a new text data-block"
+
+machine: "blender"
+op: "text.new"
+
+ARGS: []

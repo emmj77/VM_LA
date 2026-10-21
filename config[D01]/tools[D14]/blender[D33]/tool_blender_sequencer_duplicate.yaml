@@ -1,0 +1,21 @@
+id: "B1341"
+tool: "blender_sequencer_duplicate"
+date: "2026-10-17"
+tags: ["blender_sequencer_duplicate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate the selected strips"
+
+machine: "blender"
+op: "sequencer.duplicate"
+
+ARGS:
+  - {name: linked, type: text}          # true|false, vide pour ne rien poser

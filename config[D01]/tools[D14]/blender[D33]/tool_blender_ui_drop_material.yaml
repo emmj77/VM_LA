@@ -1,0 +1,21 @@
+id: "B1468"
+tool: "blender_ui_drop_material"
+date: "2026-10-17"
+tags: ["blender_ui_drop_material"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Drag material to Material slots in Properties"
+
+machine: "blender"
+op: "ui.drop_material"
+
+ARGS:
+  - {name: session_uid, type: int}

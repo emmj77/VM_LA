@@ -1,0 +1,29 @@
+id: "G040"
+tool: "repair_zone_in_img"
+date: "2026-10-20"
+tags: ["repair_zone_in_img", "inpaint", "lama"]
+
+RULES:
+  enabled: true
+  timeout: 900
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "repairs a zone of an image (blot, text, object) and writes the result"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  F="$W/{{source}}"; [ -f "$F" ] || F="$ROOT/{{source}}"
+  O=""; [ -z "{{out}}" ] || O="$W/{{out}}"
+  run_call vision.image "op=inpaint" "image=$F" "out=$O" "zone={{x}},{{y}},{{width}},{{height}}"
+
+ARGS:
+  - {name: source, type: path}
+  - {name: out, type: path}
+  - {name: x, type: int}
+  - {name: y, type: int}
+  - {name: width, type: int}
+  - {name: height, type: int}

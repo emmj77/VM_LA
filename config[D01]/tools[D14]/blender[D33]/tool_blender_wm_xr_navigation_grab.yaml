@@ -1,0 +1,25 @@
+id: "B1688"
+tool: "blender_wm_xr_navigation_grab"
+date: "2026-10-17"
+tags: ["blender_wm_xr_navigation_grab"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Navigate the VR scene by grabbing with controllers"
+
+machine: "blender"
+op: "wm.xr_navigation_grab"
+
+ARGS:
+  - {name: lock_location, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_location_z, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_rotation, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_rotation_z, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_scale, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,25 @@
+id: "B925"
+tool: "blender_object_datalayout_transfer"
+date: "2026-10-17"
+tags: ["blender_object_datalayout_transfer"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Transfer layout of data layer(s) from active to selected meshes"
+
+machine: "blender"
+op: "object.datalayout_transfer"
+
+ARGS:
+  - {name: modifier, type: text}
+  - {name: data_type, type: text}          # un de : VGROUP_WEIGHTS | BEVEL_WEIGHT_VERT | COLOR_VERTEX | SHARP_EDGE | SEAM | CREASE | BEVEL_WEIGHT_EDGE | FREESTYLE_EDGE | CUSTOM_NORMAL | COLOR_CORNER | UV | SMOOTH | FREESTYLE_FACE
+  - {name: use_delete, type: text}          # true|false, vide pour ne rien poser
+  - {name: layers_select_src, type: text}          # un de : ACTIVE | ALL | BONE_SELECT | BONE_DEFORM
+  - {name: layers_select_dst, type: text}          # un de : ACTIVE | NAME | INDEX

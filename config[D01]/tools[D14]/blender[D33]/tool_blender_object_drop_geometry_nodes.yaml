@@ -1,0 +1,22 @@
+id: "B928"
+tool: "blender_object_drop_geometry_nodes"
+date: "2026-10-17"
+tags: ["blender_object_drop_geometry_nodes"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(undocumented operator)"
+
+machine: "blender"
+op: "object.drop_geometry_nodes"
+
+ARGS:
+  - {name: session_uid, type: int}
+  - {name: show_datablock_in_modifier, type: text}          # true|false, vide pour ne rien poser

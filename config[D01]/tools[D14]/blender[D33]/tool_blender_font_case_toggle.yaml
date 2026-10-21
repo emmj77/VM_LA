@@ -1,0 +1,20 @@
+id: "B358"
+tool: "blender_font_case_toggle"
+date: "2026-10-17"
+tags: ["blender_font_case_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle font case"
+
+machine: "blender"
+op: "font.case_toggle"
+
+ARGS: []

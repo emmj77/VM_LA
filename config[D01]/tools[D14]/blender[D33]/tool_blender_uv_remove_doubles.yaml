@@ -1,0 +1,23 @@
+id: "B1507"
+tool: "blender_uv_remove_doubles"
+date: "2026-10-17"
+tags: ["blender_uv_remove_doubles"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Selected UV vertices that are within a radius of each other are welded together"
+
+machine: "blender"
+op: "uv.remove_doubles"
+
+ARGS:
+  - {name: threshold, type: text}
+  - {name: use_unselected, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_shared_vertex, type: text}          # true|false, vide pour ne rien poser

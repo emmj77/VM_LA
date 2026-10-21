@@ -1,0 +1,49 @@
+# one step of the turn. it reads state/turn.json, does its work, writes it back.
+id: "T006"
+tool: "turn.scope"
+date: "2026-10-20"
+tags: ["turn", "scope"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: toolset
+  count: false
+  paths: write
+DESCRIPTION: "the tools of this turn and nothing more, as the provider wants them"
+COMMAND: |
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
+  _reg=$(cfg abs registry) || { printf 'FAULT no register\n'; exit 0; }
+  _ids=$( { for _n in $(cfg list permanent); do table_field "$_reg" "$_n" id; done
+            skl_toolset 2>/dev/null; } | sort -u | grep -v '^$' )
+  _arr='[]'
+  for _i in $_ids; do
+    _n=$(table_field "$_reg" "$_i" tool)
+    [ -n "$_n" ] || continue
+    _bd=""
+    _fn=$(printf '%s' "$_n" | tr '.' '_')
+    for _x in "$(cfg path tools)"/*/tool_"$_fn".yaml; do
+      [ -f "$_x" ] && { _bd=$_x; break; }
+    done
+    [ -n "$_bd" ] || continue
+    _d=$(_door_field "$_bd" DESCRIPTION)
+    _props='{}'
+    _req='[]'
+    for _a in $(_door_decl "$_bd"); do
+      _an=${_a%%:*}
+      _at=${_a#*:}
+      case $_at in int) _ty=integer ;; bool) _ty=boolean ;; *) _ty=string ;; esac
+      _props=$(printf '%s' "$_props" | jq --arg k "$_an" --arg t "$_ty" '. + {($k): {type: $t}}')
+      _req=$(printf '%s' "$_req" | jq --arg k "$_an" '. + [$k]')
+    done
+    _obj=$(jq -n --arg n "$_n" --arg d "$_d" --argjson pr "$_props" --argjson rq "$_req" \
+      '{type:"function",function:{name:$n,description:$d,parameters:{type:"object",properties:$pr,required:$rq}}}')
+    _arr=$(printf '%s' "$_arr" | jq --argjson o "$_obj" '. + [$o]')
+  done
+  _turn_set_json '(.tools = $v)' "$_arr"
+  _tr scope "$(printf '%s' "$_arr" | jq 'length') tools"
+  exit 0
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B001"
+tool: "blender_asset_listing"
+date: "2026-10-17"
+tags: ["blender", "blender_asset_listing"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "manage asset library index files."
+
+machine: "blender-cli"
+op: "asset_listing"
+
+ARGS: []

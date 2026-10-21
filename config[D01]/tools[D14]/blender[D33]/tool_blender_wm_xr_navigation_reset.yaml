@@ -1,0 +1,23 @@
+id: "B1689"
+tool: "blender_wm_xr_navigation_reset"
+date: "2026-10-17"
+tags: ["blender_wm_xr_navigation_reset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset VR navigation deltas relative to session base pose"
+
+machine: "blender"
+op: "wm.xr_navigation_reset"
+
+ARGS:
+  - {name: location, type: text}          # true|false, vide pour ne rien poser
+  - {name: rotation, type: text}          # true|false, vide pour ne rien poser
+  - {name: scale, type: text}          # true|false, vide pour ne rien poser

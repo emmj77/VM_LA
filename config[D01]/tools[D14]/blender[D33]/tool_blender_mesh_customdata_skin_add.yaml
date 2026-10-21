@@ -1,0 +1,20 @@
+id: "B636"
+tool: "blender_mesh_customdata_skin_add"
+date: "2026-10-17"
+tags: ["blender_mesh_customdata_skin_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a vertex skin layer"
+
+machine: "blender"
+op: "mesh.customdata_skin_add"
+
+ARGS: []

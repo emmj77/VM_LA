@@ -1,0 +1,24 @@
+id: "B507"
+tool: "blender_grease_pencil_vertex_color_hsv"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_vertex_color_hsv"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Adjust vertex color HSV values"
+
+machine: "blender"
+op: "grease_pencil.vertex_color_hsv"
+
+ARGS:
+  - {name: mode, type: text}          # un de : STROKE | FILL | BOTH
+  - {name: h, type: text}
+  - {name: s, type: text}
+  - {name: v, type: text}

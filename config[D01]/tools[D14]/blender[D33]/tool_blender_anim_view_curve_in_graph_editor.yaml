@@ -1,0 +1,22 @@
+id: "B060"
+tool: "blender_anim_view_curve_in_graph_editor"
+date: "2026-10-17"
+tags: ["blender_anim_view_curve_in_graph_editor"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Frame the property under the cursor in the Graph Editor"
+
+machine: "blender"
+op: "anim.view_curve_in_graph_editor"
+
+ARGS:
+  - {name: all, type: text}          # true|false, vide pour ne rien poser
+  - {name: isolate, type: text}          # true|false, vide pour ne rien poser

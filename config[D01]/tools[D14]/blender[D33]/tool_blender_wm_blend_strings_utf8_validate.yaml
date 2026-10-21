@@ -1,0 +1,20 @@
+id: "B1595"
+tool: "blender_wm_blend_strings_utf8_validate"
+date: "2026-10-17"
+tags: ["blender_wm_blend_strings_utf8_validate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Check and fix all strings in current .blend file to be valid UTF-8 Unicode (needed for some old, 2.4x area files)"
+
+machine: "blender"
+op: "wm.blend_strings_utf8_validate"
+
+ARGS: []

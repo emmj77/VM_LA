@@ -1,0 +1,25 @@
+id: "B1731"
+tool: "blender_graph_fmodifier"
+date: "2026-10-17"
+tags: ["blender_graph_fmodifier"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a graph editor F-modifier: add | copy | delete | paste (op picks which)"
+
+machine: "blender"
+op: "graph.fmodifier_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, copy, delete, paste]}
+  - {name: only_active, type: text}
+  - {name: type, type: text}
+  - {name: mode, type: text}
+  - {name: replace, type: text}

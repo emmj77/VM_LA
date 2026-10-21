@@ -1,0 +1,30 @@
+id: "B1735"
+tool: "blender_marker_select_mode"
+date: "2026-10-17"
+tags: ["blender_marker_select_mode"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "the selection of a timeline marker: all | box | leftright (op picks which)"
+
+machine: "blender"
+op: "marker.select_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [all, box, leftright]}
+  - {name: mode, type: text}
+  - {name: action, type: text}
+  - {name: extend, type: text}
+  - {name: tweak, type: text}
+  - {name: wait_for_input, type: text}
+  - {name: xmax, type: int}
+  - {name: xmin, type: int}
+  - {name: ymax, type: int}
+  - {name: ymin, type: int}

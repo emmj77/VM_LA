@@ -1,0 +1,22 @@
+id: "B1032"
+tool: "blender_object_shade_auto_smooth"
+date: "2026-10-17"
+tags: ["blender_object_shade_auto_smooth"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add modifier to automatically set the sharpness of mesh edges based on the angle between the neighboring faces"
+
+machine: "blender"
+op: "object.shade_auto_smooth"
+
+ARGS:
+  - {name: use_auto_smooth, type: text}          # true|false, vide pour ne rien poser
+  - {name: angle, type: text}

@@ -1,0 +1,42 @@
+id: "U295"
+tool: "unity_collaboration_jira_project_link"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Link a Unity project to a Jira project configuration"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration jira project link --no-banner --no-pager --non-interactive
+  [ -n "{{unityprojectid}}" ] || { printf '%s\n' "$(msg argument_required 'unityprojectid' 'unity collaboration jira project link')" >&2; exit 1; }
+  [ -n "{{projectconfigid}}" ] || { printf '%s\n' "$(msg argument_required 'projectconfigid' 'unity collaboration jira project link')" >&2; exit 1; }
+
+  [ -n "{{unityprojectid}}" ] && set -- "$@" "{{unityprojectid}}"
+  [ -n "{{projectconfigid}}" ] && set -- "$@" "{{projectconfigid}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_jira_project_2)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: unityprojectid, type: text}
+  - {name: projectconfigid, type: text}

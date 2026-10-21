@@ -1,0 +1,20 @@
+id: "B1570"
+tool: "blender_view3d_toggle_xray"
+date: "2026-10-17"
+tags: ["blender_view3d_toggle_xray"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Transparent scene display. Allow selecting through items"
+
+machine: "blender"
+op: "view3d.toggle_xray"
+
+ARGS: []

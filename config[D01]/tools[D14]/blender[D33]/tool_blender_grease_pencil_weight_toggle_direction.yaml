@@ -1,0 +1,20 @@
+id: "B518"
+tool: "blender_grease_pencil_weight_toggle_direction"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_weight_toggle_direction"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle Add/Subtract for the weight paint draw tool"
+
+machine: "blender"
+op: "grease_pencil.weight_toggle_direction"
+
+ARGS: []

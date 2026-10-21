@@ -1,0 +1,24 @@
+id: "B460"
+tool: "blender_grease_pencil_outline"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_outline"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Convert selected strokes to outlines"
+
+machine: "blender"
+op: "grease_pencil.outline"
+
+ARGS:
+  - {name: type, type: text}          # un de : VIEW | FRONT | SIDE | TOP | CURSOR | CAMERA
+  - {name: radius, type: text}
+  - {name: offset_factor, type: text}
+  - {name: corner_subdivisions, type: int}

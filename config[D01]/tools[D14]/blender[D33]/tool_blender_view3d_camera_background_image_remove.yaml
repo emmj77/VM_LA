@@ -1,0 +1,21 @@
+id: "B1540"
+tool: "blender_view3d_camera_background_image_remove"
+date: "2026-10-17"
+tags: ["blender_view3d_camera_background_image_remove"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove a background image from the camera"
+
+machine: "blender"
+op: "view3d.camera_background_image_remove"
+
+ARGS:
+  - {name: index, type: int}

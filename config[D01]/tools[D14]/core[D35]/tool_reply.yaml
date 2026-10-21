@@ -1,0 +1,29 @@
+id: "G001"
+tool: "reply"
+date: "2026-10-18"
+tags: ["reply", "talk", "ask", "answer", "parole"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "speaks (talk), asks the human (ask) or returns the reply (answer), depending on the mode"
+
+COMMAND: |
+  # le texte du modele est la reponse ; sans texte, l entree fait foi
+  _t="{{text}}"
+  [ -n "$_t" ] || _t=$(cat)
+  printf '%s\n' "$_t"
+
+ARGS:
+  - {name: mode, type: enum, values: answer,ask,talk}
+  - {name: form, type: enum, values: text,voice}
+  - {name: text, type: text}
+  - {name: mode, type: enum, values: [talk, ask, answer]}
+  - {name: form, type: enum, values: [text, list, table, code]}
+  - {name: text, type: text, stdin: true}

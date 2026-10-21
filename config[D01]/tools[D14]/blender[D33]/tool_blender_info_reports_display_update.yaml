@@ -1,0 +1,20 @@
+id: "B569"
+tool: "blender_info_reports_display_update"
+date: "2026-10-17"
+tags: ["blender_info_reports_display_update"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Update the display of reports in Blender UI (internal use)"
+
+machine: "blender"
+op: "info.reports_display_update"
+
+ARGS: []

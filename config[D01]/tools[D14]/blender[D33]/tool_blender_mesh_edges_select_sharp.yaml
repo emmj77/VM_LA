@@ -1,0 +1,21 @@
+id: "B656"
+tool: "blender_mesh_edges_select_sharp"
+date: "2026-10-17"
+tags: ["blender_mesh_edges_select_sharp"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all sharp enough edges"
+
+machine: "blender"
+op: "mesh.edges_select_sharp"
+
+ARGS:
+  - {name: sharpness, type: text}

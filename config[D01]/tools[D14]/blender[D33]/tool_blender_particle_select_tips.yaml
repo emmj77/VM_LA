@@ -1,0 +1,21 @@
+id: "B1169"
+tool: "blender_particle_select_tips"
+date: "2026-10-17"
+tags: ["blender_particle_select_tips"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select tips of all visible particles"
+
+machine: "blender"
+op: "particle.select_tips"
+
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT

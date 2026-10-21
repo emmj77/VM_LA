@@ -1,0 +1,28 @@
+id: "B1368"
+tool: "blender_sequencer_scene_strip_add_new"
+date: "2026-10-17"
+tags: ["blender_sequencer_scene_strip_add_new"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a strip using a new scene as the source"
+
+machine: "blender"
+op: "sequencer.scene_strip_add_new"
+
+ARGS:
+  - {name: move_strips, type: text}          # true|false, vide pour ne rien poser
+  - {name: frame_start, type: int}
+  - {name: channel, type: int}
+  - {name: replace_sel, type: text}          # true|false, vide pour ne rien poser
+  - {name: overlap, type: text}          # true|false, vide pour ne rien poser
+  - {name: overlap_shuffle_override, type: text}          # true|false, vide pour ne rien poser
+  - {name: skip_locked_or_muted_channels, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : NEW | EMPTY | LINK_COPY | FULL_COPY

@@ -1,0 +1,20 @@
+id: "B1019"
+tool: "blender_object_reset_override_library"
+date: "2026-10-17"
+tags: ["blender_object_reset_override_library"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset the selected local overrides to their linked references values"
+
+machine: "blender"
+op: "object.reset_override_library"
+
+ARGS: []

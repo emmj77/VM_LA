@@ -1,0 +1,22 @@
+id: "B1311"
+tool: "blender_sculpt_face_set_change_visibility"
+date: "2026-10-17"
+tags: ["blender_sculpt_face_set_change_visibility"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change the visibility of the face sets of the sculpt"
+
+machine: "blender"
+op: "sculpt.face_set_change_visibility"
+
+ARGS:
+  - {name: mode, type: text}          # un de : TOGGLE | SHOW_ACTIVE | HIDE_ACTIVE
+  - {name: active_face_set, type: int}

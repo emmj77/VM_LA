@@ -1,0 +1,21 @@
+id: "B070"
+tool: "blender_armature_duplicate"
+date: "2026-10-17"
+tags: ["blender_armature_duplicate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make copies of the selected bones within the same armature"
+
+machine: "blender"
+op: "armature.duplicate"
+
+ARGS:
+  - {name: do_flip_names, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,21 @@
+id: "B1707"
+tool: "blender_clip_stabilize"
+date: "2026-10-17"
+tags: ["blender_clip_stabilize"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "2D stabilisation of a clip: add | remove | rotation_add | rotation_remove | rotation_select | select (op picks which)"
+
+machine: "blender"
+op: "clip.stabilize_2d_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, remove, rotation_add, rotation_remove, rotation_select, select]}

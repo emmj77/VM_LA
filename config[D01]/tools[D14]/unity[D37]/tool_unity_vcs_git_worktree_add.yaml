@@ -1,0 +1,57 @@
+id: "U425"
+tool: "unity_vcs_git_worktree_add"
+date: "2026-10-18"
+tags: ["unity", "cli", "vcs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Create a worktree for a branch, seed its Library from this one, and register it with the Hub"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- vcs git worktree add --no-banner --no-pager --non-interactive
+  [ -n "{{branch}}" ] || { printf '%s\n' "$(msg argument_required 'branch' 'unity vcs git worktree add')" >&2; exit 1; }
+  case "{{install_editor}}" in ''|true|false) ;; *) printf '%s\n' "$(msg install_editor_true_false)" >&2; exit 1 ;; esac
+  case "{{no_register}}" in ''|true|false) ;; *) printf '%s\n' "$(msg register_true_false)" >&2; exit 1 ;; esac
+  case "{{dry_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg dry_run_true_false)" >&2; exit 1 ;; esac
+  case "{{yes}}" in ''|true|false) ;; *) printf '%s\n' "$(msg yes_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{branch}}" ] && set -- "$@" "{{branch}}"
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ -n "{{into}}" ] && set -- "$@" --into "{{into}}"
+  [ -n "{{seed}}" ] && set -- "$@" --seed "{{seed}}"
+  [ "{{install_editor}}" = true ] && set -- "$@" --install-editor
+  [ "{{no_register}}" = true ] && set -- "$@" --no-register
+  [ "{{dry_run}}" = true ] && set -- "$@" --dry-run
+  [ "{{yes}}" = true ] && set -- "$@" --yes
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_vcs_git_worktree_2)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: branch, type: text}
+  - {name: path, type: text}   # facultatif
+  - {name: into, type: text}   # Where to create the worktree (defaults to a folder beside the reposito
+  - {name: seed, type: text}   # How much of this checkout's Library to copy: cache, full, or none
+  - {name: install_editor, type: text}   # true pour poser --install-editor ; Install the editor the branch needs, rather than only reporting it
+  - {name: no_register, type: text}   # true pour poser --no-register ; Leave the new worktree out of the Hub project registry
+  - {name: dry_run, type: text}   # true pour poser --dry-run ; Run every check and report the plan, then change nothing
+  - {name: yes, type: text}   # true pour poser --yes ; Answer yes to every confirmation

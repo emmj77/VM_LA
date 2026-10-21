@@ -1,0 +1,21 @@
+id: "B345"
+tool: "blender_file_select_bookmark"
+date: "2026-10-17"
+tags: ["blender_file_select_bookmark"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select a bookmarked directory"
+
+machine: "blender"
+op: "file.select_bookmark"
+
+ARGS:
+  - {name: dir, type: text}

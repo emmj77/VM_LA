@@ -1,0 +1,20 @@
+id: "B1047"
+tool: "blender_object_skin_root_mark"
+date: "2026-10-17"
+tags: ["blender_object_skin_root_mark"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Mark selected vertices as roots"
+
+machine: "blender"
+op: "object.skin_root_mark"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B187"
+tool: "blender_clip_track_settings_as_default"
+date: "2026-10-17"
+tags: ["blender_clip_track_settings_as_default"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy tracking settings from active track to default settings"
+
+machine: "blender"
+op: "clip.track_settings_as_default"
+
+ARGS: []

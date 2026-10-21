@@ -1,0 +1,21 @@
+id: "B1331"
+tool: "blender_sequencer_change_effect_type"
+date: "2026-10-17"
+tags: ["blender_sequencer_change_effect_type"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Replace effect strip with another that takes the same number of inputs"
+
+machine: "blender"
+op: "sequencer.change_effect_type"
+
+ARGS:
+  - {name: type, type: text}          # un de : CROSS | ADD | SUBTRACT | ALPHA_OVER | ALPHA_UNDER | GAMMA_CROSS | MULTIPLY | WIPE | GLOW | COLOR | SPEED | MULTICAM | ADJUSTMENT | GAUSSIAN_BLUR | TEXT | COLORMIX | COMPOSITOR

@@ -1,0 +1,23 @@
+id: "B1139"
+tool: "blender_paintcurve_select"
+date: "2026-10-17"
+tags: ["blender_paintcurve_select"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select a paint curve point"
+
+machine: "blender"
+op: "paintcurve.select"
+
+ARGS:
+  - {name: location, type: int}
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,28 @@
+id: "B655"
+tool: "blender_mesh_edgering_select"
+date: "2026-10-17"
+tags: ["blender_mesh_edgering_select"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select an edge ring"
+
+machine: "blender"
+op: "mesh.edgering_select"
+
+ARGS:
+  - {name: delimit_edge_ring, type: text}          # un de : SEAM | SHARP | MATERIAL | NGONS
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: object_index, type: int}
+  - {name: edge_index, type: int}
+  - {name: vert_index, type: int}
+  - {name: face_index, type: int}

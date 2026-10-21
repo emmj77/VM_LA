@@ -1,0 +1,20 @@
+id: "B1086"
+tool: "blender_outliner_liboverride_property_remove"
+date: "2026-10-17"
+tags: ["blender_outliner_liboverride_property_remove"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove the selected library override properties, and reset the relevant data to the linked reference values"
+
+machine: "blender"
+op: "outliner.liboverride_property_remove"
+
+ARGS: []

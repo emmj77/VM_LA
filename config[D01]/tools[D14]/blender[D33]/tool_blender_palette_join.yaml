@@ -1,0 +1,21 @@
+id: "B1142"
+tool: "blender_palette_join"
+date: "2026-10-17"
+tags: ["blender_palette_join"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Join Palette Swatches"
+
+machine: "blender"
+op: "palette.join"
+
+ARGS:
+  - {name: palette, type: text}

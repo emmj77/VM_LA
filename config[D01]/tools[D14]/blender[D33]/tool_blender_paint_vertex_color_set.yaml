@@ -1,0 +1,21 @@
+id: "B1120"
+tool: "blender_paint_vertex_color_set"
+date: "2026-10-17"
+tags: ["blender_paint_vertex_color_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Fill the active vertex color layer with the current paint color"
+
+machine: "blender"
+op: "paint.vertex_color_set"
+
+ARGS:
+  - {name: use_alpha, type: text}          # true|false, vide pour ne rien poser

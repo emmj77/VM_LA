@@ -1,0 +1,21 @@
+id: "B1286"
+tool: "blender_screen_repeat_history"
+date: "2026-10-17"
+tags: ["blender_screen_repeat_history"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Display menu for previous actions performed"
+
+machine: "blender"
+op: "screen.repeat_history"
+
+ARGS:
+  - {name: index, type: int}

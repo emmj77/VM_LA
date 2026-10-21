@@ -1,0 +1,21 @@
+id: "B1596"
+tool: "blender_wm_call_asset_shelf_popover"
+date: "2026-10-17"
+tags: ["blender_wm_call_asset_shelf_popover"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open a predefined asset shelf in a popup"
+
+machine: "blender"
+op: "wm.call_asset_shelf_popover"
+
+ARGS:
+  - {name: name, type: text}

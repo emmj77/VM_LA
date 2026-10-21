@@ -1,0 +1,46 @@
+id: "U041"
+tool: "upipe_create_gameobjects"
+date: "2026-10-18"
+tags: ["unity", "pipeline", "create_gameobjects"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Batch-create N empty GameObjects or primitives in one call. Optional positions/rotations/scales are arrays of [x,y,z] (length must equal count). Returns the created identities."
+
+COMMAND: |
+  PROJ=$(sed -n '1p' "$ROOT/projects/.active" 2>/dev/null | tr -d '\r')
+  P=
+  [ -n "$PROJ" ] && P=$(sed -n 's/^path:[[:space:]]*//p' "$ROOT/projects/$PROJ/project.yml" 2>/dev/null | head -1 | tr -d '"')
+  [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
+  case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
+  [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  set -- command --project-path "$P" create_gameobjects
+  [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+  [ -n "{{primitive}}" ] && set -- "$@" --primitive "{{primitive}}"
+  [ -n "{{parent}}" ] && set -- "$@" --parent "{{parent}}"
+  [ -n "{{count}}" ] && set -- "$@" --count "{{count}}"
+  [ -n "{{positions}}" ] && set -- "$@" --positions "{{positions}}"
+  [ -n "{{rotations}}" ] && set -- "$@" --rotations "{{rotations}}"
+  [ -n "{{scales}}" ] && set -- "$@" --scales "{{scales}}"
+
+  OUT=$(timeout 90 "$CLI" --no-banner --no-pager --non-interactive --format json "$@" </dev/null 2>&1)
+  printf '%s' "$OUT" | jq -e '.success == true' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | jq -r '.errors[0].message // .errors[0].code // "reponse illisible du CLI"' 2>/dev/null || printf '%s' "$OUT")" >&2; exit 1; }
+  printf '%s\n' "$OUT" | jq -c '.data'
+
+ARGS:
+  - {name: name, type: text}
+  - {name: primitive, type: text}
+  - {name: parent, type: text}
+  - {name: count, type: int}
+  - {name: positions, type: text}
+  - {name: rotations, type: text}
+  - {name: scales, type: text}

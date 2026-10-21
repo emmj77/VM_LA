@@ -1,0 +1,20 @@
+id: "B1508"
+tool: "blender_uv_reset"
+date: "2026-10-17"
+tags: ["blender_uv_reset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset UV projection"
+
+machine: "blender"
+op: "uv.reset"
+
+ARGS: []

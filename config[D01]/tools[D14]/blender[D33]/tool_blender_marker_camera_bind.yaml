@@ -1,0 +1,20 @@
+id: "B581"
+tool: "blender_marker_camera_bind"
+date: "2026-10-17"
+tags: ["blender_marker_camera_bind"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Bind the selected camera to a marker on the current frame"
+
+machine: "blender"
+op: "marker.camera_bind"
+
+ARGS: []

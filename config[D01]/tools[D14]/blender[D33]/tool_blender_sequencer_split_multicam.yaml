@@ -1,0 +1,21 @@
+id: "B1387"
+tool: "blender_sequencer_split_multicam"
+date: "2026-10-17"
+tags: ["blender_sequencer_split_multicam"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Split multicam strip and select camera"
+
+machine: "blender"
+op: "sequencer.split_multicam"
+
+ARGS:
+  - {name: camera, type: int}

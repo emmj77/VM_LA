@@ -1,0 +1,23 @@
+id: "B645"
+tool: "blender_mesh_dissolve_limited"
+date: "2026-10-17"
+tags: ["blender_mesh_dissolve_limited"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Dissolve selected edges and vertices, limited by the angle of surrounding geometry"
+
+machine: "blender"
+op: "mesh.dissolve_limited"
+
+ARGS:
+  - {name: angle_limit, type: text}
+  - {name: use_dissolve_boundaries, type: text}          # true|false, vide pour ne rien poser
+  - {name: delimit, type: text}          # un de : NORMAL | MATERIAL | SEAM | SHARP | UV

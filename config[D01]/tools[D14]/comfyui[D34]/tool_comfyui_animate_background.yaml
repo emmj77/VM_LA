@@ -1,0 +1,115 @@
+id: "C013"
+tool: "comfyui_animate_background"
+date: "2026-10-17"
+tags: ["comfyui", "comfyui_animate_background"]
+
+RULES:
+  enabled: true
+  timeout: 2400
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "builds the decor around the character with the anima model and its inpainting LLLite, and writes it into the existing background layer (under the colour and ink)"
+
+COMMAND: |
+  SERVICE=http://127.0.0.1:8188
+  APLAT=http://127.0.0.1:${LA_FLATTENER_PORT:-8097}
+  curl -sf --max-time 10 "$SERVICE/system_stats" >/dev/null 2>&1 || { printf '%s\n' "$(msg comfy_no_answer)""$SERVICE" >&2; exit 1; }
+  curl -sf --max-time 10 "$APLAT/health" >/dev/null 2>&1 || { printf '%s\n' "$(msg flattener_no_answer)""$APLAT" >&2; exit 1; }
+  command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1 || { printf '%s\n' "$(msg ffmpeg_missing)" >&2; exit 1; }
+  T="${TMPDIR:-/tmp}"
+  TEXT=$(cat)
+  [ -n "$TEXT" ] || { printf '%s\n' "$(msg backdrop_text_missing)" >&2; exit 1; }
+  FILE="$W/{{source}}"
+  [ -f "$FILE" ] || { printf '%s\n' "$(msg drawing_missing)""$FILE" >&2; exit 1; }
+  case "$FILE" in *.kra|*.krz) ;; *) printf '%s\n' "$(msg anima_backdrop_kra '%s')""$FILE" >&2; exit 1 ;; esac
+  unzip -p "$FILE" mergedimage.png > "$T/anim_aplat.png" 2>/dev/null
+  [ -s "$T/anim_aplat.png" ] || { printf '%s\n' "$(msg image_has_no_flat_colour_2)""$FILE" >&2; exit 1; }
+  SIZE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$T/anim_aplat.png" | tr ',' 'x')
+  L=${SIZE%x*}; H=${SIZE#*x}
+  COL="{{colour}}"; [ -n "$COL" ] || COL="couleur"
+  INK="{{ink}}"; [ -n "$INK" ] || INK="encrage"
+  SERVICEK=http://127.0.0.1:5678
+  curl -sf --max-time 10 "$SERVICEK/health" >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_no_answer)""$SERVICEK" >&2; exit 1; }
+  K() { curl -sS --max-time "$2" -H 'Content-Type: application/json' -d "$1" "$SERVICEK/"; }
+  calque_seul() {          # $1 = le calque a rendre, $2 = le PNG de sortie
+    K "$(jq -cn --arg p "$FILE" '{action:"open_file",params:{path:$p}}')" 180 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_cannot_open_p)""$FILE" >&2; return 1; }
+    LIST=$(K '{"action":"list_layers","params":{}}' 60)
+    NAMES=$(printf '%s' "$LIST" | jq -r '.layers[].name')
+    printf '%s\n' "$NAMES" | grep -Fxq "$1" || { printf '%s\n' "$(msg layer_unknown)""$1" "$(printf '%s' "$NAMES" | tr '\n' ' ')" >&2; return 1; }
+    VIS=$(printf '%s' "$LIST" | jq -r '.layers[] | select(.visible) | .name')
+    CACHES=$(printf '%s' "$LIST" | jq -r '.layers[] | select(.visible|not) | .name')
+    printf '%s\n' "$NAMES" | while IFS= read -r N; do if [ "$N" = "$1" ]; then V=true; else V=false; fi; K "$(jq -cn --arg n "$N" --argjson v "$V" '{action:"set_layer_visibility",params:{name:$n,visible:$v}}')" 30 >/dev/null; done
+    K "$(jq -cn --arg n "$1" '{action:"select_layer",params:{name:$n}}')" 30 >/dev/null
+    K "$(jq -cn --arg p "$2" '{action:"save",params:{path:$p}}')" 300 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_layer_unrendered)""$1" >&2; return 1; }
+    [ -s "$2" ] || { printf '%s\n' "$(msg layer_empty)""$1" >&2; return 1; }
+    if printf '%s' "$VIS" | grep -q . ; then printf '%s\n' "$VIS" | while IFS= read -r N; do K "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:true}}')" 30 >/dev/null; done; fi
+    if printf '%s' "$CACHES" | grep -q . ; then printf '%s\n' "$CACHES" | while IFS= read -r N; do K "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:false}}')" 30 >/dev/null; done; fi
+    return 0
+  }
+  calque_seul "$COL" "$T/anim_col.png" || exit 1
+  calque_seul "$INK" "$T/anim_ink.png" || exit 1
+  ffmpeg -y -v error -f lavfi -i "color=c=white:s=${L}x${H}" -i "$T/anim_col.png" -i "$T/anim_ink.png" -filter_complex "[0][1]overlay[t];[t][2]overlay" -frames:v 1 "$T/anim_page.png" || { printf '%s\n' "$(msg control_page_failed)" >&2; exit 1; }
+  set -- $(awk -v w="$L" -v h="$H" -v c="${LA_ANIMA_SIDE:-1536}" 'BEGIN{m=(w>h?w:h); e=(c<m?c/m:1); tw=int(w*e)/8*8; th=int(h*e)/8*8; if(tw<64)tw=64; if(th<64)th=64; printf "%d %d", tw, th}')
+  TW=$1; TH=$2
+  printf '%s\n' "$(msg page_resized_to_work)""$L" "$H" "$TW" "$TH"
+  ffmpeg -y -v error -i "$T/anim_page.png" -vf "scale=${TW}:${TH}" -frames:v 1 -pix_fmt rgb24 "$T/anim_ctl.png"
+  ffmpeg -y -v error -f lavfi -i "color=c=white:s=${TW}x${TH}" -frames:v 1 -pix_fmt rgb24 "$T/anim_msk.png"
+  NCTL=$(curl -s -F "image=@$T/anim_ctl.png" -F "type=input" -F "subfolder=" -F "overwrite=true" "$SERVICE/upload/image" | jq -r '.name // empty')
+  NMSK=$(curl -s -F "image=@$T/anim_msk.png" -F "type=input" -F "subfolder=" -F "overwrite=true" "$SERVICE/upload/image" | jq -r '.name // empty')
+  [ -n "$NCTL" ] && [ -n "$NMSK" ] || { printf '%s\n' "$(msg control_page_refused)" >&2; exit 1; }
+  GRAINE() { od -An -N4 -tu4 /dev/urandom | tr -d ' '; }
+  GRAPHE=$(jq -cn --arg clip "${LA_ANIMA_CLIP:-qwen_3_06b_base.safetensors}" --arg vae "${LA_ANIMA_VAE:-qwen_image_vae.safetensors}" \
+    --arg unet "${LA_ANIMA_UNET:-anima-base-v1.0.safetensors}" --arg patch "${LA_ANIMA_PATCH:-anima-lllite-inpainting-v2.safetensors}" \
+    --arg ctl "$NCTL" --arg msk "$NMSK" --arg t "$TEXT" \
+    --argjson larg "$TW" --argjson haut "$TH" --argjson force "${LA_ANIMA_FORCE:-1.0}" --argjson etapes "${LA_ANIMA_STEPS:-30}" --argjson cfg "${LA_ANIMA_CFG:-4.0}" --argjson sd "$(GRAINE)" '
+    {"78":{"class_type":"CLIPLoader","inputs":{"clip_name":$clip,"type":"stable_diffusion","device":"default"}},
+     "79":{"class_type":"VAELoader","inputs":{"vae_name":$vae}},
+     "85":{"class_type":"UNETLoader","inputs":{"unet_name":$unet,"weight_dtype":"default"}},
+     "86":{"class_type":"ModelPatchLoader","inputs":{"name":$patch}},
+     "91":{"class_type":"LoadImage","inputs":{"image":$ctl}},
+     "92":{"class_type":"LoadImage","inputs":{"image":$msk}},
+     "93":{"class_type":"ImageToMask","inputs":{"image":["92",0],"channel":"red"}},
+     "87":{"class_type":"AnimaLLLiteApply","inputs":{"model":["85",0],"model_patch":["86",0],"image":["91",0],"mask":["93",0],"strength":$force,"start_percent":0.0,"end_percent":1.0}},
+     "84":{"class_type":"CLIPTextEncode","inputs":{"text":$t,"clip":["78",0]}},
+     "82":{"class_type":"CLIPTextEncode","inputs":{"text":"low quality, worst quality, blurry, jpeg artifacts, text, watermark, signature","clip":["78",0]}},
+     "81":{"class_type":"EmptyLatentImage","inputs":{"width":$larg,"height":$haut,"batch_size":1}},
+     "106":{"class_type":"KSampler","inputs":{"seed":$sd,"steps":$etapes,"cfg":$cfg,"sampler_name":"euler","scheduler":"simple","denoise":1.0,"model":["87",0],"positive":["84",0],"negative":["82",0],"latent_image":["81",0]}},
+     "105":{"class_type":"VAEDecode","inputs":{"samples":["106",0],"vae":["79",0]}},
+     "46":{"class_type":"SaveImage","inputs":{"filename_prefix":"la_anima","images":["105",0]}}}')
+  R=$(jq -cn --argjson p "$GRAPHE" '{prompt:$p,client_id:"la"}' | curl -s -H 'Content-Type: application/json' --data-binary @- "$SERVICE/prompt")
+  PID=$(printf '%s' "$R" | jq -r '.prompt_id // empty')
+  [ -n "$PID" ] || { printf '%s\n' "$(msg graph_rejected)""$(printf '%s' "$R" | jq -c '.error // .node_errors // .' | cut -c1-400)" >&2; exit 1; }
+  i=0; while [ "$i" -lt 900 ]; do H2=$(curl -s "$SERVICE/history/$PID"); printf '%s' "$H2" | jq -e --arg p "$PID" 'has($p)' >/dev/null 2>&1 && break; sleep 2; i=$((i + 1)); done
+  [ "$i" -lt 900 ] || { printf '%s\n' "$(msg backdrop_timeout)""$PID" >&2; exit 1; }
+  ECHEC=$(printf '%s' "$H2" | jq -r --arg p "$PID" '.[$p].status.messages[]? | select(.[0]=="execution_error") | ((.[1].exception_type // "erreur") + " : " + (.[1].exception_message // ""))' | head -n 1)
+  [ -z "$ECHEC" ] || { printf '%s\n' "$(msg machine_failed)""$ECHEC" >&2; exit 1; }
+  IMG=$(printf '%s' "$H2" | jq -r --arg p "$PID" '.[$p].outputs[]?.images[]? | [.filename, (.subfolder // ""), (.type // "output")] | @tsv' | head -n 1)
+  [ -n "$IMG" ] || { printf '%s\n' "$(msg backdrop_no_image)" >&2; exit 1; }
+  curl -s -G --data-urlencode "filename=$(printf '%s' "$IMG" | cut -f1)" --data-urlencode "subfolder=$(printf '%s' "$IMG" | cut -f2)" --data-urlencode "type=$(printf '%s' "$IMG" | cut -f3)" "$SERVICE/view" -o "$T/anim_rendu.png"
+  [ -s "$T/anim_rendu.png" ] || { printf '%s\n' "$(msg backdrop_not_down)" >&2; exit 1; }
+  DECOR="$T/anim_decor.png"
+  ffmpeg -y -v error -i "$T/anim_rendu.png" -vf "scale=${L}:${H}:flags=lanczos" -frames:v 1 "$DECOR" || { printf '%s\n' "$(msg backdrop_resize_failed)""$L" "$H" >&2; exit 1; }
+  OUTPUT="$W/{{output}}"
+  [ -n "{{output}}" ] || OUTPUT="$W/fond_$(date +%Y%m%d-%H%M%S).png"
+  cp "$DECOR" "$OUTPUT"
+  case "{{keep}}" in
+    file) ;;
+    *) INSIDE="{{under}}"; [ -n "$INSIDE" ] || INSIDE="fond/décors"
+       K "$(jq -cn --arg p "$OUTPUT" --arg i "$INSIDE" '{action:"import_image",params:{path:$p,into:$i}}')" 300 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_layer_write_refused)""$INSIDE" >&2; exit 1; }
+       K "$(jq -cn --arg p "$FILE" '{action:"save_document",params:{path:$p}}')" 300 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg backdrop_write_failed)""$FILE" >&2; exit 1; }
+       printf '%s\n' "$(msg backdrop_written_in '%s')""$INSIDE" "$FILE" "$(wc -c < "$FILE")" ;;
+  esac
+  printf '%s\n' "$(msg backdrop_summary '%s')""$OUTPUT" "$(wc -c < "$OUTPUT")" "$TW" "$TH"
+
+ARGS:
+  - {name: source, type: path}                # le dessin .kra, relatif a l'espace du skill
+  - {name: colour, type: text}                # le calque de couleur (vide : couleur)
+  - {name: ink, type: text}                   # le calque d'encrage (vide : encrage)
+  - {name: under, type: text}                 # le calque de fond EXISTANT ou ecrire le decor (vide : fond/décors)
+  - {name: output, type: path}                # le PNG du decor, dans l'espace du skill
+  - {name: keep, type: enum, values: [kra, file, ""]}   # kra : ecrit dans le .kra ; file : PNG seul
+  - {name: style, type: text, stdin: true}    # le decor, en texte libre : par l'ENTREE STANDARD

@@ -1,0 +1,25 @@
+id: "B1505"
+tool: "blender_uv_project_from_view"
+date: "2026-10-17"
+tags: ["blender_uv_project_from_view"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Project the UV vertices of the mesh as seen in current 3D view"
+
+machine: "blender"
+op: "uv.project_from_view"
+
+ARGS:
+  - {name: orthographic, type: text}          # true|false, vide pour ne rien poser
+  - {name: camera_bounds, type: text}          # true|false, vide pour ne rien poser
+  - {name: correct_aspect, type: text}          # true|false, vide pour ne rien poser
+  - {name: clip_to_bounds, type: text}          # true|false, vide pour ne rien poser
+  - {name: scale_to_bounds, type: text}          # true|false, vide pour ne rien poser

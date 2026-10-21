@@ -1,0 +1,21 @@
+id: "B1182"
+tool: "blender_pose_autoside_names"
+date: "2026-10-17"
+tags: ["blender_pose_autoside_names"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Automatically renames the selected bones according to which side of the target axis they fall on"
+
+machine: "blender"
+op: "pose.autoside_names"
+
+ARGS:
+  - {name: axis, type: text}          # un de : XAXIS | YAXIS | ZAXIS

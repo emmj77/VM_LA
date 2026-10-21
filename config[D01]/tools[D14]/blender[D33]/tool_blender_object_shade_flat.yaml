@@ -1,0 +1,21 @@
+id: "B1033"
+tool: "blender_object_shade_flat"
+date: "2026-10-17"
+tags: ["blender_object_shade_flat"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Render and display faces uniform, using face normals"
+
+machine: "blender"
+op: "object.shade_flat"
+
+ARGS:
+  - {name: keep_sharp_edges, type: text}          # true|false, vide pour ne rien poser

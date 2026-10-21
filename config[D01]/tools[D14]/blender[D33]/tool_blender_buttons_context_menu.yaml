@@ -1,0 +1,20 @@
+id: "B119"
+tool: "blender_buttons_context_menu"
+date: "2026-10-17"
+tags: ["blender_buttons_context_menu"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Display properties editor context_menu"
+
+machine: "blender"
+op: "buttons.context_menu"
+
+ARGS: []

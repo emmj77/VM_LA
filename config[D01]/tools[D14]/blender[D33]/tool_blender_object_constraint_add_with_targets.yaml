@@ -1,0 +1,21 @@
+id: "B915"
+tool: "blender_object_constraint_add_with_targets"
+date: "2026-10-17"
+tags: ["blender_object_constraint_add_with_targets"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a constraint to the active object, with target (where applicable) set to the selected objects/bones"
+
+machine: "blender"
+op: "object.constraint_add_with_targets"
+
+ARGS:
+  - {name: type, type: text}          # un de :

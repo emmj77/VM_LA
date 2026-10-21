@@ -1,0 +1,22 @@
+id: "B954"
+tool: "blender_object_grease_pencil_time_modifier_segment_remove"
+date: "2026-10-17"
+tags: ["blender_object_grease_pencil_time_modifier_segment_remove"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove the active segment from the time modifier"
+
+machine: "blender"
+op: "object.grease_pencil_time_modifier_segment_remove"
+
+ARGS:
+  - {name: modifier, type: text}
+  - {name: index, type: int}

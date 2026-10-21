@@ -1,0 +1,20 @@
+id: "B335"
+tool: "blender_file_pack_all"
+date: "2026-10-17"
+tags: ["blender_file_pack_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Pack all used external files into this .blend"
+
+machine: "blender"
+op: "file.pack_all"
+
+ARGS: []

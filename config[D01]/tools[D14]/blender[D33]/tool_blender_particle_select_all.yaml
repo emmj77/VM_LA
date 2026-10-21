@@ -1,0 +1,21 @@
+id: "B1162"
+tool: "blender_particle_select_all"
+date: "2026-10-17"
+tags: ["blender_particle_select_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(De)select all particles' keys"
+
+machine: "blender"
+op: "particle.select_all"
+
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT

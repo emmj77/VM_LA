@@ -1,0 +1,21 @@
+id: "B726"
+tool: "blender_mesh_separate"
+date: "2026-10-17"
+tags: ["blender_mesh_separate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Separate selected geometry into a new mesh"
+
+machine: "blender"
+op: "mesh.separate"
+
+ARGS:
+  - {name: type, type: text}          # un de : SELECTED | MATERIAL | LOOSE

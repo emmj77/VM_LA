@@ -1,0 +1,21 @@
+id: "B163"
+tool: "blender_clip_refine_markers"
+date: "2026-10-17"
+tags: ["blender_clip_refine_markers"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Refine selected markers positions by running the tracker from track's reference to current frame"
+
+machine: "blender"
+op: "clip.refine_markers"
+
+ARGS:
+  - {name: backwards, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,20 @@
+id: "B839"
+tool: "blender_node_group_ungroup"
+date: "2026-10-17"
+tags: ["blender_node_group_ungroup"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Ungroup selected nodes"
+
+machine: "blender"
+op: "node.group_ungroup"
+
+ARGS: []

@@ -1,0 +1,35 @@
+id: "B1790"
+tool: "blender_uv_project"
+date: "2026-10-17"
+tags: ["blender_uv_project"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a UV projection: cube | cylinder | smart | sphere (op picks which)"
+
+machine: "blender"
+op: "uv.{{op}}_project"
+
+ARGS:
+  - {name: op, type: enum, values: [cube, cylinder, smart, sphere]}
+  - {name: correct_aspect, type: text}
+  - {name: scale_to_bounds, type: text}
+  - {name: clip_to_bounds, type: text}
+  - {name: align, type: text}
+  - {name: direction, type: text}
+  - {name: pole, type: text}
+  - {name: seam, type: text}
+  - {name: angle_limit, type: text}
+  - {name: area_weight, type: text}
+  - {name: cube_size, type: text}
+  - {name: island_margin, type: text}
+  - {name: margin_method, type: text}
+  - {name: radius, type: text}
+  - {name: rotate_method, type: text}

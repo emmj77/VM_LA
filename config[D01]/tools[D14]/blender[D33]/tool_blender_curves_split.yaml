@@ -1,0 +1,20 @@
+id: "B295"
+tool: "blender_curves_split"
+date: "2026-10-17"
+tags: ["blender_curves_split"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Split selected points"
+
+machine: "blender"
+op: "curves.split"
+
+ARGS: []

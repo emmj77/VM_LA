@@ -1,0 +1,21 @@
+id: "B359"
+tool: "blender_font_change_character"
+date: "2026-10-17"
+tags: ["blender_font_change_character"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change font character code"
+
+machine: "blender"
+op: "font.change_character"
+
+ARGS:
+  - {name: delta, type: int}

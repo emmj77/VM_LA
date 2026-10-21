@@ -1,0 +1,23 @@
+id: "B459"
+tool: "blender_grease_pencil_move_to_layer"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_move_to_layer"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move selected strokes to another layer"
+
+machine: "blender"
+op: "grease_pencil.move_to_layer"
+
+ARGS:
+  - {name: target_layer_name, type: text}
+  - {name: target_group_name, type: text}
+  - {name: add_new_layer, type: text}          # true|false, vide pour ne rien poser

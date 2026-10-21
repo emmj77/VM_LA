@@ -1,0 +1,45 @@
+id: "B1716"
+tool: "blender_ed_lib_id"
+date: "2026-10-17"
+tags: ["blender_ed_lib_id"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a linked datablock in the outliner: fake_user_toggle | generate_preview | generate_preview_from_object | load_custom_preview | override_editable_toggle | remove_preview | unlink (op picks which)"
+
+machine: "blender"
+op: "ed.lib_id_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [fake_user_toggle, generate_preview, generate_preview_from_object, load_custom_preview, override_editable_toggle, remove_preview, unlink]}
+  - {name: filepath, type: text}
+  - {name: filter_blenlib, type: text}
+  - {name: filter_obj, type: text}
+  - {name: filter_usd, type: text}
+  - {name: show_multiview, type: text}
+  - {name: check_existing, type: text}
+  - {name: display_type, type: text}
+  - {name: filemode, type: int}
+  - {name: filter_alembic, type: text}
+  - {name: filter_archive, type: text}
+  - {name: filter_backup, type: text}
+  - {name: filter_blender, type: text}
+  - {name: filter_btx, type: text}
+  - {name: filter_folder, type: text}
+  - {name: filter_font, type: text}
+  - {name: filter_image, type: text}
+  - {name: filter_movie, type: text}
+  - {name: filter_python, type: text}
+  - {name: filter_sound, type: text}
+  - {name: filter_text, type: text}
+  - {name: filter_volume, type: text}
+  - {name: hide_props_region, type: text}
+  - {name: sort_method, type: text}
+  - {name: use_multiview, type: text}

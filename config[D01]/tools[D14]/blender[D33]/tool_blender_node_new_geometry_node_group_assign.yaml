@@ -1,0 +1,20 @@
+id: "B858"
+tool: "blender_node_new_geometry_node_group_assign"
+date: "2026-10-17"
+tags: ["blender_node_new_geometry_node_group_assign"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a new geometry node group and assign it to the active modifier"
+
+machine: "blender"
+op: "node.new_geometry_node_group_assign"
+
+ARGS: []

@@ -1,0 +1,21 @@
+id: "B1793"
+tool: "blender_view3d_ndof"
+date: "2026-10-17"
+tags: ["blender_view3d_ndof"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a 3D navigation device move: all | orbit | orbit_zoom | pan (op picks which)"
+
+machine: "blender"
+op: "view3d.ndof_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [all, orbit, orbit_zoom, pan]}

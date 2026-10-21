@@ -1,0 +1,21 @@
+id: "B1469"
+tool: "blender_ui_drop_name"
+date: "2026-10-17"
+tags: ["blender_ui_drop_name"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Drop name to button"
+
+machine: "blender"
+op: "ui.drop_name"
+
+ARGS:
+  - {name: string, type: text}

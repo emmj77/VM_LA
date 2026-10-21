@@ -1,0 +1,23 @@
+id: "B1656"
+tool: "blender_wm_redraw_timer"
+date: "2026-10-17"
+tags: ["blender_wm_redraw_timer"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Simple redraw timer to test the speed of updating the interface"
+
+machine: "blender"
+op: "wm.redraw_timer"
+
+ARGS:
+  - {name: type, type: text}          # un de : DRAW | DRAW_SWAP | DRAW_WIN | DRAW_WIN_SWAP | ANIM_STEP | ANIM_PLAY | UNDO
+  - {name: iterations, type: int}
+  - {name: time_limit, type: text}

@@ -1,0 +1,154 @@
+id: "U450"
+tool: "coplay_asset_gen"
+date: "2026-10-17"
+tags: ["coplay_asset_gen"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "the asset generator: generate-audio | generate-image | generate-model | import-model | import-model-file | list-models | status (op picks which) ; kind (list-models) : audio | image | model"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  generate-audio)
+    set -f
+    set -- asset-gen generate-audio
+    [ -n "{{provider}}" ] && set -- "$@" --provider "{{provider}}"
+    [ -n "{{prompt}}" ] && set -- "$@" --prompt "{{prompt}}"
+    [ -n "{{model}}" ] && set -- "$@" --model "{{model}}"
+    [ -n "{{duration}}" ] && set -- "$@" --duration "{{duration}}"
+    [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+    [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  generate-image)
+    set -f
+    set -- asset-gen generate-image
+    case "{{transparent}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'transparent')" >&2; exit 1 ;; esac
+    [ -n "{{provider}}" ] && set -- "$@" --provider "{{provider}}"
+    [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+    [ -n "{{prompt}}" ] && set -- "$@" --prompt "{{prompt}}"
+    [ -n "{{image_path}}" ] && set -- "$@" --image-path "{{image_path}}"
+    [ -n "{{image_url}}" ] && set -- "$@" --image-url "{{image_url}}"
+    [ -n "{{model}}" ] && set -- "$@" --model "{{model}}"
+    [ "{{transparent}}" = true ] && set -- "$@" --transparent
+    [ -n "{{width}}" ] && set -- "$@" --width "{{width}}"
+    [ -n "{{height}}" ] && set -- "$@" --height "{{height}}"
+    [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+    [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  generate-model)
+    set -f
+    set -- asset-gen generate-model
+    case "{{texture}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'texture')" >&2; exit 1 ;; esac
+    [ -n "{{provider}}" ] && set -- "$@" --provider "{{provider}}"
+    [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+    [ -n "{{prompt}}" ] && set -- "$@" --prompt "{{prompt}}"
+    [ -n "{{image_path}}" ] && set -- "$@" --image-path "{{image_path}}"
+    [ -n "{{image_url}}" ] && set -- "$@" --image-url "{{image_url}}"
+    [ -n "{{fmt}}" ] && set -- "$@" --format "{{fmt}}"
+    [ -n "{{target_size}}" ] && set -- "$@" --target-size "{{target_size}}"
+    [ "{{texture}}" = true ] && set -- "$@" --texture
+    [ -n "{{tier}}" ] && set -- "$@" --tier "{{tier}}"
+    [ -n "{{model}}" ] && set -- "$@" --model "{{model}}"
+    [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+    [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  import-model)
+    set -f
+    set -- asset-gen import-model
+    [ -n "{{uid}}" ] && set -- "$@" --uid "{{uid}}"
+    [ -n "{{target_size}}" ] && set -- "$@" --target-size "{{target_size}}"
+    [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+    [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  import-model-file)
+    set -f
+    set -- asset-gen import-model-file
+    [ -n "{{source_path}}" ] && set -- "$@" --source-path "{{source_path}}"
+    [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+    [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+    [ -n "{{target_size}}" ] && set -- "$@" --target-size "{{target_size}}"
+    [ -n "{{animation_type}}" ] && set -- "$@" --animation-type "{{animation_type}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  list-models)
+    set -f
+    set -- asset-gen list-models
+    case "{{refresh}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'refresh')" >&2; exit 1 ;; esac
+    [ -n "{{kind}}" ] && set -- "$@" --kind "{{kind}}"
+    [ -n "{{provider}}" ] && set -- "$@" --provider "{{provider}}"
+    [ "{{refresh}}" = true ] && set -- "$@" --refresh
+    [ -n "{{search}}" ] && set -- "$@" --search "{{search}}"
+    [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+    [ -n "{{limit}}" ] && set -- "$@" --limit "{{limit}}"
+    [ -n "{{offset}}" ] && set -- "$@" --offset "{{offset}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  status)
+    set -f
+    set -- asset-gen status
+    [ -n "{{job_id}}" ] && set -- "$@" --job-id "{{job_id}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [generate-audio, generate-image, generate-model, import-model, import-model-file, list-models, status]}
+  - {name: animation_type, type: text}
+  - {name: duration, type: text}
+  - {name: fmt, type: text}
+  - {name: height, type: int}
+  - {name: image_path, type: text}
+  - {name: image_url, type: text}
+  - {name: job_id, type: text}
+  - {name: kind, type: text}
+  - {name: limit, type: int}
+  - {name: mode, type: text}
+  - {name: model, type: text}
+  - {name: name, type: text}
+  - {name: offset, type: int}
+  - {name: output_folder, type: text}
+  - {name: prompt, type: text}
+  - {name: provider, type: text}
+  - {name: search, type: text}
+  - {name: source_path, type: text}
+  - {name: target_size, type: text}
+  - {name: tier, type: text}
+  - {name: uid, type: text}
+  - {name: width, type: int}
+  - {name: refresh, type: text}
+  - {name: texture, type: text}
+  - {name: transparent, type: text}

@@ -1,0 +1,22 @@
+id: "B1771"
+tool: "blender_rigidbody_objects"
+date: "2026-10-17"
+tags: ["blender_rigidbody_objects"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a rigid body element: _add | _remove | s_add | s_remove (op picks which)"
+
+machine: "blender"
+op: "rigidbody.object{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [_add, _remove, s_add, s_remove]}
+  - {name: type, type: text}

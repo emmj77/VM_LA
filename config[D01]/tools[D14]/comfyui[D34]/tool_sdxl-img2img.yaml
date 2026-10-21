@@ -1,0 +1,27 @@
+id: "C017"
+tool: "sdxl-img2img"
+date: "2026-10-17"
+tags: ["comfyui", "sdxl-img2img", "img2img", "image"]
+
+RULES:
+  enabled: true
+  timeout: 1200
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "image-to-image (SDXL) via ComfyUI"
+
+COMMAND: |
+  I=$(cat); [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }
+  S=http://127.0.0.1:8188; curl -sS -m 5 "$S/system_stats" >/dev/null 2>&1 || { printf '%s\n' "$(msg comfyui_silent "$S")" >&2; exit 1; }
+  D=/mnt/hermes_workspace/hermes/skills/software-development/comfyui
+  O="{{out}}"; [ -n "$O" ] || O="$ROOT/work/GEN"
+  python3 "$D/scripts/run_workflow.py" --workflow "$D/workflows/sdxl_img2img.json" --input-image "image=$I" --args "{\"prompt\": \"{{prompt}}\"}" --output-dir "$O"
+
+ARGS:
+  - {name: image, type: path, stdin: true}
+  - {name: prompt, type: text, required: false}
+  - {name: out, type: path, required: false}

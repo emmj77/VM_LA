@@ -1,0 +1,21 @@
+id: "B1126"
+tool: "blender_paint_weight_from_bones"
+date: "2026-10-17"
+tags: ["blender_paint_weight_from_bones"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the weights of the groups matching the attached armature's bones that have 'Deform' option enabled, using the distance between the vertices and th"
+
+machine: "blender"
+op: "paint.weight_from_bones"
+
+ARGS:
+  - {name: type, type: text}          # un de : AUTOMATIC | ENVELOPES

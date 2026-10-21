@@ -1,0 +1,23 @@
+id: "B506"
+tool: "blender_grease_pencil_vertex_color_brightness_contrast"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_vertex_color_brightness_contrast"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Adjust vertex color brightness/contrast"
+
+machine: "blender"
+op: "grease_pencil.vertex_color_brightness_contrast"
+
+ARGS:
+  - {name: mode, type: text}          # un de : STROKE | FILL | BOTH
+  - {name: brightness, type: text}
+  - {name: contrast, type: text}

@@ -1,0 +1,20 @@
+id: "B148"
+tool: "blender_clip_graph_delete_knot"
+date: "2026-10-17"
+tags: ["blender_clip_graph_delete_knot"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete curve knots"
+
+machine: "blender"
+op: "clip.graph_delete_knot"
+
+ARGS: []

@@ -1,0 +1,21 @@
+id: "B128"
+tool: "blender_clip_add_marker"
+date: "2026-10-17"
+tags: ["blender_clip_add_marker"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Place new marker at specified location"
+
+machine: "blender"
+op: "clip.add_marker"
+
+ARGS:
+  - {name: location, type: text}          # 2 valeurs separees par des virgules

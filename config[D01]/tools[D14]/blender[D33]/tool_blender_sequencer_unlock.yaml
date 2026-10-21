@@ -1,0 +1,20 @@
+id: "B1404"
+tool: "blender_sequencer_unlock"
+date: "2026-10-17"
+tags: ["blender_sequencer_unlock"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Unlock strips so they can be transformed"
+
+machine: "blender"
+op: "sequencer.unlock"
+
+ARGS: []

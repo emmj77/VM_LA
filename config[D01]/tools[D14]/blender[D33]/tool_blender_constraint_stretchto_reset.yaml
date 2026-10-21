@@ -1,0 +1,22 @@
+id: "B229"
+tool: "blender_constraint_stretchto_reset"
+date: "2026-10-17"
+tags: ["blender_constraint_stretchto_reset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset original length of bone for Stretch To Constraint"
+
+machine: "blender"
+op: "constraint.stretchto_reset"
+
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE

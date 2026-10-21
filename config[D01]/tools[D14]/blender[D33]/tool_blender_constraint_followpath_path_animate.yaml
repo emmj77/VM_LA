@@ -1,0 +1,24 @@
+id: "B222"
+tool: "blender_constraint_followpath_path_animate"
+date: "2026-10-17"
+tags: ["blender_constraint_followpath_path_animate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add default animation for path used by constraint if it isn't animated already"
+
+machine: "blender"
+op: "constraint.followpath_path_animate"
+
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE
+  - {name: frame_start, type: int}
+  - {name: length, type: int}

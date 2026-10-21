@@ -1,0 +1,35 @@
+# one step of the turn. it reads state/turn.json, does its work, writes it back.
+id: "T007"
+tool: "turn.second"
+date: "2026-10-20"
+tags: ["turn", "second"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the small head says who speaks"
+COMMAND: |
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
+  _h=$(cfg str models.host) || _h=127.0.0.1
+  _p=$(cfg num models.port) || _p=8091
+  _m=$(cfg str models.local) || _m=local
+  _t=$(cfg num limits.ping_timeout) || _t=2
+  _q=$(jq -n --arg m "$_m" --arg p "who speaks: the human or the agent? one word." \
+    '{model:$m,messages:[{role:"user",content:$p}],max_tokens:4,stream:false}')
+  _r=$(printf '%s' "$_q" | curl -fsS -m "$_t" -H 'Content-Type: application/json' \
+    -d @- "http://$_h:$_p/v1/chat/completions" 2>/dev/null |
+    jq -r '.choices[0].message.content // empty' 2>/dev/null)
+  case $_r in
+    *human*) _f=human ;;
+    *)       _f=agent ;;
+  esac
+  _turn_set "(.family = \"$_f\")"
+  _tr second "$_f"
+  exit 0
+
+ARGS: []

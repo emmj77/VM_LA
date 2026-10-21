@@ -1,0 +1,21 @@
+id: "B1650"
+tool: "blender_wm_read_factory_userpref"
+date: "2026-10-17"
+tags: ["blender_wm_read_factory_userpref"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Load factory default preferences. To make changes to preferences permanent, use 'Save Preferences'"
+
+machine: "blender"
+op: "wm.read_factory_userpref"
+
+ARGS:
+  - {name: use_factory_startup_app_template_only, type: text}          # true|false, vide pour ne rien poser

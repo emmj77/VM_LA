@@ -1,0 +1,20 @@
+id: "B1143"
+tool: "blender_palette_new"
+date: "2026-10-17"
+tags: ["blender_palette_new"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add new palette"
+
+machine: "blender"
+op: "palette.new"
+
+ARGS: []

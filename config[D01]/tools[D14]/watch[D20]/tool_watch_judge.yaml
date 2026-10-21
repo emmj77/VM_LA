@@ -1,0 +1,71 @@
+# one event judged: wake or sleep. the events are carried here, they are a closed list.
+id: "W001"
+tool: "watch.judge"
+date: "2026-10-20"
+tags: ["watch", "judge"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "asks the reranker whether an event of the bridge wakes the session or waits"
+COMMAND: |
+  _op=${1:-judge}
+  _ev_list="say voice image"
+  _h=$(cfg str models.host 127.0.0.1)
+  _pt=$(cfg num models.port 8091) || _pt=8091
+  _m=$(cfg str models.rerank) || { printf 'FAULT models.rerank is not written\n'; exit 0; }
+  _t=$(cfg num limits.ping_timeout 2) || _t=2
+  case $_op in
+  events)
+    for _e in $_ev_list; do printf 'ok %s\n' "$_e"; done
+    ;;
+  judge)
+    _in=$(cat)
+    _ev=$(printf '%s' "$_in" | awk '{ print $1 }')
+    _de=$(printf '%s' "$_in" | sed 's/^[^ ]*[ ]*//')
+    [ -n "$_ev" ] || { printf 'FAULT judge wants the event then its body on the input\n'; exit 0; }
+    case " $_ev_list " in
+      *" $_ev "*) ;;
+      *) msg refusals.watch_event "$_ev"; exit 0 ;;
+    esac
+    [ -n "$_de" ] || _de="the event carries no body"
+    _q="the bridge saw $_ev while the session sleeps: $_de"
+    _body=$(jq -cn --arg m "$_m" --arg q "$_q" \
+      '{model:$m,query:$q,documents:["a human asks for an answer now","nothing needs an answer now"],top_n:2}')
+    _r=$(printf '%s' "$_body" | curl -sS -m "$_t" -H 'Content-Type: application/json' \
+      -d @- "http://$_h:$_pt/v1/rerank" 2>/dev/null)
+    [ -n "$_r" ] || { printf 'note the judge is silent: the event waits for the next turn\n'; exit 0; }
+    _s1=$(printf '%s' "$_r" | jq -r '.results[0].relevance_score // empty' 2>/dev/null)
+    _s2=$(printf '%s' "$_r" | jq -r '.results[1].relevance_score // empty' 2>/dev/null)
+    [ -n "$_s1" ] && [ -n "$_s2" ] || { printf 'note the judge answered nothing usable: the event waits\n'; exit 0; }
+    _v=$(awk -v a="$_s1" -v b="$_s2" 'BEGIN { print (a >= b) ? "wake" : "sleep" }')
+    printf 'watch %s %s %s\n' "$_v" "$_ev" "$_de" | run_call engine.trace "op=line" >/dev/null
+    [ "$_v" = wake ] && printf 'ok wake: a human request waits for an answer now (%.3f / %.3f)\n' "$_s1" "$_s2" \
+      || printf 'note sleep: nothing waits for an answer now (%.3f / %.3f)\n' "$_s1" "$_s2"
+    ;;
+  decide)
+    _in=$(cat)
+    _v=$(printf '%s' "$_in" | awk '{ print $1 }')
+    case $_v in
+      wake|sleep) ;;
+      *) printf 'FAULT the decision is not one of the two agreed outputs: wake, sleep\n'; exit 0 ;;
+    esac
+    printf 'watch %s\n' "$_in" | run_call engine.trace "op=line" >/dev/null
+    printf 'ok the human said %s\n' "$_v"
+    ;;
+  last)
+    _f=$(cfg abs trace 2>/dev/null) || { printf 'FAULT no channel\n'; exit 0; }
+    [ -f "$_f" ] || { printf 'note nothing has been judged yet\n'; exit 0; }
+    _n=$(jq -r 'select(.kind == "watch") | "\(.ts)  \(.text)"' "$_f" 2>/dev/null | tail -n 10)
+    [ -n "$_n" ] && printf 'ok %s\n' "$(printf '%s' "$_n" | tr '\n' ' ')" || printf 'note no verdict in the channel\n'
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: judge,events,last,decide}

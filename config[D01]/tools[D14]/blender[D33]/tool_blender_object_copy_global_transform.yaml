@@ -1,0 +1,20 @@
+id: "B918"
+tool: "blender_object_copy_global_transform"
+date: "2026-10-17"
+tags: ["blender_object_copy_global_transform"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copies the matrix of the currently active object or pose bone to the clipboard. Uses world-space matrices"
+
+machine: "blender"
+op: "object.copy_global_transform"
+
+ARGS: []

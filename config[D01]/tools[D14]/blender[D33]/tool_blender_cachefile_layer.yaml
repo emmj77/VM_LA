@@ -1,0 +1,45 @@
+id: "B1705"
+tool: "blender_cachefile_layer"
+date: "2026-10-17"
+tags: ["blender_cachefile_layer"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a cache file layer: add | move | remove (op picks which)"
+
+machine: "blender"
+op: "cachefile.layer_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, move, remove]}
+  - {name: direction, type: text}
+  - {name: filepath, type: text}
+  - {name: filter_blenlib, type: text}
+  - {name: filter_obj, type: text}
+  - {name: filter_usd, type: text}
+  - {name: check_existing, type: text}
+  - {name: display_type, type: text}
+  - {name: filemode, type: int}
+  - {name: filter_alembic, type: text}
+  - {name: filter_archive, type: text}
+  - {name: filter_backup, type: text}
+  - {name: filter_blender, type: text}
+  - {name: filter_btx, type: text}
+  - {name: filter_folder, type: text}
+  - {name: filter_font, type: text}
+  - {name: filter_image, type: text}
+  - {name: filter_movie, type: text}
+  - {name: filter_python, type: text}
+  - {name: filter_sound, type: text}
+  - {name: filter_text, type: text}
+  - {name: filter_volume, type: text}
+  - {name: hide_props_region, type: text}
+  - {name: relative_path, type: text}
+  - {name: sort_method, type: text}

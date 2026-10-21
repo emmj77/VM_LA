@@ -1,0 +1,21 @@
+id: "B1422"
+tool: "blender_text_comment_toggle"
+date: "2026-10-17"
+tags: ["blender_text_comment_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(undocumented operator)"
+
+machine: "blender"
+op: "text.comment_toggle"
+
+ARGS:
+  - {name: type, type: text}          # un de : TOGGLE | COMMENT | UNCOMMENT

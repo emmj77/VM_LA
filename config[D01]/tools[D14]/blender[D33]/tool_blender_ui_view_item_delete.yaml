@@ -1,0 +1,20 @@
+id: "B1477"
+tool: "blender_ui_view_item_delete"
+date: "2026-10-17"
+tags: ["blender_ui_view_item_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete selected list item"
+
+machine: "blender"
+op: "ui.view_item_delete"
+
+ARGS: []

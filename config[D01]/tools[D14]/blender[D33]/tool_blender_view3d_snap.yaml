@@ -1,0 +1,23 @@
+id: "B1794"
+tool: "blender_view3d_snap"
+date: "2026-10-17"
+tags: ["blender_view3d_snap"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "the 3D cursor or the selection: cursor_to_active | cursor_to_center | cursor_to_grid | cursor_to_selected | selected_to_active | selected_to_cursor | selected_to_grid (op picks which)"
+
+machine: "blender"
+op: "view3d.snap_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [cursor_to_active, cursor_to_center, cursor_to_grid, cursor_to_selected, selected_to_active, selected_to_cursor, selected_to_grid]}
+  - {name: use_offset, type: text}
+  - {name: use_rotation, type: text}

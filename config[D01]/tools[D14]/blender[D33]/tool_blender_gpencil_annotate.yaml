@@ -1,0 +1,28 @@
+id: "B370"
+tool: "blender_gpencil_annotate"
+date: "2026-10-17"
+tags: ["blender_gpencil_annotate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make annotations on the active data"
+
+machine: "blender"
+op: "gpencil.annotate"
+
+ARGS:
+  - {name: mode, type: text}          # un de : DRAW | DRAW_STRAIGHT | DRAW_POLY | ERASER
+  - {name: arrowstyle_start, type: text}          # un de : NONE | ARROW | ARROW_OPEN | ARROW_OPEN_INVERTED | DIAMOND
+  - {name: arrowstyle_end, type: text}          # un de : NONE | ARROW | ARROW_OPEN | ARROW_OPEN_INVERTED | DIAMOND
+  - {name: use_stabilizer, type: text}          # true|false, vide pour ne rien poser
+  - {name: stabilizer_factor, type: text}
+  - {name: stabilizer_radius, type: int}
+  - {name: stroke, type: text}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser

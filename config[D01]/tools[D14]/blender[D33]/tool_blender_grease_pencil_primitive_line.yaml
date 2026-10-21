@@ -1,0 +1,22 @@
+id: "B468"
+tool: "blender_grease_pencil_primitive_line"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_primitive_line"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create predefined Grease Pencil stroke lines"
+
+machine: "blender"
+op: "grease_pencil.primitive_line"
+
+ARGS:
+  - {name: subdivision, type: int}
+  - {name: type, type: text}          # un de : BOX | LINE | POLYLINE | CIRCLE | ARC | CURVE

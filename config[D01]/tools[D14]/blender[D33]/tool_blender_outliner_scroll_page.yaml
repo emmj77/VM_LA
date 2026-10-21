@@ -1,0 +1,21 @@
+id: "B1091"
+tool: "blender_outliner_scroll_page"
+date: "2026-10-17"
+tags: ["blender_outliner_scroll_page"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Scroll page up or down"
+
+machine: "blender"
+op: "outliner.scroll_page"
+
+ARGS:
+  - {name: up, type: text}          # true|false, vide pour ne rien poser

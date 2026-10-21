@@ -1,0 +1,21 @@
+id: "B727"
+tool: "blender_mesh_set_normals_from_faces"
+date: "2026-10-17"
+tags: ["blender_mesh_set_normals_from_faces"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the custom normals from the selected faces ones"
+
+machine: "blender"
+op: "mesh.set_normals_from_faces"
+
+ARGS:
+  - {name: keep_sharp, type: text}          # true|false, vide pour ne rien poser

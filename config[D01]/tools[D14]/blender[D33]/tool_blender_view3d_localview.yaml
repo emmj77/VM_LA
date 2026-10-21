@@ -1,0 +1,21 @@
+id: "B1551"
+tool: "blender_view3d_localview"
+date: "2026-10-17"
+tags: ["blender_view3d_localview"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle display of selected object(s) separately and centered in view"
+
+machine: "blender"
+op: "view3d.localview"
+
+ARGS:
+  - {name: frame_selected, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,20 @@
+id: "B1275"
+tool: "blender_screen_animation_step"
+date: "2026-10-17"
+tags: ["blender_screen_animation_step"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Step through animation by position"
+
+machine: "blender"
+op: "screen.animation_step"
+
+ARGS: []

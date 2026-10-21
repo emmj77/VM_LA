@@ -1,3 +1,4 @@
+# id: R02
 # --- SECRETS ET PRIVE : JAMAIS publies (ce depot est PUBLIC) ---
 memory/
 config/.env
@@ -61,3 +62,4 @@ config/*.db
 config/*.db-wal
 config/*.db-shm
 skills/.active
+config*/conf*/.env

@@ -1,0 +1,20 @@
+id: "B1151"
+tool: "blender_particle_edited_clear"
+date: "2026-10-17"
+tags: ["blender_particle_edited_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Undo all edition performed on the particle system"
+
+machine: "blender"
+op: "particle.edited_clear"
+
+ARGS: []

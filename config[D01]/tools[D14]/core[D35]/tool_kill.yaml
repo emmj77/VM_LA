@@ -1,0 +1,55 @@
+id: "G023"
+tool: "kill"
+date: "2026-10-17"
+tags: ["kill"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "kills a process by its pid, refuses its own pid and its ancestors"
+
+COMMAND: |
+  P="{{pid}}"
+  S="{{signal}}"
+  case "$S" in "") S=TERM ;; TERM|KILL) ;; *) printf '%s\n' "$(msg signal_malformed "${S:-absent}")" >&2; exit 1 ;; esac
+  [ -n "$P" ] || { printf '%s\n' "$(msg pid_required)" >&2; exit 1; }
+  case "$P" in *[!0-9]*) printf '%s\n' "$(msg pid_malformed "$P")" >&2; exit 1 ;; esac
+  [ "$P" = 0 ] && { printf '%s\n' "$(msg pid_zero_refused)" >&2; exit 1; }
+  [ "$P" = 1 ] && { printf '%s\n' "$(msg pid_one_refused)" >&2; exit 1; }
+  HERE=
+  while IFS= read -r L; do
+    case "$L" in "Pid:"*) [ -n "$HERE" ] || HERE=$(printf '%s' "${L#*:}" | tr -d '[:space:]') ;; esac
+  done < /proc/self/status
+  case "$HERE" in ""|*[!0-9]*) HERE=$$ ;; esac
+  A=$HERE
+  GUARD=
+  while [ -n "$A" ]; do
+    [ "$A" = "$P" ] && { GUARD=$A; break; }
+    [ "$A" = 1 ] && break
+    A=$(sed -n 's/^PPid:[[:space:]]*//p' "/proc/$A/status" 2>/dev/null | head -n 1)
+    case "$A" in ""|*[!0-9]*) break ;; esac
+  done
+  [ -z "$GUARD" ] || { printf '%s\n' "$(msg pid_in_own_chain "$P" "$HERE")" >&2; exit 1; }
+  [ -d "/proc/$P" ] || { printf '%s\n' "$(msg pid_not_found "$P")" >&2; exit 1; }
+  kill -s "$S" "$P" 2>/dev/null || { printf '%s\n' "$(msg signal_not_delivered "$S" "$P")" >&2; exit 1; }
+  VIVANT=1
+  i=0
+  while [ "$i" -lt 20 ]; do
+    if [ ! -d "/proc/$P" ]; then VIVANT=0; break; fi
+    E=$(sed -n 's/^State:[[:space:]]*//p' "/proc/$P/status" 2>/dev/null | head -n 1)
+    case "$E" in Z*) VIVANT=0; break ;; esac
+    sleep 0.1
+    i=$((i + 1))
+  done
+  [ "$VIVANT" = 0 ] || { printf '%s\n' "$(msg pid_still_alive "$P" "$S")" >&2; exit 1; }
+  printf 'pid %s tue (signal %s)\n' "$P" "$S"
+
+ARGS:
+  - {name: pid, type: int}
+  - {name: signal, type: enum, values: [TERM, KILL, ""]}

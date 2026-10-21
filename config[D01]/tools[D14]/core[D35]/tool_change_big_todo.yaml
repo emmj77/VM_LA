@@ -1,0 +1,26 @@
+id: "G050"
+tool: "change_big_todo"
+date: "2026-10-17"
+tags: ["change_big_todo", "plan", "project"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "REWRITES the big plan of the project (it REPLACES every point) ; this one needs the user's validation"
+
+COMMAND: |
+  [ -n "{{name}}" ] || { printf '%s\n' "$(msg workstream_name_required)" >&2 ; exit 1 ; }
+  [ -n "{{goal}}" ] || { printf '%s\n' "$(msg workstream_goal_required)" >&2 ; exit 1 ; }
+  [ -x "$PROCS/plan.sh" ] || { echo "refused: the plan brick is missing ($PROCS/plan.sh)" >&2 ; exit 1 ; }
+  "$PROCS/plan.sh" big change "{{name}}" "{{goal}}"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: goal, type: text}
+  - {name: points, type: text, stdin: true}

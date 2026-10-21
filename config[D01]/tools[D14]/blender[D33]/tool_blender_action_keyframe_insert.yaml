@@ -1,0 +1,21 @@
+id: "B011"
+tool: "blender_action_keyframe_insert"
+date: "2026-10-17"
+tags: ["blender_action_keyframe_insert"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Insert keyframes for the specified channels"
+
+machine: "blender"
+op: "action.keyframe_insert"
+
+ARGS:
+  - {name: type, type: text}          # un de : ALL | SEL | GROUP

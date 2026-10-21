@@ -1,0 +1,21 @@
+id: "B653"
+tool: "blender_mesh_edge_rotate"
+date: "2026-10-17"
+tags: ["blender_mesh_edge_rotate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Rotate selected edge or adjoining faces"
+
+machine: "blender"
+op: "mesh.edge_rotate"
+
+ARGS:
+  - {name: use_ccw, type: text}          # true|false, vide pour ne rien poser

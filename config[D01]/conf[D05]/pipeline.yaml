@@ -1,0 +1,12 @@
+# id: C04
+# role: the turn as ordered steps. the loop reads this list and nothing else decides the order.
+api: 1
+steps:
+  - facts
+  - second
+  - scope
+  - prompt
+  - call
+  - tools
+  - reply
+  - note

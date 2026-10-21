@@ -1,0 +1,21 @@
+id: "B344"
+tool: "blender_file_select_all"
+date: "2026-10-17"
+tags: ["blender_file_select_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select or deselect all files"
+
+machine: "blender"
+op: "file.select_all"
+
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT

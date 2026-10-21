@@ -1,0 +1,21 @@
+id: "B543"
+tool: "blender_image_rotate_orthogonal"
+date: "2026-10-17"
+tags: ["blender_image_rotate_orthogonal"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Rotate the image"
+
+machine: "blender"
+op: "image.rotate_orthogonal"
+
+ARGS:
+  - {name: degrees, type: text}          # un de : 90 | 180 | 270

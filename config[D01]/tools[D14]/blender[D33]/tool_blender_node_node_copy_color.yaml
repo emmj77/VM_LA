@@ -1,0 +1,20 @@
+id: "B863"
+tool: "blender_node_node_copy_color"
+date: "2026-10-17"
+tags: ["blender_node_node_copy_color"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy color to all selected nodes"
+
+machine: "blender"
+op: "node.node_copy_color"
+
+ARGS: []

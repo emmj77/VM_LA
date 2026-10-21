@@ -1,0 +1,21 @@
+id: "B1743"
+tool: "blender_node_cryptomatte_layer"
+date: "2026-10-17"
+tags: ["blender_node_cryptomatte_layer"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a cryptomatte layer of a node: add | remove (op picks which)"
+
+machine: "blender"
+op: "node.cryptomatte_layer_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, remove]}

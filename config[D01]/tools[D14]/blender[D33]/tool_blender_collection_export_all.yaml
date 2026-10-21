@@ -1,0 +1,20 @@
+id: "B205"
+tool: "blender_collection_export_all"
+date: "2026-10-17"
+tags: ["blender_collection_export_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Invoke all configured exporters on this collection"
+
+machine: "blender"
+op: "collection.export_all"
+
+ARGS: []

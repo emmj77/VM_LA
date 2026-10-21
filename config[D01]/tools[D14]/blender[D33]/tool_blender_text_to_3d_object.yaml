@@ -1,0 +1,21 @@
+id: "B1444"
+tool: "blender_text_to_3d_object"
+date: "2026-10-17"
+tags: ["blender_text_to_3d_object"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create 3D text object from active text data-block"
+
+machine: "blender"
+op: "text.to_3d_object"
+
+ARGS:
+  - {name: split_lines, type: text}          # true|false, vide pour ne rien poser

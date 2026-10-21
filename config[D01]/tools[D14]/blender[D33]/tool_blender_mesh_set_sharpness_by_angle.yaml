@@ -1,0 +1,22 @@
+id: "B728"
+tool: "blender_mesh_set_sharpness_by_angle"
+date: "2026-10-17"
+tags: ["blender_mesh_set_sharpness_by_angle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set edge sharpness based on the angle between neighboring faces"
+
+machine: "blender"
+op: "mesh.set_sharpness_by_angle"
+
+ARGS:
+  - {name: angle, type: text}
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

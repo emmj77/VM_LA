@@ -1,0 +1,21 @@
+id: "B1219"
+tool: "blender_preferences_keyitem_restore"
+date: "2026-10-17"
+tags: ["blender_preferences_keyitem_restore"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Restore key map item"
+
+machine: "blender"
+op: "preferences.keyitem_restore"
+
+ARGS:
+  - {name: item_id, type: int}

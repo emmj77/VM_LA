@@ -1,0 +1,20 @@
+id: "B1426"
+tool: "blender_text_duplicate_line"
+date: "2026-10-17"
+tags: ["blender_text_duplicate_line"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate the current line"
+
+machine: "blender"
+op: "text.duplicate_line"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B1356"
+tool: "blender_sequencer_offset_clear"
+date: "2026-10-17"
+tags: ["blender_sequencer_offset_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Clear strip in/out offsets from the start and end of content"
+
+machine: "blender"
+op: "sequencer.offset_clear"
+
+ARGS: []

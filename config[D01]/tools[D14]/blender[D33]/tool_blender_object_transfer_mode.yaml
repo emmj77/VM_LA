@@ -1,0 +1,21 @@
+id: "B1053"
+tool: "blender_object_transfer_mode"
+date: "2026-10-17"
+tags: ["blender_object_transfer_mode"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Switches the active object and assigns the same mode to a new one under the mouse cursor, leaving the active mode in the current one"
+
+machine: "blender"
+op: "object.transfer_mode"
+
+ARGS:
+  - {name: use_flash_on_transfer, type: text}          # true|false, vide pour ne rien poser

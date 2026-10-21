@@ -1,0 +1,20 @@
+id: "B658"
+tool: "blender_mesh_face_split_by_edges"
+date: "2026-10-17"
+tags: ["blender_mesh_face_split_by_edges"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Weld loose edges into faces (splitting them into new faces)"
+
+machine: "blender"
+op: "mesh.face_split_by_edges"
+
+ARGS: []

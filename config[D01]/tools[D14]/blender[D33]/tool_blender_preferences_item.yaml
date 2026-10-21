@@ -1,0 +1,54 @@
+id: "B1766"
+tool: "blender_preferences_item"
+date: "2026-10-17"
+tags: ["blender_preferences_item"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a preferences item (library, path, repo, keymap, key): asset_library_add | asset_library_remove | autoexec_path_add | autoexec_path_remove | extension_repo_add | extension_repo_remove | keyitem_add | keyitem_remove | script_directory_add | script_directory_remove (op picks which)"
+
+machine: "blender"
+op: "preferences.{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [asset_library_add, asset_library_remove, autoexec_path_add, autoexec_path_remove, extension_repo_add, extension_repo_remove, keyitem_add, keyitem_remove, script_directory_add, script_directory_remove]}
+  - {name: index, type: int}
+  - {name: directory, type: text}
+  - {name: name, type: text}
+  - {name: remote_url, type: text}
+  - {name: type, type: text}
+  - {name: access_token, type: text}
+  - {name: custom_directory, type: text}
+  - {name: filter_blenlib, type: text}
+  - {name: filter_obj, type: text}
+  - {name: filter_usd, type: text}
+  - {name: item_id, type: int}
+  - {name: remove_files, type: text}
+  - {name: use_access_token, type: text}
+  - {name: use_custom_directory, type: text}
+  - {name: use_sync_on_startup, type: text}
+  - {name: filter_folder, type: text}
+  - {name: check_existing, type: text}
+  - {name: display_type, type: text}
+  - {name: filemode, type: int}
+  - {name: filter_alembic, type: text}
+  - {name: filter_archive, type: text}
+  - {name: filter_backup, type: text}
+  - {name: filter_blender, type: text}
+  - {name: filter_btx, type: text}
+  - {name: filter_font, type: text}
+  - {name: filter_image, type: text}
+  - {name: filter_movie, type: text}
+  - {name: filter_python, type: text}
+  - {name: filter_sound, type: text}
+  - {name: filter_text, type: text}
+  - {name: filter_volume, type: text}
+  - {name: hide_props_region, type: text}
+  - {name: sort_method, type: text}

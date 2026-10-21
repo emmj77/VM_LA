@@ -1,0 +1,20 @@
+id: "B090"
+tool: "blender_armature_select_more"
+date: "2026-10-17"
+tags: ["blender_armature_select_more"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select those bones connected to the initial selection"
+
+machine: "blender"
+op: "armature.select_more"
+
+ARGS: []

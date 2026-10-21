@@ -1,0 +1,23 @@
+id: "B1712"
+tool: "blender_constraint_inverse"
+date: "2026-10-17"
+tags: ["blender_constraint_inverse"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a constraint inverse: childof_clear | childof_set | objectsolver_clear | objectsolver_set (op picks which)"
+
+machine: "blender"
+op: "constraint.{{op}}_inverse"
+
+ARGS:
+  - {name: op, type: enum, values: [childof_clear, childof_set, objectsolver_clear, objectsolver_set]}
+  - {name: constraint, type: text}
+  - {name: owner, type: text}

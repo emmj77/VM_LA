@@ -1,0 +1,22 @@
+id: "B1557"
+tool: "blender_view3d_pastebuffer"
+date: "2026-10-17"
+tags: ["blender_view3d_pastebuffer"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Paste objects from the internal clipboard"
+
+machine: "blender"
+op: "view3d.pastebuffer"
+
+ARGS:
+  - {name: autoselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: active_collection, type: text}          # true|false, vide pour ne rien poser

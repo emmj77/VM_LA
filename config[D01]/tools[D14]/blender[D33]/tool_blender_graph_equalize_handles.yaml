@@ -1,0 +1,23 @@
+id: "B391"
+tool: "blender_graph_equalize_handles"
+date: "2026-10-17"
+tags: ["blender_graph_equalize_handles"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Ensure selected keyframes' handles have equal length, optionally making them horizontal. Automatic, Automatic Clamped, or Vector handle types will be "
+
+machine: "blender"
+op: "graph.equalize_handles"
+
+ARGS:
+  - {name: side, type: text}          # un de : LEFT | RIGHT | BOTH
+  - {name: handle_length, type: text}
+  - {name: flatten, type: text}          # true|false, vide pour ne rien poser

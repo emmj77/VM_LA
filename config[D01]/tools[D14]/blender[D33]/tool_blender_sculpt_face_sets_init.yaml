@@ -1,0 +1,22 @@
+id: "B1315"
+tool: "blender_sculpt_face_sets_init"
+date: "2026-10-17"
+tags: ["blender_sculpt_face_sets_init"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Initializes all face sets in the mesh"
+
+machine: "blender"
+op: "sculpt.face_sets_init"
+
+ARGS:
+  - {name: mode, type: text}          # un de : LOOSE_PARTS | MATERIALS | NORMALS | UV_SEAMS | CREASES | BEVEL_WEIGHT | SHARP_EDGES | FACE_SET_BOUNDARIES
+  - {name: threshold, type: text}

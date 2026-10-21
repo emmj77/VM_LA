@@ -1,0 +1,22 @@
+id: "B855"
+tool: "blender_node_move_detach_links_release"
+date: "2026-10-17"
+tags: ["blender_node_move_detach_links_release"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move a node to detach links"
+
+machine: "blender"
+op: "node.move_detach_links_release"
+
+ARGS:
+  - {name: NODE_OT_links_detach, type: text}
+  - {name: NODE_OT_translate_attach, type: text}

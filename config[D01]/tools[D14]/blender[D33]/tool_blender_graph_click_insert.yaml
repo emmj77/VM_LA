@@ -1,0 +1,23 @@
+id: "B378"
+tool: "blender_graph_click_insert"
+date: "2026-10-17"
+tags: ["blender_graph_click_insert"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Insert new keyframe at the cursor position for the active F-Curve"
+
+machine: "blender"
+op: "graph.click_insert"
+
+ARGS:
+  - {name: frame, type: text}
+  - {name: value, type: text}
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

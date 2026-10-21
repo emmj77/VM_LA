@@ -1,0 +1,22 @@
+id: "B1512"
+tool: "blender_uv_seams_from_islands"
+date: "2026-10-17"
+tags: ["blender_uv_seams_from_islands"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set mesh seams according to island setup in the UV editor"
+
+machine: "blender"
+op: "uv.seams_from_islands"
+
+ARGS:
+  - {name: mark_seams, type: text}          # true|false, vide pour ne rien poser
+  - {name: mark_sharp, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,26 @@
+id: "B1603"
+tool: "blender_wm_context_modal_mouse"
+date: "2026-10-17"
+tags: ["blender_wm_context_modal_mouse"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Adjust arbitrary values with mouse input"
+
+machine: "blender"
+op: "wm.context_modal_mouse"
+
+ARGS:
+  - {name: data_path_iter, type: text}
+  - {name: data_path_item, type: text}
+  - {name: header_text, type: text}
+  - {name: input_scale, type: text}
+  - {name: invert, type: text}          # true|false, vide pour ne rien poser
+  - {name: initial_x, type: int}

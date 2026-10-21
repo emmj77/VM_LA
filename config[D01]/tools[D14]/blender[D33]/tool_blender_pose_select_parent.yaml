@@ -1,0 +1,20 @@
+id: "B1207"
+tool: "blender_pose_select_parent"
+date: "2026-10-17"
+tags: ["blender_pose_select_parent"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select bones that are parents of the currently selected bones"
+
+machine: "blender"
+op: "pose.select_parent"
+
+ARGS: []

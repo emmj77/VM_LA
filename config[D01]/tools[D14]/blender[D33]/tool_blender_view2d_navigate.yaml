@@ -1,0 +1,39 @@
+id: "B1791"
+tool: "blender_view2d_navigate"
+date: "2026-10-17"
+tags: ["blender_view2d_navigate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a 2D view (pan, zoom, scroll): edge_pan | ndof | pan | reset | scroll_down | scroll_left | scroll_right | scroll_up | scroller_activate | smoothview | zoom | zoom_border | zoom_in | zoom_out (op picks which)"
+
+machine: "blender"
+op: "view2d.{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [edge_pan, ndof, pan, reset, scroll_down, scroll_left, scroll_right, scroll_up, scroller_activate, smoothview, zoom, zoom_border, zoom_in, zoom_out]}
+  - {name: deltax, type: text}
+  - {name: deltay, type: text}
+  - {name: page, type: text}
+  - {name: wait_for_input, type: text}
+  - {name: xmax, type: int}
+  - {name: xmin, type: int}
+  - {name: ymax, type: int}
+  - {name: ymin, type: int}
+  - {name: zoomfacx, type: text}
+  - {name: zoomfacy, type: text}
+  - {name: delay, type: text}
+  - {name: inside_padding, type: text}
+  - {name: max_speed, type: text}
+  - {name: outside_padding, type: text}
+  - {name: speed_ramp, type: text}
+  - {name: use_cursor_init, type: text}
+  - {name: zoom_influence, type: text}
+  - {name: zoom_out, type: text}

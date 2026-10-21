@@ -1,0 +1,57 @@
+id: "U465"
+tool: "coplay_graphics_volume_set"
+date: "2026-10-17"
+tags: ["coplay_graphics_volume_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a post-process volume's settings: effect | properties (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  effect)
+    set -f
+    set -- graphics volume-set-effect
+    T=$(printf '%s' "{{param}}" | tr -d '0123456789. -')
+    [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'param' '2' '%s')""{{param}}" >&2; exit 1; }
+    unset T
+    [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+    [ -n "{{effect}}" ] && set -- "$@" --effect "{{effect}}"
+    [ -n "{{param}}" ] && set -- "$@" --param {{param}}
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  properties)
+    set -f
+    set -- graphics volume-set-properties
+    case "{{is_global}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'is_global')" >&2; exit 1 ;; esac
+    [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+    [ -n "{{weight}}" ] && set -- "$@" --weight "{{weight}}"
+    [ -n "{{priority}}" ] && set -- "$@" --priority "{{priority}}"
+    [ "{{is_global}}" = true ] && set -- "$@" --global
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [effect, properties]}
+  - {name: effect, type: text}
+  - {name: priority, type: text}
+  - {name: target, type: text}
+  - {name: weight, type: text}
+  - {name: is_global, type: text}
+  - {name: param, type: text}

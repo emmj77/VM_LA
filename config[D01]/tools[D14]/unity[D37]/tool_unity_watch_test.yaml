@@ -1,0 +1,55 @@
+id: "U445"
+tool: "unity_watch_test"
+date: "2026-10-18"
+tags: ["unity", "cli", "watch"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Re-run unity test --affected each time a project file changes"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- watch test --no-banner --no-pager --non-interactive
+  case "{{allow_install}}" in ''|true|false) ;; *) printf '%s\n' "$(msg allow_install_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{project}}" ] && set -- "$@" "{{project}}"
+  [ -n "{{mode}}" ] && set -- "$@" --mode "{{mode}}"
+  [ -n "{{filter}}" ] && set -- "$@" --filter "{{filter}}"
+  [ -n "{{editor_version}}" ] && set -- "$@" --editor-version "{{editor_version}}"
+  [ -n "{{editor_path}}" ] && set -- "$@" --editor-path "{{editor_path}}"
+  [ -n "{{architecture}}" ] && set -- "$@" --architecture "{{architecture}}"
+  [ "{{allow_install}}" = true ] && set -- "$@" --allow-install
+  [ -n "{{timeout}}" ] && set -- "$@" --timeout "{{timeout}}"
+  [ -n "{{ignore}}" ] && set -- "$@" --ignore "{{ignore}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_watch_test_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: project, type: text}   # facultatif
+  - {name: mode, type: text}   # Test platform to run: EditMode or PlayMode. If omitted, the editor's d
+  - {name: filter, type: text}   # Run only tests whose names match this filter
+  - {name: editor_version, type: text}   # Override editor version (default: from ProjectVersion.txt)
+  - {name: editor_path, type: text}   # Path to a specific editor binary
+  - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
+  - {name: allow_install, type: text}   # true pour poser --allow-install ; Install the project's editor version if it is not already installed
+  - {name: timeout, type: text}   # Kill the Unity process after this many seconds (disabled by default)
+  - {name: ignore, type: text}   # Additional file or directory pattern to ignore, beyond the default set

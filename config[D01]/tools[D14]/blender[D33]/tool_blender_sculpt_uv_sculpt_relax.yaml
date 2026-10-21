@@ -1,0 +1,22 @@
+id: "B1328"
+tool: "blender_sculpt_uv_sculpt_relax"
+date: "2026-10-17"
+tags: ["blender_sculpt_uv_sculpt_relax"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Relax UVs"
+
+machine: "blender"
+op: "sculpt.uv_sculpt_relax"
+
+ARGS:
+  - {name: use_invert, type: text}          # true|false, vide pour ne rien poser
+  - {name: relax_method, type: text}          # un de : LAPLACIAN | HC | COTAN

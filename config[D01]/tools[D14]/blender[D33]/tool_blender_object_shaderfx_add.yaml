@@ -1,0 +1,21 @@
+id: "B1036"
+tool: "blender_object_shaderfx_add"
+date: "2026-10-17"
+tags: ["blender_object_shaderfx_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a visual effect to the active object"
+
+machine: "blender"
+op: "object.shaderfx_add"
+
+ARGS:
+  - {name: type, type: text}          # un de : FX_BLUR | FX_COLORIZE | FX_FLIP | FX_GLOW | FX_PIXEL | FX_RIM | FX_SHADOW | FX_SWIRL | FX_WAVE

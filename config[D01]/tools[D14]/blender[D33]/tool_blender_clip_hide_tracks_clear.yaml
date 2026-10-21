@@ -1,0 +1,20 @@
+id: "B154"
+tool: "blender_clip_hide_tracks_clear"
+date: "2026-10-17"
+tags: ["blender_clip_hide_tracks_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Clear hide selected tracks"
+
+machine: "blender"
+op: "clip.hide_tracks_clear"
+
+ARGS: []

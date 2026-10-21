@@ -1,0 +1,21 @@
+id: "B869"
+tool: "blender_node_select_all"
+date: "2026-10-17"
+tags: ["blender_node_select_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(De)select all nodes"
+
+machine: "blender"
+op: "node.select_all"
+
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT

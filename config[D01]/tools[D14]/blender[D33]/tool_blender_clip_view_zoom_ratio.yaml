@@ -1,0 +1,21 @@
+id: "B202"
+tool: "blender_clip_view_zoom_ratio"
+date: "2026-10-17"
+tags: ["blender_clip_view_zoom_ratio"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the zoom ratio (based on clip size)"
+
+machine: "blender"
+op: "clip.view_zoom_ratio"
+
+ARGS:
+  - {name: ratio, type: text}

@@ -1,0 +1,20 @@
+id: "B1243"
+tool: "blender_rigidbody_world_remove"
+date: "2026-10-17"
+tags: ["blender_rigidbody_world_remove"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove Rigid Body simulation world from the current scene"
+
+machine: "blender"
+op: "rigidbody.world_remove"
+
+ARGS: []

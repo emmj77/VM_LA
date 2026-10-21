@@ -1,0 +1,20 @@
+id: "B1660"
+tool: "blender_wm_save_homefile"
+date: "2026-10-17"
+tags: ["blender_wm_save_homefile"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make the current file the default startup file"
+
+machine: "blender"
+op: "wm.save_homefile"
+
+ARGS: []

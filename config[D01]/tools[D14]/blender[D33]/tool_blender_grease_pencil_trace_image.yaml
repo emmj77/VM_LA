@@ -1,0 +1,26 @@
+id: "B504"
+tool: "blender_grease_pencil_trace_image"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_trace_image"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Extract Grease Pencil strokes from image"
+
+machine: "blender"
+op: "grease_pencil.trace_image"
+
+ARGS:
+  - {name: target, type: text}          # un de : NEW | SELECTED
+  - {name: threshold, type: text}
+  - {name: turnpolicy, type: text}          # un de : FOREGROUND | BACKGROUND | LEFT | RIGHT | MINORITY | MAJORITY | RANDOM
+  - {name: mode, type: text}          # un de : SINGLE | SEQUENCE
+  - {name: use_current_frame, type: text}          # true|false, vide pour ne rien poser
+  - {name: frame_number, type: int}

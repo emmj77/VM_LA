@@ -1,0 +1,21 @@
+id: "B1045"
+tool: "blender_object_skin_armature_create"
+date: "2026-10-17"
+tags: ["blender_object_skin_armature_create"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create an armature that parallels the skin layout"
+
+machine: "blender"
+op: "object.skin_armature_create"
+
+ARGS:
+  - {name: modifier, type: text}

@@ -1,0 +1,21 @@
+id: "B432"
+tool: "blender_graph_view_selected"
+date: "2026-10-17"
+tags: ["blender_graph_view_selected"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset viewable area to show selected keyframe range"
+
+machine: "blender"
+op: "graph.view_selected"
+
+ARGS:
+  - {name: include_handles, type: text}          # true|false, vide pour ne rien poser

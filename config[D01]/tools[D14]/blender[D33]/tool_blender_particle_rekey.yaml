@@ -1,0 +1,21 @@
+id: "B1159"
+tool: "blender_particle_rekey"
+date: "2026-10-17"
+tags: ["blender_particle_rekey"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change the number of keys of selected particles (root and tip keys included)"
+
+machine: "blender"
+op: "particle.rekey"
+
+ARGS:
+  - {name: keys_number, type: int}

@@ -1,0 +1,22 @@
+id: "B037"
+tool: "blender_anim_channel_view_pick"
+date: "2026-10-17"
+tags: ["blender_anim_channel_view_pick"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset viewable area to show the channel under the cursor"
+
+machine: "blender"
+op: "anim.channel_view_pick"
+
+ARGS:
+  - {name: include_handles, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_preview_range, type: text}          # true|false, vide pour ne rien poser

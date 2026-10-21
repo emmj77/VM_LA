@@ -1,0 +1,20 @@
+id: "B135"
+tool: "blender_clip_constraint_to_fcurve"
+date: "2026-10-17"
+tags: ["blender_clip_constraint_to_fcurve"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create F-Curves for object which will copy object's movement caused by this constraint"
+
+machine: "blender"
+op: "clip.constraint_to_fcurve"
+
+ARGS: []

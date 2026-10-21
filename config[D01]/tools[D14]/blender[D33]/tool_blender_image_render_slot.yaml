@@ -1,0 +1,22 @@
+id: "B1732"
+tool: "blender_image_render_slot"
+date: "2026-10-17"
+tags: ["blender_image_render_slot"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a render slot of an image: add | clear | cycle | remove (op picks which)"
+
+machine: "blender"
+op: "image.{{op}}_render_slot"
+
+ARGS:
+  - {name: op, type: enum, values: [add, clear, cycle, remove]}
+  - {name: reverse, type: text}

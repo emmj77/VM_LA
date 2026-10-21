@@ -1,0 +1,63 @@
+id: "U269"
+tool: "unity_collaboration_annotations_list"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "List annotations in a project, filtered by query clauses"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration annotations list --no-banner --no-pager --non-interactive
+  case "{{all}}" in ''|true|false) ;; *) printf '%s\n' "$(msg all_true_false)" >&2; exit 1 ;; esac
+  case "{{full}}" in ''|true|false) ;; *) printf '%s\n' "$(msg full_true_false)" >&2; exit 1 ;; esac
+  case "{{resolve_users}}" in ''|true|false) ;; *) printf '%s\n' "$(msg resolve_users_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{project_id}}" ] && set -- "$@" --project-id "{{project_id}}"
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  [ -n "{{query}}" ] && set -- "$@" --query "{{query}}"
+  [ -n "{{next}}" ] && set -- "$@" --next "{{next}}"
+  [ -n "{{limit}}" ] && set -- "$@" --limit "{{limit}}"
+  [ "{{all}}" = true ] && set -- "$@" --all
+  [ -n "{{sort}}" ] && set -- "$@" --sort "{{sort}}"
+  [ -n "{{sort_field}}" ] && set -- "$@" --sort-field "{{sort_field}}"
+  [ -n "{{include_fields}}" ] && set -- "$@" --include-fields "{{include_fields}}"
+  [ -n "{{fields}}" ] && set -- "$@" --fields "{{fields}}"
+  [ "{{full}}" = true ] && set -- "$@" --full
+  [ "{{resolve_users}}" = true ] && set -- "$@" --resolve-users
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_annotations_list)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: project_id, type: text}   # Unity Cloud project id
+  - {name: project_path, type: text}   # Path to the Unity project (defaults to the current directory); used to
+  - {name: query, type: text}   # JSON array of annotation query clauses (see the collaboration API docs
+  - {name: next, type: text}   # Pagination cursor from a previous response
+  - {name: limit, type: text}   # Number of annotations per page (1-100, default 10)
+  - {name: all, type: text}   # true pour poser --all ; Fetch all annotations
+  - {name: sort, type: text}   # Sort order: Ascending or Descending (default Ascending)
+  - {name: sort_field, type: text}   # Field to sort by: annotationId or latestReply (default annotationId)
+  - {name: include_fields, type: text}   # Comma-separated fields the server should populate (omitted by default)
+  - {name: fields, type: text}   # Comma-separated list of fields to display, or 'all' for every field (t
+  - {name: full, type: text}   # true pour poser --full ; Show annotation text without truncation (whitespace, including line br
+  - {name: resolve_users, type: text}   # true pour poser --resolve-users ; Replace user IDs with display names

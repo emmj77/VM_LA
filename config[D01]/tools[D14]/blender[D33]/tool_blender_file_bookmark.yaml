@@ -1,0 +1,23 @@
+id: "B1721"
+tool: "blender_file_bookmark"
+date: "2026-10-17"
+tags: ["blender_file_bookmark"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a bookmark of the file browser: add | cleanup | delete | move (op picks which)"
+
+machine: "blender"
+op: "file.bookmark_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, cleanup, delete, move]}
+  - {name: direction, type: text}
+  - {name: index, type: int}

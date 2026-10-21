@@ -1,0 +1,25 @@
+id: "B021"
+tool: "blender_action_select_circle"
+date: "2026-10-17"
+tags: ["blender_action_select_circle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select keyframe points using circle selection"
+
+machine: "blender"
+op: "action.select_circle"
+
+ARGS:
+  - {name: x, type: int}
+  - {name: y, type: int}
+  - {name: radius, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # un de : SET | ADD | SUB

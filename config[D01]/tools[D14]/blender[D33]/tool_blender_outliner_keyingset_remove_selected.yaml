@@ -1,0 +1,20 @@
+id: "B1084"
+tool: "blender_outliner_keyingset_remove_selected"
+date: "2026-10-17"
+tags: ["blender_outliner_keyingset_remove_selected"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove selected items (blue-gray rows) from active Keying Set"
+
+machine: "blender"
+op: "outliner.keyingset_remove_selected"
+
+ARGS: []

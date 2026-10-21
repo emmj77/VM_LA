@@ -1,0 +1,20 @@
+id: "B1542"
+tool: "blender_view3d_camera_to_view_selected"
+date: "2026-10-17"
+tags: ["blender_view3d_camera_to_view_selected"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move the camera so selected objects are framed"
+
+machine: "blender"
+op: "view3d.camera_to_view_selected"
+
+ARGS: []

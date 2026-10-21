@@ -1,0 +1,20 @@
+id: "B355"
+tool: "blender_fluid_pause_bake"
+date: "2026-10-17"
+tags: ["blender_fluid_pause_bake"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Pause Bake"
+
+machine: "blender"
+op: "fluid.pause_bake"
+
+ARGS: []

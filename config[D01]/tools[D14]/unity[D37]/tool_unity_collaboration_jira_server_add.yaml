@@ -1,0 +1,47 @@
+id: "U298"
+tool: "unity_collaboration_jira_server_add"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Add a new Jira server configuration"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration jira server add --no-banner --no-pager --non-interactive
+
+
+  [ -n "{{organization_id}}" ] && set -- "$@" --organization-id "{{organization_id}}"
+  [ -n "{{url}}" ] && set -- "$@" --url "{{url}}"
+  [ -n "{{username}}" ] && set -- "$@" --username "{{username}}"
+  [ -n "{{key}}" ] && set -- "$@" --key "{{key}}"
+  [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_jira_server_4)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: organization_id, type: text}   # Unity organization ID
+  - {name: url, type: text}   # URL of the Jira server (e.g. https://jira.example.com)
+  - {name: username, type: text}   # Username for Jira authentication
+  - {name: key, type: text}   # API key for Jira authentication
+  - {name: name, type: text}   # Display name for this server configuration

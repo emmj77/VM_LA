@@ -1,0 +1,21 @@
+id: "B117"
+tool: "blender_brush_stencil_reset_transform"
+date: "2026-10-17"
+tags: ["blender_brush_stencil_reset_transform"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset the stencil transformation to the default"
+
+machine: "blender"
+op: "brush.stencil_reset_transform"
+
+ARGS:
+  - {name: mask, type: text}          # true|false, vide pour ne rien poser

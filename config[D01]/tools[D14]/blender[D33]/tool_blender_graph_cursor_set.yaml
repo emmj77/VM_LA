@@ -1,0 +1,22 @@
+id: "B381"
+tool: "blender_graph_cursor_set"
+date: "2026-10-17"
+tags: ["blender_graph_cursor_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Interactively set the current frame and value cursor"
+
+machine: "blender"
+op: "graph.cursor_set"
+
+ARGS:
+  - {name: frame, type: text}
+  - {name: value, type: text}

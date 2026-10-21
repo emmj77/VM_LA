@@ -1,0 +1,22 @@
+id: "B079"
+tool: "blender_armature_move_to_collection"
+date: "2026-10-17"
+tags: ["blender_armature_move_to_collection"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move bones to a collection"
+
+machine: "blender"
+op: "armature.move_to_collection"
+
+ARGS:
+  - {name: collection_index, type: int}
+  - {name: new_collection_name, type: text}

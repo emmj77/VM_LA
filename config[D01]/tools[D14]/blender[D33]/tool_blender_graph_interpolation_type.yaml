@@ -1,0 +1,21 @@
+id: "B400"
+tool: "blender_graph_interpolation_type"
+date: "2026-10-17"
+tags: ["blender_graph_interpolation_type"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set interpolation mode for the F-Curve segments starting from the selected keyframes"
+
+machine: "blender"
+op: "graph.interpolation_type"
+
+ARGS:
+  - {name: type, type: text}          # un de : CONSTANT | LINEAR | BEZIER | SINE | QUAD | CUBIC | QUART | QUINT | EXPO | CIRC | BACK | BOUNCE | ELASTIC

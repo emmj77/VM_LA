@@ -1,0 +1,22 @@
+id: "B800"
+tool: "blender_node_add_import_node"
+date: "2026-10-17"
+tags: ["blender_node_add_import_node"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add an import node to the node tree"
+
+machine: "blender"
+op: "node.add_import_node"
+
+ARGS:
+  - {name: directory, type: text}
+  - {name: files, type: text}

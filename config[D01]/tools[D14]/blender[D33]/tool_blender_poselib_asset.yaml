@@ -1,0 +1,30 @@
+id: "B1764"
+tool: "blender_poselib_asset"
+date: "2026-10-17"
+tags: ["blender_poselib_asset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a pose asset: apply_pos | blend_pos | create_pos | past (op picks which)"
+
+machine: "blender"
+op: "poselib.{{op}}e_asset"
+
+ARGS:
+  - {name: op, type: enum, values: [apply_pos, blend_pos, create_pos, past]}
+  - {name: asset_library_identifier, type: text}
+  - {name: asset_library_type, type: text}
+  - {name: blend_factor, type: text}
+  - {name: flipped, type: text}
+  - {name: relative_asset_identifier, type: text}
+  - {name: asset_library_reference, type: text}
+  - {name: catalog_path, type: text}
+  - {name: pose_name, type: text}
+  - {name: release_confirm, type: text}

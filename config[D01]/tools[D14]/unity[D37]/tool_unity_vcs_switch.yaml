@@ -1,0 +1,59 @@
+id: "U436"
+tool: "unity_vcs_switch"
+date: "2026-10-18"
+tags: ["unity", "cli", "vcs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Switch branches safely: refuse while an Editor holds the project, then report the reimport the switch causes"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- vcs switch --no-banner --no-pager --non-interactive
+  [ -n "{{branch}}" ] || { printf '%s\n' "$(msg argument_required 'branch' 'unity vcs switch')" >&2; exit 1; }
+  case "{{dry_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg dry_run_true_false)" >&2; exit 1 ;; esac
+  case "{{allow_dirty}}" in ''|true|false) ;; *) printf '%s\n' "$(msg allow_dirty_true_false)" >&2; exit 1 ;; esac
+  case "{{discard_changes}}" in ''|true|false) ;; *) printf '%s\n' "$(msg discard_changes_true_false)" >&2; exit 1 ;; esac
+  case "{{close_editor}}" in ''|true|false) ;; *) printf '%s\n' "$(msg close_editor_true_false)" >&2; exit 1 ;; esac
+  case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg force_true_false)" >&2; exit 1 ;; esac
+  case "{{yes}}" in ''|true|false) ;; *) printf '%s\n' "$(msg yes_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{branch}}" ] && set -- "$@" "{{branch}}"
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ "{{dry_run}}" = true ] && set -- "$@" --dry-run
+  [ "{{allow_dirty}}" = true ] && set -- "$@" --allow-dirty
+  [ "{{discard_changes}}" = true ] && set -- "$@" --discard-changes
+  [ "{{close_editor}}" = true ] && set -- "$@" --close-editor
+  [ "{{force}}" = true ] && set -- "$@" --force
+  [ "{{yes}}" = true ] && set -- "$@" --yes
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_vcs_switch_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: branch, type: text}
+  - {name: path, type: text}   # facultatif
+  - {name: dry_run, type: text}   # true pour poser --dry-run ; Run every check and report what would be reimported, then change nothing
+  - {name: allow_dirty, type: text}   # true pour poser --allow-dirty ; Carry uncommitted changes across the switch
+  - {name: discard_changes, type: text}   # true pour poser --discard-changes ; Discard uncommitted changes to tracked files
+  - {name: close_editor, type: text}   # true pour poser --close-editor ; Ask the Editor holding this project to quit, then switch
+  - {name: force, type: text}   # true pour poser --force ; Switch even while an Editor holds the project
+  - {name: yes, type: text}   # true pour poser --yes ; Answer yes to every confirmation

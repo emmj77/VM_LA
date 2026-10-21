@@ -1,0 +1,21 @@
+id: "B228"
+tool: "blender_constraint_remove_target"
+date: "2026-10-17"
+tags: ["blender_constraint_remove_target"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove the target from the constraint"
+
+machine: "blender"
+op: "constraint.remove_target"
+
+ARGS:
+  - {name: index, type: int}

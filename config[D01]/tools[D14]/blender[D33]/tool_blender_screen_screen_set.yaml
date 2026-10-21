@@ -1,0 +1,21 @@
+id: "B1289"
+tool: "blender_screen_screen_set"
+date: "2026-10-17"
+tags: ["blender_screen_screen_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cycle through available screens"
+
+machine: "blender"
+op: "screen.screen_set"
+
+ARGS:
+  - {name: delta, type: int}

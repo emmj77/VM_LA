@@ -1,0 +1,67 @@
+id: "G073"
+tool: "sticky_note"
+date: "2026-10-20"
+tags: ["note", "prompt", "cache"]
+
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Reads, replaces, appends to or clears the note the agent writes for itself: a short text kept identical in the stable part of the prompt, so the cache holds from one turn to the next."
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  OP="{{op}}"
+  MAX=${LA_NOTE_BYTES:-1200}
+  N=${LA_NOTE_FILE:-}
+  if [ -z "$N" ] && command -v cfg >/dev/null 2>&1; then
+    N=$(cfg abs note 2>/dev/null || true)
+  fi
+  [ -n "$N" ] || N="${ROOT:-.}/state[D11]/note.txt"
+  case "$OP" in
+    show|set|replace|add|clear) ;;
+    *) printf 'refused: unknown operation: %s\n' "${OP:-none}" >&2 ; exit 1 ;;
+  esac
+
+  if [ "$OP" = show ]; then
+    [ -f "$N" ] || { printf 'the note is empty\n' ; exit 0 ; }
+    T=$(cat -- "$N" 2>/dev/null) || { printf 'refused: the note cannot be read (%s)\n' "$N" >&2 ; exit 1 ; }
+    [ -n "$T" ] || { printf 'the note is empty\n' ; exit 0 ; }
+    printf '%s\n' "$T"
+    exit 0
+  fi
+
+  TXT="{{text}}"
+  [ -n "$TXT" ] || TXT=$(cat)
+  [ "$OP" = clear ] || [ -n "$TXT" ] || { printf 'refused: %s wants a text\n' "$OP" >&2 ; exit 1 ; }
+
+  D=$(dirname -- "$N")
+  [ -d "$D" ] || mkdir -p -- "$D" || { printf 'refused: no directory for the note (%s)\n' "$D" >&2 ; exit 1 ; }
+  T="$N.$$.tmp"
+  case "$OP" in
+    clear) : > "$T" || { printf 'refused: the note cannot be written (%s)\n' "$T" >&2 ; exit 1 ; } ;;
+    set|replace) printf '%s\n' "$TXT" > "$T" || { printf 'refused: the note cannot be written (%s)\n' "$T" >&2 ; exit 1 ; } ;;
+    add)   : > "$T" || { printf 'refused: the note cannot be written (%s)\n' "$T" >&2 ; exit 1 ; }
+           [ -f "$N" ] && cat -- "$N" >> "$T" 2>/dev/null
+           printf '%s\n' "$TXT" >> "$T" || { printf 'refused: the note cannot be written (%s)\n' "$T" >&2 ; exit 1 ; } ;;
+  esac
+
+  K=$(wc -c < "$T" | tr -d ' ')
+  case "${K:-}" in ''|*[!0-9]*) K=0 ;; esac
+  if [ "$K" -gt "$MAX" ]; then
+    rm -f -- "$T"
+    printf 'refused: the note would hold %s bytes, its bound is %s\n' "$K" "$MAX" >&2
+    exit 1
+  fi
+  mv -f -- "$T" "$N" || { rm -f -- "$T" ; printf 'refused: the note could not be placed (%s)\n' "$N" >&2 ; exit 1 ; }
+  printf 'note %s: %s bytes\n' "$OP" "$K"
+
+ARGS:
+  - {name: op, type: enum, values: [show, set, replace, add, clear]}
+  - {name: text, type: text, stdin: true}

@@ -1,0 +1,22 @@
+id: "B088"
+tool: "blender_armature_select_linked_pick"
+date: "2026-10-17"
+tags: ["blender_armature_select_linked_pick"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(De)select bones linked by parent/child connections under the mouse cursor"
+
+machine: "blender"
+op: "armature.select_linked_pick"
+
+ARGS:
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: all_forks, type: text}          # true|false, vide pour ne rien poser

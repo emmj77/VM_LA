@@ -1,0 +1,46 @@
+id: "B1751"
+tool: "blender_object_vertex_group"
+date: "2026-10-17"
+tags: ["blender_object_vertex_group"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a vertex group of an object: add | assign | assign_new | clean | copy | copy_to_selected | deselect | invert | levels | limit_total | lock | mirror | move | normalize | normalize_all | quantize | remove | remove_from | select | set_active | smooth | sort (op picks which)"
+
+machine: "blender"
+op: "object.vertex_group_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, assign, assign_new, clean, copy, copy_to_selected, deselect, invert, levels, limit_total, lock, mirror, move, normalize, normalize_all, quantize, remove, remove_from, select, set_active, smooth, sort]}
+  - {name: group_select_mode, type: text}
+  - {name: limit, type: text}
+  - {name: action, type: text}
+  - {name: all, type: text}
+  - {name: all_groups, type: text}
+  - {name: all_unlocked, type: text}
+  - {name: auto_assign, type: text}
+  - {name: auto_remove, type: text}
+  - {name: direction, type: text}
+  - {name: expand, type: text}
+  - {name: factor, type: text}
+  - {name: flip_group_names, type: text}
+  - {name: gain, type: text}
+  - {name: group, type: text}
+  - {name: keep_single, type: text}
+  - {name: lock_active, type: text}
+  - {name: mask, type: text}
+  - {name: mirror_weights, type: text}
+  - {name: offset, type: text}
+  - {name: repeat, type: int}
+  - {name: sort_type, type: text}
+  - {name: steps, type: int}
+  - {name: use_topology, type: text}
+  - {name: use_all_groups, type: text}
+  - {name: use_all_verts, type: text}

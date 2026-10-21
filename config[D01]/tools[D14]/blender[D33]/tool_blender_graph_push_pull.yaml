@@ -1,0 +1,21 @@
+id: "B409"
+tool: "blender_graph_push_pull"
+date: "2026-10-17"
+tags: ["blender_graph_push_pull"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Exaggerate or minimize the value of the selected keys"
+
+machine: "blender"
+op: "graph.push_pull"
+
+ARGS:
+  - {name: factor, type: text}

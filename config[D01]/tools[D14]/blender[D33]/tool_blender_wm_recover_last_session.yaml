@@ -1,0 +1,21 @@
+id: "B1655"
+tool: "blender_wm_recover_last_session"
+date: "2026-10-17"
+tags: ["blender_wm_recover_last_session"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open the last closed file ('quit.blend')"
+
+machine: "blender"
+op: "wm.recover_last_session"
+
+ARGS:
+  - {name: use_scripts, type: text}          # true|false, vide pour ne rien poser

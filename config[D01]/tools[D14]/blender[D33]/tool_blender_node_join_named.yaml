@@ -1,0 +1,22 @@
+id: "B845"
+tool: "blender_node_join_named"
+date: "2026-10-17"
+tags: ["blender_node_join_named"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a new frame node around the selected nodes and name it immediately"
+
+machine: "blender"
+op: "node.join_named"
+
+ARGS:
+  - {name: NODE_OT_join, type: text}
+  - {name: WM_OT_call_panel, type: text}

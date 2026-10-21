@@ -1,0 +1,22 @@
+id: "B454"
+tool: "blender_grease_pencil_insert_blank_frame"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_insert_blank_frame"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Insert a blank frame on the current scene frame"
+
+machine: "blender"
+op: "grease_pencil.insert_blank_frame"
+
+ARGS:
+  - {name: all_layers, type: text}          # true|false, vide pour ne rien poser
+  - {name: duration, type: int}

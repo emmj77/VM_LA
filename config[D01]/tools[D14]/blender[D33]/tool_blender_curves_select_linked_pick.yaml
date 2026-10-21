@@ -1,0 +1,21 @@
+id: "B289"
+tool: "blender_curves_select_linked_pick"
+date: "2026-10-17"
+tags: ["blender_curves_select_linked_pick"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all points in the curve under the cursor"
+
+machine: "blender"
+op: "curves.select_linked_pick"
+
+ARGS:
+  - {name: deselect, type: text}          # true|false, vide pour ne rien poser

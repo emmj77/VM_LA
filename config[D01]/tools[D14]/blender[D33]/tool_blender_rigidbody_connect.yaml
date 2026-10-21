@@ -1,0 +1,23 @@
+id: "B1236"
+tool: "blender_rigidbody_connect"
+date: "2026-10-17"
+tags: ["blender_rigidbody_connect"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create rigid body constraints between selected rigid bodies"
+
+machine: "blender"
+op: "rigidbody.connect"
+
+ARGS:
+  - {name: con_type, type: text}          # un de : FIXED | POINT | HINGE | SLIDER | PISTON | GENERIC | GENERIC_SPRING | MOTOR
+  - {name: pivot_type, type: text}          # un de : CENTER | ACTIVE | SELECTED
+  - {name: connection_pattern, type: text}          # un de : SELECTED_TO_ACTIVE | CHAIN_DISTANCE

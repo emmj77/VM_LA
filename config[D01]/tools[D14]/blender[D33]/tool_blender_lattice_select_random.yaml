@@ -1,0 +1,23 @@
+id: "B579"
+tool: "blender_lattice_select_random"
+date: "2026-10-17"
+tags: ["blender_lattice_select_random"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Randomly select UVW control points"
+
+machine: "blender"
+op: "lattice.select_random"
+
+ARGS:
+  - {name: ratio, type: text}
+  - {name: seed, type: int}
+  - {name: action, type: text}          # un de : SELECT | DESELECT

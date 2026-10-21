@@ -1,0 +1,21 @@
+id: "B1465"
+tool: "blender_ui_button_execute"
+date: "2026-10-17"
+tags: ["blender_ui_button_execute"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Presses active button"
+
+machine: "blender"
+op: "ui.button_execute"
+
+ARGS:
+  - {name: skip_depressed, type: text}          # true|false, vide pour ne rien poser

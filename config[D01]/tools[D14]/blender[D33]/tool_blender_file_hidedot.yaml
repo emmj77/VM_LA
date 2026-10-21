@@ -1,0 +1,20 @@
+id: "B329"
+tool: "blender_file_hidedot"
+date: "2026-10-17"
+tags: ["blender_file_hidedot"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle hide hidden dot files"
+
+machine: "blender"
+op: "file.hidedot"
+
+ARGS: []

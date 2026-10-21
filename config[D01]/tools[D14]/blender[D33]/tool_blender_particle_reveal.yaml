@@ -1,0 +1,21 @@
+id: "B1161"
+tool: "blender_particle_reveal"
+date: "2026-10-17"
+tags: ["blender_particle_reveal"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Show hidden particles"
+
+machine: "blender"
+op: "particle.reveal"
+
+ARGS:
+  - {name: select, type: text}          # true|false, vide pour ne rien poser

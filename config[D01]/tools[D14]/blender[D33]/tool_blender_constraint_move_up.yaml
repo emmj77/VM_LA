@@ -1,0 +1,22 @@
+id: "B226"
+tool: "blender_constraint_move_up"
+date: "2026-10-17"
+tags: ["blender_constraint_move_up"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move constraint up in constraint stack"
+
+machine: "blender"
+op: "constraint.move_up"
+
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE

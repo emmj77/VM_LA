@@ -1,0 +1,392 @@
+{
+  "id": "20261021-051623",
+  "prompt": "dis bonjour en un mot",
+  "agent": "agent_one",
+  "skill": "",
+  "project": "",
+  "engine": "cloud",
+  "model": "deepseek-v4.1-flash",
+  "started": 1792559783,
+  "status": "done",
+  "family": "agent",
+  "calls": [
+    {
+      "tool": "reply",
+      "args": "{\"mode\":\"answer\",\"form\":\"text\",\"text\":\"Bonjour.\"}",
+      "result": "{\"status\":\"ok\",\"tool\":\"reply\",\"line\":\"# le texte du modele est la reponse ; sans texte, l entree fait foi\\n_t=\\\"Bonjour.\\\"\\n[ -n \\\"$_t\\\" ] || _t=$(cat)\\nprintf '%s\\\\n' \\\"$_t\\\"\",\"result\":\"Bonjour.\",\"ts\":1792559799,\"return\":\"\"}"
+    }
+  ],
+  "tokens": 2791,
+  "reply": "",
+  "messages": [
+    {
+      "role": "system",
+      "content": "LA, you answer in french.\nWHERE\nLocalAgent (LA) est un harness : il ne fait QUE des tool calls.\nLa station heberge la VM ; la VM execute les tools.\nRacine : VM_LA/. Ecriture : l'espace de travail du SKILL ACTIF (WRITEABLE WORKSPACE).\nLe SKILL ACTIF donne la portee : WRITEABLE WORKSPACE.\nEnvironnement : Debian, dash, jq, coreutils.\n\nTOOLS_SCHEMA\n[{\"type\":\"function\",\"function\":{\"name\":\"la\",\"description\":\"Nomme UN tool et ses arguments. g est le NUMERO de la ligne de la table ; a porte ses arguments DANS L ORDRE DECLARE par cette ligne. Le texte libre (le surplus de a) part sur l entree standard du tool.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"g\":{\"type\":\"integer\",\"description\":\"le numero du tool dans la table\"},\"a\":{\"type\":\"array\",\"items\":{\"type\":\"string\"},\"description\":\"les arguments, dans l ordre declare par la ligne de ce tool\"}},\"required\":[\"g\"]}}}]\nCe schema porte TOUS les tools, par un seul : la(g, a). La table n est JAMAIS envoyee.\ng = le NUMERO d une ligne de config/la_tools.yaml ; a = ses arguments, DANS L ORDRE declare par cette ligne.\nEXEMPLE : la(g=103, a=[\\\"WORKSPACE.workspace/note.md\\\"]) -> 103 = read_file ; arg path.\nLe surplus de a (le texte libre) entre par l ENTREE STANDARD du tool : ce n est pas un argument.\n\nPERMANENTS\nLes tools permanents sont INJECTES a chaque tour par la boucle, dans le message WORKSPACE.\nIls tombent SANS etre charges : le head les NOMME, la boucle les ajoute.\nreply (modes talk, ask, answer) et kill : les DEUX garde-fous, TOUJOURS la, meme sous un verrou.\ntools_list, todo, update_todo, big_todo, update_big_todo, change_big_todo.\nskill_list, skill_view, load_skill, project_list, project_view, unload_project : des OUTILS SEPARES, pas des actions de skill_manage.\n\nMECHANISM\nUN TOUR : je nomme la(g, a) -> le engine lance la commande de la ligne g -> le resultat me revient -> je continue.\nLE ENGINE VALIDE AVANT L EFFET : id, ligne, arguments, portee. Un refus me revient tel quel.\nLE TOOL QUI REPOND (reply) : mode (talk, ask, answer), la FORME (text, list, table, code), LE TEXTE. Trois arguments, dans cet ordre. Le TEXTE est la seule chose que l humain entend.\nUN SEUL reply mode talk par tour : une phrase COURTE qui dit ce que tu fais. Ensuite les tools du travail, sans redire la meme phrase. Un plan ouvert se ferme par update_todo, puis reply mode answer.\nLa conversation n est pas l etat : le PLAN et l ETAT vivent hors de moi.\nLe 4e argument de reply est une consigne de travail : il n est JAMAIS dit a l humain. Un reply de trois arguments suffit.\nUN TROU DE MEMOIRE : recall(n) relit les n derniers messages. Demande-le, une fois.\nAUCUNE SKILL ACTIVE : ce n est pas une panne. Je reponds avec reply, une phrase, sans chercher de tool.\n\nSKILL\nJe ne vois QUE le SKILL ACTIF : sa portee, ses tools, son RESUME.\nChanger de skill : load_skill. Voir la liste : skill_list.\nWORKSPACE borne OU j ecris : hors de lui, le engine refuse.\nJe ne tiens PAS tout le registre (3300+ tools) : la plupart vivent dans des skills non chargees. Pour un tool absent de mon perimetre, je CHARGE la skill qui le porte (load_skill).\nLa liste que je vois (palette + permanents) = mon perimetre de CE tour, pas le monde. Un tool manquant n'est pas une absence : c'est une skill a charger.\n\nBEHAVIOUR\nJamais de texte. Je nomme un tool.\nreply mode talk parle et ne ferme pas ; mode answer ferme si le plan est fini ; mode ask arrete.\nJe ne peux pas repondre sans tool : tool_choice est required. Sans skill active, je reponds par reply et rien d autre.\n\nLAWS\nJe ne nomme aucun chemin : WORKSPACE fait la portee.\nToute ligne porte son id.\nL obsolete se supprime.\nUn doute : reply en mode ask. Jamais un choix impose.\n\nUSER\nMoussa. Debian 13, terminal. Majuscules = urgent.\nChaque tool laisse une ligne de journal au canal humain.\nCette ligne n entre pas dans mon contexte.\nLe contenu entier ne part jamais.\nAucune cle ni jeton dans memory/ : c est lisible.\nUn secret vit dans l environnement du lanceur.\n\nPROJECTS\nMODELE_RA: deterministic AI architecture.\nDESTIN : univers narratif.\nSUPREME PMC : jeu Unity.\nLA : ce projet. Le harness vocal.\n\n== THE HUMAN ==\nyou are talking with the human (user) ; the agent answering is agent_one\n== THE ACTIVE PROJECT ==\nno project loaded : every skill is reachable\n== THE ACTIVE SKILL ==\nno skill loaded : no skill is active\n== THE LOCAL MODEL SUMMARY ==\nno summary yet\n== THE LOADED SKILL PLAN ==\nno open plan\n== THE STICKY NOTE ==\nv17\n\n== THE AGENTS ==\nagent_one  idle : no turn runs\nagent_001_jarvis  idle : no turn runs\nagent_002_paul  idle : no turn runs\nagent_003_albert  idle : no turn runs\nagent_004_eleonore  idle : no turn runs\n== THE CHAT ==\nthe chat is empty"
+    },
+    {
+      "role": "user",
+      "content": "dis bonjour en un mot"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_2g2sfsa0",
+      "content": "{\"status\":\"ok\",\"tool\":\"reply\",\"line\":\"# le texte du modele est la reponse ; sans texte, l entree fait foi\\n_t=\\\"Bonjour.\\\"\\n[ -n \\\"$_t\\\" ] || _t=$(cat)\\nprintf '%s\\\\n' \\\"$_t\\\"\",\"result\":\"Bonjour.\",\"ts\":1792559799,\"return\":\"\"}"
+    },
+    {
+      "role": "assistant",
+      "content": ""
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "reply",
+        "description": "speaks (talk), asks the human (ask) or returns the reply (answer), depending on the mode",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string"
+            },
+            "form": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "mode",
+            "form",
+            "text",
+            "mode",
+            "form",
+            "text"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_file",
+        "description": "returns a project file, as is, without modifying it",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "list_dir",
+        "description": "lists a project directory, one entry per line, directories marked with a slash",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "write_file",
+        "description": "writes a file inside writable_workspace (new, append, replace) and creates parent folders",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "mode": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "mode",
+            "text"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "tools_list",
+        "description": "the table's tools: the map of the families, one family (40 at most), or the nearest to a question -- by meaning",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "family": {
+              "type": "string"
+            },
+            "q": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "family",
+            "q"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "todo",
+        "description": "opens the plan in the active skill's PLAN: section ; the points arrive one per line",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "goal": {
+              "type": "string"
+            },
+            "points": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "goal",
+            "points"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "transcribe",
+        "description": "transcribes an audio file from config/audio/ with the parakeet engine",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "load_doc",
+        "description": "reads the docs NAMED by the active skill (DOCS): the web, a machine, or a path",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "topic": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "topic"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "kill",
+        "description": "kills a process by its pid, refuses its own pid and its ancestors",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "pid": {
+              "type": "string"
+            },
+            "signal": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "pid",
+            "signal"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "vision.read",
+        "description": "reads a workspace image with the small or the big model",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "vision_model_missing_on_machine": {
+              "type": "string"
+            },
+            "question": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "vision_model_missing_on_machine",
+            "question"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "sleep",
+        "description": "makes the turn wait for the chosen duration, and never longer",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "seconds": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "seconds"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_text_in_img",
+        "description": "reads the TEXT of an image, character by character",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "skill_list",
+        "description": "lists the skills : one per line with its tags (the ones the ACTIVE PROJECT opens, when one is loaded)",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "skill_view",
+        "description": "shows a skill as it is written, WITHOUT loading it : the plan stays closed, the palette never moves",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "sticky_note",
+        "description": "Reads, replaces, appends to or clears the note the agent writes for itself: a short text kept identical in the stable part of the prompt, so the cache holds from one turn to the next.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "text"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "vision.image",
+        "description": "Cut the subject out of an image, or repair a zone of it, by the ComfyUI machine",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string"
+            },
+            "image": {
+              "type": "string"
+            },
+            "out": {
+              "type": "string"
+            },
+            "zone": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "image",
+            "out",
+            "zone"
+          ]
+        }
+      }
+    }
+  ],
+  "reply_msg": {
+    "role": "assistant",
+    "content": "",
+    "tool_calls": [
+      {
+        "id": "call_2g2sfsa0",
+        "index": 0,
+        "type": "function",
+        "function": {
+          "name": "reply",
+          "arguments": "{\"mode\":\"answer\",\"form\":\"text\",\"text\":\"Bonjour.\"}"
+        }
+      }
+    ]
+  }
+}

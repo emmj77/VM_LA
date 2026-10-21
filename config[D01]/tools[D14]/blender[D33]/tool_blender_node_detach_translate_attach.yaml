@@ -1,0 +1,23 @@
+id: "B825"
+tool: "blender_node_detach_translate_attach"
+date: "2026-10-17"
+tags: ["blender_node_detach_translate_attach"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Detach nodes, move and attach to frame"
+
+machine: "blender"
+op: "node.detach_translate_attach"
+
+ARGS:
+  - {name: NODE_OT_detach, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}
+  - {name: NODE_OT_attach, type: text}

@@ -1,0 +1,23 @@
+id: "B1324"
+tool: "blender_sculpt_set_pivot_position"
+date: "2026-10-17"
+tags: ["blender_sculpt_set_pivot_position"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Sets the sculpt transform pivot position"
+
+machine: "blender"
+op: "sculpt.set_pivot_position"
+
+ARGS:
+  - {name: mode, type: text}          # un de : ORIGIN | UNMASKED | BORDER | ACTIVE | SURFACE
+  - {name: mouse_x, type: text}
+  - {name: mouse_y, type: text}

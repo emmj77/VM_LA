@@ -1,0 +1,20 @@
+id: "B101"
+tool: "blender_asset_browse_containing_blend_file"
+date: "2026-10-17"
+tags: ["blender_asset_browse_containing_blend_file"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open the system's file browser with the blend file that contains the active asset"
+
+machine: "blender"
+op: "asset.browse_containing_blend_file"
+
+ARGS: []

@@ -1,0 +1,26 @@
+id: "B1711"
+tool: "blender_console_edit"
+date: "2026-10-17"
+tags: ["blender_console_edit"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "the console: autocomplete | copy | delete | indent | indent_or_autocomplete | insert | move | paste | select_all | select_word | unindent (op picks which)"
+
+machine: "blender"
+op: "console.{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [autocomplete, copy, delete, indent, indent_or_autocomplete, insert, move, paste, select_all, select_word, unindent]}
+  - {name: type, type: text}
+  - {name: delete, type: text}
+  - {name: select, type: text}
+  - {name: selection, type: text}
+  - {name: text, type: text}

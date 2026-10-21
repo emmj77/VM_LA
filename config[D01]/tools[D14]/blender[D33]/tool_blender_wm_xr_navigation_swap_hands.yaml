@@ -1,0 +1,20 @@
+id: "B1690"
+tool: "blender_wm_xr_navigation_swap_hands"
+date: "2026-10-17"
+tags: ["blender_wm_xr_navigation_swap_hands"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Swap VR navigation controls between left / right controllers"
+
+machine: "blender"
+op: "wm.xr_navigation_swap_hands"
+
+ARGS: []

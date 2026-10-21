@@ -1,0 +1,21 @@
+id: "B495"
+tool: "blender_grease_pencil_set_selection_mode"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_set_selection_mode"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change the selection mode for Grease Pencil strokes"
+
+machine: "blender"
+op: "grease_pencil.set_selection_mode"
+
+ARGS:
+  - {name: mode, type: text}          # un de : POINT | STROKE | SEGMENT

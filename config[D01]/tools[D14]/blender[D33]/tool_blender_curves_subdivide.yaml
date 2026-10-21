@@ -1,0 +1,21 @@
+id: "B296"
+tool: "blender_curves_subdivide"
+date: "2026-10-17"
+tags: ["blender_curves_subdivide"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Subdivide selected curve segments"
+
+machine: "blender"
+op: "curves.subdivide"
+
+ARGS:
+  - {name: number_cuts, type: int}

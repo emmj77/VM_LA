@@ -1,0 +1,21 @@
+id: "B834"
+tool: "blender_node_group_edit"
+date: "2026-10-17"
+tags: ["blender_node_group_edit"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Edit node group"
+
+machine: "blender"
+op: "node.group_edit"
+
+ARGS:
+  - {name: exit, type: text}          # true|false, vide pour ne rien poser

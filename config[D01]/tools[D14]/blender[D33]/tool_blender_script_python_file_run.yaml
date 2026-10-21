@@ -1,0 +1,21 @@
+id: "B1298"
+tool: "blender_script_python_file_run"
+date: "2026-10-17"
+tags: ["blender_script_python_file_run"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Run Python file"
+
+machine: "blender"
+op: "script.python_file_run"
+
+ARGS:
+  - {name: filepath, type: text}

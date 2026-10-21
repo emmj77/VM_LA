@@ -1,0 +1,20 @@
+id: "B1579"
+tool: "blender_view3d_view_lock_clear"
+date: "2026-10-17"
+tags: ["blender_view3d_view_lock_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Clear all view locking"
+
+machine: "blender"
+op: "view3d.view_lock_clear"
+
+ARGS: []

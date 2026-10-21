@@ -1,0 +1,21 @@
+id: "B151"
+tool: "blender_clip_graph_select_all_markers"
+date: "2026-10-17"
+tags: ["blender_clip_graph_select_all_markers"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change selection of all markers of active track"
+
+machine: "blender"
+op: "clip.graph_select_all_markers"
+
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT

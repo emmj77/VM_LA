@@ -1,0 +1,25 @@
+id: "B1306"
+tool: "blender_sculpt_curves_select_random"
+date: "2026-10-17"
+tags: ["blender_sculpt_curves_select_random"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Randomizes existing selection or create new random selection"
+
+machine: "blender"
+op: "sculpt_curves.select_random"
+
+ARGS:
+  - {name: seed, type: int}
+  - {name: partial, type: text}          # true|false, vide pour ne rien poser
+  - {name: probability, type: text}
+  - {name: min, type: text}
+  - {name: constant_per_curve, type: text}          # true|false, vide pour ne rien poser

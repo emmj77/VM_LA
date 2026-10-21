@@ -1,0 +1,25 @@
+id: "B1227"
+tool: "blender_render_opengl"
+date: "2026-10-17"
+tags: ["blender_render_opengl"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Take a snapshot of the active viewport"
+
+machine: "blender"
+op: "render.opengl"
+
+ARGS:
+  - {name: animation, type: text}          # true|false, vide pour ne rien poser
+  - {name: render_keyed_only, type: text}          # true|false, vide pour ne rien poser
+  - {name: sequencer, type: text}          # true|false, vide pour ne rien poser
+  - {name: write_still, type: text}          # true|false, vide pour ne rien poser
+  - {name: view_context, type: text}          # true|false, vide pour ne rien poser

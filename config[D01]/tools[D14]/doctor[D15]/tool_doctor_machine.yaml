@@ -1,0 +1,89 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D006"
+tool: "doctor.machine"
+date: "2026-10-20"
+tags: ["doctor", "machine"]
+RULES:
+  enabled: true
+  timeout: 180
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "what listens, what is called, and the benches"
+COMMAND: |
+
+  _op=${1:-residents}
+  case $_op in
+  residents)
+    _ht=$(cfg num limits.health_timeout) || _ht=3
+    _n=0
+    for _u in $(_flat | awk -F'\t' '$1 ~ /^units\.[a-z_]+\.unit$/ { k = $1; sub(/^units\./, "", k); sub(/\.unit$/, "", k); print k }'); do
+      _n=$((_n + 1))
+      _un=$(cfg str "units.$_u.unit") || continue
+      _pt=$(cfg num "units.$_u.port") || { printf 'note %s carries no port\n' "$_u"; continue; }
+      _pb=$(cfg str "units.$_u.probe") || _pb=/
+      if ! systemctl --user is-active --quiet "$_un" 2>/dev/null; then
+        printf 'note %s is stopped (%s): a body that needs it will refuse\n' "$_un" "$_pt"
+        continue
+      fi
+      _r=$(curl -s -o /dev/null -w '%{http_code}' --max-time "$_ht" "http://$(cfg str models.host 127.0.0.1):$_pt$_pb" 2>/dev/null)
+      case $_r in
+        200) printf 'ok %s holds %s%s\n' "$_un" "$_pt" "$_pb" ;;
+        000) printf 'FAULT %s is active and %s does not answer\n' "$_un" "$_pt" ;;
+        *)   printf 'note %s answers %s on %s%s\n' "$_un" "$_r" "$_pt" "$_pb" ;;
+      esac
+    done
+    [ "$_n" -gt 0 ] && printf 'ok %s resident(s) declared\n' "$_n" || printf 'FAULT la_config declares no unit\n'
+    ;;
+  instruments)
+    for _b in tesseract ffmpeg jq sqlite3 curl; do
+      command -v "$_b" >/dev/null 2>&1 && printf 'ok %s answers\n' "$_b" \
+        || printf 'FAULT %s is missing: the bodies that call it read nothing\n' "$_b"
+    done
+    if command -v tesseract >/dev/null 2>&1; then
+      _l=$(tesseract --list-langs 2>/dev/null | sed -n '2,$p' | tr '\n' ' ')
+      printf 'ok tesseract languages: %s\n' "$_l"
+    fi
+    ;;
+  benches)
+    _d=${LA_BENCHES:-}
+    if [ -z "$_d" ]; then
+      printf 'note no bench declared (LA_BENCHES): a work artefact, not the repo\n'
+    elif [ -x "$_d/banc_selecteur.sh" ]; then
+      _b=$(timeout "$(cfg num limits.bench_timeout 120)" dash "$_d/banc_selecteur.sh" 2>&1 | tail -n 1)
+      case $_b in
+        *"0 non conforme"*) printf 'ok benches: %s\n' "$_b" ;;
+        "")                 printf 'note the bench selector said nothing\n' ;;
+        *)                  printf 'FAULT benches: %s\n' "$_b" ;;
+      esac
+    else
+      printf 'note no bench at %s\n' "$_d"
+    fi
+    ;;
+  tunnel)
+    if ! command -v tailscale >/dev/null 2>&1; then
+      printf 'note tailscale is not installed: the phone reaches the bridge another way\n'
+    else
+      _st=$(timeout 10 tailscale status --json 2>/dev/null | jq -r '.BackendState // "unknown"' 2>/dev/null)
+      _ip=$(timeout 10 tailscale ip -4 2>/dev/null | head -n 1)
+      _pe=$(timeout 10 tailscale status 2>/dev/null | grep -c . )
+      case ${_st:-} in
+        Running) printf 'ok tailscale is up, address %s\n' "${_ip:-none}" ;;
+        "")      printf 'FAULT tailscale says nothing\n' ;;
+        *)       printf 'FAULT tailscale is %s\n' "$_st" ;;
+      esac
+      printf 'note %s line(s) of peers\n' "${_pe:-0}"
+    fi
+    _bd=$(cfg num ports.bridge) || _bd=8770
+    _bl=$(ss -ltn 2>/dev/null | awk -v p=":$_bd" '$4 ~ p"$" { n++ } END { print n+0 }')
+    [ "${_bl:-0}" -gt 0 ] && printf 'ok the bridge listens on %s\n' "$_bd" \
+      || printf 'FAULT the bridge listens on nothing at %s\n' "$_bd"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: residents,instruments,benches,tunnel}

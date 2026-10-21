@@ -1,0 +1,22 @@
+id: "B692"
+tool: "blender_mesh_quads_convert_to_tris"
+date: "2026-10-17"
+tags: ["blender_mesh_quads_convert_to_tris"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Triangulate selected faces"
+
+machine: "blender"
+op: "mesh.quads_convert_to_tris"
+
+ARGS:
+  - {name: quad_method, type: text}          # un de : BEAUTY | FIXED | FIXED_ALTERNATE | SHORTEST_DIAGONAL | LONGEST_DIAGONAL
+  - {name: ngon_method, type: text}          # un de : BEAUTY | CLIP

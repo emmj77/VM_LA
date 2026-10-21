@@ -1,0 +1,20 @@
+id: "B500"
+tool: "blender_grease_pencil_snap_cursor_to_selected"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_snap_cursor_to_selected"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Snap cursor to center of selected points"
+
+machine: "blender"
+op: "grease_pencil.snap_cursor_to_selected"
+
+ARGS: []

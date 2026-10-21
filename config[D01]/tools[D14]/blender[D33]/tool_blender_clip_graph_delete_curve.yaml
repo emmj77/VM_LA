@@ -1,0 +1,21 @@
+id: "B147"
+tool: "blender_clip_graph_delete_curve"
+date: "2026-10-17"
+tags: ["blender_clip_graph_delete_curve"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete track corresponding to the selected curve"
+
+machine: "blender"
+op: "clip.graph_delete_curve"
+
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser

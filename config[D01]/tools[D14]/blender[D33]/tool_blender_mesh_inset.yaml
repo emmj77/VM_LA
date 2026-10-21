@@ -1,0 +1,31 @@
+id: "B669"
+tool: "blender_mesh_inset"
+date: "2026-10-17"
+tags: ["blender_mesh_inset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Inset new faces into selected faces"
+
+machine: "blender"
+op: "mesh.inset"
+
+ARGS:
+  - {name: use_boundary, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_even_offset, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_relative_offset, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_edge_rail, type: text}          # true|false, vide pour ne rien poser
+  - {name: thickness, type: text}
+  - {name: depth, type: text}
+  - {name: use_outset, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_select_inset, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_individual, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_interpolate, type: text}          # true|false, vide pour ne rien poser
+  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser

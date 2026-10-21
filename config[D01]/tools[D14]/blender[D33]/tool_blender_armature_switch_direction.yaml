@@ -1,0 +1,20 @@
+id: "B096"
+tool: "blender_armature_switch_direction"
+date: "2026-10-17"
+tags: ["blender_armature_switch_direction"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change the direction that a chain of bones points in (head and tail swap)"
+
+machine: "blender"
+op: "armature.switch_direction"
+
+ARGS: []

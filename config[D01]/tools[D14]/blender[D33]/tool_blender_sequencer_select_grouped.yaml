@@ -1,0 +1,23 @@
+id: "B1373"
+tool: "blender_sequencer_select_grouped"
+date: "2026-10-17"
+tags: ["blender_sequencer_select_grouped"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all strips grouped by various properties"
+
+machine: "blender"
+op: "sequencer.select_grouped"
+
+ARGS:
+  - {name: type, type: text}          # un de : TYPE | TYPE_BASIC | TYPE_EFFECT | DATA | EFFECT | EFFECT_LINK | OVERLAP
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_active_channel, type: text}          # true|false, vide pour ne rien poser

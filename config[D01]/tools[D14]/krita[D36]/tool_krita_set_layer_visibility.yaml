@@ -1,0 +1,33 @@
+id: "K074"
+tool: "krita_set_layer_visibility"
+date: "2026-10-18"
+tags: ["krita", "krita_set_layer_visibility"]
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle layer visibility"
+
+COMMAND: |
+  SERVICE=$(krita_url) || exit 1
+  num() { case "$1" in ''|*[!0-9.-]*) printf 'null' ;; *) printf '%s' "$1" ;; esac; }
+  tab() { case "$1" in '') printf 'null' ;; *) printf '%s' "$1" | jq -c . 2>/dev/null || printf 'null' ;; esac; }
+
+  D=$(jq -cn \
+    --arg name "{{name}}" \
+    --arg visible "{{visible}}" \
+    '{action:"set_layer_visibility", params:({ name:$name, visible:(if $visible=="" then null else $visible=="true" end) } | with_entries(select(.value != null and .value != "")))}')
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: visible, type: bool}

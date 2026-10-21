@@ -1,0 +1,20 @@
+id: "B1436"
+tool: "blender_text_reload"
+date: "2026-10-17"
+tags: ["blender_text_reload"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reload active text data-block from its file"
+
+machine: "blender"
+op: "text.reload"
+
+ARGS: []

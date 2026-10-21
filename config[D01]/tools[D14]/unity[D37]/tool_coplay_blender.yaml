@@ -1,0 +1,149 @@
+id: "U452"
+tool: "coplay_blender"
+date: "2026-10-17"
+tags: ["coplay_blender"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "the blender bridge: check-updates | compare-screenshot | import-model | object-info | scene-info | screenshot | setup-bloom | status | sync-addon (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  check-updates)
+    set -f
+    set -- blender check-updates
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  compare-screenshot)
+    set -f
+    set -- blender compare-screenshot
+    [ -n "{{game_object}}" ] && set -- "$@" --game-object "{{game_object}}"
+    [ -n "{{max_size}}" ] && set -- "$@" --max-size "{{max_size}}"
+    [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  import-model)
+    set -f
+    set -- blender import-model
+    case "{{selection_only}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'selection_only')" >&2; exit 1 ;; esac
+    T=$(printf '%s' "{{position}}" | tr -d '0123456789. -')
+    [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'position' '3' '%s')""{{position}}" >&2; exit 1; }
+    unset T
+    case "{{no_place}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'no_place')" >&2; exit 1 ;; esac
+    case "{{keep_modifiers}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'keep_modifiers')" >&2; exit 1 ;; esac
+    case "{{no_animate}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'no_animate')" >&2; exit 1 ;; esac
+    case "{{save_prefab}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'save_prefab')" >&2; exit 1 ;; esac
+    case "{{ensure_bloom}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'ensure_bloom')" >&2; exit 1 ;; esac
+    [ -n "{{object_names}}" ] && set -- "$@" --object "{{object_names}}"
+    [ "{{selection_only}}" = true ] && set -- "$@" --selection-only
+    [ -n "{{fmt}}" ] && set -- "$@" --format "{{fmt}}"
+    [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+    [ -n "{{target_size}}" ] && set -- "$@" --target-size "{{target_size}}"
+    [ -n "{{position}}" ] && set -- "$@" --position {{position}}
+    [ "{{no_place}}" = true ] && set -- "$@" --no-place
+    [ "{{keep_modifiers}}" = true ] && set -- "$@" --keep-modifiers
+    [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+    [ -n "{{animation_type}}" ] && set -- "$@" --animation-type "{{animation_type}}"
+    [ "{{no_animate}}" = true ] && set -- "$@" --no-animate
+    [ "{{save_prefab}}" = true ] && set -- "$@" --save-prefab
+    [ "{{ensure_bloom}}" = true ] && set -- "$@" --ensure-bloom
+    [ -n "{{timeout_seconds}}" ] && set -- "$@" --timeout "{{timeout_seconds}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  object-info)
+    set -f
+    set -- blender object-info
+    [ -n "{{object_name}}" ] && set -- "$@" --object-name "{{object_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  scene-info)
+    set -f
+    set -- blender scene-info
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  screenshot)
+    set -f
+    set -- blender screenshot
+    [ -n "{{max_size}}" ] && set -- "$@" --max-size "{{max_size}}"
+    [ -n "{{output_folder}}" ] && set -- "$@" --output-folder "{{output_folder}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  setup-bloom)
+    set -f
+    set -- blender setup-bloom
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  status)
+    set -f
+    set -- blender status
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  sync-addon)
+    set -f
+    set -- blender sync-addon
+    case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'force')" >&2; exit 1 ;; esac
+    [ "{{force}}" = true ] && set -- "$@" --force
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [check-updates, compare-screenshot, import-model, object-info, scene-info, screenshot, setup-bloom, status, sync-addon]}
+  - {name: animation_type, type: text}
+  - {name: fmt, type: text}
+  - {name: game_object, type: text}
+  - {name: max_size, type: int}
+  - {name: name, type: text}
+  - {name: object_name, type: text}
+  - {name: object_names, type: text}
+  - {name: output_folder, type: text}
+  - {name: target_size, type: text}
+  - {name: timeout_seconds, type: int}
+  - {name: ensure_bloom, type: text}
+  - {name: force, type: text}
+  - {name: keep_modifiers, type: text}
+  - {name: no_animate, type: text}
+  - {name: no_place, type: text}
+  - {name: position, type: text}
+  - {name: save_prefab, type: text}
+  - {name: selection_only, type: text}

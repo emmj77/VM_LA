@@ -1,0 +1,22 @@
+id: "B1730"
+tool: "blender_graph_blend"
+date: "2026-10-17"
+tags: ["blender_graph_blend"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "the blend of a keyframe: offset | to_default | to_ease | to_neighbor (op picks which)"
+
+machine: "blender"
+op: "graph.blend_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [offset, to_default, to_ease, to_neighbor]}
+  - {name: factor, type: text}

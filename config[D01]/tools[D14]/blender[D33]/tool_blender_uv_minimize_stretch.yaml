@@ -1,0 +1,23 @@
+id: "B1500"
+tool: "blender_uv_minimize_stretch"
+date: "2026-10-17"
+tags: ["blender_uv_minimize_stretch"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reduce UV stretching by relaxing angles"
+
+machine: "blender"
+op: "uv.minimize_stretch"
+
+ARGS:
+  - {name: fill_holes, type: text}          # true|false, vide pour ne rien poser
+  - {name: blend, type: text}
+  - {name: iterations, type: int}

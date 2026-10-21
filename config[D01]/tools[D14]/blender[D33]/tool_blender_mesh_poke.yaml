@@ -1,0 +1,23 @@
+id: "B690"
+tool: "blender_mesh_poke"
+date: "2026-10-17"
+tags: ["blender_mesh_poke"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Split a face into a fan"
+
+machine: "blender"
+op: "mesh.poke"
+
+ARGS:
+  - {name: offset, type: text}
+  - {name: use_relative_offset, type: text}          # true|false, vide pour ne rien poser
+  - {name: center_mode, type: text}          # un de : MEDIAN_WEIGHTED | MEDIAN | BOUNDS

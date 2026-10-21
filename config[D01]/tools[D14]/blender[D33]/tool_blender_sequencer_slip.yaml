@@ -1,0 +1,24 @@
+id: "B1384"
+tool: "blender_sequencer_slip"
+date: "2026-10-17"
+tags: ["blender_sequencer_slip"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Slip the contents of selected strips"
+
+machine: "blender"
+op: "sequencer.slip"
+
+ARGS:
+  - {name: offset, type: text}
+  - {name: slip_keyframes, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_cursor_position, type: text}          # true|false, vide pour ne rien poser
+  - {name: ignore_connections, type: text}          # true|false, vide pour ne rien poser

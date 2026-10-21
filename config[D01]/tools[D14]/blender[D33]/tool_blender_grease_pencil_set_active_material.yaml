@@ -1,0 +1,20 @@
+id: "B489"
+tool: "blender_grease_pencil_set_active_material"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_set_active_material"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the selected stroke material as the active material"
+
+machine: "blender"
+op: "grease_pencil.set_active_material"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B546"
+tool: "blender_image_save"
+date: "2026-10-17"
+tags: ["blender_image_save"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Save the image with current name and settings"
+
+machine: "blender"
+op: "image.save"
+
+ARGS: []

@@ -1,0 +1,21 @@
+id: "B1605"
+tool: "blender_wm_debug_menu"
+date: "2026-10-17"
+tags: ["blender_wm_debug_menu"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open a popup to set the debug level"
+
+machine: "blender"
+op: "wm.debug_menu"
+
+ARGS:
+  - {name: debug_value, type: int}

@@ -1,0 +1,23 @@
+id: "B1528"
+tool: "blender_uv_select_similar"
+date: "2026-10-17"
+tags: ["blender_uv_select_similar"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select similar UVs by property types"
+
+machine: "blender"
+op: "uv.select_similar"
+
+ARGS:
+  - {name: type, type: text}          # un de : PIN | LENGTH | LENGTH_3D | AREA | AREA_3D | MATERIAL | OBJECT | SIDES | WINDING | FACE
+  - {name: compare, type: text}          # un de : EQUAL | GREATER | LESS
+  - {name: threshold, type: text}

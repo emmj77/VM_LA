@@ -1,0 +1,116 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E007"
+tool: "engine.install"
+date: "2026-10-20"
+tags: ["engine", "install"]
+RULES:
+  enabled: true
+  timeout: 300
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "what is placed on the machine: units, command, desktop, applet, certs"
+COMMAND: |
+
+  _op=${1:-units}
+  _la=$(cfg abs la) || { printf 'FAULT no entry in the tree\n'; exit 0; }
+  _ud=$(cfg str paths.user_units "$HOME/.config/systemd/user") || _ud="$HOME/.config/systemd/user"
+  _bin=$(cfg str paths.user_bin "$HOME/.local/bin") || _bin="$HOME/.local/bin"
+  _apps=$(cfg str paths.user_apps "$HOME/.local/share/applications") || _apps="$HOME/.local/share/applications"
+
+  _unit() {   # $1 name, $2 what it runs, $3 description
+    _f="$_ud/$1.service"
+    if [ "$2" = dashboard ]; then
+      # LA PAGE A SA PORTE : la socket l eveille a la premiere visite, et le service
+      # s arrete de lui-meme quand plus personne ne regarde (il sort en 0).
+      _sp=$(cfg num ports.dash) || _sp=8771
+      {
+        printf '[Unit]\nDescription=%s\nAfter=la-dash.socket\nRequires=la-dash.socket\n\n' "$3"
+        printf '[Service]\nType=simple\nExecStart=/bin/dash %s service %s\nRestart=on-failure\nRestartSec=2\n\n' "$_la" "$2"
+        printf '[Install]\nWantedBy=default.target\n'
+      } > "$_f" || return 1
+      {
+        printf '[Unit]\nDescription=LA - the dashboard door\n\n'
+        printf '[Socket]\nListenStream=127.0.0.1:%s\n\n' "$_sp"
+        printf '[Install]\nWantedBy=sockets.target\n'
+      } > "$_ud/$1.socket" || return 1
+      printf 'ok unit %s (and its socket on %s)\n' "$1" "$_sp"
+      return 0
+    fi
+    {
+      printf '[Unit]\nDescription=%s\nAfter=default.target\n\n' "$3"
+      printf '[Service]\nType=simple\nExecStart=/bin/dash %s service %s\nRestart=always\nRestartSec=2\n\n' "$_la" "$2"
+      printf '[Install]\nWantedBy=default.target\n'
+    } > "$_f" || return 1
+    printf 'ok unit %s\n' "$1"
+  }
+
+  case $_op in
+  units)
+    mkdir -p "$_ud" || { printf 'FAULT no unit directory\n'; exit 0; }
+    _n=0
+    for _u in $(_flat | awk -F'\t' '$1 ~ /^units\.[a-z_]+\.unit$/ { k = $1; sub(/^units\./, "", k); sub(/\.unit$/, "", k); print k }'); do
+      _un=$(cfg str "units.$_u.unit") || continue
+      case $_u in
+        bridge)    _unit "$_un" bridge "LA - the bridge: the API, no page" ;;
+        dashboard) _unit "$_un" dashboard "LA - the dashboard: the page, its own door" ;;
+        *)         _unit "$_un" "$_u" "LA - $_u" ;;
+      esac
+      _n=$((_n + 1))
+    done
+    _timer="$_ud/la-retention.timer"
+    {
+      printf '[Unit]\nDescription=LA - the bounds applied every day\n\n'
+      printf '[Timer]\nOnCalendar=daily\nPersistent=true\n\n'
+      printf '[Install]\nWantedBy=timers.target\n'
+    } > "$_timer" || printf 'FAULT the timer cannot be written\n'
+    _svc="$_ud/la-retention.service"
+    {
+      printf '[Unit]\nDescription=LA - the bounds applied once\n\n'
+      printf '[Service]\nType=oneshot\nExecStart=/bin/dash %s engine engine.retention op=audio\n' "$_la"
+    } > "$_svc"
+    systemctl --user daemon-reload 2>&1 || printf 'note the user manager did not reload\n'
+    printf 'ok %s unit(s) written, the retention timer beside them\n' "$_n"
+    ;;
+  command)
+    mkdir -p "$_bin" || { printf 'FAULT no bin directory\n'; exit 0; }
+    printf '#!/bin/sh\n# the entry, posed by the engine. the body lives in the project.\nexec /bin/dash %s "$@"\n' "$_la" > "$_bin/la" \
+      || { printf 'FAULT the command cannot be written\n'; exit 0; }
+    chmod 755 "$_bin/la"
+    printf 'ok %s\n' "$_bin/la"
+    ;;
+  desktop)
+    mkdir -p "$_apps" || { printf 'FAULT no applications directory\n'; exit 0; }
+    _pt=$(cfg num units.dashboard.port 8770) || _pt=8770
+    printf '[Desktop Entry]\nType=Application\nName=LA\nComment=the board of LA\nExec=%s/%s app\nTerminal=false\nCategories=Utility;\n' "$_bin" "la" > "$_apps/la.desktop" \
+      || { printf 'FAULT the desktop file cannot be written\n'; exit 0; }
+    printf 'ok %s/la.desktop\n' "$_apps"
+    ;;
+  applet)
+    _s=$(cfg path applet) || { printf 'FAULT no applet in the tree\n'; exit 0; }
+    _d="$HOME/.local/share/cinnamon/applets/LA_Info@moussa"
+    mkdir -p "$(dirname -- "$_d")" || exit 0
+    cp -r "$_s/." "$_d/" || { printf 'FAULT the applet cannot be copied\n'; exit 0; }
+    printf 'ok the applet is placed: %s\n' "$_d"
+    ;;
+  certs)
+    _d=$(cfg path certs) || { printf 'FAULT no certs directory\n'; exit 0; }
+    _c=$(cfg abs bridge_cert) || _c="$_d/bridge-cert.pem"
+    _k=$(cfg abs bridge_key) || _k="$_d/bridge-key.pem"
+    _h=$(cfg str bridge.tls_host "$(tailscale ip -4 2>/dev/null | head -n 1)") || _h=127.0.0.1
+    mkdir -p "$_d" || exit 0
+    openssl req -x509 -newkey rsa:2048 -nodes -days 900 -subj "/CN=$_h" \
+      -keyout "$_k" -out "$_c" >/dev/null 2>&1 \
+      || { printf 'FAULT openssl refused\n'; exit 0; }
+    chmod 600 "$_k"
+    chmod 644 "$_c"
+    printf 'ok cert and key for %s in %s\n' "$_h" "${_d#$ROOT/}"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: units,command,desktop,applet,certs}

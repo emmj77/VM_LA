@@ -1,0 +1,25 @@
+id: "B1409"
+tool: "blender_sequencer_view_ghost_border"
+date: "2026-10-17"
+tags: ["blender_sequencer_view_ghost_border"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the boundaries of the border used for offset view"
+
+machine: "blender"
+op: "sequencer.view_ghost_border"
+
+ARGS:
+  - {name: xmin, type: int}
+  - {name: xmax, type: int}
+  - {name: ymin, type: int}
+  - {name: ymax, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser

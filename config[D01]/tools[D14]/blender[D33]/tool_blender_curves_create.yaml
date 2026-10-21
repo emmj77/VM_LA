@@ -1,0 +1,49 @@
+id: "B1715"
+tool: "blender_curves_create"
+date: "2026-10-17"
+tags: ["blender_curves_create"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a new hair curve: add_bezier | add_circle | draw | pen (op picks which)"
+
+machine: "blender"
+op: "curves.{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add_bezier, add_circle, draw, pen]}
+  - {name: align, type: text}
+  - {name: enter_editmode, type: text}
+  - {name: location, type: text}
+  - {name: radius, type: text}
+  - {name: rotation, type: text}
+  - {name: scale, type: text}
+  - {name: bezier_as_nurbs, type: text}
+  - {name: corner_angle, type: text}
+  - {name: cycle_handle_type, type: text}
+  - {name: delete_point, type: text}
+  - {name: deselect, type: text}
+  - {name: deselect_all, type: text}
+  - {name: error_threshold, type: text}
+  - {name: extend, type: text}
+  - {name: extrude_handle, type: text}
+  - {name: extrude_point, type: text}
+  - {name: fit_method, type: text}
+  - {name: insert_point, type: text}
+  - {name: is_curve_2d, type: text}
+  - {name: move_point, type: text}
+  - {name: move_segment, type: text}
+  - {name: select_passthrough, type: text}
+  - {name: select_point, type: text}
+  - {name: size, type: text}
+  - {name: stroke, type: text}
+  - {name: toggle, type: text}
+  - {name: use_cyclic, type: text}
+  - {name: wait_for_input, type: text}

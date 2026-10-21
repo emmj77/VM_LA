@@ -1,0 +1,21 @@
+id: "B756"
+tool: "blender_nla_action_pushdown"
+date: "2026-10-17"
+tags: ["blender_nla_action_pushdown"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Push action down onto the top of the NLA stack as a new strip"
+
+machine: "blender"
+op: "nla.action_pushdown"
+
+ARGS:
+  - {name: track_index, type: int}

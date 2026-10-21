@@ -1,0 +1,20 @@
+id: "B1560"
+tool: "blender_view3d_ruler_add"
+date: "2026-10-17"
+tags: ["blender_view3d_ruler_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add ruler"
+
+machine: "blender"
+op: "view3d.ruler_add"
+
+ARGS: []

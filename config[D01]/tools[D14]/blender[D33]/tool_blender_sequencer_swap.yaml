@@ -1,0 +1,21 @@
+id: "B1401"
+tool: "blender_sequencer_swap"
+date: "2026-10-17"
+tags: ["blender_sequencer_swap"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Swap active strip with strip to the right or left"
+
+machine: "blender"
+op: "sequencer.swap"
+
+ARGS:
+  - {name: side, type: text}          # un de : LEFT | RIGHT

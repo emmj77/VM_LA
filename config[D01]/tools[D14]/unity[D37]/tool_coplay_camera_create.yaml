@@ -1,0 +1,40 @@
+id: "U158"
+tool: "coplay_camera_create"
+date: "2026-10-18"
+tags: ["unity", "coplay", "camera"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Create a new camera."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- camera create
+  [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+  [ -n "{{preset}}" ] && set -- "$@" --preset "{{preset}}"
+  [ -n "{{follow}}" ] && set -- "$@" --follow "{{follow}}"
+  [ -n "{{look_at}}" ] && set -- "$@" --look-at "{{look_at}}"
+  [ -n "{{priority}}" ] && set -- "$@" --priority "{{priority}}"
+  [ -n "{{fov}}" ] && set -- "$@" --fov "{{fov}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: preset, type: text}          # un de : follow | third_person | freelook | dolly | static | top_down | side_scroller
+  - {name: follow, type: text}
+  - {name: look_at, type: text}
+  - {name: priority, type: int}
+  - {name: fov, type: text}

@@ -1,0 +1,21 @@
+id: "B1325"
+tool: "blender_sculpt_symmetrize"
+date: "2026-10-17"
+tags: ["blender_sculpt_symmetrize"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Symmetrize the topology modifications"
+
+machine: "blender"
+op: "sculpt.symmetrize"
+
+ARGS:
+  - {name: merge_tolerance, type: text}

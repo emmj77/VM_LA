@@ -1,0 +1,20 @@
+id: "B1100"
+tool: "blender_paint_add_simple_uvs"
+date: "2026-10-17"
+tags: ["blender_paint_add_simple_uvs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add cube map UVs on mesh"
+
+machine: "blender"
+op: "paint.add_simple_uvs"
+
+ARGS: []

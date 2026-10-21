@@ -1,0 +1,17 @@
+# id: U04
+# UN MODELE, PAS UNE UNITE VIVANTE : install.sh remplace @ROOT@ par la racine reelle et
+# pose le fichier dans ~/.config/systemd/user/. Le depot porte la source, le poste porte l'unite.
+[Unit]
+Description=LA - la page du poste (dash.py, une porte sur le harnais)
+Documentation=file://@ROOT@/projects/la/spec.yaml
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=@ROOT@
+ExecStart=/usr/bin/python3 config/programs/dash.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

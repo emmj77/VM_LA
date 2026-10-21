@@ -1,0 +1,36 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D009"
+tool: "doctor.texts"
+date: "2026-10-20"
+tags: ["doctor", "texts"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the head of the model, the refusals the door needs, and the french left"
+COMMAND: |
+
+  _op=${1:-prompt}
+  _hl=$(_flat | awk -F'\t' '$1 ~ /^head\.[A-Z_]+\.[0-9]+$/ { n++ } END { print n+0 }')
+  _hzo=$(_flat | awk -F'\t' '$1 ~ /^head\.[A-Z_]+\.[0-9]+$/ { z = $1; sub(/\.[0-9]+$/, "", z); s[z] = 1 } END { for (k in s) n++; print n+0 }')
+  if [ "${_hl:-0}" = 0 ]; then
+    printf 'FAULT the head is empty: the model would start with no law\n'
+  else
+    printf 'ok head %s line(s) in %s zone(s), held by la_config\n' "$_hl" "${_hzo:-0}"
+  fi
+  _tx=$(cfg abs texts) || { printf 'FAULT no texts in the tree\n'; exit 0; }
+  for _k in tool_unknown arity timeout tool_not_allowed approval_required path_outside_canon; do
+    msg_has "refusals.$_k" || printf 'FAULT the door says refusals.%s and texts has no such key\n' "$_k"
+  done
+  _accent=$(printf '\303')
+  _fr=$(LC_ALL=C grep -c "$_accent" "$_tx" 2>/dev/null)
+  [ "${_fr:-0}" = 0 ] && printf 'ok no accented letter in texts\n' \
+    || printf 'FAULT %s line(s) of texts carry an accented letter\n' "$_fr"
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: prompt}

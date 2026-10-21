@@ -1,0 +1,20 @@
+id: "B1215"
+tool: "blender_preferences_associate_blend"
+date: "2026-10-17"
+tags: ["blender_preferences_associate_blend"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use this installation for .blend files and to display thumbnails"
+
+machine: "blender"
+op: "preferences.associate_blend"
+
+ARGS: []

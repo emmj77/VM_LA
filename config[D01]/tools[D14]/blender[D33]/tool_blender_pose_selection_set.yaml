@@ -1,0 +1,23 @@
+id: "B1763"
+tool: "blender_pose_selection_set"
+date: "2026-10-17"
+tags: ["blender_pose_selection_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a bone selection set: add | add_and_assign | assign | copy | delete_all | deselect | move | paste | remove | remove_bones | select | unassign (op picks which)"
+
+machine: "blender"
+op: "pose.selection_set_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, add_and_assign, assign, copy, delete_all, deselect, move, paste, remove, remove_bones, select, unassign]}
+  - {name: direction, type: text}
+  - {name: selection_set_index, type: int}

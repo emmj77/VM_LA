@@ -1,0 +1,27 @@
+id: "A004"
+tool: "asset_builder_show"
+date: "2026-10-19"
+tags: ["asset_builder", "session"]
+
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "shows one asset document: parts, materials, budget"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  AB_HOME="$W/asset_builder" "$B" show --name "$A1"
+
+ARGS:
+  - {name: name, type: text}

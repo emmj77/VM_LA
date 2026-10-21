@@ -1,0 +1,100 @@
+# the vectors of the tools, one embedding call per batch. no python: curl, jq, sqlite3.
+id: "G074"
+tool: "tools.vectors"
+family: "core"
+sub_family: "tools"
+date: "2026-10-21"
+tags: ["tools", "vectors", "embedding"]
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "Build the vectors of the tools into tool_vec.db, or say what it holds"
+COMMAND: |
+  _db=$(cfg abs tool_vec) || exit 1
+  _h=$(cfg str models.host) || _h=127.0.0.1
+  _p=$(cfg num models.port) || _p=8091
+  _m=$(cfg str models.embed) || _m=local
+  _tools=$(cfg path tools) || exit 1
+
+  case "{{op}}" in
+    count)
+      sqlite3 "$_db" 'select count(*) from tool_vec' 2>/dev/null || echo 0
+      exit 0
+      ;;
+  esac
+
+  sqlite3 "$_db" 'CREATE TABLE IF NOT EXISTS tool_vec (name TEXT PRIMARY KEY, empreinte TEXT, texte TEXT, vec TEXT);
+                  CREATE TABLE IF NOT EXISTS meta (cle TEXT PRIMARY KEY, valeur TEXT);' || exit 1
+
+  _w=$(tmpfile vec_work) || exit 1
+  mkdir -p "$_w" || exit 1
+
+  # name and description of every body, one line each
+  awk -v out="$_w/all" '
+    FNR == 1 { if (n != "") print n "\t" d > out; n = ""; d = "" }
+    /^tool:/        { x = $0; sub(/^tool:[ \t]*/, "", x); gsub(/"/, "", x); n = x }
+    /^DESCRIPTION:/ { y = $0; sub(/^DESCRIPTION:[ \t]*/, "", y); gsub(/^"|"$/, "", y); gsub(/\t/, " ", y); d = y }
+    END { if (n != "") print n "\t" d > out }
+  ' "$_tools"/*/tool_*.yaml
+
+  [ -s "$_w/all" ] || { printf 'no tool here\n' >&2; exit 1; }
+
+  # what to do: the text, its print, and a key by name
+  awk -F '\t' -v out="$_w/todo" '
+    { words = $1; gsub(/[._-]/, " ", words); t = words
+      if ($2 != "") t = words " : " $2
+      if (length(t) > 400) t = substr(t, 1, 400)
+      print $1 "\t" t > out }
+  ' "$_w/all"
+
+  # the print of each text, and what is already stored
+  sqlite3 -separator '\t' "$_db" 'select name, empreinte from tool_vec' > "$_w/have"
+  : > "$_w/keep"
+  while IFS='	' read -r _n _t; do
+    _e=$(printf '%s' "$_t" | sha1sum | cut -c1-16)
+    [ "$(awk -F '\t' -v k="$_n" '$1 == k { print $2 }' "$_w/have")" = "$_e" ] && continue
+    printf '%s\t%s\t%s\n' "$_n" "$_e" "$_t" >> "$_w/keep"
+  done < "$_w/todo"
+
+  _n=$(wc -l < "$_w/keep" | tr -d ' ')
+  if [ "$_n" -eq 0 ]; then
+    printf 'up to date: %s tool(s)\n' "$(wc -l < "$_w/todo" | tr -d ' ')"
+    exit 0
+  fi
+
+  # the model answers batch by batch
+  _k=0
+  while [ "$_k" -lt "$_n" ]; do
+    _b=$(tmpfile vec_batch) || exit 1
+    _r=$(tmpfile vec_reply) || exit 1
+    _row=$(tmpfile vec_row) || exit 1
+    _k=$((_k + 1)); : > "$_b"; : > "$_row"
+    _i=0
+    while [ "$_i" -lt 32 ] && [ "$_k" -le "$_n" ]; do
+      _l=$(awk -F '\t' -v k="$_k" 'NR == k { print $3 }' "$_w/keep")
+      printf '%s\n' "$_l" >> "$_b"
+      _k=$((_k + 1)); _i=$((_i + 1))
+    done
+    jq -Rs --arg m "$_m" 'split("\n") | map(select(length > 0)) | {input: ., model: $m}' "$_b" \
+      | curl -s --max-time 300 -H 'Content-Type: application/json' \
+             -d @- "http://$_h:$_p/v1/embeddings" > "$_r" || { printf 'the embedder is mute on %s:%s\n' "$_h" "$_p" >&2; exit 1; }
+    jq -r '.data[]?.embedding | map(tostring) | join(",")' "$_r" > "$_w/vec" || exit 1
+    [ -s "$_w/vec" ] || { printf 'no vector came back\n' >&2; exit 1; }
+    _j=$(awk -F '\t' -v from="$((_k - _i))" -v to="$((_k - 1))" 'NR >= from && NR <= to' "$_w/keep" | awk -F '\t' -v vf="$_w/vec" '
+      BEGIN { while ((getline l < vf) > 0) { n++; V[n] = l } }
+      { print $1 "\t" $2 "\t" $3 "\t" V[NR] }')
+    printf '%s\n' "$_j" > "$_row"
+    sqlite3 -cmd '.mode tabs' "$_db" ".import '$_row' tool_vec" || exit 1
+    printf '%s/%s\r' "$((_k - 1))" "$_n" >&2
+  done
+  printf '\n'
+  sqlite3 "$_db" "INSERT OR REPLACE INTO meta VALUES ('modele', '$_m');
+                  INSERT OR REPLACE INTO meta VALUES ('dim', (select length(vec) - length(replace(vec, ',', '')) + 1 from tool_vec limit 1));" || exit 1
+  printf 'done: %s vector(s), %s tool(s) in all\n' "$_n" "$(wc -l < "$_w/todo" | tr -d ' ')"
+ARGS:
+  - {name: op, type: text, values: [build, count]}   # build: what is missing or changed

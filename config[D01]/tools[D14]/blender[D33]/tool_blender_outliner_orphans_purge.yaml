@@ -1,0 +1,23 @@
+id: "B1089"
+tool: "blender_outliner_orphans_purge"
+date: "2026-10-17"
+tags: ["blender_outliner_orphans_purge"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Clear all orphaned data-blocks without any users from the file"
+
+machine: "blender"
+op: "outliner.orphans_purge"
+
+ARGS:
+  - {name: do_local_ids, type: text}          # true|false, vide pour ne rien poser
+  - {name: do_linked_ids, type: text}          # true|false, vide pour ne rien poser
+  - {name: do_recursive, type: text}          # true|false, vide pour ne rien poser

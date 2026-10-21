@@ -1,0 +1,20 @@
+id: "B729"
+tool: "blender_mesh_shape_propagate_to_all"
+date: "2026-10-17"
+tags: ["blender_mesh_shape_propagate_to_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Apply selected vertex locations to all other shape keys"
+
+machine: "blender"
+op: "mesh.shape_propagate_to_all"
+
+ARGS: []

@@ -1,0 +1,21 @@
+id: "B526"
+tool: "blender_image_external_edit"
+date: "2026-10-17"
+tags: ["blender_image_external_edit"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Edit image in an external application"
+
+machine: "blender"
+op: "image.external_edit"
+
+ARGS:
+  - {name: filepath, type: text}

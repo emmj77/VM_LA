@@ -1,0 +1,34 @@
+id: "U199"
+tool: "coplay_physics_remove_joint"
+date: "2026-10-18"
+tags: ["unity", "coplay", "physics"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Remove joint(s) from a GameObject."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- physics remove-joint
+  [ -n "{{target}}" ] && set -- "$@" --target "{{target}}"
+  [ -n "{{joint_type}}" ] && set -- "$@" --joint-type "{{joint_type}}"
+  [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: target, type: text}
+  - {name: joint_type, type: text}
+  - {name: component_index, type: int}

@@ -1,0 +1,21 @@
+id: "B1533"
+tool: "blender_uv_snap_cursor"
+date: "2026-10-17"
+tags: ["blender_uv_snap_cursor"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Snap cursor to target type"
+
+machine: "blender"
+op: "uv.snap_cursor"
+
+ARGS:
+  - {name: target, type: text}          # un de : PIXELS | SELECTED | ORIGIN

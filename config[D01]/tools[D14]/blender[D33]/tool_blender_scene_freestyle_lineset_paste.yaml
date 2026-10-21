@@ -1,0 +1,20 @@
+id: "B1252"
+tool: "blender_scene_freestyle_lineset_paste"
+date: "2026-10-17"
+tags: ["blender_scene_freestyle_lineset_paste"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Paste the internal clipboard content to the active line set"
+
+machine: "blender"
+op: "scene.freestyle_lineset_paste"
+
+ARGS: []

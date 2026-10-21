@@ -1,0 +1,26 @@
+id: "B917"
+tool: "blender_object_convert"
+date: "2026-10-17"
+tags: ["blender_object_convert"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Convert selected objects to another type"
+
+machine: "blender"
+op: "object.convert"
+
+ARGS:
+  - {name: target, type: text}          # un de : CURVE | MESH | POINTCLOUD | CURVES | GREASEPENCIL
+  - {name: keep_original, type: text}          # true|false, vide pour ne rien poser
+  - {name: merge_customdata, type: text}          # true|false, vide pour ne rien poser
+  - {name: thickness, type: int}
+  - {name: faces, type: text}          # true|false, vide pour ne rien poser
+  - {name: offset, type: text}

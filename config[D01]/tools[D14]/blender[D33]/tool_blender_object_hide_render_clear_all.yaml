@@ -1,0 +1,20 @@
+id: "B956"
+tool: "blender_object_hide_render_clear_all"
+date: "2026-10-17"
+tags: ["blender_object_hide_render_clear_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reveal all render objects by setting the hide render flag"
+
+machine: "blender"
+op: "object.hide_render_clear_all"
+
+ARGS: []

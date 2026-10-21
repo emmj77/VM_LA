@@ -1,0 +1,23 @@
+id: "B1485"
+tool: "blender_uilist_entry_move"
+date: "2026-10-17"
+tags: ["blender_uilist_entry_move"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move an entry in the list up or down"
+
+machine: "blender"
+op: "uilist.entry_move"
+
+ARGS:
+  - {name: list_path, type: text}
+  - {name: active_index_path, type: text}
+  - {name: direction, type: text}          # un de : UP | DOWN

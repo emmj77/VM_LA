@@ -1,0 +1,22 @@
+id: "B1667"
+tool: "blender_wm_set_working_color_space"
+date: "2026-10-17"
+tags: ["blender_wm_set_working_color_space"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change the working color space of all colors in this blend file"
+
+machine: "blender"
+op: "wm.set_working_color_space"
+
+ARGS:
+  - {name: convert_colors, type: text}          # true|false, vide pour ne rien poser
+  - {name: working_space, type: text}          # un de :

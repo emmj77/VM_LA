@@ -1,0 +1,20 @@
+id: "B775"
+tool: "blender_nla_mute_toggle"
+date: "2026-10-17"
+tags: ["blender_nla_mute_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Mute or un-mute selected strips"
+
+machine: "blender"
+op: "nla.mute_toggle"
+
+ARGS: []

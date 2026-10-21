@@ -1,0 +1,24 @@
+id: "B803"
+tool: "blender_node_add_node"
+date: "2026-10-17"
+tags: ["blender_node_add_node"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a node to the active tree"
+
+machine: "blender"
+op: "node.add_node"
+
+ARGS:
+  - {name: settings, type: text}
+  - {name: use_transform, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}
+  - {name: visible_output, type: text}

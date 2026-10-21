@@ -1,0 +1,46 @@
+id: "U406"
+tool: "unity_recompile"
+date: "2026-10-18"
+tags: ["unity", "cli", "recompile"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Recompile a running Editor's scripts and report compile errors"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- recompile --no-banner --no-pager --non-interactive
+  case "{{focus}}" in ''|true|false) ;; *) printf '%s\n' "$(msg focus_true_false)" >&2; exit 1 ;; esac
+  case "{{strict}}" in ''|true|false) ;; *) printf '%s\n' "$(msg strict_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  [ -n "{{timeout}}" ] && set -- "$@" --timeout "{{timeout}}"
+  [ "{{focus}}" = true ] && set -- "$@" --focus
+  [ "{{strict}}" = true ] && set -- "$@" --strict
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_recompile_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: project_path, type: text}   # Path to the Unity project whose Editor recompiles
+  - {name: timeout, type: text}   # Seconds to wait for compilation to finish
+  - {name: focus, type: text}   # true pour poser --focus ; Bring the Editor to the foreground before compiling
+  - {name: strict, type: text}   # true pour poser --strict ; Fail when compilation reports warnings

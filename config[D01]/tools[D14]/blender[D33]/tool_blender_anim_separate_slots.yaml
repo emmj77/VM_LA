@@ -1,0 +1,20 @@
+id: "B056"
+tool: "blender_anim_separate_slots"
+date: "2026-10-17"
+tags: ["blender_anim_separate_slots"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move all slots of the action on the active object into newly created, separate actions. All users of those slots will be reassigned to the new actions"
+
+machine: "blender"
+op: "anim.separate_slots"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B865"
+tool: "blender_node_read_viewlayers"
+date: "2026-10-17"
+tags: ["blender_node_read_viewlayers"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Read all render layers of all used scenes"
+
+machine: "blender"
+op: "node.read_viewlayers"
+
+ARGS: []

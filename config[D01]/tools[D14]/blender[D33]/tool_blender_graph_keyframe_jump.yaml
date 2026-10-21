@@ -1,0 +1,21 @@
+id: "B402"
+tool: "blender_graph_keyframe_jump"
+date: "2026-10-17"
+tags: ["blender_graph_keyframe_jump"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Jump to previous/next keyframe"
+
+machine: "blender"
+op: "graph.keyframe_jump"
+
+ARGS:
+  - {name: next, type: text}          # true|false, vide pour ne rien poser

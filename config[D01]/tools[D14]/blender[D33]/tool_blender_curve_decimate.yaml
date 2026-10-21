@@ -1,0 +1,21 @@
+id: "B233"
+tool: "blender_curve_decimate"
+date: "2026-10-17"
+tags: ["blender_curve_decimate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Simplify selected curves"
+
+machine: "blender"
+op: "curve.decimate"
+
+ARGS:
+  - {name: ratio, type: text}

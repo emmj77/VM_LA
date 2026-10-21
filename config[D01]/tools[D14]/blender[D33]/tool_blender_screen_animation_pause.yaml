@@ -1,0 +1,20 @@
+id: "B1273"
+tool: "blender_screen_animation_pause"
+date: "2026-10-17"
+tags: ["blender_screen_animation_pause"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Pause animation, stopping at the current frame"
+
+machine: "blender"
+op: "screen.animation_pause"
+
+ARGS: []

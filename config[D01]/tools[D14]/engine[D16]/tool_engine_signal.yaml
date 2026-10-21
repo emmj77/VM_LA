@@ -1,0 +1,49 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E019"
+tool: "engine.signal"
+date: "2026-10-21"
+tags: ["engine", "signal"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "task signals between processes: raise one, take one, list them"
+COMMAND: |
+
+  _op=${1:-list}
+  _name=$(cat)                          # the name arrives on the input, one line
+  _f=$(cfg abs signal) || { printf 'FAULT no signal file in the tree\n'; exit 0; }
+  [ -f "$_f" ] || : > "$_f"
+  case $_op in
+  raise)
+    [ -n "$_name" ] || { printf 'FAULT raise wants a name\n'; exit 0; }
+    { cat "$_f"; printf '%s\t%s\n' "$_name" "$(date +%s)"; } | write_atomic "$_f"
+    printf 'ok raised %s\n' "$_name"
+    ;;
+  take)
+    _hit=
+    if [ -n "$_name" ]; then
+      _hit=$(grep -m 1 -F -- "$_name" "$_f" 2>/dev/null)
+    else
+      _hit=$(head -n 1 "$_f" 2>/dev/null)
+    fi
+    [ -n "$_hit" ] || { printf 'note no signal waiting\n'; exit 0; }
+    _k=$(printf '%s' "$_hit" | cut -f1)
+    grep -Fxv -- "$_hit" "$_f" | write_atomic "$_f"
+    printf 'ok %s\n' "$_k"
+    ;;
+  list)
+    _n=$(wc -l < "$_f" | tr -d ' ')
+    [ "$_n" -gt 0 ] || { printf 'note no signal waiting\n'; exit 0; }
+    awk '{print $1}' "$_f" | sort | uniq -c | awk '{printf "ok %s x%s\n", $2, $1}'
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: raise,take,list}

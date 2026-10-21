@@ -1,0 +1,38 @@
+id: "U151"
+tool: "coplay_animation_controller_add_layer"
+date: "2026-10-18"
+tags: ["unity", "coplay", "animation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Add a layer to an AnimatorController."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- animation controller add-layer
+  [ -n "{{controller_path}}" ] || { printf '%s\n' "$(msg argument_required 'controller_path' 'animation controller add-layer')" >&2; exit 1; }
+  [ -n "{{layer_name}}" ] || { printf '%s\n' "$(msg argument_required 'layer_name' 'animation controller add-layer')" >&2; exit 1; }
+  [ -n "{{weight}}" ] && set -- "$@" --weight "{{weight}}"
+  [ -n "{{blending_mode}}" ] && set -- "$@" --blending-mode "{{blending_mode}}"
+  [ -n "{{controller_path}}" ] && set -- "$@" "{{controller_path}}"
+  [ -n "{{layer_name}}" ] && set -- "$@" "{{layer_name}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: weight, type: text}
+  - {name: blending_mode, type: text}          # un de : override | additive
+  - {name: controller_path, type: text}
+  - {name: layer_name, type: text}

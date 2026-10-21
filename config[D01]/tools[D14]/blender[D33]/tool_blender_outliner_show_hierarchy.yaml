@@ -1,0 +1,20 @@
+id: "B1096"
+tool: "blender_outliner_show_hierarchy"
+date: "2026-10-17"
+tags: ["blender_outliner_show_hierarchy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open all object entries and close all others"
+
+machine: "blender"
+op: "outliner.show_hierarchy"
+
+ARGS: []

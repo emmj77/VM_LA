@@ -1,0 +1,21 @@
+id: "B080"
+tool: "blender_armature_parent_clear"
+date: "2026-10-17"
+tags: ["blender_armature_parent_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove the parent-child relationship between selected bones and their parents"
+
+machine: "blender"
+op: "armature.parent_clear"
+
+ARGS:
+  - {name: type, type: text}          # un de : CLEAR | DISCONNECT

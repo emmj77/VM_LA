@@ -1,0 +1,22 @@
+id: "B362"
+tool: "blender_font_style_set"
+date: "2026-10-17"
+tags: ["blender_font_style_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set font style"
+
+machine: "blender"
+op: "font.style_set"
+
+ARGS:
+  - {name: style, type: text}          # un de : BOLD | ITALIC | UNDERLINE | SMALL_CAPS
+  - {name: clear, type: text}          # true|false, vide pour ne rien poser

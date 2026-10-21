@@ -1,0 +1,20 @@
+id: "B403"
+tool: "blender_graph_keys_to_samples"
+date: "2026-10-17"
+tags: ["blender_graph_keys_to_samples"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Convert selected channels to an uneditable set of samples to save storage space"
+
+machine: "blender"
+op: "graph.keys_to_samples"
+
+ARGS: []

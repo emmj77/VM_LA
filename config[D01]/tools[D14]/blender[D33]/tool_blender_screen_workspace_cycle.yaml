@@ -1,0 +1,21 @@
+id: "B1296"
+tool: "blender_screen_workspace_cycle"
+date: "2026-10-17"
+tags: ["blender_screen_workspace_cycle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cycle through workspaces"
+
+machine: "blender"
+op: "screen.workspace_cycle"
+
+ARGS:
+  - {name: direction, type: text}          # un de : PREV | NEXT

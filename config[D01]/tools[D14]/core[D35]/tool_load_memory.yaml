@@ -1,0 +1,41 @@
+id: "G030"
+tool: "load_memory"
+date: "2026-10-17"
+tags: ["load_memory"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "loads a chosen part of the memory or of the sessions, by exchange number"
+
+COMMAND: |
+  S="{{source}}"; K={{key}}
+  case "$S" in
+    memory)
+      M=${LA_MEMORY_DB:-$ROOT/config/memory.db}
+      [ -f "$M" ] || { printf '%s\n' "$(msg memory_database_missing_m "$M")" >&2; exit 1; }
+      N=$(sqlite3 "$M" "SELECT count(*) FROM memory WHERE exchange = $K;" 2>/dev/null || printf '')
+      case "${N:-}" in ''|*[!0-9]*) N=0 ;; esac
+      [ "$N" -gt 0 ] || { printf '%s\n' "$(msg exchange_memory_table "$K")" >&2; exit 1; }
+      sqlite3 -line "$M" "SELECT id, exchange, stamp, human, agent FROM memory WHERE exchange = $K ORDER BY id;" 2>/dev/null
+      ;;
+    sessions)
+      D=${LA_SESSIONS_DB:-$ROOT/config/sessions.db}
+      [ -f "$D" ] || { printf '%s\n' "$(msg session_body_missing_d "$D")" >&2; exit 1; }
+      N=$(sqlite3 "$D" "SELECT count(*) FROM messages WHERE exchange = $K;" 2>/dev/null || printf '')
+      case "${N:-}" in ''|*[!0-9]*) N=0 ;; esac
+      [ "$N" -gt 0 ] || { printf '%s\n' "$(msg exchange_session_body "$K")" >&2; exit 1; }
+      sqlite3 -line "$D" "SELECT id, exchange, ts, role, substr(content, 1, 4000) AS content FROM messages WHERE exchange = $K ORDER BY id;" 2>/dev/null
+      ;;
+    *) printf '%s\n' "$(msg source_outside_list_memory "$S")" >&2; exit 1 ;;
+  esac
+
+ARGS:
+  - {name: source, type: text}
+  - {name: key, type: int}

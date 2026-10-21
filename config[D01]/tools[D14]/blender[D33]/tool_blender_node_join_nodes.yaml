@@ -1,0 +1,20 @@
+id: "B846"
+tool: "blender_node_join_nodes"
+date: "2026-10-17"
+tags: ["blender_node_join_nodes"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Merge selected group input nodes into one if possible"
+
+machine: "blender"
+op: "node.join_nodes"
+
+ARGS: []

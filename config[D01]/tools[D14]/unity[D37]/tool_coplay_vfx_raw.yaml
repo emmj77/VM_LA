@@ -1,0 +1,40 @@
+id: "U229"
+tool: "coplay_vfx_raw"
+date: "2026-10-18"
+tags: ["unity", "coplay", "vfx"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Execute any VFX action directly."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- vfx raw
+  [ -n "{{action}}" ] || { printf '%s\n' "$(msg argument_required 'action' 'vfx raw')" >&2; exit 1; }
+  [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'vfx raw')" >&2; exit 1; }
+  [ -n "{{params}}" ] && set -- "$@" --params "{{params}}"
+  [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+  [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+  [ -n "{{action}}" ] && set -- "$@" "{{action}}"
+  [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: params, type: text}
+  - {name: search_method, type: text}          # un de : by_name | by_path | by_id | by_tag | by_layer
+  - {name: component_index, type: int}
+  - {name: action, type: text}
+  - {name: target, type: text}

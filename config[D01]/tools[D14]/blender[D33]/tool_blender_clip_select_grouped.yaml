@@ -1,0 +1,21 @@
+id: "B169"
+tool: "blender_clip_select_grouped"
+date: "2026-10-17"
+tags: ["blender_clip_select_grouped"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all tracks from specified group"
+
+machine: "blender"
+op: "clip.select_grouped"
+
+ARGS:
+  - {name: group, type: text}          # un de : KEYFRAMED | ESTIMATED | TRACKED | LOCKED | DISABLED | COLOR | FAILED

@@ -1,0 +1,22 @@
+id: "B620"
+tool: "blender_mball_select_similar"
+date: "2026-10-17"
+tags: ["blender_mball_select_similar"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select similar metaballs by property types"
+
+machine: "blender"
+op: "mball.select_similar"
+
+ARGS:
+  - {name: type, type: text}          # un de : TYPE | RADIUS | STIFFNESS | ROTATION
+  - {name: threshold, type: text}

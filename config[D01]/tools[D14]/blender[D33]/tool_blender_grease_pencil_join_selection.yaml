@@ -1,0 +1,21 @@
+id: "B458"
+tool: "blender_grease_pencil_join_selection"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_join_selection"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "New stroke from selected points/strokes"
+
+machine: "blender"
+op: "grease_pencil.join_selection"
+
+ARGS:
+  - {name: type, type: text}          # un de : JOINSTROKES | SPLITCOPY | SPLIT

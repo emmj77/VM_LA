@@ -1,0 +1,20 @@
+id: "B262"
+tool: "blender_curve_shade_smooth"
+date: "2026-10-17"
+tags: ["blender_curve_shade_smooth"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set shading to smooth"
+
+machine: "blender"
+op: "curve.shade_smooth"
+
+ARGS: []

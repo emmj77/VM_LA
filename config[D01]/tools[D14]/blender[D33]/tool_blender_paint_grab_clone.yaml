@@ -1,0 +1,21 @@
+id: "B1104"
+tool: "blender_paint_grab_clone"
+date: "2026-10-17"
+tags: ["blender_paint_grab_clone"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move the clone source image"
+
+machine: "blender"
+op: "paint.grab_clone"
+
+ARGS:
+  - {name: delta, type: text}          # 2 valeurs separees par des virgules

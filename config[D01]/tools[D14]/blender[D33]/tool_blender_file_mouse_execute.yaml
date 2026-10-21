@@ -1,0 +1,20 @@
+id: "B333"
+tool: "blender_file_mouse_execute"
+date: "2026-10-17"
+tags: ["blender_file_mouse_execute"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Perform the current execute action for the file under the cursor (e.g. open the file)"
+
+machine: "blender"
+op: "file.mouse_execute"
+
+ARGS: []

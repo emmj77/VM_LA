@@ -1,0 +1,22 @@
+id: "B770"
+tool: "blender_nla_fmodifier_paste"
+date: "2026-10-17"
+tags: ["blender_nla_fmodifier_paste"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add copied F-Modifiers to the selected NLA-Strips"
+
+machine: "blender"
+op: "nla.fmodifier_paste"
+
+ARGS:
+  - {name: only_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: replace, type: text}          # true|false, vide pour ne rien poser

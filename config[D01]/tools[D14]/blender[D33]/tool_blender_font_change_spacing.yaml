@@ -1,0 +1,21 @@
+id: "B360"
+tool: "blender_font_change_spacing"
+date: "2026-10-17"
+tags: ["blender_font_change_spacing"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change font spacing"
+
+machine: "blender"
+op: "font.change_spacing"
+
+ARGS:
+  - {name: delta, type: text}

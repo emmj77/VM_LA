@@ -1,0 +1,20 @@
+id: "B559"
+tool: "blender_image_view_selected"
+date: "2026-10-17"
+tags: ["blender_image_view_selected"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "View all selected UVs"
+
+machine: "blender"
+op: "image.view_selected"
+
+ARGS: []

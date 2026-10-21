@@ -1,0 +1,22 @@
+id: "B219"
+tool: "blender_constraint_copy_to_selected"
+date: "2026-10-17"
+tags: ["blender_constraint_copy_to_selected"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy constraint to other selected objects/bones"
+
+machine: "blender"
+op: "constraint.copy_to_selected"
+
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE

@@ -1,0 +1,21 @@
+id: "B982"
+tool: "blender_object_make_links_scene"
+date: "2026-10-17"
+tags: ["blender_object_make_links_scene"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Link selection to another scene"
+
+machine: "blender"
+op: "object.make_links_scene"
+
+ARGS:
+  - {name: scene, type: text}          # un de :

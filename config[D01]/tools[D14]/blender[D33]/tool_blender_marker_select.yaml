@@ -1,0 +1,26 @@
+id: "B583"
+tool: "blender_marker_select"
+date: "2026-10-17"
+tags: ["blender_marker_select"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select time marker(s)"
+
+machine: "blender"
+op: "marker.select"
+
+ARGS:
+  - {name: wait_to_deselect_others, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_select_on_click, type: text}          # true|false, vide pour ne rien poser
+  - {name: mouse_x, type: int}
+  - {name: mouse_y, type: int}
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: camera, type: text}          # true|false, vide pour ne rien poser

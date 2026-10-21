@@ -1,0 +1,22 @@
+id: "B872"
+tool: "blender_node_select_grouped"
+date: "2026-10-17"
+tags: ["blender_node_select_grouped"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select nodes with similar properties"
+
+machine: "blender"
+op: "node.select_grouped"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : TYPE | COLOR | PREFIX | SUFFIX

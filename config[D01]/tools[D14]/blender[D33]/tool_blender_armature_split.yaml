@@ -1,0 +1,20 @@
+id: "B094"
+tool: "blender_armature_split"
+date: "2026-10-17"
+tags: ["blender_armature_split"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Split off selected bones from connected unselected bones"
+
+machine: "blender"
+op: "armature.split"
+
+ARGS: []

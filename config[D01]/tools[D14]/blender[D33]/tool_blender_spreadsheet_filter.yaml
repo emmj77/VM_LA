@@ -1,0 +1,22 @@
+id: "B1784"
+tool: "blender_spreadsheet_filter"
+date: "2026-10-17"
+tags: ["blender_spreadsheet_filter"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a row filter of the spreadsheet: add | remove (op picks which)"
+
+machine: "blender"
+op: "spreadsheet.{{op}}_row_filter_rule"
+
+ARGS:
+  - {name: op, type: enum, values: [add, remove]}
+  - {name: index, type: int}

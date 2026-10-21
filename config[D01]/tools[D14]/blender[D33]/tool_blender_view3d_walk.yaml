@@ -1,0 +1,20 @@
+id: "B1587"
+tool: "blender_view3d_walk"
+date: "2026-10-17"
+tags: ["blender_view3d_walk"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Interactively walk around the scene"
+
+machine: "blender"
+op: "view3d.walk"
+
+ARGS: []

@@ -1,0 +1,21 @@
+id: "B711"
+tool: "blender_mesh_select_less"
+date: "2026-10-17"
+tags: ["blender_mesh_select_less"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Deselect vertices, edges or faces at the boundary of each selection region"
+
+machine: "blender"
+op: "mesh.select_less"
+
+ARGS:
+  - {name: use_face_step, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,25 @@
+id: "3D006"
+tool: "pixal3d-optimise"
+date: "2026-10-17"
+tags: ["3d", "pixal3d", "optimise", "glb"]
+
+RULES:
+  enabled: true
+  timeout: 1800
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "image -> 3D (Pixal3D), variante optimisee (res reduite, moins d'etapes, seeds 2042+)"
+
+COMMAND: |
+  I=$(cat); [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }
+  W=/mnt/hermes_workspace/hermes/tools/pixal3d_variantes/optimise/workflow_pixal3d_rts_api.json
+  O="{{out}}"; [ -n "$O" ] || O="$ROOT/work/GLB_PIXAL3D"
+  pixal3d gen "$I" --workflow "$W" --out "$O"
+
+ARGS:
+  - {name: image, type: path, stdin: true}
+  - {name: out, type: path, required: false}

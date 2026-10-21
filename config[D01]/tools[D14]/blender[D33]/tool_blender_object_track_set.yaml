@@ -1,0 +1,21 @@
+id: "B1052"
+tool: "blender_object_track_set"
+date: "2026-10-17"
+tags: ["blender_object_track_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make the object track another object, using various methods/constraints"
+
+machine: "blender"
+op: "object.track_set"
+
+ARGS:
+  - {name: type, type: text}          # un de : DAMPTRACK | TRACKTO | LOCKTRACK

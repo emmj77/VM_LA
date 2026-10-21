@@ -1,0 +1,21 @@
+id: "B1432"
+tool: "blender_text_move_lines"
+date: "2026-10-17"
+tags: ["blender_text_move_lines"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move the currently selected line(s) up/down"
+
+machine: "blender"
+op: "text.move_lines"
+
+ARGS:
+  - {name: direction, type: text}          # un de : UP | DOWN

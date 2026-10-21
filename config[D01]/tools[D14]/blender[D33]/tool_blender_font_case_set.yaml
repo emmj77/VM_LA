@@ -1,0 +1,21 @@
+id: "B357"
+tool: "blender_font_case_set"
+date: "2026-10-17"
+tags: ["blender_font_case_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set font case"
+
+machine: "blender"
+op: "font.case_set"
+
+ARGS:
+  - {name: case, type: text}          # un de : LOWER | UPPER

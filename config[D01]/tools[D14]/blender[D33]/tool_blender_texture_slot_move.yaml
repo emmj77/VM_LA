@@ -1,0 +1,21 @@
+id: "B1449"
+tool: "blender_texture_slot_move"
+date: "2026-10-17"
+tags: ["blender_texture_slot_move"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move texture slots up and down"
+
+machine: "blender"
+op: "texture.slot_move"
+
+ARGS:
+  - {name: type, type: text}          # un de : UP | DOWN

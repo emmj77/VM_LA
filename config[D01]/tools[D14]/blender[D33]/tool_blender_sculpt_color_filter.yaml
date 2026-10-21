@@ -1,0 +1,29 @@
+id: "B1302"
+tool: "blender_sculpt_color_filter"
+date: "2026-10-17"
+tags: ["blender_sculpt_color_filter"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Applies a filter to modify the active color attribute"
+
+machine: "blender"
+op: "sculpt.color_filter"
+
+ARGS:
+  - {name: start_mouse, type: int}
+  - {name: area_normal_radius, type: text}
+  - {name: strength, type: text}
+  - {name: iteration_count, type: int}
+  - {name: event_history, type: text}
+  - {name: type, type: text}          # un de : FILL | HUE | SATURATION | VALUE | BRIGHTNESS | CONTRAST | SMOOTH | RED | GREEN | BLUE
+  - {name: fill_color, type: text}          # 3 valeurs separees par des virgules
+  - {name: use_immediate, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_secondary_color, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,28 @@
+id: "B1230"
+tool: "blender_render_render"
+date: "2026-10-17"
+tags: ["blender_render_render"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(undocumented operator)"
+
+machine: "blender"
+op: "render.render"
+
+ARGS:
+  - {name: animation, type: text}          # true|false, vide pour ne rien poser
+  - {name: write_still, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_viewport, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_sequencer_scene, type: text}          # true|false, vide pour ne rien poser
+  - {name: layer, type: text}
+  - {name: scene, type: text}
+  - {name: frame_start, type: int}
+  - {name: frame_end, type: int}

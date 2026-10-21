@@ -1,0 +1,22 @@
+id: "B089"
+tool: "blender_armature_select_mirror"
+date: "2026-10-17"
+tags: ["blender_armature_select_mirror"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Mirror the bone selection"
+
+machine: "blender"
+op: "armature.select_mirror"
+
+ARGS:
+  - {name: only_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

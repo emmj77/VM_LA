@@ -1,0 +1,21 @@
+id: "B1499"
+tool: "blender_uv_mark_seam"
+date: "2026-10-17"
+tags: ["blender_uv_mark_seam"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Mark selected UV edges as seams"
+
+machine: "blender"
+op: "uv.mark_seam"
+
+ARGS:
+  - {name: clear, type: text}          # true|false, vide pour ne rien poser

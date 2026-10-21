@@ -1,0 +1,39 @@
+id: "B624"
+tool: "blender_mesh_bevel"
+date: "2026-10-17"
+tags: ["blender_mesh_bevel"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cut into selected items at an angle to create bevel or chamfer"
+
+machine: "blender"
+op: "mesh.bevel"
+
+ARGS:
+  - {name: offset_type, type: text}          # un de : OFFSET | WIDTH | DEPTH | PERCENT | ABSOLUTE
+  - {name: offset, type: text}
+  - {name: profile_type, type: text}          # un de : SUPERELLIPSE | CUSTOM
+  - {name: offset_pct, type: text}
+  - {name: segments, type: int}
+  - {name: profile, type: text}
+  - {name: affect, type: text}          # un de : VERTICES | EDGES
+  - {name: clamp_overlap, type: text}          # true|false, vide pour ne rien poser
+  - {name: loop_slide, type: text}          # true|false, vide pour ne rien poser
+  - {name: mark_seam, type: text}          # true|false, vide pour ne rien poser
+  - {name: mark_sharp, type: text}          # true|false, vide pour ne rien poser
+  - {name: material, type: int}
+  - {name: harden_normals, type: text}          # true|false, vide pour ne rien poser
+  - {name: face_strength_mode, type: text}          # un de : NONE | NEW | AFFECTED | ALL
+  - {name: miter_outer, type: text}          # un de : SHARP | PATCH | ARC
+  - {name: miter_inner, type: text}          # un de : SHARP | ARC
+  - {name: spread, type: text}
+  - {name: vmesh_method, type: text}          # un de : ADJ | CUTOFF
+  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser

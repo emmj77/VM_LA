@@ -1,0 +1,20 @@
+id: "B1170"
+tool: "blender_particle_shape_cut"
+date: "2026-10-17"
+tags: ["blender_particle_shape_cut"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cut hair to conform to the set shape object"
+
+machine: "blender"
+op: "particle.shape_cut"
+
+ARGS: []

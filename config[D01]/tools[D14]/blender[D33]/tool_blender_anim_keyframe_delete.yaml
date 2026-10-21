@@ -1,0 +1,21 @@
+id: "B044"
+tool: "blender_anim_keyframe_delete"
+date: "2026-10-17"
+tags: ["blender_anim_keyframe_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete keyframes on the current frame for all properties in the specified Keying Set"
+
+machine: "blender"
+op: "anim.keyframe_delete"
+
+ARGS:
+  - {name: type, type: text}          # un de : DEFAULT

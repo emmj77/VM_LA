@@ -1,0 +1,20 @@
+id: "B587"
+tool: "blender_mask_duplicate"
+date: "2026-10-17"
+tags: ["blender_mask_duplicate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Duplicate selected control points and segments between them"
+
+machine: "blender"
+op: "mask.duplicate"
+
+ARGS: []

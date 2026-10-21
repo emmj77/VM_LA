@@ -1,0 +1,20 @@
+id: "B076"
+tool: "blender_armature_fill"
+date: "2026-10-17"
+tags: ["blender_armature_fill"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add bone between selected joint(s) and/or 3D cursor"
+
+machine: "blender"
+op: "armature.fill"
+
+ARGS: []

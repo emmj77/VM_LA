@@ -1,0 +1,20 @@
+id: "B905"
+tool: "blender_object_camera_custom_update"
+date: "2026-10-17"
+tags: ["blender_object_camera_custom_update"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Update custom camera with new parameters from the shader"
+
+machine: "blender"
+op: "object.camera_custom_update"
+
+ARGS: []

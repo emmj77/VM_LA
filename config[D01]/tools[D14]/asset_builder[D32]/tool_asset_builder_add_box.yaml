@@ -1,0 +1,47 @@
+id: "A007"
+tool: "asset_builder_add_box"
+date: "2026-10-19"
+tags: ["asset_builder", "geom"]
+
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "adds a box part (w,h,d in metres) to the asset"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{id}}"
+  case "$A2" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_id_a2 "$A2")" >&2 ; exit 1 ;; esac
+  A3="{{w}}"
+  case "$A3" in ''|*[!0-9.-]*) printf '%s\n' "$(msg w_number_a3 "$A3")" >&2 ; exit 1 ;; esac
+  A4="{{h}}"
+  case "$A4" in ''|*[!0-9.-]*) printf '%s\n' "$(msg h_number_a4 "$A4")" >&2 ; exit 1 ;; esac
+  A5="{{d}}"
+  case "$A5" in ''|*[!0-9.-]*) printf '%s\n' "$(msg d_number_a5 "$A5")" >&2 ; exit 1 ;; esac
+  A6="{{pos}}"
+  case "$A6" in ''|*[!0-9.,-]*) printf '%s\n' "$(msg position_needs_three_numbers "$A6")" >&2 ; exit 1 ;; esac
+  A7="{{rot}}"
+  case "$A7" in ''|*[!0-9.,-]*) printf '%s\n' "$(msg rotation_needs_three_numbers "$A7")" >&2 ; exit 1 ;; esac
+  A8="{{mat}}"
+  AB_HOME="$W/asset_builder" "$B" add_box --name "$A1" --id "$A2" --w "$A3" --h "$A4" --d "$A5" --pos "$A6" --rot "$A7" --mat "$A8"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: id, type: text}
+  - {name: w, type: text}
+  - {name: h, type: text}
+  - {name: d, type: text}
+  - {name: pos, type: text}
+  - {name: rot, type: text}
+  - {name: mat, type: text}

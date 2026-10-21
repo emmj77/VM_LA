@@ -1,0 +1,26 @@
+id: "G015"
+tool: "todo"
+date: "2026-10-17"
+tags: ["todo"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "opens the plan in the active skill's PLAN: section ; the points arrive one per line"
+
+COMMAND: |
+  [ -n "{{name}}" ] || { printf '%s\n' "$(msg empty_name_todo_wants)" >&2; exit 1; }
+  [ -n "{{goal}}" ] || { printf '%s\n' "$(msg empty_goal_todo_wants)" >&2; exit 1; }
+  [ -x "$PROCS/plan.sh" ] || { echo "refused: the plan brick is missing ($PROCS/plan.sh)" >&2; exit 1; }
+  "$PROCS/plan.sh" todo "{{name}}" "{{goal}}"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: goal, type: text}
+  - {name: points, type: text, stdin: true}

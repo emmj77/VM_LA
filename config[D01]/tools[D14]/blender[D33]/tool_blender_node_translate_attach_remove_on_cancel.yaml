@@ -1,0 +1,22 @@
+id: "B888"
+tool: "blender_node_translate_attach_remove_on_cancel"
+date: "2026-10-17"
+tags: ["blender_node_translate_attach_remove_on_cancel"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move nodes and attach to frame"
+
+machine: "blender"
+op: "node.translate_attach_remove_on_cancel"
+
+ARGS:
+  - {name: TRANSFORM_OT_translate, type: text}
+  - {name: NODE_OT_attach, type: text}

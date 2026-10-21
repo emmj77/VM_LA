@@ -1,0 +1,21 @@
+id: "B662"
+tool: "blender_mesh_fill"
+date: "2026-10-17"
+tags: ["blender_mesh_fill"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Fill a selected edge loop with faces"
+
+machine: "blender"
+op: "mesh.fill"
+
+ARGS:
+  - {name: use_beauty, type: text}          # true|false, vide pour ne rien poser

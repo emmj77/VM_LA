@@ -1,0 +1,20 @@
+id: "B146"
+tool: "blender_clip_graph_center_current_frame"
+date: "2026-10-17"
+tags: ["blender_clip_graph_center_current_frame"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Scroll view so current frame would be centered"
+
+machine: "blender"
+op: "clip.graph_center_current_frame"
+
+ARGS: []

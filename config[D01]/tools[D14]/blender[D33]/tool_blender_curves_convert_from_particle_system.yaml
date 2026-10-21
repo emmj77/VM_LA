@@ -1,0 +1,20 @@
+id: "B274"
+tool: "blender_curves_convert_from_particle_system"
+date: "2026-10-17"
+tags: ["blender_curves_convert_from_particle_system"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a new curves object based on the current state of the particle system"
+
+machine: "blender"
+op: "curves.convert_from_particle_system"
+
+ARGS: []

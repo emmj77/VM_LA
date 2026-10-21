@@ -1,0 +1,22 @@
+id: "B074"
+tool: "blender_armature_extrude_forked"
+date: "2026-10-17"
+tags: ["blender_armature_extrude_forked"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create new bones from the selected joints and move them"
+
+machine: "blender"
+op: "armature.extrude_forked"
+
+ARGS:
+  - {name: ARMATURE_OT_extrude, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}

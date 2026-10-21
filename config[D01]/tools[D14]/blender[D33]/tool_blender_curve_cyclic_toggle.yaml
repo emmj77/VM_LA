@@ -1,0 +1,21 @@
+id: "B230"
+tool: "blender_curve_cyclic_toggle"
+date: "2026-10-17"
+tags: ["blender_curve_cyclic_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make active spline closed/open loop"
+
+machine: "blender"
+op: "curve.cyclic_toggle"
+
+ARGS:
+  - {name: direction, type: text}          # un de : CYCLIC_U | CYCLIC_V

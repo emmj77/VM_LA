@@ -1,0 +1,20 @@
+id: "B752"
+tool: "blender_mesh_vert_connect_path"
+date: "2026-10-17"
+tags: ["blender_mesh_vert_connect_path"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Connect vertices by their selection order, creating edges, splitting faces"
+
+machine: "blender"
+op: "mesh.vert_connect_path"
+
+ARGS: []

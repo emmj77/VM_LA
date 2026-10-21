@@ -1,0 +1,179 @@
+DECISION.txt                                        root: ~/Documents/VM_LA
+2026-10-20
+Recueil des decisions d architecture et de yamlisation, telles qu elles ont ete
+prononcees. Une ligne = une decision. La parole de Moussa est citee entre guillemets.
+Quand deux decisions se contredisent, la plus recente gagne et l ancienne est notee.
+
+
+1. LE MAITRE
+
+  1.1  ARCHITECTURE_LA.txt est le maitre. Aucun fichier, aucun dossier ne peut
+       exister s il n y est pas nomme.
+       "1 ARCHITECTURE_LA est le maitre aucun fichier ne peut exister s il n est
+       pas dedans" (2026-10-20)
+
+  1.2  Le maitre est verrouille en lecture seule, par sudo, pour que l agent ne
+       puisse plus le toucher : chown root, chmod 444, chattr +i.
+
+  1.3  la_config est une copie conforme du maitre, jamais une addition :
+       memes dossiers, memes ids, meme ordre. Un chemin dans la_config que le
+       document ne nomme pas est un mensonge.
+
+  1.4  Le document dit ce que le moteur doit etre, pas ce qu il est.
+       Anglais a gauche, francais apres le diese.
+
+  1.5  Le document n a pas ete ecrit par moi. Toute modification de l architecture
+       est une decision de Moussa, jamais une initiative de l agent.
+
+
+2. LE MOTEUR
+
+  2.1  Le moteur est un chef d orchestre : il ne fait rien lui-meme, il appelle
+       dans l ordre les corps dont il a besoin. Une etape qui tombe arrete le tour.
+       Le modele ne voit jamais ces corps.
+       "le moteur deviens un appeleur de tools il est un chef d orchestre selon moi.
+       maintenant est ce que c est viable?"
+
+  2.2  Viabilite mesuree avant de s engager : un fork dash coute 2 ms, un passage
+       par la porte environ 15 ms, 32 appels par tour environ 0,5 s. C est tenable.
+
+  2.3  Trois conditions, ou le chef d orchestre n existe pas :
+         caller  la porte sait qui appelle (le modele, ou le moteur)
+         state   state/turn.json, deux processus ne partagent aucune variable
+         trace   un kind par appel, sinon le canal vivant devient illisible
+
+  2.4  Seize fichiers .sh, un par metier, 200 lignes maximum.
+       Rien ne s execute au source, sauf engine/la.sh.
+
+  2.5  Une seule porte vers le shell : engine/run.sh <id> [args].
+
+  2.6  Deux registres, deux canaux : le modele lit le sien, le moteur lit le sien.
+       Le canal du modele ne grossit pas quand le moteur s ajoute une action.
+
+  2.7  engine/shell.sh seul batit une ligne de commande.
+
+  2.8  Pas de python, pas de heredoc, pas de eval dans un .sh. Le shell reste du shell.
+
+  2.9  Aucun litteral : chemin, port, unite, modele, liste, borne, seuil.
+       Chaque liste est une table de conf/.
+
+  2.10 Chaque fait a un proprietaire : la_config dit de chaque cle si elle est
+       config ou corps.
+
+  2.11 Chaque fichier d etat, journal, base a un seul ecrivain, et une borne.
+
+  2.12 Python ne lit que l environnement : jamais un YAML, jamais un chemin.
+
+  2.13 Le moteur ne se contourne pas. Un tool ne peut pas approuver un tool : il
+       peut porter une decision qu un humain a signee, la porte verifie la
+       signature (HMAC, fenetre 300 s), jamais la bonne foi de l appelant.
+
+  2.14 Le moteur ne connait aucun instrument : un binaire est atteint par un corps.
+
+  2.15 Un critere, trois questions dans cet ordre :
+         tourne pendant un tour sans que le modele demande  -> brique, sourcee
+         action demandee, parametres, verdict               -> corps YAML
+         le shell ne sait pas l ecrire (http, onnx, sherpa) -> instrument
+
+  2.16 La vision est un tool normal, jamais dans l architecture du moteur.
+
+
+3. LA YAMLISATION
+
+  3.1  Tout ce qui peut etre une donnee est une donnee. Le code qui reste est le
+       strict minimum : lire, valider, executer, mettre en forme.
+       "ok donc finis de tout yamaliser dont les 6 listes oubliees"
+
+  3.2  tools/ ne contient que du YAML. Un corps porte son code, il n y a aucun
+       script a cote de lui.
+
+  3.3  Les dix familles, leur base et leur registre vivent dans la_config
+       (families:). Aucun case, aucune liste dans un .sh.
+
+  3.4  Les adresses vivent dans la_config : unite, port, sonde.
+       Option A retenue : les .in de config/units sont generes depuis la, jamais
+       ecrits a la main.
+
+  3.5  L effet d un tool sur le tour est une propriete de son corps, pas une liste
+       dans loop.sh.
+
+  3.6  Tout ce qui descend du maitre est genere, jamais edite : en-tete
+       "generated", et l indexeur n ecrit jamais dans la_config.
+
+  3.7  la_tools est une projection des corps, pas un registre tenu a la main.
+       Reecrite au build, et sur reload_tools. Pas de daemon : un daemon ne gagne
+       aucune seconde et ajoute une panne silencieuse.
+
+  3.8  Un refus est une cle de conf, jamais une chaine dans un .sh.
+
+  3.9  Les onze briques chaudes restent sourcees : cfg msg fs tab skl canon trace
+       shape args, plus cap. Un corps coute un processus ; on ne paie pas trente
+       processus par tour pour un INSERT.
+
+  3.10 Les tools ne s appellent pas par id : l id sert au modele pour choisir,
+       l appel garde le nom.
+
+  3.11 Quatre tools portent une approbation, pas un de plus.
+       On n ajoute pas d approbation aux tools du moteur.
+
+
+4. LES IDS
+
+  4.1  Un fichier = un id = une place. Aucun fichier sans id.
+       "meme spec.yaml enfaite il ne doit plus y avoir aucun fichier sans id."
+
+  4.2  L id d un dossier est dans son nom : nom[D##]. L id d un fichier est en
+       tete du fichier, et dans le document avant le diese.
+
+  4.3  Un id n est jamais reutilise, jamais renumerote. Une reference est un id,
+       jamais un chemin.
+
+  4.4  Deux mondes, deux comportements :
+         population  les tools. Un id nouveau entre, un id retire sort au build.
+                     Aucun ecart n est une erreur.
+         decision    tout le reste. Un id qui apparait ou disparait leve une erreur.
+
+  4.5  Lettres d aire : R racine, C conf, E engine, P programs, S setup,
+       G applet, H page, B bases, N etat, F filter, Z certs, T registre,
+       K skill, J projet, D dossier. Le corps d un tool garde son numero.
+
+  4.6  Le controle va dans les deux sens : declare sans disque, disque sans id.
+
+
+5. LA METHODE
+
+  5.1  Rien ne s efface : gio trash. Jamais rm.
+
+  5.2  Un fichier = un metier. 200 lignes maximum.
+
+  5.3  Le nouveau code ne contient aucune variable en dur, aucun chemin en dur,
+       et zero mot de francais, meme dans les commentaires.
+       "le nouveau code ne doit contenir aucune variable aucun path en dur, et 0
+       mot de francais meme dans les commentaires"
+
+  5.4  Ce qui marche deja garde son visage : le CLI, le dashboard, l applet, l app
+       Android. On corrige leurs chemins, on ne redessine pas leur layout.
+
+  5.5  Ne pas bricoler. Le doute et l ambiguite imposent une question courte, en
+       texte, avant d agir. Aucune decision sans validation explicite.
+
+  5.6  Un chantier a la fois, une action a la fois, et on attend le retour.
+
+  5.7  Les tools sont un chantier, le moteur en est un autre.
+       "on construit le engine les tools c est autre chose"
+
+
+6. CE QUI RESTE OUVERT
+
+  6.1  Quarante et un corps de tools sont nommes par le document et n existent pas
+       sur le disque (familles doctor, engine, plan, turn, watch). Ils n ont pas
+       d id, faute de corps.
+
+  6.2  Le disque n a pas encore le nom du document : la nouvelle arborescence est
+       dans config_new/, le document dit config[D01]/... Le passage n est pas fait.
+
+  6.3  Des fichiers reels ne sont pas nommes par le document : le dashboard
+       (8 fichiers), huit .py, les units (6), les templates (5), les icones de
+       l applet. Le document tranche : ils n existent pas. Rien n a ete jete.
+
+  6.4  Le build (state/index.stamp) et le reload_tools ne sont pas ecrits.

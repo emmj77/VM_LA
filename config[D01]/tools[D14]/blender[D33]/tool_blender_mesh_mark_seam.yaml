@@ -1,0 +1,21 @@
+id: "B680"
+tool: "blender_mesh_mark_seam"
+date: "2026-10-17"
+tags: ["blender_mesh_mark_seam"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(Un)mark selected edges as a seam"
+
+machine: "blender"
+op: "mesh.mark_seam"
+
+ARGS:
+  - {name: clear, type: text}          # true|false, vide pour ne rien poser

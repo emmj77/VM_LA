@@ -1,0 +1,21 @@
+id: "B399"
+tool: "blender_graph_hide"
+date: "2026-10-17"
+tags: ["blender_graph_hide"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Hide selected curves from Graph Editor view"
+
+machine: "blender"
+op: "graph.hide"
+
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser

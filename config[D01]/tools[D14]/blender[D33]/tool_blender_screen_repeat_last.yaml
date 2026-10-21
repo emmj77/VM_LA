@@ -1,0 +1,20 @@
+id: "B1287"
+tool: "blender_screen_repeat_last"
+date: "2026-10-17"
+tags: ["blender_screen_repeat_last"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Repeat last action"
+
+machine: "blender"
+op: "screen.repeat_last"
+
+ARGS: []

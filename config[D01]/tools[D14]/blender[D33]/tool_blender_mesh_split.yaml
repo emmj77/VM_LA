@@ -1,0 +1,20 @@
+id: "B737"
+tool: "blender_mesh_split"
+date: "2026-10-17"
+tags: ["blender_mesh_split"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Split off selected geometry from connected unselected geometry"
+
+machine: "blender"
+op: "mesh.split"
+
+ARGS: []

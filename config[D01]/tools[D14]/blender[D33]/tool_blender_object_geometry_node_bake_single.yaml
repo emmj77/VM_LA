@@ -1,0 +1,23 @@
+id: "B943"
+tool: "blender_object_geometry_node_bake_single"
+date: "2026-10-17"
+tags: ["blender_object_geometry_node_bake_single"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Bake a single bake node or simulation"
+
+machine: "blender"
+op: "object.geometry_node_bake_single"
+
+ARGS:
+  - {name: session_uid, type: int}
+  - {name: modifier_name, type: text}
+  - {name: bake_id, type: int}

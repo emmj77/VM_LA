@@ -1,0 +1,21 @@
+id: "B105"
+tool: "blender_asset_clear_single"
+date: "2026-10-17"
+tags: ["blender_asset_clear_single"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete all asset metadata and turn the asset data-block back into a normal data-block"
+
+machine: "blender"
+op: "asset.clear_single"
+
+ARGS:
+  - {name: set_fake_user, type: text}          # true|false, vide pour ne rien poser

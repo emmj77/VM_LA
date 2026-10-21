@@ -1,0 +1,22 @@
+id: "B413"
+tool: "blender_graph_scale_from_neighbor"
+date: "2026-10-17"
+tags: ["blender_graph_scale_from_neighbor"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Increase or decrease the value of selected keys in relationship to the neighboring one"
+
+machine: "blender"
+op: "graph.scale_from_neighbor"
+
+ARGS:
+  - {name: factor, type: text}
+  - {name: anchor, type: text}          # un de : LEFT | RIGHT

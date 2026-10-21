@@ -1,0 +1,21 @@
+id: "B390"
+tool: "blender_graph_easing_type"
+date: "2026-10-17"
+tags: ["blender_graph_easing_type"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set easing type for the F-Curve segments starting from the selected keyframes"
+
+machine: "blender"
+op: "graph.easing_type"
+
+ARGS:
+  - {name: type, type: text}          # un de : AUTO | EASE_IN | EASE_OUT | EASE_IN_OUT

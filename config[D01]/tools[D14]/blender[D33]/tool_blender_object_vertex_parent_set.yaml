@@ -1,0 +1,20 @@
+id: "B1060"
+tool: "blender_object_vertex_parent_set"
+date: "2026-10-17"
+tags: ["blender_object_vertex_parent_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Parent selected objects to the selected vertices"
+
+machine: "blender"
+op: "object.vertex_parent_set"
+
+ARGS: []

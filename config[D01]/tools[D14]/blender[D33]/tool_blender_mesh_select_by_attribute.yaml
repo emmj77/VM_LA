@@ -1,0 +1,20 @@
+id: "B705"
+tool: "blender_mesh_select_by_attribute"
+date: "2026-10-17"
+tags: ["blender_mesh_select_by_attribute"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select elements based on the active boolean attribute"
+
+machine: "blender"
+op: "mesh.select_by_attribute"
+
+ARGS: []

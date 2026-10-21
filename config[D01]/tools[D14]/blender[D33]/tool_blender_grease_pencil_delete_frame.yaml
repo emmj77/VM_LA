@@ -1,0 +1,21 @@
+id: "B443"
+tool: "blender_grease_pencil_delete_frame"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_delete_frame"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete Grease Pencil Frame(s)"
+
+machine: "blender"
+op: "grease_pencil.delete_frame"
+
+ARGS:
+  - {name: type, type: text}          # un de : ACTIVE_FRAME | ALL_FRAMES

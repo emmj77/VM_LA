@@ -1,0 +1,20 @@
+id: "B055"
+tool: "blender_anim_scene_range_frame"
+date: "2026-10-17"
+tags: ["blender_anim_scene_range_frame"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset the horizontal view to the current scene frame range, taking the preview range into account if it is active"
+
+machine: "blender"
+op: "anim.scene_range_frame"
+
+ARGS: []

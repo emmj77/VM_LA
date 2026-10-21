@@ -1,0 +1,43 @@
+id: "U421"
+tool: "unity_vcs_diff"
+date: "2026-10-18"
+tags: ["unity", "cli", "vcs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Diff a scene or prefab by object and component name instead of by file id"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- vcs diff --no-banner --no-pager --non-interactive
+  [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'unity vcs diff')" >&2; exit 1; }
+
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ -n "{{from}}" ] && set -- "$@" --from "{{from}}"
+  [ -n "{{to}}" ] && set -- "$@" --to "{{to}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_vcs_diff_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: path, type: text}
+  - {name: from, type: text}   # Revision to compare from (default: HEAD)
+  - {name: to, type: text}   # Revision to compare to (default: your working tree)

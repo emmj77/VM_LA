@@ -1,0 +1,44 @@
+id: "B1777"
+tool: "blender_sculpt_gesture"
+date: "2026-10-17"
+tags: ["blender_sculpt_gesture"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a sculpt gesture: face_set_box | face_set_lasso | face_set_line | face_set_polyline | project_line | trim_box | trim_lasso | trim_line | trim_polyline (op picks which)"
+
+machine: "blender"
+op: "sculpt.{{op}}_gesture"
+
+ARGS:
+  - {name: op, type: enum, values: [face_set_box, face_set_lasso, face_set_line, face_set_polyline, project_line, trim_box, trim_lasso, trim_line, trim_polyline]}
+  - {name: use_front_faces_only, type: text}
+  - {name: location, type: int}
+  - {name: path, type: text}
+  - {name: trim_extrude_mode, type: text}
+  - {name: trim_mode, type: text}
+  - {name: trim_orientation, type: text}
+  - {name: trim_solver, type: text}
+  - {name: use_cursor_depth, type: text}
+  - {name: cursor, type: int}
+  - {name: flip, type: text}
+  - {name: use_limit_to_segment, type: text}
+  - {name: xend, type: int}
+  - {name: xstart, type: int}
+  - {name: yend, type: int}
+  - {name: ystart, type: int}
+  - {name: smooth_stroke_factor, type: text}
+  - {name: smooth_stroke_radius, type: int}
+  - {name: use_smooth_stroke, type: text}
+  - {name: wait_for_input, type: text}
+  - {name: xmax, type: int}
+  - {name: xmin, type: int}
+  - {name: ymax, type: int}
+  - {name: ymin, type: int}

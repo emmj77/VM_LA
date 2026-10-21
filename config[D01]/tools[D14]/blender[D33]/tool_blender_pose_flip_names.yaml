@@ -1,0 +1,21 @@
+id: "B1190"
+tool: "blender_pose_flip_names"
+date: "2026-10-17"
+tags: ["blender_pose_flip_names"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Flips (and corrects) the axis suffixes of the names of selected bones"
+
+machine: "blender"
+op: "pose.flip_names"
+
+ARGS:
+  - {name: do_strip_numbers, type: text}          # true|false, vide pour ne rien poser

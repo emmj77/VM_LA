@@ -1,0 +1,23 @@
+id: "B939"
+tool: "blender_object_fix_to_camera"
+date: "2026-10-17"
+tags: ["blender_object_fix_to_camera"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Generate new keys to fix the selected object/bone to the camera on unkeyed frames"
+
+machine: "blender"
+op: "object.fix_to_camera"
+
+ARGS:
+  - {name: use_location, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_rotation, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_scale, type: text}          # true|false, vide pour ne rien poser

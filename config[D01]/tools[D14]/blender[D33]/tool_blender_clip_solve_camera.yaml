@@ -1,0 +1,20 @@
+id: "B183"
+tool: "blender_clip_solve_camera"
+date: "2026-10-17"
+tags: ["blender_clip_solve_camera"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Solve camera motion from tracks"
+
+machine: "blender"
+op: "clip.solve_camera"
+
+ARGS: []

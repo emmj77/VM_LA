@@ -1,0 +1,24 @@
+id: "3D003"
+tool: "mesh-render2png"
+date: "2026-10-17"
+tags: ["3d", "mesh-render2png", "png", "render"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "renders a 3D mesh to .png"
+
+COMMAND: |
+  I=$(cat); [ -n "$I" ] || { printf '%s\n' "$(msg mesh_missing)" >&2; exit 1; }; [ -f "$I" ] || { printf '%s\n' "$(msg mesh_found_i "$I")" >&2; exit 1; }
+  O="{{out}}"; [ -n "$O" ] || O="${I%.*}.png"
+  mesh render "$I" "$O"
+
+ARGS:
+  - {name: input, type: path, stdin: true}
+  - {name: out, type: path, required: false}

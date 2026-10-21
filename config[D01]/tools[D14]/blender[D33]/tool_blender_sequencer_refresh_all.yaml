@@ -1,0 +1,20 @@
+id: "B1362"
+tool: "blender_sequencer_refresh_all"
+date: "2026-10-17"
+tags: ["blender_sequencer_refresh_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Refresh the sequencer editor"
+
+machine: "blender"
+op: "sequencer.refresh_all"
+
+ARGS: []

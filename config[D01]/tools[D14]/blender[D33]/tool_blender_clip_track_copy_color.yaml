@@ -1,0 +1,20 @@
+id: "B185"
+tool: "blender_clip_track_copy_color"
+date: "2026-10-17"
+tags: ["blender_clip_track_copy_color"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy color to all selected tracks"
+
+machine: "blender"
+op: "clip.track_copy_color"
+
+ARGS: []

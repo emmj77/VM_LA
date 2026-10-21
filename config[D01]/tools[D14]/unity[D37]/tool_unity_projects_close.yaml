@@ -1,0 +1,44 @@
+id: "U386"
+tool: "unity_projects_close"
+date: "2026-10-18"
+tags: ["unity", "cli", "projects"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Close the Unity editor that has a project open (exits without saving)"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- projects close --no-banner --no-pager --non-interactive
+  [ -n "{{project}}" ] || { printf '%s\n' "$(msg argument_required 'project' 'unity projects close')" >&2; exit 1; }
+  case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg force_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{project}}" ] && set -- "$@" "{{project}}"
+  [ -n "{{timeout}}" ] && set -- "$@" --timeout "{{timeout}}"
+  [ "{{force}}" = true ] && set -- "$@" --force
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_projects_close_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: project, type: text}
+  - {name: timeout, type: text}   # Seconds to wait for the editor to exit
+  - {name: force, type: text}   # true pour poser --force ; Terminate the editor process (SIGTERM, then SIGKILL) when the editor o

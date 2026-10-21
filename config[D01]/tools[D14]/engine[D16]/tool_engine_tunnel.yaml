@@ -1,0 +1,87 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E015"
+tool: "engine.tunnel"
+date: "2026-10-21"
+tags: ["engine", "tunnel"]
+RULES:
+  enabled: true
+  timeout: 240
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "wireguard between the desktop and the phone: up in steps, down, status, qr"
+COMMAND: |
+
+  _op=${1:-status}
+  _file=$(cfg str tunnel.file) || { printf 'FAULT no tunnel file in la_config\n'; exit 0; }
+  _if=$(cfg str tunnel.interface) || { printf 'FAULT no tunnel interface in la_config\n'; exit 0; }
+  _port=$(cfg num tunnel.port) || { printf 'FAULT no tunnel port in la_config\n'; exit 0; }
+  _host=$(cfg str tunnel.host) || { printf 'FAULT no tunnel host in la_config\n'; exit 0; }
+  _peer=$(cfg str tunnel.peer) || { printf 'FAULT no tunnel peer in la_config\n'; exit 0; }
+  _dns=$(cfg str tunnel.dns 1.1.1.1)
+  _alive=$(cfg num tunnel.keepalive 25)
+  _conf=$(cfg here "$(cfg str tunnel.phone)" 2>/dev/null) || { printf 'FAULT no phone profile in the tree\n'; exit 0; }
+  _png=$(cfg abs phone_png 2>/dev/null)
+  _steps=$(cfg num limits.tunnel_steps 12) || _steps=12
+  case $_op in
+  up)
+    _pub=$(cfg str tunnel.public)
+    [ -n "$_pub" ] || { printf 'FAULT the public address of the desktop is not written\n'; exit 0; }
+    _k=$(tmpfile wg) || exit 0
+    printf '  step 1/%s: keys\n' "$_steps"
+    umask 077
+    wg genkey > "$_k.srv.key" && wg pubkey < "$_k.srv.key" > "$_k.srv.pub" \
+      || { printf 'FAULT wg cannot make a key\n'; exit 0; }
+    wg genkey > "$_k.tel.key" && wg pubkey < "$_k.tel.key" > "$_k.tel.pub" \
+      || { printf 'FAULT wg cannot make a key\n'; exit 0; }
+    printf '  step 2/%s: the server file\n' "$_steps"
+    {
+      printf '[Interface]\nAddress = %s/24\nListenPort = %s\nPrivateKey = %s\n\n' \
+        "$_host" "$_port" "$(cat "$_k.srv.key")"
+      printf '[Peer]\nPublicKey = %s\nAllowedIPs = %s/32\n' "$(cat "$_k.tel.pub")" "$_peer"
+    } > "$_k.wg0.conf"
+    printf '  step 3/%s: the server file installed\n' "$_steps"
+    sudo -n install -m 600 -o root -g root "$_k.wg0.conf" "$_file" \
+      || { printf 'FAULT the tunnel file cannot be installed\n'; exit 0; }
+    printf '  step 4/%s: the phone profile\n' "$_steps"
+    {
+      printf '[Interface]\nPrivateKey = %s\nAddress = %s/24\nDNS = %s\n\n' \
+        "$(cat "$_k.tel.key")" "$_peer" "$_dns"
+      printf '[Peer]\nPublicKey = %s\nEndpoint = %s:%s\nAllowedIPs = %s/24\nPersistentKeepalive = %s\n' \
+        "$(cat "$_k.srv.pub")" "$_pub" "$_port" "$_host" "$_alive"
+    } | write_atomic "$_conf"
+    printf '  step 5/%s: the interface\n' "$_steps"
+    sudo -n wg-quick down "$_if" >/dev/null 2>&1
+    sudo -n wg-quick up "$_if" 2>&1 || { printf 'FAULT wg-quick up failed\n'; exit 0; }
+    sudo -n systemctl enable "wg-quick@$_if" >/dev/null 2>&1
+    if [ -n "$_png" ]; then
+      qrencode -o "$_png" -r "$_conf" 2>/dev/null && printf '  the phone scans %s\n' "${_png#$ROOT/}"
+    else
+      printf '  note no phone image in the tree, the profile stays text\n'
+    fi
+    printf 'ok the tunnel is up on %s, the phone profile is %s\n' "$_if" "${_conf#$ROOT/}"
+    ;;
+  down)
+    sudo -n wg-quick down "$_if" 2>&1 || { printf 'FAULT wg-quick down failed\n'; exit 0; }
+    printf 'ok the tunnel is down\n'
+    ;;
+  status)
+    _s=$(sudo -n wg show "$_if" 2>/dev/null | sed -n '1,4p')
+    [ -n "$_s" ] && printf 'ok %s\n' "$(printf '%s' "$_s" | tr '\n' ' ')" \
+      || printf 'note the tunnel is not up\n'
+    ;;
+  qr)
+    [ -n "$_png" ] && [ -f "$_png" ] && printf 'ok %s\n' "${_png#$ROOT/}" \
+      || printf 'note no profile to scan: run the tunnel up first\n'
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  for _x in "$_k"*.key "$_k"*.pub "$_k".wg0.conf; do
+    [ -e "$_x" ] && gio trash -- "$_x" 2>/dev/null
+  done
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: up,down,status,qr}

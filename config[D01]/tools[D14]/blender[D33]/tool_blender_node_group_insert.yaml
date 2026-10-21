@@ -1,0 +1,20 @@
+id: "B836"
+tool: "blender_node_group_insert"
+date: "2026-10-17"
+tags: ["blender_node_group_insert"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Insert selected nodes into a node group"
+
+machine: "blender"
+op: "node.group_insert"
+
+ARGS: []

@@ -1,0 +1,21 @@
+id: "B499"
+tool: "blender_grease_pencil_set_uniform_thickness"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_set_uniform_thickness"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set all stroke points to same thickness"
+
+machine: "blender"
+op: "grease_pencil.set_uniform_thickness"
+
+ARGS:
+  - {name: thickness, type: text}

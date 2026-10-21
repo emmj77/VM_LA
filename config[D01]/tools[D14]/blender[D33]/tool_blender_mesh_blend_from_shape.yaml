@@ -1,0 +1,23 @@
+id: "B626"
+tool: "blender_mesh_blend_from_shape"
+date: "2026-10-17"
+tags: ["blender_mesh_blend_from_shape"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Blend in shape from a shape key"
+
+machine: "blender"
+op: "mesh.blend_from_shape"
+
+ARGS:
+  - {name: shape, type: text}          # un de :
+  - {name: blend, type: text}
+  - {name: add, type: text}          # true|false, vide pour ne rien poser

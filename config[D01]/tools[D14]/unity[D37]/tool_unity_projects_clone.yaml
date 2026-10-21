@@ -1,0 +1,58 @@
+id: "U385"
+tool: "unity_projects_clone"
+date: "2026-10-18"
+tags: ["unity", "cli", "projects"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Clone a remote repository and register the Unity project it contains"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- projects clone --no-banner --no-pager --non-interactive
+  case "{{git_token_stdin}}" in ''|true|false) ;; *) printf '%s\n' "$(msg git_token_stdin_true)" >&2; exit 1 ;; esac
+  case "{{no_lfs}}" in ''|true|false) ;; *) printf '%s\n' "$(msg lfs_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{url}}" ] && set -- "$@" "{{url}}"
+  [ -n "{{vcs}}" ] && set -- "$@" --vcs "{{vcs}}"
+  [ -n "{{vcs_namespace}}" ] && set -- "$@" --vcs-namespace "{{vcs_namespace}}"
+  [ -n "{{vcs_repo}}" ] && set -- "$@" --vcs-repo "{{vcs_repo}}"
+  [ -n "{{ref}}" ] && set -- "$@" --ref "{{ref}}"
+  [ -n "{{path}}" ] && set -- "$@" --path "{{path}}"
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  [ -n "{{git_token}}" ] && set -- "$@" --git-token "{{git_token}}"
+  [ "{{git_token_stdin}}" = true ] && set -- "$@" --git-token-stdin
+  [ "{{no_lfs}}" = true ] && set -- "$@" --no-lfs
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_projects_clone_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: url, type: text}   # facultatif
+  - {name: vcs, type: text}   # Source control provider: github, gitlab, or uvcs
+  - {name: vcs_namespace, type: text}   # GitHub organization, GitLab group, or Unity Version Control organizati
+  - {name: vcs_repo, type: text}   # Repository name (github/gitlab) or repository identity (uvcs)
+  - {name: ref, type: text}   # Branch, commit, or changeset to check out (an all-digits UVCS ref is r
+  - {name: path, type: text}   # Destination directory for the clone; defaults to the default projects 
+  - {name: project_path, type: text}   # Subpath of the project to register when the repository holds more than
+  - {name: git_token, type: text}   # Personal access token (github/gitlab); overrides your Git credential m
+  - {name: git_token_stdin, type: text}   # true pour poser --git-token-stdin ; Read the personal access token from stdin (CI-safe)
+  - {name: no_lfs, type: text}   # true pour poser --no-lfs ; Skip downloading Git LFS assets; leave pointer files in place

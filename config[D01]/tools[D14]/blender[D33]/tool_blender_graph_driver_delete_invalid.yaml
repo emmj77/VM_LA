@@ -1,0 +1,20 @@
+id: "B384"
+tool: "blender_graph_driver_delete_invalid"
+date: "2026-10-17"
+tags: ["blender_graph_driver_delete_invalid"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete all visible drivers considered invalid"
+
+machine: "blender"
+op: "graph.driver_delete_invalid"
+
+ARGS: []

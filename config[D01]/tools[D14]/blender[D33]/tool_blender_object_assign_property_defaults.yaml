@@ -1,0 +1,22 @@
+id: "B901"
+tool: "blender_object_assign_property_defaults"
+date: "2026-10-17"
+tags: ["blender_object_assign_property_defaults"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Assign the current values of custom properties as their defaults, for use as part of the rest pose state in NLA track mixing"
+
+machine: "blender"
+op: "object.assign_property_defaults"
+
+ARGS:
+  - {name: process_data, type: text}          # true|false, vide pour ne rien poser
+  - {name: process_bones, type: text}          # true|false, vide pour ne rien poser

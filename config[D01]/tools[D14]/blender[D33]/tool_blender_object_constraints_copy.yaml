@@ -1,0 +1,20 @@
+id: "B916"
+tool: "blender_object_constraints_copy"
+date: "2026-10-17"
+tags: ["blender_object_constraints_copy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy constraints to other selected objects"
+
+machine: "blender"
+op: "object.constraints_copy"
+
+ARGS: []

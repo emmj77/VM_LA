@@ -1,0 +1,23 @@
+id: "B098"
+tool: "blender_asset_asset_download"
+date: "2026-10-17"
+tags: ["blender_asset_asset_download"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make the asset available without internet access"
+
+machine: "blender"
+op: "asset.asset_download"
+
+ARGS:
+  - {name: asset_library_type, type: text}          # un de : ALL | LOCAL | ESSENTIALS | ONLINE_ESSENTIALS | CUSTOM
+  - {name: asset_library_identifier, type: text}
+  - {name: relative_asset_identifier, type: text}

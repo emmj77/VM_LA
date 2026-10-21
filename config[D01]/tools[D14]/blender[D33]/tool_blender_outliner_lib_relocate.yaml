@@ -1,0 +1,20 @@
+id: "B1085"
+tool: "blender_outliner_lib_relocate"
+date: "2026-10-17"
+tags: ["blender_outliner_lib_relocate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Relocate the library under cursor"
+
+machine: "blender"
+op: "outliner.lib_relocate"
+
+ARGS: []

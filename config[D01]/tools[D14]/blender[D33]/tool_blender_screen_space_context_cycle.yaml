@@ -1,0 +1,21 @@
+id: "B1292"
+tool: "blender_screen_space_context_cycle"
+date: "2026-10-17"
+tags: ["blender_screen_space_context_cycle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cycle through the editor context by activating the next/previous one"
+
+machine: "blender"
+op: "screen.space_context_cycle"
+
+ARGS:
+  - {name: direction, type: text}          # un de : PREV | NEXT

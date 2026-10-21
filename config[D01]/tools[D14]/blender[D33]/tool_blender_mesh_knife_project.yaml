@@ -1,0 +1,21 @@
+id: "B672"
+tool: "blender_mesh_knife_project"
+date: "2026-10-17"
+tags: ["blender_mesh_knife_project"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use other objects outlines and boundaries to project knife cuts"
+
+machine: "blender"
+op: "mesh.knife_project"
+
+ARGS:
+  - {name: cut_through, type: text}          # true|false, vide pour ne rien poser

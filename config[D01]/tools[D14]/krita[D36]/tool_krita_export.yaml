@@ -1,0 +1,28 @@
+id: "K011"
+tool: "krita_export"
+date: "2026-10-17"
+tags: ["krita", "krita_export"]
+
+RULES:
+  enabled: true
+  timeout: 300
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "exports the whole canvas (all visible layers) to a png in the workspace"
+
+COMMAND: |
+  SERVICE=$(krita_url) || exit 1
+  OUTPUT="$W/{{path}}"
+  REP=$(curl -sS --max-time 240 -H 'Content-Type: application/json' -d "$(jq -cn --arg p "$OUTPUT" '{action:"save",params:{path:$p}}')" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  [ -s "$OUTPUT" ] || { printf '%s\n' "$(msg nothing_written)""$OUTPUT" >&2; exit 1; }
+  SIZE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$OUTPUT" 2>/dev/null | tr ',' 'x')
+  printf 'image : %s (%s, %s octets)\n' "$OUTPUT" "$SIZE" "$(wc -c < "$OUTPUT")"
+
+ARGS:
+  - {name: path, type: path}                   # ou ecrire le PNG, dans l'espace du skill

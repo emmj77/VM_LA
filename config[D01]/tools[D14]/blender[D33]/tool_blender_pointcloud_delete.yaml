@@ -1,0 +1,20 @@
+id: "B1175"
+tool: "blender_pointcloud_delete"
+date: "2026-10-17"
+tags: ["blender_pointcloud_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove selected points"
+
+machine: "blender"
+op: "pointcloud.delete"
+
+ARGS: []

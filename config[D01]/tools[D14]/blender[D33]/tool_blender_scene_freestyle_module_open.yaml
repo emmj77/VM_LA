@@ -1,0 +1,22 @@
+id: "B1260"
+tool: "blender_scene_freestyle_module_open"
+date: "2026-10-17"
+tags: ["blender_scene_freestyle_module_open"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open a style module file"
+
+machine: "blender"
+op: "scene.freestyle_module_open"
+
+ARGS:
+  - {name: filepath, type: text}
+  - {name: make_internal, type: text}          # true|false, vide pour ne rien poser

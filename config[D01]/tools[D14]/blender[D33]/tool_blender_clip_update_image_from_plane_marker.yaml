@@ -1,0 +1,20 @@
+id: "B193"
+tool: "blender_clip_update_image_from_plane_marker"
+date: "2026-10-17"
+tags: ["blender_clip_update_image_from_plane_marker"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Update current image used by plane marker from the content of the plane marker"
+
+machine: "blender"
+op: "clip.update_image_from_plane_marker"
+
+ARGS: []

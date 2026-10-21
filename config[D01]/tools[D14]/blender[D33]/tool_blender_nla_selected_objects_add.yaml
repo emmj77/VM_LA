@@ -1,0 +1,20 @@
+id: "B780"
+tool: "blender_nla_selected_objects_add"
+date: "2026-10-17"
+tags: ["blender_nla_selected_objects_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make selected objects appear in NLA Editor by adding Animation Data"
+
+machine: "blender"
+op: "nla.selected_objects_add"
+
+ARGS: []

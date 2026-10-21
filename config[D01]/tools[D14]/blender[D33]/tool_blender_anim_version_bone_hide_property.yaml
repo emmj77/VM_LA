@@ -1,0 +1,20 @@
+id: "B059"
+tool: "blender_anim_version_bone_hide_property"
+date: "2026-10-17"
+tags: ["blender_anim_version_bone_hide_property"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Moves any F-Curves for the `hide` property of selected armatures into the action of the object. This will only operate on the first layer and strip of"
+
+machine: "blender"
+op: "anim.version_bone_hide_property"
+
+ARGS: []

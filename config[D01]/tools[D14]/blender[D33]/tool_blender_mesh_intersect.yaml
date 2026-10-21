@@ -1,0 +1,24 @@
+id: "B670"
+tool: "blender_mesh_intersect"
+date: "2026-10-17"
+tags: ["blender_mesh_intersect"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cut an intersection into faces"
+
+machine: "blender"
+op: "mesh.intersect"
+
+ARGS:
+  - {name: mode, type: text}          # un de : SELECT | SELECT_UNSELECT
+  - {name: separate_mode, type: text}          # un de : ALL | CUT | NONE
+  - {name: threshold, type: text}
+  - {name: solver, type: text}          # un de : FLOAT | EXACT

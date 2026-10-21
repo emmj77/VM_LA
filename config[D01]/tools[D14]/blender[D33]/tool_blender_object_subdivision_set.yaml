@@ -1,0 +1,23 @@
+id: "B1049"
+tool: "blender_object_subdivision_set"
+date: "2026-10-17"
+tags: ["blender_object_subdivision_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Sets a Subdivision Surface level (1 to 5)"
+
+machine: "blender"
+op: "object.subdivision_set"
+
+ARGS:
+  - {name: level, type: int}
+  - {name: relative, type: text}          # true|false, vide pour ne rien poser
+  - {name: ensure_modifier, type: text}          # true|false, vide pour ne rien poser

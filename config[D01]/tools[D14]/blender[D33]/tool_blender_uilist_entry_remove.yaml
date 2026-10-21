@@ -1,0 +1,22 @@
+id: "B1486"
+tool: "blender_uilist_entry_remove"
+date: "2026-10-17"
+tags: ["blender_uilist_entry_remove"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove the selected entry from the list"
+
+machine: "blender"
+op: "uilist.entry_remove"
+
+ARGS:
+  - {name: list_path, type: text}
+  - {name: active_index_path, type: text}

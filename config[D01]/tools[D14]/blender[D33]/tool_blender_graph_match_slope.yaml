@@ -1,0 +1,21 @@
+id: "B405"
+tool: "blender_graph_match_slope"
+date: "2026-10-17"
+tags: ["blender_graph_match_slope"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Blend selected keys to the slope of neighboring ones"
+
+machine: "blender"
+op: "graph.match_slope"
+
+ARGS:
+  - {name: factor, type: text}

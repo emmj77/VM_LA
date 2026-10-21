@@ -1,0 +1,21 @@
+id: "B386"
+tool: "blender_graph_driver_variables_paste"
+date: "2026-10-17"
+tags: ["blender_graph_driver_variables_paste"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add copied driver variables to the active driver"
+
+machine: "blender"
+op: "graph.driver_variables_paste"
+
+ARGS:
+  - {name: replace, type: text}          # true|false, vide pour ne rien poser

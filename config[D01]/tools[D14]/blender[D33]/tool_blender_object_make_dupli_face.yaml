@@ -1,0 +1,20 @@
+id: "B980"
+tool: "blender_object_make_dupli_face"
+date: "2026-10-17"
+tags: ["blender_object_make_dupli_face"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Convert objects into instanced faces"
+
+machine: "blender"
+op: "object.make_dupli_face"
+
+ARGS: []

@@ -1,0 +1,28 @@
+id: "B755"
+tool: "blender_mesh_wireframe"
+date: "2026-10-17"
+tags: ["blender_mesh_wireframe"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a solid wireframe from faces"
+
+machine: "blender"
+op: "mesh.wireframe"
+
+ARGS:
+  - {name: use_boundary, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_even_offset, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_relative_offset, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_replace, type: text}          # true|false, vide pour ne rien poser
+  - {name: thickness, type: text}
+  - {name: offset, type: text}
+  - {name: use_crease, type: text}          # true|false, vide pour ne rien poser
+  - {name: crease_weight, type: text}

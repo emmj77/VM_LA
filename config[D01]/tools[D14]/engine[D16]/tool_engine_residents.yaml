@@ -1,0 +1,87 @@
+# the residents of the machine: the three that answer the model calls, their start, their stop
+id: "E021"
+tool: "engine.residents"
+date: "2026-10-21"
+tags: ["engine", "residents", "units"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the three residents: their state, their start and their stop, and the sessions that keep them up"
+COMMAND: |
+
+  _op=${1:-status}
+  _sd=$(cfg here "$(cfg str paths.sessions)" 2>/dev/null) || _sd="$LA_STATE/sessions"
+  _names="models asr tts"
+  _each() {   # $1 = start|stop
+    for _k in $_names; do
+      _u=$(cfg str "units.$_k.unit" 2>/dev/null) || continue
+      systemctl --user "$1" "$_u" 2>/dev/null
+      printf '%s %s\n' "$1" "$_u"
+    done
+  }
+  case $_op in
+  status)
+    _up=0; _n=0
+    for _k in $_names; do
+      _n=$((_n + 1))
+      _u=$(cfg str "units.$_k.unit" 2>/dev/null) || continue
+      if systemctl --user is-active --quiet "$_u" 2>/dev/null; then
+        _up=$((_up + 1)); printf 'ok %s up\n' "$_u"
+      else
+        printf 'note %s down\n' "$_u"
+      fi
+    done
+    _ss=0
+    [ -d "$_sd" ] && _ss=$(ls -1 "$_sd" 2>/dev/null | wc -l | tr -d ' ')
+    printf 'note %s/%s resident(s) up, %s session(s) open\n' "$_up" "$_n" "$_ss"
+    ;;
+  up)     _each start ;;
+  down)   _each stop ;;
+  toggle)
+    _up=0
+    for _k in $_names; do
+      _u=$(cfg str "units.$_k.unit" 2>/dev/null) || continue
+      systemctl --user is-active --quiet "$_u" 2>/dev/null && _up=$((_up + 1))
+    done
+    if [ "$_up" -gt 0 ]; then _each stop; else _each start; fi
+    ;;
+  join|leave)
+    _nm=${2:-}
+    [ -n "$_nm" ] || { printf 'refused: no session name\n'; exit 1; }
+    case $_nm in
+      *:*) _name=${_nm%%:*} ; _pid=${_nm#*:} ;;
+      *)   _name=$_nm ; _pid=$PPID ;;
+    esac
+    mkdir -p "$_sd" 2>/dev/null
+    if [ "$_op" = join ]; then
+      printf '%s\n' "$_pid" > "$_sd/$_name.pid"
+      printf 'joined %s, pid %s\n' "$_name" "$_pid"
+    else
+      rm -f -- "$_sd/$_nm.pid" 2>/dev/null
+      printf 'left %s\n' "$_nm"
+    fi
+    ;;
+  tick)
+    _live=0
+    if [ -d "$_sd" ]; then
+      for _f in "$_sd"/*.pid; do
+        [ -f "$_f" ] || continue
+        _p=$(cat "$_f" 2>/dev/null)
+        if [ -n "$_p" ] && kill -0 "$_p" 2>/dev/null; then _live=$((_live + 1)); else rm -f -- "$_f"; fi
+      done
+    fi
+    if [ "$_live" -gt 0 ]; then _each start; else _each stop; fi
+    printf 'note %s live session(s)\n' "$_live"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: status,up,down,toggle,join,leave,tick}
+  - {name: name, type: text, stdin: true}

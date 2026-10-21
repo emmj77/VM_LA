@@ -1,0 +1,22 @@
+id: "B874"
+tool: "blender_node_select_link_viewer"
+date: "2026-10-17"
+tags: ["blender_node_select_link_viewer"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select node and link it to a viewer node"
+
+machine: "blender"
+op: "node.select_link_viewer"
+
+ARGS:
+  - {name: NODE_OT_select, type: text}
+  - {name: NODE_OT_link_viewer, type: text}

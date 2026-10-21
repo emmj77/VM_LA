@@ -1,0 +1,21 @@
+id: "B436"
+tool: "blender_grease_pencil_caps_set"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_caps_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change curve caps mode (rounded or flat)"
+
+machine: "blender"
+op: "grease_pencil.caps_set"
+
+ARGS:
+  - {name: type, type: text}          # un de : ROUND | FLAT | START | END

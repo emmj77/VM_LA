@@ -1,0 +1,20 @@
+id: "B776"
+tool: "blender_nla_previewrange_set"
+date: "2026-10-17"
+tags: ["blender_nla_previewrange_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set Preview Range based on extents of selected strips"
+
+machine: "blender"
+op: "nla.previewrange_set"
+
+ARGS: []

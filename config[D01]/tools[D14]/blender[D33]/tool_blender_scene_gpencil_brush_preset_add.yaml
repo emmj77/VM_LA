@@ -1,0 +1,23 @@
+id: "B1264"
+tool: "blender_scene_gpencil_brush_preset_add"
+date: "2026-10-17"
+tags: ["blender_scene_gpencil_brush_preset_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add or remove Grease Pencil brush preset"
+
+machine: "blender"
+op: "scene.gpencil_brush_preset_add"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: remove_name, type: text}          # true|false, vide pour ne rien poser
+  - {name: remove_active, type: text}          # true|false, vide pour ne rien poser

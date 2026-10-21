@@ -1,0 +1,23 @@
+id: "B1385"
+tool: "blender_sequencer_snap"
+date: "2026-10-17"
+tags: ["blender_sequencer_snap"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Snap strips to the current frame, using the active (or closest) strip as the anchor, and the mouse cursor relative to the playhead to determine the si"
+
+machine: "blender"
+op: "sequencer.snap"
+
+ARGS:
+  - {name: frame, type: int}
+  - {name: side, type: text}          # un de : LEFT | RIGHT
+  - {name: keep_offset, type: text}          # true|false, vide pour ne rien poser

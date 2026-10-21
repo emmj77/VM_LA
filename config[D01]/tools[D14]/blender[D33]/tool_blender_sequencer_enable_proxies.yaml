@@ -1,0 +1,25 @@
+id: "B1344"
+tool: "blender_sequencer_enable_proxies"
+date: "2026-10-17"
+tags: ["blender_sequencer_enable_proxies"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Enable selected proxies on all selected Movie and Image strips"
+
+machine: "blender"
+op: "sequencer.enable_proxies"
+
+ARGS:
+  - {name: proxy_25, type: text}          # true|false, vide pour ne rien poser
+  - {name: proxy_50, type: text}          # true|false, vide pour ne rien poser
+  - {name: proxy_75, type: text}          # true|false, vide pour ne rien poser
+  - {name: proxy_100, type: text}          # true|false, vide pour ne rien poser
+  - {name: overwrite, type: text}          # true|false, vide pour ne rien poser

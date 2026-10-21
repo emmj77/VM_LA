@@ -1,0 +1,20 @@
+id: "B824"
+tool: "blender_node_detach"
+date: "2026-10-17"
+tags: ["blender_node_detach"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Detach selected nodes from parents"
+
+machine: "blender"
+op: "node.detach"
+
+ARGS: []

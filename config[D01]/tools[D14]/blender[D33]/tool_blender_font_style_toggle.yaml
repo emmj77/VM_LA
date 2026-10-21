@@ -1,0 +1,21 @@
+id: "B363"
+tool: "blender_font_style_toggle"
+date: "2026-10-17"
+tags: ["blender_font_style_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle font style"
+
+machine: "blender"
+op: "font.style_toggle"
+
+ARGS:
+  - {name: style, type: text}          # un de : BOLD | ITALIC | UNDERLINE | SMALL_CAPS

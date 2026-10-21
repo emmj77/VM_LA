@@ -1,0 +1,20 @@
+id: "B840"
+tool: "blender_node_insert_offset"
+date: "2026-10-17"
+tags: ["blender_node_insert_offset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Automatically offset nodes on insertion"
+
+machine: "blender"
+op: "node.insert_offset"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B1078"
+tool: "blender_outliner_hide"
+date: "2026-10-17"
+tags: ["blender_outliner_hide"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Hide selected objects and collections"
+
+machine: "blender"
+op: "outliner.hide"
+
+ARGS: []

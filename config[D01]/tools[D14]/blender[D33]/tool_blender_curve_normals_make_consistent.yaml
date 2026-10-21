@@ -1,0 +1,21 @@
+id: "B245"
+tool: "blender_curve_normals_make_consistent"
+date: "2026-10-17"
+tags: ["blender_curve_normals_make_consistent"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Recalculate the direction of selected handles"
+
+machine: "blender"
+op: "curve.normals_make_consistent"
+
+ARGS:
+  - {name: calc_length, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,21 @@
+id: "B1280"
+tool: "blender_screen_frame_offset"
+date: "2026-10-17"
+tags: ["blender_screen_frame_offset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move current frame forward/backward by a given number"
+
+machine: "blender"
+op: "screen.frame_offset"
+
+ARGS:
+  - {name: delta, type: int}

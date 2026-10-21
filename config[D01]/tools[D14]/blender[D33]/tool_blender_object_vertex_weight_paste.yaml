@@ -1,0 +1,21 @@
+id: "B1064"
+tool: "blender_object_vertex_weight_paste"
+date: "2026-10-17"
+tags: ["blender_object_vertex_weight_paste"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy this group's weight to other selected vertices (disabled if vertex group is locked)"
+
+machine: "blender"
+op: "object.vertex_weight_paste"
+
+ARGS:
+  - {name: weight_group, type: int}

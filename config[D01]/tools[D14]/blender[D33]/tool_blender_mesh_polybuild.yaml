@@ -1,0 +1,35 @@
+id: "B1740"
+tool: "blender_mesh_polybuild"
+date: "2026-10-17"
+tags: ["blender_mesh_polybuild"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a polybuild gesture: delete_at_cursor | dissolve_at_cursor | extrude_at_cursor_move | face_at_cursor | face_at_cursor_move | split_at_cursor | split_at_cursor_move | transform_at_cursor | transform_at_cursor_move (op picks which)"
+
+machine: "blender"
+op: "mesh.polybuild_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [delete_at_cursor, dissolve_at_cursor, extrude_at_cursor_move, face_at_cursor, face_at_cursor_move, split_at_cursor, split_at_cursor_move, transform_at_cursor, transform_at_cursor_move]}
+  - {name: TRANSFORM_OT_translate, type: text}
+  - {name: mirror, type: text}
+  - {name: proportional_edit_falloff, type: text}
+  - {name: proportional_size, type: text}
+  - {name: release_confirm, type: text}
+  - {name: use_accurate, type: text}
+  - {name: use_proportional_connected, type: text}
+  - {name: use_proportional_edit, type: text}
+  - {name: use_proportional_projected, type: text}
+  - {name: MESH_OT_polybuild_transform_at_cursor, type: text}
+  - {name: MESH_OT_extrude_edges_indiv, type: text}
+  - {name: MESH_OT_polybuild_face_at_cursor, type: text}
+  - {name: MESH_OT_polybuild_split_at_cursor, type: text}
+  - {name: create_quads, type: text}

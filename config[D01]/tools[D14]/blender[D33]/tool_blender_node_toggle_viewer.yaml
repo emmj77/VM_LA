@@ -1,0 +1,20 @@
+id: "B886"
+tool: "blender_node_toggle_viewer"
+date: "2026-10-17"
+tags: ["blender_node_toggle_viewer"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle selected viewer node in compositor and geometry nodes"
+
+machine: "blender"
+op: "node.toggle_viewer"
+
+ARGS: []

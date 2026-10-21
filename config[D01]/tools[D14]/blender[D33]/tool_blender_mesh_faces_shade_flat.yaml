@@ -1,0 +1,20 @@
+id: "B660"
+tool: "blender_mesh_faces_shade_flat"
+date: "2026-10-17"
+tags: ["blender_mesh_faces_shade_flat"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Display faces flat"
+
+machine: "blender"
+op: "mesh.faces_shade_flat"
+
+ARGS: []

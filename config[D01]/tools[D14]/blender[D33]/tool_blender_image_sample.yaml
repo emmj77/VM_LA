@@ -1,0 +1,21 @@
+id: "B544"
+tool: "blender_image_sample"
+date: "2026-10-17"
+tags: ["blender_image_sample"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use mouse to sample a color in current image"
+
+machine: "blender"
+op: "image.sample"
+
+ARGS:
+  - {name: size, type: int}

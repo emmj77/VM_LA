@@ -1,0 +1,21 @@
+id: "B1044"
+tool: "blender_object_simulation_nodes_cache_delete"
+date: "2026-10-17"
+tags: ["blender_object_simulation_nodes_cache_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete cached/baked simulations in geometry nodes modifiers"
+
+machine: "blender"
+op: "object.simulation_nodes_cache_delete"
+
+ARGS:
+  - {name: selected, type: text}          # true|false, vide pour ne rien poser

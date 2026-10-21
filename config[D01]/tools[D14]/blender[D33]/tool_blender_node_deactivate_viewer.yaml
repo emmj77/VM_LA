@@ -1,0 +1,20 @@
+id: "B819"
+tool: "blender_node_deactivate_viewer"
+date: "2026-10-17"
+tags: ["blender_node_deactivate_viewer"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Deactivate selected viewer node in geometry nodes"
+
+machine: "blender"
+op: "node.deactivate_viewer"
+
+ARGS: []

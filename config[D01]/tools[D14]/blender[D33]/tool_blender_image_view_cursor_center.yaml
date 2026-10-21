@@ -1,0 +1,21 @@
+id: "B556"
+tool: "blender_image_view_cursor_center"
+date: "2026-10-17"
+tags: ["blender_image_view_cursor_center"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set 2D cursor to center view location"
+
+machine: "blender"
+op: "image.view_cursor_center"
+
+ARGS:
+  - {name: fit_view, type: text}          # true|false, vide pour ne rien poser

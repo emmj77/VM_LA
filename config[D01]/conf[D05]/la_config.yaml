@@ -1,0 +1,575 @@
+# id: C03
+extensions:
+  - yaml
+  - yml
+  - json
+  - jsonl
+  - sh
+  - py
+  - db
+  - txt
+  - ini
+  - head
+  - md
+  - html
+  - css
+  - js
+  - svg
+  - apk
+  - pem
+  - log
+# LA - the master file.
+# One entry per thing: id, key, path, role. No list is kept anywhere else.
+# The code never writes a path: it asks cfg for a key, cfg answers from here.
+# Only engine/cfg.sh reads this file.
+
+api: 1
+date: "2026-10-21"
+
+# what the machine offers; nothing here belongs to the repo
+machine:
+  threads: 8
+  llama:
+    bin: "/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-server"
+    gguf: "/home/moussa/LLM_GGUF"
+  blender:
+    bin: "/home/moussa/Applications/blender-5.2.2-linux-x64/blender"
+    timeout: 110
+  comfyui:
+    host: "127.0.0.1"
+    port: 8188
+    root: "/home/moussa/Applications/ComfyUI"
+  krita:
+    host: "127.0.0.1"
+    port: 5678
+  app:
+    apk: "/home/moussa/Applications/LA-app.apk"
+  browser:                                    # the window of the page, as it was
+    bin: "/usr/bin/chromium"
+    class: "LA-Dashboard"
+    window: "1500,950"
+    profile: "/home/moussa/.local/share/la-dashboard/profil"
+  asr:
+    root: "/home/moussa/Applications/NeMo-Speech.cpp"
+    cli: "build/cpu-server/bin/nemo-speech"
+    model: "models/parakeet-tdt-0.6b-v3.q8_0.gguf"
+  tts:
+    uv: "/home/moussa/.local/bin/uv"
+    python: "/home/moussa/Applications/sherpa-onnx/.venv/bin/python3"
+    sid: 1
+    threads: 8
+    cache: "/home/moussa/.cache/uv"
+    model: "/home/moussa/Applications/sherpa-onnx/voix/vits-piper-fr_FR-upmc-medium"
+  unity:
+    cli: ""
+    mcp: ""
+
+# who speaks, and how wide the board is
+agents:
+  main: "agent_one"
+  names: "agent_one agent_001_jarvis agent_002_paul agent_003_albert agent_004_eleonore"
+  chat: "config[D01]/data[D06]/agent_chat.jsonl"   # le chat entre agents, une ligne par message
+  human: "user"
+  voice: "voice"
+  run_chars: 120
+  board_lines: 24
+  body_bytes: 1024
+  line_bytes: 1600
+
+# the router: one server, three models, one pick
+models:
+  host: "127.0.0.1"
+  port: 8091
+  dir: "/home/moussa/LLM_GGUF"
+  max: 3
+  sleep: 120
+  context: 8192
+  gpu_layers: 99
+  embed: "harrier-oss-v1-270M-Q8_0"
+  rerank: "bge-reranker-v2-m3-Q4_K_M"
+  local: "LFM2.5-1.2B-Instruct-Q4_K_M.gguf"
+  pick: 60
+
+# the four services and their address; a body never repeats them
+ports:                                        # the named ports of the document, one place only
+  bridge: 8770
+  dash: 8771
+  tls: 8766
+  vision: 1234
+
+units:
+  bridge:
+    resident: "bridge"
+    count: false
+    unit: "la-bridge"
+    port: 8770
+    probe: "/ping"
+  models:
+    resident: "models"
+    count: true
+    unit: "la-models"
+    port: 8091
+    probe: "/health"
+  asr:
+    resident: "asr"
+    count: true
+    unit: "la-asr"
+    port: 8080
+    probe: "/health"
+  tts:
+    resident: "tts"
+    count: true
+    unit: "la-tts"
+    port: 8090
+    probe: "/health"
+  dashboard:
+    resident: "dash"
+    count: false
+    unit: "la-dash"
+    port: 8771
+    probe: "/ping"
+
+# the families, their base, and the register they live in
+families:
+  READ:
+    base: root
+    register: model
+  WRITE:
+    base: work
+    register: model
+  MANAGE:
+    base: none
+    register: model
+  REPLY:
+    base: none
+    register: model
+  PLAN:
+    base: none
+    register: model
+  VISION:
+    base: root
+    register: model
+  BLENDER:
+    base: work
+    register: model
+  UNITY:
+    base: work
+    register: model
+  KRITA:
+    base: work
+    register: model
+  IMAGE:
+    base: work
+    register: model
+  ENGINE:
+    base: none
+    register: engine
+  DOCTOR:
+    base: none
+    register: engine
+  WATCH:
+    base: none
+    register: engine
+  TURN:
+    base: none
+    register: engine
+# what a skill or a project does not have to ask for
+permanent:
+  - sticky_note
+  - reply
+  - kill
+  - tools_list
+  - sleep
+  - skill_list
+  - vision.image
+  - skill_view
+  - transcribe
+  - vision.read
+  - read_text_in_img
+  - search_web
+  - fetch_url
+  - load_doc
+  - list_dir
+  - read_file
+  - write_file
+  - todo
+with_skill:
+  - recall
+with_project:
+  - unload_project
+
+# the turn, measured in numbers
+loop:
+  feed_turns: 12
+  same_words_seconds: 300
+  window: 4
+  msg_max: 8000
+  msg_budget: 32000
+  max_turns: 400
+  max_tokens: 0
+  max_calls: 0
+  max_seconds: 0
+  plan_every: 10
+  update_every: 10
+  timeout: 600
+  share: 30
+  speech_tries: 2
+  load_tries: 8
+  answer_tokens: 2048
+  error_chars: 200
+  desc_chars: 40
+
+# every bound the engine applies
+limits:
+  said_window: 10
+  live_lines: 40
+  return_keep: 200
+  audio_min_minutes: 60
+  audio_keep: 20
+  audio_mb: 200
+  health_timeout: 3
+  ping_timeout: 2
+  bench_timeout: 120
+  tunnel_steps: 12
+  db_busy_ms: 5000
+  rerank_timeout: 15
+  frame_bytes: 400
+  stop_tries: 50
+  port_tries: 100
+  boot_tries: 40
+  engine_bytes: 4000
+  engine_lines: 200
+  return_bytes: 4000
+  engine_timeout: 600
+  approval_window: 300
+  trace_bytes: 200000
+  trace_keep: 5000
+  form_queue_bytes: 1000
+  form_judge_bytes: 400
+  form_demand_chars: 600
+  form_rerank_timeout: 5
+  head_bytes: 1000
+  poll_ms: 1500
+
+active_skill: ""
+active_project: ""
+
+lists:                                        # the names the code never carries
+  audio_patterns: [speech-*.wav, voice-*.wav]
+  french: [coffre, dossier, moteur, outil, tache, etape, racine, sortie, fiche, ranger, regle, veille, juge, seuil, borne, gabarit, brouillon, porte, perimetre]
+
+owners:                                       # qui lit quoi : un fait, un proprietaire
+  - {fact: extensions, owner: la}
+  - {fact: api, owner: turn.call}
+  - {fact: date, owner: doctor.manifest}
+  - {fact: machine, owner: shell}
+  - {fact: agents, owner: loop}
+  - {fact: models, owner: engine.models}
+  - {fact: units, owner: engine.install}
+  - {fact: families, owner: engine.reload}
+  - {fact: permanent, owner: skl}
+  - {fact: with_skill, owner: skl}
+  - {fact: with_project, owner: skl}
+  - {fact: loop, owner: la}
+  - {fact: limits, owner: run}
+  - {fact: forms, owner: turn.reply}
+  - {fact: lists, owner: doctor.language}
+  - {fact: active_engine, owner: turn.prompt}
+  - {fact: engines, owner: engine.switch}
+  - {fact: secrets, owner: turn.call}
+  - {fact: world, owner: cfg}
+  - {fact: archi, owner: doctor.manifest}
+
+update:
+  return_tag: la-return
+
+tunnel:
+  phone: "config[D01]/state[D12]/phone.conf"
+  port: 51820
+  host: 10.10.0.1
+  peer: 10.10.0.2
+  public: ""
+  file: /etc/wireguard/wg0.conf
+  interface: wg0
+  dns: 1.1.1.1
+  keepalive: 25
+
+active_engine: cloud
+engines:
+  cloud:
+    provider: "ollama-cloud"
+    post: "https://ollama.com/v1/chat/completions"
+    header: "Authorization"
+    variable: "OLLAMA_API_KEY"
+    model: "deepseek-v4.1-flash"
+    max_tokens: 32768
+    stream: true
+    thinking: "enabled"
+    reasoning_effort: "high"
+    tool_choice: "required"
+    context: 1000000
+  pro:
+    provider: "deepseek"
+    post: "https://api.deepseek.com/chat/completions"
+    header: "Authorization"
+    variable: "DEEPSEEK_API_KEY"
+    model: "deepseek-v4-pro"
+    max_tokens: 32768
+    stream: false
+    thinking: "enabled"
+    reasoning_effort: "medium"
+    tool_choice: "auto"
+    context: 128000
+  mimo:
+    provider: "xiaomi-mimo"
+    post: "https://api.xiaomimimo.com/v1/chat/completions"
+    header: "api-key"
+    variable: "MIMO_API_KEY"
+    model: "mimo-v2.6-flash"
+    max_tokens: 8192
+    stream: false
+    tool_choice: "auto"
+    context: 128000
+
+
+# the repo outside this directory: the world the engine works in, never owned by it
+world:
+  - {id: W04, key: docs,           path: "docs"}
+  - {id: W05, key: skill_active,   path: "skills[D23]/.active"}
+  - {id: W06, key: project_active, path: "projects[D21]/.active"}
+
+# the head of every prompt, in zones: the prefix that never moves (prompt cache)
+head:
+  name: "LA"
+  language_response: "french"
+  source: "agent"
+  date: "2026-10-15"
+  WHERE:
+    101: "LocalAgent (LA) est un harness : il ne fait QUE des tool calls."
+    102: "La station heberge la VM ; la VM execute les tools."
+    103: "Racine : VM_LA/. Ecriture : l'espace de travail du SKILL ACTIF (WRITEABLE WORKSPACE)."
+    104: "Le SKILL ACTIF donne la portee : WRITEABLE WORKSPACE."
+    105: "Environnement : Debian, dash, jq, coreutils."
+  TOOLS_SCHEMA:
+    101: [{"type":"function","function":{"name":"la","description":"Nomme UN tool et ses arguments. g est le NUMERO de la ligne de la table ; a porte ses arguments DANS L ORDRE DECLARE par cette ligne. Le texte libre (le surplus de a) part sur l entree standard du tool.","parameters":{"type":"object","properties":{"g":{"type":"integer","description":"le numero du tool dans la table"},"a":{"type":"array","items":{"type":"string"},"description":"les arguments, dans l ordre declare par la ligne de ce tool"}},"required":["g"]}}}]
+    102: "Ce schema porte TOUS les tools, par un seul : la(g, a). La table n est JAMAIS envoyee."
+    103: "g = le NUMERO d une ligne de config/la_tools.yaml ; a = ses arguments, DANS L ORDRE declare par cette ligne."
+    104: "EXEMPLE : la(g=103, a=[\"WORKSPACE.workspace/note.md\"]) -> 103 = read_file ; arg path."
+    105: "Le surplus de a (le texte libre) entre par l ENTREE STANDARD du tool : ce n est pas un argument."
+  PERMANENTS:
+    101: "Les tools permanents sont INJECTES a chaque tour par la boucle, dans le message WORKSPACE."
+    102: "Ils tombent SANS etre charges : le head les NOMME, la boucle les ajoute."
+    103: "reply (modes talk, ask, answer) et kill : les DEUX garde-fous, TOUJOURS la, meme sous un verrou."
+    104: "tools_list, todo, update_todo, big_todo, update_big_todo, change_big_todo."
+    105: "skill_list, skill_view, load_skill, project_list, project_view, unload_project : des OUTILS SEPARES, pas des actions de skill_manage."
+  MECHANISM:
+    101: "UN TOUR : je nomme la(g, a) -> le engine lance la commande de la ligne g -> le resultat me revient -> je continue."
+    102: "LE ENGINE VALIDE AVANT L EFFET : id, ligne, arguments, portee. Un refus me revient tel quel."
+    103: "LE TOOL QUI REPOND (reply) : mode (talk, ask, answer), la FORME (text, list, table, code), LE TEXTE. Trois arguments, dans cet ordre. Le TEXTE est la seule chose que l humain entend."
+    104: "UN SEUL reply mode talk par tour : une phrase COURTE qui dit ce que tu fais. Ensuite les tools du travail, sans redire la meme phrase. Un plan ouvert se ferme par update_todo, puis reply mode answer."
+    105: "La conversation n est pas l etat : le PLAN et l ETAT vivent hors de moi."
+    106: "Le 4e argument de reply est une consigne de travail : il n est JAMAIS dit a l humain. Un reply de trois arguments suffit."
+    107: "UN TROU DE MEMOIRE : recall(n) relit les n derniers messages. Demande-le, une fois."
+    108: "AUCUNE SKILL ACTIVE : ce n est pas une panne. Je reponds avec reply, une phrase, sans chercher de tool."
+  SKILL:
+    101: "Je ne vois QUE le SKILL ACTIF : sa portee, ses tools, son RESUME."
+    102: "Changer de skill : load_skill. Voir la liste : skill_list."
+    103: "WORKSPACE borne OU j ecris : hors de lui, le engine refuse."
+    104: "Je ne tiens PAS tout le registre (3300+ tools) : la plupart vivent dans des skills non chargees. Pour un tool absent de mon perimetre, je CHARGE la skill qui le porte (load_skill)."
+    105: "La liste que je vois (palette + permanents) = mon perimetre de CE tour, pas le monde. Un tool manquant n'est pas une absence : c'est une skill a charger."
+  BEHAVIOUR:
+    101: "Jamais de texte. Je nomme un tool."
+    102: "reply mode talk parle et ne ferme pas ; mode answer ferme si le plan est fini ; mode ask arrete."
+    103: "Je ne peux pas repondre sans tool : tool_choice est required. Sans skill active, je reponds par reply et rien d autre."
+  LAWS:
+    101: "Je ne nomme aucun chemin : WORKSPACE fait la portee."
+    102: "Toute ligne porte son id."
+    103: "L obsolete se supprime."
+    104: "Un doute : reply en mode ask. Jamais un choix impose."
+  USER:
+    101: "Moussa. Debian 13, terminal. Majuscules = urgent."
+    102: "Chaque tool laisse une ligne de journal au canal humain."
+    103: "Cette ligne n entre pas dans mon contexte."
+    104: "Le contenu entier ne part jamais."
+    105: "Aucune cle ni jeton dans memory/ : c est lisible."
+    106: "Un secret vit dans l environnement du lanceur."
+  PROJECTS:
+    101: "MODELE_RA: deterministic AI architecture."
+    102: "DESTIN : univers narratif."
+    103: "SUPREME PMC : jeu Unity."
+    104: "LA : ce projet. Le harness vocal."
+
+# where the install puts its pieces, and the two names the bridge and the backup answer to
+paths:
+  sessions: "config[D01]/state[D12]/sessions"
+  user_units: "/home/moussa/.config/systemd/user"
+  user_bin: "/home/moussa/.local/bin"
+  user_apps: "/home/moussa/.local/share/applications"
+
+bridge:
+  host: "0.0.0.0"
+  tls_host: ""
+
+backup:
+  support: "git"
+  supports: "[git]"
+
+# the settings page: the engine choices and the fields it may edit
+schema:
+  engine_choices:
+    thinking: ["", enabled, disabled]
+    reasoning_effort: ["", none, low, medium, high, max]
+    reasoning_field: ["", reasoning, reasoning_content]
+    stream: ["true", "false"]
+    reasoning_echo: ["true", "false"]
+    tool_choice: [auto, required, none]
+    max_tokens: ["1024", "2048", "4096", "8192", "16384", "32768", "65536"]
+  fields:
+  - section: loop
+    key: window
+    kind: int
+    min: 2
+    max: 40
+    step: 1
+    why: la fenetre du tour, en messages (loi 809)
+  - section: loop
+    key: max_turns
+    kind: int
+    min: 0
+    max: 400
+    why: la borne de securite des tours (0 = aucune)
+  - section: loop
+    key: msg_budget
+    kind: int
+    min: 4000
+    max: 128000
+    step: 4000
+    why: le budget en octets de tout ce que le modele lit
+  - section: loop
+    key: plan_every
+    kind: int
+    min: 1
+    max: 50
+    why: l imposition du plan, tous les N tours
+  - section: loop
+    key: update_every
+    kind: int
+    min: 1
+    max: 50
+    why: la mise a jour du grand plan et du canon, tous les N tours
+  - section: loop
+    key: share
+    kind: int
+    min: 0
+    max: 100
+    why: la part de tete du scope (loi 472)
+  - section: loop
+    key: speech_tries
+    kind: int
+    min: 1
+    max: 8
+    why: combien de fois un message sans parole est redemande
+  - section: second
+    key: order
+    kind: order
+    choices:
+    - project
+    - skill
+    - summary
+    - plan
+    - agents
+    - messages
+    - tools
+    - reads
+    - next
+    - task
+    - stamp
+    why: l ordre des sections du head secondaire, du plus stable au plus volatil
+  - section: second
+    key: agents_lines
+    kind: int
+    min: 3
+    max: 30
+    why: la fenetre des agents, en lignes
+  - section: second
+    key: agents_chars
+    kind: int
+    min: 200
+    max: 4000
+    step: 50
+    why: la fenetre des agents, en octets
+  - section: second
+    key: msg_lines
+    kind: int
+    min: 4
+    max: 60
+    why: la fenetre des messages, en lignes
+  - section: second
+    key: msg_chars
+    kind: int
+    min: 400
+    max: 6000
+    step: 100
+    why: la fenetre des messages, en octets
+  - section: second
+    key: plan_lines
+    kind: int
+    min: 4
+    max: 40
+    why: la fenetre du plan, en lignes
+  - section: second
+    key: tools_lines
+    kind: int
+    min: 1
+    max: 20
+    why: la fenetre des tools, en lignes
+  - section: agents
+    key: main
+    kind: choice
+    choices:
+    - agent_one
+    - agent_001_jarvis
+    - agent_002_paul
+    - agent_003_albert
+    - agent_004_eleonore
+    - agent_005_claire
+    why: 'l agent principal : l auteur d un tour quand le lanceur n en pose pas'
+  - section: agents
+    key: board_lines
+    kind: int
+    min: 8
+    max: 200
+    why: le plafond du tableau des agents (reecriture, jamais un rm)
+  - section: agents
+    key: body_bytes
+    kind: int
+    min: 128
+    max: 4096
+    step: 64
+    why: la borne d un message d agent
+  - section: agents
+    key: run_chars
+    kind: int
+    min: 20
+    max: 400
+    step: 10
+    why: combien de signes de la demande entrent dans la marque du tour
+  - section: dashboard
+    key: poll_ms
+    kind: int
+    min: 500
+    max: 10000
+    step: 100
+    why: la cadence de rafraichissement de cette page
+  - section: dashboard
+    key: feed_turns
+    kind: int
+    min: 2
+    max: 60
+    why: combien de tours l historique du chat relit
+  - section: bridge
+    key: port
+    kind: int
+    min: 1024
+    max: 65535
+    why: la porte du pont (le telephone s y connecte)

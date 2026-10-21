@@ -1,0 +1,35 @@
+id: "B1717"
+tool: "blender_extensions_package"
+date: "2026-10-17"
+tags: ["blender_extensions_package"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "an extension package: disable | install | install_files | install_marked | obsolete_marked | show_clear | show_set | show_settings | theme_disable | theme_enable | uninstall | uninstall_marked | uninstall_system | upgrade_all (op picks which)"
+
+machine: "blender"
+op: "extensions.package_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [disable, install, install_files, install_marked, obsolete_marked, show_clear, show_set, show_settings, theme_disable, theme_enable, uninstall, uninstall_marked, uninstall_system, upgrade_all]}
+  - {name: pkg_id, type: text}
+  - {name: repo_index, type: int}
+  - {name: enable_on_install, type: text}
+  - {name: repo_directory, type: text}
+  - {name: url, type: text}
+  - {name: directory, type: text}
+  - {name: do_legacy_replace, type: text}
+  - {name: filepath, type: text}
+  - {name: files, type: text}
+  - {name: overwrite, type: text}
+  - {name: repo, type: text}
+  - {name: target, type: text}
+  - {name: use_active_only, type: text}
+  - {name: filter_glob, type: text}

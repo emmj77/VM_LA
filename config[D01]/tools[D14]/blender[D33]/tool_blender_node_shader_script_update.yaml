@@ -1,0 +1,20 @@
+id: "B878"
+tool: "blender_node_shader_script_update"
+date: "2026-10-17"
+tags: ["blender_node_shader_script_update"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Update shader script node with new sockets and options from the script"
+
+machine: "blender"
+op: "node.shader_script_update"
+
+ARGS: []

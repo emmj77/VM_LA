@@ -1,0 +1,48 @@
+id: "G057"
+tool: "tool_show"
+date: "2026-10-18"
+tags: ["tool_show", "fiche", "arguments"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "returns a tool sheet: description, refusals, typed arguments, closed values, id and call order"
+
+COMMAND: |
+  T="{{tool}}"
+  [ -n "$T" ] || { printf '%s\n' "$(msg tool_arg_required)" >&2; exit 1; }
+  case "$T" in
+    *[!a-z0-9_]*) printf '%s\n' "$(msg tool_name_shape '%s')""$T" >&2; exit 1 ;;
+  esac
+  F=
+  for d in "$ROOT"/config/tools/*/ "$ROOT"/config/tools/; do
+    [ -f "$d/tool_$T.yaml" ] && { F="$d/tool_$T.yaml"; break; }
+  done
+  [ -n "$F" ] || { printf '%s\n' "$(msg tool_unknown_named)""$T" >&2; exit 1; }
+  G=$(awk -v n="$T" '/^  - id: /{i=$3} /^    tool: /{if ($2==n) {print i; exit}}' "$LA_CONFIG" 2>/dev/null)
+  printf '%s   id=%s\n' "$T" "${G:--}"
+  printf '%s\n' "$(msg file_line)""${F#$ROOT/}"
+  sed -n '1,2p' "$F" | sed 's/^# //'
+  printf 'DESCRIPTION : %s\n' "$(sed -n 's/^DESCRIPTION: "\(.*\)"/\1/p' "$F" | head -1)"
+  printf '%s\n' "$(msg refused_generic)""$(sed -n 's/^# REFUSE : \(.*\)/\1/p' "$F" | head -1)"
+  N=$(sed -n '/^ARGS:/,$p' "$F" | grep -c '^  - {name:')
+  if [ "${N:-0}" = 0 ]; then
+    printf '%s\n' "$(msg args_none)"
+  else
+    printf '%s\n' "$(msg args_values)""$N"
+    sed -n '/^ARGS:/,$p' "$F" | sed -n 's/^  - {name:[[:space:]]*\([A-Za-z0-9_]*\)[^}]*type:[[:space:]]*\([a-z]*\)\(.*\)}/  \1 (\2)\3/p'
+    sed -n '/^ARGS:/,$p' "$F" | sed -n 's/^  - {name:[[:space:]]*\([A-Za-z0-9_]*\).*values:[[:space:]]*\[\(.*\)\]}.*/    \1 : \2/p'
+  fi
+  if [ -n "$G" ]; then
+    printf '%s\n' "$(msg call_line)""$G"
+  fi
+  printf '%s\n' "$(msg body_example)""${F#$ROOT/}"
+
+ARGS:
+  - {name: tool, type: text}          # le nom exact du tool, tel que tools_find le rend

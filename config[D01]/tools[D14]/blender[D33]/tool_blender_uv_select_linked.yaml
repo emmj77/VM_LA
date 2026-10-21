@@ -1,0 +1,21 @@
+id: "B1521"
+tool: "blender_uv_select_linked"
+date: "2026-10-17"
+tags: ["blender_uv_select_linked"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all UV vertices linked to the active UV map"
+
+machine: "blender"
+op: "uv.select_linked"
+
+ARGS:
+  - {name: delimit, type: text}          # un de : SEAM | SHARP | MATERIAL

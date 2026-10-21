@@ -1,0 +1,30 @@
+id: "B1330"
+tool: "blender_sequencer_box_blade"
+date: "2026-10-17"
+tags: ["blender_sequencer_box_blade"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Draw a box around the parts of strips you want to cut away"
+
+machine: "blender"
+op: "sequencer.box_blade"
+
+ARGS:
+  - {name: xmin, type: int}
+  - {name: xmax, type: int}
+  - {name: ymin, type: int}
+  - {name: ymax, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # un de : SET | ADD | SUB
+  - {name: type, type: text}          # un de : SOFT | HARD
+  - {name: ignore_selection, type: text}          # true|false, vide pour ne rien poser
+  - {name: ignore_connections, type: text}          # true|false, vide pour ne rien poser
+  - {name: remove_gaps, type: text}          # true|false, vide pour ne rien poser

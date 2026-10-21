@@ -1,0 +1,24 @@
+id: "G032"
+tool: "web_extract"
+date: "2026-10-17"
+tags: ["web_extract"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "fetches a web page and returns its text as markdown : this is what READS a page"
+
+COMMAND: |
+  U=$(cat); case "$U" in http://*|https://*) ;; *) echo 'refused: url attendue (http ou https)' >&2; exit 1 ;; esac
+  P=${LA_LIGHTPANDA:-$HOME/.local/bin/lightpanda}; [ -x "$P" ] || { printf '%s\n' "$(msg lightpanda_not_found "$P")" >&2; exit 1; }
+  C=${SSL_CERT_FILE:-/etc/ssl/certs/ca-certificates.crt}
+  SSL_CERT_FILE="$C" CURL_CA_BUNDLE="$C" timeout 60 "$P" fetch --dump markdown "$U" 2>/dev/null | head -c 20000
+
+ARGS:
+  - {name: url, type: text, stdin: true}

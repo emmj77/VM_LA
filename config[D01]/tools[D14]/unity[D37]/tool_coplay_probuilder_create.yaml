@@ -1,0 +1,65 @@
+id: "U471"
+tool: "coplay_probuilder_create"
+date: "2026-10-17"
+tags: ["coplay_probuilder_create"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a probuilder shape: poly | shape (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  poly)
+    set -f
+    set -- probuilder create-poly
+    case "{{flip_normals}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'flip_normals')" >&2; exit 1 ;; esac
+    [ -n "{{points}}" ] && set -- "$@" --points "{{points}}"
+    [ -n "{{height}}" ] && set -- "$@" --height "{{height}}"
+    [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+    [ "{{flip_normals}}" = true ] && set -- "$@" --flip-normals
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  shape)
+    set -f
+    set -- probuilder create-shape
+    T=$(printf '%s' "{{position}}" | tr -d '0123456789. -')
+    [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'position' '3' '%s')""{{position}}" >&2; exit 1; }
+    unset T
+    T=$(printf '%s' "{{rotation}}" | tr -d '0123456789. -')
+    [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'rotation' '3' '%s')""{{rotation}}" >&2; exit 1; }
+    unset T
+    [ -n "{{shape_type}}" ] || { printf '%s\n' "$(msg argument_required 'shape_type' 'probuilder create-shape')" >&2; exit 1; }
+    [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
+    [ -n "{{position}}" ] && set -- "$@" --position {{position}}
+    [ -n "{{rotation}}" ] && set -- "$@" --rotation {{rotation}}
+    [ -n "{{params}}" ] && set -- "$@" --params "{{params}}"
+    [ -n "{{shape_type}}" ] && set -- "$@" "{{shape_type}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [poly, shape]}
+  - {name: shape_type, type: text}
+  - {name: height, type: text}
+  - {name: name, type: text}
+  - {name: params, type: text}
+  - {name: points, type: text}
+  - {name: flip_normals, type: text}
+  - {name: position, type: text}
+  - {name: rotation, type: text}

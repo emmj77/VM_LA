@@ -1,0 +1,34 @@
+# one step of the turn. it reads state/turn.json, does its work, writes it back.
+id: "T005"
+tool: "turn.reply"
+date: "2026-10-20"
+tags: ["turn", "reply"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the words of the answer, on the stream and on the board"
+COMMAND: |
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
+  # la reponse est le texte rendu par l outil reply ; a defaut, le contenu du modele
+  _r=$(jq -r '[.calls[] | select(.tool == "reply")] | last | .result | fromjson? | .result // empty' "$(cfg abs turn)" 2>/dev/null)
+  # a defaut : ce que le modele a dit. certains ecrivent leur appel en texte : on en tire le texte
+  if [ -z "$_r" ]; then
+    _c=$(_turn_get '.reply_msg.content // ""')
+    case $_c in
+      *'"text"'*) _r=$(printf '%s' "$_c" | sed -n 's/.*"text"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p') ;;
+      *) _r=$_c ;;
+    esac
+  fi
+  [ -n "$_r" ] || _r=$(_turn_get '.reply_msg.reasoning // ""')
+  printf '%s\n' "$_r" | write_atomic "$(cfg abs reply_stream)"
+  printf '%s\n' "$_r"
+  _tr reply "$(printf '%s' "$_r" | wc -c) bytes"
+  exit 0
+
+ARGS: []

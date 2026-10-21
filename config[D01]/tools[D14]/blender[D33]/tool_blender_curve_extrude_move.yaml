@@ -1,0 +1,22 @@
+id: "B240"
+tool: "blender_curve_extrude_move"
+date: "2026-10-17"
+tags: ["blender_curve_extrude_move"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Extrude curve and move result"
+
+machine: "blender"
+op: "curve.extrude_move"
+
+ARGS:
+  - {name: CURVE_OT_extrude, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}

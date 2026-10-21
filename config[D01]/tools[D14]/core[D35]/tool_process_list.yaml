@@ -1,0 +1,22 @@
+id: "G013"
+tool: "process_list"
+date: "2026-10-17"
+tags: ["process_list"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "lists the machine's processes, filtered by a pattern"
+
+COMMAND: |
+  PAT=$(cat)
+  if [ -n "$PAT" ]; then hx proc -n 40 -- "$PAT"; else hx proc -n 40; fi
+
+ARGS:
+  - {name: pattern, type: text, stdin: true}

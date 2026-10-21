@@ -1,0 +1,22 @@
+id: "B861"
+tool: "blender_node_new_node_tree"
+date: "2026-10-17"
+tags: ["blender_node_new_node_tree"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a new node tree"
+
+machine: "blender"
+op: "node.new_node_tree"
+
+ARGS:
+  - {name: type, type: text}          # un de :
+  - {name: name, type: text}

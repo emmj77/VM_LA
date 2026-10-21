@@ -1,0 +1,25 @@
+id: "B170"
+tool: "blender_clip_select_lasso"
+date: "2026-10-17"
+tags: ["blender_clip_select_lasso"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select markers using lasso selection"
+
+machine: "blender"
+op: "clip.select_lasso"
+
+ARGS:
+  - {name: path, type: text}
+  - {name: use_smooth_stroke, type: text}          # true|false, vide pour ne rien poser
+  - {name: smooth_stroke_factor, type: text}
+  - {name: smooth_stroke_radius, type: int}
+  - {name: mode, type: text}          # un de : SET | ADD | SUB

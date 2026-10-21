@@ -1,0 +1,58 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E010"
+tool: "engine.spec"
+date: "2026-10-20"
+tags: ["engine", "spec"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the canon: add one law, or read it"
+COMMAND: |
+
+  _op=${1:-list}
+  _f=$(canon_path 2>/dev/null) || { printf 'FAULT no canon: the armed project names none\n'; exit 0; }
+  [ -f "$_f" ] || { printf 'FAULT the canon is not on the disk\n'; exit 0; }
+  case $_op in
+  list)
+    _n=$(grep -cE '^  [0-9]+:' "$_f")
+    printf 'ok %s law(s) in %s\n' "$_n" "${_f#$ROOT/}"
+    sed -nE 's/^  ([0-9]+):.*/    \1/p' "$_f" | tail -n 5
+    ;;
+  add)
+    _in=$(cat)
+    _num=$(printf '%s' "$_in" | awk '{ print $1 }')
+    _law=$(printf '%s' "$_in" | sed 's/^[^ ]*[ ]*//')
+    case $_num in ''|*[!0-9]*) printf 'FAULT add wants the law number then the law, on the input\n'; exit 0 ;; esac
+    [ -n "$_law" ] || { printf 'FAULT the law is empty\n'; exit 0; }
+    _t=$(tmpfile spec) || exit 0
+    awk -v id="$_num" -v new="  $_num: $_law" '
+      function num(s) { if (match(s, /[0-9]+/)) return substr(s, RSTART, RLENGTH) + 0; return -1 }
+      BEGIN { placed = 0; band = int(id / 100) * 100; inband = 0 }
+      /^SECTION : / { if (inband && !placed) { print new; placed = 1 } inband = 0; print; next }
+      /^  [0-9]+:/ {
+        cur = num($0)
+        if (int(cur / 100) * 100 == band) {
+          if (!inband) inband = 1
+          if (cur == id) { print new; placed = 1; next }
+          if (!placed && cur > id) { print new; placed = 1 }
+        } else if (inband && !placed) { print new; placed = 1; inband = 0 }
+        print; next
+      }
+      { print }
+      END { if (!placed) exit 9 }
+    ' "$_f" > "$_t" || { printf 'FAULT no section carries the number %s\n' "$_num"; exit 0; }
+    [ -s "$_t" ] || { printf 'FAULT the build wrote nothing\n'; exit 0; }
+    mv -f "$_t" "$_f" || { printf 'FAULT the write is impossible\n'; exit 0; }
+    printf 'ok law %s written in %s\n' "$_num" "${_f#$ROOT/}"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: add,list}

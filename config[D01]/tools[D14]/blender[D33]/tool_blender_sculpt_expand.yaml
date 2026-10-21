@@ -1,0 +1,30 @@
+id: "B1310"
+tool: "blender_sculpt_expand"
+date: "2026-10-17"
+tags: ["blender_sculpt_expand"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Generic sculpt expand operator"
+
+machine: "blender"
+op: "sculpt.expand"
+
+ARGS:
+  - {name: target, type: text}          # un de : MASK | FACE_SETS | COLOR
+  - {name: falloff_type, type: text}          # un de : GEODESIC | TOPOLOGY | TOPOLOGY_DIAGONALS | NORMALS | SPHERICAL | BOUNDARY_TOPOLOGY | BOUNDARY_FACE_SET | ACTIVE_FACE_SET
+  - {name: invert, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_mask_preserve, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_falloff_gradient, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_modify_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_reposition_pivot, type: text}          # true|false, vide pour ne rien poser
+  - {name: max_geodesic_move_preview, type: int}
+  - {name: use_auto_mask, type: text}          # true|false, vide pour ne rien poser
+  - {name: normal_falloff_smooth, type: int}

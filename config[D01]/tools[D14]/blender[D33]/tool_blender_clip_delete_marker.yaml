@@ -1,0 +1,21 @@
+id: "B138"
+tool: "blender_clip_delete_marker"
+date: "2026-10-17"
+tags: ["blender_clip_delete_marker"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete marker for current frame from selected tracks"
+
+machine: "blender"
+op: "clip.delete_marker"
+
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser

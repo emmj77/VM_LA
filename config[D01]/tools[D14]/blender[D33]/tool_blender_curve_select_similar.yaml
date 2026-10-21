@@ -1,0 +1,23 @@
+id: "B259"
+tool: "blender_curve_select_similar"
+date: "2026-10-17"
+tags: ["blender_curve_select_similar"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select similar curve points by property type"
+
+machine: "blender"
+op: "curve.select_similar"
+
+ARGS:
+  - {name: type, type: text}          # un de : TYPE | RADIUS | WEIGHT | DIRECTION
+  - {name: compare, type: text}          # un de : EQUAL | GREATER | LESS
+  - {name: threshold, type: text}

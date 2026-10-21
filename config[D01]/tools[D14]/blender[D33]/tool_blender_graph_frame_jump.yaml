@@ -1,0 +1,20 @@
+id: "B394"
+tool: "blender_graph_frame_jump"
+date: "2026-10-17"
+tags: ["blender_graph_frame_jump"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Place the cursor on the midpoint of selected keyframes"
+
+machine: "blender"
+op: "graph.frame_jump"
+
+ARGS: []

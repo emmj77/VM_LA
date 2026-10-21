@@ -1,0 +1,23 @@
+id: "B882"
+tool: "blender_node_swap_node"
+date: "2026-10-17"
+tags: ["blender_node_swap_node"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Replace the selected nodes with the specified type"
+
+machine: "blender"
+op: "node.swap_node"
+
+ARGS:
+  - {name: settings, type: text}
+  - {name: type, type: text}
+  - {name: visible_output, type: text}

@@ -1,0 +1,23 @@
+id: "B796"
+tool: "blender_node_add_group"
+date: "2026-10-17"
+tags: ["blender_node_add_group"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add an existing node group to the current node editor"
+
+machine: "blender"
+op: "node.add_group"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: session_uid, type: int}
+  - {name: show_datablock_in_node, type: text}          # true|false, vide pour ne rien poser

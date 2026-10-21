@@ -1,0 +1,20 @@
+id: "B1491"
+tool: "blender_uv_copy"
+date: "2026-10-17"
+tags: ["blender_uv_copy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy selected UV vertices"
+
+machine: "blender"
+op: "uv.copy"
+
+ARGS: []

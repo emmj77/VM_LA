@@ -1,0 +1,20 @@
+id: "B162"
+tool: "blender_clip_rebuild_proxy"
+date: "2026-10-17"
+tags: ["blender_clip_rebuild_proxy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Rebuild all selected proxies in the background"
+
+machine: "blender"
+op: "clip.rebuild_proxy"
+
+ARGS: []

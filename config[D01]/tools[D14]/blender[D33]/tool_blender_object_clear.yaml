@@ -1,0 +1,27 @@
+id: "B1746"
+tool: "blender_object_clear"
+date: "2026-10-17"
+tags: ["blender_object_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "values cleared on an object: constraints | hide_view | lineart | location | modifiers | origin | parent | paths | rotation | scale | skin_loose_mark | track (op picks which)"
+
+machine: "blender"
+op: "object.{{op}}_clear"
+
+ARGS:
+  - {name: op, type: enum, values: [constraints, hide_view, lineart, location, modifiers, origin, parent, paths, rotation, scale, skin_loose_mark, track]}
+  - {name: clear_delta, type: text}
+  - {name: type, type: text}
+  - {name: action, type: text}
+  - {name: clear_all, type: text}
+  - {name: only_selected, type: text}
+  - {name: select, type: text}

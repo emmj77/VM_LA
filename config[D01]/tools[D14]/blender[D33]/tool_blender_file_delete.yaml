@@ -1,0 +1,20 @@
+id: "B321"
+tool: "blender_file_delete"
+date: "2026-10-17"
+tags: ["blender_file_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move selected files to the trash or recycle bin"
+
+machine: "blender"
+op: "file.delete"
+
+ARGS: []

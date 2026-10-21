@@ -1,0 +1,151 @@
+id: "G061"
+tool: "unity_tools_find"
+date: "2026-10-18"
+tags: ["unity", "tools_find", "recherche"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "finds a unity tool by words or lists it by sub-family (ls), and returns the full sheet, up to 3 results"
+
+COMMAND: |
+  [ -f "$LA_CONFIG" ] || { printf '%s\n' "$(msg registry_missing)""$LA_CONFIG" >&2; exit 1; }
+  BASE="$ROOT/config/tools/unity"
+  [ -d "$BASE" ] || { printf '%s\n' "$(msg tools_dir_missing 'unity' '%s')""$BASE" >&2; exit 1; }
+  PRE='^(unity_|upipe_|coplay_)'
+  NAME=unity
+  TAB=$(printf '\t')
+  W="${TMPDIR:-/tmp}/unity_find.$$"
+  WORDS="{{words}}"
+  LS="{{ls}}"
+
+  if [ -n "$LS" ]; then
+    if [ "$LS" = familles ]; then
+      printf 'tools %s, sub-families (count):\n' "$NAME"
+      awk -v pre="$PRE" '
+        /^  - id: / { id = $3 }
+        /^    tool: / { t = $2 }
+        /^    sub_family: / {
+          s = $2 ; gsub(/"/, "", s)
+          if (t ~ pre && s != "") c[s]++
+          id = "" ; t = ""
+        }
+        END { for (k in c) printf "  %-16s %5d\n", k, c[k] }
+      ' "$LA_CONFIG" | sort
+      printf '  ls <sub-family> for the list; ls all for everything.\n'
+      exit 0
+    fi
+    printf 'tools %s, %s:\n' "$NAME" "$LS"
+    awk -v pre="$PRE" -v sel="$LS" '
+      /^  - id: / { id = $3 }
+      /^    tool: / { t = $2 }
+      /^    family: / { f = $2 }
+      /^    sub_family: / {
+        s = $2 ; gsub(/"/, "", s)
+        bas = tolower(sel)
+        if (id != "" && t != "" && t ~ pre && \
+            (bas == "tout" || s == bas || tolower(f) == bas)) {
+          n++
+          if (n <= 25) printf "%s\t%s\t%s\n", id, t, (s == "" ? f : s)
+        }
+        id = "" ; t = ""
+      }
+      END { if (n == 0) printf "--\t--\tno sub-family is named %s: ls families lists them\n", sel
+            else if (n > 25) printf '%s\n' "$(msg tools_total_narrow , n })"
+    ' "$LA_CONFIG" > "$W"
+    while IFS="$TAB" read -r G T FA; do
+      [ -n "$G" ] || continue
+      if [ "$G" = "--" ]; then printf '  %s\n' "$FA"; continue; fi
+      S=$(sed -n 's/^DESCRIPTION: "\(.*\)"$/\1/p' "$BASE/tool_$T.yaml" 2>/dev/null | head -1 | cut -c1-74)
+      printf '  %-5s %-44s %-11s %s\n' "$G" "$T" "$FA" "$S"
+    done < "$W"
+    rm -f "$W"
+    printf '%s\n' "$(msg tools_sheet_hint 'unity')"
+    exit 0
+  fi
+
+  if [ -z "$WORDS" ]; then
+    N=$(ls -1 "$BASE" 2>/dev/null | grep -c '^tool_.*\.yaml$')
+    printf '%s\n' "$(msg tools_map 'unity')""$N"
+    printf '%s\n' "$(msg tools_find_search 'unity')"
+    printf '%s\n' "$(msg tools_find_all 'unity')"
+    printf '%s\n' "$(msg tools_find_family 'unity')"
+    printf 'exemple : unity_tools_find "build"\n'
+    exit 0
+  fi
+
+  N=0
+  for m in $WORDS; do
+    case "$m" in *[!A-Za-z0-9_-]*) printf '%s\n' "$(msg word_carries_only_letters)""$m" >&2; rm -f "$W"; exit 1 ;; esac
+    N=$((N + 1))
+  done
+  [ "$N" -ge 1 ] || { printf '%s\n' "$(msg usable_word)" >&2; exit 1; }
+
+  awk -v pre="$PRE" -v words="$WORDS" '
+    BEGIN { n = split(tolower(words), M, " ") }
+    /^  - id: / { id = $3 }
+    /^    tool: / { t = $2 }
+    /^    family: / {
+      if (id != "" && t != "" && t ~ pre) {
+        bas = tolower(t); ok = 1
+        for (i = 1; i <= n; i++) if (index(bas, M[i]) == 0) { ok = 0; break }
+        if (ok) printf "%s\t%s\t%s\n", id, t, $2
+      }
+      id = ""; t = ""
+    }' "$LA_CONFIG" > "$W"
+  TOTAL=$(wc -l < "$W" | tr -d ' ')
+
+  if [ "$TOTAL" = 0 ]; then
+    printf '%s\n' "$(msg tools_name_none_search 'unity')""$WORDS" >&2
+    for f in "$BASE"/tool_*.yaml; do
+      [ -f "$f" ] || continue
+      ok=1
+      for m in $WORDS; do grep -qi -- "$m" "$f" || { ok=0; break; }; done
+      if [ "$ok" = 1 ]; then
+        T=$(sed -n 's/^tool: "\(.*\)"/\1/p' "$f" | head -1)
+        awk -v n="$T" '/^  - id: /{i=$3} /^    tool: /{if ($2==n) {printf "%s\t%s\t-\n", i, n; exit}}' "$LA_CONFIG" >> "$W"
+      fi
+    done
+    TOTAL=$(wc -l < "$W" | tr -d ' ')
+  fi
+
+  if [ "$TOTAL" = 0 ]; then
+    rm -f "$W"
+    printf '%s\n' "$(msg tools_name_none 'unity')""$WORDS" >&2
+    printf '%s\n' "$(msg tools_word_shorter 'unity')" >&2
+    exit 1
+  fi
+
+  if [ "$TOTAL" -le 3 ]; then
+    while IFS="$TAB" read -r G T FA; do
+      [ -n "$G" ] || continue
+      printf '\n=== %s   (id %s, family %s)\n' "$T" "$G" "$FA"
+      sed -n 's/^DESCRIPTION: "\(.*\)"/  \1/p' "$BASE/tool_$T.yaml" 2>/dev/null | head -1
+      sed -n '/^ARGS:/,$p' "$BASE/tool_$T.yaml" 2>/dev/null | sed '/^[A-Z][A-Z]*:/d' | sed '$d'
+    done < "$W"
+    rm -f "$W"
+    printf '%s\n' "$(msg engine_call_order exit 0)"
+  fi
+
+  printf '%s\n' "$(msg tools_results 'unity')""$TOTAL" "$WORDS"
+  i=0
+  while IFS="$TAB" read -r G T FA; do
+    [ -n "$G" ] || continue
+    i=$((i + 1))
+    [ "$i" -le 12 ] || break
+    S=$(sed -n 's/^DESCRIPTION: "\(.*\)"/\1/p' "$BASE/tool_$T.yaml" 2>/dev/null | head -1 | cut -c1-86)
+    printf '  %-5s %-44s %s\n' "$G" "$T" "$S"
+  done < "$W"
+  [ "$TOTAL" -gt 12 ] && printf '  ... %d more: narrow the words\n' "$((TOTAL - 12))"
+  printf 'three words or fewer give the full record; otherwise narrow it.\n'
+  rm -f "$W"
+
+ARGS:
+  - {name: words, type: text}            # les words, separes par des espaces ; vide pour la carte
+  - {name: ls, type: text}             # tout | familles | une sous-famille (mesh, animation...)

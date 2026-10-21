@@ -1,0 +1,21 @@
+id: "B1733"
+tool: "blender_info_report"
+date: "2026-10-17"
+tags: ["blender_info_report"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a report line of the info editor: copy | delete | replay (op picks which)"
+
+machine: "blender"
+op: "info.report_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [copy, delete, replay]}

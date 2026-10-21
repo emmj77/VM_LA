@@ -1,0 +1,20 @@
+id: "B310"
+tool: "blender_ed_undo"
+date: "2026-10-17"
+tags: ["blender_ed_undo"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Undo previous action"
+
+machine: "blender"
+op: "ed.undo"
+
+ARGS: []

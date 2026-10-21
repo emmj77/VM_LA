@@ -1,0 +1,20 @@
+id: "B1361"
+tool: "blender_sequencer_rebuild_proxy"
+date: "2026-10-17"
+tags: ["blender_sequencer_rebuild_proxy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Rebuild all selected proxies"
+
+machine: "blender"
+op: "sequencer.rebuild_proxy"
+
+ARGS: []

@@ -1,0 +1,23 @@
+id: "B1488"
+tool: "blender_uv_align_rotation"
+date: "2026-10-17"
+tags: ["blender_uv_align_rotation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Align the UV island's rotation"
+
+machine: "blender"
+op: "uv.align_rotation"
+
+ARGS:
+  - {name: method, type: text}          # un de : AUTO | EDGE | GEOMETRY
+  - {name: axis, type: text}          # un de : X | Y | Z
+  - {name: correct_aspect, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,21 @@
+id: "B580"
+tool: "blender_lattice_select_ungrouped"
+date: "2026-10-17"
+tags: ["blender_lattice_select_ungrouped"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select vertices without a group"
+
+machine: "blender"
+op: "lattice.select_ungrouped"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

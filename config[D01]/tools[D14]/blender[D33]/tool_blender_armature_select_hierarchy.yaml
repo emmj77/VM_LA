@@ -1,0 +1,22 @@
+id: "B085"
+tool: "blender_armature_select_hierarchy"
+date: "2026-10-17"
+tags: ["blender_armature_select_hierarchy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select immediate parent/children of selected bones"
+
+machine: "blender"
+op: "armature.select_hierarchy"
+
+ARGS:
+  - {name: direction, type: text}          # un de : PARENT | CHILD
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

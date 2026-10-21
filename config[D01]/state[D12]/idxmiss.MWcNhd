@@ -1,0 +1,6 @@
+FAULT the index names approve and the disk holds nothing
+FAULT the index names approve.request and the disk holds nothing
+FAULT the index names reply.stream and the disk holds nothing
+FAULT the index names turn.pid and the disk holds nothing
+FAULT the index names phone.conf and the disk holds nothing
+FAULT the index names phone.png and the disk holds nothing

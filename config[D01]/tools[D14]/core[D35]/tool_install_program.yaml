@@ -1,0 +1,44 @@
+id: "G045"
+tool: "install_program"
+date: "2026-10-17"
+tags: ["install_program", "installer", "apt", "paquet", "program-manage"]
+
+RULES:
+  enabled: true
+  timeout: 1800
+  writable_workspace: ""
+  approval: whole
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "installs a program from the repository (apt) and says the version that landed"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  P="{{name}}"
+  case "$P" in
+    '') printf '%s\n' "$(msg package_required)" >&2 ; exit 1 ;;
+    -*|.*|*..*) printf '%s\n' "$(msg package_name_shape "$P")" >&2 ; exit 1 ;;
+    *[!a-z0-9+.-]*) printf '%s\n' "$(msg package_bad_char "$P")" >&2 ; exit 1 ;;
+  esac
+  command -v apt-get >/dev/null 2>&1 || { printf '%s\n' "$(msg binary_missing 'apt-get')" >&2 ; exit 1 ; }
+  command -v apt-cache >/dev/null 2>&1 || { printf '%s\n' "$(msg binary_missing 'apt-cache')" >&2 ; exit 1 ; }
+  if dpkg -s "$P" >/dev/null 2>&1; then
+    printf '%s\n' "$(msg already_installed)""$P" "$(dpkg-query -W -f='${Version}' "$P" 2>/dev/null)"
+    exit 0
+  fi
+  apt-cache show "$P" >/dev/null 2>&1 || { printf '%s\n' "$(msg package_unknown_repo "$P")" >&2 ; exit 1 ; }
+  C=$(apt-cache show "$P" 2>/dev/null | sed -n 's/^Package:[[:space:]]*//p' | head -n 1)
+  [ "$C" = "$P" ] || { printf '%s\n' "$(msg package_name_exact "$P" "${C:-rien}")" >&2 ; exit 1 ; }
+  L=$(sudo -n apt-get -y install -- "$P" 2>&1) || {
+    printf '%s\n' "$(msg install_failed "$P" "$(printf '%s' "$L" | tail -n 3 | tr '\n' ' ' | cut -c1-240)")" >&2
+    exit 1
+  }
+  V=$(dpkg-query -W -f='${Version}' "$P" 2>/dev/null)
+  N=$(printf '%s' "$L" | grep -c '^Setting up' 2>/dev/null || printf 0)
+  case "$N" in ''|*[!0-9]*) N=1 ;; esac
+  printf '%s\n' "$(msg installed)""$P" "${V:-?}" "$N"
+
+ARGS:
+  - {name: name, type: text}

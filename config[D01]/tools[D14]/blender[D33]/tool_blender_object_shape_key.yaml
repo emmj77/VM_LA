@@ -1,0 +1,29 @@
+id: "B1750"
+tool: "blender_object_shape_key"
+date: "2026-10-17"
+tags: ["blender_object_shape_key"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a shape key of an object: add | apply_to_basis | clear | copy | lock | make_basis | mirror | move | remove | retime | transfer (op picks which)"
+
+machine: "blender"
+op: "object.shape_key_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, apply_to_basis, clear, copy, lock, make_basis, mirror, move, remove, retime, transfer]}
+  - {name: action, type: text}
+  - {name: all, type: text}
+  - {name: apply_mix, type: text}
+  - {name: from_mix, type: text}
+  - {name: mode, type: text}
+  - {name: type, type: text}
+  - {name: use_clamp, type: text}
+  - {name: use_topology, type: text}

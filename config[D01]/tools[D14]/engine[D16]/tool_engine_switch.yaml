@@ -1,0 +1,51 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E012"
+tool: "engine.switch"
+date: "2026-10-20"
+tags: ["engine", "switch"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the active provider: list, take"
+COMMAND: |
+
+  _op=${1:-list}
+  _act=$(cfg str active_engine)
+  _names=$(_flat | awk -F'\t' '$1 ~ /^engines\.[a-z_]+\.[a-z_]+$/ { k = $1; sub(/^engines\./, "", k); sub(/\.[a-z_]+$/, "", k); print k }' | sort -u | tr '\n' ' ')
+  case $_op in
+  list)
+    [ -n "$_names" ] || { printf 'FAULT la_config names no engine\n'; exit 0; }
+    for _e in $_names; do
+      _m=$(cfg str "engines.$_e.model")
+      case $_e in
+        "$_act") printf 'ok %s%s %s\n' "$_e" " *" "$_m" ;;
+        *)       printf 'ok %s %s\n' "$_e" "$_m" ;;
+      esac
+    done
+    ;;
+  take)
+    _to=$(cat)
+    [ -n "$_to" ] || { printf 'FAULT take wants an engine name on the input\n'; exit 0; }
+    case " $_names " in
+      *" $_to "*) ;;
+      *) printf 'FAULT no engine named %s: la_config carries %s\n' "$_to" "$(printf '%s' "$_names" | tr '\n' ' ')"; exit 0 ;;
+    esac
+    [ -w "$LA_CONF" ] || { printf 'FAULT la_config is not writable\n'; exit 0; }
+    _t=$(tmpfile switch) || exit 0
+    sed "s/^active_engine:.*/active_engine: "$_to"/" "$LA_CONF" > "$_t" || { printf 'FAULT the build failed\n'; exit 0; }
+    [ "$(wc -l < "$_t")" = "$(wc -l < "$LA_CONF")" ] || { printf 'FAULT the build changed the line count: nothing is written\n'; exit 0; }
+    [ "$(grep -c '^active_engine:' "$_t")" = 1 ] || { printf 'FAULT the active engine would not be unique\n'; exit 0; }
+    mv -f "$_t" "$LA_CONF" || { printf 'FAULT the write is impossible\n'; exit 0; }
+    printf 'ok the active engine is %s\n' "$_to"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: list,take}

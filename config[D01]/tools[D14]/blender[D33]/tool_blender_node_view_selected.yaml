@@ -1,0 +1,20 @@
+id: "B891"
+tool: "blender_node_view_selected"
+date: "2026-10-17"
+tags: ["blender_node_view_selected"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Resize view so you can see selected nodes"
+
+machine: "blender"
+op: "node.view_selected"
+
+ARGS: []

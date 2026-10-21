@@ -1,0 +1,92 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E016"
+tool: "engine.update"
+date: "2026-10-21"
+tags: ["engine", "update"]
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the project by git: check, apply with a named return point, rollback"
+COMMAND: |
+
+  _op=${1:-check}
+  command -v git >/dev/null 2>&1 || { printf 'FAULT git is not there\n'; exit 0; }
+  git -C "$ROOT" rev-parse --git-dir >/dev/null 2>&1 || { printf 'FAULT the root is not a git tree\n'; exit 0; }
+  _tag=$(cfg str update.return_tag) || { printf 'FAULT no return tag in la_config\n'; exit 0; }
+  _door=$(cfg abs run) || { printf 'FAULT no door in the tree\n'; exit 0; }
+  case $_op in
+  check)
+    _up=$(git -C "$ROOT" rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null)
+    [ -n "$_up" ] || { printf 'note no upstream: this tree is not tracking a branch\n'; exit 0; }
+    git -C "$ROOT" fetch --quiet 2>/dev/null || { printf 'note the fetch failed: the network or the remote is down\n'; exit 0; }
+    _n=$(git -C "$ROOT" rev-list --count "HEAD..@{u}" 2>/dev/null)
+    _d=$(git -C "$ROOT" status --porcelain | wc -l | tr -d ' ')
+    printf 'ok %s commit(s) behind %s, %s file(s) changed here\n' "${_n:-0}" "$_up" "$_d"
+    [ "${_n:-0}" = 0 ] || printf 'note an update is available: apply brings them\n'
+    ;;
+  apply)
+    _d=$(git -C "$ROOT" status --porcelain | wc -l | tr -d ' ')
+    [ "$_d" = 0 ] || { printf 'FAULT %s file(s) are changed here: an update would carry them away\n' "$_d"; exit 0; }
+    _old=$(git -C "$ROOT" rev-parse HEAD)
+    git -C "$ROOT" tag -f "$_tag" "$_old" >/dev/null 2>&1 \
+      || { printf 'FAULT the return point cannot be written\n'; exit 0; }
+    git -C "$ROOT" pull --ff-only 2>&1 || { printf 'FAULT the pull failed: nothing moved\n'; exit 0; }
+    _new=$(git -C "$ROOT" rev-parse HEAD)
+    if [ "$_old" = "$_new" ]; then
+      printf 'ok nothing to bring: already at %s\n' "$(printf '%s' "$_new" | cut -c1-8)"
+      exit 0
+    fi
+    printf 'ok moved from %s to %s, back is %s\n' \
+      "$(printf '%s' "$_old" | cut -c1-8)" "$(printf '%s' "$_new" | cut -c1-8)" "$_tag"
+    _ch=$(git -C "$ROOT" diff --name-only "$_old" "$_new" 2>/dev/null)
+    _cn=$(printf '%s\n' "$_ch" | grep -c . 2>/dev/null)
+    printf '  %s file(s) changed\n' "${_cn:-0}"
+    printf '%s\n' "$_ch" | head -n 10 | sed 's/^/    /'
+    _svc=
+    case $_ch in
+      *"engine[D07]"*|*"units[D26]"*|*"programs[D10]"*) _svc=yes ;;
+    esac
+    for _w in units command desktop applet certs; do
+      _l=$(LA_FROM=engine "$_door" engine.install "$_w" 2>&1)
+      case $_l in
+        ok*) printf '  install %s: ok\n' "$_w" ;;
+        *)   printf '  install %s: %s\n' "$_w" "$_l" ;;
+      esac
+    done
+    if [ -n "$_svc" ]; then
+      for _s in models asr tts dashboard; do
+        _u=$(cfg str "units.$_s.unit" 2>/dev/null)
+        [ -n "$_u" ] || continue
+        systemctl --user try-restart "$_u" 2>/dev/null \
+          && printf '  restarted %s\n' "$_u" || printf '  note %s did not answer the restart\n' "$_u"
+      done
+    fi
+    ;;
+  rollback)
+    git -C "$ROOT" rev-parse -q --verify "refs/tags/$_tag" >/dev/null 2>&1 \
+      || { printf 'FAULT no return point named %s\n' "$_tag"; exit 0; }
+    _cur=$(git -C "$ROOT" rev-parse HEAD)
+    git -C "$ROOT" reset --hard "$_tag" 2>&1 || { printf 'FAULT the rollback failed\n'; exit 0; }
+    printf 'ok back to %s (was %s)\n' \
+      "$(git -C "$ROOT" rev-parse HEAD | cut -c1-8)" "$(printf '%s' "$_cur" | cut -c1-8)"
+    for _w in units command desktop applet certs; do
+      _l=$(LA_FROM=engine "$_door" engine.install "$_w" 2>&1)
+      case $_l in ok*) printf '  install %s: ok\n' "$_w" ;; *) printf '  install %s: %s\n' "$_w" "$_l" ;; esac
+    done
+    for _s in models asr tts dashboard; do
+      _u=$(cfg str "units.$_s.unit" 2>/dev/null)
+      [ -n "$_u" ] || continue
+      systemctl --user try-restart "$_u" 2>/dev/null && printf '  restarted %s\n' "$_u"
+    done
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: check,apply,rollback}

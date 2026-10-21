@@ -1,0 +1,24 @@
+id: "B1775"
+tool: "blender_screen_jump"
+date: "2026-10-17"
+tags: ["blender_screen_jump"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a timeline jump: frame | keyframe | marker | time (op picks which)"
+
+machine: "blender"
+op: "screen.{{op}}_jump"
+
+ARGS:
+  - {name: op, type: enum, values: [frame, keyframe, marker, time]}
+  - {name: next, type: text}
+  - {name: backward, type: text}
+  - {name: end, type: text}

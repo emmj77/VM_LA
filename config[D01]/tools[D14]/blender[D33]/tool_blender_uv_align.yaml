@@ -1,0 +1,22 @@
+id: "B1487"
+tool: "blender_uv_align"
+date: "2026-10-17"
+tags: ["blender_uv_align"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Aligns selected UV vertices on a line"
+
+machine: "blender"
+op: "uv.align"
+
+ARGS:
+  - {name: axis, type: text}          # un de : ALIGN_S | ALIGN_T | ALIGN_U | ALIGN_AUTO | ALIGN_X | ALIGN_Y
+  - {name: position_mode, type: text}          # un de : MEAN | MIN | MAX

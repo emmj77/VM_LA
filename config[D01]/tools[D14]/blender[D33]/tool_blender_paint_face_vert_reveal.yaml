@@ -1,0 +1,21 @@
+id: "B1103"
+tool: "blender_paint_face_vert_reveal"
+date: "2026-10-17"
+tags: ["blender_paint_face_vert_reveal"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reveal hidden faces and vertices"
+
+machine: "blender"
+op: "paint.face_vert_reveal"
+
+ARGS:
+  - {name: select, type: text}          # true|false, vide pour ne rien poser

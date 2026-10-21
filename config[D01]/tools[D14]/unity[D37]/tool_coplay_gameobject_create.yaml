@@ -1,0 +1,61 @@
+id: "U169"
+tool: "coplay_gameobject_create"
+date: "2026-10-18"
+tags: ["unity", "coplay", "gameobject"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Create a new GameObject."
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
+  set -f
+  set -- gameobject create
+  T=$(printf '%s' "{{position}}" | tr -d '0123456789. -')
+  [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'position' '3' '%s')""{{position}}" >&2; exit 1; }
+  unset T
+  T=$(printf '%s' "{{rotation}}" | tr -d '0123456789. -')
+  [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'rotation' '3' '%s')""{{rotation}}" >&2; exit 1; }
+  unset T
+  T=$(printf '%s' "{{scale}}" | tr -d '0123456789. -')
+  [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'scale' '3' '%s')""{{scale}}" >&2; exit 1; }
+  unset T
+  case "{{save_prefab}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'save_prefab')" >&2; exit 1 ;; esac
+  [ -n "{{name}}" ] || { printf '%s\n' "$(msg argument_required 'name' 'gameobject create')" >&2; exit 1; }
+  [ -n "{{primitive}}" ] && set -- "$@" --primitive "{{primitive}}"
+  [ -n "{{position}}" ] && set -- "$@" --position {{position}}
+  [ -n "{{rotation}}" ] && set -- "$@" --rotation {{rotation}}
+  [ -n "{{scale}}" ] && set -- "$@" --scale {{scale}}
+  [ -n "{{parent}}" ] && set -- "$@" --parent "{{parent}}"
+  [ -n "{{tag}}" ] && set -- "$@" --tag "{{tag}}"
+  [ -n "{{layer}}" ] && set -- "$@" --layer "{{layer}}"
+  [ -n "{{components}}" ] && set -- "$@" --components "{{components}}"
+  [ "{{save_prefab}}" = true ] && set -- "$@" --save-prefab
+  [ -n "{{prefab_path}}" ] && set -- "$@" --prefab-path "{{prefab_path}}"
+  [ -n "{{name}}" ] && set -- "$@" "{{name}}"
+
+  OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+  RC=$?
+  [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: primitive, type: text}          # un de : Cube | Sphere | Cylinder | Plane | Capsule | Quad
+  - {name: position, type: text}          # 3 nombres : x y z
+  - {name: rotation, type: text}          # 3 nombres : x y z
+  - {name: scale, type: text}          # 3 nombres : x y z
+  - {name: parent, type: text}
+  - {name: tag, type: text}
+  - {name: layer, type: text}
+  - {name: components, type: text}
+  - {name: save_prefab, type: text}          # true pour poser le drapeau, vide sinon
+  - {name: prefab_path, type: text}
+  - {name: name, type: text}

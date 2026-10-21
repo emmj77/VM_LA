@@ -1,0 +1,46 @@
+id: "U280"
+tool: "unity_collaboration_attachments_list"
+date: "2026-10-18"
+tags: ["unity", "cli", "collaboration"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "List all attachments on an annotation"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- collaboration attachments list --no-banner --no-pager --non-interactive
+  [ -n "{{annotationid}}" ] || { printf '%s\n' "$(msg argument_required 'annotationid' 'unity collaboration attachments list')" >&2; exit 1; }
+  case "{{resolve_users}}" in ''|true|false) ;; *) printf '%s\n' "$(msg resolve_users_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{annotationid}}" ] && set -- "$@" "{{annotationid}}"
+  [ "{{resolve_users}}" = true ] && set -- "$@" --resolve-users
+  [ -n "{{project_id}}" ] && set -- "$@" --project-id "{{project_id}}"
+  [ -n "{{project_path}}" ] && set -- "$@" --project-path "{{project_path}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_collaboration_attachments_list)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: annotationid, type: text}
+  - {name: resolve_users, type: text}   # true pour poser --resolve-users ; Replace user IDs with display names
+  - {name: project_id, type: text}   # Unity Cloud project id
+  - {name: project_path, type: text}   # Path to the Unity project (defaults to the current directory); used to

@@ -1,0 +1,39 @@
+id: "K056"
+tool: "krita_new_canvas"
+date: "2026-10-18"
+tags: ["krita", "krita_new_canvas"]
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a new canvas"
+
+COMMAND: |
+  SERVICE=$(krita_url) || exit 1
+  num() { case "$1" in ''|*[!0-9.-]*) printf 'null' ;; *) printf '%s' "$1" ;; esac; }
+  tab() { case "$1" in '') printf 'null' ;; *) printf '%s' "$1" | jq -c . 2>/dev/null || printf 'null' ;; esac; }
+  A_width=$(num "{{width}}")
+  A_height=$(num "{{height}}")
+
+  D=$(jq -cn \
+    --argjson width "$A_width" \
+    --argjson height "$A_height" \
+    --arg name "{{name}}" \
+    --arg background "{{background}}" \
+    '{action:"new_canvas", params:({ width:$width, height:$height, name:$name, background:$background } | with_entries(select(.value != null and .value != "")))}')
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+  printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: width, type: int}
+  - {name: height, type: int}
+  - {name: name, type: text}
+  - {name: background, type: text}

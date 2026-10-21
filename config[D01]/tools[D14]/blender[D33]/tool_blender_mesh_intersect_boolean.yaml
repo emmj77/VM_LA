@@ -1,0 +1,25 @@
+id: "B671"
+tool: "blender_mesh_intersect_boolean"
+date: "2026-10-17"
+tags: ["blender_mesh_intersect_boolean"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Cut solid geometry from selected to unselected"
+
+machine: "blender"
+op: "mesh.intersect_boolean"
+
+ARGS:
+  - {name: operation, type: text}          # un de : INTERSECT | UNION | DIFFERENCE
+  - {name: use_swap, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_self, type: text}          # true|false, vide pour ne rien poser
+  - {name: threshold, type: text}
+  - {name: solver, type: text}          # un de : FLOAT | EXACT

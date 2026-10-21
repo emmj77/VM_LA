@@ -1,0 +1,20 @@
+id: "B1364"
+tool: "blender_sequencer_rename_channel"
+date: "2026-10-17"
+tags: ["blender_sequencer_rename_channel"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(undocumented operator)"
+
+machine: "blender"
+op: "sequencer.rename_channel"
+
+ARGS: []

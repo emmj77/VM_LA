@@ -1,0 +1,20 @@
+id: "B303"
+tool: "blender_dpaint_bake"
+date: "2026-10-17"
+tags: ["blender_dpaint_bake"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Bake dynamic paint image sequence surface"
+
+machine: "blender"
+op: "dpaint.bake"
+
+ARGS: []

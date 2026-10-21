@@ -1,0 +1,21 @@
+id: "B038"
+tool: "blender_anim_clear_useless_actions"
+date: "2026-10-17"
+tags: ["blender_anim_clear_useless_actions"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Mark actions with no F-Curves for deletion after save and reload of file preserving 'action libraries'"
+
+machine: "blender"
+op: "anim.clear_useless_actions"
+
+ARGS:
+  - {name: only_unused, type: text}          # true|false, vide pour ne rien poser

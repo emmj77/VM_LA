@@ -1,0 +1,45 @@
+id: "U442"
+tool: "unity_vcs_uvcs_review_reply"
+date: "2026-10-18"
+tags: ["unity", "cli", "vcs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Reply to a review comment"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- vcs uvcs review reply --no-banner --no-pager --non-interactive
+
+
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ -n "{{review}}" ] && set -- "$@" --review "{{review}}"
+  [ -n "{{comment}}" ] && set -- "$@" --comment "{{comment}}"
+  [ -n "{{body}}" ] && set -- "$@" --body "{{body}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_vcs_uvcs_review_2)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: path, type: text}   # facultatif
+  - {name: review, type: text}   # The review holding the comment, by id (required)
+  - {name: comment, type: text}   # The comment to act on, by id (required)
+  - {name: body, type: text}   # The reply text (required)

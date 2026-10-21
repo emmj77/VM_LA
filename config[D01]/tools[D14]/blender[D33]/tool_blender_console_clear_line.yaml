@@ -1,0 +1,20 @@
+id: "B208"
+tool: "blender_console_clear_line"
+date: "2026-10-17"
+tags: ["blender_console_clear_line"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Clear the line and store in history"
+
+machine: "blender"
+op: "console.clear_line"
+
+ARGS: []

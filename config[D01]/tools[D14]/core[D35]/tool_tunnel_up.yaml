@@ -1,0 +1,50 @@
+id: "G065"
+tool: "tunnel_up"
+date: "2026-10-19"
+tags: ["tunnel_up", "tunnel", "wireguard", "wg0", "lever"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "brings the wireguard tunnel up with wg-quick and says the address that landed"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  SECT=$(sed -n '/^tunnel:/,/^[a-z_]/p' "$ROOT/config/la_config.yaml" 2>/dev/null)
+  IFACE=$(printf '%s\n' "$SECT" | sed -n 's/^  iface:[[:space:]]*//p' | head -n 1 \
+          | sed -e 's/#.*//' -e 's/[[:space:]]*$//')
+  [ -n "$IFACE" ] || IFACE=wg0
+  case "$IFACE" in
+    ''|*[!a-zA-Z0-9_-]*) printf '%s\n' "$(msg bad_interface "$IFACE")" >&2 ; exit 1 ;;
+  esac
+  command -v wg-quick >/dev/null 2>&1 || { printf '%s\n' "$(msg wgquick_missing)" >&2 ; exit 1 ; }
+  command -v ip >/dev/null 2>&1 || { printf '%s\n' "$(msg ip_missing)" >&2 ; exit 1 ; }
+  CONF=/etc/wireguard/$IFACE.conf
+  sudo -n test -r "$CONF" 2>/dev/null || { printf '%s\n' "$(msg conf_unreadable "$CONF")" >&2 ; exit 1 ; }
+
+  if ip link show "$IFACE" >/dev/null 2>&1; then
+    ADR=$(ip -4 -o addr show dev "$IFACE" 2>/dev/null | awk '{print $4}' | head -n 1)
+    printf '%s\n' "$(msg already_up)""$IFACE" "${ADR:--}"
+    exit 0
+  fi
+
+  L=$(sudo -n wg-quick up "$IFACE" 2>&1) || {
+    printf '%s\n' "$(msg wireguard_up_failed "$IFACE")"$L" | tail -n 3 | tr '\n' ' ' | cut -c1-240)" >&2
+    exit 1
+  }
+  sleep 1
+  if ip link show "$IFACE" >/dev/null 2>&1; then
+    ADR=$(ip -4 -o addr show dev "$IFACE" 2>/dev/null | awk '{print $4}' | head -n 1)
+    printf 'leve : %s, adresse %s\n' "$IFACE" "${ADR:-sans adresse}"
+  else
+    printf '%s\n' "$(msg wg_up_silent "$IFACE")" >&2
+    exit 1
+  fi
+
+ARGS: []

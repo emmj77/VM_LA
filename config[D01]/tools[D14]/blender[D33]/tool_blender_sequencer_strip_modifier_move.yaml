@@ -1,0 +1,22 @@
+id: "B1395"
+tool: "blender_sequencer_strip_modifier_move"
+date: "2026-10-17"
+tags: ["blender_sequencer_strip_modifier_move"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move modifier up and down in the stack"
+
+machine: "blender"
+op: "sequencer.strip_modifier_move"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: direction, type: text}          # un de : UP | DOWN

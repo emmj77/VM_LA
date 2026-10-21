@@ -1,0 +1,21 @@
+id: "B1326"
+tool: "blender_sculpt_uv_sculpt_grab"
+date: "2026-10-17"
+tags: ["blender_sculpt_uv_sculpt_grab"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Grab UVs"
+
+machine: "blender"
+op: "sculpt.uv_sculpt_grab"
+
+ARGS:
+  - {name: use_invert, type: text}          # true|false, vide pour ne rien poser

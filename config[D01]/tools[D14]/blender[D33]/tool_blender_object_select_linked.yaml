@@ -1,0 +1,22 @@
+id: "B1026"
+tool: "blender_object_select_linked"
+date: "2026-10-17"
+tags: ["blender_object_select_linked"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all visible objects that are linked"
+
+machine: "blender"
+op: "object.select_linked"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # un de : OBDATA | MATERIAL | DUPGROUP | PARTICLE | LIBRARY | LIBRARY_OBDATA

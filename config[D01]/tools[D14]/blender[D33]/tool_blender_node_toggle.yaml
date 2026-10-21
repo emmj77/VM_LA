@@ -1,0 +1,21 @@
+id: "B1745"
+tool: "blender_node_toggle"
+date: "2026-10-17"
+tags: ["blender_node_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a node switch (hide, mute, options...): collapse_hide_unused | hide_socket | hide | interface_item_make_panel | interface_item_new_panel | interface_item_unlink_panel | mute | options | preview (op picks which)"
+
+machine: "blender"
+op: "node.{{op}}_toggle"
+
+ARGS:
+  - {name: op, type: enum, values: [collapse_hide_unused, hide_socket, hide, interface_item_make_panel, interface_item_new_panel, interface_item_unlink_panel, mute, options, preview]}

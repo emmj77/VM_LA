@@ -1,0 +1,20 @@
+id: "B813"
+tool: "blender_node_backimage_sample"
+date: "2026-10-17"
+tags: ["blender_node_backimage_sample"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use mouse to sample background image"
+
+machine: "blender"
+op: "node.backimage_sample"
+
+ARGS: []

@@ -1,0 +1,23 @@
+id: "B1747"
+tool: "blender_object_hook"
+date: "2026-10-17"
+tags: ["blender_object_hook"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a hook of an object: add_newob | add_selob | assign | recenter | remove | reset | select (op picks which)"
+
+machine: "blender"
+op: "object.hook_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add_newob, add_selob, assign, recenter, remove, reset, select]}
+  - {name: modifier, type: text}
+  - {name: use_bone, type: text}

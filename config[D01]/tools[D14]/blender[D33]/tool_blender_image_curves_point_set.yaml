@@ -1,0 +1,22 @@
+id: "B525"
+tool: "blender_image_curves_point_set"
+date: "2026-10-17"
+tags: ["blender_image_curves_point_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set black point or white point for curves"
+
+machine: "blender"
+op: "image.curves_point_set"
+
+ARGS:
+  - {name: point, type: text}          # un de : BLACK_POINT | WHITE_POINT
+  - {name: size, type: int}

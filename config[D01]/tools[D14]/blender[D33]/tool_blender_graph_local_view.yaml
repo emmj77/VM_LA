@@ -1,0 +1,21 @@
+id: "B404"
+tool: "blender_graph_local_view"
+date: "2026-10-17"
+tags: ["blender_graph_local_view"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Isolate selected F-Curves in Graph Editor view"
+
+machine: "blender"
+op: "graph.local_view"
+
+ARGS:
+  - {name: frame_selected, type: text}          # true|false, vide pour ne rien poser

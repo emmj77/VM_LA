@@ -1,0 +1,23 @@
+id: "B1736"
+tool: "blender_mask_shape_key"
+date: "2026-10-17"
+tags: ["blender_mask_shape_key"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a shape key of a mask: clear | feather_reset | insert | rekey (op picks which)"
+
+machine: "blender"
+op: "mask.shape_key_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [clear, feather_reset, insert, rekey]}
+  - {name: feather, type: text}
+  - {name: location, type: text}

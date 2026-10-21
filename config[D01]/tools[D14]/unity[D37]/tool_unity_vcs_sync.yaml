@@ -1,0 +1,50 @@
+id: "U437"
+tool: "unity_vcs_sync"
+date: "2026-10-18"
+tags: ["unity", "cli", "vcs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Pull safely: refuse while an Editor holds the project, pull the commits and the LFS objects, then report the reimport"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- vcs sync --no-banner --no-pager --non-interactive
+  case "{{rebase}}" in ''|true|false) ;; *) printf '%s\n' "$(msg rebase_true_false)" >&2; exit 1 ;; esac
+  case "{{allow_dirty}}" in ''|true|false) ;; *) printf '%s\n' "$(msg allow_dirty_true_false)" >&2; exit 1 ;; esac
+  case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg force_true_false)" >&2; exit 1 ;; esac
+  case "{{verify}}" in ''|true|false) ;; *) printf '%s\n' "$(msg verify_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ "{{rebase}}" = true ] && set -- "$@" --rebase
+  [ "{{allow_dirty}}" = true ] && set -- "$@" --allow-dirty
+  [ "{{force}}" = true ] && set -- "$@" --force
+  [ "{{verify}}" = true ] && set -- "$@" --verify
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_vcs_sync_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: path, type: text}   # facultatif
+  - {name: rebase, type: text}   # true pour poser --rebase ; Replay your local commits on top of the incoming ones
+  - {name: allow_dirty, type: text}   # true pour poser --allow-dirty ; Pull over uncommitted changes to tracked files, instead of refusing
+  - {name: force, type: text}   # true pour poser --force ; Pull even while an Editor holds the project
+  - {name: verify, type: text}   # true pour poser --verify ; Check the project afterwards without asking

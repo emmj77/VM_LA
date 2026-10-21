@@ -1,0 +1,22 @@
+id: "B1786"
+tool: "blender_text_search"
+date: "2026-10-17"
+tags: ["blender_text_search"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a find or replace in a text block: find | find_set_selected | replace | replace_set_selected | start_find (op picks which)"
+
+machine: "blender"
+op: "text.{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [find, find_set_selected, replace, replace_set_selected, start_find]}
+  - {name: all, type: text}

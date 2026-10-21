@@ -1,0 +1,20 @@
+id: "B1276"
+tool: "blender_screen_back_to_previous"
+date: "2026-10-17"
+tags: ["blender_screen_back_to_previous"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Revert back to the original screen layout, before fullscreen area overlay"
+
+machine: "blender"
+op: "screen.back_to_previous"
+
+ARGS: []

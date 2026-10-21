@@ -1,0 +1,20 @@
+id: "B1240"
+tool: "blender_rigidbody_object_settings_copy"
+date: "2026-10-17"
+tags: ["blender_rigidbody_object_settings_copy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy Rigid Body settings from active object to selected"
+
+machine: "blender"
+op: "rigidbody.object_settings_copy"
+
+ARGS: []

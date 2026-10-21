@@ -1,0 +1,20 @@
+id: "B231"
+tool: "blender_curve_de_select_first"
+date: "2026-10-17"
+tags: ["blender_curve_de_select_first"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(De)select first of visible part of each NURBS"
+
+machine: "blender"
+op: "curve.de_select_first"
+
+ARGS: []

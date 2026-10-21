@@ -1,0 +1,21 @@
+id: "B1598"
+tool: "blender_wm_call_menu_pie"
+date: "2026-10-17"
+tags: ["blender_wm_call_menu_pie"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open a predefined pie menu"
+
+machine: "blender"
+op: "wm.call_menu_pie"
+
+ARGS:
+  - {name: name, type: text}

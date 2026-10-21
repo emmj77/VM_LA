@@ -1,0 +1,20 @@
+id: "B710"
+tool: "blender_mesh_select_interior_faces"
+date: "2026-10-17"
+tags: ["blender_mesh_select_interior_faces"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select faces where all edges have more than 2 face users"
+
+machine: "blender"
+op: "mesh.select_interior_faces"
+
+ARGS: []

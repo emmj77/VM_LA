@@ -1,0 +1,23 @@
+id: "B217"
+tool: "blender_constraint_apply"
+date: "2026-10-17"
+tags: ["blender_constraint_apply"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Apply constraint and remove from the stack"
+
+machine: "blender"
+op: "constraint.apply"
+
+ARGS:
+  - {name: constraint, type: text}
+  - {name: owner, type: text}          # un de : OBJECT | BONE
+  - {name: report, type: text}          # true|false, vide pour ne rien poser

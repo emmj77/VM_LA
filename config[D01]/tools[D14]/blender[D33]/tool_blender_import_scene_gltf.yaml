@@ -1,0 +1,40 @@
+id: "B568"
+tool: "blender_import_scene_gltf"
+date: "2026-10-17"
+tags: ["blender_import_scene_gltf"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Load a glTF 2.0 file"
+
+machine: "blender"
+op: "import_scene.gltf"
+
+ARGS:
+  - {name: filepath, type: text}
+  - {name: export_import_convert_lighting_mode, type: text}          # un de : SPEC | COMPAT | RAW
+  - {name: filter_glob, type: text}
+  - {name: directory, type: text}
+  - {name: files, type: text}
+  - {name: loglevel, type: int}
+  - {name: import_pack_images, type: text}          # true|false, vide pour ne rien poser
+  - {name: merge_vertices, type: text}          # true|false, vide pour ne rien poser
+  - {name: import_shading, type: text}          # un de : NORMALS | FLAT | SMOOTH
+  - {name: bone_heuristic, type: text}          # un de : BLENDER | TEMPERANCE | FORTUNE
+  - {name: disable_bone_shape, type: text}          # true|false, vide pour ne rien poser
+  - {name: bone_shape_scale_factor, type: text}
+  - {name: guess_original_bind_pose, type: text}          # true|false, vide pour ne rien poser
+  - {name: import_webp_texture, type: text}          # true|false, vide pour ne rien poser
+  - {name: import_unused_materials, type: text}          # true|false, vide pour ne rien poser
+  - {name: import_select_created_objects, type: text}          # true|false, vide pour ne rien poser
+  - {name: import_scene_extras, type: text}          # true|false, vide pour ne rien poser
+  - {name: import_scene_as_collection, type: text}          # true|false, vide pour ne rien poser
+  - {name: import_merge_material_slots, type: text}          # true|false, vide pour ne rien poser
+  - {name: import_point_as_pointcloud, type: text}          # true|false, vide pour ne rien poser

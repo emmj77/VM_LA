@@ -1,0 +1,27 @@
+id: "B1652"
+tool: "blender_wm_read_homefile"
+date: "2026-10-17"
+tags: ["blender_wm_read_homefile"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open the default file"
+
+machine: "blender"
+op: "wm.read_homefile"
+
+ARGS:
+  - {name: filepath, type: text}
+  - {name: load_ui, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_splash, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_factory_startup, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_factory_startup_app_template_only, type: text}          # true|false, vide pour ne rien poser
+  - {name: app_template, type: text}
+  - {name: use_empty, type: text}          # true|false, vide pour ne rien poser

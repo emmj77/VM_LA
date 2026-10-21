@@ -1,0 +1,21 @@
+id: "B351"
+tool: "blender_file_unpack_all"
+date: "2026-10-17"
+tags: ["blender_file_unpack_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Unpack all files packed into this .blend to external ones"
+
+machine: "blender"
+op: "file.unpack_all"
+
+ARGS:
+  - {name: method, type: text}          # un de : USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL | KEEP | REMOVE

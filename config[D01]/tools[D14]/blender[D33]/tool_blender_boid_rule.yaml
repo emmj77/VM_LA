@@ -1,0 +1,22 @@
+id: "B1702"
+tool: "blender_boid_rule"
+date: "2026-10-17"
+tags: ["blender_boid_rule"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a boid rule: add | del | move_down | move_up (op picks which)"
+
+machine: "blender"
+op: "boid.rule_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, del, move_down, move_up]}
+  - {name: type, type: text}

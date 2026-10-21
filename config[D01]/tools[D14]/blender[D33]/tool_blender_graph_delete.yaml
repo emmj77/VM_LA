@@ -1,0 +1,21 @@
+id: "B383"
+tool: "blender_graph_delete"
+date: "2026-10-17"
+tags: ["blender_graph_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove all selected keyframes"
+
+machine: "blender"
+op: "graph.delete"
+
+ARGS:
+  - {name: confirm, type: text}          # true|false, vide pour ne rien poser

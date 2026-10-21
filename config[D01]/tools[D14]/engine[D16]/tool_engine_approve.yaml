@@ -1,0 +1,50 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E001"
+tool: "engine.approve"
+date: "2026-10-20"
+tags: ["engine", "approve"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the human door: request, grant, deny, status"
+COMMAND: |
+
+  _op=${1:-status}
+  case $_op in
+  request)
+    _in=$(cat)
+    [ -n "$_in" ] || { printf 'FAULT request wants the tool and its arguments on the input\n'; exit 0; }
+    approval_request $_in
+    _rc=$?
+    [ "$_rc" = 3 ] && printf 'ok the request waits for a human signature\n' || printf 'note the request was not written\n'
+    ;;
+  allow)
+    _in=$(cat)
+    [ -n "$_in" ] || { printf 'FAULT allow wants the tool and the gesture on the input\n'; exit 0; }
+    approval_request "$_in" >/dev/null 2>&1
+    approval_grant >/dev/null 2>&1
+    [ $? = 0 ] && printf 'ok %s is allowed once\n' "$_in" || printf 'FAULT the signature failed\n'
+    ;;
+  grant)
+    approval_grant
+    [ $? = 0 ] && printf 'ok a human signed it\n' || printf 'FAULT nothing waits, or the signature failed\n'
+    ;;
+  deny)
+    approval_deny
+    printf 'ok the request is denied\n'
+    ;;
+  status)
+    _t=$(approval_status)
+    [ "$_t" = none ] && printf 'note nothing is signed\n' || printf 'ok signed: %s\n' "$_t"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: request,allow,grant,deny,status}

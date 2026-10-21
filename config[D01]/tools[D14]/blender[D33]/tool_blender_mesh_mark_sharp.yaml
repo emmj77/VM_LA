@@ -1,0 +1,22 @@
+id: "B681"
+tool: "blender_mesh_mark_sharp"
+date: "2026-10-17"
+tags: ["blender_mesh_mark_sharp"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "(Un)mark selected edges as sharp"
+
+machine: "blender"
+op: "mesh.mark_sharp"
+
+ARGS:
+  - {name: clear, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_verts, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,22 @@
+id: "B134"
+tool: "blender_clip_clear_track_path"
+date: "2026-10-17"
+tags: ["blender_clip_clear_track_path"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Clear tracks after/before current position or clear the whole track"
+
+machine: "blender"
+op: "clip.clear_track_path"
+
+ARGS:
+  - {name: action, type: text}          # un de : UPTO | REMAINED | ALL
+  - {name: clear_active, type: text}          # true|false, vide pour ne rien poser

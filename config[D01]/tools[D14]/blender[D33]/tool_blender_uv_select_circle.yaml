@@ -1,0 +1,25 @@
+id: "B1517"
+tool: "blender_uv_select_circle"
+date: "2026-10-17"
+tags: ["blender_uv_select_circle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select UV vertices using circle selection"
+
+machine: "blender"
+op: "uv.select_circle"
+
+ARGS:
+  - {name: x, type: int}
+  - {name: y, type: int}
+  - {name: radius, type: int}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # un de : SET | ADD | SUB

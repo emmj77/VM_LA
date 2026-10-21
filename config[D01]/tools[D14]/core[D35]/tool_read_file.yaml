@@ -1,0 +1,21 @@
+id: "G002"
+tool: "read_file"
+date: "2026-10-17"
+tags: ["read_file"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "returns a project file, as is, without modifying it"
+
+COMMAND: |
+  cat "$ROOT/{{path}}"
+
+ARGS:
+  - {name: path, type: path}

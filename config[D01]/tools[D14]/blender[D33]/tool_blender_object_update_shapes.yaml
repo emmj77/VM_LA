@@ -1,0 +1,21 @@
+id: "B1059"
+tool: "blender_object_update_shapes"
+date: "2026-10-17"
+tags: ["blender_object_update_shapes"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Update existing shape keys with the vertex positions of selected objects with matching names"
+
+machine: "blender"
+op: "object.update_shapes"
+
+ARGS:
+  - {name: use_mirror, type: text}          # true|false, vide pour ne rien poser

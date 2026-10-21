@@ -1,0 +1,22 @@
+id: "B498"
+tool: "blender_grease_pencil_set_uniform_opacity"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_set_uniform_opacity"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set all stroke points to same opacity"
+
+machine: "blender"
+op: "grease_pencil.set_uniform_opacity"
+
+ARGS:
+  - {name: opacity_stroke, type: text}
+  - {name: opacity_fill, type: text}

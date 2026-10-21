@@ -1,0 +1,21 @@
+id: "B412"
+tool: "blender_graph_scale_average"
+date: "2026-10-17"
+tags: ["blender_graph_scale_average"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Scale selected key values by their combined average"
+
+machine: "blender"
+op: "graph.scale_average"
+
+ARGS:
+  - {name: factor, type: text}

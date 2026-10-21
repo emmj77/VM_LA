@@ -1,0 +1,20 @@
+id: "B1529"
+tool: "blender_uv_select_split"
+date: "2026-10-17"
+tags: ["blender_uv_select_split"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select only entirely selected faces"
+
+machine: "blender"
+op: "uv.select_split"
+
+ARGS: []

@@ -1,0 +1,23 @@
+id: "K001"
+tool: "krita_status"
+date: "2026-10-17"
+tags: ["krita", "krita_status"]
+
+RULES:
+  enabled: true
+  timeout: 40
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "reports whether the Krita machine answers and what it says it can do"
+
+COMMAND: |
+  SERVICE=$(krita_url) || exit 1
+  printf '%s\n' "$(msg machine_output "$SANTE")"
+  CAP=$(curl -sS --max-time 20 -H 'Content-Type: application/json' -d '{"action":"get_capabilities","params":{}}' "$SERVICE/")
+  printf '%s\n' "$(msg machine_announces)""$(printf '%s' "$CAP" | jq -c .)"
+
+ARGS: []                    # aucun argument : ce tool se nomme seul

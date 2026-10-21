@@ -1,0 +1,21 @@
+id: "B1526"
+tool: "blender_uv_select_overlap"
+date: "2026-10-17"
+tags: ["blender_uv_select_overlap"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all UV faces which overlap each other"
+
+machine: "blender"
+op: "uv.select_overlap"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

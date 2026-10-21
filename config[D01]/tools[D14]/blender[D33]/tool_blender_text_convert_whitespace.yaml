@@ -1,0 +1,21 @@
+id: "B1423"
+tool: "blender_text_convert_whitespace"
+date: "2026-10-17"
+tags: ["blender_text_convert_whitespace"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Convert whitespaces by type"
+
+machine: "blender"
+op: "text.convert_whitespace"
+
+ARGS:
+  - {name: type, type: text}          # un de : SPACES | TABS

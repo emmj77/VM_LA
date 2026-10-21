@@ -1,0 +1,54 @@
+id: "B1636"
+tool: "blender_wm_ply_export"
+date: "2026-10-17"
+tags: ["blender_wm_ply_export"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Save the scene to a PLY file"
+
+machine: "blender"
+op: "wm.ply_export"
+
+ARGS:
+  - {name: filepath, type: text}
+  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_backup, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_image, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_movie, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_python, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_font, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_sound, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_text, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_archive, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_btx, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_alembic, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_usd, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_obj, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_volume, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blenlib, type: text}          # true|false, vide pour ne rien poser
+  - {name: filemode, type: int}
+  - {name: display_type, type: text}          # un de : DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
+  - {name: sort_method, type: text}          # un de :
+  - {name: forward_axis, type: text}          # un de : X | Y | Z | NEGATIVE_X | NEGATIVE_Y | NEGATIVE_Z
+  - {name: up_axis, type: text}          # un de : X | Y | Z | NEGATIVE_X | NEGATIVE_Y | NEGATIVE_Z
+  - {name: global_scale, type: text}
+  - {name: apply_modifiers, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_selected_objects, type: text}          # true|false, vide pour ne rien poser
+  - {name: collection, type: text}
+  - {name: export_uv, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_normals, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_colors, type: text}          # un de : NONE | SRGB | LINEAR
+  - {name: export_attributes, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_triangulated_mesh, type: text}          # true|false, vide pour ne rien poser
+  - {name: ascii_format, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_glob, type: text}

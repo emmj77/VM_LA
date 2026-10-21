@@ -1,0 +1,43 @@
+# id: Q01
+# THE MOULD OF A TOOL. one tool = one file: tools/<family>/tool_<name>.yaml
+# The engine reads it, fills the {{...}} holes, and hands the commands to the shell. One runner
+# only: the engine. No side .sh, no python.
+# The register (tools/registry.yaml) carries the identity: id, tool, family, sub_family.
+# The family says in which place a path is allowed to be. The sub-family is a fact of the name.
+# Everything else (the body, the description, the arguments) lives in this file.
+id: "{{id}}"                 # THE identity of this tool: the register repeats it, and the
+                             # correspondence between a line and a body is by it, and by nothing else
+tool: "{{name}}"             # the name the model calls; the file is tool_<name>.yaml
+date: "{{date}}"             # the day it was laid down
+tags: ["{{name}}"]           # the words that make this tool come to mind
+
+RULES:                       # what bounds the tool, said before any effect
+  enabled: true              # true | false: a disabled tool is refused, it does not disappear
+  timeout: "{{timeout}}"     # the engine reads limits.engine_timeout; this field only overrides it
+  writable_workspace: "{{workspace}}"   # the ONE place this tool may write. empty = it writes nothing
+  approval: none             # none | write | whole : a human signs before it runs (four tools only)
+  turn: none                 # doc | plan | toolset | project | canon | none : what it changes in the turn
+  count: false               # true: its return enters the counter the loop reads
+  paths: read                # read | write : it touches the disk, and on which side
+
+DESCRIPTION: "..."           # ONE line, for the eye of the model: what the tool DOES. The quotes
+                             # are removed at reading; the engine and the loop read it here.
+
+# THE BODY: shell commands, dash + coreutils + jq (curl towards the machine), nothing else.
+#   1 arguments arrive through their {{name}} holes, already checked by the engine for arity and
+#     type: the body does not check again what is already checked.
+#   2 free text arrives on the standard input: T=$(cat). Never inside the command.
+#   3 it refuses by naming: a word on the error output, a non zero exit. Never a silence.
+#   4 what it prints is bounded and given the single shape by the engine: the body never writes
+#     JSON by hand.
+#   5 it talks to the machine only: a service on the local port. Never outside.
+#   6 the block runs to the first line that is not indented; empty lines inside the body are kept.
+COMMAND: |
+  {{command}}
+
+ARGS:                        # the arguments, in the declared order. The engine checks them before any effect.
+  - {name: image, type: path}                  # path | enum | int | bool | text
+  - {name: style, type: text, stdin: true}     # stdin: true = the free text of this tool comes on the input
+  - {name: op, type: enum, values: add,list}   # an enum carries its closed list, in `values:`
+# No argument at all? then the exact line, and nothing else:
+# ARGS: []

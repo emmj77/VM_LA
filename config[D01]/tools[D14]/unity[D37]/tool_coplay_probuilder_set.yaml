@@ -1,0 +1,71 @@
+id: "U473"
+tool: "coplay_probuilder_set"
+date: "2026-10-17"
+tags: ["coplay_probuilder_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a probuilder mesh: material | pivot | smoothing (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  material)
+    set -f
+    set -- probuilder set-material
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'probuilder set-material')" >&2; exit 1; }
+    [ -n "{{faces}}" ] && set -- "$@" --faces "{{faces}}"
+    [ -n "{{material}}" ] && set -- "$@" --material "{{material}}"
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  pivot)
+    set -f
+    set -- probuilder set-pivot
+    T=$(printf '%s' "{{position}}" | tr -d '0123456789. -')
+    [ -z "$T" ] || { printf '%s\n' "$(msg expects_space_separated_numbers 'position' '3' '%s')""{{position}}" >&2; exit 1; }
+    unset T
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'probuilder set-pivot')" >&2; exit 1; }
+    [ -n "{{position}}" ] && set -- "$@" --position {{position}}
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  smoothing)
+    set -f
+    set -- probuilder set-smoothing
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'probuilder set-smoothing')" >&2; exit 1; }
+    [ -n "{{faces}}" ] && set -- "$@" --faces "{{faces}}"
+    [ -n "{{group}}" ] && set -- "$@" --group "{{group}}"
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [material, pivot, smoothing]}
+  - {name: target, type: text}
+  - {name: faces, type: text}
+  - {name: group, type: int}
+  - {name: material, type: text}
+  - {name: search_method, type: text}
+  - {name: position, type: text}

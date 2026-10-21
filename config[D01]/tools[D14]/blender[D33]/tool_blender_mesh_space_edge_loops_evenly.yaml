@@ -1,0 +1,23 @@
+id: "B735"
+tool: "blender_mesh_space_edge_loops_evenly"
+date: "2026-10-17"
+tags: ["blender_mesh_space_edge_loops_evenly"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Space the vertices in a regular distribution on the loop"
+
+machine: "blender"
+op: "mesh.space_edge_loops_evenly"
+
+ARGS:
+  - {name: factor, type: text}
+  - {name: interpolation, type: text}          # un de : CUBIC | LINEAR
+  - {name: lock, type: text}          # 3 valeurs separees par des virgules

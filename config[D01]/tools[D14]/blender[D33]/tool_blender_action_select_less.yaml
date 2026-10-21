@@ -1,0 +1,20 @@
+id: "B025"
+tool: "blender_action_select_less"
+date: "2026-10-17"
+tags: ["blender_action_select_less"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Deselect keyframes on ends of selection islands"
+
+machine: "blender"
+op: "action.select_less"
+
+ARGS: []

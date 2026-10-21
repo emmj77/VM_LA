@@ -1,0 +1,20 @@
+id: "B1353"
+tool: "blender_sequencer_meta_separate"
+date: "2026-10-17"
+tags: ["blender_sequencer_meta_separate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Put the contents of a meta-strip back in the sequencer"
+
+machine: "blender"
+op: "sequencer.meta_separate"
+
+ARGS: []

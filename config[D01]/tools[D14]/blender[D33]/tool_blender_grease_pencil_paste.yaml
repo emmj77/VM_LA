@@ -1,0 +1,23 @@
+id: "B462"
+tool: "blender_grease_pencil_paste"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_paste"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Paste Grease Pencil points or strokes from the internal clipboard to the active layer"
+
+machine: "blender"
+op: "grease_pencil.paste"
+
+ARGS:
+  - {name: type, type: text}          # un de : ACTIVE | LAYER
+  - {name: paste_back, type: text}          # true|false, vide pour ne rien poser
+  - {name: keep_world_transform, type: text}          # true|false, vide pour ne rien poser

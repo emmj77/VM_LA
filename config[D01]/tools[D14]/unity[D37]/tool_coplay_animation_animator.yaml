@@ -1,0 +1,129 @@
+id: "U446"
+tool: "coplay_animation_animator"
+date: "2026-10-17"
+tags: ["coplay_animation_animator"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "an animator: crossfade | get-parameter | info | play | set-enabled | set-parameter | set-speed (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  crossfade)
+    set -f
+    set -- animation animator crossfade
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'animation animator crossfade')" >&2; exit 1; }
+    [ -n "{{state_name}}" ] || { printf '%s\n' "$(msg argument_required 'state_name' 'animation animator crossfade')" >&2; exit 1; }
+    [ -n "{{duration}}" ] && set -- "$@" --duration "{{duration}}"
+    [ -n "{{layer}}" ] && set -- "$@" --layer "{{layer}}"
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{state_name}}" ] && set -- "$@" "{{state_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  get-parameter)
+    set -f
+    set -- animation animator get-parameter
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'animation animator get-parameter')" >&2; exit 1; }
+    [ -n "{{param_name}}" ] || { printf '%s\n' "$(msg argument_required 'param_name' 'animation animator get-parameter')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{param_name}}" ] && set -- "$@" "{{param_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  info)
+    set -f
+    set -- animation animator info
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'animation animator info')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  play)
+    set -f
+    set -- animation animator play
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'animation animator play')" >&2; exit 1; }
+    [ -n "{{state_name}}" ] || { printf '%s\n' "$(msg argument_required 'state_name' 'animation animator play')" >&2; exit 1; }
+    [ -n "{{layer}}" ] && set -- "$@" --layer "{{layer}}"
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{state_name}}" ] && set -- "$@" "{{state_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  set-enabled)
+    set -f
+    set -- animation animator set-enabled
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'animation animator set-enabled')" >&2; exit 1; }
+    [ -n "{{enabled}}" ] || { printf '%s\n' "$(msg argument_required 'enabled' 'animation animator set-enabled')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{enabled}}" ] && set -- "$@" "{{enabled}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  set-parameter)
+    set -f
+    set -- animation animator set-parameter
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'animation animator set-parameter')" >&2; exit 1; }
+    [ -n "{{param_name}}" ] || { printf '%s\n' "$(msg argument_required 'param_name' 'animation animator set-parameter')" >&2; exit 1; }
+    [ -n "{{value}}" ] || { printf '%s\n' "$(msg argument_required 'value' 'animation animator set-parameter')" >&2; exit 1; }
+    [ -n "{{param_type}}" ] && set -- "$@" --type "{{param_type}}"
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{param_name}}" ] && set -- "$@" "{{param_name}}"
+    [ -n "{{value}}" ] && set -- "$@" "{{value}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  set-speed)
+    set -f
+    set -- animation animator set-speed
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'animation animator set-speed')" >&2; exit 1; }
+    [ -n "{{speed}}" ] || { printf '%s\n' "$(msg argument_required 'speed' 'animation animator set-speed')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{speed}}" ] && set -- "$@" "{{speed}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [crossfade, get-parameter, info, play, set-enabled, set-parameter, set-speed]}
+  - {name: target, type: text}
+  - {name: speed, type: text}
+  - {name: enabled, type: text}
+  - {name: param_name, type: text}
+  - {name: value, type: text}
+  - {name: state_name, type: text}
+  - {name: duration, type: text}
+  - {name: layer, type: int}
+  - {name: param_type, type: text}
+  - {name: search_method, type: text}

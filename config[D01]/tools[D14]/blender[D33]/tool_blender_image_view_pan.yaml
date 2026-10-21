@@ -1,0 +1,21 @@
+id: "B558"
+tool: "blender_image_view_pan"
+date: "2026-10-17"
+tags: ["blender_image_view_pan"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Pan the view"
+
+machine: "blender"
+op: "image.view_pan"
+
+ARGS:
+  - {name: offset, type: text}          # 2 valeurs separees par des virgules

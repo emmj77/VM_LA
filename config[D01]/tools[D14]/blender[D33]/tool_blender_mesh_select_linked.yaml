@@ -1,0 +1,21 @@
+id: "B712"
+tool: "blender_mesh_select_linked"
+date: "2026-10-17"
+tags: ["blender_mesh_select_linked"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all vertices connected to the current selection"
+
+machine: "blender"
+op: "mesh.select_linked"
+
+ARGS:
+  - {name: delimit, type: text}          # un de : NORMAL | MATERIAL | SEAM | SHARP | UV

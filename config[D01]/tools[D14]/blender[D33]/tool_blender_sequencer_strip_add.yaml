@@ -1,0 +1,72 @@
+id: "B1780"
+tool: "blender_sequencer_strip_add"
+date: "2026-10-17"
+tags: ["blender_sequencer_strip_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a sequencer strip: effect | image | mask | movie | movieclip | scene | sound (op picks which)"
+
+machine: "blender"
+op: "sequencer.{{op}}_strip_add"
+
+ARGS:
+  - {name: op, type: enum, values: [effect, image, mask, movie, movieclip, scene, sound]}
+  - {name: channel, type: int}
+  - {name: frame_start, type: int}
+  - {name: move_strips, type: text}
+  - {name: overlap, type: text}
+  - {name: overlap_shuffle_override, type: text}
+  - {name: replace_sel, type: text}
+  - {name: skip_locked_or_muted_channels, type: text}
+  - {name: directory, type: text}
+  - {name: files, type: text}
+  - {name: filter_blenlib, type: text}
+  - {name: filter_obj, type: text}
+  - {name: filter_usd, type: text}
+  - {name: filepath, type: text}
+  - {name: fit_method, type: text}
+  - {name: length, type: int}
+  - {name: set_view_transform, type: text}
+  - {name: show_multiview, type: text}
+  - {name: adjust_playback_rate, type: text}
+  - {name: cache, type: text}
+  - {name: clip, type: text}
+  - {name: color, type: text}
+  - {name: height, type: int}
+  - {name: image_import_type, type: text}
+  - {name: mask, type: text}
+  - {name: mono, type: text}
+  - {name: scene, type: text}
+  - {name: sound, type: text}
+  - {name: type, type: text}
+  - {name: use_framerate, type: text}
+  - {name: use_placeholders, type: text}
+  - {name: use_sequence_detection, type: text}
+  - {name: width, type: int}
+  - {name: check_existing, type: text}
+  - {name: display_type, type: text}
+  - {name: filemode, type: int}
+  - {name: filter_alembic, type: text}
+  - {name: filter_archive, type: text}
+  - {name: filter_backup, type: text}
+  - {name: filter_blender, type: text}
+  - {name: filter_btx, type: text}
+  - {name: filter_folder, type: text}
+  - {name: filter_font, type: text}
+  - {name: filter_image, type: text}
+  - {name: filter_movie, type: text}
+  - {name: filter_python, type: text}
+  - {name: filter_sound, type: text}
+  - {name: filter_text, type: text}
+  - {name: filter_volume, type: text}
+  - {name: relative_path, type: text}
+  - {name: sort_method, type: text}
+  - {name: use_multiview, type: text}

@@ -1,0 +1,20 @@
+id: "B1692"
+tool: "blender_wm_xr_session_toggle"
+date: "2026-10-17"
+tags: ["blender_wm_xr_session_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open a view for use with virtual reality headsets, or close it if already opened"
+
+machine: "blender"
+op: "wm.xr_session_toggle"
+
+ARGS: []

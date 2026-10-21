@@ -1,0 +1,20 @@
+id: "B030"
+tool: "blender_action_stash_and_create"
+date: "2026-10-17"
+tags: ["blender_action_stash_and_create"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Store this action in the NLA stack as a non-contributing strip for later use, and create a new action"
+
+machine: "blender"
+op: "action.stash_and_create"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B176"
+tool: "blender_clip_set_scene_frames"
+date: "2026-10-17"
+tags: ["blender_clip_set_scene_frames"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set scene's start and end frame to match clip's start frame and length"
+
+machine: "blender"
+op: "clip.set_scene_frames"
+
+ARGS: []

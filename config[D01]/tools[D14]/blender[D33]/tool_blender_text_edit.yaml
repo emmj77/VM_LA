@@ -1,0 +1,24 @@
+id: "B1785"
+tool: "blender_text_edit"
+date: "2026-10-17"
+tags: ["blender_text_edit"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a text block: autocomplete | copy | delete | indent | indent_or_autocomplete | insert | line_break | move | move_select | paste | select_all | select_word | selection_set | unindent (op picks which)"
+
+machine: "blender"
+op: "text.{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [autocomplete, copy, delete, indent, indent_or_autocomplete, insert, line_break, move, move_select, paste, select_all, select_word, selection_set, unindent]}
+  - {name: type, type: text}
+  - {name: selection, type: text}
+  - {name: text, type: text}

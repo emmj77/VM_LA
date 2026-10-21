@@ -1,0 +1,22 @@
+id: "B1110"
+tool: "blender_paint_mask_flood_fill"
+date: "2026-10-17"
+tags: ["blender_paint_mask_flood_fill"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Fill the whole mask with a given value, or invert its values"
+
+machine: "blender"
+op: "paint.mask_flood_fill"
+
+ARGS:
+  - {name: mode, type: text}          # un de : VALUE | VALUE_INVERSE | INVERT
+  - {name: value, type: text}

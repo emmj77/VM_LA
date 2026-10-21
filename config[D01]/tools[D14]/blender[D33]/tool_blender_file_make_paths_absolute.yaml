@@ -1,0 +1,20 @@
+id: "B331"
+tool: "blender_file_make_paths_absolute"
+date: "2026-10-17"
+tags: ["blender_file_make_paths_absolute"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make all paths to external files absolute"
+
+machine: "blender"
+op: "file.make_paths_absolute"
+
+ARGS: []

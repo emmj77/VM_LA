@@ -1,0 +1,21 @@
+id: "B969"
+tool: "blender_object_light_linking_blockers_link"
+date: "2026-10-17"
+tags: ["blender_object_light_linking_blockers_link"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Light link selected blockers to the active emitter object"
+
+machine: "blender"
+op: "object.light_linking_blockers_link"
+
+ARGS:
+  - {name: link_state, type: text}          # un de : INCLUDE | EXCLUDE

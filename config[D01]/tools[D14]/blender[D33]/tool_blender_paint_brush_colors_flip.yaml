@@ -1,0 +1,20 @@
+id: "B1102"
+tool: "blender_paint_brush_colors_flip"
+date: "2026-10-17"
+tags: ["blender_paint_brush_colors_flip"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Swap primary and secondary brush colors"
+
+machine: "blender"
+op: "paint.brush_colors_flip"
+
+ARGS: []

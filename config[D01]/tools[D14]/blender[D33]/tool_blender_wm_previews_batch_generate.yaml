@@ -1,0 +1,30 @@
+id: "B1639"
+tool: "blender_wm_previews_batch_generate"
+date: "2026-10-17"
+tags: ["blender_wm_previews_batch_generate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Generate selected .blend file's previews"
+
+machine: "blender"
+op: "wm.previews_batch_generate"
+
+ARGS:
+  - {name: files, type: text}
+  - {name: directory, type: text}
+  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_scenes, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_collections, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_objects, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_intern_data, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_trusted, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_backups, type: text}          # true|false, vide pour ne rien poser

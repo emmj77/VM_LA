@@ -1,0 +1,24 @@
+id: "B1588"
+tool: "blender_view3d_zoom"
+date: "2026-10-17"
+tags: ["blender_view3d_zoom"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Zoom in/out in the view"
+
+machine: "blender"
+op: "view3d.zoom"
+
+ARGS:
+  - {name: mx, type: int}
+  - {name: my, type: int}
+  - {name: delta, type: int}
+  - {name: use_cursor_init, type: text}          # true|false, vide pour ne rien poser

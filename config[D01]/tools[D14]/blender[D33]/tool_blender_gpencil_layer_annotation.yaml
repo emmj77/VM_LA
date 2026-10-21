@@ -1,0 +1,22 @@
+id: "B1729"
+tool: "blender_gpencil_layer_annotation"
+date: "2026-10-17"
+tags: ["blender_gpencil_layer_annotation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "an annotation layer: add | move | remove (op picks which)"
+
+machine: "blender"
+op: "gpencil.layer_annotation_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, move, remove]}
+  - {name: type, type: text}

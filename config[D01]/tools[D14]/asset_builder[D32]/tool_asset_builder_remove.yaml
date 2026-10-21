@@ -1,0 +1,30 @@
+id: "A006"
+tool: "asset_builder_remove"
+date: "2026-10-19"
+tags: ["asset_builder", "session"]
+
+
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "sends an asset to the trash; name must be repeated in confirm"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{confirm}}"
+  case "$A2" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_confirm_a2 "$A2")" >&2 ; exit 1 ;; esac
+  AB_HOME="$W/asset_builder" "$B" remove --name "$A1" --confirm "$A2"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: confirm, type: text}

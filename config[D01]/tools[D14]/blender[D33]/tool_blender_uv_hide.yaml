@@ -1,0 +1,21 @@
+id: "B1497"
+tool: "blender_uv_hide"
+date: "2026-10-17"
+tags: ["blender_uv_hide"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Hide (un)selected UV vertices"
+
+machine: "blender"
+op: "uv.hide"
+
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser

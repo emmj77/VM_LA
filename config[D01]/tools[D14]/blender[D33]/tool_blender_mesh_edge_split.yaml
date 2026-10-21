@@ -1,0 +1,21 @@
+id: "B654"
+tool: "blender_mesh_edge_split"
+date: "2026-10-17"
+tags: ["blender_mesh_edge_split"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Split selected edges so that each neighbor face gets its own copy"
+
+machine: "blender"
+op: "mesh.edge_split"
+
+ARGS:
+  - {name: type, type: text}          # un de : EDGE | VERT

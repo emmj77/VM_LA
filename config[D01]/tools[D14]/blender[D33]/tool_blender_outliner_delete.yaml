@@ -1,0 +1,21 @@
+id: "B1074"
+tool: "blender_outliner_delete"
+date: "2026-10-17"
+tags: ["blender_outliner_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete selected objects and collections"
+
+machine: "blender"
+op: "outliner.delete"
+
+ARGS:
+  - {name: hierarchy, type: text}          # true|false, vide pour ne rien poser

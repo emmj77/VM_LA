@@ -1,0 +1,22 @@
+id: "B1584"
+tool: "blender_view3d_view_roll"
+date: "2026-10-17"
+tags: ["blender_view3d_view_roll"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Roll the view"
+
+machine: "blender"
+op: "view3d.view_roll"
+
+ARGS:
+  - {name: angle, type: text}
+  - {name: type, type: text}          # un de : ANGLE | LEFT | RIGHT

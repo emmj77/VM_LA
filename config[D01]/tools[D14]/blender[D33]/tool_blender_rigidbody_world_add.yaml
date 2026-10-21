@@ -1,0 +1,20 @@
+id: "B1242"
+tool: "blender_rigidbody_world_add"
+date: "2026-10-17"
+tags: ["blender_rigidbody_world_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add Rigid Body simulation world to the current scene"
+
+machine: "blender"
+op: "rigidbody.world_add"
+
+ARGS: []

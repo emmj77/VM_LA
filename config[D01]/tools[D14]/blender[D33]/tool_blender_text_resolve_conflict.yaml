@@ -1,0 +1,21 @@
+id: "B1437"
+tool: "blender_text_resolve_conflict"
+date: "2026-10-17"
+tags: ["blender_text_resolve_conflict"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "When external text is out of sync, resolve the conflict"
+
+machine: "blender"
+op: "text.resolve_conflict"
+
+ARGS:
+  - {name: resolution, type: text}          # un de : IGNORE | RELOAD | SAVE | MAKE_INTERNAL

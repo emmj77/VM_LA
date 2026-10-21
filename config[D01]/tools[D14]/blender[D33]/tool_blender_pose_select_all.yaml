@@ -1,0 +1,21 @@
+id: "B1200"
+tool: "blender_pose_select_all"
+date: "2026-10-17"
+tags: ["blender_pose_select_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle selection status of all bones"
+
+machine: "blender"
+op: "pose.select_all"
+
+ARGS:
+  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT

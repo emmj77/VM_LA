@@ -1,0 +1,69 @@
+id: "U378"
+tool: "unity_pipeline_cloud_build_targets_list"
+date: "2026-10-18"
+tags: ["unity", "cli", "pipeline"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "List Build Automation build targets in the project"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- pipeline cloud-build targets list --no-banner --no-pager --non-interactive
+
+
+  [ -n "{{page}}" ] && set -- "$@" --page "{{page}}"
+  [ -n "{{limit}}" ] && set -- "$@" --limit "{{limit}}"
+  [ -n "{{platform}}" ] && set -- "$@" --platform "{{platform}}"
+  [ -n "{{build_target_name}}" ] && set -- "$@" --build-target-name "{{build_target_name}}"
+  [ -n "{{search}}" ] && set -- "$@" --search "{{search}}"
+  [ -n "{{branch}}" ] && set -- "$@" --branch "{{branch}}"
+  [ -n "{{operating_system}}" ] && set -- "$@" --operating-system "{{operating_system}}"
+  [ -n "{{os_version}}" ] && set -- "$@" --os-version "{{os_version}}"
+  [ -n "{{unity_version}}" ] && set -- "$@" --unity-version "{{unity_version}}"
+  [ -n "{{last_built_unity_version}}" ] && set -- "$@" --last-built-unity-version "{{last_built_unity_version}}"
+  [ -n "{{xcode_version}}" ] && set -- "$@" --xcode-version "{{xcode_version}}"
+  [ -n "{{android_version}}" ] && set -- "$@" --android-version "{{android_version}}"
+  [ -n "{{created_by}}" ] && set -- "$@" --created-by "{{created_by}}"
+  [ -n "{{group_name}}" ] && set -- "$@" --group-name "{{group_name}}"
+  [ -n "{{filter_for_cache_copy}}" ] && set -- "$@" --filter-for-cache-copy "{{filter_for_cache_copy}}"
+  [ -n "{{sort_by}}" ] && set -- "$@" --sort-by "{{sort_by}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_pipeline_cloud_build_4)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: page, type: text}   # The page of results to return, starting at 1. Defaults to 1.
+  - {name: limit, type: text}   # The number of results per page, from 1 through 100. Defaults to 25.
+  - {name: platform, type: text}   # Filter by platform
+  - {name: build_target_name, type: text}   # Filter by build target name
+  - {name: search, type: text}   # Search build targets
+  - {name: branch, type: text}   # Filter by source control branch
+  - {name: operating_system, type: text}   # Filter by operating system
+  - {name: os_version, type: text}   # Filter by operating system version
+  - {name: unity_version, type: text}   # Filter by configured Unity version
+  - {name: last_built_unity_version, type: text}   # Filter by the Unity version used for the last build
+  - {name: xcode_version, type: text}   # Filter by Xcode version
+  - {name: android_version, type: text}   # Filter by Android version
+  - {name: created_by, type: text}   # Filter by creation source
+  - {name: group_name, type: text}   # Filter by group name within the API page. Short or empty pages can hav
+  - {name: filter_for_cache_copy, type: text}   # Filter by cache-copy eligibility. Requires an explicit boolean; omit t
+  - {name: sort_by, type: text}   # Sort by a field. Repeat in priority order; prefix a field with minus f

@@ -1,0 +1,20 @@
+id: "B584"
+tool: "blender_mask_copy_splines"
+date: "2026-10-17"
+tags: ["blender_mask_copy_splines"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy the selected splines to the internal clipboard"
+
+machine: "blender"
+op: "mask.copy_splines"
+
+ARGS: []

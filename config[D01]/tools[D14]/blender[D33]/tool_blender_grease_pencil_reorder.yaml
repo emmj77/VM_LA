@@ -1,0 +1,21 @@
+id: "B472"
+tool: "blender_grease_pencil_reorder"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_reorder"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change the display order of the selected strokes"
+
+machine: "blender"
+op: "grease_pencil.reorder"
+
+ARGS:
+  - {name: direction, type: text}          # un de : TOP | UP | DOWN | BOTTOM

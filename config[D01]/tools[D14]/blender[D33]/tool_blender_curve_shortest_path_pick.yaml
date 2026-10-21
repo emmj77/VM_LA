@@ -1,0 +1,20 @@
+id: "B263"
+tool: "blender_curve_shortest_path_pick"
+date: "2026-10-17"
+tags: ["blender_curve_shortest_path_pick"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select shortest path between two selections"
+
+machine: "blender"
+op: "curve.shortest_path_pick"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B180"
+tool: "blender_clip_setup_tracking_scene"
+date: "2026-10-17"
+tags: ["blender_clip_setup_tracking_scene"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Prepare scene for compositing 3D objects into this footage"
+
+machine: "blender"
+op: "clip.setup_tracking_scene"
+
+ARGS: []

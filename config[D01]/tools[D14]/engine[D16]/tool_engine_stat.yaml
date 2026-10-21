@@ -1,0 +1,43 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E011"
+tool: "engine.stat"
+date: "2026-10-20"
+tags: ["engine", "stat"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: "read"
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "sessions.db, counted: exchanges, tools, cost"
+COMMAND: |
+
+  _op=${1:-exchanges}
+  _f=$(cfg abs sessions 2>/dev/null)
+  [ -f "$_f" ] || { printf 'FAULT no sessions base\n'; exit 0; }
+  case $_op in
+  exchanges)
+    _n=$(sqlite3 "$_f" 'select count(*) from messages;' 2>/dev/null)
+    printf 'ok %s message(s) in the base\n' "${_n:-0}"
+    ;;
+  tools)
+    _n=$(sqlite3 "$_f" 'select count(*) from messages where role = "tool";' 2>/dev/null)
+    printf 'ok %s tool return(s) in the base\n' "${_n:-0}"
+    ;;
+  cost)
+    _u=$(cfg abs usage 2>/dev/null)
+    [ -f "$_u" ] || { printf 'FAULT no usage file\n'; exit 0; }
+    _c=$(grep -v '^#' "$_u" | jq -s 'map(select(.tokens != null)) | length' 2>/dev/null)
+    _t=$(grep -v '^#' "$_u" | jq -s 'map(select(.tokens != null)) | map(.tokens) | add // 0' 2>/dev/null)
+    case ${_c:-} in ''|*[!0-9]*) _c=0 ;; esac
+    case ${_t:-} in ''|*[!0-9]*) _t=0 ;; esac
+    printf 'ok %s call(s), %s token(s)\n' "$_c" "$_t"
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: exchanges,tools,cost}

@@ -1,0 +1,7 @@
+FAULT the index names config[D01]/programs[D10]/board.py and the disk holds nothing
+FAULT the index names config[D01]/state[D12]/approve and the disk holds nothing
+FAULT the index names config[D01]/state[D12]/reply.stream and the disk holds nothing
+FAULT the index names config[D01]/state[D12]/stop and the disk holds nothing
+FAULT the index names config[D01]/state[D12]/turn.pid and the disk holds nothing
+FAULT the index names config[D01]/state[D12]/phone.conf and the disk holds nothing
+FAULT the index names config[D01]/state[D12]/phone.png and the disk holds nothing

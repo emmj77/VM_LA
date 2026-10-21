@@ -1,0 +1,20 @@
+id: "B1407"
+tool: "blender_sequencer_view_all_preview"
+date: "2026-10-17"
+tags: ["blender_sequencer_view_all_preview"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Zoom preview to fit in the area"
+
+machine: "blender"
+op: "sequencer.view_all_preview"
+
+ARGS: []

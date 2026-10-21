@@ -1,0 +1,20 @@
+id: "B107"
+tool: "blender_asset_library_reload_listing"
+date: "2026-10-17"
+tags: ["blender_asset_library_reload_listing"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Re-download the asset listing of a remote library. Only supported when the active asset library is remote or has a remote component (the Essentials li"
+
+machine: "blender"
+op: "asset.library_reload_listing"
+
+ARGS: []

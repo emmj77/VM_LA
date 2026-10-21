@@ -1,0 +1,20 @@
+id: "B235"
+tool: "blender_curve_dissolve_verts"
+date: "2026-10-17"
+tags: ["blender_curve_dissolve_verts"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete selected control points, correcting surrounding handles"
+
+machine: "blender"
+op: "curve.dissolve_verts"
+
+ARGS: []

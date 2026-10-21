@@ -1,0 +1,20 @@
+id: "B535"
+tool: "blender_image_pack"
+date: "2026-10-17"
+tags: ["blender_image_pack"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Pack an image as embedded data into the .blend file"
+
+machine: "blender"
+op: "image.pack"
+
+ARGS: []

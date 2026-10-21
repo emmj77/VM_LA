@@ -1,0 +1,22 @@
+id: "B1772"
+tool: "blender_scene_freestyle_modifier"
+date: "2026-10-17"
+tags: ["blender_scene_freestyle_modifier"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a freestyle modifier: alpha | color | geometry | thickness (op picks which)"
+
+machine: "blender"
+op: "scene.freestyle_{{op}}_modifier_add"
+
+ARGS:
+  - {name: op, type: enum, values: [alpha, color, geometry, thickness]}
+  - {name: type, type: text}

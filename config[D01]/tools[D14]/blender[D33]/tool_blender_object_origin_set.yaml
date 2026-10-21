@@ -1,0 +1,22 @@
+id: "B1001"
+tool: "blender_object_origin_set"
+date: "2026-10-17"
+tags: ["blender_object_origin_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the object's origin, by either moving the data, or set to center of data, or use 3D cursor"
+
+machine: "blender"
+op: "object.origin_set"
+
+ARGS:
+  - {name: type, type: text}          # un de : GEOMETRY_ORIGIN | ORIGIN_GEOMETRY | ORIGIN_CURSOR | ORIGIN_CENTER_OF_MASS | ORIGIN_CENTER_OF_VOLUME
+  - {name: center, type: text}          # un de : MEDIAN | BOUNDS

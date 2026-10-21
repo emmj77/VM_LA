@@ -1,0 +1,23 @@
+id: "B1467"
+tool: "blender_ui_drop_color"
+date: "2026-10-17"
+tags: ["blender_ui_drop_color"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Drop colors to buttons"
+
+machine: "blender"
+op: "ui.drop_color"
+
+ARGS:
+  - {name: color, type: text}          # 4 valeurs separees par des virgules
+  - {name: gamma, type: text}          # true|false, vide pour ne rien poser
+  - {name: has_alpha, type: text}          # true|false, vide pour ne rien poser

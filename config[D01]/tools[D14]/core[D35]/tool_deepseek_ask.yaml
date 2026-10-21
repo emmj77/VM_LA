@@ -1,0 +1,73 @@
+id: "G071"
+tool: "deepseek_ask"
+date: "2026-10-20"
+tags: ["deepseek", "web", "agent-browser"]
+
+
+RULES:
+  enabled: true
+  timeout: 240
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Ouvre DeepSeek dans le Chrome persistant, tape la question au rythme d'un humain, attend la reponse et la rend en texte."
+
+COMMAND: |
+  A=$(command -v agent-browser 2>/dev/null || echo /usr/local/bin/agent-browser)
+  [ -x "$A" ] || { echo "refuse : agent-browser introuvable" >&2 ; exit 1 ; }
+  # Un vrai Chrome sur le profil persistant : le navigateur integre annonce webdriver=true et
+  # « HeadlessChrome », et tous les captchas echouent. Ici on s'y raccroche par CDP.
+  PORT=9222
+  if ! curl -s --max-time 2 "http://127.0.0.1:$PORT/json/version" >/dev/null 2>&1; then
+    # headless passe, mais seulement avec une empreinte de vrai Chrome : sans --user-agent
+    # le binaire annonce « HeadlessChrome » et les captchas echouent en boucle.
+    /usr/bin/chromium --headless=new --remote-debugging-port=$PORT \
+      --user-data-dir=/home/moussa/.agent-browser/profile --profile-directory=Default \
+      --no-first-run --no-default-browser-check \
+      --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36" \
+      about:blank >/dev/null 2>&1 &
+    n=0
+    while [ "$n" -lt 20 ]; do
+      curl -s --max-time 1 "http://127.0.0.1:$PORT/json/version" >/dev/null 2>&1 && break
+      sleep 1; n=$((n+1))
+    done
+    curl -s --max-time 1 "http://127.0.0.1:$PORT/json/version" >/dev/null 2>&1 || { echo "refuse : Chrome ne demarre pas sur $PORT" >&2 ; exit 1 ; }
+  fi
+  B="$A --cdp $PORT"
+  Q=$(cat)
+  [ -n "$Q" ] || { echo "refuse : question vide" >&2 ; exit 1 ; }
+  $B open https://chat.deepseek.com/ >/dev/null 2>&1 || { echo "refuse : DeepSeek ne s'ouvre pas" >&2 ; exit 1 ; }
+  case "$($B get url 2>/dev/null)" in
+    *sign_in*|*accounts.google.com*) echo "refuse : session DeepSeek absente (se connecter une fois dans le Chrome persistant)" >&2 ; exit 1 ;;
+  esac
+  j=0
+  while [ "$j" -lt 20 ]; do
+    $B is visible "textarea" 2>/dev/null | grep -q true && break
+    sleep 1; j=$((j+1))
+  done
+  $B click "textarea" >/dev/null 2>&1 || { echo "refuse : champ de saisie introuvable" >&2 ; exit 1 ; }
+  # frappe humaine : un caractere a la fois, 70-220 ms, pause plus longue entre les mots.
+  # dash n'a pas $RANDOM : l'entropie vient de /dev/urandom.
+  for w in $Q; do
+    for c in $(printf '%s' "$w" | fold -w1); do
+      $B keyboard type "$c" >/dev/null 2>&1 || { echo "refuse : frappe impossible" >&2 ; exit 1 ; }
+      sleep 0.$(printf '%03d' $(( 70 + $(od -An -N1 -tu1 /dev/urandom) % 150 )))
+    done
+    $B keyboard type " " >/dev/null 2>&1
+    sleep 0.$(printf '%03d' $(( 180 + $(od -An -N1 -tu1 /dev/urandom) % 420 )))
+  done
+  $B press Enter >/dev/null 2>&1 || { echo "refuse : envoi impossible" >&2 ; exit 1 ; }
+  ANS=; i=0
+  while [ "$i" -lt 30 ]; do
+    sleep 3; i=$((i+1))
+    ANS=$($B eval "(()=>{const m=document.querySelectorAll('.ds-markdown');return m.length?m[m.length-1].innerText:''})()" 2>/dev/null)
+    [ -n "$ANS" ] && [ "$ANS" != '""' ] && break
+  done
+  [ -n "$ANS" ] && [ "$ANS" != '""' ] || { echo "refuse : aucune reponse apres 90 s" >&2 ; exit 1 ; }
+  printf '%s' "$ANS" | sed 's/^"//; s/"$//; s/\\n/\n/g; s/\\"/"/g' | head -n 180 | head -c 3500
+
+ARGS:
+  - {name: question, type: text, stdin: true}

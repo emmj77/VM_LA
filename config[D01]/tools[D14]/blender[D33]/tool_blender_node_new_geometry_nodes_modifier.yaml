@@ -1,0 +1,20 @@
+id: "B860"
+tool: "blender_node_new_geometry_nodes_modifier"
+date: "2026-10-17"
+tags: ["blender_node_new_geometry_nodes_modifier"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a new modifier with a new geometry node group"
+
+machine: "blender"
+op: "node.new_geometry_nodes_modifier"
+
+ARGS: []

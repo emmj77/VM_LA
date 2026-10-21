@@ -1,0 +1,67 @@
+id: "G068"
+tool: "gemini_image"
+date: "2026-10-20"
+tags: ["gemini", "image", "web", "agent-browser"]
+
+
+RULES:
+  enabled: true
+  timeout: 300
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Genere une image sur Gemini web a partir d'un prompt, attend le bouton de telechargement, enregistre le fichier dans work/ et rend son chemin et sa taille."
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  A=$(command -v agent-browser 2>/dev/null || echo /usr/local/bin/agent-browser)
+  [ -x "$A" ] || { echo "refuse : agent-browser introuvable (sudo npm i -g agent-browser)" >&2 ; exit 1 ; }
+  W=$(cfg here work[D25] 2>/dev/null) || W="${ROOT}/work[D25]"
+  P=$(cat)
+  [ -n "$P" ] || { echo "refuse : prompt vide" >&2 ; exit 1 ; }
+  N="{{name}}"
+  [ -n "$N" ] || N="gemini-$(date +%Y%m%d-%H%M%S)"
+  N=$(printf '%s' "$N" | tr -c 'a-zA-Z0-9._-' '-' | sed 's/-*$//')
+  OUT="$W/$N.jpg"
+  "$A" --profile /home/moussa/.agent-browser/profile --restore open https://gemini.google.com/app >/dev/null 2>&1 || { echo "refuse : Gemini ne s'ouvre pas" >&2 ; exit 1 ; }
+  S1=$("$A" snapshot 2>/dev/null)
+  printf '%s' "$S1" | grep -qiE 'sign in|se connecter' && {
+    echo "refuse : aucune session Google dans le profil Chromium — se connecter une fois : agent-browser --profile /home/moussa/.agent-browser/profile --headed --restore open https://gemini.google.com/app" >&2 ; exit 1 ; }
+  # la zone de saisie de Gemini est un contenteditable : on la vide avant d'ecrire
+  "$A" click "[role=textbox]" >/dev/null 2>&1 || { echo "refuse : champ de saisie Gemini introuvable (page changee ?)" >&2 ; exit 1 ; }
+  "$A" press "Control+a" >/dev/null 2>&1
+  "$A" keyboard inserttext "$P" >/dev/null 2>&1 || { echo "refuse : ecriture impossible dans le champ" >&2 ; exit 1 ; }
+  "$A" press Enter >/dev/null 2>&1 || { echo "refuse : envoi impossible" >&2 ; exit 1 ; }
+  # on attend le bouton qui telecharge l'image en taille reelle (l'apostrophe est un point :
+  # le libelle est « Telecharger l'image en taille reelle »)
+  i=0
+  while [ "$i" -lt 40 ]; do
+    sleep 3; i=$((i+1))
+    "$A" snapshot 2>/dev/null | grep -qiE "charger l.image|download (the )?(full|original)" && break
+  done
+  # chaque snapshot perime les references precedentes : on reprend une reference fraiche
+  # et on reessaie, parce que Gemini re-rend le bouton entre deux lectures.
+  T=$(mktemp -d); k=0; F=
+  while [ "$k" -lt 3 ]; do
+    k=$((k+1))
+    REF=$("$A" snapshot 2>/dev/null | grep -iE "charger l.image|download (the )?(full|original)" | grep -o 'ref=e[0-9]*' | tail -1 | cut -d= -f2)
+    [ -n "$REF" ] || { sleep 5 ; continue ; }
+    # sans --download-path : le drapeau fait rendre 0 fichier. Le binaire ecrit un nom
+    # d'identifiant dans le dossier de la cible, et sort en erreur meme quand ca marche.
+    "$A" download "@$REF" "$T/$N.jpg" >/dev/null 2>&1
+    sleep 5
+    F=$(find "$T" -maxdepth 1 -type f | head -1)
+    [ -n "$F" ] && break
+    sleep 2
+  done
+  [ -n "$F" ] || { gio trash "$T" 2>/dev/null ; echo "refuse : l'image existe mais le telechargement n'a rien rendu" >&2 ; exit 1 ; }
+  file -b "$F" | grep -qi image || { gio trash "$T" 2>/dev/null ; echo "refuse : le fichier telecharge n'est pas une image" >&2 ; exit 1 ; }
+  mv "$F" "$OUT" && gio trash "$T" 2>/dev/null
+  echo "$OUT $(stat -c%s "$OUT") o"
+
+ARGS:
+  - {name: prompt, type: text, stdin: true}
+  - {name: name, type: text}

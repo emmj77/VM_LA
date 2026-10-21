@@ -1,0 +1,21 @@
+id: "B1218"
+tool: "blender_preferences_extension_url_drop"
+date: "2026-10-17"
+tags: ["blender_preferences_extension_url_drop"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Handle dropping an extension URL"
+
+machine: "blender"
+op: "preferences.extension_url_drop"
+
+ARGS:
+  - {name: url, type: text}

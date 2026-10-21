@@ -1,0 +1,21 @@
+id: "B204"
+tool: "blender_collection_create"
+date: "2026-10-17"
+tags: ["blender_collection_create"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create an object collection from selected objects"
+
+machine: "blender"
+op: "collection.create"
+
+ARGS:
+  - {name: name, type: text}

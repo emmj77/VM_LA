@@ -1,0 +1,23 @@
+id: "B418"
+tool: "blender_graph_select_key_handles"
+date: "2026-10-17"
+tags: ["blender_graph_select_key_handles"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "For selected keyframes, select/deselect any combination of the key itself and its handles"
+
+machine: "blender"
+op: "graph.select_key_handles"
+
+ARGS:
+  - {name: left_handle_action, type: text}          # un de : SELECT | DESELECT | KEEP
+  - {name: right_handle_action, type: text}          # un de : SELECT | DESELECT | KEEP
+  - {name: key_action, type: text}          # un de : SELECT | DESELECT | KEEP

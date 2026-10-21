@@ -1,0 +1,23 @@
+id: "B641"
+tool: "blender_mesh_delete_loose"
+date: "2026-10-17"
+tags: ["blender_mesh_delete_loose"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete loose vertices, edges or faces"
+
+machine: "blender"
+op: "mesh.delete_loose"
+
+ARGS:
+  - {name: use_verts, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_edges, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_faces, type: text}          # true|false, vide pour ne rien poser

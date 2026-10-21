@@ -1,0 +1,28 @@
+id: "G052"
+tool: "skill_view"
+date: "2026-10-17"
+tags: ["skill_view", "skill"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "shows a skill as it is written, WITHOUT loading it : the plan stays closed, the palette never moves"
+
+COMMAND: |
+  NAME="{{name}}"
+  SK="$ROOT/skills"
+  [ -d "$SK" ] || { printf '%s\n' "$(msg skills_dir_missing "$SK")" >&2 ; exit 1 ; }
+  SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//')
+  [ -n "$SLUG" ] || { printf '%s\n' "$(msg name_no_slug "${NAME:-absent}")" >&2 ; exit 1 ; }
+  C="$SK/$SLUG/skill.yaml"
+  if [ -L "$SK/$SLUG" ]; then printf '%s\n' "$(msg target_symlink "$SLUG")" >&2 ; exit 1 ; fi
+  [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { printf '%s\n' "$(msg skill_absent_file "$SLUG")" >&2 ; exit 1 ; }
+  cat "$C"
+
+ARGS:

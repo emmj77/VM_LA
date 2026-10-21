@@ -1,0 +1,21 @@
+id: "B470"
+tool: "blender_grease_pencil_relative_layer_mask_add"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_relative_layer_mask_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Mask active layer with layer above or below"
+
+machine: "blender"
+op: "grease_pencil.relative_layer_mask_add"
+
+ARGS:
+  - {name: mode, type: text}          # un de : ABOVE | BELOW

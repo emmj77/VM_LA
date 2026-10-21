@@ -1,0 +1,21 @@
+id: "B177"
+tool: "blender_clip_set_solution_scale"
+date: "2026-10-17"
+tags: ["blender_clip_set_solution_scale"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set object solution scale using distance between two selected tracks"
+
+machine: "blender"
+op: "clip.set_solution_scale"
+
+ARGS:
+  - {name: distance, type: text}

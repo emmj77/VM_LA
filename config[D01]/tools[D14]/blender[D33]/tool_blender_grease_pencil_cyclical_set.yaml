@@ -1,0 +1,22 @@
+id: "B440"
+tool: "blender_grease_pencil_cyclical_set"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_cyclical_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Close or open the selected stroke adding a segment from last to first point"
+
+machine: "blender"
+op: "grease_pencil.cyclical_set"
+
+ARGS:
+  - {name: type, type: text}          # un de : CLOSE | OPEN | TOGGLE
+  - {name: subdivide_cyclic_segment, type: text}          # true|false, vide pour ne rien poser

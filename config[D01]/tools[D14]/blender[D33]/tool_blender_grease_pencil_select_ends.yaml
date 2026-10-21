@@ -1,0 +1,22 @@
+id: "B480"
+tool: "blender_grease_pencil_select_ends"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_select_ends"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select end points of strokes"
+
+machine: "blender"
+op: "grease_pencil.select_ends"
+
+ARGS:
+  - {name: amount_start, type: int}
+  - {name: amount_end, type: int}

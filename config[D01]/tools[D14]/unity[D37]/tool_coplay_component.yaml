@@ -1,0 +1,95 @@
+id: "U455"
+tool: "coplay_component"
+date: "2026-10-17"
+tags: ["coplay_component"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a component: add | modify | remove | set (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  add)
+    set -f
+    set -- component add
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'component add')" >&2; exit 1; }
+    [ -n "{{component_type}}" ] || { printf '%s\n' "$(msg argument_required 'component_type' 'component add')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{properties}}" ] && set -- "$@" --properties "{{properties}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{component_type}}" ] && set -- "$@" "{{component_type}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  modify)
+    set -f
+    set -- component modify
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'component modify')" >&2; exit 1; }
+    [ -n "{{component_type}}" ] || { printf '%s\n' "$(msg argument_required 'component_type' 'component modify')" >&2; exit 1; }
+    [ -n "{{properties}}" ] && set -- "$@" --properties "{{properties}}"
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{component_type}}" ] && set -- "$@" "{{component_type}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  remove)
+    set -f
+    set -- component remove
+    case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'force')" >&2; exit 1 ;; esac
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'component remove')" >&2; exit 1; }
+    [ -n "{{component_type}}" ] || { printf '%s\n' "$(msg argument_required 'component_type' 'component remove')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ "{{force}}" = true ] && set -- "$@" --force
+    [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{component_type}}" ] && set -- "$@" "{{component_type}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  set)
+    set -f
+    set -- component set
+    [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'component set')" >&2; exit 1; }
+    [ -n "{{component_type}}" ] || { printf '%s\n' "$(msg argument_required 'component_type' 'component set')" >&2; exit 1; }
+    [ -n "{{property_name}}" ] || { printf '%s\n' "$(msg argument_required 'property_name' 'component set')" >&2; exit 1; }
+    [ -n "{{value}}" ] || { printf '%s\n' "$(msg argument_required 'value' 'component set')" >&2; exit 1; }
+    [ -n "{{search_method}}" ] && set -- "$@" --search-method "{{search_method}}"
+    [ -n "{{component_index}}" ] && set -- "$@" --component-index "{{component_index}}"
+    [ -n "{{target}}" ] && set -- "$@" "{{target}}"
+    [ -n "{{component_type}}" ] && set -- "$@" "{{component_type}}"
+    [ -n "{{property_name}}" ] && set -- "$@" "{{property_name}}"
+    [ -n "{{value}}" ] && set -- "$@" "{{value}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [add, modify, remove, set]}
+  - {name: target, type: text}
+  - {name: component_type, type: text}
+  - {name: property_name, type: text}
+  - {name: value, type: text}
+  - {name: component_index, type: int}
+  - {name: properties, type: text}
+  - {name: search_method, type: text}
+  - {name: force, type: text}

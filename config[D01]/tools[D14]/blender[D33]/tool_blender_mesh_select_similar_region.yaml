@@ -1,0 +1,20 @@
+id: "B724"
+tool: "blender_mesh_select_similar_region"
+date: "2026-10-17"
+tags: ["blender_mesh_select_similar_region"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select similar face regions to the current selection"
+
+machine: "blender"
+op: "mesh.select_similar_region"
+
+ARGS: []

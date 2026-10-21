@@ -1,0 +1,23 @@
+id: "B720"
+tool: "blender_mesh_select_nth"
+date: "2026-10-17"
+tags: ["blender_mesh_select_nth"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Deselect every Nth element starting from the active vertex, edge or face"
+
+machine: "blender"
+op: "mesh.select_nth"
+
+ARGS:
+  - {name: skip, type: int}
+  - {name: nth, type: int}
+  - {name: offset, type: int}

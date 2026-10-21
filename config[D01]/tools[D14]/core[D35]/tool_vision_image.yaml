@@ -1,0 +1,99 @@
+# the four vision jobs, by the ComfyUI machine. no python here: jq, curl, the graph.
+id: "G076"
+tool: "vision.image"
+family: "core"
+sub_family: "vision"
+date: "2026-10-21"
+tags: ["vision", "comfyui", "onnx"]
+RULES:
+  enabled: true
+  timeout: 180
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "Cut the subject out of an image, or repair a zone of it, by the ComfyUI machine"
+COMMAND: |
+  _op='{{op}}' ; _img='{{image}}' ; _out='{{out}}' ; _zone='{{zone}}'
+  _ch=$(cfg str machine.comfyui.host) || exit 1
+  _cp=$(cfg num machine.comfyui.port) || exit 1
+  _cr=$(cfg str machine.comfyui.root) || exit 1
+  _url="http://$_ch:$_cp"
+
+  [ -f "$_img" ] || { printf 'refused: no such image (%s)\n' "$_img" >&2; exit 1; }
+  [ -d "$(dirname "$_out")" ] || { printf 'refused: the output folder does not exist (%s)\n' "$(dirname "$_out")" >&2; exit 1; }
+  case $_op in
+    matte|inpaint) ;;
+    *) printf 'refused: op is matte or inpaint\n' >&2; exit 1 ;;
+  esac
+
+  # the image enters the machine by its input folder
+  _in="$_cr/input"
+  mkdir -p "$_in" 2>/dev/null
+  _name="la_vision_$$_$(basename "$_img")"
+  cp -f "$_img" "$_in/$_name" || { printf 'refused: the image did not enter the machine\n' >&2; exit 1; }
+
+  case $_op in
+    matte) _model="vision/u2netp.onnx" ; _hw=320 ;;
+  esac
+
+  if [ "$_op" = inpaint ]; then
+    _x=${_zone%%,*} ; _r=${_zone#*,}
+    _y=${_r%%,*} ; _r=${_r#*,}
+    _w=${_r%%,*} ; _h=${_r##*,}
+    case "$_x$_y$_w$_h" in *[!0-9]*) printf 'refused: the zone is x,y,width,height in whole numbers\n' >&2; exit 1 ;; esac
+    { [ "$_w" -gt 0 ] && [ "$_h" -gt 0 ]; } || { printf 'refused: a zone to repair needs a positive width and height\n' >&2; exit 1; }
+    _graph=$(jq -n --arg f "$_name" --argjson x "$_x" --argjson y "$_y" --argjson w "$_w" --argjson h "$_h" '{
+      "1": {"class_type": "LoadImage", "inputs": {"image": $f}},
+      "2": {"class_type": "GetImageSize", "inputs": {"image": ["1", 0]}},
+      "3": {"class_type": "SolidMask", "inputs": {"value": 0.0, "width": ["2", 0], "height": ["2", 1]}},
+      "4": {"class_type": "SolidMask", "inputs": {"value": 1.0, "width": $w, "height": $h}},
+      "5": {"class_type": "MaskComposite", "inputs": {"destination": ["3", 0], "source": ["4", 0], "x": $x, "y": $y, "operation": "add"}},
+      "6": {"class_type": "INPAINT_LoadInpaintModel", "inputs": {"model_name": "big-lama.pt"}},
+      "7": {"class_type": "INPAINT_InpaintWithModel", "inputs": {"inpaint_model": ["6", 0], "image": ["1", 0], "mask": ["5", 0], "seed": 0}},
+      "8": {"class_type": "SaveImage", "inputs": {"images": ["7", 0], "filename_prefix": "la_vision"}}
+    }') || { printf 'refused: the graph did not build\n' >&2; exit 1; }
+  else
+    _graph=$(jq -n --arg f "$_name" --arg m "$_model" --argjson hw "$_hw" '{
+      "1": {"class_type": "LoadImage", "inputs": {"image": $f}},
+      "2": {"class_type": "GetImageSize", "inputs": {"image": ["1", 0]}},
+      "3": {"class_type": "ImageScale", "inputs": {"image": ["1", 0], "upscale_method": "lanczos", "width": $hw, "height": $hw, "crop": "disabled"}},
+      "4": {"class_type": "ONNXImageFilter", "inputs": {"image": ["3", 0], "model": $m, "device": "CPU", "provider": "CPUExecutionProvider", "refresh_models": false, "tile_size": 0, "overlap": 32, "fp16": false, "batch_size": 1, "favorite": false, "run_benchmark": false}},
+      "5": {"class_type": "ImageScale", "inputs": {"image": ["4", 0], "upscale_method": "lanczos", "width": ["2", 0], "height": ["2", 1], "crop": "disabled"}},
+      "6": {"class_type": "SaveImage", "inputs": {"images": ["5", 0], "filename_prefix": "la_vision"}}
+    }') || { printf 'refused: the graph did not build\n' >&2; exit 1; }
+  fi
+
+  _rep=$(printf '%s' "$_graph" | jq -c '{prompt: .}' \
+        | curl -s --max-time 30 -H 'Content-Type: application/json' -d @- "$_url/prompt") \
+    || { printf 'refused: the machine does not answer on %s\n' "$_url" >&2; exit 1; }
+  _pid=$(printf '%s' "$_rep" | jq -r '.prompt_id // empty')
+  [ -n "$_pid" ] || { printf 'refused: the machine said no (%s)\n' "$(printf '%s' "$_rep" | jq -c '.error // .node_errors // .')" >&2; exit 1; }
+
+  _i=0 ; _st=""
+  while [ "$_i" -lt 150 ]; do
+    _h=$(curl -s --max-time 10 "$_url/history/$_pid")
+    _st=$(printf '%s' "$_h" | jq -r --arg p "$_pid" '.[$p].status.status_str // empty')
+    [ "$_st" = success ] && break
+    [ "$_st" = error ] && { printf 'refused: the graph failed on the machine\n' >&2; exit 1; }
+    sleep 1 ; _i=$((_i + 1))
+  done
+  [ "$_st" = success ] || { printf 'refused: the machine did not finish in time\n' >&2; exit 1; }
+
+  _fn=$(printf '%s' "$_h" | jq -r --arg p "$_pid" '.[$p].outputs | to_entries[0].value.images[0].filename // empty')
+  _sf=$(printf '%s' "$_h" | jq -r --arg p "$_pid" '.[$p].outputs | to_entries[0].value.images[0].subfolder // ""')
+  [ -n "$_fn" ] || { printf 'refused: the machine produced no image\n' >&2; exit 1; }
+
+  curl -s --max-time 60 "$_url/view?filename=$(printf '%s' "$_fn" | jq -sRr @uri)&subfolder=$(printf '%s' "$_sf" | jq -sRr @uri)&type=output" -o "$_out" \
+    || { printf 'refused: the image did not come back\n' >&2; exit 1; }
+  [ -s "$_out" ] || { printf 'refused: the image came back empty\n' >&2; exit 1; }
+
+  rm -f "$_in/$_name"
+  if [ -n "$_sf" ]; then rm -f "$_cr/output/$_sf/$_fn"; else rm -f "$_cr/output/$_fn"; fi
+  printf '%s\n' "$_out"
+ARGS:
+  - {name: op, type: text, values: [matte, inpaint]}          # the job
+  - {name: image, type: text}                                 # the image to work on
+  - {name: out, type: text}                                   # where the result goes
+  - {name: zone, type: text}                                  # inpaint only: x,y,width,height; 0,0,0,0 otherwise

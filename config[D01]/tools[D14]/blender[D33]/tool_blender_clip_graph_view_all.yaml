@@ -1,0 +1,20 @@
+id: "B153"
+tool: "blender_clip_graph_view_all"
+date: "2026-10-17"
+tags: ["blender_clip_graph_view_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "View all curves in editor"
+
+machine: "blender"
+op: "clip.graph_view_all"
+
+ARGS: []

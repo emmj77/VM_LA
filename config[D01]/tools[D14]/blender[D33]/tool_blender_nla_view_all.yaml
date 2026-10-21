@@ -1,0 +1,20 @@
+id: "B787"
+tool: "blender_nla_view_all"
+date: "2026-10-17"
+tags: ["blender_nla_view_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset viewable area to show full strips range"
+
+machine: "blender"
+op: "nla.view_all"
+
+ARGS: []

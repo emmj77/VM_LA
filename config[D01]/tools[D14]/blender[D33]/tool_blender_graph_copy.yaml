@@ -1,0 +1,20 @@
+id: "B380"
+tool: "blender_graph_copy"
+date: "2026-10-17"
+tags: ["blender_graph_copy"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy selected keyframes to the internal clipboard"
+
+machine: "blender"
+op: "graph.copy"
+
+ARGS: []

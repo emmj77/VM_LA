@@ -1,0 +1,22 @@
+id: "B214"
+tool: "blender_console_scrollback_append"
+date: "2026-10-17"
+tags: ["blender_console_scrollback_append"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Append scrollback text by type"
+
+machine: "blender"
+op: "console.scrollback_append"
+
+ARGS:
+  - {name: text, type: text}
+  - {name: type, type: text}          # un de : OUTPUT | INPUT | INFO | ERROR

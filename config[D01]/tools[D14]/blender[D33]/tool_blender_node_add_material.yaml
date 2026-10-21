@@ -1,0 +1,22 @@
+id: "B802"
+tool: "blender_node_add_material"
+date: "2026-10-17"
+tags: ["blender_node_add_material"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a material node to the current node editor"
+
+machine: "blender"
+op: "node.add_material"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: session_uid, type: int}

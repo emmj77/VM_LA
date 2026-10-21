@@ -1,0 +1,20 @@
+id: "B339"
+tool: "blender_file_refresh"
+date: "2026-10-17"
+tags: ["blender_file_refresh"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Refresh the file list"
+
+machine: "blender"
+op: "file.refresh"
+
+ARGS: []

@@ -1,0 +1,22 @@
+id: "B097"
+tool: "blender_armature_symmetrize"
+date: "2026-10-17"
+tags: ["blender_armature_symmetrize"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Enforce symmetry, make copies of the selection or use existing"
+
+machine: "blender"
+op: "armature.symmetrize"
+
+ARGS:
+  - {name: direction, type: text}          # un de : NEGATIVE_X | POSITIVE_X
+  - {name: copy_bone_colors, type: text}          # true|false, vide pour ne rien poser

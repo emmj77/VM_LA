@@ -1,0 +1,28 @@
+id: "B005"
+tool: "blender_action_clickselect"
+date: "2026-10-17"
+tags: ["blender_action_clickselect"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select keyframes by clicking on them"
+
+machine: "blender"
+op: "action.clickselect"
+
+ARGS:
+  - {name: wait_to_deselect_others, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_select_on_click, type: text}          # true|false, vide pour ne rien poser
+  - {name: mouse_x, type: int}
+  - {name: mouse_y, type: int}
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: column, type: text}          # true|false, vide pour ne rien poser
+  - {name: channel, type: text}          # true|false, vide pour ne rien poser

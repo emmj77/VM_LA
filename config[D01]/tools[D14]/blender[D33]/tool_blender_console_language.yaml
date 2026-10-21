@@ -1,0 +1,21 @@
+id: "B213"
+tool: "blender_console_language"
+date: "2026-10-17"
+tags: ["blender_console_language"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the current language for this console"
+
+machine: "blender"
+op: "console.language"
+
+ARGS:
+  - {name: language, type: text}

@@ -1,0 +1,21 @@
+id: "B1237"
+tool: "blender_rigidbody_constraint_add"
+date: "2026-10-17"
+tags: ["blender_rigidbody_constraint_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add Rigid Body Constraint to active object"
+
+machine: "blender"
+op: "rigidbody.constraint_add"
+
+ARGS:
+  - {name: type, type: text}          # un de : FIXED | POINT | HINGE | SLIDER | PISTON | GENERIC | GENERIC_SPRING | MOTOR

@@ -1,0 +1,22 @@
+id: "B572"
+tool: "blender_info_select_pick"
+date: "2026-10-17"
+tags: ["blender_info_select_pick"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select reports by index"
+
+machine: "blender"
+op: "info.select_pick"
+
+ARGS:
+  - {name: report_index, type: int}
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

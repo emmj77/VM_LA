@@ -1,0 +1,21 @@
+id: "B1144"
+tool: "blender_palette_sort"
+date: "2026-10-17"
+tags: ["blender_palette_sort"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Sort Palette Colors"
+
+machine: "blender"
+op: "palette.sort"
+
+ARGS:
+  - {name: type, type: text}          # un de : HSV | SVH | VHS | LUMINANCE

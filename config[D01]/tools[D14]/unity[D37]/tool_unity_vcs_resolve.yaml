@@ -1,0 +1,54 @@
+id: "U432"
+tool: "unity_vcs_resolve"
+date: "2026-10-18"
+tags: ["unity", "cli", "vcs"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Resolve a conflicted Unity asset with UnityYAMLMerge, or by taking one side"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- vcs resolve --no-banner --no-pager --non-interactive
+  case "{{merge}}" in ''|true|false) ;; *) printf '%s\n' "$(msg merge_true_false)" >&2; exit 1 ;; esac
+  case "{{ours}}" in ''|true|false) ;; *) printf '%s\n' "$(msg ours_true_false)" >&2; exit 1 ;; esac
+  case "{{theirs}}" in ''|true|false) ;; *) printf '%s\n' "$(msg theirs_true_false)" >&2; exit 1 ;; esac
+  case "{{all}}" in ''|true|false) ;; *) printf '%s\n' "$(msg all_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{path}}" ] && set -- "$@" "{{path}}"
+  [ "{{merge}}" = true ] && set -- "$@" --merge
+  [ "{{ours}}" = true ] && set -- "$@" --ours
+  [ "{{theirs}}" = true ] && set -- "$@" --theirs
+  [ "{{all}}" = true ] && set -- "$@" --all
+  [ -n "{{editor_version}}" ] && set -- "$@" --editor-version "{{editor_version}}"
+  [ -n "{{editor_path}}" ] && set -- "$@" --editor-path "{{editor_path}}"
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_vcs_resolve_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: path, type: text}   # facultatif
+  - {name: merge, type: text}   # true pour poser --merge ; Merge the two branches with UnityYAMLMerge. The default.
+  - {name: ours, type: text}   # true pour poser --ours ; Take our side of the file, discarding theirs
+  - {name: theirs, type: text}   # true pour poser --theirs ; Take their side of the file, discarding ours
+  - {name: all, type: text}   # true pour poser --all ; Resolve every auto-resolvable conflict in the repository
+  - {name: editor_version, type: text}   # Use this editor's UnityYAMLMerge instead of the one the project requir
+  - {name: editor_path, type: text}   # Use the UnityYAMLMerge in this editor installation

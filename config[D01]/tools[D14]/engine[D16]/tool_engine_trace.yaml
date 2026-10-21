@@ -1,0 +1,43 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E013"
+tool: "engine.trace"
+date: "2026-10-21"
+tags: ["engine", "trace"]
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the living channel: write one line, or read the tail as reasoning and tools"
+COMMAND: |
+
+  _op=${1:-line}
+  _f=$(cfg abs trace 2>/dev/null) || { printf 'FAULT no trace in the tree\n'; exit 0; }
+  case $_op in
+  line)
+    _in=$(cat)
+    [ -n "$_in" ] || { printf 'FAULT line wants kind and text on the input\n'; exit 0; }
+    _k=$(printf '%s' "$_in" | awk '{ print $1 }')
+    _t=$(printf '%s' "$_in" | sed 's/^[^ ]*[ ]*//')
+    printf '{"ts":%s,"kind":"%s","text":"%s"}\n' "$(date +%s)" "$(fs_json "$_k")" "$(fs_json "$_t")" >> "$_f"
+    printf 'ok line written\n'
+    ;;
+  json)
+    _n=$(cfg num limits.live_lines 40) || _n=40
+    [ -f "$_f" ] || { printf '{"thinking":[],"journal":[],"reply":{}}\n'; exit 0; }
+    tail -n "$_n" "$_f" | jq -s '{"thinking": [.[] | select(.kind == "note" or .kind == "think" or .kind == "step") | {ts, text}],
+      "journal": [.[] | select(.kind == "tool" or .kind == "approve") | {ts, text}],
+      "reply": {}}' 2>/dev/null || printf '{"thinking":[],"journal":[],"reply":{}}\n'
+    ;;
+  tail)
+    tail -n "${2:-20}" "$_f" 2>/dev/null
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: line,json,tail}

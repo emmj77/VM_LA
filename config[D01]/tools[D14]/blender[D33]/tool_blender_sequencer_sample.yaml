@@ -1,0 +1,21 @@
+id: "B1366"
+tool: "blender_sequencer_sample"
+date: "2026-10-17"
+tags: ["blender_sequencer_sample"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Use mouse to sample color in current frame"
+
+machine: "blender"
+op: "sequencer.sample"
+
+ARGS:
+  - {name: size, type: int}

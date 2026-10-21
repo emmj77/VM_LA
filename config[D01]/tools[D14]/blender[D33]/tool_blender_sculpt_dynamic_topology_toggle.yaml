@@ -1,0 +1,20 @@
+id: "B1308"
+tool: "blender_sculpt_dynamic_topology_toggle"
+date: "2026-10-17"
+tags: ["blender_sculpt_dynamic_topology_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Dynamic topology alters the mesh topology while sculpting"
+
+machine: "blender"
+op: "sculpt.dynamic_topology_toggle"
+
+ARGS: []

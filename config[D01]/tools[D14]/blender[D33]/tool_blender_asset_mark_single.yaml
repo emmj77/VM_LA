@@ -1,0 +1,20 @@
+id: "B109"
+tool: "blender_asset_mark_single"
+date: "2026-10-17"
+tags: ["blender_asset_mark_single"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Enable easier reuse of a data-block through the Asset Browser, with the help of customizable metadata (like previews, descriptions and tags)"
+
+machine: "blender"
+op: "asset.mark_single"
+
+ARGS: []

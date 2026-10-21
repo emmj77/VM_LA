@@ -1,0 +1,21 @@
+id: "B1245"
+tool: "blender_scene_drop_scene_asset"
+date: "2026-10-17"
+tags: ["blender_scene_drop_scene_asset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Import scene and set it as the active one in the window"
+
+machine: "blender"
+op: "scene.drop_scene_asset"
+
+ARGS:
+  - {name: session_uid, type: int}

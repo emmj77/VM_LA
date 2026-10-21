@@ -1,0 +1,21 @@
+id: "B036"
+tool: "blender_anim_channel_select_keys"
+date: "2026-10-17"
+tags: ["blender_anim_channel_select_keys"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select all keyframes of channel under mouse"
+
+machine: "blender"
+op: "anim.channel_select_keys"
+
+ARGS:
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

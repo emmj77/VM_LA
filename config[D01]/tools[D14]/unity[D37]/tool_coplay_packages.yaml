@@ -1,0 +1,151 @@
+id: "U467"
+tool: "coplay_packages"
+date: "2026-10-17"
+tags: ["coplay_packages"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "a package: add | add-registry | embed | info | list | list-registries | ping | remove | remove-registry | resolve | search | status (op picks which)"
+
+COMMAND: |
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
+  case "{{op}}" in
+  add)
+    set -f
+    set -- packages add
+    [ -n "{{package}}" ] || { printf '%s\n' "$(msg argument_required 'package' 'packages add')" >&2; exit 1; }
+    [ -n "{{package}}" ] && set -- "$@" "{{package}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  add-registry)
+    set -f
+    set -- packages add-registry
+    [ -n "{{registry_name}}" ] || { printf '%s\n' "$(msg argument_required 'registry_name' 'packages add-registry')" >&2; exit 1; }
+    [ -n "{{url}}" ] && set -- "$@" --url "{{url}}"
+    [ -n "{{package_set}}" ] && set -- "$@" --scope "{{package_set}}"
+    [ -n "{{registry_name}}" ] && set -- "$@" "{{registry_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  embed)
+    set -f
+    set -- packages embed
+    [ -n "{{package}}" ] || { printf '%s\n' "$(msg argument_required 'package' 'packages embed')" >&2; exit 1; }
+    [ -n "{{package}}" ] && set -- "$@" "{{package}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  info)
+    set -f
+    set -- packages info
+    [ -n "{{package}}" ] || { printf '%s\n' "$(msg argument_required 'package' 'packages info')" >&2; exit 1; }
+    [ -n "{{package}}" ] && set -- "$@" "{{package}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  list)
+    set -f
+    set -- packages list
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  list-registries)
+    set -f
+    set -- packages list-registries
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  ping)
+    set -f
+    set -- packages ping
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  remove)
+    set -f
+    set -- packages remove
+    case "{{force}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean 'force')" >&2; exit 1 ;; esac
+    [ -n "{{package}}" ] || { printf '%s\n' "$(msg argument_required 'package' 'packages remove')" >&2; exit 1; }
+    [ "{{force}}" = true ] && set -- "$@" --force
+    [ -n "{{package}}" ] && set -- "$@" "{{package}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  remove-registry)
+    set -f
+    set -- packages remove-registry
+    [ -n "{{registry_name}}" ] || { printf '%s\n' "$(msg argument_required 'registry_name' 'packages remove-registry')" >&2; exit 1; }
+    [ -n "{{registry_name}}" ] && set -- "$@" "{{registry_name}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  resolve)
+    set -f
+    set -- packages resolve
+    :
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  search)
+    set -f
+    set -- packages search
+    [ -n "{{query}}" ] || { printf '%s\n' "$(msg argument_required 'query' 'packages search')" >&2; exit 1; }
+    [ -n "{{query}}" ] && set -- "$@" "{{query}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  status)
+    set -f
+    set -- packages status
+    [ -n "{{job_id}}" ] || { printf '%s\n' "$(msg argument_required 'job_id' 'packages status')" >&2; exit 1; }
+    [ -n "{{job_id}}" ] && set -- "$@" "{{job_id}}"
+    OUT=$(timeout 90 "$CLI" --format json "$@" 2>&1)
+    RC=$?
+    [ "$RC" = 0 ] || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$OUT" | head -5 | tr '\n' ' ')" >&2; exit 1; }
+    printf '%s\n' "$OUT"
+    ;;
+  esac
+
+ARGS:
+  - {name: op, type: enum, values: [add, add-registry, embed, info, list, list-registries, ping, remove, remove-registry, resolve, search, status]}
+  - {name: job_id, type: text}
+  - {name: query, type: text}
+  - {name: registry_name, type: text}
+  - {name: package, type: text}
+  - {name: package_set, type: text}   # installed | available | all, passed to upipe as --scope
+  - {name: url, type: text}
+  - {name: force, type: text}

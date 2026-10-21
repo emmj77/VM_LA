@@ -1,0 +1,20 @@
+id: "B1002"
+tool: "blender_object_parent_inverse_apply"
+date: "2026-10-17"
+tags: ["blender_object_parent_inverse_apply"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Apply the object's parent inverse to its data"
+
+machine: "blender"
+op: "object.parent_inverse_apply"
+
+ARGS: []

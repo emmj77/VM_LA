@@ -1,0 +1,20 @@
+id: "B039"
+tool: "blender_anim_copy_driver_button"
+date: "2026-10-17"
+tags: ["blender_anim_copy_driver_button"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Copy the driver for the highlighted button"
+
+machine: "blender"
+op: "anim.copy_driver_button"
+
+ARGS: []

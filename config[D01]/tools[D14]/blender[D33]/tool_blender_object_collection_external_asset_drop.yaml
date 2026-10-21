@@ -1,0 +1,29 @@
+id: "B908"
+tool: "blender_object_collection_external_asset_drop"
+date: "2026-10-17"
+tags: ["blender_object_collection_external_asset_drop"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add the dragged collection to the scene"
+
+machine: "blender"
+op: "object.collection_external_asset_drop"
+
+ARGS:
+  - {name: session_uid, type: int}
+  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 valeurs separees par des virgules
+  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
+  - {name: scale, type: text}          # 3 valeurs separees par des virgules
+  - {name: use_instance, type: text}          # true|false, vide pour ne rien poser
+  - {name: drop_x, type: int}
+  - {name: drop_y, type: int}
+  - {name: collection, type: text}          # un de :

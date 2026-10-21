@@ -1,0 +1,32 @@
+id: "B1301"
+tool: "blender_sculpt_cloth_filter"
+date: "2026-10-17"
+tags: ["blender_sculpt_cloth_filter"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Applies a cloth simulation deformation to the entire mesh"
+
+machine: "blender"
+op: "sculpt.cloth_filter"
+
+ARGS:
+  - {name: start_mouse, type: int}
+  - {name: area_normal_radius, type: text}
+  - {name: strength, type: text}
+  - {name: iteration_count, type: int}
+  - {name: event_history, type: text}
+  - {name: type, type: text}          # un de : GRAVITY | INFLATE | EXPAND | PINCH | SCALE
+  - {name: force_axis, type: text}          # un de : X | Y | Z
+  - {name: orientation, type: text}          # un de : LOCAL | WORLD | VIEW
+  - {name: cloth_mass, type: text}
+  - {name: cloth_damping, type: text}
+  - {name: use_face_sets, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_collisions, type: text}          # true|false, vide pour ne rien poser

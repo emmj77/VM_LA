@@ -1,0 +1,25 @@
+id: "B1666"
+tool: "blender_wm_set_stereo_3d"
+date: "2026-10-17"
+tags: ["blender_wm_set_stereo_3d"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Toggle 3D stereo support for current window (or change the display mode)"
+
+machine: "blender"
+op: "wm.set_stereo_3d"
+
+ARGS:
+  - {name: display_mode, type: text}          # un de : ANAGLYPH | INTERLACE | TIMESEQUENTIAL | SIDEBYSIDE | TOPBOTTOM
+  - {name: anaglyph_type, type: text}          # un de : RED_CYAN | GREEN_MAGENTA | YELLOW_BLUE
+  - {name: interlace_type, type: text}          # un de : ROW_INTERLEAVED | COLUMN_INTERLEAVED | CHECKERBOARD_INTERLEAVED
+  - {name: use_interlace_swap, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_sidebyside_crosseyed, type: text}          # true|false, vide pour ne rien poser

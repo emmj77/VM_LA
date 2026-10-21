@@ -1,0 +1,20 @@
+id: "B1323"
+tool: "blender_sculpt_set_persistent_base"
+date: "2026-10-17"
+tags: ["blender_sculpt_set_persistent_base"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset the copy of the mesh that is being sculpted on"
+
+machine: "blender"
+op: "sculpt.set_persistent_base"
+
+ARGS: []

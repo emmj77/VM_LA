@@ -1,0 +1,22 @@
+id: "B998"
+tool: "blender_object_multires_subdivide"
+date: "2026-10-17"
+tags: ["blender_object_multires_subdivide"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a new level of subdivision"
+
+machine: "blender"
+op: "object.multires_subdivide"
+
+ARGS:
+  - {name: modifier, type: text}
+  - {name: mode, type: text}          # un de : CATMULL_CLARK | SIMPLE | LINEAR

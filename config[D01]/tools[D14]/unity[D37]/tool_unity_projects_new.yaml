@@ -1,0 +1,50 @@
+id: "U395"
+tool: "unity_projects_new"
+date: "2026-10-18"
+tags: ["unity", "cli", "projects"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "Create a new Unity project (non-interactive, CI-friendly)"
+
+COMMAND: |
+  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
+  set -f
+  set -- projects new --no-banner --no-pager --non-interactive
+  [ -n "{{name}}" ] || { printf '%s\n' "$(msg argument_required 'name' 'unity projects new')" >&2; exit 1; }
+  case "{{open}}" in ''|true|false) ;; *) printf '%s\n' "$(msg open_true_false)" >&2; exit 1 ;; esac
+
+  [ -n "{{name}}" ] && set -- "$@" "{{name}}"
+  [ -n "{{path}}" ] && set -- "$@" --path "{{path}}"
+  [ -n "{{editor_version}}" ] && set -- "$@" --editor-version "{{editor_version}}"
+  [ -n "{{template}}" ] && set -- "$@" --template "{{template}}"
+  [ -n "{{architecture}}" ] && set -- "$@" --architecture "{{architecture}}"
+  [ "{{open}}" = true ] && set -- "$@" --open
+  ERR="${TMPDIR:-/tmp}/unity.$$.err"
+  OUT=$(timeout 100 "$CLI" "$@" </dev/null 2>"$ERR")
+  RC=$?
+  if [ "$RC" != 0 ]; then
+    M=$(head -6 "$ERR" | tr '\n' ' ')
+    [ -n "$M" ] || M=$(printf '%s' "$OUT" | head -6 | tr '\n' ' ')
+    rm -f "$ERR"
+    printf '%s\n' "$(msg unity_projects_new_code)""$RC" "$M" >&2
+    exit 1
+  fi
+  rm -f "$ERR"
+  printf '%s\n' "$OUT"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: path, type: text}   # Parent directory for the project
+  - {name: editor_version, type: text}   # Unity editor version (e.g. 6000.0.26f1, latest, lts)
+  - {name: template, type: text}   # Template name or package ID (e.g. com.unity.template.3d)
+  - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
+  - {name: open, type: text}   # true pour poser --open ; Open the project in the Editor after creation

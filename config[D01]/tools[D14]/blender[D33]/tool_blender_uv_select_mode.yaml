@@ -1,0 +1,21 @@
+id: "B1524"
+tool: "blender_uv_select_mode"
+date: "2026-10-17"
+tags: ["blender_uv_select_mode"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change UV selection mode"
+
+machine: "blender"
+op: "uv.select_mode"
+
+ARGS:
+  - {name: type, type: text}          # un de : VERTEX | EDGE | FACE

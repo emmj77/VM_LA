@@ -1,0 +1,20 @@
+id: "B1121"
+tool: "blender_paint_vertex_color_smooth"
+date: "2026-10-17"
+tags: ["blender_paint_vertex_color_smooth"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Smooth colors across vertices"
+
+machine: "blender"
+op: "paint.vertex_color_smooth"
+
+ARGS: []

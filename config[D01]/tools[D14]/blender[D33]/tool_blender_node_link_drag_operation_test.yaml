@@ -1,0 +1,22 @@
+id: "B848"
+tool: "blender_node_link_drag_operation_test"
+date: "2026-10-17"
+tags: ["blender_node_link_drag_operation_test"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Run a node link-drag operation for testing"
+
+machine: "blender"
+op: "node.link_drag_operation_test"
+
+ARGS:
+  - {name: find_link_operations, type: text}          # true|false, vide pour ne rien poser
+  - {name: link_operation_index, type: int}

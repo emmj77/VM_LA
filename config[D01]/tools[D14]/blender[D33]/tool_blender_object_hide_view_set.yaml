@@ -1,0 +1,21 @@
+id: "B957"
+tool: "blender_object_hide_view_set"
+date: "2026-10-17"
+tags: ["blender_object_hide_view_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Temporarily hide objects from the viewport"
+
+machine: "blender"
+op: "object.hide_view_set"
+
+ARGS:
+  - {name: unselected, type: text}          # true|false, vide pour ne rien poser

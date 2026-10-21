@@ -1,0 +1,20 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E024"
+tool: "engine.map"
+date: "2026-10-21"
+tags: ["engine", "map"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "the map of the names: rebuilt from the disk, the index names them and the map finds them"
+COMMAND: |
+
+  cfg map || { printf 'FAULT the map cannot be written\n'; exit 1; }
+  printf 'note %s place(s) in the map\n' "$(wc -l < "$LA_STATE/tree.map")"
+ARGS:
+  - {name: op, type: enum, values: rebuild}

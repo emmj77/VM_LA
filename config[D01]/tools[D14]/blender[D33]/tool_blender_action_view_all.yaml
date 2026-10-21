@@ -1,0 +1,20 @@
+id: "B032"
+tool: "blender_action_view_all"
+date: "2026-10-17"
+tags: ["blender_action_view_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reset viewable area to show full keyframe range"
+
+machine: "blender"
+op: "action.view_all"
+
+ARGS: []

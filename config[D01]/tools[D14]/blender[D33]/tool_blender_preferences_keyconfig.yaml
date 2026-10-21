@@ -1,0 +1,27 @@
+id: "B1767"
+tool: "blender_preferences_keyconfig"
+date: "2026-10-17"
+tags: ["blender_preferences_keyconfig"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a key configuration: activate | export | import | remove | test (op picks which)"
+
+machine: "blender"
+op: "preferences.keyconfig_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [activate, export, import, remove, test]}
+  - {name: filepath, type: text}
+  - {name: all, type: text}
+  - {name: keep_original, type: text}
+  - {name: filter_folder, type: text}
+  - {name: filter_python, type: text}
+  - {name: filter_text, type: text}

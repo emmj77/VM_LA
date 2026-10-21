@@ -1,0 +1,20 @@
+id: "B1439"
+tool: "blender_text_save"
+date: "2026-10-17"
+tags: ["blender_text_save"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Save active text data-block"
+
+machine: "blender"
+op: "text.save"
+
+ARGS: []

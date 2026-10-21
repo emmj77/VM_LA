@@ -1,0 +1,21 @@
+id: "B326"
+tool: "blender_file_filenum"
+date: "2026-10-17"
+tags: ["blender_file_filenum"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Increment number in filename"
+
+machine: "blender"
+op: "file.filenum"
+
+ARGS:
+  - {name: increment, type: int}

@@ -1,0 +1,20 @@
+id: "B759"
+tool: "blender_nla_apply_scale"
+date: "2026-10-17"
+tags: ["blender_nla_apply_scale"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Apply scaling of selected strips to their referenced Actions"
+
+machine: "blender"
+op: "nla.apply_scale"
+
+ARGS: []

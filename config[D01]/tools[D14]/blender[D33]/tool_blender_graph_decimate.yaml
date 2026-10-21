@@ -1,0 +1,23 @@
+id: "B382"
+tool: "blender_graph_decimate"
+date: "2026-10-17"
+tags: ["blender_graph_decimate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Decimate F-Curves by removing keyframes that influence the curve shape the least"
+
+machine: "blender"
+op: "graph.decimate"
+
+ARGS:
+  - {name: mode, type: text}          # un de : RATIO | ERROR
+  - {name: factor, type: text}
+  - {name: remove_error_margin, type: text}

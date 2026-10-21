@@ -1,0 +1,34 @@
+id: "B1739"
+tool: "blender_mesh_extrude"
+date: "2026-10-17"
+tags: ["blender_mesh_extrude"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "an extrusion of mesh elements: context | context_move | edges_indiv | edges_move | faces_indiv | faces_move | manifold | region | region_move | region_shrink_fatten | repeat | vertices_move | verts_indiv (op picks which)"
+
+machine: "blender"
+op: "mesh.extrude_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [context, context_move, edges_indiv, edges_move, faces_indiv, faces_move, manifold, region, region_move, region_shrink_fatten, repeat, vertices_move, verts_indiv]}
+  - {name: TRANSFORM_OT_translate, type: text}
+  - {name: mirror, type: text}
+  - {name: MESH_OT_extrude_region, type: text}
+  - {name: use_normal_flip, type: text}
+  - {name: TRANSFORM_OT_shrink_fatten, type: text}
+  - {name: use_dissolve_ortho_edges, type: text}
+  - {name: MESH_OT_extrude_context, type: text}
+  - {name: MESH_OT_extrude_edges_indiv, type: text}
+  - {name: MESH_OT_extrude_faces_indiv, type: text}
+  - {name: MESH_OT_extrude_verts_indiv, type: text}
+  - {name: offset, type: text}
+  - {name: scale_offset, type: text}
+  - {name: steps, type: int}

@@ -1,0 +1,22 @@
+id: "B276"
+tool: "blender_curves_curve_type_set"
+date: "2026-10-17"
+tags: ["blender_curves_curve_type_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set type of selected curves"
+
+machine: "blender"
+op: "curves.curve_type_set"
+
+ARGS:
+  - {name: type, type: text}          # un de : CATMULL_ROM | POLY | BEZIER | NURBS
+  - {name: use_handles, type: text}          # true|false, vide pour ne rien poser

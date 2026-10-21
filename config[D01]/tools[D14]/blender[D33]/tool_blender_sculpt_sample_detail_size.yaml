@@ -1,0 +1,22 @@
+id: "B1321"
+tool: "blender_sculpt_sample_detail_size"
+date: "2026-10-17"
+tags: ["blender_sculpt_sample_detail_size"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Sample the mesh detail on clicked point"
+
+machine: "blender"
+op: "sculpt.sample_detail_size"
+
+ARGS:
+  - {name: location, type: int}
+  - {name: mode, type: text}          # un de : DYNTOPO | VOXEL

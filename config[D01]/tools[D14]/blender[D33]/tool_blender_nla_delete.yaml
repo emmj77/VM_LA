@@ -1,0 +1,20 @@
+id: "B764"
+tool: "blender_nla_delete"
+date: "2026-10-17"
+tags: ["blender_nla_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Delete selected strips"
+
+machine: "blender"
+op: "nla.delete"
+
+ARGS: []

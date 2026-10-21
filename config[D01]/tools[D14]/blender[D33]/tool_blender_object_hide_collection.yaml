@@ -1,0 +1,23 @@
+id: "B955"
+tool: "blender_object_hide_collection"
+date: "2026-10-17"
+tags: ["blender_object_hide_collection"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Show only objects in collection (Shift to extend)"
+
+machine: "blender"
+op: "object.hide_collection"
+
+ARGS:
+  - {name: collection_index, type: int}
+  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

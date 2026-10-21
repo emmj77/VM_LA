@@ -1,0 +1,20 @@
+id: "B899"
+tool: "blender_object_anim_transforms_to_deltas"
+date: "2026-10-17"
+tags: ["blender_object_anim_transforms_to_deltas"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Convert object animation for normal transforms to delta transforms"
+
+machine: "blender"
+op: "object.anim_transforms_to_deltas"
+
+ARGS: []

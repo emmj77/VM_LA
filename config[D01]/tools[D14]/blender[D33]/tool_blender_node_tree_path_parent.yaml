@@ -1,0 +1,21 @@
+id: "B889"
+tool: "blender_node_tree_path_parent"
+date: "2026-10-17"
+tags: ["blender_node_tree_path_parent"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Go to parent node tree"
+
+machine: "blender"
+op: "node.tree_path_parent"
+
+ARGS:
+  - {name: parent_tree_index, type: int}

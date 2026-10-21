@@ -1,0 +1,20 @@
+id: "B049"
+tool: "blender_anim_merge_animation"
+date: "2026-10-17"
+tags: ["blender_anim_merge_animation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Merge the animation of the selected objects into the action of the active object. Actions are not deleted by this, but might end up with zero users"
+
+machine: "blender"
+op: "anim.merge_animation"
+
+ARGS: []

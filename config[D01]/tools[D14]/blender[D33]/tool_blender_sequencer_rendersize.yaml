@@ -1,0 +1,20 @@
+id: "B1365"
+tool: "blender_sequencer_rendersize"
+date: "2026-10-17"
+tags: ["blender_sequencer_rendersize"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set render size and aspect from active strip"
+
+machine: "blender"
+op: "sequencer.rendersize"
+
+ARGS: []

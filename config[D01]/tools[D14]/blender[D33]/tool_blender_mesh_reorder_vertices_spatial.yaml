@@ -1,0 +1,20 @@
+id: "B695"
+tool: "blender_mesh_reorder_vertices_spatial"
+date: "2026-10-17"
+tags: ["blender_mesh_reorder_vertices_spatial"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reorder mesh faces and vertices based on their spatial position for better BVH building and sculpting performance."
+
+machine: "blender"
+op: "mesh.reorder_vertices_spatial"
+
+ARGS: []

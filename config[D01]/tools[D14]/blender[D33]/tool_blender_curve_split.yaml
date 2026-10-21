@@ -1,0 +1,20 @@
+id: "B268"
+tool: "blender_curve_split"
+date: "2026-10-17"
+tags: ["blender_curve_split"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Split off selected points from connected unselected points"
+
+machine: "blender"
+op: "curve.split"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B890"
+tool: "blender_node_view_all"
+date: "2026-10-17"
+tags: ["blender_node_view_all"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Resize view so you can see all nodes"
+
+machine: "blender"
+op: "node.view_all"
+
+ARGS: []

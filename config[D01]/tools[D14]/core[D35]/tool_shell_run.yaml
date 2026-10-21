@@ -1,0 +1,24 @@
+id: "G014"
+tool: "shell_run"
+date: "2026-10-17"
+tags: ["shell_run"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "runs a shell command under landrun : read-only, writes into the workspace"
+
+COMMAND: |
+  C=$(cat); [ -n "$C" ] || { printf '%s\n' "$(msg empty_missing_command)" >&2; exit 1; }
+  L=${LA_LANDRUN:-/home/moussa/.local/bin/landrun}; T="{{timeout}}"; [ -n "$T" ] || T=30; [ -x "$L" ] || { printf '%s\n' "$(msg landrun_not_found "$L")" >&2; exit 1; }
+  cd "$ROOT" || exit 1; timeout "$T" "$L" --ro / --rox /usr --rox /bin --rox /lib --rox /lib64 --rw "$W" -- /bin/sh -c "$C"
+
+ARGS:
+  - {name: command, type: text, stdin: true}
+  - {name: timeout, type: int}

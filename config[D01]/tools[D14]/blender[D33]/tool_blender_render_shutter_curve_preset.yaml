@@ -1,0 +1,21 @@
+id: "B1231"
+tool: "blender_render_shutter_curve_preset"
+date: "2026-10-17"
+tags: ["blender_render_shutter_curve_preset"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set shutter curve"
+
+machine: "blender"
+op: "render.shutter_curve_preset"
+
+ARGS:
+  - {name: shape, type: text}          # un de : SHARP | SMOOTH | MAX | LINE | ROUND | ROOT

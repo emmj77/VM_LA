@@ -1,0 +1,20 @@
+id: "B431"
+tool: "blender_graph_view_frame"
+date: "2026-10-17"
+tags: ["blender_graph_view_frame"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move the view to the current frame"
+
+machine: "blender"
+op: "graph.view_frame"
+
+ARGS: []

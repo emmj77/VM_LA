@@ -1,0 +1,22 @@
+id: "B1511"
+tool: "blender_uv_rip_move"
+date: "2026-10-17"
+tags: ["blender_uv_rip_move"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Unstitch UVs and move the result"
+
+machine: "blender"
+op: "uv.rip_move"
+
+ARGS:
+  - {name: UV_OT_rip, type: text}
+  - {name: TRANSFORM_OT_translate, type: text}

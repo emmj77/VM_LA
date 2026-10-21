@@ -1,0 +1,34 @@
+id: "B1749"
+tool: "blender_object_modifier"
+date: "2026-10-17"
+tags: ["blender_object_modifier"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a modifier of an object: add | add_node_group | apply | apply_as_shapekey | convert | copy | copy_to_selected | move_down | move_to_index | move_up | remove | set_active (op picks which)"
+
+machine: "blender"
+op: "object.modifier_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [add, add_node_group, apply, apply_as_shapekey, convert, copy, copy_to_selected, move_down, move_to_index, move_up, remove, set_active]}
+  - {name: modifier, type: text}
+  - {name: use_selected_objects, type: text}
+  - {name: report, type: text}
+  - {name: all_keyframes, type: text}
+  - {name: asset_library_identifier, type: text}
+  - {name: asset_library_type, type: text}
+  - {name: index, type: int}
+  - {name: keep_modifier, type: text}
+  - {name: merge_customdata, type: text}
+  - {name: relative_asset_identifier, type: text}
+  - {name: session_uid, type: int}
+  - {name: single_user, type: text}
+  - {name: type, type: text}

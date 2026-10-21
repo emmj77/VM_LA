@@ -1,0 +1,23 @@
+id: "B1320"
+tool: "blender_sculpt_paint_mask_slice"
+date: "2026-10-17"
+tags: ["blender_sculpt_paint_mask_slice"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Slices the paint mask from the mesh"
+
+machine: "blender"
+op: "sculpt.paint_mask_slice"
+
+ARGS:
+  - {name: mask_threshold, type: text}
+  - {name: fill_holes, type: text}          # true|false, vide pour ne rien poser
+  - {name: new_object, type: text}          # true|false, vide pour ne rien poser

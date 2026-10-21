@@ -1,0 +1,24 @@
+id: "B1452"
+tool: "blender_transform_create_orientation"
+date: "2026-10-17"
+tags: ["blender_transform_create_orientation"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create transformation orientation from selection"
+
+machine: "blender"
+op: "transform.create_orientation"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: use_view, type: text}          # true|false, vide pour ne rien poser
+  - {name: use, type: text}          # true|false, vide pour ne rien poser
+  - {name: overwrite, type: text}          # true|false, vide pour ne rien poser

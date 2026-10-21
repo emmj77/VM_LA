@@ -1,0 +1,21 @@
+id: "B838"
+tool: "blender_node_group_separate"
+date: "2026-10-17"
+tags: ["blender_node_group_separate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Separate selected nodes from the node group"
+
+machine: "blender"
+op: "node.group_separate"
+
+ARGS:
+  - {name: type, type: text}          # un de : COPY | MOVE

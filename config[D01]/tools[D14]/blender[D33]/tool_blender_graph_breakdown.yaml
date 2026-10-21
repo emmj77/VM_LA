@@ -1,0 +1,21 @@
+id: "B375"
+tool: "blender_graph_breakdown"
+date: "2026-10-17"
+tags: ["blender_graph_breakdown"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move selected keyframes to an inbetween position relative to adjacent keys"
+
+machine: "blender"
+op: "graph.breakdown"
+
+ARGS:
+  - {name: factor, type: text}

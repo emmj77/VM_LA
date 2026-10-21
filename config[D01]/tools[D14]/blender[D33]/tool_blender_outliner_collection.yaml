@@ -1,0 +1,24 @@
+id: "B1752"
+tool: "blender_outliner_collection"
+date: "2026-10-17"
+tags: ["blender_outliner_collection"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a collection in the outliner: color_tag_set | disable | disable_render | duplicate | duplicate_linked | enable | enable_render | exclude_clear | exclude_set | hide | hide_inside | hierarchy_delete | holdout_clear | holdout_set | indirect_only_clear | indirect_only_set | instance | isolate | link | new | objects_deselect | objects_select | show | show_inside (op picks which)"
+
+machine: "blender"
+op: "outliner.collection_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [color_tag_set, disable, disable_render, duplicate, duplicate_linked, enable, enable_render, exclude_clear, exclude_set, hide, hide_inside, hierarchy_delete, holdout_clear, holdout_set, indirect_only_clear, indirect_only_set, instance, isolate, link, new, objects_deselect, objects_select, show, show_inside]}
+  - {name: color, type: text}
+  - {name: extend, type: text}
+  - {name: nested, type: text}

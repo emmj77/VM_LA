@@ -1,0 +1,21 @@
+id: "B045"
+tool: "blender_anim_keyframe_insert"
+date: "2026-10-17"
+tags: ["blender_anim_keyframe_insert"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Insert keyframes on the current frame using either the active keying set, or the user preferences if no keying set is active"
+
+machine: "blender"
+op: "anim.keyframe_insert"
+
+ARGS:
+  - {name: type, type: text}          # un de : DEFAULT

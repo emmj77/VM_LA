@@ -1,0 +1,20 @@
+id: "B319"
+tool: "blender_file_autopack_toggle"
+date: "2026-10-17"
+tags: ["blender_file_autopack_toggle"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Automatically pack all external files into the .blend file"
+
+machine: "blender"
+op: "file.autopack_toggle"
+
+ARGS: []

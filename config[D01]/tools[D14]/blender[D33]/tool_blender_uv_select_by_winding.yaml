@@ -1,0 +1,22 @@
+id: "B1516"
+tool: "blender_uv_select_by_winding"
+date: "2026-10-17"
+tags: ["blender_uv_select_by_winding"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select UV faces by their winding"
+
+machine: "blender"
+op: "uv.select_by_winding"
+
+ARGS:
+  - {name: winding, type: text}          # un de : POSITIVE | NEGATIVE
+  - {name: extend, type: text}          # true|false, vide pour ne rien poser

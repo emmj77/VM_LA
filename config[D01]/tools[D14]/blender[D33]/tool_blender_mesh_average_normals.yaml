@@ -1,0 +1,23 @@
+id: "B622"
+tool: "blender_mesh_average_normals"
+date: "2026-10-17"
+tags: ["blender_mesh_average_normals"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Average custom normals of selected vertices"
+
+machine: "blender"
+op: "mesh.average_normals"
+
+ARGS:
+  - {name: average_type, type: text}          # un de : CUSTOM_NORMAL | FACE_AREA | CORNER_ANGLE
+  - {name: weight, type: int}
+  - {name: threshold, type: text}

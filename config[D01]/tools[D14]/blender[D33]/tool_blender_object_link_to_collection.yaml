@@ -1,0 +1,23 @@
+id: "B979"
+tool: "blender_object_link_to_collection"
+date: "2026-10-17"
+tags: ["blender_object_link_to_collection"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Link objects to a collection"
+
+machine: "blender"
+op: "object.link_to_collection"
+
+ARGS:
+  - {name: collection_uid, type: int}
+  - {name: is_new, type: text}          # true|false, vide pour ne rien poser
+  - {name: new_collection_name, type: text}

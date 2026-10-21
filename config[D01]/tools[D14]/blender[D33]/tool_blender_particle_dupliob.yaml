@@ -1,0 +1,21 @@
+id: "B1759"
+tool: "blender_particle_dupliob"
+date: "2026-10-17"
+tags: ["blender_particle_dupliob"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "a duplication object of a particle system: copy | move_down | move_up | refresh | remove (op picks which)"
+
+machine: "blender"
+op: "particle.dupliob_{{op}}"
+
+ARGS:
+  - {name: op, type: enum, values: [copy, move_down, move_up, refresh, remove]}

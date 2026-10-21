@@ -1,0 +1,22 @@
+id: "B1008"
+tool: "blender_object_paths_calculate"
+date: "2026-10-17"
+tags: ["blender_object_paths_calculate"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Generate motion paths for the selected objects"
+
+machine: "blender"
+op: "object.paths_calculate"
+
+ARGS:
+  - {name: display_type, type: text}          # un de : CURRENT_FRAME | RANGE
+  - {name: range, type: text}          # un de : KEYS_ALL | KEYS_SELECTED | SCENE | MANUAL

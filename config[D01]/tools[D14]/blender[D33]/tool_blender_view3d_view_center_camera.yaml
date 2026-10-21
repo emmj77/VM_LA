@@ -1,0 +1,20 @@
+id: "B1575"
+tool: "blender_view3d_view_center_camera"
+date: "2026-10-17"
+tags: ["blender_view3d_view_center_camera"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Center the camera view, resizing the view to fit its bounds"
+
+machine: "blender"
+op: "view3d.view_center_camera"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B812"
+tool: "blender_node_backimage_move"
+date: "2026-10-17"
+tags: ["blender_node_backimage_move"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Move node backdrop"
+
+machine: "blender"
+op: "node.backimage_move"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B278"
+tool: "blender_curves_delete"
+date: "2026-10-17"
+tags: ["blender_curves_delete"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Remove selected control points or curves"
+
+machine: "blender"
+op: "curves.delete"
+
+ARGS: []

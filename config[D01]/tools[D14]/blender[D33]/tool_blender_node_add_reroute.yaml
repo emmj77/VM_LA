@@ -1,0 +1,22 @@
+id: "B806"
+tool: "blender_node_add_reroute"
+date: "2026-10-17"
+tags: ["blender_node_add_reroute"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a reroute node"
+
+machine: "blender"
+op: "node.add_reroute"
+
+ARGS:
+  - {name: path, type: text}
+  - {name: cursor, type: int}

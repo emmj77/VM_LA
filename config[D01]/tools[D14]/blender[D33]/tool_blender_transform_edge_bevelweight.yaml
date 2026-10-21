@@ -1,0 +1,24 @@
+id: "B1454"
+tool: "blender_transform_edge_bevelweight"
+date: "2026-10-17"
+tags: ["blender_transform_edge_bevelweight"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change the bevel weight of edges"
+
+machine: "blender"
+op: "transform.edge_bevelweight"
+
+ARGS:
+  - {name: value, type: text}
+  - {name: snap, type: text}          # true|false, vide pour ne rien poser
+  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_accurate, type: text}          # true|false, vide pour ne rien poser

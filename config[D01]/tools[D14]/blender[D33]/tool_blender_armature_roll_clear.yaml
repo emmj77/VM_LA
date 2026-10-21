@@ -1,0 +1,21 @@
+id: "B083"
+tool: "blender_armature_roll_clear"
+date: "2026-10-17"
+tags: ["blender_armature_roll_clear"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Clear roll for selected bones"
+
+machine: "blender"
+op: "armature.roll_clear"
+
+ARGS:
+  - {name: roll, type: text}

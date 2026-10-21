@@ -1,0 +1,22 @@
+id: "B106"
+tool: "blender_asset_library_refresh"
+date: "2026-10-17"
+tags: ["blender_asset_library_refresh"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Reread assets and asset catalogs from the asset library on disk"
+
+machine: "blender"
+op: "asset.library_refresh"
+
+ARGS:
+  - {name: use_remote_listing, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_shift_for_remote_listing, type: text}          # true|false, vide pour ne rien poser

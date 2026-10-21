@@ -1,0 +1,22 @@
+id: "B510"
+tool: "blender_grease_pencil_vertex_color_set"
+date: "2026-10-17"
+tags: ["blender_grease_pencil_vertex_color_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set active color to all selected vertices"
+
+machine: "blender"
+op: "grease_pencil.vertex_color_set"
+
+ARGS:
+  - {name: mode, type: text}          # un de : STROKE | FILL | BOTH
+  - {name: factor, type: text}

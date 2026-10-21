@@ -1,0 +1,20 @@
+id: "B057"
+tool: "blender_anim_start_frame_set"
+date: "2026-10-17"
+tags: ["blender_anim_start_frame_set"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Set the current frame as the preview or scene start frame"
+
+machine: "blender"
+op: "anim.start_frame_set"
+
+ARGS: []

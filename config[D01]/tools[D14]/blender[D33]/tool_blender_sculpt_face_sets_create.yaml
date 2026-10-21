@@ -1,0 +1,21 @@
+id: "B1314"
+tool: "blender_sculpt_face_sets_create"
+date: "2026-10-17"
+tags: ["blender_sculpt_face_sets_create"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Create a new face set"
+
+machine: "blender"
+op: "sculpt.face_sets_create"
+
+ARGS:
+  - {name: mode, type: text}          # un de : MASKED | VISIBLE | ALL | SELECTION

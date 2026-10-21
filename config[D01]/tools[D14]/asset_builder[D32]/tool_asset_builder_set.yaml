@@ -1,0 +1,35 @@
+id: "A013"
+tool: "asset_builder_set"
+date: "2026-10-19"
+tags: ["asset_builder", "edit"]
+
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "changes ONE thing on an existing part: what is pos, rot, scale or mat, and value carries it"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  B=/home/moussa/Applications/asset-builder/bin/asset-builder
+  [ -x "$B" ] || { printf '%s\n' "$(msg asset_builder_found_b "$B")" >&2 ; exit 1 ; }
+  A1="{{name}}"
+  case "$A1" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_name_a1 "$A1")" >&2 ; exit 1 ;; esac
+  A2="{{id}}"
+  case "$A2" in ''|*[!a-z0-9_]*) printf '%s\n' "$(msg malformed_id_a2 "$A2")" >&2 ; exit 1 ;; esac
+  A3="{{what}}"
+  case "$A3" in pos|rot|scale|mat) ;; *) printf '%s\n' "$(msg value_outside_allowed_list)" >&2 ; exit 1 ;; esac
+  A4="{{value}}"
+  AB_HOME="$W/asset_builder" "$B" set --name "$A1" --id "$A2" --what "$A3" --value "$A4"
+
+ARGS:
+  - {name: name, type: text}
+  - {name: id, type: text}
+  - {name: what, type: text}
+  - {name: value, type: text}

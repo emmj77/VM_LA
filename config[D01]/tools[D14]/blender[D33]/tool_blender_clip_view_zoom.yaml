@@ -1,0 +1,22 @@
+id: "B199"
+tool: "blender_clip_view_zoom"
+date: "2026-10-17"
+tags: ["blender_clip_view_zoom"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Zoom in/out the view"
+
+machine: "blender"
+op: "clip.view_zoom"
+
+ARGS:
+  - {name: factor, type: text}
+  - {name: use_cursor_init, type: text}          # true|false, vide pour ne rien poser

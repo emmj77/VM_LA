@@ -1,0 +1,20 @@
+id: "B374"
+tool: "blender_graph_bake_keys"
+date: "2026-10-17"
+tags: ["blender_graph_bake_keys"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add keyframes on every frame between the selected keyframes"
+
+machine: "blender"
+op: "graph.bake_keys"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B833"
+tool: "blender_node_gltf_settings_node_operator"
+date: "2026-10-17"
+tags: ["blender_node_gltf_settings_node_operator"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add a node to the active tree for glTF export"
+
+machine: "blender"
+op: "node.gltf_settings_node_operator"
+
+ARGS: []

@@ -1,0 +1,21 @@
+id: "B675"
+tool: "blender_mesh_loop_to_region"
+date: "2026-10-17"
+tags: ["blender_mesh_loop_to_region"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select region of faces inside of a selected loop of edges"
+
+machine: "blender"
+op: "mesh.loop_to_region"
+
+ARGS:
+  - {name: select_bigger, type: text}          # true|false, vide pour ne rien poser

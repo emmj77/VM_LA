@@ -1,0 +1,22 @@
+id: "B1414"
+tool: "blender_spreadsheet_change_spreadsheet_data_source"
+date: "2026-10-17"
+tags: ["blender_spreadsheet_change_spreadsheet_data_source"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Change visible data source in the spreadsheet"
+
+machine: "blender"
+op: "spreadsheet.change_spreadsheet_data_source"
+
+ARGS:
+  - {name: component_type, type: int}
+  - {name: attribute_domain_type, type: int}

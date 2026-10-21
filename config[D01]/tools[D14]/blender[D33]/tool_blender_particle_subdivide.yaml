@@ -1,0 +1,20 @@
+id: "B1171"
+tool: "blender_particle_subdivide"
+date: "2026-10-17"
+tags: ["blender_particle_subdivide"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Subdivide selected particles segments (adds keys)"
+
+machine: "blender"
+op: "particle.subdivide"
+
+ARGS: []

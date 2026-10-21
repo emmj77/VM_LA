@@ -1,0 +1,22 @@
+id: "B1484"
+tool: "blender_uilist_entry_add"
+date: "2026-10-17"
+tags: ["blender_uilist_entry_add"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add an entry to the list after the current active item"
+
+machine: "blender"
+op: "uilist.entry_add"
+
+ARGS:
+  - {name: list_path, type: text}
+  - {name: active_index_path, type: text}

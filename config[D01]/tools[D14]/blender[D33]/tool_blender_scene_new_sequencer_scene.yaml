@@ -1,0 +1,21 @@
+id: "B1268"
+tool: "blender_scene_new_sequencer_scene"
+date: "2026-10-17"
+tags: ["blender_scene_new_sequencer_scene"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Add new scene to be used by the sequencer"
+
+machine: "blender"
+op: "scene.new_sequencer_scene"
+
+ARGS:
+  - {name: type, type: text}          # un de : NEW | EMPTY | LINK_COPY | FULL_COPY

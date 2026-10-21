@@ -1,0 +1,20 @@
+id: "B1668"
+tool: "blender_wm_splash"
+date: "2026-10-17"
+tags: ["blender_wm_splash"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Open the splash screen with release info"
+
+machine: "blender"
+op: "wm.splash"
+
+ARGS: []

@@ -1,0 +1,20 @@
+id: "B323"
+tool: "blender_file_edit_directory_path"
+date: "2026-10-17"
+tags: ["blender_file_edit_directory_path"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Start editing directory field"
+
+machine: "blender"
+op: "file.edit_directory_path"
+
+ARGS: []

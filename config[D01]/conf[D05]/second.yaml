@@ -1,0 +1,8 @@
+# id: C08
+# THE MICRO-SUMMARY OF THE SECONDARY HEAD (config[D02]/second.yaml).
+# WRITTEN BY THE LOCAL MODEL ; OVERWRITTEN at each rewrite : it replaces itself, it does not grow.
+stamp: "2026-10-19T02:05:26Z"
+exchanges: "1-3"
+bound: "12 lines, 800 bytes, held by session_note.sh"
+summary:
+  101: "ME confirme son retard d'une minute après le tour précédent ; AGENT corrige et précise la date exacte des tours ; les données fournies sont vérifiées sur l'horodatage."

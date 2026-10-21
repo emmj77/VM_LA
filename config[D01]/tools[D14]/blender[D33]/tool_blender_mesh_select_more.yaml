@@ -1,0 +1,21 @@
+id: "B717"
+tool: "blender_mesh_select_more"
+date: "2026-10-17"
+tags: ["blender_mesh_select_more"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Select more vertices, edges or faces connected to initial selection"
+
+machine: "blender"
+op: "mesh.select_more"
+
+ARGS:
+  - {name: use_face_step, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,23 @@
+id: "B1594"
+tool: "blender_wm_batch_rename"
+date: "2026-10-17"
+tags: ["blender_wm_batch_rename"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Rename multiple items at once"
+
+machine: "blender"
+op: "wm.batch_rename"
+
+ARGS:
+  - {name: data_type, type: text}          # un de : OBJECT | COLLECTION | MATERIAL | MESH | CURVE | META | VOLUME | GREASEPENCIL | ARMATURE | LATTICE | LIGHT | LIGHT_PROBE | CAMERA | SPEAKER | BONE | NODE | SEQUENCE_STRIP | ACTION_CLIP | SCENE | BRUSH
+  - {name: data_source, type: text}          # un de : SELECT | ALL
+  - {name: actions, type: text}

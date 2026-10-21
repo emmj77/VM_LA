@@ -1,0 +1,21 @@
+id: "B877"
+tool: "blender_node_select_same_type_step"
+date: "2026-10-17"
+tags: ["blender_node_select_same_type_step"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Activate and view same node type, step by step"
+
+machine: "blender"
+op: "node.select_same_type_step"
+
+ARGS:
+  - {name: prev, type: text}          # true|false, vide pour ne rien poser

@@ -1,0 +1,26 @@
+id: "B236"
+tool: "blender_curve_draw"
+date: "2026-10-17"
+tags: ["blender_curve_draw"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Draw a freehand spline"
+
+machine: "blender"
+op: "curve.draw"
+
+ARGS:
+  - {name: error_threshold, type: text}
+  - {name: fit_method, type: text}          # un de : REFIT | SPLIT
+  - {name: corner_angle, type: text}
+  - {name: use_cyclic, type: text}          # true|false, vide pour ne rien poser
+  - {name: stroke, type: text}
+  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser

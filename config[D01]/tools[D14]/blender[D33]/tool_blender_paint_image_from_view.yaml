@@ -1,0 +1,21 @@
+id: "B1108"
+tool: "blender_paint_image_from_view"
+date: "2026-10-17"
+tags: ["blender_paint_image_from_view"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "Make an image from biggest 3D view for reprojection"
+
+machine: "blender"
+op: "paint.image_from_view"
+
+ARGS:
+  - {name: filepath, type: text}
