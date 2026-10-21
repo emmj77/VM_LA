@@ -1,8 +1,9 @@
 # id: E14
 # role: the loaded set. One file for what is loaded and what it opens: the active skill, the
-# active project, its plan, the toolset and the skillset built from the register, the readers
-# that say which tool rides every turn (table_perm, table_permanents, table_with_skill,
-# table_with_project), and what is always allowed.
+# active project, its plan, the toolset and the skillset built from the register, and THE GATE.
+# skl_gate is the ONE place that decides what a turn may carry: the doc lock, the plan lock,
+# the step of a route, the recall of a journal, the finish. The door (run.sh), the toolset
+# (tool_toolset, tool_turn_scope) and the end of turn all ASK it; none of them decide.
 
 # skl_skill : the name of the armed skill, empty when none
 skl_skill() {
@@ -42,26 +43,54 @@ skl_plan_is_closed() {
     END { exit (perm ? 0 : 1) }' "$_f"
 }
 
+# skl_agent : the name of the agent whose plan is live, a bare token
+skl_agent() {
+  _a=${LA_AGENT:-}
+  [ -n "$_a" ] || _a=$(cfg str agents.main jarvis 2>/dev/null)
+  [ -n "$_a" ] || _a=la
+  printf '%s\n' "$_a" | tr -cd 'A-Za-z0-9_-'
+}
+
+# skl_plan_file [agent] : the journal plan of an agent : ONE file, named <Agent>Todo.md, in the
+# state folder. a parallel session writes its own, so two plans never meet.
+skl_plan_file() {
+  _a=${1:-$(skl_agent)}
+  [ -n "$_a" ] || return 1
+  _t=$(cfg abs turn) || return 1
+  printf '%s/%sTodo.md\n' "$(dirname "$_t")" "$_a"
+}
+
+# skl_plan_src [name] : the file the plan is READ from : the skill.yaml for a route (the human
+# wrote it), the agent's file for a journal (the model writes it)
+skl_plan_src() {
+  _n=${1:-$(skl_skill)}
+  [ -n "$_n" ] || return 1
+  if skl_plan_is_closed "$_n" 2>/dev/null; then skl_step_file "$_n"; return 0; fi
+  skl_plan_file
+}
+
 # skl_plan_step [name] : the step the plan holds open, four fields, TAB between them :
 #   id<TAB>tool<TAB>bytes<TAB>max
-# 0 an open step, 3 the plan is finished (no [progress] left), 1 a journal plan, not a route.
+# 0 an open step, 2 no plan at all, 3 the plan is finished (every marked line is completed).
+# a [todo] with no [in_progress] is read as the open step : the next advance repairs it.
 skl_plan_step() {
-  _f=$(skl_step_file "${1:-}") || return 1
-  awk '
-    /^PERMANENT_TODO:[ \t]*/ {
-      v = $0; sub(/^PERMANENT_TODO:[ \t]*/, "", v); gsub(/[ \t"]/, "", v)
-      perm = (v == "true")
-    }
+  _n=${1:-$(skl_skill)}
+  _src=$(skl_plan_src "$_n" 2>/dev/null) || return 2
+  [ -r "$_src" ] || return 2
+  _route=0 ; skl_plan_is_closed "$_n" 2>/dev/null && _route=1
+  awk -v route="$_route" '
     /^PLAN:[ \t]*$/ { inplan = 1; next }
-    inplan && /^[^ \t]/ { inplan = 0 }
-    inplan && /^[ \t]*[0-9]+:/ {
+    route && inplan && /^[^ \t]/ { inplan = 0 }
+    (!route || inplan) && /^[ \t]*[0-9]+:/ {
       idp = $0; sub(/^[ \t]*/, "", idp); id = idp; sub(/:.*/, "", id)
       v = $0; sub(/^[ \t]*[0-9]+:[ \t]*/, "", v); gsub(/"?[ \t]*$/, "", v); sub(/^"/, "", v)
-      if (v ~ /^\[progress\]/) { step = id; line = v }
+      any = 1
+      if (v ~ /^\[in_progress\]/) { if (step == "") { step = id; line = v } }
+      else if (v ~ /^\[todo\]/ && step == "" && todo == "") todo = id
     }
     END {
-      if (!perm) exit 1
-      if (step == "") exit 3
+      if (step == "" && todo != "") { step = todo; line = "" }
+      if (step == "") exit (any ? 3 : 2)
       tool = ""; bytes = ""; mx = ""
       if (match(line, /--[ \t]*tools:[ \t]*[A-Za-z0-9_.]+/)) {
         tool = substr(line, RSTART, RLENGTH); sub(/.*tools:[ \t]*/, "", tool)
@@ -73,7 +102,210 @@ skl_plan_step() {
         mx = substr(line, RSTART, RLENGTH); sub(/.*max:[ \t]*/, "", mx)
       }
       printf "%s\t%s\t%s\t%s\n", step, tool, bytes, mx
-    }' "$_f"
+    }' "$_src"
+}
+
+# skl_plan_stamp : the turn number a journal plan was last touched at, empty when the header
+# carries none ("400: ... -- turn N")
+skl_plan_stamp() {
+  _p=$(skl_plan_file 2>/dev/null) || return 1
+  [ -r "$_p" ] || return 1
+  sed -n 's/^400:.*--[ \t]*turn[ \t]*\([0-9][0-9]*\).*/\1/p' "$_p" | head -n 1
+}
+
+# skl_turn_no : how many turns this machine has started, read in its own trace
+skl_turn_no() {
+  _f=$(cfg abs trace) || { printf '0\n'; return 0; }
+  [ -r "$_f" ] || { printf '0\n'; return 0; }
+  _c=$(grep -c '"kind":"turn"' "$_f" 2>/dev/null)
+  case $_c in ''|*[!0-9]*) _c=0 ;; esac
+  printf '%s\n' "$_c"
+}
+
+# skl_doc_seen : true when the doc of the armed skill has been read this turn
+skl_doc_seen() {
+  _n=$(skl_skill 2>/dev/null) || return 1
+  [ -n "$_n" ] || return 1
+  _d=$(jq -r '.doc // ""' "$(cfg abs turn)" 2>/dev/null)
+  [ "$_d" = "$_n" ]
+}
+
+# skl_lock : THE one tool the turn is held to, empty when the set is open.
+# the order is the law : the doc, then the plan, then the step (a route), then the recall.
+skl_lock() {
+  _n=$(skl_skill 2>/dev/null) || return 0
+  [ -n "$_n" ] || return 0
+  if ! skl_doc_seen; then printf 'load_doc\n'; return 0; fi
+  _st=$(skl_plan_step "$_n" 2>/dev/null)
+  _rc=$?
+  case $_rc in
+    2) printf 'todo\n'; return 0 ;;
+    3) return 0 ;;
+  esac
+  if skl_plan_is_closed "$_n" 2>/dev/null; then
+    _t=$(printf '%s' "$_st" | awk -F'\t' '{ print $2 }')
+    printf '%s\n' "${_t:-update_todo}"
+    return 0
+  fi
+  _pe=$(cfg num loop.plan_every 3) || _pe=3
+  _at=$(skl_plan_stamp 2>/dev/null)
+  _now=$(skl_turn_no)
+  if [ -n "$_at" ] && [ "$_now" -gt 0 ] && [ $((_now - _at)) -ge "$_pe" ]; then
+    printf 'update_todo\n'
+  fi
+  return 0
+}
+
+# skl_gate [tool] : the one place. no argument : the NAMES the turn may carry, one per line.
+# with a name : 0 allowed, 2 the doc first, 3 the plan first, 4 not this step, 5 the recall, 1 no.
+skl_gate() {
+  if [ "$#" -gt 0 ]; then _skl_gate_check "$1"; return $?; fi
+  _l=$(skl_lock)
+  if [ -n "$_l" ]; then printf '%s\n' "$_l" reply; return 0; fi
+  _n=$(skl_skill 2>/dev/null)
+  [ -n "$_n" ] || { table_permanents; return 0; }
+  _st=$(skl_plan_step "$_n" 2>/dev/null)
+  case $? in
+    3) table_permanents ; return 0 ;;
+  esac
+  {
+    table_permanents
+    skl_tools_map "$_n" | awk -F'\t' '{ print $2 }'
+    skl_plan_is_closed "$_n" 2>/dev/null || printf 'update_todo\n'
+  } | awk 'NF && !seen[$0]++'
+  return 0
+}
+
+# _skl_gate_check <tool> : the door's question, answered from the same place
+_skl_gate_check() {
+  _t=${1:-}
+  [ -n "$_t" ] || return 1
+  _l=$(skl_lock)
+  if [ -n "$_l" ]; then
+    [ "$_t" = "$_l" ] && return 0
+    [ "$_t" = reply ] && return 0
+    case $_l in
+      load_doc) return 2 ;;
+      todo) return 3 ;;
+      update_todo) return 5 ;;
+      *) return 4 ;;
+    esac
+  fi
+  skl_permanent "$_t" && return 0
+  _n=$(skl_skill 2>/dev/null)
+  [ -n "$_n" ] || return 1
+  _st=$(skl_plan_step "$_n" 2>/dev/null)
+  [ $? = 3 ] && return 1
+  skl_plan_is_closed "$_n" 2>/dev/null || { [ "$_t" = update_todo ] && return 0; }
+  skl_carries "$_t" "" && return 0
+  return 1
+}
+
+# tool_allowed <name> <id> : the door's word, from skl_gate alone
+tool_allowed() {
+  skl_gate "${1:-}"
+  return $?
+}
+
+# plan_status : what the head shows : the doc, the plan, and its open step
+plan_status() {
+  _n=$(skl_skill 2>/dev/null)
+  [ -n "$_n" ] || { printf 'no skill armed\n'; return 0; }
+  if skl_doc_seen; then printf 'doc: read\n'; else printf 'doc: TO READ -- load_doc first, it is the only tool of this turn\n'; fi
+  _st=$(skl_plan_step "$_n" 2>/dev/null)
+  case $? in
+    2) printf 'plan: NONE -- todo writes %sTodo.md\n' "$(skl_agent)"; return 0 ;;
+    3) printf 'plan: FINISHED -- the skill closes\n'; return 0 ;;
+  esac
+  printf '%s\n' "$(printf '%s' "$_st" | awk -F'\t' '{ printf "plan: step %s OPEN", $1; if ($2 != "") printf " -- tools: %s", $2; printf "\n" }')"
+  _src=$(skl_plan_src "$_n" 2>/dev/null) || return 0
+  [ -r "$_src" ] || return 0
+  awk '/^[ \t]*4[0-1][0-9]:/ { print }' "$_src" | head -n 12
+}
+
+# skl_plan_write <goal> <points> : todo writes the journal plan of the agent. the bounds hold :
+# 12 steps, 100 characters a step, the first step in_progress, the header stamped with the turn.
+# returns 0 written, 1 the arguments, 10 too many steps, 11 a step too long.
+skl_plan_write() {
+  _nm=${1:-} ; _g=${2:-} ; _ps=${3:-}
+  [ -n "$_g" ] || return 1
+  printf '%s\n' "$_ps" | grep -qv '^[[:space:]]*$' || return 1
+  _mx=$(cfg num loop.plan_steps 12) || _mx=12
+  _mc=$(cfg num loop.plan_chars 100) || _mc=100
+  _k=0
+  while IFS= read -r _l; do
+    [ -n "$(printf '%s' "$_l" | tr -d '[:space:]')" ] || continue
+    _k=$((_k+1))
+    [ "$_k" -le "$_mx" ] || return 10
+    [ "${#_l}" -le "$_mc" ] || return 11
+  done <<EOF
+$_ps
+EOF
+  _p=$(skl_plan_file) || return 1
+  if [ -s "$_p" ] && grep -q '\[in_progress\]\|\[todo\]' "$_p" 2>/dev/null; then return 12; fi
+  _tn=$(skl_turn_no)
+  {
+    printf '400: "PLAN %s: %s -- turn %s"\n' "${_nm:-$(skl_agent)}" "$_g" "$_tn"
+    _k=0 ; _i=400
+    printf '%s\n' "$_ps" | while IFS= read -r _l; do
+      [ -n "$(printf '%s' "$_l" | tr -d '[:space:]')" ] || continue
+      _k=$((_k+1)) ; _i=$((_i+1))
+      if [ "$_k" -eq 1 ]; then _m=in_progress ; else _m=todo ; fi
+      printf '%s: "[%s] %s"\n' "$_i" "$_m" "$_l"
+    done
+  } | write_atomic "$_p"
+  printf 'ok the plan of %s is open: %s steps -- %s\n' "$(skl_agent)" "$_k" "$_p"
+}
+
+# skl_plan_advance <in_progress|completed> : update_todo moves the journal plan.
+# completed : the open step closes, the next one opens ; the last one closes the plan, the file
+# goes, the skill unloads. in_progress : the step stays, the header is restamped (the recall).
+# returns 0 moved, 2 the state, 4 a route (the machine advances it), 5 no plan, 9 finished.
+skl_plan_advance() {
+  _st=${1:-completed}
+  case $_st in in_progress|completed) ;; *) return 2 ;; esac
+  _n=$(skl_skill 2>/dev/null) || return 5
+  [ -n "$_n" ] || return 5
+  skl_plan_is_closed "$_n" 2>/dev/null && return 4
+  _p=$(skl_plan_file) || return 5
+  [ -s "$_p" ] || return 5
+  _tn=$(skl_turn_no)
+  _t=$(mktemp "${TMPDIR:-/tmp}/todo.XXXXXX") || return 5
+  awk -v st="$_st" -v tn="$_tn" '
+    function restamp(s) { if (match(s, /--[ \t]*turn[ \t]*[0-9]+/)) { return substr(s, 1, RSTART - 1) "-- turn " tn substr(s, RSTART + RLENGTH) } return s }
+    { lines[NR] = $0 }
+    END {
+      for (i = 1; i <= NR; i++) {
+        l = lines[i]
+        if (l ~ /^400:/) { lines[i] = restamp(l); continue }
+        if (l ~ /\[in_progress\]/ && ip == 0) ip = i
+        if (l ~ /\[todo\]/ && td == 0) td = i
+      }
+      if (st == "completed") {
+        if (ip) { sub(/\[in_progress\]/, "[completed]", lines[ip])
+                  if (td) sub(/\[todo\]/, "[in_progress]", lines[td]) ; else fin = 1 }
+        else if (td) sub(/\[todo\]/, "[in_progress]", lines[td])
+        else fin = 1
+      } else {
+        if (td && !ip) sub(/\[todo\]/, "[in_progress]", lines[td])
+      }
+      for (i = 1; i <= NR; i++) print lines[i]
+      if (fin) exit 9
+    }' "$_p" > "$_t"
+  _rc=$?
+  if [ "$_rc" = 9 ]; then
+    rm -f "$_t"
+    gio trash -- "$_p" 2>/dev/null || rm -f -- "$_p"
+    skl_disarm
+    printf '%s\n' "$(msg plan_done "$_n")"
+    return 9
+  fi
+  if [ "$_rc" != 0 ] || [ ! -s "$_t" ]; then rm -f "$_t" ; return 5 ; fi
+  if ! mv -f "$_t" "$_p"; then rm -f "$_t" ; return 5 ; fi
+  _left=$(grep -c '\[in_progress\]' "$_p" 2>/dev/null)
+  case $_left in ''|*[!0-9]*) _left=0 ;; esac
+  printf 'ok the plan moved: %s -- %s steps in progress\n' "$_st" "$_left"
+  return 0
 }
 
 # skl_arm <name> : a skill exists before it is armed
@@ -84,18 +316,25 @@ skl_arm() {
   printf '%s\n' "$_n" | write_atomic "$(cfg abs skill_active)"
 }
 
-# skl_disarm : no skill, no tool is allowed any more
+# skl_disarm : no skill, no tool is allowed any more, and the plan file of the agent goes with it
 skl_disarm() {
   _f=$(cfg abs skill_active) || return 1
-  [ -e "$_f" ] && gio trash -- "$_f" 2>/dev/null
+  [ -e "$_f" ] && { gio trash -- "$_f" 2>/dev/null || rm -f -- "$_f"; }
+  _p=$(skl_plan_file 2>/dev/null)
+  [ -n "$_p" ] && [ -e "$_p" ] && { gio trash -- "$_p" 2>/dev/null || rm -f -- "$_p"; }
   return 0
 }
 
-# skl_turn_end : the turn is over, the skill goes, always. A permanent plan (PERMANENT_TODO: true,
-# tunnels) or a normal one the model writes and ticks, the plan closes inside the turn; what is
-# left of it stays in its skill.yaml as history. The motor unloads after, whatever the case.
+# skl_turn_end : the turn is over. an open plan keeps its skill armed (the plan resumes next
+# turn: nobody quits a skill with the plan unfinished); a finished plan or none, the skill goes.
 # The MODEL never unloads: no unload_skill tool exists. The human keeps `skill unload`.
 skl_turn_end() {
+  _n=$(skl_skill 2>/dev/null) || return 0
+  [ -n "$_n" ] || return 0
+  skl_plan_step "$_n" >/dev/null 2>&1
+  case $? in
+    0) return 0 ;;
+  esac
   skl_disarm
 }
 
@@ -146,20 +385,9 @@ skl_in_toolset() {
   done | grep -q yes
 }
 
-# skl_toolset [name] : the tool NAMES this turn may carry, one per line, and it is the ONE
-# place that decides : an open step gives its single tool, a finished plan gives nothing
-# (the skill is closed, only the permanent tools remain), a journal plan gives the TOOLS map.
-# a name, never the key of the map : the register is read by name, and a key 200 names nothing.
+# skl_toolset [name] : kept for its callers : the gate's names, one per line
 skl_toolset() {
-  _n=${1:-$(skl_skill)}
-  [ -n "$_n" ] || return 1
-  _st=$(skl_plan_step "$_n" 2>/dev/null)
-  case $? in
-    0)  printf '%s\n' "$(printf '%s' "$_st" | awk -F'\t' '{ print $2 }')"
-        return 0 ;;
-    3)  return 0 ;;   # the plan is finished: the skill opens nothing any more
-  esac
-  skl_tools_map "$_n" | awk -F'\t' '{ print $2 }'
+  skl_gate
 }
 
 # skl_permanent <name> : allowed whatever the skill, because the TOOL says so in the register
@@ -206,21 +434,6 @@ skl_carries() {
   _flat "$_f" | awk -F'\t' -v n="$_n" -v i="$_i" '
     $1 ~ /^TOOLS\./ { k = $1; sub(/^TOOLS\./, "", k); if (k == i || $2 == n) f = 1 }
     END { exit(f ? 0 : 1) }'
-}
-
-# tool_allowed <name> <id> : the two doors at once, the name for the master file, the id for the skill
-# an open step closes the second door to its single tool : what is not named on the step's
-# line is not reachable, and the door and the toolset cannot disagree (law 2402).
-tool_allowed() {
-  skl_permanent "$1" && return 0
-  if skl_plan_is_closed 2>/dev/null; then
-    _st=$(skl_plan_step 2>/dev/null) || return 1
-    _t=$(printf '%s' "$_st" | awk -F'\t' '{ print $2 }')
-    [ -n "$_t" ] || return 1
-    [ "$_t" = "$1" ] && return 0
-    return 1
-  fi
-  skl_carries "$1" "$2"
 }
 
 # approval_of <body> : what the body says a human must carry, empty when nothing

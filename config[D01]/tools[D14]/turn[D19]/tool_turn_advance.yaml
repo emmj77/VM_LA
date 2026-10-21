@@ -1,5 +1,5 @@
 # one step of the turn, after the tools. the plan of the armed skill moves by itself:
-# it reads what the step's tool returned, and moves the [progress] mark when the fact is there.
+# it reads what the step's tool returned, and moves the [in_progress] mark when the fact is there.
 id: "T010"
 tool: "turn.advance"
 date: "2026-10-21"
@@ -83,9 +83,9 @@ COMMAND: |
       sub(/^[ \t]*/, "", idp)
       id = idp
       sub(/:.*/, "", id)
-      if (id == cur && !done) { sub(/\[progress\]/, "[done]", $0); print; done = 1; next }
+      if (id == cur && !done) { sub(/\[progress\]/, "[completed]", $0); print; done = 1; next }
       if (done && !taken && $0 ~ /\[todo\]/) {
-        sub(/\[todo\]/, "[progress]", $0)
+        sub(/\[todo\]/, "[in_progress]", $0)
         if (aft != "") $0 = stamps($0, aft)
         taken = 1
         print

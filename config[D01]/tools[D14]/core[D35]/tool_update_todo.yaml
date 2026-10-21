@@ -1,5 +1,6 @@
 id: "G016"
 tool: "update_todo"
+permanent: true
 date: "2026-10-17"
 tags: ["plan", "shell", "animation", "update"]
 
@@ -10,19 +11,22 @@ RULES:
   approval: none
   turn: none
   count: false
-  paths: read
+  paths: write
 
-DESCRIPTION: "advances the plan of the skill : the CURRENT point is done (a call imposed by the engine may pass its state)"
+DESCRIPTION: "moves the plan of the agent: completed closes the open step and opens the next; in_progress keeps it (the recall is pushed back). The last completed closes the plan, deletes its file and unloads the skill."
 
 COMMAND: |
   ST="{{state}}"
-  [ -n "$ST" ] || ST=complete
-  case "$ST" in
-    progress|complete) ;;
-    *) printf '%s\n' "$(msg unknown_state_st_progress "$ST")" >&2 ; exit 1 ;;
+  [ -n "$ST" ] || ST=completed
+  skl_plan_advance "$ST"
+  _rc=$?
+  case $_rc in
+    0) exit 0 ;;
+    9) exit 0 ;;
+    2) printf '%s\n' "$(msg refusals.plan_state_unknown in_progress completed)" >&2 ; exit 1 ;;
+    4) printf '%s\n' "$(msg refusals.plan_is_closed)" >&2 ; exit 1 ;;
+    *) printf '%s\n' "$(msg refusals.plan_file_missing)" >&2 ; exit 1 ;;
   esac
-  PB=$(cfg path plan 2>/dev/null) ; [ -n "$PB" ] && [ -x "$PB/plan.sh" ] || { printf '%s\n' "refused: the plan brick is missing (plan/plan.sh)" >&2 ; exit 1 ; }
-  "$PB/plan.sh" progress "$ST"
 
 ARGS:
   - {name: state, type: text}

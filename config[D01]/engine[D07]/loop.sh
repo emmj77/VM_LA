@@ -70,6 +70,8 @@ loop_turn() {
   [ -n "$PROMPT" ] || { shape_fail "" "" refusals.arity prompt; return 1; }
   loop_busy && { shape_fail "" "" refusals.arity; return 1; }
   loop_mark || return 1
+  _tf=$(cfg abs turn)
+  [ -s "$_tf" ] && _turn_set '.doc = ""' 2>/dev/null
 
   _ltr turn "start"
   _t0=$(date +%s)

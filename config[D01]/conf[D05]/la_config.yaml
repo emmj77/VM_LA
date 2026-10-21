@@ -140,7 +140,8 @@ units:
     probe: "/ping"
   models:
     resident: "models"
-    count: false                            # les trois modeles se comptent dans board.residents
+    # les trois modeles du routeur se comptent dans board.residents, pas ici
+    count: false
     unit: "la-models"
     port: 8091
     probe: "/health"
@@ -158,7 +159,8 @@ units:
     probe: "/health"
   kws:
     resident: "kws"
-    count: false                            # l ecoute n est pas un resident : on la demande
+    # il compte : c est le sixieme, en veille. Jamais au boot : le bouton de l app l ouvre.
+    count: true
     mode: "on-demand"
     unit: "la-kws"
     port: 0                                 # it opens no port: it listens
@@ -231,6 +233,8 @@ loop:
   max_calls: 0
   max_seconds: 0
   plan_every: 10
+  plan_steps: 12
+  plan_chars: 100
   update_every: 10
   timeout: 600
   share: 30
@@ -381,6 +385,13 @@ commands:
     name: "stop"
     act: stop
     voice: true
+  - id: "V21"
+    name: "listen on"
+    act: listen_on
+    # pas de voice : l oreille ne s ouvre pas a la voix, seulement par un geste
+  - id: "V22"
+    name: "listen off"
+    act: listen_off
   - id: "V06"
     name: "skill list"
     tool: skill_list
@@ -522,6 +533,18 @@ schema:
     min: 1
     max: 50
     why: l imposition du plan, tous les N tours
+  - section: loop
+    key: plan_steps
+    kind: int
+    min: 1
+    max: 20
+    why: une etape du plan compte, au plus, N etapes
+  - section: loop
+    key: plan_chars
+    kind: int
+    min: 40
+    max: 400
+    why: une ligne du plan, en caracteres, au plus
   - section: loop
     key: update_every
     kind: int
@@ -696,6 +719,8 @@ board:
     - {name: local, unit: la-models, model: "LFM2.5-1.2B-Instruct-Q4_K_M.gguf"}
     - {name: asr, unit: la-asr, port: 8080, probe: ready}
     - {name: tts, unit: la-tts, port: 8090, probe: health}
+    # le sixieme : il dort tant qu on ne l a pas ouvert. « veille » n est pas une faute.
+    - {name: kws, unit: la-kws, idle: true}
   appoints:
     # bridge: board.py carries it itself. dash: the page, which opens and closes by itself.
     - {name: dash, port: 8771, unit: la-dash.service}

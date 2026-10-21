@@ -109,7 +109,15 @@ run_call() {
   # a permanent tool passes anywhere, the others need the toolset of the active skill
   case ${LA_FROM:-model} in
     engine|human) : ;;
-    *) tool_allowed "$_name" "$_id" || { shape_fail "$_name" "" refusals.tool_not_allowed; return 1; } ;;
+    *) skl_gate "$_name"; _rc=$?
+       case $_rc in
+         0) : ;;
+         2) shape_fail "$_name" "" refusals.doc_first "$(skl_skill)"; return 1 ;;
+         3) shape_fail "$_name" "" refusals.plan_first; return 1 ;;
+         5) shape_fail "$_name" "" refusals.overdue "$(cfg num loop.plan_every 3)"; return 1 ;;
+         4) shape_fail "$_name" "" refusals.not_on_step; return 1 ;;
+         *) shape_fail "$_name" "" refusals.tool_not_allowed; return 1 ;;
+       esac ;;
   esac
 
   # 6 arity and 7 types

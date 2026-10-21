@@ -50,7 +50,7 @@ DOCS:
 
 PLAN:
   400: "PLAN phone-tunnel: bring the phone up to the bridge, and prove it"
-  401: "[progress] read the tunnel state -- tools: tunnel_status"
+  401: "[in_progress] read the tunnel state -- tools: tunnel_status"
   402: "[todo] raise wg0 and say it -- tools: tunnel_up"
   403: "[todo] state what is mounted -- tools: tunnel_status"
   404: "[todo] rendre compte au telephone -- tools: reply"

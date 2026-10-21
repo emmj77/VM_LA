@@ -15,30 +15,17 @@ RULES:
 DESCRIPTION: "shows the COMPLETE list of the tour's tools (the active skill's palette, plus the permanent tools)"
 
 COMMAND: |
-  A=$(sed -n '1p' "${LA_STATE_SKILL:-$(cfg path skills)/.active}" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-  case "$A" in ''|*/*|*..*) A=la ;; esac
-  K="$(cfg path skills)/$A/skill.yaml"
-  [ -f "$K" ] || { printf '%s\n' "$(msg active_skill_missing "$K")" >&2; exit 1; }
   T="$(cfg path tools)/registry.yaml"
   W="${TMPDIR:-/tmp}/toolset.$$"
-  SK=$(sed -n '/^TOOLS:/,/^[^[:space:]]/p' "$K" | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' | sed -e 's/^"//' -e 's/"$//' | grep -v '^$' | sort -u)
-  PN=$(table_permanents)
-  WIDE=0
-  if [ -n "$SK" ]; then
-    printf '%s\n%s\n' "$SK" "$PN" | grep -v '^$' | sort -u > "$W.names"
-  else
-    WIDE=1
-    printf '%s\n' "$PN" | grep -v '^$' | sort -u > "$W.names"
-  fi
+  skl_gate | grep -v '^$' | sort -u > "$W.names"
   awk -v NAMES="$W.names" '
     BEGIN { while ((getline n < NAMES) > 0) keep[n] = 1 }
     /^- id: /{ i = $3; f = ""; d = "" }
-    /^  tool: /{ t = $2 }
+    /^  tool: /{ t = $2; gsub(/"/, "", t) }
     /^  family: /{ f = $2 }
     /^  doc: /{ d = $2 }
     /^  visible: /{ if (keep[t]) { gsub(/"/, "", d); gsub(/"/, "", f); printf "%s  %s  %s\n", i, t, (d == "" ? f : d) } }' "$T" > "$W"
   RC=0
-  [ "$WIDE" = 1 ] && printf '%s\n' "$(msg tool_registry_too_wide)"
   if [ -s "$W" ]; then cat "$W"; else printf '%s\n' "$(msg no_tool_for_this_turn)" >&2; RC=1; fi
   rm -f "$W" "$W.names"
   exit $RC

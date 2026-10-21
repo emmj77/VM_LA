@@ -34,9 +34,11 @@ TOOLS:                       # the tools this skill opens, and them alone (200 t
   201: "..."
 DOCS:                        # the source: the NAME of a file, OR of a folder (no path)
   300: "..."                 # the model searches it and reads the one useful file; otherwise "web_search"
-PLAN:                        # 20 lines at most, TWO per task (400 to 419)
-  400: "tache : ..."         # one task per step of two
-  401: "etat : todo | in_progress | done"
+PLAN:                        # a JOURNAL plan lives OUTSIDE: state/<Agent>Todo.md, written by todo,
+                             # moved by update_todo (in_progress | completed, 12 steps at most, 100 chars
+                             # a step). this section stays for a ROUTE only (PERMANENT_TODO: true): one
+                             # line per step, its state in front, its tools at the end. 20 lines at most.
+  400: "..."                 # a route: "[in_progress] read the tunnel state -- tools: tunnel_status"
 WRITABLE_WORKSPACE:          # the write space: two things, and only two
   workspace: "work/"        # the working folders
   type-file: ".md .yaml .sh .json .txt"   # the file types accepted

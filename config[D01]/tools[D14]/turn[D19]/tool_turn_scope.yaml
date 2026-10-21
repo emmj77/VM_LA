@@ -16,12 +16,9 @@ COMMAND: |
   _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _reg=$(cfg abs registry) || { printf 'FAULT no register\n'; exit 0; }
-  _perm=$(table_permanents)
-  _ids=$( { for _n in $_perm; do table_field "$_reg" "$_n" id; done
-            skl_toolset 2>/dev/null; } | sort -u | grep -v '^$' )
+  _names=$(skl_gate | sort -u | grep -v '^$')
   _arr='[]'
-  for _i in $_ids; do
-    _n=$(table_field "$_reg" "$_i" tool)
+  for _n in $_names; do
     [ -n "$_n" ] || continue
     _bd=""
     _fn=$(printf '%s' "$_n" | tr '.' '_')
@@ -51,7 +48,7 @@ COMMAND: |
   _top=$(( (_n * _pct + 99) / 100 ))
   [ "$_top" -lt 3 ] && _top=3
   _closed=0
-  skl_plan_step 2>/dev/null && _closed=1
+  [ -n "$(skl_lock)" ] && _closed=1
   if [ "$_closed" != 1 ] && [ "${_n:-0}" -gt "$_top" ]; then
     _q=$(jq -r '.prompt // ""' "$(cfg abs turn)" 2>/dev/null)
     _m=$(cfg str models.rerank) || _m=""
