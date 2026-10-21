@@ -3,14 +3,14 @@ you are talking with the human (user) ; the agent answering is agent_one
 == THE ACTIVE PROJECT ==
 no project loaded : every skill is reachable
 == THE ACTIVE SKILL ==
-skill : workshop
+no skill loaded : no skill is active
+skills probables : models-bench 0.15 · asset-builder 0.14 · program-manage 0.09
 == THE LOCAL MODEL SUMMARY ==
 no summary yet
 == THE LOADED SKILL PLAN ==
 no open plan
 == THE STICKY NOTE ==
-v17
-
+the note is empty
 == THE AGENTS ==
 agent_one  idle : no turn runs
 agent_001_jarvis  idle : no turn runs
