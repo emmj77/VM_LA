@@ -18,7 +18,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Clutter = imports.gi.Clutter;
 
-const RESIDENT_NAMES = ["models", "asr", "tts", "dash"];
+const RESIDENT_NAMES = ["models", "asr", "tts"];
 const DOT_WIDTH = 18;
 const TITLE_WIDTH = 150;
 const EMO_WIDTH = 22;

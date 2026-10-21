@@ -585,7 +585,8 @@ board:
     - {name: asr, unit: la-asr, port: 8080, probe: ready}
     - {name: tts, unit: la-tts, port: 8090, probe: health}
   appoints:
-    # bridge et dash sont des unites : la table les liste deja, une seule fois
+    # bridge : board.py le porte lui-meme. dash : la page, qui s ouvre et se ferme seule.
+    - {name: dash, port: 8771, probe: ping, word: "la page dort"}
     - {name: vision, port: 1234, probe: health, word: "it wakes on demand"}
   instruments:
     - {name: tesseract, why: "the OCR of read_text_in_img"}

@@ -21,6 +21,9 @@ from textual.widgets import Footer, Header, Input, RichLog, Static
 
 # --- le panneau lit le pont, et rien d'autre : aucune donnee en double ---
 ROOT = os.environ.get("LA_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# lance a la main, sans la porte, board.py doit trouver sa config : elle est dans l arbre, pas dans l environnement
+os.environ.setdefault("LA_CONFIG", os.path.join(ROOT, "config[D01]", "conf[D05]", "la_config.yaml"))
+os.environ.setdefault("LA_STATE", os.path.join(ROOT, "config[D01]", "state[D12]"))
 CONFD = os.path.dirname(os.environ.get("LA_CONFIG", ""))
 # la racine du projet a change de nom (config -> config[D01]) : elle se deduit du fichier, jamais d un litteral
 CONF_DIR = CONFD or os.path.join(ROOT, "config[D01]")
@@ -1532,7 +1535,7 @@ def main():
                 return "TOOLS"
             if n.startswith("resident "):
                 return "LA"
-            if n in ("LA status", "residents", "ram of la", "sessions", "last_activity"):
+            if n in ("la status", "residents", "ram of la", "sessions", "last_activity"):
                 return "LA"
             if n in ("approbation", "feu vert"):
                 return "LA"
@@ -1557,7 +1560,8 @@ def main():
         rank = {"LA": 0, "RESIDENT": 1, "TOOLS": 2, "GPU/RAM": 3, "SYSTEME": 4, "RESEAU": 5}
         print("\n".join("%s|%s|%s|%s" % ("ko" if x[2] else "ok", title(x[0]), x[0],
                                            short(x[0], x[1]))
-                        for x in sorted(L, key=lambda x: rank[title(x[0])])))
+                        for x in sorted(L, key=lambda x: (rank[title(x[0])],
+                                                         0 if x[0].lower() == "la status" else 1))))
         return 1 if faults else 0
 
     if a.once:
