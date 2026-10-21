@@ -347,8 +347,9 @@ def read_appoints():
         # le port d une page est un socket, le sonder la reveille et elle ne dort plus jamais
         if unit:
             st = (_units([unit]).get(unit) or {}).get("state") or "?"
-            # une page qui dort est son etat normal : seul un echec est un defaut
-            out.append((name, port, st, word, st == "failed", unit))
+            # la page de LA a deux etats utiles : ouverte ou fermee. Vert veut dire ouverte.
+            mot = {"active": "open", "inactive": "closed"}.get(st, st)
+            out.append((name, port, mot, word, st != "active", unit))
             continue
         code = probe(port, path)
         out.append((name, port, code, word, code == "000", ""))

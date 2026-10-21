@@ -168,6 +168,8 @@ class LAInfoApplet extends Applet.TextIconApplet {
         this._ready = true;
         this._read();
         this._restartWatch();
+        // les octets du tunnel se lisent dans /proc : deux secondes, sans lancer un seul processus
+        this._netWatch = Mainloop.timeout_add_seconds(2, () => this._netTick());
     }
 
     // ---- la montre : le board est relu toutes les N secondes, et il ne s'arrete pas
@@ -260,7 +262,56 @@ class LAInfoApplet extends Applet.TextIconApplet {
     }
 
     // ---- ce qui se voit sans rien ouvrir : la pastille de l'state, et deux chiffres qui bougent
-    // TAILSCALE : UN ETAT, PAS DES BOUTONS. Il se lit et s ecrit comme une rangee du tableau.
+    // TAILSCALE : UN ETAT ET DES OCTETS, EN DIRECT. Pas de boutons.
+    _fmt(b) {
+        if (b >= 1073741824) { return (b / 1073741824).toFixed(1) + " GB"; }
+        if (b >= 1048576) { return (b / 1048576).toFixed(1) + " MB"; }
+        if (b >= 1024) { return (b / 1024).toFixed(1) + " kB"; }
+        return b + " B";
+    }
+
+    // /proc/net/dev : deux compteurs par interface, lus sans rien lancer
+    _netBytes() {
+        try {
+            const [, data] = GLib.file_get_contents("/proc/net/dev");
+            const lines = data.toString().split("\n");
+            for (let k = 0; k < lines.length; k++) {
+                if (lines[k].indexOf("tailscale0:") === -1) { continue; }
+                const f = lines[k].split(":")[1].trim().split(/\s+/);
+                return { rx: parseInt(f[0], 10) || 0, tx: parseInt(f[8], 10) || 0 };
+            }
+        } catch (e) { }
+        return null;
+    }
+
+    _netRow() {
+        const now = Date.now() / 1000;
+        const b = this._netBytes();
+        let rate = "";
+        if (b && this._netPrev) {
+            const dt = now - this._netPrev.t;
+            if (dt > 0.5) {
+                const d = (b.rx - this._netPrev.rx) + (b.tx - this._netPrev.tx);
+                if (d > 0) { rate = " · " + this._fmt(Math.round(d / dt)) + "/s"; }
+            }
+        }
+        if (b) { this._netPrev = { t: now, rx: b.rx, tx: b.tx }; }
+        const up = this._netUp === true;
+        const state = up ? "up" : (this._netState || "down");
+        const io = b ? (" \u2193" + this._fmt(b.rx) + " \u2191" + this._fmt(b.tx)) : "";
+        return { state: up ? "ok" : "ko", section: "RESEAU", title: "tailscale",
+                 verdict: state + io + rate };
+    }
+
+    _netTick() {
+        const row = this._netRow();
+        const i = this._lines.findIndex((l) => l.title === "tailscale");
+        if (i > -1) { this._lines[i] = row; } else { this._lines.push(row); }
+        this._paint();
+        if (this._menu && this._menu.isOpen) { this._dessinerLeMenu(); }
+        return true;
+    }
+
     _updateNet() {
         let proc;
         try {
@@ -270,14 +321,9 @@ class LAInfoApplet extends Applet.TextIconApplet {
         proc.communicate_utf8_async(null, null, (p, res) => {
             let d = {};
             try { d = JSON.parse(p.communicate_utf8_finish(res)[1] || "{}"); } catch (e) { return; }
-            const up = (d.BackendState || "") === "Running";
-            const peers = Object.keys(d.Peer || {}).length;
-            const row = { state: up ? "ok" : "ko", section: "RESEAU", title: "tailscale",
-                          verdict: up ? ("up " + peers + " peer") : ("down " + (d.BackendState || "?")) };
-            const i = this._lines.findIndex((l) => l.title === "tailscale");
-            if (i > -1) { this._lines[i] = row; } else { this._lines.push(row); }
-            this._paint();
-            this._dessinerLeMenu();
+            this._netUp = (d.BackendState || "") === "Running";
+            this._netState = d.BackendState || "down";
+            this._netTick();
         });
     }
 
