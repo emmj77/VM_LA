@@ -41,6 +41,8 @@ COMMAND: |
   R=$(curl -sS -m 280 -H 'Content-Type: application/json' --data-binary @"$TD/q" "$URL/v1/chat/completions") || { printf 'refused: the router did not answer (%s)\n' "$URL" >&2 ; exit 1 ; }
   T=$(printf '%s' "$R" | jq -r 'if ((.choices[0].message.content // "") != "") then .choices[0].message.content else (.choices[0].message.reasoning // "") end' 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d')
   [ -n "$T" ] || { printf 'refused: the model rendered nothing (%s)\n' "$(printf '%s' "$R" | tr '\n' ' ' | cut -c1-200)" >&2 ; exit 1 ; }
+  # the eye is not a resident: it leaves the memory as soon as it has read
+  curl -fsS -m 10 -H 'Content-Type: application/json' -d "{\"model\":\"$NAME\"}" "$URL/models/unload" >/dev/null 2>&1
   printf '%s\n' "$T"
 
 ARGS:

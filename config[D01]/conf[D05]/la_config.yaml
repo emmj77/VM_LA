@@ -117,11 +117,8 @@ models:
   host: "127.0.0.1"
   port: 8091
   dir: "/home/moussa/LLM_GGUF"
-  preset: "/home/moussa/LLM_GGUF/models.ini"
-  max: 4
-  sleep: 120
-  context: 8192
-  gpu_layers: 99
+  preset: "config[D01]/conf[D05]/llama_preset.ini"
+  max: 6
   embed: "harrier-oss-v1-270M-Q8_0"
   rerank: "bge-reranker-v2-m3-Q4_K_M"
   local: "LFM2.5-1.2B-Instruct-Q4_K_M.gguf"
@@ -248,6 +245,7 @@ limits:
   audio_mb: 200
   health_timeout: 3
   ping_timeout: 2
+  session_ttl: 300
   bench_timeout: 120
   tunnel_steps: 12
   db_busy_ms: 5000
