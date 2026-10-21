@@ -1,7 +1,7 @@
 id: "K18"
 skill: "program-manage"
 date: "2026-10-17"
-tags: ["program-manage", "installer", "retirer", "ouvrir", "paquets"]
+tags: ["program-manage", "install", "remove", "open", "packages"]
 
 SUMMARY:
   101: "Manage the programs of the machine: install, remove, open."

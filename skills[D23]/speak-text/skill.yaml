@@ -1,7 +1,7 @@
 id: "K24"
 skill: "speak-text"
 date: "2026-10-17"
-tags: ["speak-text", "voix", "parler", "audio"]
+tags: ["speak-text", "voice", "speak", "audio"]
 
 SUMMARY:
   101: "Say a text out loud (render it as audio)."

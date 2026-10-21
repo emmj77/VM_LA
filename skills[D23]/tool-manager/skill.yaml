@@ -1,7 +1,7 @@
 id: "K26"
 skill: "tool-manager"
 date: "2026-10-19"
-tags: ["tool-manager", "forge", "outil", "outils", "table", "skill", "palette", "ajouter", "retirer", "activer"]
+tags: ["tool-manager", "forge", "tool", "tools", "table", "skill", "palette", "add", "remove", "enable"]
 
 SUMMARY:
   101: "Change the HARNESS: the tool table, or a skill and its toolset."

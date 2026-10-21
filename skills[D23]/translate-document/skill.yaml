@@ -1,7 +1,7 @@
 id: "K28"
 skill: "translate-document"
 date: "2026-10-17"
-tags: ["translate-document", "traduire", "langue", "document"]
+tags: ["translate-document", "translate", "language", "document"]
 
 SUMMARY:
   101: "Translate a document from one language to another, faithfully."

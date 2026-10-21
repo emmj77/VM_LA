@@ -1,7 +1,7 @@
 id: "K10"
 skill: "edit-table"
 date: "2026-10-17"
-tags: ["edit-table", "table", "registre"]
+tags: ["edit-table", "table", "registry"]
 
 SUMMARY:
   101: "Edit the table: add, remove, enable or disable a row."

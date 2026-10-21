@@ -1,7 +1,7 @@
 id: "K15"
 skill: "manipulation-3d"
 date: "2026-10-17"
-tags: ["manipulation-3d", "3d", "mesh", "glb", "fbx"]
+tags: ["3d-manipulation", "3d", "mesh", "glb", "fbx"]
 
 SUMMARY:
   101: "L'atelier 3D : image -> glb, mesh -> fbx, mesh -> png, mesurer, inspecter."

@@ -1,7 +1,7 @@
 id: "K12"
 skill: "krita"
 date: "2026-10-18"
-tags: ["krita", "dessin", "peinture", "calque", "kra"]
+tags: ["krita", "drawing", "painting", "layer", "kra"]
 
 SUMMARY:
   101: "Krita 5.3.4 through the kritamcp plugin (plugin HTTP, 127.0.0.1:5678): 78 tools, same door as the others."

@@ -1,7 +1,7 @@
 id: "K27"
 skill: "transcribe-audio"
 date: "2026-10-17"
-tags: ["transcribe-audio", "audio", "transcription", "voix"]
+tags: ["transcribe-audio", "audio", "transcription", "voice"]
 
 SUMMARY:
   101: "Transcribe an audio into Text."

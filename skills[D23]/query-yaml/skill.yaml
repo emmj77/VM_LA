@@ -1,7 +1,7 @@
 id: "K19"
 skill: "query-yaml"
 date: "2026-10-17"
-tags: ["query-yaml", "yaml", "requete", "config"]
+tags: ["query-yaml", "yaml", "request", "config"]
 
 SUMMARY:
   101: "Query a YAML file and return the field asked for."

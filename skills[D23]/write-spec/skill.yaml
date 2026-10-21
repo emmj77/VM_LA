@@ -1,7 +1,7 @@
 id: "K34"
 skill: "write-spec"
 date: "2026-10-17"
-tags: ["write-spec", "spec", "conception"]
+tags: ["write-spec", "spec", "design"]
 
 SUMMARY:
   101: "Write one section of the active skill spec, bounded by a ceiling."

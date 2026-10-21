@@ -1,7 +1,7 @@
 id: "K16"
 skill: "models-bench"
 date: "2026-10-17"
-tags: ["models-bench", "modele", "comparer", "bench"]
+tags: ["models-bench", "model", "compare", "bench"]
 
 SUMMARY:
   101: "Question the models and compare their answers."

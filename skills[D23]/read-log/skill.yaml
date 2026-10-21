@@ -1,7 +1,7 @@
 id: "K20"
 skill: "read-log"
 date: "2026-10-17"
-tags: ["read-log", "journal", "log", "erreur"]
+tags: ["read-log", "log", "error"]
 
 SUMMARY:
   101: "Read a log and draw the errors out, in the order of time."

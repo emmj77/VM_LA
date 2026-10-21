@@ -1,7 +1,7 @@
 id: "K11"
 skill: "git"
 date: "2026-10-17"
-tags: ["git", "commit", "diff", "revue", "review", "version"]
+tags: ["git", "commit", "diff", "review", "version"]
 
 SUMMARY:
   101: "Work with Git: read the state, re-read a diff, commit."

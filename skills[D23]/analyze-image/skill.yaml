@@ -1,7 +1,7 @@
 id: "K01"
 skill: "analyze-image"
 date: "2026-10-17"
-tags: ["analyze-image", "image", "vision", "voir"]
+tags: ["analyze-image", "image", "vision", "see"]
 
 SUMMARY:
   101: "Analyse an image: what it shows, down to the detail."

@@ -1,7 +1,7 @@
 id: "K23"
 skill: "search-memory"
 date: "2026-10-17"
-tags: ["search-memory", "memoire", "souvenir", "session"]
+tags: ["search-memory", "memory", "recall", "session"]
 
 SUMMARY:
   101: "Search the memory and the past sessions."

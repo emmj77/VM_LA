@@ -1,7 +1,7 @@
 id: "K25"
 skill: "summarize-document"
 date: "2026-10-17"
-tags: ["summarize-document", "resume", "document"]
+tags: ["summarize-document", "summary", "document"]
 
 SUMMARY:
   101: "Summarise a long document into a short and FAITHFUL text."

@@ -1,7 +1,7 @@
 id: "K05"
 skill: "computer-debug"
 date: "2026-10-17"
-tags: ["computer-debug", "debug", "systeme", "pc"]
+tags: ["computer-debug", "debug", "system", "pc"]
 
 SUMMARY:
   101: "When the machine is unwell: read the traces, set the diagnosis, propose the fix."

@@ -1,7 +1,7 @@
 id: "K32"
 skill: "web-search"
 date: "2026-10-17"
-tags: ["web-search", "web", "recherche", "rapport"]
+tags: ["web-search", "web", "search", "report"]
 
 SUMMARY:
   101: "Search the web, bring back the sourced answer -- or turn it into a WRITTEN report."

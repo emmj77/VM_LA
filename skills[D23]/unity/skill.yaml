@@ -1,7 +1,7 @@
 id: "K30"
 skill: "unity"
 date: "2026-10-18"
-tags: ["unity", "editeur", "jeu"]
+tags: ["unity", "editor", "game"]
 
 SUMMARY:
   101: "Unity through four channels: the unity CLI (216 commands, full tree), the pipeline (upipe_, 150), Coplay (coplay_, 277); the Hub goes through the CLI."

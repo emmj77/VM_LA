@@ -1,7 +1,7 @@
 id: "K31"
 skill: "web-agent"
 date: "2026-10-20"
-tags: ["web", "agent-browser", "gemini", "image", "lecture"]
+tags: ["web", "agent-browser", "gemini", "image", "reading"]
 
 SUMMARY:
   101: "Read a page, generate an image on Gemini: agent-browser drives Chromium, not a home-made engine."

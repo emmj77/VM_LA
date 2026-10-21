@@ -1,7 +1,7 @@
 id: "K21"
 skill: "search-code"
 date: "2026-10-17"
-tags: ["search-code", "code", "chercher", "ast"]
+tags: ["search-code", "code", "search", "ast"]
 
 SUMMARY:
   101: "Search the code by its SHAPE (ast) or its text."

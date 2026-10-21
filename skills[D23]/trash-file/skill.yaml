@@ -1,7 +1,7 @@
 id: "K29"
 skill: "trash-file"
 date: "2026-10-17"
-tags: ["trash-file", "corbeille", "supprimer", "ranger"]
+tags: ["trash-file", "trash", "remove", "tidy"]
 
 SUMMARY:
   101: "Send a file to the trash (never delete)."
