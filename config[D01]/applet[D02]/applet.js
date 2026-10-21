@@ -18,7 +18,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Clutter = imports.gi.Clutter;
 
-const RESIDENT_NAMES = ["embed", "rerank", "local", "asr", "tts"];
+const RESIDENT_NAMES = ["embed", "rerank", "local", "asr", "tts", "kws"];
 const DOT_WIDTH = 18;
 const TITLE_WIDTH = 150;
 const EMO_WIDTH = 22;
@@ -61,12 +61,13 @@ const EMOTICONE = {
     // une line par carte, comme pour les residents
     "gpu RTX 3060": "\u{1F3AE}",
     "gpu Quadro P2200": "\u{1F5A5}",
-    // les cinq residents, un par line
+    // les six residents, un par line
     "embed": "\u{1F9E9}",
     "rerank": "\u{1F3AF}",
     "local": "\u{270D}",
     "asr": "\u{1F3A4}",
     "tts": "\u{1F50A}",
+    "kws": "\u{1F442}",
 };
 
 // Une barre n'a de sens que sur une mesure qui porte un rapport. On le lit dans le verdict :

@@ -348,7 +348,8 @@ def read_residents():
                         val, None))
             continue
         state, mo, _, busy = alive(unit)
-        code = probe(port, path) if state == "active" else "000"
+        # a resident that opens no port is up with its process alone
+        code = (probe(port, path) if port else "200") if state == "active" else "000"
         fault = state != "active" or code == "000"
         pattern = ("eteint (%s)" % state) if state != "active" else ("silent" if code == "000" else "")
         out.append((name, port, state, code, mo, fault, pattern, busy))
@@ -789,13 +790,14 @@ def control(light=False):
     L.append(("residents", "%d/%d up" % (live, len(res)), live != len(res)))
     for name, port, state, code, mo, fault, pattern, busy in res:
         _mo = mo if mo is not None else busy
+        tail = (" · :%d" % port) if port else ""
         if fault:
-            verdict = "%s · :%d" % (pattern, port)
+            verdict = pattern + tail
         elif _mo:
-            verdict = "%d MB · :%d" % ((_mo or 0), port)
+            verdict = "%d MB%s" % ((_mo or 0), tail)
         else:
-            # a model of the router: no weight of its own, only the state it answers in
-            verdict = "%s · :%d" % (pattern or "up", port)
+            # a model of the router has no weight of its own: only the state it answers in
+            verdict = (pattern or "up") + tail
         L.append((name, verdict, fault))
     for name, v, ok, what in instr:
         L.append((name, (v + " · 0 MB · no port") if ok else ("ABSENT · " + what + " · 0 MB · no port"), not ok))

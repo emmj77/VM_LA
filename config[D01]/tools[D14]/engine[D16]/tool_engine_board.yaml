@@ -91,7 +91,7 @@ COMMAND: |
         loaded|sleeping) _n=$((_n + 1)) ;;
       esac
     done
-    for _k in asr tts; do
+    for _k in $(_flat | awk -F'\t' '$1 ~ /^units\.[a-z_]+\.count$/ && $2 == "true" { k = $1; sub(/^units\./, "", k); sub(/\.count$/, "", k); if (k != "models") print k }'); do
       _tot_u=$((_tot_u + 1))
       [ "$(systemctl --user is-active "$(cfg str "units.$_k.unit")" 2>/dev/null)" = active ] && _n=$((_n + 1))
     done

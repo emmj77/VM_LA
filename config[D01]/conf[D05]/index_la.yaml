@@ -120,6 +120,7 @@ files:
   - {id: "P01", name: "board.py", role: "the panel and the cli: the board in a terminal, one line, one pass, one turn"}
   - {id: "P02", name: "bridge.py", role: "the bridge: API, audio, delegate. transport only, it decides nothing"}
   - {id: "P07", name: "dash_server.py", role: "the dashboard's own door: the page only, it exits when nobody looks"}
+  - {id: "P08", name: "kws.py", role: "the ear: sherpa-onnx keyword spotter on the microphone, a heard command opens the door"}
   - {id: "P03", name: "tts_daemon.py", role: "the voice: sherpa-onnx loads once, POST /say answers a wav"}
   - {id: "P04", name: "watch.py", role: "the watch: onnxruntime, the word passes, it signs what waits"}
   - {id: "Q01", name: "tool_template.yaml", role: "the gabarit of a tool body"}

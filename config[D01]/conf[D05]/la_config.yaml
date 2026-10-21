@@ -35,6 +35,7 @@ machine:
   kws:
     root: "/home/moussa/Applications/sherpa-onnx/kws-en/sherpa-onnx-kws-zipformer-gigaspeech-3.3M-2024-01-01"
     python: "/home/moussa/Applications/sherpa-onnx/.venv/bin/python"
+    mic: "default"
   llama:
     bin: "/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-server"
     gguf: "/home/moussa/LLM_GGUF"
@@ -155,6 +156,12 @@ units:
     unit: "la-tts"
     port: 8090
     probe: "/health"
+  kws:
+    resident: "kws"
+    count: true
+    unit: "la-kws"
+    port: 0                                   # it opens no port: it listens
+    probe: ""
   dashboard:
     resident: "dash"
     count: false
@@ -647,6 +654,7 @@ board:
     - {name: local, unit: la-models, port: 8091, probe: health, model: "LFM2.5-1.2B-Instruct-Q4_K_M.gguf"}
     - {name: asr, unit: la-asr, port: 8080, probe: ready}
     - {name: tts, unit: la-tts, port: 8090, probe: health}
+    - {name: kws, unit: la-kws, port: 0, probe: ""}
   appoints:
     # bridge: board.py carries it itself. dash: the page, which opens and closes by itself.
     - {name: dash, port: 8771, unit: la-dash.service}
