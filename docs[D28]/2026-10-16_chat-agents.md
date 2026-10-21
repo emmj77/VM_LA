@@ -130,7 +130,7 @@ ferme a la ligne 1499). Jamais au milieu, jamais renumerote (loi 1019) :
     family: MANAGE
     description: "writes ONE message onto an agent's board, and never more than one"
     args:
-      - {name: to, type: enum, values: [jarvis, paul, "human", "voice"]}
+      - {name: to, type: enum, values: [jarvis, paul, albert, eleonore, claire]}
       - {name: body, type: text, stdin: true}
     command: |
       # THE NAMES ARE ENGRAVED HERE, and nowhere else. The engine refuses a name that is not
@@ -309,9 +309,8 @@ lois 1200-1201).
 
 ## CE QUI ATTEND TA REPONSE (cinq points, et chacun change des lignes)
 
-1. **LES NOMS.** J'ai grave `jarvis`, `paul`, `human`, `voice` — tes propres exemples plus les deux
-   tours qui existent deja (`human` pour toi, `voice` pour le telephone). **Quels noms, et comment
-   s'appelle l'agent principal ?** Sa reponse change la ligne `values:` de la piece 3.
+1. **LES NOMS.** Les cinq agents sont `jarvis` (l'agent principal), `paul`, `albert`, `eleonore`, `claire`.
+   Le chat ne passe qu'entre eux : aucun autre nom n'entre dans `from` ni `to`.
 2. **LES NOMBRES.** Corps **1024** octets ; fenetre **1200 octets / 14 lignes** ; tableau plafonne a
    **24 lignes**. Ce sont des plafonds **declares** : ils se lisent, ils se discutent. Moins ? Plus ?
 3. **LA PURGE.** Je propose la **forme (iii)** : le dernier ecrivain purge quand le tableau depasse

@@ -26,7 +26,7 @@ COMMAND: |
           | sed -e 's/[[:space:]]*#.*$//' -e 's/^"//' -e 's/"$//')
   MAIN=$(printf '%s\n' "$SECT" | sed -n 's/^[[:space:]]*main:[[:space:]]*//p' | head -n 1 \
           | sed -e 's/[[:space:]]*#.*$//' -e 's/^"//' -e 's/"$//')
-  [ -n "$MAIN" ] || MAIN=la
+  [ -n "$MAIN" ] || MAIN=jarvis
   FIVE=''
   for N in $NAMES ; do [ "$N" = "$MAIN" ] && continue ; FIVE="$FIVE $N" ; done
   [ -n "$FIVE" ] || { printf '%s\n' "$(msg agent_declared_under_agents)" >&2 ; exit 1 ; }

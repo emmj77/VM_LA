@@ -345,11 +345,11 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `bridge` · `/widget` | the bridge serves this address |
 
 ## the agents
-An agent is named by its NAME alone: `la`, `jarvis`, `paul`, `albert`, `eleonore`, `claire`.
+Five agents, named by their name alone: `jarvis` (the principal), `paul`, `albert`, `eleonore`, `claire`.
 No number, no prefix: the name IS the id.
 The name is a file name: lowercase, `a-z 0-9 _ -`, one word. A name that does not fit is refused.
-`human` and `voice` are the two turns of the station, not agents.
-The LAUNCHER poses it (`LA_FROM`), the model never chooses it (law 206); it signs the chat (`from`, `to`).
+The chat runs between agents only: no other name ever enters `from` or `to`.
+The LAUNCHER poses the name (`LA_FROM`), the model never chooses it (law 206).
 `agents.names` in the master file is the ONLY list; `agents.main` names the principal and is one of them.
 
 ## the environment

@@ -38,21 +38,12 @@ machine:
   llama:
     bin: "/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-server"
     gguf: "/home/moussa/LLM_GGUF"
-    models:                                   # one entry per vision model: the file, its projector, its door
+    # the names the router answers to; the files and their projectors live in the preset
+    models:
       small:
         name: "smolvlm-256m"
-        model: "SmolVLM-256M-Instruct-Q8_0.gguf"
-        mmproj: "mmproj-SmolVLM-256M-Instruct-Q8_0.gguf"
-        port: 8091
-        ctx: 4096
-        gpu: 0
       big:
         name: "qwen3-vl-8b"
-        model: "Qwen_Qwen3-VL-8B-Instruct-Q5_K_M.gguf"
-        mmproj: "mmproj-Qwen3VL-8B-Instruct-Q8_0.gguf"
-        port: 8092
-        ctx: 4096
-        gpu: 0
   vision:                                     # what reads an image through an API
     api:
       base: "https://ollama.com/v1"
@@ -111,22 +102,22 @@ machine:
 
 # who speaks, and how wide the board is
 agents:
-  main: "la"
-  names: "la jarvis paul albert eleonore claire"
+  main: "jarvis"
+  names: "jarvis paul albert eleonore claire"
   chat: "config[D01]/data[D06]/agent_chat.jsonl"   # the chat between agents, one line per message
   human: "Moussa"
-  voice: "voice"
   run_chars: 120
   board_lines: 24
   body_bytes: 1024
   line_bytes: 1600
 
-# the router: one server, three models, one pick
+# the router: one server, every model, one pick
 models:
   host: "127.0.0.1"
   port: 8091
   dir: "/home/moussa/LLM_GGUF"
-  max: 3
+  preset: "/home/moussa/LLM_GGUF/models.ini"
+  max: 4
   sleep: 120
   context: 8192
   gpu_layers: 99
@@ -623,7 +614,6 @@ schema:
     key: main
     kind: choice
     choices:
-    - la
     - jarvis
     - paul
     - albert
