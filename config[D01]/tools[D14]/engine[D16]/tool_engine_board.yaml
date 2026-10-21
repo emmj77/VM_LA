@@ -90,7 +90,8 @@ COMMAND: |
       printf 'note|POWER|tailscale|down\n'
     fi
     # THE INSTRUMENTS : what reads a page, what looks at an image
-    _tv=$(timeout 10 indra-ocr --version 2>/dev/null | head -n 1 | awk '{print $2}')
+    _ib=$(cfg str machine.ocr.bin)
+    _tv=$(timeout 10 "$_ib" --version 2>/dev/null | head -n 1 | awk '{print $2}')
     if [ -n "$_tv" ]; then printf 'ok|TOOLS|indra ocr|%s . no port\n' "$_tv"
     else printf 'ko|TOOLS|indra ocr|absent\n'; fi
     _vp=$(cfg num ports.vision 2>/dev/null); _vp=${_vp:-1234}

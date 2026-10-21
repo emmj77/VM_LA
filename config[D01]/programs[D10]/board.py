@@ -211,6 +211,16 @@ class laconf(object):
     table = staticmethod(_table)
 
 
+def dotted(key, default=""):
+    """the value at a dotted key of the table, as cfg str reads it on the shell side"""
+    v = _cfg()
+    for part in key.split("."):
+        v = v.get(part) if isinstance(v, dict) else None
+        if v is None:
+            return default
+    return v if isinstance(v, str) else default
+
+
 class model(object):
     engine = staticmethod(_engine)
     tokens = staticmethod(lambda: bridge_state().get("tokens") or {})
@@ -245,7 +255,7 @@ RESIDENT_NAMES = tuple(r[0] for r in RESIDENTS)
 APPOINT = [(a["name"], _port(a.get("port")), a.get("probe", "health"), a.get("word", ""),
             a.get("unit", ""))
            for a in laconf.get("board", "appoints", [])]
-INSTRUMENTS = [(i["name"], i.get("label") or i["name"], i.get("why", ""))
+INSTRUMENTS = [(i["name"], i.get("label") or i["name"], i.get("bin", ""), i.get("why", ""))
                for i in laconf.get("board", "instruments", [])]
 FORMS = laconf.text("board", "forms", r"[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)")
 BRICKS = {r[0]: r[2] for r in RESIDENTS}
@@ -410,8 +420,9 @@ def read_approval():
 
 def read_instruments():
     out = []
-    for name, label, what in INSTRUMENTS:
-        code, output = run([name, "--version"], timeout=5)
+    for name, label, bin_key, what in INSTRUMENTS:
+        prog = dotted(bin_key) if bin_key else name
+        code, output = run([prog, "--version"], timeout=5)
         v = ""
         if code == 0:
             for l in output.splitlines():

@@ -38,13 +38,16 @@ COMMAND: |
     [ "$_n" -gt 0 ] && printf 'ok %s resident(s) declared\n' "$_n" || printf 'FAULT la_config declares no unit\n'
     ;;
   instruments)
-    for _b in indra-ocr ffmpeg jq sqlite3 curl; do
+    for _b in ffmpeg jq sqlite3 curl; do
       command -v "$_b" >/dev/null 2>&1 && printf 'ok %s answers\n' "$_b" \
         || printf 'FAULT %s is missing: the bodies that call it read nothing\n' "$_b"
     done
-    if command -v indra-ocr >/dev/null 2>&1; then
-      _l=$(indra-ocr --version 2>/dev/null | head -n 1)
-      printf 'ok indra ocr: %s\n' "$_l"
+    _i=$(cfg str machine.ocr.bin)
+    if [ -x "$_i" ]; then
+      _l=$("$_i" --version 2>/dev/null | head -n 1)
+      printf 'ok indra ocr answers: %s\n' "$_l"
+    else
+      printf 'FAULT indra ocr is missing (%s): read_text_in_img reads nothing\n' "${_i:-no machine.ocr.bin}"
     fi
     ;;
   benches)

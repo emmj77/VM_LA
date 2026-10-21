@@ -42,6 +42,8 @@ machine:
   krita:
     host: "127.0.0.1"
     port: 5678
+  ocr:                                        # what reads the text out of an image
+    bin: "/mnt/hermes_workspace/hermes/tools/indra-env/bin/indra-ocr"
   app:
     apk: "/home/moussa/Applications/LA-app.apk"
   browser:                                    # the window of the page, as it was
@@ -590,6 +592,6 @@ board:
     - {name: dash, port: 8771, unit: la-dash.service}
     - {name: vision, port: 1234, probe: health, word: "it wakes on demand"}
   instruments:
-    - {name: indra-ocr, label: "indra ocr", why: "the OCR of read_text_in_img"}
+    - {name: indra-ocr, label: "indra ocr", bin: "machine.ocr.bin", why: "the OCR of read_text_in_img"}
   carriers: [micro_vision.py]
   forms: '[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)'
