@@ -29,6 +29,10 @@ COMMAND: |
   printf '%s\n' "$_r" | write_atomic "$(cfg abs reply_stream)"
   printf '%s\n' "$_r"
   _tr reply "$(printf '%s' "$_r" | wc -c) bytes"
+  # apres avoir repondu la session se met au repos : le repos automatique s arme (loi 1544)
+  _d=$(cfg path state) && : > "$_d/watch.armed" 2>/dev/null
   exit 0
+
+
 
 ARGS: []

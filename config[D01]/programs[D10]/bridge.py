@@ -233,6 +233,126 @@ def _keep_turn(prompt, reply):
             sys.stderr.write("hist add %s: %s\n" % (role, e))
 
 
+def _machine_return():
+    """what the machine has to say: a process that ended, a reading of the machine."""
+    out = []
+    try:
+        r = subprocess.run(["systemctl", "--user", "list-units", "--type=service",
+                            "--state=failed", "--no-legend", "--plain"],
+                           capture_output=True, text=True, timeout=6)
+        for line in (r.stdout or "").splitlines():
+            unit = (line.split() or [""])[0]
+            if unit:
+                out.append("process finished: %s failed" % unit)
+    except Exception:
+        pass
+    try:
+        with open("/proc/loadavg") as f:
+            load = float(f.read().split()[0])
+        mem = {}
+        with open("/proc/meminfo") as f:
+            for ln in f:
+                k, _, v = ln.partition(":")
+                mem[k] = int(v.split()[0])
+        pct = int(100 * (mem["MemTotal"] - mem["MemAvailable"]) / max(1, mem["MemTotal"]))
+        out.append("system reading: load %.2f, memory %d%%" % (load, pct))
+    except Exception:
+        pass
+    return out
+
+
+def _watch_armed():
+    return os.path.isfile(_turn_file("watch.armed"))
+
+
+def _watch_once():
+    """one pass: the fresh events go to the judge, its verdict to the channel.
+
+    the automatic rest is armed by an answer (law 1544); its return goes to the judge,
+    never to the agent (law 1545). one automatic system per session (law 1551).
+    """
+    seen_f = _turn_file("watch.seen")
+    try:
+        with open(seen_f, encoding="utf-8") as f:
+            seen = set(json.load(f))
+    except Exception:
+        seen = set()
+    events = []
+    # le sommeil depose son retour ici quand systemd arrive a echeance
+    ev_f = _turn_file("watch.event")
+    if os.path.isfile(ev_f):
+        try:
+            with open(ev_f, encoding="utf-8") as f:
+                line = f.read().strip()
+        except OSError:
+            line = ""
+        try:
+            os.unlink(ev_f)
+        except OSError:
+            pass
+        if line:
+            events.append(line)
+    for line in _machine_return():
+        if line.startswith("process finished") and line not in seen:
+            events.append(line)
+            seen.add(line)
+    try:
+        with open(seen_f, "w", encoding="utf-8") as f:
+            json.dump(sorted(seen)[-80:], f)
+    except OSError:
+        pass
+    # a reading only counts when it is out of the ordinary
+    for line in _machine_return():
+        if line.startswith("system reading"):
+            try:
+                pct = int(line.rsplit("memory ", 1)[1].rstrip("%"))
+            except Exception:
+                pct = 0
+            if pct >= 92:
+                events.append(line)
+    for ev in events:
+        try:
+            said = ask("engine", "watch.judge", ["op=judge"], feed=ev, secs=30)
+        except Exception:
+            continue
+        if isinstance(said, dict):
+            said = said.get("result") or ""
+        said = str(said)
+        if said.startswith("ok wake"):
+            # a wake opens a request (law 1549) and never widens the scope (law 1550)
+            try:
+                ask("engine", "engine.wake", [], feed=ev, secs=30)
+            except Exception:
+                pass
+            try:
+                os.unlink(_turn_file("watch.armed"))
+            except OSError:
+                pass
+            try:
+                ask("engine", "engine.turn", ["text=reveil: " + ev], secs=600)
+            except Exception:
+                pass
+            break
+
+
+def watch_loop():
+    """the automatic rest, in the bridge: a turn dies, the bridge lives (law 1545)."""
+    while True:
+        try:
+            secs = float(os.environ.get("LA_WATCH_SECONDS") or 15)
+        except ValueError:
+            secs = 15.0
+        time.sleep(secs)
+        try:
+            if not _watch_armed():
+                continue
+            if os.path.isfile(_turn_file("turn.pid")):
+                continue
+            _watch_once()
+        except Exception as e:
+            sys.stderr.write("watch: %s\n" % e)
+
+
 def _turn_file(name):
     return os.path.join(os.environ.get("LA_STATE") or ".", name)
 
@@ -870,6 +990,7 @@ def main():
         os.makedirs(os.environ[d], exist_ok=True)
     port = int(os.environ["LA_PORT_BRIDGE"])
     threading.Thread(target=warm, daemon=True).start()   # la page ouvre sans attendre
+    threading.Thread(target=watch_loop, daemon=True).start()   # le repos automatique et son juge
     srv = ThreadingHTTPServer((os.environ.get("LA_BRIDGE_HOST") or os.environ["LA_HOST"], port), Handler)
     sys.stderr.write("bridge: listening on %s:%d\n" % (srv.server_address[0], port))
     subprocess.run(["dash", os.environ["LA_TOOL"], "engine", "engine.residents", "op=join"],

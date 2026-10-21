@@ -1,0 +1,91 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D012"
+tool: "doctor.models"
+date: "2026-10-21"
+tags: ["doctor", "models", "llamacpp"]
+RULES:
+  enabled: true
+  timeout: 180
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the models and the llama.cpp that carries them: binary, list, files, service, router"
+COMMAND: |
+
+  _op=${1:-router}
+  _h=$(cfg str models.host 127.0.0.1)
+  _pt=$(cfg num models.port 8091) || _pt=8091
+  _ini=$(cfg str models.preset) || _ini="$(cfg str machine.llama.gguf)/models.ini"
+  [ -r "$_ini" ] || _ini="$(cfg str models.dir)/models.ini"
+  _bin=$(cfg str machine.llama.bin) || _bin=$(cfg str models.cli)
+
+  case $_op in
+  files)
+    # chaque section du fichier de liste porte le chemin de son modele : on le lit, on ne le devine pas
+    [ -r "$_ini" ] || { printf 'FAULT the model list is missing: %s\n' "$_ini"; exit 0; }
+    _n=0
+    _list=$(awk '
+      /^\[/ { name = $0 ; gsub(/[][]/, "", name) ; next }
+      /^model[[:space:]]*=/ { v = $0 ; sub(/^model[[:space:]]*=[[:space:]]*/, "", v) ; print name "\t" v }
+    ' "$_ini")
+    [ -n "$_list" ] || { printf 'FAULT the model list carries no model line\n'; exit 0; }
+    printf '%s\n' "$_list" | while IFS="$(printf '\t')" read -r _s _f; do
+      [ -n "$_s" ] || continue
+      if [ -r "$_f" ]; then
+        printf 'ok %s: %s Mo, %s\n' "$_s" "$(( $(stat -c%s "$_f") / 1048576 ))" "$_f"
+      else
+        printf 'FAULT %s names a file that is not there: %s\n' "$_s" "$_f"
+      fi
+    done
+    ;;
+  binary)
+    # le binaire qui sert tous les modeles, et les capacites dont le routeur depend
+    [ -x "$_bin" ] || { printf 'FAULT the llama-server is not there: %s\n' "$_bin"; exit 0; }
+    for _c in --models-preset --models-max --reranking --embeddings; do
+      "$_bin" --help 2>&1 | grep -q -- "$_c" && printf 'ok %s knows %s\n' "$(basename "$_bin")" "$_c" \
+        || printf 'FAULT %s does not know %s\n' "$(basename "$_bin")" "$_c"
+    done
+    ;;
+  router)
+    # le service unique : actif, ses drapeaux, et ce qu il annonce sur son port
+    _u=$(cfg str units.models.unit) || _u=la-models.service
+    _st=$(systemctl --user is-active "$_u" 2>/dev/null)
+    case $_st in
+      active) printf 'ok %s is active\n' "$_u" ;;
+      *)      printf 'FAULT %s is %s\n' "$_u" "${_st:-unknown}" ;;
+    esac
+    _args=$(systemctl --user show "$_u" -p ExecStart --no-pager 2>/dev/null)
+    for _c in models-preset models-max reranking embeddings; do
+      case $_args in *"$_c"*) printf 'ok the service carries --%s\n' "$_c" ;; esac
+    done
+    _r=$(curl -sS -m 5 "http://$_h:$_pt/v1/models" 2>/dev/null)
+    if [ -z "$_r" ]; then
+      printf 'FAULT the router answers nothing on %s:%s\n' "$_h" "$_pt"
+    else
+      _n=$(printf '%s' "$_r" | jq -r '.data | length' 2>/dev/null)
+      printf 'ok the router names %s model(s)\n' "${_n:-0}"
+      printf '%s' "$_r" | jq -r '.data[]?.id' 2>/dev/null | while IFS= read -r _m; do printf 'ok model %s\n' "$_m"; done
+    fi
+    ;;
+  residents)
+    # ce qui occupe vraiment la memoire, modele par modele
+    for _p in $(pgrep -f 'llama-server' 2>/dev/null); do
+      _rss=$(awk '/VmRSS/ { print int($2 / 1024) }' "/proc/$_p/status" 2>/dev/null)
+      _nm=$(ps -o args= -p "$_p" 2>/dev/null | cut -c1-70)
+      printf 'ok pid %s: %s Mo, %s\n' "$_p" "${_rss:-?}" "$_nm"
+    done
+    for _p in $(pgrep -f 'nemo-speech serve' 2>/dev/null); do
+      _rss=$(awk '/VmRSS/ { print int($2 / 1024) }' "/proc/$_p/status" 2>/dev/null)
+      printf 'ok asr pid %s: %s Mo (parakeet v3 q8_0, loi 1429)\n' "$_p" "${_rss:-?}"
+    done
+    ;;
+  *)
+    printf 'FAULT unknown op %s\n' "$_op"
+    ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: router,files,binary,residents}

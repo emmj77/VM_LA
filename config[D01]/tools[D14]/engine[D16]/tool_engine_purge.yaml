@@ -1,0 +1,56 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E027"
+tool: "engine.purge"
+date: "2026-10-21"
+tags: ["engine", "purge", "memory"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "asks the kernel to take back the page cache of the resident services, so the memory never grows without end"
+COMMAND: |
+
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
+  _op=${1:-all}
+  _amount=$(cfg str loop.reclaim 300M) || _amount=300M
+
+  _one() {
+    _u=$1
+    [ -n "$_u" ] || return 0
+    _cg=$(systemctl --user show "$_u" -p ControlGroup --value 2>/dev/null)
+    [ -n "$_cg" ] || { printf 'note %s has no cgroup\n' "$_u"; return 0; }
+    _p="/sys/fs/cgroup$_cg"
+    [ -r "$_p/memory.current" ] || { printf 'note %s is not there\n' "$_u"; return 0; }
+    _b=$(( $(cat "$_p/memory.current") / 1048576 ))
+    if [ -w "$_p/memory.reclaim" ]; then
+      printf '%s' "$_amount" > "$_p/memory.reclaim" 2>/dev/null
+    fi
+    _a=$(( $(cat "$_p/memory.current") / 1048576 ))
+    if [ "$_a" -lt "$_b" ]; then
+      printf 'ok %s: %s Mo -> %s Mo\n' "$_u" "$_b" "$_a"
+    else
+      printf 'ok %s: %s Mo, rien de mou a reprendre\n' "$_u" "$_a"
+    fi
+  }
+
+  case $_op in
+  list)
+    for _u in la-asr la-tts la-models la-bridge; do _one "$_u"; done
+    ;;
+  all)
+    for _u in la-asr la-tts la-models la-bridge; do _one "$_u"; done
+    _tr purge "memoire rendue au noyau"
+    ;;
+  *)
+    _one "$_op"
+    ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: all,list,la-asr,la-tts,la-models,la-bridge}

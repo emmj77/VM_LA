@@ -80,7 +80,18 @@ loop_turn() {
     _rep=$(_turn_get '[.calls[] | select(.tool == "reply")] | length')
     [ "${_rep:-0}" -gt 0 ] 2>/dev/null && { _ltr step "stopped: the answer is said"; break; }
     _after=$(_turn_get '.calls | length')
-    [ "$_after" -gt "$_before" ] || break
+    if [ "$_after" -le "$_before" ]; then
+      # le modele n a rien appele : on lui redemande une reponse, meme vide,
+      # pour que l humain puisse parler a tout moment (retry du tour)
+      _try=$(_turn_get '.retry // 0')
+      _rt=$(cfg num loop.retry 1) || _rt=1
+      if [ "${_try:-0}" -lt "$_rt" ] 2>/dev/null; then
+        _turn_set '.retry = ((.retry // 0) + 1)'
+        _ltr step "retry: a reply is asked again"
+        continue
+      fi
+      break
+    fi
     _calls=$_after
     if [ "$_maxc" -gt 0 ] && [ "$_calls" -ge "$_maxc" ]; then
       _ltr step "stopped: $_calls calls, the bound"

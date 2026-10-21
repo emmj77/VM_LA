@@ -1,0 +1,71 @@
+# la surveillance : un agent pose une marque, dort, se reveille et regarde ce qui a bouge.
+id: "W003"
+tool: "watch.surveil"
+date: "2026-10-21"
+tags: ["watch", "surveil"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+DESCRIPTION: "watches another agent at work: it marks the ground, rests, wakes, and names what changed since the mark"
+COMMAND: |
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
+  _op=${1:-check}
+  case $_op in
+    arm*) S=${_op#arm} ;;
+    *)    S=0 ;;
+  esac
+  _d=$(cfg path state) || { printf 'FAULT no state in the tree\n'; exit 0; }
+  _mk="$_d/surveil.mark"
+  # la racine est celle qui porte work : l etat est a deux crans sous elle
+  _root=$(dirname "$(dirname "$_d")")
+  _w=$(ls -d "$_root"/work* 2>/dev/null | head -1)
+  [ -n "$_w" ] || _w="$_root/work"
+
+  case $_op in
+  arm*)
+    [ "${S:-0}" -gt 0 ] 2>/dev/null || S=180
+    : > "$_mk" || { printf 'FAULT the mark was not laid\n'; exit 0; }
+    _u="la-surveil-$(date +%s)"
+    systemd-run --user --unit="$_u" --on-active="${S}s" \
+      --timer-property=AccuracySec=1s --collect \
+      /bin/dash -c "printf 'process finished: la surveillance de %s secondes est arrivee a son terme\n' '$S' > '$_d/watch.event'" \
+      >/dev/null 2>&1 || { printf 'FAULT the watch was not armed\n'; exit 0; }
+    _tr surveil "marque posee, reveil dans ${S}s"
+    printf 'ok la marque est posee et le reveil vient dans %s s ; au retour, op=check dit ce qui a bouge\n' "$S"
+    ;;
+  check)
+    [ -e "$_mk" ] || { printf 'note aucune marque : op=arm d abord\n'; exit 0; }
+    _ago=$(( $(date +%s) - $(stat -c %Y "$_mk") ))
+    printf 'ok la marque a %s s\n' "$_ago"
+    # work est interdit a la surveillance : elle ne regarde que le journal du moteur
+    _t=$(cfg abs trace 2>/dev/null)
+    if [ -r "$_t" ]; then
+      printf 'ok les derniers pas du journal :\n'
+      tail -n 6 "$_t" | jq -r '"ok \(.kind // "?") \(.text // "")"' 2>/dev/null | cut -c1-120
+    fi
+    ;;
+  status)
+    if [ -e "$_mk" ]; then
+      printf 'ok la marque a %s s\n' "$(( $(date +%s) - $(stat -c %Y "$_mk") ))"
+    else
+      printf 'note aucune surveillance en cours\n'
+    fi
+    ;;
+  stop)
+    [ -e "$_mk" ] && mv -f "$_mk" "$_mk.retired" 2>/dev/null
+    printf 'ok la surveillance est levee\n'
+    ;;
+  *)
+    printf 'FAULT unknown op %s\n' "$_op"
+    ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: [check,status,stop,arm15,arm30,arm45,arm60,arm90,arm120,arm180,arm240,arm300,arm360,arm480,arm580]}

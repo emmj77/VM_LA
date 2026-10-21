@@ -29,6 +29,30 @@ COMMAND: |
   if [ "$_n" -gt "$_keep" ]; then
     _t=$(tmpfile memory) && tail -n "$_keep" "$_f" > "$_t" 2>/dev/null && mv -f -- "$_t" "$_f"
   fi
+  # le cache du modele est purge sauf sa tete : on rejoue la tete seule, un token
+  # le serveur garde le prefixe commun (la tete) et jette le reste du fil
+  _head=$(jq -r '.messages[0].content // ""' "$(cfg abs turn)" 2>/dev/null | cut -c1-4000)
+  if [ -n "$_head" ]; then
+    _al=$(jq -r '.engine // "main"' "$(cfg abs turn)" 2>/dev/null)
+    _m=$(cfg str "engines.$_al.model" 2>/dev/null) || _m=$(cfg str models.local 2>/dev/null)
+    _h=$(cfg str models.host 127.0.0.1) || _h=127.0.0.1
+    _pt=$(cfg num models.port 8091) || _pt=8091
+    _lst=$(curl -sS -m 5 "http://$_h:$_pt/v1/models" 2>/dev/null)
+    case "$_lst" in
+    *"$_m"*) _local=1 ;;
+    *)       _local=0 ;;
+    esac
+    # la purge ne concerne que le modele servi ici
+    if [ -n "$_m" ] && [ "$_local" = 1 ]; then
+      jq -cn --arg m "$_m" --arg h "$_head" \
+        '{model:$m,messages:[{role:"system",content:$h}],max_tokens:1,cache_prompt:true,stream:false}' \
+        | curl -sS -m 20 -H 'Content-Type: application/json' -d @- \
+            "http://$_h:$_pt/v1/chat/completions" >/dev/null 2>&1 \
+        && _tr note "kv purge, la tete reste"
+    fi
+  fi
+  # le noyau reprend la page cache des residents : la memoire ne grossit pas sans fin
+  run_call engine.purge "op=all" >/dev/null 2>&1
   _turn_set '(.status = "done")'
   _tr note "turn closed"
   exit 0

@@ -14,7 +14,7 @@ RULES:
 DESCRIPTION: "asks the reranker whether an event of the bridge wakes the session or waits"
 COMMAND: |
   _op=${1:-judge}
-  _ev_list="say voice image"
+  _ev_list="say voice image process system"
   _h=$(cfg str models.host 127.0.0.1)
   _pt=$(cfg num models.port 8091) || _pt=8091
   _m=$(cfg str models.rerank) || { printf 'FAULT models.rerank is not written\n'; exit 0; }
@@ -33,9 +33,9 @@ COMMAND: |
       *) msg refusals.watch_event "$_ev"; exit 0 ;;
     esac
     [ -n "$_de" ] || _de="the event carries no body"
-    _q="the bridge saw $_ev while the session sleeps: $_de"
+    _q="the machine says $_ev while the session sleeps: $_de"
     _body=$(jq -cn --arg m "$_m" --arg q "$_q" \
-      '{model:$m,query:$q,documents:["a human asks for an answer now","nothing needs an answer now"],top_n:2}')
+      '{model:$m,query:$q,documents:["alarm: a process failed, something broke, the human waits, this needs an answer now","routine: everything is normal, a plain reading, nothing broke, nothing to answer"],top_n:2}')
     _r=$(printf '%s' "$_body" | curl -sS -m "$_t" -H 'Content-Type: application/json' \
       -d @- "http://$_h:$_pt/v1/rerank" 2>/dev/null)
     [ -n "$_r" ] || { printf 'note the judge is silent: the event waits for the next turn\n'; exit 0; }

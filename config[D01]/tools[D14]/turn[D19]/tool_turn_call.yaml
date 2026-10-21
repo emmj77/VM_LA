@@ -31,7 +31,10 @@ COMMAND: |
   # -n : sans entree, jq ne lançait pas le filtre et le corps partait vide (reponse vide, 21/10)
   _body=$(jq -nc --arg m "$_model" --argjson mt "$_mt" --arg tc "$_tc" --arg ef "$_ef" \
     --slurpfile t "$(cfg abs turn)" '
-      {model:$m,messages:$t[0].messages,max_tokens:$mt,tool_choice:$tc,stream:false}
+      {model:$m,messages:($t[0].messages +
+        (if (($t[0].retry // 0) > 0)
+         then [{role:"user",content:"Answer now with the reply tool. If you have nothing to say, call reply with an empty text."}]
+         else [] end)),max_tokens:$mt,tool_choice:$tc,stream:false}
       + (if ($t[0].tools // [] | length) > 0 then {tools:$t[0].tools} else {} end)
       + (if $ef != "" then {reasoning_effort:$ef} else {} end)' /dev/null)
   _resp=$(printf '%s' "$_body" | curl -sS -m "$_to" -H "$_hdr: Bearer $_key" \

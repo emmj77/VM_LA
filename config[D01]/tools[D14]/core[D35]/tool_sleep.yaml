@@ -5,28 +5,29 @@ tags: ["sleep"]
 
 RULES:
   enabled: true
-  timeout: 600
+  timeout: 30
   writable_workspace: ""
   approval: none
   turn: none
   count: false
-  paths: read
+  paths: write
 
-DESCRIPTION: "makes the turn wait for the chosen duration, and never longer"
+DESCRIPTION: "puts the session to rest: a systemd timer of its own that cancels itself, and its return is what wakes the model"
 
 COMMAND: |
+  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
+
   S={{seconds}}
-  SP=${LA_STOP_FILE:-}
-  i=0
-  while [ "$i" -lt "$S" ]; do
-    if [ -n "$SP" ] && [ -e "$SP" ]; then
-      printf '%s\n' "$(msg sleep_interrupted)""$i" "$S"
-      exit 0
-    fi
-    sleep 1
-    i=$((i + 1))
-  done
-  printf 'sommeil : %s s, echeance atteinte\n' "$S"
+  _d=$(cfg path state) || { printf 'FAULT no state in the tree\n'; exit 0; }
+  _u="la-sleep-$(date +%s)"
+  # le sommeil vit dans systemd, pas dans le tour : le tour rend la main tout de suite
+  systemd-run --user --unit="$_u" --on-active="${S}s" \
+    --timer-property=AccuracySec=1s --collect \
+    /bin/dash -c "printf 'process finished: le sommeil de %s secondes est arrive a son terme\n' '$S' > '$_d/watch.event'" \
+    >/dev/null 2>&1 || { printf 'FAULT the rest was not armed\n'; exit 0; }
+  _tr sleep "arme ${S}s sous $_u"
+  printf 'ok le sommeil est arme pour %s s ; a l echeance le systeme rend la main et le juge decide\n' "$S"
+  exit 0
 
 ARGS:
-  - {name: seconds, type: enum, values: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]}
+  - {name: seconds, type: enum, values: [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 580]}

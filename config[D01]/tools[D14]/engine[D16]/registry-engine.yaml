@@ -366,3 +366,35 @@
   guardrail: true
   enabled: true
   visible: false
+- id: "E026"
+  tool: "engine.wake"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: "D012"
+  tool: "doctor.models"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: false
+  enabled: true
+  visible: false
+- id: "W003"
+  tool: "watch.surveil"
+  family: WATCH
+  sub_family: ""
+  doc: ""
+  guardrail: false
+  enabled: true
+  visible: true
+- id: "E027"
+  tool: "engine.purge"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: false
+  enabled: true
+  visible: false
