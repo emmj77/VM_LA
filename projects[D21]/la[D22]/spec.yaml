@@ -300,7 +300,7 @@ SECTION : TOOLS
 
   473: "UN TOOL APPELE PAR LE BRIDGE LIT UNE INPUT VIDE, jamais la socket du client."
 
-  474: "LE SOMMEIL EST UN TOOL DU TURN ; il n'ouvre NI proc, NI service, NI fichier d'state."
+  474: "LE SOMMEIL EST UN TOOL DU TURN ; il arme une UNITE systemd d jetable, et n'ecrit aucun fichier d'state."
   475: "SA DUREE EST UNE LISTE FERMEE (15..180 par pas de 15) ; hors liste, le refus DIS la liste."
   476: "LE SOMMEIL A DEUX MORTS : l'echeance atteinte, ou le STOP DE L'HUMAN (LA_STOP_FILE)."
   477: "IL RESTE SOUS LE DELAI DU ENGINE (600 s) : au-dela, le tool est TUE, pas attendu."
@@ -399,6 +399,8 @@ SECTION : ECONOMY
   826: "LA RAM SE REMBOURSE EN TOKENS : un resident qui dort est une fault."
   827: "UN RESIDENT DOIT SERVIR PLUSIEURS FOIS PAR TURN, sinon sa RAM est payee pour rien."
   828: "VOULU : le engine resident AUSSI, a condition que la table editee prenne effet aussitot."
+  829: "LA PURGE REND LE FROID, JAMAIS LES POIDS : l'arbre du resident est mesure, RSS plus marge gardee (lois 826, 1573)."
+  830: "LE CACHE KV SE PURGE SAUF LA TETE entre deux demandes : la tete se rejoue, un token."
 
 SECTION : PLAN
   900: "LE PLAN EST LA TACHE ECRITE."
@@ -672,8 +674,8 @@ SECTION : MODEL
   1541: "LE MODEL LOCAL ECRIT APRES LA REPLY, JAMAIS DEVANT : devant, il paie sa latence."
   1542: "LE REPOS A DEUX SYSTEMES D JETABLES : le VOLONTAIRE et l'AUTOMATIQUE."
   1543: "LE VOLONTAIRE : le model appelle le sommeil, et le retour du systeme revient A LUI."
-  1544: "L'AUTOMATIQUE : answer l'ARME ; son retour va AU JUGE, jamais a l'agent."
-  1545: "LA VEILLE ARMEE PAR answer VIT AU BRIDGE : un turn meurt, le bridge vit."
+  1544: "L'AUTOMATIQUE : answer l'ARME POUR loop.autosleep (580 s) ; son retour reveille l'agent EN DIRECT."
+  1545: "LA VEILLE ARMEE PAR answer VIT DANS SYSTEMD : un turn meurt, le timer sonne quand meme."
   1546: "LE JUGE EST LE WATCHER : une input, DEUX OUTPUTS convenues : wake or sleep."
   1547: "SON ETAGE EST LE RERANKER : il NOTE les deux outputs, il n'en INVENTE aucune."
   1548: "IL JUGE LE REVEIL, JAMAIS L'ARRET : l'arret reste un COMPTE d'etapes (lois 382, 393)."
@@ -706,14 +708,13 @@ SECTION : MODEL
   1574: "BARRE 72x7 = UN RAPPORT MESURABLE ; PASTILLE 14x6 CENTREE = UN STATE vert, gris, rouge."
   1575: "UNE LIGNE A 0 Mo MONTRE UN RAIL VIDE : zero est une mesure, pas une absence."
   1576: "L APPLET NE SE RECHARGE PAS PAR reexec_self() : il faut cinnamon --replace."
-  1577: "LE SOMMEIL REVEILLE EN DIRECT : le timer systemd ouvre le tour lui-meme, aucun juge entre les deux."
-  1578: "LA SURVEILLANCE SE PROGRAMME UNE FOIS : un timer repetitif de systemd, douze reveils au plus, il s arrete seul au dernier."
-  1579: "LE TEXTE DU REVEIL PORTE LA MISSION : le modele lit ce qu il doit continuer de surveiller, et rien d autre."
-  1580: "LE GRAND PLAN SE SURVEILLE COMME UNE MISSION : toutes les 600 ou 1200 s, tant qu il n est pas fini (loi 1612)."
-  1581: "LA PURGE REND LE FROID, JAMAIS LES POIDS : l arbre du resident est mesure, RSS plus marge gardee (lois 826, 1573)."
-  1582: "L EFFORT A QUATRE NIVEAUX : none, low, medium, high ; le reranker le choisit, le tour l envoie au model."
-  1583: "LA PALETTE GARDE 30% DE TETE, reply intouchable : le reste ne part pas au model."
-  1584: "LE CACHE KV EST PURGE SAUF LA TETE entre deux demandes : la tete se rejoue, un token."
+
+  1577: "LE REVEIL D'UN SOMMEIL EST DIRECT : le timer ouvre le tour lui-meme ; le juge ne voit que les EVENEMENTS."
+  1578: "LA SURVEILLANCE SE PROGRAMME UNE FOIS, DANS SYSTEMD ; aucun turn ne la reprogramme."
+  1579: "LA SURVEILLANCE EST UN SOMMEIL REPETITIF : douze reveils au plus, et il s'arrete seul au dernier."
+  1580: "LE TEXTE DU REVEIL PORTE LA MISSION : le model lit ce qu'il doit continuer de surveiller."
+  1581: "LE GRAND PLAN SE SURVEILLE COMME UNE MISSION : 600 ou 1200 s, tant qu'il n'est pas fini (loi 919)."
+  1582: "L'EFFORT A QUATRE NIVEAUX none|low|medium|high : le reranker le choisit, le turn l'envoie au model."
 SECTION : WORK
   1600: "UN CHEMIN D'ECRITURE EST RELATIF ET SE RESOUT SOUS LE REGISTRY DU SKILL ACTIF."
   1601: "Le model ne choisit AUCUN chemin : il nomme une VALEUR."
