@@ -689,9 +689,8 @@ def control(light=False):
         L.append(("approbation", "%s %s -- asked %ds ago" % (request[0], request[1], request[2]), True))
     if signal:
         L.append(("feu vert", "%s -- %ds" % (signal[0], signal[1]), False))
-    # la ligne dit QUI demande une signature, pas seulement qu il n y en a pas
-    L.append(("approbation", ", ".join(rights) if rights else "no skill carries APPROVAL: true",
-              False))
+    # la ligne dit COMBIEN de skills demandent une signature
+    L.append(("approbation", str(len(rights)), False))
     # le cli est un programme qu on OUVRE : vert quand une session tourne, rouge quand personne ne l a ouvert.
     # on lit les arguments exacts dans /proc : un pgrep -f se prendrait pour lui-meme.
     _cli_pid = ""
