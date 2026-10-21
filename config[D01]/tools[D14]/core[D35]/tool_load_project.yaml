@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "loads a project : writes projects/.active, then its SKILLS become the skills the model may load"
 
 COMMAND: |
-  N="${1:-}"; [ -n "$N" ] || N=$(cat); N=$(printf '%s' "$N" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  N="{{name}}"; N=$(printf '%s' "$N" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
   case "$N" in ''|*/*|*..*) printf '%s\n' "$(msg project_name_required)" >&2; exit 1;; esac
   D=$(cfg path projects) || { printf '%s\n' "$(msg projects_not_found projects)" >&2; exit 1; }
   P="$D/$N"; [ -d "$P" ] || P=$(find "$D" -mindepth 1 -maxdepth 1 -type d -name "$N*" | head -n 1)
@@ -24,4 +24,4 @@ COMMAND: |
   printf '%s\n' "$(msg project_loaded "$N")"
 
 ARGS:
-  - {name: name, type: text, stdin: true}
+  - {name: name, type: text}

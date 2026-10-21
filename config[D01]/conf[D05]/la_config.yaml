@@ -59,9 +59,9 @@ machine:
     # one pixel job = one node, one weight, one scale, one output
     jobs:
       matte:
-        node: "ONNXImageFilter"
-        model: "vision/u2netp.onnx"
-        scale: 320
+        node: "BackgroundRemoval"
+        model: "birefnet.safetensors"
+        scale: 0
         out: "png"
       inpaint:
         node: "INPAINT_LoadInpaintModel"

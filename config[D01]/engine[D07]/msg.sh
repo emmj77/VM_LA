@@ -7,6 +7,8 @@ msg() {
   [ $# -gt 0 ] && shift
   [ -n "$_k" ] || return 1
   _t=$(msg_str "$_k") || return 1
+  # a missing text is SAID: the phrase carries its own key, never a silence
+  [ -n "$_t" ] || _t="no-text:$_k"
   [ $# -gt 0 ] && _t=$(printf "$_t" "$@")
   printf '%s\n' "$_t"
 }

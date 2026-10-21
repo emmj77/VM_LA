@@ -59,6 +59,15 @@ COMMAND: |
       "2": {"class_type": "DepthAnythingV2Preprocessor", "inputs": {"image": ["1", 0], "ckpt_name": $m, "resolution": $r}},
       "3": {"class_type": "SaveImage", "inputs": {"images": ["2", 0], "filename_prefix": "la_pixel"}}
     }') || { printf 'refused: the graph did not build\n' >&2; exit 1; }
+  elif [ "$(cfg str "machine.comfyui.jobs.$_op.node")" = BackgroundRemoval ]; then
+    # the machine's own background removal: one weight, one mask, no resizing
+    _graph=$(jq -n --arg f "$_name" --arg m "$_model" '{
+      "1": {"class_type": "LoadImage", "inputs": {"image": $f}},
+      "2": {"class_type": "LoadBackgroundRemovalModel", "inputs": {"bg_removal_name": $m}},
+      "3": {"class_type": "RemoveBackground", "inputs": {"bg_removal_model": ["2", 0], "image": ["1", 0]}},
+      "4": {"class_type": "MaskToImage", "inputs": {"mask": ["3", 0]}},
+      "5": {"class_type": "SaveImage", "inputs": {"images": ["4", 0], "filename_prefix": "la_pixel"}}
+    }') || { printf 'refused: the graph did not build\n' >&2; exit 1; }
   else
     # one ONNX weight, applied as a filter, then brought back to the size of the source
     _graph=$(jq -n --arg f "$_name" --arg m "$_model" --argjson hw "$_scale" '{

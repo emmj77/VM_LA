@@ -48,6 +48,7 @@ COMMAND: |
     case $_node in
       ONNXImageFilter)          _w="$_cr/models/onnx/$_md" ;;
       INPAINT_LoadInpaintModel) _w="$_cr/models/inpaint/$_md" ;;
+      BackgroundRemoval)        _w="$_cr/models/background_removal/$_md" ;;
       DepthAnythingV2Preprocessor) _w="$_cr/custom_nodes/comfyui_controlnet_aux/ckpts/depth-anything/Depth-Anything-V2-Base/$_md" ;;
       *)                        _w="" ;;
     esac

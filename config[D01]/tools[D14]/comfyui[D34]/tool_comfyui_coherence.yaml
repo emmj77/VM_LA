@@ -46,7 +46,7 @@ COMMAND: |
     --arg cvi "${LA_COMFY_CLIP_VISION:-clip-vision_vit-h.safetensors}" \
     --arg lora "$LORA" \
     --arg cn_couleur "${LA_COMFY_CONTROLNET:-}" \
-    --arg cn_pose "${LA_COMFY_CONTROLNET_POSE:-openpose-sdxl.safetensors}" \
+    --arg cn_pose "${LA_COMFY_CONTROLNET_POSE:-xinsir-controlnet-union-sdxl-1.0-promax.safetensors}" \
     --arg t "$T" --arg perso "$PERSONA_NAME" --arg cos "$COS_NAME" --arg pose "$POSE_FILE" \
     --argjson m0 "$REF_M" --argjson c0 "$REF_C" --argjson sd "$GRAINE" \
     --argjson fl "${LA_COMFY_FORCE_LORA:-0.7}" --argjson flc "${LA_COMFY_FORCE_LORA_CLIP:-0.7}" \
@@ -87,10 +87,11 @@ COMMAND: |
          "16":{"class_type":"OpenposePreprocessor","inputs":{"image":["15",0],"detect_hand":false,
                "detect_body":true,"detect_face":false,"resolution":512}},
          "17":{"class_type":"ControlNetLoader","inputs":{"control_net_name":$cn_pose}},
+         "19":{"class_type":"SetUnionControlNetType","inputs":{"control_net":["17",0],"type":"openpose"}},
          "18":{"class_type":"ControlNetApplyAdvanced","inputs":{
                "positive":(if $cn_couleur != "" then ["33",0] else ["6",0] end),
                "negative":(if $cn_couleur != "" then ["33",1] else ["7",0] end),
-               "control_net":["17",0],"image":["16",0],"strength":$f_pose,"start_percent":0.0,
+               "control_net":["19",0],"image":["16",0],"strength":$f_pose,"start_percent":0.0,
                "end_percent":0.8}} } else . end)
     | . + {
         "9":{"class_type":"KSampler","inputs":{"seed":$sd,"steps":$etapes,"cfg":$cfg,
