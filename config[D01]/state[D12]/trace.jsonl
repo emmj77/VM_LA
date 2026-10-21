@@ -200,3 +200,53 @@
 {"ts":1792559803,"kind":"reply","text":"8 bytes"}
 {"ts":1792559805,"kind":"note","text":"turn closed"}
 {"ts":1792559807,"kind":"step","text":"turn done in 24s, 0 calls, ok"}
+{"ts":1792562178,"kind":"turn","text":"start"}
+{"ts":1792562181,"kind":"facts","text":"20261021-055620"}
+{"ts":1792562183,"kind":"second","text":"human"}
+{"ts":1792562187,"kind":"scope","text":"16 tools"}
+{"ts":1792562189,"kind":"prompt","text":"21 bytes"}
+{"ts":1792562442,"kind":"turn","text":"start"}
+{"ts":1792562444,"kind":"facts","text":"20261021-060043"}
+{"ts":1792562447,"kind":"second","text":"agent"}
+{"ts":1792562451,"kind":"scope","text":"16 tools"}
+{"ts":1792562454,"kind":"prompt","text":"21 bytes"}
+{"ts":1792562458,"kind":"call","text":"2791 tokens"}
+{"ts":1792562462,"kind":"tool","text":"reply: ok"}
+{"ts":1792562463,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792562466,"kind":"reply","text":"8 bytes"}
+{"ts":1792562468,"kind":"note","text":"turn closed"}
+{"ts":1792562469,"kind":"step","text":"turn done in 26s, 0 calls, ok"}
+{"ts":1792562485,"kind":"turn","text":"start"}
+{"ts":1792562487,"kind":"facts","text":"20261021-060126"}
+{"ts":1792562489,"kind":"second","text":"human"}
+{"ts":1792562494,"kind":"scope","text":"16 tools"}
+{"ts":1792562496,"kind":"prompt","text":"21 bytes"}
+{"ts":1792562500,"kind":"call","text":"2791 tokens"}
+{"ts":1792562503,"kind":"tool","text":"reply: ok"}
+{"ts":1792562505,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792562506,"kind":"reply","text":"8 bytes"}
+{"ts":1792562509,"kind":"note","text":"turn closed"}
+{"ts":1792562510,"kind":"step","text":"turn done in 24s, 0 calls, ok"}
+{"ts":1792562513,"kind":"turn","text":"start"}
+{"ts":1792562515,"kind":"facts","text":"20261021-060154"}
+{"ts":1792562517,"kind":"second","text":"agent"}
+{"ts":1792562521,"kind":"scope","text":"16 tools"}
+{"ts":1792562523,"kind":"prompt","text":"21 bytes"}
+{"ts":1792562527,"kind":"call","text":"2798 tokens"}
+{"ts":1792562530,"kind":"tool","text":"reply: ok"}
+{"ts":1792562531,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792562533,"kind":"reply","text":"7 bytes"}
+{"ts":1792562536,"kind":"note","text":"turn closed"}
+{"ts":1792562537,"kind":"step","text":"turn done in 23s, 0 calls, ok"}
+{"ts":1792562599,"kind":"turn","text":"start"}
+{"ts":1792562601,"kind":"facts","text":"20261021-060320"}
+{"ts":1792562603,"kind":"second","text":"human"}
+{"ts":1792562607,"kind":"scope","text":"16 tools"}
+{"ts":1792562609,"kind":"prompt","text":"21 bytes"}
+{"ts":1792562613,"kind":"call","text":"2808 tokens"}
+{"ts":1792562617,"kind":"tool","text":"reply: ok"}
+{"ts":1792562618,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792562620,"kind":"reply","text":"8 bytes"}
+{"ts":1792562622,"kind":"note","text":"turn closed"}
+{"ts":1792562623,"kind":"step","text":"turn done in 23s, 0 calls, ok"}
+{"ts":1792562681,"kind":"turn","text":"start"}

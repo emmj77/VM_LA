@@ -241,7 +241,10 @@ class LAInfoApplet extends Applet.TextIconApplet {
                 this._stale = false;
                 try { GLib.file_set_contents(CACHE, text); } catch (e) { }
             }
+            // la ligne du tunnel vient de /proc, pas de board.py : un releve ne doit pas l effacer
+            const _oldNet = this._lines.find((l) => l.title === "tailscale");
             this._lines = rows;
+            if (_oldNet) { this._lines.push(_oldNet); }
             // L'APPROBATION SE LIT DANS LES LIGNES DU TABLEAU, pas dans un second appel : la line
             // dont le title est « approbation » porte le geste en clair (tool + geste). S'il n'y en
             // a pas, il n'y a rien a approve et le bouton n'existe pas.
@@ -298,17 +301,23 @@ class LAInfoApplet extends Applet.TextIconApplet {
         if (b) { this._netPrev = { t: now, rx: b.rx, tx: b.tx }; }
         const up = this._netUp === true;
         const state = up ? "up" : (this._netState || "down");
-        const io = b ? (" \u2193" + this._fmt(b.rx) + " \u2191" + this._fmt(b.tx)) : "";
+        // ni total ni cumul : l etat, et le debit de l instant
         return { state: up ? "ok" : "ko", section: "RESEAU", title: "tailscale",
-                 verdict: state + io + rate };
+                 verdict: state + rate };
     }
 
     _netTick() {
-        const row = this._netRow();
+        let row;
+        try {
+            row = this._netRow();
+        } catch (e) {
+            global.logError("LA_Info net: " + e.message);
+            return true;
+        }
         const i = this._lines.findIndex((l) => l.title === "tailscale");
         if (i > -1) { this._lines[i] = row; } else { this._lines.push(row); }
         this._paint();
-        if (this._menu && this._menu.isOpen) { this._dessinerLeMenu(); }
+        if (this._netLabel) { this._netLabel.text = row.verdict; }
         return true;
     }
 
@@ -385,7 +394,10 @@ class LAInfoApplet extends Applet.TextIconApplet {
         children.push(this._pastille(line));
         const r = ratioOf(line.title, line.verdict, this._ramOfLA);
         children.push(r !== null ? this._barre(r) : this._slotVide());
-        children.push(this._smallLabel(line.verdict, "la-info-verdict", 0, Clutter.ActorAlign.END));
+        const verdict = this._smallLabel(line.verdict, "la-info-verdict", 0, Clutter.ActorAlign.END);
+        children.push(verdict);
+        // le debit se met a jour sur place : reconstruire le menu le refermerait
+        if (line.title === "tailscale") { this._netLabel = verdict; }
         return this._rangee(children);
     }
 
@@ -475,10 +487,13 @@ class LAInfoApplet extends Applet.TextIconApplet {
         // DEUX BLOCS : les etats d abord, les mesures ensemble a la fin (MOUSSA, 21/10).
         // Une rangee qui a un rail est une mesure ; les autres disent un etat, et leur couleur
         // suffit : ni carre, ni pastille.
-        const estMesure = (l) => ratioOf(l.title, l.verdict, this._ramOfLA) !== null;
+        // le debit du tunnel n est pas une barre : sa ligne reste un etat, dans RESEAU
+        const estMesure = (l) => l.title !== "tailscale"
+            && ratioOf(l.title, l.verdict, this._ramOfLA) !== null;
         const etats = this._lines.filter((l) => !estMesure(l));
         const mesures = this._lines.filter((l) => estMesure(l));
 
+        this._netLabel = null;
         let section = null;
         const poser = (l) => {
             if (l.section !== section) {
