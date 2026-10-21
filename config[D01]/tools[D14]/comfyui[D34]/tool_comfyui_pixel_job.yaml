@@ -1,7 +1,7 @@
 # the pixel jobs of the vision family, run by the ComfyUI machine. no python here: jq, curl, the graph.
 id: "C024"
 tool: "comfyui_pixel_job"
-family: "comfyui"
+family: "IMAGE"
 sub_family: "vision"
 date: "2026-10-21"
 tags: ["image", "comfyui", "img", "run"]
@@ -51,6 +51,13 @@ COMMAND: |
       "6": {"class_type": "INPAINT_LoadInpaintModel", "inputs": {"model_name": $m}},
       "7": {"class_type": "INPAINT_InpaintWithModel", "inputs": {"inpaint_model": ["6", 0], "image": ["1", 0], "mask": ["5", 0], "seed": 0}},
       "8": {"class_type": "SaveImage", "inputs": {"images": ["7", 0], "filename_prefix": "la_pixel"}}
+    }') || { printf 'refused: the graph did not build\n' >&2; exit 1; }
+  elif [ "$_op" = depth ]; then
+    # the depth reader is a preprocessor of ComfyUI: its own node, its own weight, its own size
+    _graph=$(jq -n --arg f "$_name" --arg m "$_model" --argjson r "$_scale" '{
+      "1": {"class_type": "LoadImage", "inputs": {"image": $f}},
+      "2": {"class_type": "DepthAnythingV2Preprocessor", "inputs": {"image": ["1", 0], "ckpt_name": $m, "resolution": $r}},
+      "3": {"class_type": "SaveImage", "inputs": {"images": ["2", 0], "filename_prefix": "la_pixel"}}
     }') || { printf 'refused: the graph did not build\n' >&2; exit 1; }
   else
     # one ONNX weight, applied as a filter, then brought back to the size of the source

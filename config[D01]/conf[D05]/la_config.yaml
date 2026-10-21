@@ -69,9 +69,9 @@ machine:
         scale: 0
         out: "png"
       depth:
-        node: "ONNXImageFilter"
-        model: "vision/depth-anything-v2-small.onnx"
-        scale: 518
+        node: "DepthAnythingV2Preprocessor"
+        model: "depth_anything_v2_vitb.pth"
+        scale: 512
         out: "png"
   krita:
     host: "127.0.0.1"

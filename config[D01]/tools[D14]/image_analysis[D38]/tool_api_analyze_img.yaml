@@ -18,6 +18,10 @@ COMMAND: |
   LC_ALL=C; export LC_ALL
   _ke=$(cfg str machine.vision.api.key_env) || exit 1
   KEY=$(printenv "$_ke" 2>/dev/null) || KEY=""
+  if [ -z "$KEY" ]; then
+    _cf=$(cfg path conf) || exit 1
+    if [ -r "$_cf/.env" ]; then KEY=$(. "$_cf/.env" >/dev/null 2>&1; eval "printf '%s' \"\${$_ke:-}\"") ; fi
+  fi
   [ -n "$KEY" ] || { printf '%s\n' "$(msg api_key_missing)" >&2 ; exit 1 ; }
   API=$(cfg str machine.vision.api.base) || exit 1
   MODEL=$(cfg str machine.vision.api.model) || exit 1

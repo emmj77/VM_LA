@@ -18,7 +18,8 @@ COMMAND: |
   LC_ALL=C; export LC_ALL
   F="$W/{{source}}"; [ -f "$F" ] || F="$ROOT/{{source}}"
   [ -f "$F" ] || { printf 'refused: the image is missing (%s)\n' "{{source}}" >&2 ; exit 1 ; }
-  O=""; [ -z "{{out}}" ] || O="$W/{{out}}"
+  O="$W/{{out}}"
+  if [ -z "{{out}}" ]; then _b=$(basename "$F"); O="$(dirname "$F")/${_b%.*}.repaired.png"; fi
   run_call comfyui_pixel_job "op=inpaint" "image=$F" "out=$O" "zone={{zone}}"
 
 ARGS:
