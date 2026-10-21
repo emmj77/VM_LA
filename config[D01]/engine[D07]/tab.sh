@@ -79,6 +79,12 @@ table_keys() {
     }'
 }
 
+# table_ids <table> : every id of the table, one per line, block style
+table_ids() {
+  [ -f "${1:-}" ] || return 1
+  awk '/^[ \t]*- id:[ \t]*/ { v = $0; sub(/^[ \t]*- id:[ \t]*/, "", v); gsub(/["\047]/, "", v); sub(/[ \t].*$/, "", v); print v }' "$1"
+}
+
 # table_index : the whole table as id|tool|family|guardrail|description, kept once in TABLE_INDEX
 table_index() {
   [ -n "${TABLE_INDEX+x}" ] && return 0

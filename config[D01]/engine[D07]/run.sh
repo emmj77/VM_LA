@@ -107,9 +107,10 @@ run_call() {
 
   # 5 the tools the active skill allows ; an engine call answers to nobody
   # a permanent tool passes anywhere, the others need the toolset of the active skill
-  if [ "${LA_FROM:-model}" != engine ]; then
-    tool_allowed "$_name" "$_id" || { shape_fail "$_name" "" refusals.tool_not_allowed; return 1; }
-  fi
+  case ${LA_FROM:-model} in
+    engine|human) : ;;
+    *) tool_allowed "$_name" "$_id" || { shape_fail "$_name" "" refusals.tool_not_allowed; return 1; } ;;
+  esac
 
   # 6 arity and 7 types
   _decl=$(_door_decl "$_body")
@@ -161,7 +162,9 @@ run_call() {
   done
 
   # 9 approval : four bodies wait for a human, never for a tool
-  if is_gated "$_body" && [ "${LA_FROM:-model}" != engine ]; then
+  _gate=1
+  case ${LA_FROM:-model} in engine|human) _gate=0 ;; esac
+  if [ "$_gate" = 1 ] && is_gated "$_body"; then
     if approval_ok "$_name" "$@"; then
       :
     else

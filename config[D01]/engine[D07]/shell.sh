@@ -103,11 +103,10 @@ $_c" dash "$@" 2>&1)
     return 124
   fi
   # an engine call feeds the turn, not the model: no cap, no returns entry
-  if [ "${LA_FROM:-model}" = engine ]; then
-    _res=$_out
-  else
-    _res=$(printf '%s' "$_out" | cap_return "$_x")
-  fi
+  case ${LA_FROM:-model} in
+    engine|human) _res=$_out ;;
+    *) _res=$(printf '%s' "$_out" | cap_return "$_x") ;;
+  esac
   [ "$_rc" -eq 0 ] && { shape_ok "$_x" "$_c" "$_res" ""; return 0; }
   shape refused "$_x" "$_c" "$_res" ""
   return "$_rc"

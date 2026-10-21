@@ -15,10 +15,15 @@ RULES:
 DESCRIPTION: "lists the skills : one per line with its tags (the ones the ACTIVE PROJECT opens, when one is loaded)"
 
 COMMAND: |
-  SK="$ROOT/skills"
+  SK=$(cfg path skills)
   [ -d "$SK" ] || { printf '%s\n' "$(msg skills_dir_missing "$SK")" >&2 ; exit 1 ; }
-  [ -f "$PROCS/lib.sh" ] || { printf '%s\n' "$(msg shared_library_missing "$PROCS")" >&2 ; exit 1 ; }
-  . "$PROCS/lib.sh"
+  PROCS=${PROCS:-$(cfg path programs 2>/dev/null)}
+  if [ -n "$PROCS" ] && [ -f "$PROCS/lib.sh" ]; then
+    . "$PROCS/lib.sh"
+  else
+    active_project() { PNAME=""; PROJECT=""; }
+    project_skills() { :; }
+  fi
   active_project ; PSK=
   [ -n "$PNAME" ] && PSK=$(project_skills "$PROJECT")
   N=0 ; NT=0

@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "lists the projects : one name per line"
 
 COMMAND: |
-  D="$ROOT/projects"
+  D=$(cfg path projects) || D="$ROOT/projects"
   [ -d "$D" ] || { printf '%s\n' "$(msg no_project "$D")"; exit 0; }
   for f in "$D"/*/project.yml; do
     [ -f "$f" ] || continue

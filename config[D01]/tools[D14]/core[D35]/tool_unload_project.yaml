@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "unloads the project : removes projects/.active, so the whole skillset reopens"
 
 COMMAND: |
-  F="$ROOT/projects/.active"
+  F=$(cfg abs project_active) || F="$ROOT/projects/.active"
   if [ -L "$F" ]; then printf '%s\n' "$(msg symlink_forbidden "$F")" >&2; exit 1; fi
   if [ -e "$F" ]; then rm -f "$F"; fi
   printf '%s\n' "$(msg project_unloaded_whole_skillset)"

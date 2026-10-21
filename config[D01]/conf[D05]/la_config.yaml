@@ -342,6 +342,60 @@ world:
   - {id: W05, key: skill_active,   path: "skills[D23]/.active"}
   - {id: W06, key: project_active, path: "projects[D21]/.active"}
 
+# the commands: one name, one act or one tool. the cli, the dashboard and the app read this list, nobody else.
+# act = a gesture the engine owns ; tool = an existing tool, called by the human door ; voice = a keyword for the spotter
+commands:
+  - id: "V01"
+    name: "help"
+    act: usage
+    voice: true
+  - id: "V02"
+    name: "version"
+    act: version
+  - id: "V03"
+    name: "map"
+    act: map
+  - id: "V04"
+    name: "new"
+    act: new
+    voice: true
+  - id: "V05"
+    name: "stop"
+    act: stop
+    voice: true
+  - id: "V06"
+    name: "skill list"
+    tool: skill_list
+    voice: true
+  - id: "V07"
+    name: "skill load"
+    tool: load_skill
+    arg: name
+    voice: true
+  - id: "V08"
+    name: "skill unload"
+    act: skill_unload
+    voice: true
+  - id: "V09"
+    name: "project list"
+    tool: project_list
+  - id: "V10"
+    name: "load project"
+    tool: load_project
+    arg: name
+    voice: true
+  - id: "V11"
+    name: "unload project"
+    tool: unload_project
+    voice: true
+  - id: "V12"
+    name: "service"
+    act: service
+    arg: name
+  - id: "V13"
+    name: "tool"
+    act: tool_call
+
 # the head of every prompt, in zones: the prefix that never moves (prompt cache)
 head:
   name: "LA"
