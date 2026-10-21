@@ -125,6 +125,10 @@ function parseRows(text) {
         const c = l.split("|");
         rows.push({ state: c[0], section: c[1], title: c[2], verdict: c.slice(3).join("|") });
     });
+    // LA LIGNE DU CLI : elle ferme la section LA, sans deplacer une seule rangee existante
+    let at = -1;
+    rows.forEach((r, i) => { if (r.section === "LA") { at = i; } });
+    rows.splice(at + 1, 0, { state: "ok", section: "LA", title: "cli", verdict: "board.py --cli" });
     return rows;
 }
 
@@ -180,14 +184,21 @@ class LAInfoApplet extends Applet.TextIconApplet {
     }
 
     // ---- la lecture
+    // board.py vit a cote de la porte : la porte est dans config[D01]/engine[D07]/la.sh
+    _cliPath() {
+        const engine = GLib.path_get_dirname(this.board);      // engine[D07]
+        const conf = GLib.path_get_dirname(engine);            // config[D01]
+        return GLib.build_filenamev([conf, "programs[D10]", "board.py"]);
+    }
+
     _read() {
         if (this._reading || !this.board) { return; }
         this._reading = true;
 
         let proc;
         try {
-            // la porte du projet : `la board menu` rend une rangee par ligne, state|section|title|verdict
-            proc = Gio.Subprocess.new(["dash", this.board, "board", "menu"],
+            // LA TABLE EST board.py : un seul tableau, le sien. On le lance, on ne le double pas.
+            proc = Gio.Subprocess.new(["python3", this._cliPath(), "--menu"],
                 Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE);
         } catch (e) {
             this._reading = false;
@@ -431,6 +442,18 @@ class LAInfoApplet extends Applet.TextIconApplet {
             approve.connect("activate", () => { this._approve(outil, geste); });
             this._menu.addMenuItem(approve);
         }
+
+        // LE CLI S OUVRE ICI : ta table, dans un terminal, telle quelle
+        const cli = new PopupMenu.PopupMenuItem("\u2328  Ouvrir le CLI (board.py)");
+        cli.connect("activate", () => {
+            try {
+                Gio.Subprocess.new(["x-terminal-emulator", "-e", "python3", this._cliPath(), "--cli"],
+                    Gio.SubprocessFlags.NONE);
+            } catch (e) {
+                global.logError("LA_Info : le cli ne s ouvre pas : " + e.message);
+            }
+        });
+        this._menu.addMenuItem(cli);
 
         // LE TUNNEL, DEUX GESTES : ils vivent ici et pas dans la barre, et ils passent par la
         // porte du projet comme tout le reste -- l applet n a jamais de commande a elle.

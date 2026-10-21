@@ -22,6 +22,8 @@ from textual.widgets import Footer, Header, Input, RichLog, Static
 # --- le panneau lit le pont, et rien d'autre : aucune donnee en double ---
 ROOT = os.environ.get("LA_ROOT") or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CONFD = os.path.dirname(os.environ.get("LA_CONFIG", ""))
+# la racine du projet a change de nom (config -> config[D01]) : elle se deduit du fichier, jamais d un litteral
+CONF_DIR = CONFD or os.path.join(ROOT, "config[D01]")
 BRIDGE = "http://%s:%s" % (os.environ.get("LA_HOST") or "127.0.0.1",
                            os.environ.get("LA_PORT_BRIDGE") or "8770")
 _SEEN = {}
@@ -95,10 +97,27 @@ def read_live():
 
 
 def _units(names):
+    """l etat d une unite, tel que read_residents l attend : state, pid, memoire"""
     out = {}
     for u in names or []:
-        r = subprocess.run(["systemctl", "--user", "is-active", u], capture_output=True, text=True)
-        out[u] = {"active": (r.stdout or "").strip() == "active"}
+        state, pid, mb = "?", "", None
+        try:
+            r = subprocess.run(["systemctl", "--user", "show", "-p", "ActiveState",
+                                "-p", "MainPID", "-p", "MemoryCurrent", u],
+                               capture_output=True, text=True, timeout=4)
+            d = {}
+            for l in (r.stdout or "").strip().splitlines():
+                if "=" in l:
+                    k, v = l.split("=", 1)
+                    d[k] = v
+            state = d.get("ActiveState") or "?"
+            pid = d.get("MainPID") or ""
+            mem = d.get("MemoryCurrent") or ""
+            mb = int(mem) // 1048576 if mem.isdigit() else None
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        out[u] = {"state": state, "active": state == "active", "pid": pid,
+                  "cg_mb": mb, "rss_mb": mb, "anon_mb": mb}
     return out
 
 
@@ -451,12 +470,12 @@ def read_modeles():
         for name in _models_in(os.path.join(CONF_DIR, "engine", "%s.sh" % stem)):
             place(name, "%s %s" % (stem, port), state == "active", pid)
     ids = read_registry()
-    for f in sorted(glob.glob(os.path.join(ROOT, "config", "tools", "*", "tool_*.yaml"))):
+    for f in sorted(glob.glob(os.path.join(CONF_DIR, "tools", "*", "tool_*.yaml"))):
         tool_name = os.path.basename(f)[len("tool_"):-len(".yaml")]
         for name in _models_in(f):
             place(name, "%s %s" % (tool_name, ids.get(tool_name, "?")), False)
     for f in CARRIERS:
-        for name in _models_in(os.path.join(ROOT, "config", "programs", f)):
+        for name in _models_in(os.path.join(CONF_DIR, "programs", f)):
             place(name, f, False)
     if os.path.isfile(FILTER):
         place("family.bin", "filter 223/224", False)
@@ -893,7 +912,7 @@ def tui(a, output):
                 elif c == "r":
                     break
                 elif c == "a":
-                    subprocess.Popen(["/bin/sh", os.path.join(ROOT, "config/engine/la.sh"), "--app"],
+                    subprocess.Popen(["/bin/sh", os.path.join(CONF_DIR, "engine", "la.sh"), "--app"],
                                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                                      start_new_session=True)
                 deadline = time.time() + a.watch

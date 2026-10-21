@@ -401,6 +401,8 @@ head:
 
 # where the install puts its pieces, and the two names the bridge and the backup answer to
 paths:
+  trace: "state[D12]/trace.jsonl"
+  bridge_log: "state[D12]/bridge.log"
   sessions: "config[D01]/state[D12]/sessions"
   user_units: "/home/moussa/.config/systemd/user"
   user_bin: "/home/moussa/.local/bin"
@@ -573,3 +575,19 @@ schema:
     min: 1024
     max: 65535
     why: la porte du pont (le telephone s y connecte)
+
+# THE TABLE (board.py, l autre agent) : ses donnees vivent ici, pas dans son code.
+board:
+  columns: 82
+  lines: 50
+  residents:
+    - {name: models, unit: la-models, port: 8091, probe: health}
+    - {name: asr, unit: la-asr, port: 8080, probe: ready}
+    - {name: tts, unit: la-tts, port: 8090, probe: health}
+  appoints:
+    # bridge et dash sont des unites : la table les liste deja, une seule fois
+    - {name: vision, port: 1234, probe: health, word: "it wakes on demand"}
+  instruments:
+    - {name: tesseract, why: "the OCR of read_text_in_img"}
+  carriers: [micro_vision.py]
+  forms: '[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)'
