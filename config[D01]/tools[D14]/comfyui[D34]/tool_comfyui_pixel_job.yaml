@@ -53,11 +53,13 @@ COMMAND: |
       "8": {"class_type": "SaveImage", "inputs": {"images": ["7", 0], "filename_prefix": "la_pixel"}}
     }') || { printf 'refused: the graph did not build\n' >&2; exit 1; }
   elif [ "$_op" = depth ]; then
-    # the depth reader is a preprocessor of ComfyUI: its own node, its own weight, its own size
+    # depth anything 3: its own loader, its own inference, its own renderer
     _graph=$(jq -n --arg f "$_name" --arg m "$_model" --argjson r "$_scale" '{
       "1": {"class_type": "LoadImage", "inputs": {"image": $f}},
-      "2": {"class_type": "DepthAnythingV2Preprocessor", "inputs": {"image": ["1", 0], "ckpt_name": $m, "resolution": $r}},
-      "3": {"class_type": "SaveImage", "inputs": {"images": ["2", 0], "filename_prefix": "la_pixel"}}
+      "2": {"class_type": "LoadDA3Model", "inputs": {"model_name": $m, "weight_dtype": "default"}},
+      "3": {"class_type": "DA3Inference", "inputs": {"da3_model": ["2", 0], "image": ["1", 0], "resolution": $r, "resize_method": "upper_bound_resize", "mode": "mono"}},
+      "4": {"class_type": "DA3Render", "inputs": {"da3_geometry": ["3", 0], "output": "depth", "output.normalization": "v2_style", "output.apply_sky_clip": false}},
+      "5": {"class_type": "SaveImage", "inputs": {"images": ["4", 0], "filename_prefix": "la_pixel"}}
     }') || { printf 'refused: the graph did not build\n' >&2; exit 1; }
   elif [ "$(cfg str "machine.comfyui.jobs.$_op.node")" = BackgroundRemoval ]; then
     # the machine's own background removal: one weight, one mask, no resizing

@@ -49,7 +49,7 @@ COMMAND: |
       ONNXImageFilter)          _w="$_cr/models/onnx/$_md" ;;
       INPAINT_LoadInpaintModel) _w="$_cr/models/inpaint/$_md" ;;
       BackgroundRemoval)        _w="$_cr/models/background_removal/$_md" ;;
-      DepthAnythingV2Preprocessor) _w="$_cr/custom_nodes/comfyui_controlnet_aux/ckpts/depth-anything/Depth-Anything-V2-Base/$_md" ;;
+      DepthAnything3)           _w="$_cr/models/geometry_estimation/$_md" ;;
       *)                        _w="" ;;
     esac
     if [ -n "$_w" ] && [ -r "$_w" ]; then _say "ok job $_j: $_node, $(basename "$_w"), $(( $(stat -c%s "$_w") / 1048576 )) Mo"
