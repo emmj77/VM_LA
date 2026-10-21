@@ -11,13 +11,35 @@ RULES:
   turn: none
   count: false
   paths: read
-DESCRIPTION: "asks the kernel to take back the page cache of the resident services, so the memory never grows without end"
+DESCRIPTION: "gives the cold page cache back to the kernel, and never the weights a resident holds: law 826, a resident that sleeps is a fault"
 COMMAND: |
 
   _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _op=${1:-all}
-  _amount=$(cfg str loop.reclaim 300M) || _amount=300M
+  # la marge gardee au-dessus des processus : leurs poids restent chauds (loi 826)
+  _marge=$(cfg num loop.purge_margin 150) || _marge=150
+
+  # toute la descendance d un pid, par les children de chaque tid
+  _tree_rss() {
+    _q=" ${1:-} "
+    _done=" "
+    _sum=0
+    while [ -n "$(printf '%s' "$_q" | tr -d ' ')" ]; do
+      _next=""
+      for _p in $_q; do
+        case "$_done" in *" $_p "*) continue ;; esac
+        _done="$_done$_p "
+        _v=$(awk '/VmRSS/ { print int($2 / 1024) }' "/proc/$_p/status" 2>/dev/null)
+        _sum=$(( _sum + ${_v:-0} ))
+        for _t in /proc/"$_p"/task/*/children; do
+          [ -r "$_t" ] && _next="$_next $(cat "$_t" 2>/dev/null)"
+        done
+      done
+      _q=$_next
+    done
+    printf '%s' "$_sum"
+  }
 
   _one() {
     _u=$1
@@ -27,24 +49,25 @@ COMMAND: |
     _p="/sys/fs/cgroup$_cg"
     [ -r "$_p/memory.current" ] || { printf 'note %s is not there\n' "$_u"; return 0; }
     _b=$(( $(cat "$_p/memory.current") / 1048576 ))
+    # un resident est son arbre, pas son MainPID (loi 1573)
+    _rss=$(_tree_rss "$(systemctl --user show "$_u" -p MainPID --value 2>/dev/null)")
+    _mou=$(( _b - _rss - _marge ))
+    if [ "$_mou" -le 0 ]; then
+      printf 'ok %s: %s Mo pour %s Mo de processus, rien de froid a rendre\n' "$_u" "$_b" "$_rss"
+      return 0
+    fi
+    [ "$_mou" -gt 1024 ] && _mou=1024
     if [ -w "$_p/memory.reclaim" ]; then
-      printf '%s' "$_amount" > "$_p/memory.reclaim" 2>/dev/null
+      printf '%sM' "$_mou" > "$_p/memory.reclaim" 2>/dev/null
     fi
     _a=$(( $(cat "$_p/memory.current") / 1048576 ))
-    if [ "$_a" -lt "$_b" ]; then
-      printf 'ok %s: %s Mo -> %s Mo\n' "$_u" "$_b" "$_a"
-    else
-      printf 'ok %s: %s Mo, rien de mou a reprendre\n' "$_u" "$_a"
-    fi
+    printf 'ok %s: %s Mo -> %s Mo (processus %s Mo gardes)\n' "$_u" "$_b" "$_a" "$_rss"
   }
 
   case $_op in
-  list)
+  list|all)
     for _u in la-asr la-tts la-models la-bridge; do _one "$_u"; done
-    ;;
-  all)
-    for _u in la-asr la-tts la-models la-bridge; do _one "$_u"; done
-    _tr purge "memoire rendue au noyau"
+    [ "$_op" = all ] && _tr purge "le froid rendu, les poids gardes"
     ;;
   *)
     _one "$_op"
