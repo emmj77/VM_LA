@@ -395,7 +395,8 @@ def read_approval():
         except Exception:
             signal = ("illisible", 0)
     rights = []
-    for p in sorted((pathlib.Path(ROOT) / "skills").glob("*/skill.yaml")):
+    # les skills vivent a la racine du projet, sous un nom qui porte son numero : on les cherche par leur forme
+    for p in sorted(pathlib.Path(ROOT).glob("skills*/*/skill.yaml")):
         try:
             for ln in p.read_text(errors="replace").splitlines():
                 if ln.startswith("APPROVAL:") and ln.split(":", 1)[1].strip().lower() == "true":
@@ -685,11 +686,12 @@ def control(light=False):
     L.append(("LA status", "active" if not faults else "disabled", bool(faults)))
     request, signal, rights, _win = read_approval()
     if request:
-        L.append(("approbation", "%s %s -- demandee il y a %ds" % (request[0], request[1], request[2]), True))
+        L.append(("approbation", "%s %s -- asked %ds ago" % (request[0], request[1], request[2]), True))
     if signal:
         L.append(("feu vert", "%s -- %ds" % (signal[0], signal[1]), False))
-    if not rights:
-        L.append(("approbation", "aucun skill ne porte APPROVAL: true", False))
+    # la ligne dit QUI demande une signature, pas seulement qu il n y en a pas
+    L.append(("approbation", ", ".join(rights) if rights else "no skill carries APPROVAL: true",
+              False))
     # le cli est un programme qu on OUVRE : vert quand une session tourne, rouge quand personne ne l a ouvert.
     # on lit les arguments exacts dans /proc : un pgrep -f se prendrait pour lui-meme.
     _cli_pid = ""
