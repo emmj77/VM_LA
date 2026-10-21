@@ -250,3 +250,13 @@
 {"ts":1792562622,"kind":"note","text":"turn closed"}
 {"ts":1792562623,"kind":"step","text":"turn done in 23s, 0 calls, ok"}
 {"ts":1792562681,"kind":"turn","text":"start"}
+{"ts":1792562683,"kind":"facts","text":"20261021-060442"}
+{"ts":1792562685,"kind":"second","text":"agent"}
+{"ts":1792562690,"kind":"scope","text":"16 tools"}
+{"ts":1792562692,"kind":"prompt","text":"21 bytes"}
+{"ts":1792562695,"kind":"call","text":"2817 tokens"}
+{"ts":1792562699,"kind":"tool","text":"reply: ok"}
+{"ts":1792562700,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792562702,"kind":"reply","text":"9 bytes"}
+{"ts":1792562705,"kind":"note","text":"turn closed"}
+{"ts":1792562706,"kind":"step","text":"turn done in 24s, 0 calls, ok"}

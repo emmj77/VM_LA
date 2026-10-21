@@ -193,6 +193,18 @@ def _door_read(kind, tool, args, fallback):
     return v if isinstance(v, (dict, list)) else fallback
 
 
+_NOISE = re.compile(r"^(\d+\s*(tokens?|bytes?|octets?)|turn\s+(start|closed|done\b.*)|"
+                    r"stopped\s*:.*|facts\b.*|reply\s+\d+\s*\w+)$", re.I)
+
+
+def _thinking_keep(text):
+    """one line of reasoning, or nothing when the engine only counted itself."""
+    t = " ".join(str(text).split())
+    if not t or _NOISE.match(t):
+        return ""
+    return t
+
+
 def _turn_file(name):
     return os.path.join(os.environ.get("LA_STATE") or ".", name)
 
@@ -492,6 +504,8 @@ class Handler(BaseHTTPRequestHandler):
                     pass
                 lines += [str(e.get("text")) for e in _trace_events()
                           if e.get("kind") in ("step", "call", "reply", "note") and e.get("text")]
+                # the engine writes counters next to the model's words: they are not reasoning
+                lines = [l for l in (_thinking_keep(x) for x in lines) if l]
                 return self.json(lines)
             if p == "/approval":
                 # un OBJET, jamais une chaine : l app le passe a JSONObject et casse sinon
