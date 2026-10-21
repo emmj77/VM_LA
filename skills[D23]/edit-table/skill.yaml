@@ -4,9 +4,9 @@ date: "2026-10-17"
 tags: ["edit-table", "table", "registre"]
 
 SUMMARY:
-  101: "Modifier la table : ajouter, retirer, activer ou desactiver une ligne."
-  102: "table_manage fait le geste ; read_file montre la ligne avant et apres."
-  103: "On ne renumérote JAMAIS les ids (lois 1019-1020)."
+  101: "Edit the table: add, remove, enable or disable a row."
+  102: "table_manage makes the change; read_file shows the row before and after."
+  103: "The ids are NEVER renumbered (laws 1019-1020)."
 RULES:
   create_subfolder: false
   execute_code: false
@@ -21,7 +21,7 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".yaml"
 ERROR:

@@ -4,9 +4,9 @@ date: "2026-10-19"
 tags: ["asset-builder", "3d", "glb", "html", "three", "rts"]
 
 SUMMARY:
-  101: "Forger un asset 3D par gestes : un document JSON, des parts, un .glb validé."
-  102: "Chaque geste est une commande ; le code n'est qu'UN geste, sur stdin, jamais une commande."
-  103: "On ne dit jamais qu'un asset tient sans l'avoir REGARDÉ et mesuré."
+  101: "Forge a 3D asset step by step: one JSON document, parts, a validated .glb."
+  102: "Each step is a command; the code is only ONE step, on stdin, never a command."
+  103: "An asset is never said to hold without having LOOKED at it and measured it."
   104: "La porte est `final` : elle refuse une vue sans verdict, un validateur sale, un budget dépassé."
 
 RULES:
@@ -55,7 +55,7 @@ DOCS:
 
 PLAN:
 
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".json .glb .png .js"
 

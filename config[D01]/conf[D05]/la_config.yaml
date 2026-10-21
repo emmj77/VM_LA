@@ -29,6 +29,9 @@ date: "2026-10-21"
 # what the machine offers; nothing here belongs to the repo
 machine:
   threads: 8
+  free_terminal:                            # what a free shell may not do: the calls the kernel refuses
+    deny: [unlink, unlinkat, rmdir]
+    error: EPERM
   kws:
     root: "/home/moussa/Applications/sherpa-onnx/kws-en/sherpa-onnx-kws-zipformer-gigaspeech-3.3M-2024-01-01"
     python: "/home/moussa/Applications/sherpa-onnx/.venv/bin/python"
@@ -401,6 +404,13 @@ commands:
   - id: "V14"
     name: "voice keywords"
     tool: voice_keywords
+  - id: "V15"
+    name: "doctor"
+    act: doctor
+  - id: "V16"
+    name: "model"
+    act: model
+    arg: alias
 
 # the head of every prompt, in zones: the prefix that never moves (prompt cache)
 head:

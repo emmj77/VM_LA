@@ -17,13 +17,13 @@ DESCRIPTION: "Ouvre DeepSeek dans le Chrome persistant, tape la question au ryth
 
 COMMAND: |
   A=$(command -v agent-browser 2>/dev/null || echo /usr/local/bin/agent-browser)
-  [ -x "$A" ] || { echo "refuse : agent-browser introuvable" >&2 ; exit 1 ; }
-  # Un vrai Chrome sur le profil persistant : le navigateur integre annonce webdriver=true et
-  # « HeadlessChrome », et tous les captchas echouent. Ici on s'y raccroche par CDP.
+  [ -x "$A" ] || { echo "refuse: agent-browser not found" >&2 ; exit 1 ; }
+  # A real Chrome on the persistent profile: the bundled browser announces webdriver=true and
+  # « HeadlessChrome », and every captcha fails. Here we hold on to it over CDP.
   PORT=9222
   if ! curl -s --max-time 2 "http://127.0.0.1:$PORT/json/version" >/dev/null 2>&1; then
-    # headless passe, mais seulement avec une empreinte de vrai Chrome : sans --user-agent
-    # le binaire annonce « HeadlessChrome » et les captchas echouent en boucle.
+    # headless passes, but only with a real Chrome fingerprint: without --user-agent
+    # the binary announces « HeadlessChrome » and the captchas fail in a loop.
     /usr/bin/chromium --headless=new --remote-debugging-port=$PORT \
       --user-data-dir=/home/moussa/.agent-browser/profile --profile-directory=Default \
       --no-first-run --no-default-browser-check \
@@ -59,7 +59,7 @@ COMMAND: |
     $B keyboard type " " >/dev/null 2>&1
     sleep 0.$(printf '%03d' $(( 180 + $(od -An -N1 -tu1 /dev/urandom) % 420 )))
   done
-  $B press Enter >/dev/null 2>&1 || { echo "refuse : envoi impossible" >&2 ; exit 1 ; }
+  $B press Enter >/dev/null 2>&1 || { echo "refuse: cannot send" >&2 ; exit 1 ; }
   ANS=; i=0
   while [ "$i" -lt 30 ]; do
     sleep 3; i=$((i+1))

@@ -1,0 +1,37 @@
+INDEX A JOUR — les lignes exactes a coller (21/10/2026, 20 h)
+
+Le free terminal ne masque plus de binaires : le noyau refuse l'appel systeme.
+Aucun fichier nouveau. Une ligne retiree, un bloc ajoute.
+
+===========================================================================
+1) config[D01]/conf[D05]/la_config.yaml     section "machine:", sous threads: 8
+===========================================================================
+  free_terminal:                            # what a free shell may not do: the calls the kernel refuses
+    deny: [unlink, unlinkat, rmdir]
+    error: EPERM
+
+===========================================================================
+2) config[D01]/conf[D05]/index_la.yaml      section "files:"
+===========================================================================
+- RETIRER la ligne C10 (blocked_commands.txt) : le fichier est a la corbeille.
+- Rien d'autre a declarer : le refus vit dans la maitresse, pas dans un fichier.
+
+===========================================================================
+3) Rien d'autre
+===========================================================================
+- le corps de l'outil   config[D01]/tools[D14]/core[D35]/tool_free_terminal.yaml
+  -> reecrit en place (G077), indexe par son dossier (D35 core)
+- l'appel des textes     filter_missing, unit_missing (texts.yaml)
+- la doc                 docs[D28]/BREAK_GLASS_FREE_TERMINAL.md, section 5bis
+- la convention          docs[D28]/LA-CONVENTIONS.md : cmd_*, table_ids,
+                         commands / commands_html / commands_legend / run_command,
+                         /cmd, les deux reperes, state/free_terminal.log
+- la map                 la map -> state[D12]/tree.map, 2 894 places
+
+===========================================================================
+4) Ce que ca donne, mesure
+===========================================================================
+rm           -> "Operation non permise", code 1
+python3      -> PermissionError: [Errno 1] Operation not permitted
+touch, id -un -> libre (moussa)
+journal      -> state[D12]/free_terminal.log

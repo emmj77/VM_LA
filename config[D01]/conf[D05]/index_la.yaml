@@ -57,7 +57,6 @@ files:
   - {id: "C06", name: "texts.yaml", role: "every phrase: refusals, turn, board, bridge, voice, doctor"}
   - {id: "C08", name: "second.yaml", role: "the second head kinds and bounds"}
   - {id: "C09", name: "llama_preset.ini", role: "the llama.cpp preset of the local engine"}
-  - {id: "C10", name: "blocked_commands.txt", role: "the blocklist of the free terminal: one command name per line, masked to /dev/null in the cage"}
   - {id: "C11", name: "voice_keywords.txt", role: "the voice commands, generated from la_config by voice_keywords; no comment line: the spotter reads none"}
   - {id: "E01", name: "approval.sh", role: "the human door: a signed go is checked here, never asked by a tool"}
   - {id: "E02", name: "args.sh", role: "declared arguments to a command line: path enum int bool text"}
@@ -74,7 +73,7 @@ files:
   - {id: "E13", name: "shell.sh", role: "the machine layer: a machine, an operation, arguments, one command line"}
   - {id: "E14", name: "skl.sh", role: "the active skill, the active project, the tools a skill allows, what is always allowed"}
   - {id: "E15", name: "step.sh", role: "one step of the turn: the order is conf/pipeline.yaml, the work is a body"}
-  - {id: "E16", name: "tab.sh", role: "the register: block_by_id table_block table_entry body_of count, on the table it is given"}
+  - {id: "E16", name: "tab.sh", role: "the register: block_by_id table_block table_entry body_of count, on the table it is given; and the command table: cmd_ids cmd_get cmd_has cmd_run cmd_slash"}
   - {id: "F01", name: "family.bin", role: "the trained family filter"}
   - {id: "F02", name: "families.txt", role: "the training corpus of the family filter: one line, one label, one request"}
   - {id: "F03", name: "clean.txt", role: "the same corpus, cleaned of what repeats"}

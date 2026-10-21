@@ -203,8 +203,8 @@ run_call() {
     *"{{"*) shape_fail "$_name" "" refusals.arity; return 1 ;;
   esac
 
-  # 11 run : la porte ne lance rien. elle confie le texte et les arguments a l executeur
-  # unique du moteur, shell_exec (shell.sh) : une seule voie, un seul timeout, une seule forme.
+  # 11 run: the door launches nothing. it hands the text and the arguments to the runner
+  # one road for the engine, shell_exec (shell.sh): one way in, one timeout, one form.
   _to=$(_door_field "$_body" timeout)
   [ -n "$_to" ] || _to=$(conf_num limits.engine_timeout) || { shape_fail "$_name" "" refusals.timeout; return 1; }
   LA_TIMEOUT="$_to" shell_exec "$_name" "$_cmd" $_args

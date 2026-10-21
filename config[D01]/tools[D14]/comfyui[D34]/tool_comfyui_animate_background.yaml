@@ -109,7 +109,7 @@ ARGS:
   - {name: source, type: path}                # le dessin .kra, relatif a l'espace du skill
   - {name: colour, type: text}                # le calque de couleur (vide : couleur)
   - {name: ink, type: text}                   # le calque d'encrage (vide : encrage)
-  - {name: under, type: text}                 # le calque de fond EXISTANT ou ecrire le decor (vide : fond/décors)
+  - {name: under, type: text}                 # the EXISTING background layer, or where to write the decor (empty: fond/décors)
   - {name: output, type: path}                # le PNG du decor, dans l'espace du skill
   - {name: keep, type: enum, values: [kra, file, ""]}   # kra : ecrit dans le .kra ; file : PNG seul
   - {name: style, type: text, stdin: true}    # le decor, en texte libre : par l'ENTREE STANDARD

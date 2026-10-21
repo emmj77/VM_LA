@@ -86,12 +86,12 @@ shell_exec() {
   _x=${1:?shell_exec: a name is required}
   _c=${2:-}
   [ $# -gt 1 ] && shift 2
-  # un corps peut imposer sa borne (timeout: dans son en-tete), sinon celle du maitre
+  # a body may set its own bound (timeout: in its header), otherwise the master's
   _to=${LA_TIMEOUT:-$(cfg num limits.engine_timeout)} || _to=600
   [ -n "$_to" ] || _to=600
   _eng=$(cfg path engine) || return 1
   _pre=". '$_eng/boot.sh'"
-  # une borne de 0 : aucune borne. le geste prend la main et la garde (un service).
+  # a bound of 0: no bound at all. the call keeps the hand and holds it (a service).
   _lim="timeout $_to"
   [ "$_to" = 0 ] && _lim=""
   _out=$(LA_FROM="${LA_FROM:-model}" LA_DIR="$_eng" ROOT="$ROOT" W="$W" LA_HOME="$LA_HOME" LA_CONF="$LA_CONF" \

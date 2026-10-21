@@ -1069,4 +1069,5 @@ tunnel_needs_sudo: 'refused: sudo would ask for a password ; provision the tunne
 turn_same_words: 'you have just said exactly that: do not repeat it, take the next step or answer the open plan'
 
 bwrap_missing: 'REFUSED: bubblewrap is not on this machine.'
-blocklist_missing: 'REFUSED: no blocklist at %s.'
+filter_missing: 'REFUSED: no system-call filter in the master file (machine.free_terminal.deny).'
+unit_missing: 'REFUSED: systemd-run is not on this machine.'

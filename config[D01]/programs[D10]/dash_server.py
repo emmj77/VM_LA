@@ -21,10 +21,10 @@ PAGE = os.environ.get("LA_PAGE") or os.path.join(ROOT, "page[D09]")
 BRIDGE = os.environ.get("LA_BRIDGE_URL") or "http://127.0.0.1:8770"
 IDLE = int(os.environ.get("LA_DASH_IDLE") or 120)
 PAGE_ROUTES = ("/", "/m", "/chat", "/doctor", "/plan", "/models")
-MASTER = os.environ.get("LA_CONF") or os.path.join(ROOT, "conf[D05]", "la_config.yaml")
+MASTER = os.environ.get("LA_CONFIG") or os.path.join(ROOT, "conf[D05]", "la_config.yaml")
 ENGINE = os.environ.get("LA_ENGINE") or os.path.join(ROOT, "engine[D07]", "la.sh")
 MARK = "<!-- the commands -->"
-MARK_G = "<!-- the gestures -->"
+MARK_G = "<!-- the commands legend -->"
 TOUCH = [time.time()]
 
 
@@ -84,7 +84,7 @@ def commands_html():
     return "".join(h)
 
 
-def gestures_html():
+def commands_legend():
     # the legend of the chat box: the first word of every command, once, in order
     seen, words = set(), []
     for c in commands():
@@ -142,7 +142,7 @@ class Handler(BaseHTTPRequestHandler):
         if MARK.encode() in data:
             data = data.replace(MARK.encode(), commands_html().encode(), 1)
         if MARK_G.encode() in data:
-            data = data.replace(MARK_G.encode(), gestures_html().encode(), 1)
+            data = data.replace(MARK_G.encode(), commands_legend().encode(), 1)
         return self.reply(200, data, "text/html; charset=utf-8")
 
     def reply(self, code, data, ctype):

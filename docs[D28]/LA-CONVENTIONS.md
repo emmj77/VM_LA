@@ -57,8 +57,6 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `fs.sh` · `fs_json` | fs_json <text> : the text escaped for one JSON string, newlines kept as \n |
 | `fs.sh` · `fs_age` | fs_age <path> : seconds since the file was last written, fails when absent |
 | `fs.sh` · `env_get` | env_get <NAME> : one value of the key file, empty when it is not there |
-| `la.sh` · `la_usage` | the usage lines la prints |
-| `la.sh` · `la_service` | la_service <name> : one of the four services, started for a unit |
 | `loop.sh` · `_ltr` | the trace belongs to its body: the loop calls it, it never writes the channel |
 | `loop.sh` · `loop_before` | loop_steps : the pipeline split where it repeats: before call, the cycle, after tools |
 | `loop.sh` · `loop_cycle` | the steps from call to tools, the half that talks to the model |
@@ -110,12 +108,24 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `tab.sh` · `table_block` | the indent of the table does not matter: the anchor is "- id:" wherever it sits. |
 | `tab.sh` · `table_entry` | table_entry <table> <id\|name> : the entry, whether it is given by its id or by its name |
 | `tab.sh` · `table_field` | table_field <table> <id\|name> <key> : one value of one entry, empty when it is not there |
+| `tab.sh` · `table_ids` | table_ids <table> : every id of the table, one per line, block style |
+| `tab.sh` · `cmd_ids` | cmd_ids [file] : the ids of the commands block, one per line |
+| `tab.sh` · `cmd_get` | cmd_get <id> <key> : one field of one command |
+| `tab.sh` · `cmd_has` | cmd_has <name> : true when the name prefixes a declared command |
+| `tab.sh` · `cmd_usage` | cmd_usage : the usage lines the door prints, read from the commands block |
+| `tab.sh` · `cmd_slash` | cmd_slash : the legend of the chat, the first word of every command, once |
+| `tab.sh` · `cmd_new_turn` | cmd_new_turn : archives the turn file, the next turn is born |
+| `tab.sh` · `cmd_run` | cmd_run <word ...> : the longest declared name wins and the rest is its argument; a tool goes through the human door, an act runs inside the engine |
 | `tab.sh` · `table_field_list` | table_field_list <table> <id\|name> <key> : a bracketed list, one word per line |
 | `tab.sh` · `table_keys` | table_keys <table> <id\|name> : the keys of one entry, one per line |
 | `tab.sh` · `table_index` | table_index : the whole table as id\|tool\|family\|guardrail\|description, kept once in TABLE_INDEX |
 | `tab.sh` · `block_by_id` | block_by_id <id> : the block of an id in the table carried by TABLE, one pass, no temp file |
 | `tab.sh` · `body_of` | body_of <id> : what the document calls the block of an id |
 | `tab.sh` · `count` | count <file> : how big it is, "bytes lines" on the standard output |
+| `dash_server.py` · `commands` | the commands block of the master file, in order, read at render |
+| `dash_server.py` · `commands_html` | the bar of buttons, one form per declared command |
+| `dash_server.py` · `commands_legend` | the legend of the chat: first word of every command, once |
+| `dash_server.py` · `run_command` | runs one command through the door, allowlist only |
 | `board.py` · `_port` | an argument read as a port number |
 | `board.py` · `run` | runs a command, returns its exit code and its output |
 | `board.py` · `probe` | the http code of one address |
@@ -249,7 +259,7 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `engine.approve` (E001) | the human door: request, grant, deny, status |
 | `engine.asr` (E002) | the ear: start, stop, status |
 | `engine.backup` (E003) | the net outside the disk: now, verify, restore |
-| `engine.commands` (E004) | the surfaces of la: board, once, app, cli, say, turn, doctor, tool, new, update, help |
+| `engine.commands` (E004) | the surfaces of la: board, once, app, cli, say, turn, doctor, tool, new, update, help, line |
 | `engine.doctor` (E005) | runs every control of the doctor family and counts: one fault makes it red |
 | `engine.hist` (E006) | sessions.db: init, add, window, apply, result |
 | `engine.install` (E007) | what is placed on the machine: units, command, desktop, applet, certs |
@@ -293,6 +303,7 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `state/approve` | the signed go, kept until it expires |
 | `state/approve.request` | the pending request, waiting for a human signature |
 | `state/doctor.cache` | the last doctor output, read by the applet and the page |
+| `state/free_terminal.log` | every command of the free terminal, its time and its text |
 | `state/reply.stream` | the answer as it is being written |
 | `state/say.queue` | what waits to be said |
 | `state/second_head.yaml` | the product of the second head |
@@ -302,6 +313,9 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `state/turn.pid` | the pid of the turn in progress |
 | `tools/registry.yaml` | the register the model reads, one line per tool it may ask |
 | `tools/engine/registry-engine.yaml` | the register the engine reads, one line per body it calls by name |
+| `dashboard` · `/cmd` | the dashboard runs one command of the master file, name and arg, through the door |
+| `page` · `<!-- the commands -->` | where the dashboard writes the command bar, at render |
+| `page` · `<!-- the commands legend -->` | where the dashboard writes the chat legend, at render |
 | `page` · `/api/agents` | the page asks this address |
 | `page` · `/api/cmd` | the page asks this address |
 | `page` · `/api/config` | the page asks this address |

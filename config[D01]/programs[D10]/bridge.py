@@ -372,7 +372,7 @@ def _trace_events():
                     pass
     except OSError:
         pass
-    # le bandeau ne montre que le tour courant : la derniere borne "turn start" ouvre la fenetre
+    # the banner shows the current turn only: the last "turn start" opens the window
     for i in range(len(out) - 1, -1, -1):
         e = out[i]
         if e.get("kind") == "turn" and str(e.get("text") or "").startswith("start"):
@@ -546,7 +546,7 @@ class Handler(BaseHTTPRequestHandler):
             if p.startswith("/api/") or p == "/doctor":
                 return self.api(p, u.query, method, body)
             if p in ("/", "/m", "/chat", "/doctor", "/plan", "/models"):
-                # la page a sa propre porte : le pont ne la sert plus, il l indique
+                # the page has its own door: the bridge no longer serves it, it points at it
                 return self.redirect(os.environ.get("LA_DASH_URL") or "http://127.0.0.1:8771/")
             if p == "/ping":
                 return self.json({"state": "alive", "port": os.environ["LA_PORT_BRIDGE"], "ts": now()})
@@ -990,13 +990,13 @@ def main():
         os.makedirs(os.environ[d], exist_ok=True)
     port = int(os.environ["LA_PORT_BRIDGE"])
     threading.Thread(target=warm, daemon=True).start()   # la page ouvre sans attendre
-    threading.Thread(target=watch_loop, daemon=True).start()   # le repos automatique et son juge
+    threading.Thread(target=watch_loop, daemon=True).start()   # the automatic rest and its judge
     srv = ThreadingHTTPServer((os.environ.get("LA_BRIDGE_HOST") or os.environ["LA_HOST"], port), Handler)
     sys.stderr.write("bridge: listening on %s:%d\n" % (srv.server_address[0], port))
     subprocess.run(["dash", os.environ["LA_TOOL"], "engine", "engine.residents", "op=join"],
                    input="dash:" + str(os.getpid()), capture_output=True, text=True, timeout=20)
     # L APP PARLE HTTPS SUR LA PORTE TLS (MOUSSA, 21/10) : le meme service, la meme page, la
-    # meme porte, mais chiffre, avec le certificat du projet.
+    # the same door, but encrypted, with the certificate of the project.
     tls_port = int(os.environ.get("LA_PORT_TLS") or 0)
     cert, key = os.environ.get("LA_CERT"), os.environ.get("LA_KEY")
     if tls_port and cert and key and os.path.isfile(cert) and os.path.isfile(key):

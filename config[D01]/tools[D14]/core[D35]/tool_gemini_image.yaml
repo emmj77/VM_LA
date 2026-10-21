@@ -35,8 +35,8 @@ COMMAND: |
   "$A" press "Control+a" >/dev/null 2>&1
   "$A" keyboard inserttext "$P" >/dev/null 2>&1 || { echo "refuse : ecriture impossible dans le champ" >&2 ; exit 1 ; }
   "$A" press Enter >/dev/null 2>&1 || { echo "refuse : envoi impossible" >&2 ; exit 1 ; }
-  # on attend le bouton qui telecharge l'image en taille reelle (l'apostrophe est un point :
-  # le libelle est « Telecharger l'image en taille reelle »)
+  # we wait for the button that downloads the full-size image (the apostrophe is a point:
+  # the label reads « Telecharger l'image en taille reelle »)
   i=0
   while [ "$i" -lt 40 ]; do
     sleep 3; i=$((i+1))

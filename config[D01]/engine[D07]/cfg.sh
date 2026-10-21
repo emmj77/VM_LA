@@ -221,7 +221,7 @@ cfg() {
     tree) _cfg_tree_list "$@" ;;
     map)  _cfg_map_build ;;
     here) _cfg_here "$@" ;;
-    # where <name> : le nom devient un lieu. l index ne porte plus de chemin.
+    # where <name>: the name becomes a place. the index carries no path any more.
     where) _q=$(_cfg_locate "$1"); [ -n "$_q" ] && _cfg_here "$_q" ;;
     *)    return 2 ;;
   esac

@@ -28,7 +28,7 @@ COMMAND: |
   _ef=$(jq -r '.effort // ""' "$(cfg abs turn)" 2>/dev/null)
   [ -n "$_ef" ] || _ef=$(cfg str "engines.$_al.reasoning_effort") || _ef=""
   _to=$(cfg num loop.timeout) || _to=600
-  # -n : sans entree, jq ne lançait pas le filtre et le corps partait vide (reponse vide, 21/10)
+  # -n: with no input jq still runs the filter (without it the body left empty)
   _body=$(jq -nc --arg m "$_model" --argjson mt "$_mt" --arg tc "$_tc" --arg ef "$_ef" \
     --slurpfile t "$(cfg abs turn)" '
       {model:$m,messages:($t[0].messages +
