@@ -38,13 +38,13 @@ COMMAND: |
     [ "$_n" -gt 0 ] && printf 'ok %s resident(s) declared\n' "$_n" || printf 'FAULT la_config declares no unit\n'
     ;;
   instruments)
-    for _b in tesseract ffmpeg jq sqlite3 curl; do
+    for _b in indra-ocr ffmpeg jq sqlite3 curl; do
       command -v "$_b" >/dev/null 2>&1 && printf 'ok %s answers\n' "$_b" \
         || printf 'FAULT %s is missing: the bodies that call it read nothing\n' "$_b"
     done
-    if command -v tesseract >/dev/null 2>&1; then
-      _l=$(tesseract --list-langs 2>/dev/null | sed -n '2,$p' | tr '\n' ' ')
-      printf 'ok tesseract languages: %s\n' "$_l"
+    if command -v indra-ocr >/dev/null 2>&1; then
+      _l=$(indra-ocr --version 2>/dev/null | head -n 1)
+      printf 'ok indra ocr: %s\n' "$_l"
     fi
     ;;
   benches)

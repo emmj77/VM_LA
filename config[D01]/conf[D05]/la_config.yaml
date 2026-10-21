@@ -590,6 +590,6 @@ board:
     - {name: dash, port: 8771, unit: la-dash.service}
     - {name: vision, port: 1234, probe: health, word: "it wakes on demand"}
   instruments:
-    - {name: tesseract, why: "the OCR of read_text_in_img"}
+    - {name: indra-ocr, label: "indra ocr", why: "the OCR of read_text_in_img"}
   carriers: [micro_vision.py]
   forms: '[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)'

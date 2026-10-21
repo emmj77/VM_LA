@@ -41,7 +41,7 @@ const EMOTICONE = {
     "dash": "\u{1F4CA}",
     "cli": "\u{2328}",            // le clavier : la ou on tape
     "tailscale": "\u{1F310}",      // le globe : le reseau du tunnel
-    "tesseract": "\u{1F527}",
+    "indra ocr": "\u{1F527}",
     "ram of LA": "\u{1F9E0}",
     "sessions": "\u{1F4AC}",
     "last_activity": "\u{23F1}",
@@ -93,7 +93,7 @@ function ratioOf(title, verdict, ramDeLA) {
     // UNE BARRE SEULEMENT POUR CE QUI SE MESURE : les quatre totaux (residents, ram, les deux
     // cartes). Un resident, un instrument, un outil : leur etat suffit, pas de rail. MOUSSA, 21/10 :
     // « les champs avec des barres restent comme ca », donc on n en ajoute pas aux autres.
-    if (title === "tesseract" || title === "vision") {
+    if (title === "indra ocr" || title === "vision") {
         return null;
     }
     if (RESIDENT_NAMES.indexOf(title) > -1) {

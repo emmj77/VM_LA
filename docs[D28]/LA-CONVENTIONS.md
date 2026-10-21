@@ -424,7 +424,6 @@ Every `LA_*` name the code carries as a whole word, 99 of them: exported by boot
 | `LA_STATE_SKILL` | the skill armed for this turn, as a state file |
 | `LA_STOP_FILE` | the stop mark, for a body that must not run after a stop |
 | `LA_TABLE` | the register a table body reads |
-| `LA_TESSERACT_LANG` | the language tesseract reads, for the text-in-image body |
 | `LA_TOOL` | the door itself, la.sh: the one way in, for the model and for the bridge |
 | `LA_TRACE` | trace.jsonl, the living channel: one line per event of the turn |
 | `LA_TTS_MODEL` | the onnx voice of the resident, read by tts_daemon.py |

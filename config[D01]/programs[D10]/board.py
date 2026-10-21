@@ -245,7 +245,8 @@ RESIDENT_NAMES = tuple(r[0] for r in RESIDENTS)
 APPOINT = [(a["name"], _port(a.get("port")), a.get("probe", "health"), a.get("word", ""),
             a.get("unit", ""))
            for a in laconf.get("board", "appoints", [])]
-INSTRUMENTS = [(i["name"], i.get("why", "")) for i in laconf.get("board", "instruments", [])]
+INSTRUMENTS = [(i["name"], i.get("label") or i["name"], i.get("why", ""))
+               for i in laconf.get("board", "instruments", [])]
 FORMS = laconf.text("board", "forms", r"[A-Za-z0-9_.\-]+\.(?:gguf|onnx|pb|ftz)")
 BRICKS = {r[0]: r[2] for r in RESIDENTS}
 CARRIERS = laconf.get("board", "porteurs", [])
@@ -409,7 +410,7 @@ def read_approval():
 
 def read_instruments():
     out = []
-    for name, what in INSTRUMENTS:
+    for name, label, what in INSTRUMENTS:
         code, output = run([name, "--version"], timeout=5)
         v = ""
         if code == 0:
@@ -419,7 +420,7 @@ def read_instruments():
                     t = l.split()
                     v = t[1] if len(t) > 1 and t[0] == name else t[0]
                     break
-        out.append((name, v, code == 0, what))
+        out.append((label, v, code == 0, what))
     return out
 
 
@@ -1569,7 +1570,7 @@ def main():
                 return "RESIDENT"
             if n.startswith("gpu ") or n == "ram of la":
                 return "GPU/RAM"
-            if n == "tesseract" or n == "vision":
+            if n == "indra ocr" or n == "vision":
                 return "TOOLS"
             if n.startswith("resident "):
                 return "LA"

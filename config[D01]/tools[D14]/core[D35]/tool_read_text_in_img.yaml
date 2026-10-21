@@ -22,11 +22,10 @@ COMMAND: |
     *.png|*.jpg|*.jpeg|*.webp|*.tif|*.tiff|*.bmp|*.pnm) ;;
     *) printf '%s\n' "$(msg image_type_not_read)" >&2 ; exit 1 ;;
   esac
-  command -v tesseract >/dev/null 2>&1 || { printf '%s\n' "$(msg tesseract_missing_machine)" >&2 ; exit 1 ; }
-  L=${LA_TESSERACT_LANG:-fra+eng}
-  T=$(tesseract "$F" stdout -l "$L" 2>/dev/null | sed -e 's/[[:space:]]*$//' -e '/^$/d')
+  command -v indra-ocr >/dev/null 2>&1 || { printf '%s\n' "$(msg indra_missing_machine)" >&2 ; exit 1 ; }
+  T=$(indra-ocr "$F" --format text 2>/dev/null | sed -e 's/[[:space:]]*$//' -e '/^$/d')
   if [ -z "$T" ]; then
-    printf '%s\n' "$(msg text_found_image_path "$L")"
+    printf '%s\n' "$(msg text_found_image_path)"
     exit 0
   fi
   printf '%s\n' "$T"

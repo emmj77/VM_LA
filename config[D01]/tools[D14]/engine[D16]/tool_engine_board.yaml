@@ -90,9 +90,9 @@ COMMAND: |
       printf 'note|POWER|tailscale|down\n'
     fi
     # THE INSTRUMENTS : what reads a page, what looks at an image
-    _tv=$(timeout 10 tesseract --version 2>/dev/null | head -n 1 | awk '{print $2}')
-    if [ -n "$_tv" ]; then printf 'ok|TOOLS|tesseract|%s . no port\n' "$_tv"
-    else printf 'ko|TOOLS|tesseract|absent\n'; fi
+    _tv=$(timeout 10 indra-ocr --version 2>/dev/null | head -n 1 | awk '{print $2}')
+    if [ -n "$_tv" ]; then printf 'ok|TOOLS|indra ocr|%s . no port\n' "$_tv"
+    else printf 'ko|TOOLS|indra ocr|absent\n'; fi
     _vp=$(cfg num ports.vision 2>/dev/null); _vp=${_vp:-1234}
     if ss -ltn 2>/dev/null | awk -v p=":$_vp$" '$4 ~ p { n++ } END { exit !n }'; then
       printf 'ok|TOOLS|vision|listening . :%s\n' "$_vp"

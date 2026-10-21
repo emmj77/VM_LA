@@ -289,7 +289,7 @@ Le plan est écrit pour **A**. B est un chantier à part. C est une décision de
     systemctl --user  les services
     tailscale         le tailnet
     node              --check seulement
-    tesseract         l'OCR
+    indra-ocr         l'OCR
     git               la mise a jour
 
 Interdits : `python3` dans le moteur, `yq` (absent du PATH de service, et second lecteur de
