@@ -1,0 +1,26 @@
+id: "V006"
+tool: "read_depth_img"
+date: "2026-10-21"
+tags: ["vision", "comfyui", "img", "depth"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "reads the relief of an image and writes it as a grey depth map (PNG)"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  F="$W/{{source}}"; [ -f "$F" ] || F="$ROOT/{{source}}"
+  [ -f "$F" ] || { printf 'refused: the image is missing (%s)\n' "{{source}}" >&2 ; exit 1 ; }
+  O=""; [ -z "{{out}}" ] || O="$W/{{out}}"
+  run_call comfyui_pixel_job "op=depth" "image=$F" "out=$O" "zone=0,0,0,0"
+
+ARGS:
+  - {name: source, type: path}
+  - {name: out, type: path}

@@ -13,13 +13,13 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 TOOLS:
-  200: "read_file"
-  201: "write_file"
-  202: "search"
-  203: "load_doc"
-  204: "list_dir"
-  205: "read_language_of_text"
-  206: "mkdir"
+  G002: "read_file"
+  G004: "write_file"
+  G005: "search"
+  G022: "load_doc"
+  G003: "list_dir"
+  G041: "read_language_of_text"
+  G062: "mkdir"
 DOCS:
   300: "web_search"
 PLAN:

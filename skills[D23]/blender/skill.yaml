@@ -13,13 +13,13 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 TOOLS:
-  200: "blender_tools_find"
-  201: "tool_show"
-  202: "read_file"
-  203: "list_dir"
-  204: "load_doc"
-  205: "fast_analyze_img"
-  206: "mkdir"
+  G059: "blender_tools_find"
+  G057: "tool_show"
+  G002: "read_file"
+  G003: "list_dir"
+  G022: "load_doc"
+  V002: "local_analyze_img"
+  G062: "mkdir"
 DOCS:
   300: "blender"
 PLAN:

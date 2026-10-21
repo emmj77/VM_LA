@@ -14,8 +14,8 @@ RULES:
   max_section_lines: 100
 APPROVAL: false
 TOOLS:
-  200: "free_terminal"
-  201: "reply"
+  G077: "free_terminal"
+  G001: "reply"
 DOCS:
 PLAN:
 WRITABLE_WORKSPACE:

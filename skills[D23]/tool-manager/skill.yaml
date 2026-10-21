@@ -19,12 +19,12 @@ RULES:
   # so the human can see it and sign it (approval.sh allow <tool> <act>).
 APPROVAL: true
 TOOLS:
-  200: "table_manage"
-  201: "skill_manage"
-  202: "read_file"
-  203: "list_dir"
-  205: "load_doc"
-  206: "mkdir"
+  G018: "table_manage"
+  G017: "skill_manage"
+  G002: "read_file"
+  G003: "list_dir"
+  G022: "load_doc"
+  G062: "mkdir"
 DOCS:
   300: "web_search"
 PLAN:

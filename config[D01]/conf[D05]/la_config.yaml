@@ -56,20 +56,21 @@ machine:
     host: "127.0.0.1"
     port: 8188
     root: "/home/moussa/Applications/ComfyUI"
-    # the folder under models/onnx that holds the jobs' weights
-    onnx: "vision"
-    # one pixel job = one weight, one scale, one output
+    # one pixel job = one node, one weight, one scale, one output
     jobs:
       matte:
-        model: "u2netp.onnx"
+        node: "ONNXImageFilter"
+        model: "vision/u2netp.onnx"
         scale: 320
         out: "png"
       inpaint:
-        model: "lama-inpaint.onnx"
+        node: "INPAINT_LoadInpaintModel"
+        model: "big-lama.pt"
         scale: 0
         out: "png"
       depth:
-        model: "depth-anything-v2-small.onnx"
+        node: "ONNXImageFilter"
+        model: "vision/depth-anything-v2-small.onnx"
         scale: 518
         out: "png"
   krita:
@@ -260,6 +261,7 @@ limits:
   said_window: 10
   live_lines: 40
   return_keep: 200
+  vision_tokens: 1024
   audio_min_minutes: 60
   audio_keep: 20
   audio_mb: 200

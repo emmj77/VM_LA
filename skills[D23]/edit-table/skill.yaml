@@ -13,11 +13,11 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 TOOLS:
-  200: "table_manage"
-  201: "read_file"
-  202: "list_dir"
-  203: "load_doc"
-  204: "mkdir"
+  G018: "table_manage"
+  G002: "read_file"
+  G003: "list_dir"
+  G022: "load_doc"
+  G062: "mkdir"
 DOCS:
   300: "web_search"
 PLAN:

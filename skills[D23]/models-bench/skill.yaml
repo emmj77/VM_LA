@@ -13,10 +13,10 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 TOOLS:
-  200: "models_status"
-  201: "models_ask"
-  202: "load_doc"
-  203: "mkdir"
+  G010: "models_status"
+  G009: "models_ask"
+  G022: "load_doc"
+  G062: "mkdir"
 DOCS:
   300: "web_search"
 PLAN:

@@ -14,19 +14,19 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 TOOLS:
-  200: "image2glb"
-  201: "mesh-convert2fbx"
-  202: "mesh-render2png"
-  203: "mesh-measure"
-  204: "mesh-inspect"
-  205: "pixal3d-optimise"
-  206: "pixal3d-memesgraines"
-  207: "pixal3d-ref-cold"
-  208: "pixal3d-texture2048"
-  209: "fast_analyze_img"
-  210: "list_dir"
-  211: "load_doc"
-  212: "mkdir"
+  3D001: "image2glb"
+  3D002: "mesh-convert2fbx"
+  3D003: "mesh-render2png"
+  3D004: "mesh-measure"
+  3D005: "mesh-inspect"
+  3D006: "pixal3d-optimise"
+  3D007: "pixal3d-memesgraines"
+  3D008: "pixal3d-ref-cold"
+  3D009: "pixal3d-texture2048"
+  V002: "local_analyze_img"
+  G003: "list_dir"
+  G022: "load_doc"
+  G062: "mkdir"
 DOCS:
   300: "3d"
 PLAN:

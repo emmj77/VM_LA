@@ -33,11 +33,11 @@ APPROVAL: true
 PERMANENT_TODO: false
 
 TOOLS:
-  200: "download_file"
-  201: "read_file"
-  202: "list_dir"
-  203: "mkdir"
-  204: "load_doc"
+  G067: "download_file"
+  G002: "read_file"
+  G003: "list_dir"
+  G062: "mkdir"
+  G022: "load_doc"
 
 DOCS:
   300: "TUNNEL_trois_skills_a_juger"

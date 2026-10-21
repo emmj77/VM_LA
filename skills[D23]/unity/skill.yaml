@@ -13,18 +13,18 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 TOOLS:
-  200: "unity_tools_find"
-  201: "tool_show"
-  202: "unity_status"
-  203: "unity_open"
-  204: "unity_close"
-  205: "unity_build"
-  206: "unity_test"
-  207: "read_file"
-  208: "list_dir"
-  209: "load_doc"
-  210: "fast_analyze_img"
-  211: "mkdir"
+  G061: "unity_tools_find"
+  G057: "tool_show"
+  U409: "unity_status"
+  U368: "unity_open"
+  U252: "unity_close"
+  U245: "unity_build"
+  U417: "unity_test"
+  G002: "read_file"
+  G003: "list_dir"
+  G022: "load_doc"
+  V002: "local_analyze_img"
+  G062: "mkdir"
 DOCS:
   300: "unity"
 PLAN:

@@ -1,0 +1,27 @@
+id: "V005"
+tool: "repair_zone_img"
+date: "2026-10-21"
+tags: ["vision", "comfyui", "img", "repair"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "repairs a rectangular zone of an image: removes what sits there and fills it"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  F="$W/{{source}}"; [ -f "$F" ] || F="$ROOT/{{source}}"
+  [ -f "$F" ] || { printf 'refused: the image is missing (%s)\n' "{{source}}" >&2 ; exit 1 ; }
+  O=""; [ -z "{{out}}" ] || O="$W/{{out}}"
+  run_call comfyui_pixel_job "op=inpaint" "image=$F" "out=$O" "zone={{zone}}"
+
+ARGS:
+  - {name: source, type: path}
+  - {name: out, type: path}
+  - {name: zone, type: text}

@@ -40,10 +40,10 @@ APPROVAL: false
 PERMANENT_TODO: true
 
 TOOLS:
-  200: "tunnel_status"
-  201: "tunnel_up"
-  202: "tunnel_down"
-  204: "read_file"
+  G064: "tunnel_status"
+  G065: "tunnel_up"
+  G066: "tunnel_down"
+  G002: "read_file"
 
 DOCS:
   300: "TUNNEL_trois_skills_a_juger"

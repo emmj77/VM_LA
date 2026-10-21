@@ -18,7 +18,8 @@ COMMAND: |
   # the stable prefix: the head, zone by zone, in the order the config holds them
   _who=$(cfg str head.name "LA")
   _lang=$(cfg str head.language_response "french")
-  # the projects are READ from the machine, never written in the master file
+  # THE PROJECTS: their NAMES only, read from the machine. The summary is the
+  # project's own, shown when it is loaded - never doubled here.
   _prj=""
   _pdir=$(ls -d "${LA_ROOT:-.}"/projects\[D*\] 2>/dev/null | head -n 1)
   if [ -n "$_pdir" ]; then
@@ -26,14 +27,13 @@ COMMAND: |
       [ -f "$_f" ] || continue
       _n=$(sed -n 's/^project:[[:space:]]*//p' "$_f" | head -n 1 | tr -d '"')
       [ -n "$_n" ] || continue
-      _s=$(sed -n '/^SUMMARY:/,$p' "$_f" | sed -n 's/^[[:space:]]*101:[[:space:]]*//p' | head -n 1 | tr -d '"')
-      _prj=$_prj$(printf '%s: %s|' "$_n" "${_s:-no summary}")
+      _prj=$_prj$_n' '
     done
   fi
   _head=$(_flat | awk -F'\t' -v P="$_prj" '$1 ~ /^head\.[A-Z_]+\.[0-9]+$/ {
       z = $1; sub(/\.[0-9]+$/, "", z); sub(/^head\./, "", z)
       if (z != last) { printf "\n%s\n", z; last = z }
-      if ($2 == "@PROJECTS@") { sub(/\|+$/, "", P); gsub(/\|/, "\n", P); printf "%s\n", P; next }
+      if ($2 == "@PROJECTS@") { sub(/[ ]+$/, "", P); printf "%s\n", P; next }
       printf "%s\n", $2
     }')
   _sys=$(printf '%s, you answer in %s.%s' "$_who" "$_lang" "$_head")

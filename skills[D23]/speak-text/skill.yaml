@@ -13,9 +13,9 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 TOOLS:
-  200: "speak"
-  201: "load_doc"
-  202: "mkdir"
+  G025: "speak"
+  G022: "load_doc"
+  G062: "mkdir"
 DOCS:
   300: "web_search"
 PLAN:

@@ -19,12 +19,12 @@ RULES:
   # asks for a named go, once, inside the approval.window seconds (300).
 APPROVAL: true
 TOOLS:
-  200: "install_program"
-  201: "uninstall_program"
-  202: "open_program"
-  203: "list_dir"
-  204: "load_doc"
-  205: "mkdir"
+  G045: "install_program"
+  G046: "uninstall_program"
+  G047: "open_program"
+  G003: "list_dir"
+  G022: "load_doc"
+  G062: "mkdir"
 
 DOCS:
   300: "web_search"

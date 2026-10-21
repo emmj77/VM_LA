@@ -17,7 +17,7 @@ DESCRIPTION: "reads an image with a local model: small (fast) or big (detailed)"
 COMMAND: |
   LC_ALL=C; export LC_ALL
   _md='{{model}}'
-  NAME=$(cfg str machine.llama.models."$_md".name) || { printf 'refused: no such model (%s)\n' "$_md" >&2 ; exit 1 ; }
+  NAME=$(cfg str "machine.llama.models.$_md.name") || { printf 'refused: no such model (%s)\n' "$_md" >&2 ; exit 1 ; }
   H=$(cfg str models.host) || H=127.0.0.1
   P=$(cfg num models.port) || exit 1
   MT=$(cfg num limits.vision_tokens) || MT=1024

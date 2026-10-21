@@ -1,0 +1,54 @@
+id: "V007"
+tool: "find_objects_img"
+date: "2026-10-21"
+tags: ["vision", "local", "img", "boxes"]
+
+RULES:
+  enabled: true
+  timeout: 300
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "finds the objects of an image and returns their boxes, scaled 0-1000"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  NAME=$(cfg str machine.llama.models.big.name) || exit 1
+  H=$(cfg str models.host) || H=127.0.0.1
+  P=$(cfg num models.port) || exit 1
+  MT=$(cfg num limits.vision_tokens) || MT=1024
+  URL="http://$H:$P"
+  F="$W/{{image}}"; [ -f "$F" ] || F="$ROOT/{{image}}"
+  [ -f "$F" ] || { printf 'refused: the image is missing (%s)\n' "{{image}}" >&2 ; exit 1 ; }
+  case "$F" in
+    *.png) M=image/png ;;
+    *.jpg|*.jpeg) M=image/jpeg ;;
+    *.webp) M=image/webp ;;
+    *.bmp) M=image/bmp ;;
+    *) printf 'refused: this image type is not read (%s)\n' "$F" >&2 ; exit 1 ;;
+  esac
+  curl -fsS -m 3 "$URL/health" >/dev/null 2>&1 || { printf 'refused: the router is silent on %s:%s -- start la-models\n' "$H" "$P" >&2 ; exit 1 ; }
+  WANT=$(cat); [ -n "$WANT" ] || WANT="the main objects"
+  command -v jq >/dev/null 2>&1 || { printf 'refused: jq is missing\n' >&2 ; exit 1 ; }
+  Q="Locate $WANT in this image. Reply ONLY with JSON: {\"objects\":[{\"name\":\"...\",\"box\":[x1,y1,x2,y2]}]} where the four numbers are integers scaled 0-1000 on the width and the height. One entry per object, the most visible first."
+  TD=$(mktemp -d "${TMPDIR:-/tmp}/find_objects_img.XXXXXX") || { printf 'refused: no space left for a temp folder\n' >&2 ; exit 1 ; }
+  trap 'rm -f "$TD/b" "$TD/q"' EXIT INT TERM HUP
+  base64 -w 0 -- "$F" > "$TD/b" || { printf 'refused: the image is unreadable (%s)\n' "$F" >&2 ; exit 1 ; }
+  jq -cn --arg m "$M" --rawfile b "$TD/b" --arg q "$Q" --arg mo "$NAME" --argjson mt "$MT" '{model:$mo,stream:false,temperature:0,max_tokens:$mt,messages:[{role:"user",content:[{type:"text",text:$q},{type:"image_url",image_url:{url:("data:"+$m+";base64,"+$b)}}]}]}' > "$TD/q" || { printf 'refused: the request did not build\n' >&2 ; exit 1 ; }
+  R=$(curl -sS -m 280 -H 'Content-Type: application/json' --data-binary @"$TD/q" "$URL/v1/chat/completions") || { printf 'refused: the router did not answer (%s)\n' "$URL" >&2 ; exit 1 ; }
+  T=$(printf '%s' "$R" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+  [ -n "$T" ] || { printf 'refused: the model rendered nothing (%s)\n' "$(printf '%s' "$R" | tr '\n' ' ' | cut -c1-200)" >&2 ; exit 1 ; }
+  # the model may wrap its JSON in prose or a fence: the object is taken out, the rest is said
+  J=$(printf '%s' "$T" | tr -d '\n' | sed -e 's/^[^{]*//' -e 's/}[^}]*$/}/')
+  if printf '%s' "$J" | jq -e '.objects' >/dev/null 2>&1; then
+    printf '%s' "$J" | jq -c '.objects[] | [.name, (.box|join(","))] | @tsv'
+  else
+    printf '%s\n' "$T"
+  fi
+
+ARGS:
+  - {name: image, type: path}
+  - {name: want, type: text, stdin: true}

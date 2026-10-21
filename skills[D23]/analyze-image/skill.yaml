@@ -5,7 +5,7 @@ tags: ["analyze-image", "image", "vision", "voir"]
 
 SUMMARY:
   101: "Analyse an image: what it shows, down to the detail."
-  102: "vision_analyze reads the image; fast_analyze_img opens it to the eye."
+  102: "api_analyze_img reads the image; local_analyze_img opens it to the eye."
   103: "What is SEEN is described; in doubt, the call is made again ALONE (never grouped)."
 RULES:
   create_subfolder: true
@@ -13,16 +13,16 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 TOOLS:
-  200: "vision_analyze"
-  201: "fast_analyze_img"
-  202: "load_doc"
-  203: "list_dir"
-  204: "read_text_in_img"
-  205: "find_objects_in_img"
-  206: "cut_subject_from_img"
-  207: "read_depth_of_img"
-  208: "repair_zone_in_img"
-  209: "mkdir"
+  V001: "api_analyze_img"
+  V002: "local_analyze_img"
+  G022: "load_doc"
+  G003: "list_dir"
+  V003: "indra_ocr_img"
+  V007: "find_objects_img"
+  V004: "cut_subject_img"
+  V006: "read_depth_img"
+  V005: "repair_zone_img"
+  G062: "mkdir"
 DOCS:
   300: "web_search"
 PLAN:
