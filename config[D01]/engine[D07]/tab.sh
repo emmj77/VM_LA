@@ -110,30 +110,6 @@ table_index() {
   return 0
 }
 
-# table_perm <name> : the TOOL says it rides every turn, in the register - the one source
-table_perm() {
-  table_index || return 1
-  printf '%s\n' "$TABLE_INDEX" | awk -F'|' -v n="${1:-}" '$2 == n && $6 == "true" { f = 1 } END { exit !f }'
-}
-
-# table_with_skill <name> : allowed as soon as ANY skill is armed
-table_with_skill() {
-  table_index || return 1
-  printf '%s\n' "$TABLE_INDEX" | awk -F'|' -v n="${1:-}" '$2 == n && $7 == "true" { f = 1 } END { exit !f }'
-}
-
-# table_with_project <name> : allowed as soon as a project is loaded
-table_with_project() {
-  table_index || return 1
-  printf '%s\n' "$TABLE_INDEX" | awk -F'|' -v n="${1:-}" '$2 == n && $8 == "true" { f = 1 } END { exit !f }'
-}
-
-# table_permanents : the names that ride every turn, one per line, in the register's order
-table_permanents() {
-  table_index || return 1
-  printf '%s\n' "$TABLE_INDEX" | awk -F'|' '$6 == "true" { print $2 }'
-}
-
 # block_by_id <id> : the block of an id in the table carried by TABLE, one pass, no temp file
 block_by_id() {
   awk -v id="${1:-}" '

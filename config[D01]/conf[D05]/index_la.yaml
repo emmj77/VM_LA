@@ -70,7 +70,7 @@ files:
   - {id: "E11", name: "run.sh", role: "the door: reads the register, reads the body, checks the call, runs it, shapes what comes back"}
   - {id: "E12", name: "shape.sh", role: "the single form every call returns: six fields, always in this order"}
   - {id: "E13", name: "shell.sh", role: "the machine layer: a machine, an operation, arguments, one command line"}
-  - {id: "E14", name: "skl.sh", role: "the active skill, the active project, the tools a skill allows, what is always allowed"}
+  - {id: "E14", name: "skl.sh", role: "the loaded set in one file: the active skill, the active project, its plan, the toolset and the skillset built from the register, the permanence readers, what is always allowed"}
   - {id: "E15", name: "step.sh", role: "one step of the turn: the order is conf/pipeline.yaml, the work is a body"}
   - {id: "E16", name: "tab.sh", role: "the register: block_by_id table_block table_entry body_of count, on the table it is given; and the command table: cmd_ids cmd_get cmd_has cmd_run cmd_slash"}
   - {id: "F01", name: "family.bin", role: "the trained family filter"}
