@@ -18,5 +18,5 @@ machine: "blender"
 op: "pose.select_mirror"
 
 ARGS:
-  - {name: only_active, type: text}          # true|false, vide pour ne rien poser
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: only_active, type: text}          # true|false, empty to set nothing
+  - {name: extend, type: text}          # true|false, empty to set nothing

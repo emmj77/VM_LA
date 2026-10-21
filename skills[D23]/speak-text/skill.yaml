@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["speak-text", "voix", "parler", "audio"]
 
 SUMMARY:
-  101: "Dire un texte a voix haute (le rendre en audio)."
-  102: "speak produit la voix ; on NOMME le fichier rendu."
-  103: "On dit ce qu'on a ECRIT, mot pour mot, sans le reecrire."
+  101: "Say a text out loud (render it as audio)."
+  102: "speak produces the voice; the rendered file is NAMED."
+  103: "What was WRITTEN is said, word for word, without rewriting it."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "speak"
   201: "load_doc"
@@ -19,8 +19,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".mp3 .wav .ogg .txt"
 ERROR:
-  600: "Voix absente : le dire (config), ne pas rendre un texte a la place."
+  600: "Voice missing: say it (config), never return a text instead."

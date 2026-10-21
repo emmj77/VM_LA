@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.select_more"
 
 ARGS:
-  - {name: use_face_step, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_face_step, type: text}          # true|false, empty to set nothing

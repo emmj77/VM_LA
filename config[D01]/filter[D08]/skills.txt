@@ -1,0 +1,413 @@
+# CORPUS DES SKILLS : une ligne = __label__<skill> <une DEMANDE reelle, en francais>.
+# Douze demandes par skill, ecrites a la main, dans le vocabulaire du skill.
+# Le juge (skills_judge.txt) est ecrit a part et n'entre jamais ici.
+# Ajouter un skill plus tard : ajouter ses lignes ici, relancer l'entrainement (secondes).
+
+__label__analyze-image regarde cette photo et dis moi ce qu'il y a dessus
+__label__analyze-image analyse l'image que je viens d'envoyer
+__label__analyze-image qu'est-ce qui est ecrit sur cette capture d'ecran
+__label__analyze-image decris ce que montre cette image
+__label__analyze-image lis le texte de cette image
+__label__analyze-image combien de personnes sur cette photo
+__label__analyze-image regarde l'image du dossier et dis moi si elle est floue
+__label__analyze-image ouvre cette capture et dis moi quelle fenetre est ouverte
+__label__analyze-image est-ce que cette image est un graphique de courbe
+__label__analyze-image verifie si la photo contient bien le logo
+__label__analyze-image analyse ce dessin a l'ecran
+__label__analyze-image dis moi ce que tu vois sur cette image
+__label__asset-builder fabrique un asset 3d avec un document json et des parts
+__label__asset-builder construis un glb a partir de ce plan de parts
+__label__asset-builder forge un nouveau modele 3d par gestes
+__label__asset-builder cree un asset 3d valide et rends le glb
+__label__asset-builder assemble les parts de cet asset et verifie le rendu
+__label__asset-builder refais le geste pour changer la couleur de l'asset
+__label__asset-builder prepare le document de parts de l'asset
+__label__asset-builder je veux un nouvel objet 3d simple, genere le glb
+__label__asset-builder verifie que le glb produit est valide
+__label__asset-builder corrige l'asset et relance le rendu
+__label__asset-builder decoupe cet asset en parties reutilisables
+__label__asset-builder construis une scene 3d complete a partir des parts
+__label__blender ouvre blender et charge la scene
+__label__blender cherche l'operateur bpy qui ajoute une lumiere
+__label__blender dans blender, mets un materiau sur cet objet
+__label__blender lance un script bpy pour dupliquer le cube
+__label__blender trouve la commande blender pour exporter en fbx
+__label__blender selectionne les objets de la scene et joins les
+__label__blender ajoute une camera et fais un rendu de la vue
+__label__blender comment on fait un bevel sur un mesh dans blender
+__label__blender applique une subdivision a la sphere
+__label__blender ouvre le fichier blend et liste les collections
+__label__blender en arriere plan, importe un obj dans blender
+__label__blender cherche parmi les operateurs celui du lissage
+__label__comfyui genere une image de paysage avec comfyui
+__label__comfyui le serveur comfyui est il lance
+__label__comfyui colorie cette image en noir et blanc
+__label__comfyui nettoie et agrandis cette image
+__label__comfyui fais un txt2img avec mon workflow
+__label__comfyui applique un style peinture a cette photo
+__label__comfyui genere une video courte a partir de l'image
+__label__comfyui passe cette image en quatre fois plus grande
+__label__comfyui stylise cette image comme une aquarelle
+__label__comfyui relance le serveur comfyui et verifie qu'il repond
+__label__comfyui retire le bruit de cette image
+__label__comfyui genere trois variantes de la meme image
+__label__computer-debug la machine rame, regarde ce qui se passe
+__label__computer-debug lis les journaux et dis moi quelle erreur revient
+__label__computer-debug pourquoi le service ne demarre plus
+__label__computer-debug regarde la charge et propose un correctif
+__label__computer-debug lis les traces recentes et pose le diagnostic
+__label__computer-debug le bureau plante, debogue l'application
+__label__computer-debug trouve l'erreur dans le journal systeme
+__label__computer-debug inspecte les processus et dis moi lequel consomme
+__label__computer-debug qu'est ce qui a casse au dernier demarrage
+__label__computer-debug lis les logs du service et propose une correction
+__label__computer-debug la souris ne repond plus, debogue
+__label__computer-debug analyse la trace et donne la cause
+__label__delegate-work delegue cette recherche a un sous agent
+__label__delegate-work fais faire ce travail par un autre agent
+__label__delegate-work confie cette tache et rends moi le verdict
+__label__delegate-work sous traite la redaction a un agent
+__label__delegate-work lance un agent pour analyser ces fichiers
+__label__delegate-work je ne veux pas que tu le fasses toi meme, delegue
+__label__delegate-work demande a un sous agent de verifier ca
+__label__delegate-work envoie la tache a un agent et lis son resultat
+__label__delegate-work un sous agent peut il comparer ces deux documents
+__label__delegate-work delegue la correction et donne moi la reponse
+__label__delegate-work fais analyser ca par deux agents en parallele
+__label__delegate-work rends moi le resultat du sous agent
+__label__disk-report fais le point sur l'espace disque
+__label__disk-report ou est le gras sur le disque
+__label__disk-report dis moi ce qui occupe le plus de place
+__label__disk-report combien il reste de libre sur la partition home
+__label__disk-report liste les dix plus gros dossiers
+__label__disk-report le disque est plein, trouve ce qui prend la place
+__label__disk-report mesure la taille des dossiers du projet
+__label__disk-report fais un rapport d'espace par dossier
+__label__disk-report quels fichiers sont les plus lourds
+__label__disk-report verifie l'espace libre et nomme les gros
+__label__disk-report un dossier gonfle, dis moi lequel
+__label__disk-report trie les repertoires du plus gros au plus petit
+__label__download-file telecharge ce fichier et montre le moi
+__label__download-file recupere le fichier a cette adresse
+__label__download-file ramene l'archive depuis le lien
+__label__download-file telecharge le pdf et ne l'execute pas
+__label__download-file fais entrer ce fichier du dehors
+__label__download-file recupere ce modele depuis le web
+__label__download-file telecharge l'image de cette page
+__label__download-file prends le fichier sur ce serveur et range le
+__label__download-file je veux ce fichier en local, telecharge le
+__label__download-file recupere ce paquet et montre moi son chemin
+__label__download-file telecharge ce document dans le dossier
+__label__download-file ramene ce fichier ici sans l'ouvrir
+__label__edit-file corrige le fichier de configuration
+__label__edit-file change la ligne quarante du script
+__label__edit-file lis le fichier et remplace cette valeur
+__label__edit-file modifie la fonction et repose le fichier
+__label__edit-file dans ce fichier, remplace le mot par celui la
+__label__edit-file corrige la faute de frappe dans le texte
+__label__edit-file change le chemin en dur du script
+__label__edit-file ajoute cette ligne en fin de fichier
+__label__edit-file renomme la variable dans tout le fichier
+__label__edit-file relis et corrige ce bloc de code
+__label__edit-file insere la section apres le titre
+__label__edit-file mets a jour la date en tete du fichier
+__label__edit-table ajoute une ligne a la table
+__label__edit-table retire cette ligne du tableau
+__label__edit-table desactive l'entree dans la table
+__label__edit-table modifie le champ de la ligne cinq
+__label__edit-table active cette ligne du registre
+__label__edit-table change la valeur dans la colonne famille
+__label__edit-table supprime la derniere ligne de la table
+__label__edit-table ajoute un outil dans la table des tools
+__label__edit-table corrige le champ identifiant de cette entree
+__label__edit-table montre la ligne avant et apres modification
+__label__edit-table liste puis modifie la bonne ligne
+__label__edit-table remets l'ordre des colonnes dans la table
+__label__git montre l'etat du depot git
+__label__git lis le diff et dis moi ce qui change
+__label__git committe les modifications
+__label__git quel est le dernier commit
+__label__git annule cette modification non commitee
+__label__git liste les branches du depot
+__label__git fais un commit avec ce message
+__label__git compare cette branche avec la principale
+__label__git montre l'historique des dix derniers commits
+__label__git prepare un commit et lis le diff d'abord
+__label__git qui a touche ce fichier en dernier
+__label__git reviens en arriere sur ce fichier
+__label__krita ouvre krita et charge le fichier kra
+__label__krita trouve l'outil krita qui change le pinceau
+__label__krita colore ce dessin dans krita
+__label__krita ajoute un calque dans le document krita
+__label__krita applique un filtre a l'image kra
+__label__krita liste les outils du plugin krita
+__label__krita exporte le dessin krita en png
+__label__krita change la taille du canevas dans krita
+__label__krita dessine avec le pinceau krita
+__label__krita fusionne les calques du document
+__label__krita verifie que le serveur krita repond
+__label__krita annule la derniere action dans krita
+__label__list-files liste le contenu du dossier
+__label__list-files qu'est ce qu'il y a dans ce repertoire
+__label__list-files montre moi les fichiers du dossier telechargements
+__label__list-files liste ce que contient le bureau
+__label__list-files affiche les fichiers de l'atelier
+__label__list-files nomme les entrees de ce dossier
+__label__list-files donne la liste des fichiers d'ici
+__label__list-files quels fichiers dans le sous dossier
+__label__list-files regarde le dossier et liste tout
+__label__list-files montre les sous dossiers du projet
+__label__list-files liste les fichiers par nom
+__label__list-files ouvre le dossier et dis moi ce qu'il contient
+__label__manage-processes arrete ce processus
+__label__manage-processes liste les processus qui tournent
+__label__manage-processes tue le processus du serveur qui ne repond plus
+__label__manage-processes montre les processus et leur consommation
+__label__manage-processes quel processus utilise le port huit mille
+__label__manage-processes filtre les processus par nom
+__label__manage-processes arrete le serveur asr
+__label__manage-processes combien de processus python tournent
+__label__manage-processes tue le processus bloque par son pid
+__label__manage-processes fais le tri dans les processus qui trainent
+__label__manage-processes montre moi le processus du navigateur
+__label__manage-processes arrete proprement ce demon
+__label__manipulation-3d convertis cette image en glb
+__label__manipulation-3d transforme ce mesh en fbx
+__label__manipulation-3d fais un rendu png de ce mesh
+__label__manipulation-3d mesure le volume de ce modele
+__label__manipulation-3d inspecte ce fichier 3d
+__label__manipulation-3d convertis le mesh en image
+__label__manipulation-3d image vers glb pour l'imprimante
+__label__manipulation-3d calcule les dimensions du modele
+__label__manipulation-3d exporte ce mesh en fbx pour unity
+__label__manipulation-3d lis les proprietes du fichier glb
+__label__manipulation-3d rends une vue du mesh
+__label__manipulation-3d convertis ce modele au bon format
+__label__models-bench compare les reponses de deux modeles
+__label__models-bench interroge le modele local sur cette question
+__label__models-bench liste les modeles disponibles
+__label__models-bench mesure la vitesse des modeles
+__label__models-bench pose la meme question a deux modeles et compare
+__label__models-bench lance un petit benchmark des modeles
+__label__models-bench quel modele repond le mieux a cette demande
+__label__models-bench interroge ce modele et montre sa reponse
+__label__models-bench verifie la qualite de ce modele sur un exemple
+__label__models-bench combien de temps met ce modele a repondre
+__label__models-bench compare la fidelite de ces deux resumes
+__label__models-bench teste trois modeles sur la meme phrase
+__label__phone-tunnel amene le telephone jusqu'au pont
+__label__phone-tunnel le telephone est il connecte
+__label__phone-tunnel teste la route vers le telephone
+__label__phone-tunnel verifie le tunnel vers le telephone
+__label__phone-tunnel connecte le telephone au reseau
+__label__phone-tunnel le pont android repond il
+__label__phone-tunnel prouve que le telephone est joignable
+__label__phone-tunnel relance le tunnel du telephone
+__label__phone-tunnel dis moi si adb voit le telephone
+__label__phone-tunnel le telephone est il sur le meme reseau
+__label__phone-tunnel verifie la connexion au pont
+__label__phone-tunnel remets le telephone dans le tunnel
+__label__program-manage installe ce programme
+__label__program-manage retire ce paquet du systeme
+__label__program-manage ouvre cette application
+__label__program-manage installe le paquet avec apt
+__label__program-manage desinstalle ce logiciel
+__label__program-manage lance le programme en arriere plan
+__label__program-manage verifie si ce programme est installe
+__label__program-manage mets a jour les paquets du systeme
+__label__program-manage ouvre le lecteur de musique
+__label__program-manage retire l'ancienne version et installe la neuve
+__label__program-manage quel paquet contient cette commande
+__label__program-manage installe ce programme et dis moi sa version
+__label__query-yaml lis le champ port du yaml
+__label__query-yaml quel est le nom dans ce fichier yaml
+__label__query-yaml sors la valeur de la cle skill du yaml
+__label__query-yaml interroge le yaml et rends le champ
+__label__query-yaml dans la config, quelle est la valeur de share
+__label__query-yaml donne la liste des ports declares
+__label__query-yaml lis le chemin du registre dans le yaml
+__label__query-yaml trouve la cle limits timeout
+__label__query-yaml extrais le champ tools du skill
+__label__query-yaml montre la valeur de la cle active
+__label__query-yaml quel port pour la passerelle dans la conf
+__label__query-yaml rends le champ date du yaml
+__label__read-log lis le journal et dis moi les erreurs
+__label__read-log quelles erreurs dans le log depuis ce matin
+__label__read-log cite la ligne d'erreur du service
+__label__read-log lis les logs et donne l'ordre des evenements
+__label__read-log cherche les erreurs recentes dans le journal
+__label__read-log le service a plante, lis le log
+__label__read-log montre les dernieres lignes du journal
+__label__read-log qu'est ce qui a echoue dans le log
+__label__read-log liste les avertissements du journal
+__label__read-log lis les traces et cite la premiere erreur
+__label__read-log dans le log, isole les echecs
+__label__read-log trie les erreurs par heure dans le journal
+__label__search-code cherche cette fonction dans le code
+__label__search-code ou est definie la variable dans le projet
+__label__search-code trouve tous les appels a cette fonction
+__label__search-code cherche par forme cette expression dans le code
+__label__search-code dans le code, trouve l'usage de ce mot
+__label__search-code grep ce motif dans les sources
+__label__search-code ou ce mot apparait dans le code
+__label__search-code cherche la definition de cette classe
+__label__search-code liste les fichiers qui appellent ce module
+__label__search-code cherche le texte exact dans le code
+__label__search-code trouve les occurrences de cette chaine
+__label__search-code montre le fichier et la ligne de cette fonction
+__label__search-files cherche le fichier spec yaml
+__label__search-files trouve les fichiers nommes rapport
+__label__search-files dans quel dossier se trouve ce fichier
+__label__search-files cherche ce mot dans les fichiers
+__label__search-files trouve le fichier qui contient cette phrase
+__label__search-files ou est ce document sur le disque
+__label__search-files cherche par nom et par contenu
+__label__search-files trouve tous les fichiers de ce type
+__label__search-files localise ce fichier dans le projet
+__label__search-files cherche le fichier de configuration
+__label__search-files quels fichiers contiennent ce motif
+__label__search-files montre le chemin du fichier trouve
+__label__search-memory cherche dans ma memoire la cle api
+__label__search-memory qu'est ce que je t'ai dit sur ce projet
+__label__search-memory retrouve la conversation ou on parlait de ca
+__label__search-memory cherche dans les sessions passees
+__label__search-memory dans ma memoire, quelle est la preference
+__label__search-memory rappelle moi la note sur l'installation
+__label__search-memory cherche dans les conversations le mot deploiement
+__label__search-memory retrouve la decision sur ce sujet
+__label__search-memory dans la memoire, cherche la cle gpu
+__label__search-memory qu'ai je dit la derniere fois sur la machine
+__label__search-memory cherche la note sur le modele local
+__label__search-memory retrouve ce qu'on a decide hier
+__label__speak-text dis ce texte a voix haute
+__label__speak-text lis moi ce paragraphe
+__label__speak-text prononce cette phrase
+__label__speak-text fais une voix de ce texte
+__label__speak-text synthetise ce texte en audio
+__label__speak-text lis le resultat a haute voix
+__label__speak-text genere un fichier audio de ce texte
+__label__speak-text dis bonjour avec la voix
+__label__speak-text rends ce document en audio
+__label__speak-text parle et lis ce message
+__label__speak-text enregistre la voix de ce texte
+__label__speak-text lis a voix haute la reponse
+__label__summarize-document resume ce document
+__label__summarize-document fais un resume fidele de ce texte long
+__label__summarize-document resume le rapport en dix lignes
+__label__summarize-document donne l'essentiel de ce document
+__label__summarize-document resume la page en trois phrases
+__label__summarize-document fais court et fidele sur ce document
+__label__summarize-document condense ce long texte
+__label__summarize-document quel est le resume de ce fichier
+__label__summarize-document resume sans rien inventer
+__label__summarize-document fais un resume de cette conversation
+__label__summarize-document reduis ce document a l'essentiel
+__label__summarize-document resume ce pdf
+__label__tool-manager ajoute un outil a la table
+__label__tool-manager modifie la palette de ce skill
+__label__tool-manager cree un nouvel outil dans le registre
+__label__tool-manager retire cet outil de la table
+__label__tool-manager change la description de cet outil
+__label__tool-manager liste les outils avant de modifier
+__label__tool-manager corrige l'identifiant de cet outil
+__label__tool-manager ajoute un outil dans la skill
+__label__tool-manager mets a jour la table des tools
+__label__tool-manager verifie qu'il n'y a pas de doublon d'outil
+__label__tool-manager reorganise la palette du skill
+__label__tool-manager declare ce nouveau tool en yaml
+__label__transcribe-audio transcris cet audio
+__label__transcribe-audio ecris en texte ce que dit l'enregistrement
+__label__transcribe-audio transcris le fichier wav
+__label__transcribe-audio dis moi ce qui est dit dans la video
+__label__transcribe-audio transcris ce vocal en texte
+__label__transcribe-audio passe l'audio en transcription
+__label__transcribe-audio ecris la transcription de ce message vocal
+__label__transcribe-audio transcris et pose le texte dans un fichier
+__label__transcribe-audio quel est le texte de cet enregistrement
+__label__transcribe-audio transcribe ce message audio
+__label__transcribe-audio lis l'audio et ecris ce qui est dit
+__label__transcribe-audio transcris cette note vocale
+__label__translate-document traduis ce document en anglais
+__label__translate-document traduis ce texte en francais
+__label__translate-document fais la traduction fidele du fichier
+__label__translate-document traduis le rapport sans changer le sens
+__label__translate-document passe ce document en anglais
+__label__translate-document traduis cette page en francais
+__label__translate-document donne la version anglaise de ce texte
+__label__translate-document traduis le document et pose le fichier
+__label__translate-document traduis ce paragraphe en conservant le ton
+__label__translate-document quelle est la traduction de ce texte
+__label__translate-document traduis ce pdf en italien
+__label__translate-document fais une traduction fidele de la note
+__label__trash-file mets ce fichier a la corbeille
+__label__trash-file jette ce document
+__label__trash-file deplace ce dossier a la corbeille
+__label__trash-file supprime ce fichier sans le perdre
+__label__trash-file mets a la corbeille l'ancienne version
+__label__trash-file jette les fichiers temporaires
+__label__trash-file retire ce fichier du disque proprement
+__label__trash-file envoie ce dossier a la corbeille
+__label__trash-file mets a la corbeille cet ancien script
+__label__trash-file debarrasse toi de ce fichier
+__label__trash-file vide ce dossier vers la corbeille
+__label__trash-file jette ce fichier obsolete
+__label__unity ouvre unity et charge la scene
+__label__unity liste les commandes du cli unity
+__label__unity lance le pipeline upipe sur le projet
+__label__unity dans unity, ajoute un composant a l'objet
+__label__unity cherche la commande coplay pour la scene
+__label__unity compile le projet unity
+__label__unity ouvre le hub unity
+__label__unity mets en place la scene dans unity
+__label__unity exporte la scene unity en package
+__label__unity liste les objets de la scene unity
+__label__unity lance le play mode dans unity
+__label__unity trouve la commande pour creer un prefab
+__label__web-agent ouvre cette page dans le navigateur
+__label__web-agent pilote le navigateur et clique sur le bouton
+__label__web-agent lis cette page web qui bloque
+__label__web-agent genere une image avec gemini
+__label__web-agent va sur ce site et remplis le formulaire
+__label__web-agent navigue et prends une capture
+__label__web-agent lis la page et dis moi le prix
+__label__web-agent ouvre le navigateur et cherche sur ce site
+__label__web-agent remplis le champ sur la page
+__label__web-agent clique sur le lien dans la page
+__label__web-agent capture l'ecran de la page web
+__label__web-agent pilote chromium vers cette adresse
+__label__web-search cherche sur le web
+__label__web-search trouve la reponse en ligne et cite la source
+__label__web-search fais une recherche et ramene les pages
+__label__web-search cherche cette information sur internet
+__label__web-search lis cette page web et resume la
+__label__web-search fais un rapport ecrit depuis le web
+__label__web-search cherche les dernieres nouvelles sur ce sujet
+__label__web-search trouve la documentation officielle en ligne
+__label__web-search cherche ce modele sur le web
+__label__web-search ramene trois sources sur cette question
+__label__web-search verifie cette information en ligne
+__label__web-search cherche le prix de ce materiel
+__label__workshop tient l'atelier, modifie la skill
+__label__workshop change la spec du skill actif
+__label__workshop ajoute un champ a la skill
+__label__workshop tiens la table des tools de l'atelier
+__label__workshop corrige la spec de cette skill
+__label__workshop mets a jour le skill et sa palette
+__label__workshop ecris la section de la spec du skill
+__label__workshop verifie la coherence de l'atelier
+__label__workshop range les outils du skill
+__label__workshop modifie le skill par champ
+__label__workshop la spec du skill est elle a jour
+__label__workshop tiens l'atelier et compte les outils
+__label__write-spec ecris une section de la spec
+__label__write-spec ajoute cette regle a la spec du skill
+__label__write-spec redige la section architecture dans la spec
+__label__write-spec ecris la loi dans la spec du skill
+__label__write-spec ajoute une ligne a la spec
+__label__write-spec redige la description du skill dans la spec
+__label__write-spec mets a jour la spec avec cette decision
+__label__write-spec ecris cette contrainte dans la spec
+__label__write-spec la spec doit dire cette regle
+__label__write-spec redige la section du plan
+__label__write-spec corrige la spec et relis la section
+__label__write-spec ecris la spec du skill actif

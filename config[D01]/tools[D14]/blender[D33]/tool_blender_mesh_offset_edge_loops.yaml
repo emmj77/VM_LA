@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.offset_edge_loops"
 
 ARGS:
-  - {name: use_cap_endpoint, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_cap_endpoint, type: text}          # true|false, empty to set nothing

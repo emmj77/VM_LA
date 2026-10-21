@@ -18,5 +18,5 @@ machine: "blender"
 op: "anim.channel_view_pick"
 
 ARGS:
-  - {name: include_handles, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_preview_range, type: text}          # true|false, vide pour ne rien poser
+  - {name: include_handles, type: text}          # true|false, empty to set nothing
+  - {name: use_preview_range, type: text}          # true|false, empty to set nothing

@@ -19,14 +19,14 @@ op: "grease_pencil.interpolate_sequence"
 
 ARGS:
   - {name: step, type: int}
-  - {name: layers, type: text}          # un de : ACTIVE | ALL
-  - {name: exclude_breakdowns, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_selection, type: text}          # true|false, vide pour ne rien poser
-  - {name: flip, type: text}          # un de : NONE | FLIP | AUTO
+  - {name: layers, type: text}          # one of: ACTIVE | ALL
+  - {name: exclude_breakdowns, type: text}          # true|false, empty to set nothing
+  - {name: use_selection, type: text}          # true|false, empty to set nothing
+  - {name: flip, type: text}          # one of: NONE | FLIP | AUTO
   - {name: smooth_steps, type: int}
   - {name: smooth_factor, type: text}
-  - {name: type, type: text}          # un de : LINEAR | CUSTOM | SINE | QUAD | CUBIC | QUART | QUINT | EXPO | CIRC | BACK | BOUNCE | ELASTIC
-  - {name: easing, type: text}          # un de : AUTO | EASE_IN | EASE_OUT | EASE_IN_OUT
+  - {name: type, type: text}          # one of: LINEAR | CUSTOM | SINE | QUAD | CUBIC | QUART | QUINT | EXPO | CIRC | BACK | BOUNCE | ELASTIC
+  - {name: easing, type: text}          # one of: AUTO | EASE_IN | EASE_OUT | EASE_IN_OUT
   - {name: back, type: text}
   - {name: amplitude, type: text}
   - {name: period, type: text}

@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Open Unity documentation for a class or topic, matched to your project's editor version"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- docs --no-banner --no-pager --non-interactive
@@ -45,6 +45,6 @@ COMMAND: |
 ARGS:
   - {name: topic, type: text}
   - {name: editor_version, type: text}   # Documentation version to open, instead of the current project's
-  - {name: manual, type: text}   # true pour poser --manual ; Look the topic up in the manual instead of the scripting API reference
-  - {name: search, type: text}   # true pour poser --search ; Open the documentation search results for the topic
-  - {name: url, type: text}   # true pour poser --url ; Print the URL instead of opening it in your browser
+  - {name: manual, type: text}   # true to set --manual ; Look the topic up in the manual instead of the scripting API reference
+  - {name: search, type: text}   # true to set --search ; Open the documentation search results for the topic
+  - {name: url, type: text}   # true to set --url ; Print the URL instead of opening it in your browser

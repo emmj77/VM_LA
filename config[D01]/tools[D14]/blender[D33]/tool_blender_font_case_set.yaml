@@ -18,4 +18,4 @@ machine: "blender"
 op: "font.case_set"
 
 ARGS:
-  - {name: case, type: text}          # un de : LOWER | UPPER
+  - {name: case, type: text}          # one of: LOWER | UPPER

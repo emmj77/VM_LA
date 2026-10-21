@@ -18,14 +18,14 @@ machine: "blender"
 op: "uv.stitch"
 
 ARGS:
-  - {name: use_limit, type: text}          # true|false, vide pour ne rien poser
-  - {name: snap_islands, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_limit, type: text}          # true|false, empty to set nothing
+  - {name: snap_islands, type: text}          # true|false, empty to set nothing
   - {name: limit, type: text}
   - {name: static_island, type: int}
   - {name: active_object_index, type: int}
-  - {name: midpoint_snap, type: text}          # true|false, vide pour ne rien poser
-  - {name: clear_seams, type: text}          # true|false, vide pour ne rien poser
-  - {name: mode, type: text}          # un de : VERTEX | EDGE
-  - {name: stored_mode, type: text}          # un de : VERTEX | EDGE
+  - {name: midpoint_snap, type: text}          # true|false, empty to set nothing
+  - {name: clear_seams, type: text}          # true|false, empty to set nothing
+  - {name: mode, type: text}          # one of: VERTEX | EDGE
+  - {name: stored_mode, type: text}          # one of: VERTEX | EDGE
   - {name: selection, type: text}
   - {name: objects_selection_count, type: int}

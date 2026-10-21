@@ -19,7 +19,7 @@ op: "mesh.subdivide_edgering"
 
 ARGS:
   - {name: number_cuts, type: int}
-  - {name: interpolation, type: text}          # un de : LINEAR | PATH | SURFACE
+  - {name: interpolation, type: text}          # one of: LINEAR | PATH | SURFACE
   - {name: smoothness, type: text}
   - {name: profile_shape_factor, type: text}
-  - {name: profile_shape, type: text}          # un de : SMOOTH | SPHERE | ROOT | INVERSE_SQUARE | SHARP | LINEAR
+  - {name: profile_shape, type: text}          # one of: SMOOTH | SPHERE | ROOT | INVERSE_SQUARE | SHARP | LINEAR

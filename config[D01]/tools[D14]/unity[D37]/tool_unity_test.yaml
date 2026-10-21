@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Run a project's EditMode/PlayMode tests in the editor and write a results report"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- test --no-banner --no-pager --non-interactive
@@ -72,17 +72,17 @@ ARGS:
   - {name: shard, type: text}   # Run only one slice of the suite, written as N/M, so parallel CI jobs c
   - {name: shard_inventory, type: text}   # Path to the results report a full run wrote, whose test list the shard
   - {name: retries, type: text}   # Re-run failing tests up to this many extra times (0-10), and report an
-  - {name: rerun_failed, type: text}   # true pour poser --rerun-failed ; Run only the tests that failed in the previous run's results report, i
-  - {name: affected, type: text}   # true pour poser --affected ; Run only the tests a change can reach, from the guid impact graph; run
-  - {name: affected_compare, type: text}   # true pour poser --affected-compare ; Run every test, then report what affected-test selection would have sk
+  - {name: rerun_failed, type: text}   # true to set --rerun-failed ; Run only the tests that failed in the previous run's results report, i
+  - {name: affected, type: text}   # true to set --affected ; Run only the tests a change can reach, from the guid impact graph; run
+  - {name: affected_compare, type: text}   # true to set --affected-compare ; Run every test, then report what affected-test selection would have sk
   - {name: since, type: text}   # Revision to compare against. Its merge base with HEAD is used. Default
-  - {name: coverage, type: text}   # true pour poser --coverage ; Collect code coverage (requires the Unity Code Coverage package in the
+  - {name: coverage, type: text}   # true to set --coverage ; Collect code coverage (requires the Unity Code Coverage package in the
   - {name: coverage_output, type: text}   # Directory to write the coverage report to (default: CodeCoverage)
   - {name: coverage_options, type: text}   # Semicolon-separated options passed through to the Code Coverage packag
   - {name: editor_version, type: text}   # Override editor version (default: from ProjectVersion.txt)
   - {name: editor_path, type: text}   # Path to a specific editor binary
   - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
-  - {name: allow_install, type: text}   # true pour poser --allow-install ; Install the project's editor version if it is not already installed
+  - {name: allow_install, type: text}   # true to set --allow-install ; Install the project's editor version if it is not already installed
   - {name: timeout, type: text}   # Kill the Unity process after this many seconds (disabled by default)
   - {name: accelerator, type: text}   # Unity Accelerator endpoint for this invocation. A bare host defaults t
-  - {name: no_accelerator, type: text}   # true pour poser --no-accelerator ; Ignore any configured Unity Accelerator for this invocation
+  - {name: no_accelerator, type: text}   # true to set --no-accelerator ; Ignore any configured Unity Accelerator for this invocation

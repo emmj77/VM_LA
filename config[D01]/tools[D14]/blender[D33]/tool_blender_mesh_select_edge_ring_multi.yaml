@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.select_edge_ring_multi"
 
 ARGS:
-  - {name: delimit_edge_ring, type: text}          # un de : SEAM | SHARP | MATERIAL | NGONS
+  - {name: delimit_edge_ring, type: text}          # one of: SEAM | SHARP | MATERIAL | NGONS

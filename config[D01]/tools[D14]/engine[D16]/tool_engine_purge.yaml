@@ -17,10 +17,10 @@ COMMAND: |
   _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _op=${1:-all}
-  # la marge gardee au-dessus des processus : leurs poids restent chauds (loi 826)
+  # the margin kept above the processes: their weights stay warm (law 826)
   _marge=$(cfg num loop.purge_margin 150) || _marge=150
 
-  # toute la descendance d un pid, par les children de chaque tid
+  # the whole descent of a pid, through the children of every tid
   _tree_rss() {
     _q=" ${1:-} "
     _done=" "
@@ -49,7 +49,7 @@ COMMAND: |
     _p="/sys/fs/cgroup$_cg"
     [ -r "$_p/memory.current" ] || { printf 'note %s is not there\n' "$_u"; return 0; }
     _b=$(( $(cat "$_p/memory.current") / 1048576 ))
-    # un resident est son arbre, pas son MainPID (loi 1573)
+    # a resident is its tree, not its MainPID (law 1573)
     _rss=$(_tree_rss "$(systemctl --user show "$_u" -p MainPID --value 2>/dev/null)")
     _mou=$(( _b - _rss - _marge ))
     if [ "$_mou" -le 0 ]; then

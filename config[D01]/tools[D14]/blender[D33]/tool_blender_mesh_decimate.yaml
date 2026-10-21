@@ -19,8 +19,8 @@ op: "mesh.decimate"
 
 ARGS:
   - {name: ratio, type: text}
-  - {name: use_vertex_group, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_vertex_group, type: text}          # true|false, empty to set nothing
   - {name: vertex_group_factor, type: text}
-  - {name: invert_vertex_group, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_symmetry, type: text}          # true|false, vide pour ne rien poser
-  - {name: symmetry_axis, type: text}          # un de : X | Y | Z
+  - {name: invert_vertex_group, type: text}          # true|false, empty to set nothing
+  - {name: use_symmetry, type: text}          # true|false, empty to set nothing
+  - {name: symmetry_axis, type: text}          # one of: X | Y | Z

@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.mark_seam"
 
 ARGS:
-  - {name: clear, type: text}          # true|false, vide pour ne rien poser
+  - {name: clear, type: text}          # true|false, empty to set nothing

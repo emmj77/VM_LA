@@ -18,5 +18,5 @@ machine: "blender"
 op: "poselib.pose_asset_select_bones"
 
 ARGS:
-  - {name: select, type: text}          # true|false, vide pour ne rien poser
-  - {name: flipped, type: text}          # true|false, vide pour ne rien poser
+  - {name: select, type: text}          # true|false, empty to set nothing
+  - {name: flipped, type: text}          # true|false, empty to set nothing

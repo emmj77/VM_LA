@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -n "{{instance}}" ] || { printf '%s\n' "$(msg argument_required 'instance' 'unpack_prefab')" >&2; exit 1; }
   case "{{completely}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'completely' 'unpack_prefab')""{{completely}}" >&2; exit 1 ;; esac
   set -- command --project-path "$P" unpack_prefab
@@ -35,4 +35,4 @@ COMMAND: |
 
 ARGS:
   - {name: instance, type: text}
-  - {name: completely, type: text}          # true|false, vide pour ne rien poser
+  - {name: completely, type: text}          # true|false, empty to set nothing

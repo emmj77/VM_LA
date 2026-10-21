@@ -19,5 +19,5 @@ op: "constraint.copy"
 
 ARGS:
   - {name: constraint, type: text}
-  - {name: owner, type: text}          # un de : OBJECT | BONE
-  - {name: report, type: text}          # true|false, vide pour ne rien poser
+  - {name: owner, type: text}          # one of: OBJECT | BONE
+  - {name: report, type: text}          # true|false, empty to set nothing

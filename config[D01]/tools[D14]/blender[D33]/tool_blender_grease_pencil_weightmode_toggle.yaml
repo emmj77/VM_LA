@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.weightmode_toggle"
 
 ARGS:
-  - {name: back, type: text}          # true|false, vide pour ne rien poser
+  - {name: back, type: text}          # true|false, empty to set nothing

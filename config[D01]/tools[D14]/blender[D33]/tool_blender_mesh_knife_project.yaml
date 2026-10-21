@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.knife_project"
 
 ARGS:
-  - {name: cut_through, type: text}          # true|false, vide pour ne rien poser
+  - {name: cut_through, type: text}          # true|false, empty to set nothing

@@ -1,17 +1,17 @@
 # id: Q06
-# LE GABARIT D UN FICHIER DE CODE. pas de code hors de ce gabarit.
+# THE TEMPLATE OF A CODE FILE. no code outside this template.
 #
-# l en-tete, deux lignes avant tout le reste :
-#   # id: Xnn                     l identite, la meme que dans setup[D11]/index_la.yaml
-#   # role: <une ligne anglaise>  ce que le fichier fait, pas ce qu il raconte
+# the header, two lines before everything else:
+#   # id: Xnn                     the identity, the same as in setup[D11]/index_la.yaml
+#   # role: <one English line>   what the file does, not what it tells
 #
-# ce qu un fichier de code ne fait jamais :
-#   aucun mot francais          ni nom, ni variable, ni commentaire : le francais vit dans les messages
-#   aucun chemin en dur         une brique passe par cfg, un serveur par l environnement
-#   aucun acces direct au maitre  cfg.sh, et programs/laconf.py. un corps ne parse jamais la_config
-#   aucun recit en commentaire  une ligne utile, sinon rien
+# what a code file never does:
+#   no French word             no name, no variable, no comment: French lives in the messages
+#   no hard-coded path          a brick goes through cfg, a server through the environment
+#   no direct access to the master: cfg.sh, and programs/laconf.py. a body never parses la_config
+#   no story in a comment      one useful line, otherwise nothing
 #
-# shell   dash. une brique est une fonction, pas un programme. set -eu a la racine seulement.
-# python  les serveurs se lancent, ils ne sont jamais sources.
+# shell   dash. a brick is a function, not a program. set -eu at the root only.
+# python  servers are launched, they are never sourced.
 #
-# l id se pose une fois : le fichier le porte, index_la.yaml le liste et le cite.
+# the id is set once: the file carries it, index_la.yaml lists and cites it.

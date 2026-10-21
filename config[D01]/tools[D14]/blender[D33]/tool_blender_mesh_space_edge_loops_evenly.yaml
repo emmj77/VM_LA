@@ -19,5 +19,5 @@ op: "mesh.space_edge_loops_evenly"
 
 ARGS:
   - {name: factor, type: text}
-  - {name: interpolation, type: text}          # un de : CUBIC | LINEAR
-  - {name: lock, type: text}          # 3 valeurs separees par des virgules
+  - {name: interpolation, type: text}          # one of: CUBIC | LINEAR
+  - {name: lock, type: text}          # 3 values separated by commas

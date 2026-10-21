@@ -18,4 +18,4 @@ machine: "blender"
 op: "curve.vertex_add"
 
 ARGS:
-  - {name: location, type: text}          # 3 valeurs separees par des virgules
+  - {name: location, type: text}          # 3 values separated by commas

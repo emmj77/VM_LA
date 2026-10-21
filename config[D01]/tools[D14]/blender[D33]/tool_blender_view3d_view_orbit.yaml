@@ -19,4 +19,4 @@ op: "view3d.view_orbit"
 
 ARGS:
   - {name: angle, type: text}
-  - {name: type, type: text}          # un de : ORBITLEFT | ORBITRIGHT | ORBITUP | ORBITDOWN
+  - {name: type, type: text}          # one of: ORBITLEFT | ORBITRIGHT | ORBITUP | ORBITDOWN

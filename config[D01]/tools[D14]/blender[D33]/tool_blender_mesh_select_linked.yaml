@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.select_linked"
 
 ARGS:
-  - {name: delimit, type: text}          # un de : NORMAL | MATERIAL | SEAM | SHARP | UV
+  - {name: delimit, type: text}          # one of: NORMAL | MATERIAL | SEAM | SHARP | UV

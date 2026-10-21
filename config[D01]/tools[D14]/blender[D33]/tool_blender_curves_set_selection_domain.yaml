@@ -18,4 +18,4 @@ machine: "blender"
 op: "curves.set_selection_domain"
 
 ARGS:
-  - {name: domain, type: text}          # un de : POINT | CURVE
+  - {name: domain, type: text}          # one of: POINT | CURVE

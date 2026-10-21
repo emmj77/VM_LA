@@ -19,5 +19,5 @@ op: "mesh.dissolve_limited"
 
 ARGS:
   - {name: angle_limit, type: text}
-  - {name: use_dissolve_boundaries, type: text}          # true|false, vide pour ne rien poser
-  - {name: delimit, type: text}          # un de : NORMAL | MATERIAL | SEAM | SHARP | UV
+  - {name: use_dissolve_boundaries, type: text}          # true|false, empty to set nothing
+  - {name: delimit, type: text}          # one of: NORMAL | MATERIAL | SEAM | SHARP | UV

@@ -4,14 +4,14 @@ date: "2026-10-18"
 tags: ["unity", "editeur", "jeu"]
 
 SUMMARY:
-  101: "Unity par quatre canaux : le CLI unity (216 commandes, arbre complet), le pipeline (upipe_, 150), Coplay (coplay_, 277) ; le Hub passe par le CLI."
-  102: "unity_tools_find 'mots' : fiche complete jusqu a 3 reponses ; unity_tools_find '' tout pour la liste par famille."
-  103: "Les 216 commandes du CLI viennent de `unity commands --format json` ; les canaux de code direct sont ecartes (shell, plugin, --execute-method)."
+  101: "Unity through four channels: the unity CLI (216 commands, full tree), the pipeline (upipe_, 150), Coplay (coplay_, 277); the Hub goes through the CLI."
+  102: "unity_tools_find 'words': full card up to 3 answers; unity_tools_find '' everything for the list by family."
+  103: "The 216 CLI commands come from `unity commands --format json`; the direct code channels are set aside (shell, plugin, --execute-method)"
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "unity_tools_find"
   201: "tool_show"
@@ -28,11 +28,11 @@ TOOLS:
 DOCS:
   300: "unity"
 PLAN:
-PERIMETER:
-  # LE PERIMETRE DE LA SKILL UNITY : le projet lui-meme.
+WRITABLE_WORKSPACE:
+  # THE WORKSPACE OF THE UNITY SKILL: the project itself.
   workspace: "/home/moussa/Documents/SUPREME_PMC"
-  # le dossier config/tools/unity : tout son inventaire est dans le perimetre
+  # the folder config/tools/unity: its whole inventory is in the toolset
   tools: "unity"
   type-file: ".cs .unity .prefab .asset .anim .json .md"
 ERROR:
-  600: "L'editeur ne repond pas : unity_status, puis le dire ; un build ou un play bloque la compilation."
+  600: "The editor does not answer: unity_status, then say it; a build or a play blocks compilation."

@@ -18,5 +18,5 @@ machine: "blender"
 op: "mball.select_similar"
 
 ARGS:
-  - {name: type, type: text}          # un de : TYPE | RADIUS | STIFFNESS | ROTATION
+  - {name: type, type: text}          # one of: TYPE | RADIUS | STIFFNESS | ROTATION
   - {name: threshold, type: text}

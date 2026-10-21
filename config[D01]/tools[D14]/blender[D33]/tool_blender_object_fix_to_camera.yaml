@@ -18,6 +18,6 @@ machine: "blender"
 op: "object.fix_to_camera"
 
 ARGS:
-  - {name: use_location, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_rotation, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_scale, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_location, type: text}          # true|false, empty to set nothing
+  - {name: use_rotation, type: text}          # true|false, empty to set nothing
+  - {name: use_scale, type: text}          # true|false, empty to set nothing

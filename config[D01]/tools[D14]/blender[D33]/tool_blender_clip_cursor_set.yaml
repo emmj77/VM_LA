@@ -18,4 +18,4 @@ machine: "blender"
 op: "clip.cursor_set"
 
 ARGS:
-  - {name: location, type: text}          # 2 valeurs separees par des virgules
+  - {name: location, type: text}          # 2 values separated by commas

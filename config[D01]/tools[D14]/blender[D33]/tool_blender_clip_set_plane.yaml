@@ -18,4 +18,4 @@ machine: "blender"
 op: "clip.set_plane"
 
 ARGS:
-  - {name: plane, type: text}          # un de : FLOOR | WALL
+  - {name: plane, type: text}          # one of: FLOOR | WALL

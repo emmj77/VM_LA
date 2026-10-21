@@ -18,4 +18,4 @@ machine: "blender"
 op: "anim.clear_useless_actions"
 
 ARGS:
-  - {name: only_unused, type: text}          # true|false, vide pour ne rien poser
+  - {name: only_unused, type: text}          # true|false, empty to set nothing

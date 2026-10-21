@@ -18,9 +18,9 @@ machine: "blender"
 op: "object.add_named"
 
 ARGS:
-  - {name: linked, type: text}          # true|false, vide pour ne rien poser
+  - {name: linked, type: text}          # true|false, empty to set nothing
   - {name: name, type: text}
   - {name: session_uid, type: int}
-  - {name: matrix, type: text}          # 16 valeurs separees par des virgules
+  - {name: matrix, type: text}          # 16 values separated by commas
   - {name: drop_x, type: int}
   - {name: drop_y, type: int}

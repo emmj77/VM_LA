@@ -18,5 +18,5 @@ machine: "blender"
 op: "mask.slide_point"
 
 ARGS:
-  - {name: slide_feather, type: text}          # true|false, vide pour ne rien poser
-  - {name: is_new_point, type: text}          # true|false, vide pour ne rien poser
+  - {name: slide_feather, type: text}          # true|false, empty to set nothing
+  - {name: is_new_point, type: text}          # true|false, empty to set nothing

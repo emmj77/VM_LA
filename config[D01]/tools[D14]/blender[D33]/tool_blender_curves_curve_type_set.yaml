@@ -18,5 +18,5 @@ machine: "blender"
 op: "curves.curve_type_set"
 
 ARGS:
-  - {name: type, type: text}          # un de : CATMULL_ROM | POLY | BEZIER | NURBS
-  - {name: use_handles, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: CATMULL_ROM | POLY | BEZIER | NURBS
+  - {name: use_handles, type: text}          # true|false, empty to set nothing

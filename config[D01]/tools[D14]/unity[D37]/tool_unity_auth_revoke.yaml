@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Stop an application from using your sign-in"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- auth revoke --no-banner --no-pager --non-interactive
@@ -39,4 +39,4 @@ COMMAND: |
 
 ARGS:
   - {name: application, type: text}
-  - {name: restore, type: text}   # true pour poser --restore ; Restore a previously revoked application
+  - {name: restore, type: text}   # true to set --restore ; Restore a previously revoked application

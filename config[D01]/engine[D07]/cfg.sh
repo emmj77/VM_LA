@@ -78,7 +78,7 @@ conf_has() {
 # a directory carries [Dxx] in its name; a file carries its id in the third column.
 # the path is rebuilt from the indentation, so the reader never needs the box drawing.
 _cfg_tree() {
-  # l INDEX est la seule liste : dossiers et fichiers, chacun avec son id.
+  # the INDEX is the only list: folders and files, each with its id.
   _exts=$(conf_list extensions 2>/dev/null | tr '
 ' ' ')
   awk -v want="$1" -v kind="$2" -v exts="$_exts" '
@@ -119,7 +119,7 @@ _cfg_map_build() {
 }
 
 _cfg_locate() {
-  # AU DEMARRAGE, LA_STATE N EST PAS ENCORE CONNU : on cherche directement, une fois.
+  # AT STARTUP, LA_STATE IS NOT KNOWN YET: the search is direct, once.
   if [ -z "${LA_STATE:-}" ]; then
     _pat=$(printf '%s' "$1" | sed 's/[][*?\\]/\\&/g')
     find "$LA_HOME" \( -name .git -o -name node_modules \) -prune -o -name "$_pat" -print -quit 2>/dev/null \
@@ -128,8 +128,8 @@ _cfg_locate() {
   fi
   _m=$LA_STATE/tree.map
   [ -s "$_m" ] || _cfg_map_build
-  # un nom absent de la carte ne declenche AUCUNE reconstruction : la carte est faite au
-  # demarrage et refaite par la commande map, sinon chaque cle inconnue coutait un parcours.
+  # a name absent from the map triggers NO rebuild: the map is made at
+  # startup and remade by the map command, otherwise every unknown key cost a walk.
   awk -F'\t' -v n="$1" '$1 == n { print $2; exit }' "$_m"
 }
 
@@ -175,8 +175,8 @@ _cfg_here() {
 }
 
 # cfg_path <key> : a directory key resolved against the root
-# _cfg_family <name> : l identifiant que l index donne a ce nom. la lettre dit la zone,
-# et un fichier d etat (N) vit dans state, meme avant d exister sur le disque.
+# _cfg_family <name>: the id the index gives that name. the letter says the zone,
+# and a state file (N) lives in state, even before it exists on disk.
 _cfg_family() {
   awk -v n="$1" '
     /^  - \{id: "/ {

@@ -19,4 +19,4 @@ op: "action.clean"
 
 ARGS:
   - {name: threshold, type: text}
-  - {name: channels, type: text}          # true|false, vide pour ne rien poser
+  - {name: channels, type: text}          # true|false, empty to set nothing

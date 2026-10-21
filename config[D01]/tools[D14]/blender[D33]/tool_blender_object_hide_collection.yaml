@@ -19,5 +19,5 @@ op: "object.hide_collection"
 
 ARGS:
   - {name: collection_index, type: int}
-  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, empty to set nothing
+  - {name: extend, type: text}          # true|false, empty to set nothing

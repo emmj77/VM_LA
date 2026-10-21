@@ -18,4 +18,4 @@ machine: "blender"
 op: "sequencer.select_handles"
 
 ARGS:
-  - {name: side, type: text}          # un de : LEFT | RIGHT | BOTH | LEFT_NEIGHBOR | RIGHT_NEIGHBOR | BOTH_NEIGHBORS
+  - {name: side, type: text}          # one of: LEFT | RIGHT | BOTH | LEFT_NEIGHBOR | RIGHT_NEIGHBOR | BOTH_NEIGHBORS

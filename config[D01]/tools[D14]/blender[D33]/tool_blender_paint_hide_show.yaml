@@ -22,7 +22,7 @@ ARGS:
   - {name: xmax, type: int}
   - {name: ymin, type: int}
   - {name: ymax, type: int}
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
-  - {name: action, type: text}          # un de : HIDE | SHOW
-  - {name: area, type: text}          # un de : OUTSIDE | Inside
-  - {name: use_front_faces_only, type: text}          # true|false, vide pour ne rien poser
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing
+  - {name: action, type: text}          # one of: HIDE | SHOW
+  - {name: area, type: text}          # one of: OUTSIDE | Inside
+  - {name: use_front_faces_only, type: text}          # true|false, empty to set nothing

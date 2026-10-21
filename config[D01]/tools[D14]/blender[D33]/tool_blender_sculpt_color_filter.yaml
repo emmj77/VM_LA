@@ -23,7 +23,7 @@ ARGS:
   - {name: strength, type: text}
   - {name: iteration_count, type: int}
   - {name: event_history, type: text}
-  - {name: type, type: text}          # un de : FILL | HUE | SATURATION | VALUE | BRIGHTNESS | CONTRAST | SMOOTH | RED | GREEN | BLUE
-  - {name: fill_color, type: text}          # 3 valeurs separees par des virgules
-  - {name: use_immediate, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_secondary_color, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: FILL | HUE | SATURATION | VALUE | BRIGHTNESS | CONTRAST | SMOOTH | RED | GREEN | BLUE
+  - {name: fill_color, type: text}          # 3 values separated by commas
+  - {name: use_immediate, type: text}          # true|false, empty to set nothing
+  - {name: use_secondary_color, type: text}          # true|false, empty to set nothing

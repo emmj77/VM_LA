@@ -18,4 +18,4 @@ machine: "blender"
 op: "font.style_toggle"
 
 ARGS:
-  - {name: style, type: text}          # un de : BOLD | ITALIC | UNDERLINE | SMALL_CAPS
+  - {name: style, type: text}          # one of: BOLD | ITALIC | UNDERLINE | SMALL_CAPS

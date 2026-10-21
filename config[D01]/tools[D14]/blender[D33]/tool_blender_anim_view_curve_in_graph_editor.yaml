@@ -18,5 +18,5 @@ machine: "blender"
 op: "anim.view_curve_in_graph_editor"
 
 ARGS:
-  - {name: all, type: text}          # true|false, vide pour ne rien poser
-  - {name: isolate, type: text}          # true|false, vide pour ne rien poser
+  - {name: all, type: text}          # true|false, empty to set nothing
+  - {name: isolate, type: text}          # true|false, empty to set nothing

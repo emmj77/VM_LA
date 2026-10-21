@@ -19,5 +19,5 @@ op: "wm.interface_theme_preset_remove"
 
 ARGS:
   - {name: name, type: text}
-  - {name: remove_name, type: text}          # true|false, vide pour ne rien poser
-  - {name: remove_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: remove_name, type: text}          # true|false, empty to set nothing
+  - {name: remove_active, type: text}          # true|false, empty to set nothing

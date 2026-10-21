@@ -14,9 +14,9 @@ RULES:
 DESCRIPTION: "the register against the bodies by id, and every path they cite"
 COMMAND: |
   _op=${1:-table}
-  # LA TABLE DES CORPS SE COMPARE AU REGISTRE DES OUTILS (MOUSSA, 21/10) : _door_register
-  # rend le registre du moteur quand la porte appelle un outil moteur, donc 41 identifiants
-  # contre 2535 corps, et 2494 faux etrangers.
+  # THE TABLE OF BODIES IS COMPARED TO THE TOOL REGISTER (MOUSSA, 21/10): _door_register
+  # returns the engine register when the door calls an engine tool, so 41 ids
+  # against 2535 bodies, and 2494 false strangers.
   _reg=$(cfg abs registry 2>/dev/null) || _reg=$(_door_register) || { printf 'FAULT no register\n'; exit 0; }
   [ -r "$_reg" ] || { printf 'FAULT the register is not on the disk\n'; exit 0; }
   _td=$(cfg path tools) || { printf 'FAULT no tools directory\n'; exit 0; }
@@ -31,7 +31,7 @@ COMMAND: |
       END { if (dup != "") printf "FAULT the register uses an id twice:%s\n", dup }
     ' "$_reg" > "$_t.reg"
     # the body says its own id: the file name is not the identity.
-    # UN SEUL awk POUR LES 2500 CORPS (MOUSSA, 21/10) : un awk par fichier prenait 26 s.
+    # ONE awk FOR THE 2500 BODIES (MOUSSA, 21/10): one awk per file took 26 s.
     awk '
       FNR == 1 {
         if (name != "" && id == "") printf "MISSING\t%s\n", name
@@ -46,8 +46,8 @@ COMMAND: |
     grep '^MISSING' "$_t.all" | cut -f2 | while IFS= read -r _m; do printf 'FAULT %s carries no id\n' "${_m#$LA_HOME/}"; done
     grep -v '^MISSING' "$_t.all" | sort > "$_t.bodies"
     cut -f1 "$_t.reg" | sort > "$_t.rid"
-    # LE DOCTEUR EST UN OUTIL MOTEUR (MOUSSA, 21/10) : ses corps portent des identifiants
-    # ranges dans registry-engine.yaml, pas dans registry.yaml. On reunit les deux.
+    # THE DOCTOR IS AN ENGINE TOOL (MOUSSA, 21/10): its bodies carry ids
+    # kept in registry-engine.yaml, not in registry.yaml. Both are joined.
     _re=$(cfg abs registry_engine 2>/dev/null)
     [ -n "$_re" ] && awk '/^[ \t]*- id:/ { v = $0 ; sub(/.*- id:[ \t]*/, "", v) ; gsub(/[^0-9A-Za-z]/, "", v) ; print v }' "$_re" >> "$_t.rid"
     sort -u "$_t.rid" > "$_t.rid2" && mv "$_t.rid2" "$_t.rid"

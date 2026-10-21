@@ -19,4 +19,4 @@ op: "wm.drop_blend_file"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: use_scripts, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_scripts, type: text}          # true|false, empty to set nothing

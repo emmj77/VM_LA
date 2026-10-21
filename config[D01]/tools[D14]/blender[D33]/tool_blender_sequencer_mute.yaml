@@ -18,4 +18,4 @@ machine: "blender"
 op: "sequencer.mute"
 
 ARGS:
-  - {name: unselected, type: text}          # true|false, vide pour ne rien poser
+  - {name: unselected, type: text}          # true|false, empty to set nothing

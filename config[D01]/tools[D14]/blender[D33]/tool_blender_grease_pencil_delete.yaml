@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.delete"
 
 ARGS:
-  - {name: mode, type: text}          # un de : ALL | STROKES | FILLS
+  - {name: mode, type: text}          # one of: ALL | STROKES | FILLS

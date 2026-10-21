@@ -4,14 +4,14 @@ date: "2026-10-18"
 tags: ["krita", "dessin", "peinture", "calque", "kra"]
 
 SUMMARY:
-  101: "Krita 5.3.4 par le plugin kritamcp (HTTP du plugin, 127.0.0.1:5678) : 78 outils, meme porte que les autres."
-  102: "krita_tools_find 'mots' : fiche complete jusqu a 3 reponses ; krita_tools_find '' tout pour la liste."
-  103: "Les gestes de tous les jours sont dans la palette ; le reste se fouille, jamais charge en masse."
+  101: "Krita 5.3.4 through the kritamcp plugin (plugin HTTP, 127.0.0.1:5678): 78 tools, same door as the others."
+  102: "krita_tools_find 'words': full card up to 3 answers; krita_tools_find '' everything for the list."
+  103: "The everyday acts are in the toolset; the rest is searched, never loaded in bulk."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "krita_tools_find"
   201: "tool_show"
@@ -28,10 +28,10 @@ TOOLS:
 DOCS:
   300: "krita"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
-  # le dossier config/tools/krita : tout son inventaire est dans le perimetre
+  # the folder config/tools/krita: its whole inventory is in the toolset
   tools: "krita"
   type-file: ".kra .krz .png .jpg .webp"
 ERROR:
-  600: "Krita ne repond pas : krita_status d'abord, puis le dire ; ne pas enchainer les gestes a l'aveugle."
+  600: "Krita does not answer: krita_status first, then say it; never chain acts blindly."

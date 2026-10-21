@@ -18,9 +18,9 @@ machine: "blender"
 op: "uv.shortest_path_pick"
 
 ARGS:
-  - {name: use_face_step, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_topology_distance, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_fill, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_face_step, type: text}          # true|false, empty to set nothing
+  - {name: use_topology_distance, type: text}          # true|false, empty to set nothing
+  - {name: use_fill, type: text}          # true|false, empty to set nothing
   - {name: skip, type: int}
   - {name: nth, type: int}
   - {name: offset, type: int}

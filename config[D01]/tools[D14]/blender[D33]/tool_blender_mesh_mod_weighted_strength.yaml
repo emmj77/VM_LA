@@ -18,5 +18,5 @@ machine: "blender"
 op: "mesh.mod_weighted_strength"
 
 ARGS:
-  - {name: set, type: text}          # true|false, vide pour ne rien poser
-  - {name: face_strength, type: text}          # un de : WEAK | MEDIUM | STRONG
+  - {name: set, type: text}          # true|false, empty to set nothing
+  - {name: face_strength, type: text}          # one of: WEAK | MEDIUM | STRONG

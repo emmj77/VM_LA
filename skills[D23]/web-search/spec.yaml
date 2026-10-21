@@ -1,4 +1,4 @@
 id: "M03"
-# spec de la skill web-search
-# L'ARCHITECTURE : comment cette skill est faite (le canon).
+# spec of the skill web-search
+THE ARCHITECTURE: how this skill is built (the canon).
 skill: "web-search"

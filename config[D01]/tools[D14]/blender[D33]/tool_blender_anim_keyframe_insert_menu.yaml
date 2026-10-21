@@ -18,5 +18,5 @@ machine: "blender"
 op: "anim.keyframe_insert_menu"
 
 ARGS:
-  - {name: type, type: text}          # un de : DEFAULT
-  - {name: always_prompt, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: DEFAULT
+  - {name: always_prompt, type: text}          # true|false, empty to set nothing

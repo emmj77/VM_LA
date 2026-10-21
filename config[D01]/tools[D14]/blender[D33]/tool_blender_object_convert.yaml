@@ -18,9 +18,9 @@ machine: "blender"
 op: "object.convert"
 
 ARGS:
-  - {name: target, type: text}          # un de : CURVE | MESH | POINTCLOUD | CURVES | GREASEPENCIL
-  - {name: keep_original, type: text}          # true|false, vide pour ne rien poser
-  - {name: merge_customdata, type: text}          # true|false, vide pour ne rien poser
+  - {name: target, type: text}          # one of: CURVE | MESH | POINTCLOUD | CURVES | GREASEPENCIL
+  - {name: keep_original, type: text}          # true|false, empty to set nothing
+  - {name: merge_customdata, type: text}          # true|false, empty to set nothing
   - {name: thickness, type: int}
-  - {name: faces, type: text}          # true|false, vide pour ne rien poser
+  - {name: faces, type: text}          # true|false, empty to set nothing
   - {name: offset, type: text}

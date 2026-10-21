@@ -20,4 +20,4 @@ op: "console.history_append"
 ARGS:
   - {name: text, type: text}
   - {name: current_character, type: int}
-  - {name: remove_duplicates, type: text}          # true|false, vide pour ne rien poser
+  - {name: remove_duplicates, type: text}          # true|false, empty to set nothing

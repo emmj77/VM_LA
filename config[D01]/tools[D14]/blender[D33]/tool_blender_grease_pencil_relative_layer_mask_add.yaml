@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.relative_layer_mask_add"
 
 ARGS:
-  - {name: mode, type: text}          # un de : ABOVE | BELOW
+  - {name: mode, type: text}          # one of: ABOVE | BELOW

@@ -18,7 +18,7 @@ machine: "blender"
 op: "object.align"
 
 ARGS:
-  - {name: bb_quality, type: text}          # true|false, vide pour ne rien poser
-  - {name: align_mode, type: text}          # un de : OPT_1 | OPT_2 | OPT_3
-  - {name: relative_to, type: text}          # un de : OPT_1 | OPT_2 | OPT_3 | OPT_4
-  - {name: align_axis, type: text}          # un de : X | Y | Z
+  - {name: bb_quality, type: text}          # true|false, empty to set nothing
+  - {name: align_mode, type: text}          # one of: OPT_1 | OPT_2 | OPT_3
+  - {name: relative_to, type: text}          # one of: OPT_1 | OPT_2 | OPT_3 | OPT_4
+  - {name: align_axis, type: text}          # one of: X | Y | Z

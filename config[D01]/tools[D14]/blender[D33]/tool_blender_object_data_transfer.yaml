@@ -18,21 +18,21 @@ machine: "blender"
 op: "object.data_transfer"
 
 ARGS:
-  - {name: use_reverse_transfer, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_freeze, type: text}          # true|false, vide pour ne rien poser
-  - {name: data_type, type: text}          # un de : VGROUP_WEIGHTS | BEVEL_WEIGHT_VERT | COLOR_VERTEX | SHARP_EDGE | SEAM | CREASE | BEVEL_WEIGHT_EDGE | FREESTYLE_EDGE | CUSTOM_NORMAL | COLOR_CORNER | UV | SMOOTH | FREESTYLE_FACE
-  - {name: use_create, type: text}          # true|false, vide pour ne rien poser
-  - {name: vert_mapping, type: text}          # un de : TOPOLOGY | NEAREST | EDGE_NEAREST | EDGEINTERP_NEAREST | POLY_NEAREST | POLYINTERP_NEAREST | POLYINTERP_VNORPROJ
-  - {name: edge_mapping, type: text}          # un de : TOPOLOGY | VERT_NEAREST | NEAREST | POLY_NEAREST | EDGEINTERP_VNORPROJ
-  - {name: loop_mapping, type: text}          # un de : TOPOLOGY | NEAREST_NORMAL | NEAREST_POLYNOR | NEAREST_POLY | POLYINTERP_NEAREST | POLYINTERP_LNORPROJ
-  - {name: poly_mapping, type: text}          # un de : TOPOLOGY | NEAREST | NORMAL | POLYINTERP_PNORPROJ
-  - {name: use_auto_transform, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_object_transform, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_max_distance, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_reverse_transfer, type: text}          # true|false, empty to set nothing
+  - {name: use_freeze, type: text}          # true|false, empty to set nothing
+  - {name: data_type, type: text}          # one of: VGROUP_WEIGHTS | BEVEL_WEIGHT_VERT | COLOR_VERTEX | SHARP_EDGE | SEAM | CREASE | BEVEL_WEIGHT_EDGE | FREESTYLE_EDGE | CUSTOM_NORMAL | COLOR_CORNER | UV | SMOOTH | FREESTYLE_FACE
+  - {name: use_create, type: text}          # true|false, empty to set nothing
+  - {name: vert_mapping, type: text}          # one of: TOPOLOGY | NEAREST | EDGE_NEAREST | EDGEINTERP_NEAREST | POLY_NEAREST | POLYINTERP_NEAREST | POLYINTERP_VNORPROJ
+  - {name: edge_mapping, type: text}          # one of: TOPOLOGY | VERT_NEAREST | NEAREST | POLY_NEAREST | EDGEINTERP_VNORPROJ
+  - {name: loop_mapping, type: text}          # one of: TOPOLOGY | NEAREST_NORMAL | NEAREST_POLYNOR | NEAREST_POLY | POLYINTERP_NEAREST | POLYINTERP_LNORPROJ
+  - {name: poly_mapping, type: text}          # one of: TOPOLOGY | NEAREST | NORMAL | POLYINTERP_PNORPROJ
+  - {name: use_auto_transform, type: text}          # true|false, empty to set nothing
+  - {name: use_object_transform, type: text}          # true|false, empty to set nothing
+  - {name: use_max_distance, type: text}          # true|false, empty to set nothing
   - {name: max_distance, type: text}
   - {name: ray_radius, type: text}
   - {name: islands_precision, type: text}
-  - {name: layers_select_src, type: text}          # un de : ACTIVE | ALL | BONE_SELECT | BONE_DEFORM
-  - {name: layers_select_dst, type: text}          # un de : ACTIVE | NAME | INDEX
-  - {name: mix_mode, type: text}          # un de : REPLACE | ABOVE_THRESHOLD | BELOW_THRESHOLD | MIX | ADD | SUB | MUL
+  - {name: layers_select_src, type: text}          # one of: ACTIVE | ALL | BONE_SELECT | BONE_DEFORM
+  - {name: layers_select_dst, type: text}          # one of: ACTIVE | NAME | INDEX
+  - {name: mix_mode, type: text}          # one of: REPLACE | ABOVE_THRESHOLD | BELOW_THRESHOLD | MIX | ADD | SUB | MUL
   - {name: mix_factor, type: text}

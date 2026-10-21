@@ -21,7 +21,7 @@ ARGS:
   - {name: x, type: int}
   - {name: y, type: int}
   - {name: radius, type: int}
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
-  - {name: mode, type: text}          # un de : SET | ADD | SUB
-  - {name: include_handles, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_curve_selection, type: text}          # true|false, vide pour ne rien poser
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing
+  - {name: mode, type: text}          # one of: SET | ADD | SUB
+  - {name: include_handles, type: text}          # true|false, empty to set nothing
+  - {name: use_curve_selection, type: text}          # true|false, empty to set nothing

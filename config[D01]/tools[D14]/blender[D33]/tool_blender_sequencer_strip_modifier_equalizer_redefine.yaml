@@ -18,5 +18,5 @@ machine: "blender"
 op: "sequencer.strip_modifier_equalizer_redefine"
 
 ARGS:
-  - {name: graphs, type: text}          # un de : SIMPLE | DOUBLE | TRIPLE
+  - {name: graphs, type: text}          # one of: SIMPLE | DOUBLE | TRIPLE
   - {name: name, type: text}

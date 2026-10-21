@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["trash-file", "corbeille", "supprimer", "ranger"]
 
 SUMMARY:
-  101: "Mettre un fichier a la corbeille (jamais supprimer)."
-  102: "trash_file deplace vers la corbeille ; rien n'est efface."
-  103: "On NOMME la cible, on ne devine pas un motif."
+  101: "Send a file to the trash (never delete)."
+  102: "trash_file moves to the trash; nothing is erased."
+  103: "The target is NAMED, no pattern is guessed."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "trash_file"
   201: "list_dir"
@@ -20,8 +20,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Cible absente : le dire, ne rien forcer."
+  600: "Target missing: say it, force nothing."

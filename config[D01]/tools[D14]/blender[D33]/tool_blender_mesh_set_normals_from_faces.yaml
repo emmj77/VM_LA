@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.set_normals_from_faces"
 
 ARGS:
-  - {name: keep_sharp, type: text}          # true|false, vide pour ne rien poser
+  - {name: keep_sharp, type: text}          # true|false, empty to set nothing

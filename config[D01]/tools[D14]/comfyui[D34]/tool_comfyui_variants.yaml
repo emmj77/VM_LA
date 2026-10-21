@@ -34,7 +34,7 @@ COMMAND: |
   SERVICEK=http://127.0.0.1:5678
   curl -sf --max-time 10 "$SERVICEK/health" >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_no_answer)""$SERVICEK" >&2; exit 1; }
   K() { curl -sS --max-time "$2" -H 'Content-Type: application/json' -d "$1" "$SERVICEK/"; }
-  calque_seul() {          # $1 = le calque a rendre, $2 = le PNG de sortie
+  calque_seul() {          # $1 = the layer to render, $2 = the output PNG
     K "$(jq -cn --arg p "$FILE" '{action:"open_file",params:{path:$p}}')" 180 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_cannot_open_p)""$FILE" >&2; return 1; }
     LIST=$(K '{"action":"list_layers","params":{}}' 60)
     NAMES=$(printf '%s' "$LIST" | jq -r '.layers[].name')
@@ -56,7 +56,7 @@ COMMAND: |
   [ -n "$NAME" ] || { printf '%s\n' "$(msg flat_refused)" >&2; exit 1; }
   set -- $(awk -v l="$L" -v h="$H" -v b="${LA_COMFY_SIZE:-1024}" 'BEGIN{e=sqrt(b*b/(l*h)); tw=int(l*e)/64*64; th=int(h*e)/64*64; if(tw<64)tw=64; if(th<64)th=64; printf "%d %d", tw, th}')
   TW=$1; TH=$2
-  rendre() {              # $1 = graphe deja construit ; pose $RENDER, ou refuse et sort
+  rendre() {              # $1 = the graph already built; sets $RENDER, or refuses and exits
     R=$(jq -cn --argjson p "$1" '{prompt:$p,client_id:"la"}' | curl -s -H 'Content-Type: application/json' --data-binary @- "$SERVICE/prompt")
     PID=$(printf '%s' "$R" | jq -r '.prompt_id // empty')
     [ -n "$PID" ] || { printf '%s\n' "$(msg graph_rejected)""$(printf '%s' "$R" | jq -c '.error // .node_errors // .' | cut -c1-400)" >&2; exit 1; }
@@ -71,7 +71,7 @@ COMMAND: |
     curl -s -G --data-urlencode "filename=$(printf '%s' "$IMG" | cut -f1)" --data-urlencode "subfolder=$(printf '%s' "$IMG" | cut -f2)" --data-urlencode "type=$(printf '%s' "$IMG" | cut -f3)" "$SERVICE/view" -o "$RENDER"
     [ -s "$RENDER" ] || { printf '%s\n' "$(msg render_not_down)" >&2; exit 1; }
   }
-  aplatir() {              # $1 = masque, $2 = guide, $3 = sortie ; pose le compte des regions
+  aplatir() {              # $1 = mask, $2 = guide, $3 = output; sets the region count
     RA=$(curl -sS --max-time 600 -H 'Content-Type: application/json' -d "$(jq -cn --arg m "$1" --arg g "$2" --arg o "$3" '{mask:$m,guide:$g,out:$o}')" "$APLAT/")
     printf '%s' "$RA" | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg flattener_refused)""$(printf '%s' "$RA" | jq -r '.error.message // "reponse illisible"')" >&2; exit 1; }
     REGIONS=$(printf '%s' "$RA" | jq -r .regions); GRANDES=$(printf '%s' "$RA" | jq -r .grandes); PETITES=$(printf '%s' "$RA" | jq -r .petites)
@@ -119,8 +119,8 @@ COMMAND: |
   printf "planche-contact de %s tirages : %s (%s octets)\n" "$N" "$OUTPUT" "$(wc -c < "$OUTPUT")"
 
 ARGS:
-  - {name: source, type: path}                # le dessin .kra, relatif a l'espace du skill
-  - {name: layer, type: text}                 # le calque d'encrage = le masque (vide : encrage)
-  - {name: count, type: int}                  # le nombre de tirages, 1 a 9 (vide : 4)
-  - {name: output, type: path}                # la planche-contact, dans l'espace du skill
-  - {name: style, type: text, stdin: true}    # le sujet, en texte libre : par l'ENTREE STANDARD
+  - {name: source, type: path}                # the .kra drawing, relative to the space of the skill
+  - {name: layer, type: text}                 # the ink layer = the mask (empty: encrage)
+  - {name: count, type: int}                  # the number of draws, 1 to 9 (empty: 4)
+  - {name: output, type: path}                # the contact sheet, in the space of the skill
+  - {name: style, type: text, stdin: true}    # the subject, free text: on STANDARD INPUT

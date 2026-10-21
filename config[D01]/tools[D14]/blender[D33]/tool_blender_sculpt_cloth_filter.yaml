@@ -23,10 +23,10 @@ ARGS:
   - {name: strength, type: text}
   - {name: iteration_count, type: int}
   - {name: event_history, type: text}
-  - {name: type, type: text}          # un de : GRAVITY | INFLATE | EXPAND | PINCH | SCALE
-  - {name: force_axis, type: text}          # un de : X | Y | Z
-  - {name: orientation, type: text}          # un de : LOCAL | WORLD | VIEW
+  - {name: type, type: text}          # one of: GRAVITY | INFLATE | EXPAND | PINCH | SCALE
+  - {name: force_axis, type: text}          # one of: X | Y | Z
+  - {name: orientation, type: text}          # one of: LOCAL | WORLD | VIEW
   - {name: cloth_mass, type: text}
   - {name: cloth_damping, type: text}
-  - {name: use_face_sets, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_collisions, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_face_sets, type: text}          # true|false, empty to set nothing
+  - {name: use_collisions, type: text}          # true|false, empty to set nothing

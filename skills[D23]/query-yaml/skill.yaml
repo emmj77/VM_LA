@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["query-yaml", "yaml", "requete", "config"]
 
 SUMMARY:
-  101: "Interroger un fichier YAML et rendre le champ demande."
-  102: "yq_query lit le fichier par son chemin ; read_file ouvre le fichier entier."
-  103: "On rend le chemin EXACT interroge, avec sa valeur."
+  101: "Query a YAML file and return the field asked for."
+  102: "yq_query reads the file by its path; read_file opens the whole file."
+  103: "The EXACT path queried is returned, with its value."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "yq_query"
   201: "read_file"
@@ -21,8 +21,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".yaml .yml"
 ERROR:
-  600: "Le chemin ne tombe sur rien : le dire, et montrer les cles voisines."
+  600: "The path lands on nothing: say it, and show the neighbouring keys."

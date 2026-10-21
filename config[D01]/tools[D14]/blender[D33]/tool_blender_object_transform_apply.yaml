@@ -18,9 +18,9 @@ machine: "blender"
 op: "object.transform_apply"
 
 ARGS:
-  - {name: location, type: text}          # true|false, vide pour ne rien poser
-  - {name: rotation, type: text}          # true|false, vide pour ne rien poser
-  - {name: scale, type: text}          # true|false, vide pour ne rien poser
-  - {name: properties, type: text}          # true|false, vide pour ne rien poser
-  - {name: corrective_flip_normals, type: text}          # true|false, vide pour ne rien poser
-  - {name: isolate_users, type: text}          # true|false, vide pour ne rien poser
+  - {name: location, type: text}          # true|false, empty to set nothing
+  - {name: rotation, type: text}          # true|false, empty to set nothing
+  - {name: scale, type: text}          # true|false, empty to set nothing
+  - {name: properties, type: text}          # true|false, empty to set nothing
+  - {name: corrective_flip_normals, type: text}          # true|false, empty to set nothing
+  - {name: isolate_users, type: text}          # true|false, empty to set nothing

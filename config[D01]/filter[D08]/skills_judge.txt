@@ -1,0 +1,105 @@
+# JUGE DES SKILLS : trois demandes par skill, ecrites A PART du corpus.
+# Sert a mesurer : jamais donne a l'entrainement.
+
+__label__analyze-image regarde cette capture et dis moi ce qu'elle montre
+__label__analyze-image que voit on sur cette image
+__label__analyze-image analyse ce dessin
+__label__asset-builder fabrique un nouvel asset 3d
+__label__asset-builder genere un glb a partir des parts
+__label__asset-builder cree un objet 3d valide
+__label__blender dans blender ajoute une lumiere
+__label__blender cherche l'operateur bpy du bevel
+__label__blender ouvre le fichier blend
+__label__comfyui genere moi une image onirique
+__label__comfyui colorie cette photo
+__label__comfyui le serveur comfyui repond il
+__label__computer-debug la machine est lente, debogue
+__label__computer-debug quelles erreurs dans les logs du systeme
+__label__computer-debug pourquoi ce service plante
+__label__delegate-work delegue cette analyse
+__label__delegate-work confie la tache a un sous agent
+__label__delegate-work fais faire ce travail par un agent
+__label__disk-report combien d'espace libre sur le disque
+__label__disk-report quels dossiers prennent le plus de place
+__label__disk-report fais un rapport d'espace
+__label__download-file telecharge ce pdf
+__label__download-file recupere le fichier depuis ce lien
+__label__download-file ramene cette archive ici
+__label__edit-file corrige la valeur dans le script
+__label__edit-file remplace cette ligne du fichier
+__label__edit-file modifie la config et repose le fichier
+__label__edit-table ajoute une entree a la table
+__label__edit-table retire la ligne trois du tableau
+__label__edit-table desactive cette ligne du registre
+__label__git committe ce changement
+__label__git montre le diff
+__label__git quel est l'etat du depot
+__label__krita change le pinceau dans krita
+__label__krita ouvre le kra et ajoute un calque
+__label__krita exporte le dessin en png
+__label__list-files montre le contenu du dossier
+__label__list-files liste les fichiers du repertoire
+__label__list-files quels fichiers dans le dossier
+__label__manage-processes tue le processus bloque
+__label__manage-processes liste les processus java
+__label__manage-processes arrete le serveur qui ne repond pas
+__label__manipulation-3d convertis le mesh en fbx
+__label__manipulation-3d image vers glb
+__label__manipulation-3d mesure ce modele 3d
+__label__models-bench compare ces deux modeles
+__label__models-bench interroge le modele local
+__label__models-bench liste les modeles charges
+__label__phone-tunnel le telephone repond il sur le pont
+__label__phone-tunnel teste adb et le telephone
+__label__phone-tunnel verifie le tunnel android
+__label__program-manage installe ce logiciel
+__label__program-manage demarre ce logiciel et laisse le ouvert
+__label__program-manage desinstalle ce paquet
+__label__query-yaml lis la cle port du yaml
+__label__query-yaml quelle est la valeur de share
+__label__query-yaml sors le champ model du fichier de conf
+__label__read-log lis le journal du service
+__label__read-log quelles erreurs dans le log
+__label__read-log cite la ligne d'erreur
+__label__search-code ou est cette fonction dans le code
+__label__search-code cherche cet appel dans les sources
+__label__search-code trouve la classe dans le projet
+__label__search-files trouve le fichier rapport
+__label__search-files cherche ce fichier par son nom
+__label__search-files localise le document sur le disque
+__label__search-memory cherche la cle api dans ma memoire
+__label__search-memory retrouve la conversation sur ce sujet
+__label__search-memory qu'est ce que je t'ai dit sur la machine
+__label__speak-text lis ce texte a voix haute
+__label__speak-text prononce cette reponse
+__label__speak-text genere la voix de ce paragraphe
+__label__summarize-document resume ce rapport
+__label__summarize-document fais un resume de ce document
+__label__summarize-document condense ce texte long
+__label__tool-manager ajoute un outil au registre
+__label__tool-manager modifie la palette du skill
+__label__tool-manager enleve un outil de la table des tools
+__label__transcribe-audio transcris ce message vocal
+__label__transcribe-audio ecris ce que dit l'audio
+__label__transcribe-audio transcribe ce wav
+__label__translate-document traduis ce texte en anglais
+__label__translate-document donne la version francaise du document
+__label__translate-document traduis fidelement ce rapport
+__label__trash-file jette ce fichier a la corbeille
+__label__trash-file mets ce dossier a la corbeille
+__label__trash-file supprime proprement cet ancien fichier
+__label__unity cherche la commande coplay
+__label__unity fais tourner la scene dans l'editeur unity
+__label__unity quelles commandes offre le cli unity
+__label__web-agent ouvre cette page dans chromium
+__label__web-agent clique sur le bouton de la page
+__label__web-agent lis cette page bloquee
+__label__web-search cherche cette information sur le web
+__label__web-search ramene les sources sur ce sujet
+__label__web-search trouve la doc officielle en ligne
+__label__workshop modifie la spec du skill actif
+__label__workshop maintiens la table des tools de l'atelier a jour
+__label__workshop corrige un champ de la skill
+__label__write-spec ecris la regle dans la spec
+__label__write-spec redige une section de la spec
+__label__write-spec ajoute cette loi a la spec du skill

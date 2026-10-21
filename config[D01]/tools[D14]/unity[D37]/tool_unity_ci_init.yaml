@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Write a CI workflow that installs the CLI, restores the caches, installs the editor, activates a license, tests, and builds"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- ci init --no-banner --no-pager --non-interactive
@@ -46,5 +46,5 @@ ARGS:
   - {name: provider, type: text}   # CI provider to generate a workflow for
   - {name: target, type: text}   # Build target the generated workflow builds
   - {name: shards, type: text}   # Split the tests across this many parallel jobs (omit for a single job)
-  - {name: overwrite, type: text}   # true pour poser --overwrite ; Replace an existing workflow file
-  - {name: dry_run, type: text}   # true pour poser --dry-run ; Print the workflow to stdout without writing it
+  - {name: overwrite, type: text}   # true to set --overwrite ; Replace an existing workflow file
+  - {name: dry_run, type: text}   # true to set --dry-run ; Print the workflow to stdout without writing it

@@ -18,5 +18,5 @@ machine: "blender"
 op: "rigidbody.mass_calculate"
 
 ARGS:
-  - {name: material, type: text}          # un de : DEFAULT
+  - {name: material, type: text}          # one of: DEFAULT
   - {name: density, type: text}

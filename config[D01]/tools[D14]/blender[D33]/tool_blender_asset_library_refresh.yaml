@@ -18,5 +18,5 @@ machine: "blender"
 op: "asset.library_refresh"
 
 ARGS:
-  - {name: use_remote_listing, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_shift_for_remote_listing, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_remote_listing, type: text}          # true|false, empty to set nothing
+  - {name: use_shift_for_remote_listing, type: text}          # true|false, empty to set nothing

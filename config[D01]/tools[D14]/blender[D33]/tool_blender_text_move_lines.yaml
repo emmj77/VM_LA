@@ -18,4 +18,4 @@ machine: "blender"
 op: "text.move_lines"
 
 ARGS:
-  - {name: direction, type: text}          # un de : UP | DOWN
+  - {name: direction, type: text}          # one of: UP | DOWN

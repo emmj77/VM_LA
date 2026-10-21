@@ -18,4 +18,4 @@ machine: "blender"
 op: "wm.read_factory_userpref"
 
 ARGS:
-  - {name: use_factory_startup_app_template_only, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_factory_startup_app_template_only, type: text}          # true|false, empty to set nothing

@@ -20,4 +20,4 @@ op: "mesh.fill_grid"
 ARGS:
   - {name: span, type: int}
   - {name: offset, type: int}
-  - {name: use_interp_simple, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_interp_simple, type: text}          # true|false, empty to set nothing

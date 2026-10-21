@@ -18,5 +18,5 @@ machine: "blender"
 op: "grease_pencil.cyclical_set"
 
 ARGS:
-  - {name: type, type: text}          # un de : CLOSE | OPEN | TOGGLE
-  - {name: subdivide_cyclic_segment, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: CLOSE | OPEN | TOGGLE
+  - {name: subdivide_cyclic_segment, type: text}          # true|false, empty to set nothing

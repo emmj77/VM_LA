@@ -19,5 +19,5 @@ op: "file.directory_new"
 
 ARGS:
   - {name: directory, type: text}
-  - {name: open, type: text}          # true|false, vide pour ne rien poser
-  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: open, type: text}          # true|false, empty to set nothing
+  - {name: confirm, type: text}          # true|false, empty to set nothing

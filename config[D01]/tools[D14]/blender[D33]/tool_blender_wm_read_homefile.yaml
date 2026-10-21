@@ -19,9 +19,9 @@ op: "wm.read_homefile"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: load_ui, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_splash, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_factory_startup, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_factory_startup_app_template_only, type: text}          # true|false, vide pour ne rien poser
+  - {name: load_ui, type: text}          # true|false, empty to set nothing
+  - {name: use_splash, type: text}          # true|false, empty to set nothing
+  - {name: use_factory_startup, type: text}          # true|false, empty to set nothing
+  - {name: use_factory_startup_app_template_only, type: text}          # true|false, empty to set nothing
   - {name: app_template, type: text}
-  - {name: use_empty, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_empty, type: text}          # true|false, empty to set nothing

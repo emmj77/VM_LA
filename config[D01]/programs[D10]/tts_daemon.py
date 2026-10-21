@@ -25,7 +25,7 @@ LOCK = threading.Lock()
 def load():
     onnx = sorted(glob.glob(os.path.join(MODEL_DIR, "*.onnx")))
     if not onnx:
-        raise SystemExit("voix : aucun modele dans %s" % MODEL_DIR)
+        raise SystemExit("voice: no model in %s" % MODEL_DIR)
     start = time.monotonic()
     config = sherpa_onnx.OfflineTtsConfig(
         model=sherpa_onnx.OfflineTtsModelConfig(
@@ -41,7 +41,7 @@ def load():
         max_num_sentences=1,
     )
     if not config.validate():
-        raise SystemExit("voix : configuration invalide (chemins du modele ?)")
+        raise SystemExit("voice: invalid configuration (model paths?)")
     tts = sherpa_onnx.OfflineTts(config)
     return tts, int((time.monotonic() - start) * 1000)
 
@@ -59,7 +59,7 @@ def say(text):
     with LOCK:
         audio = TTS.generate(text, sid=SID, speed=1.0)
     if not audio.samples:
-        raise RuntimeError("voix : aucun son produit")
+        raise RuntimeError("voice: no sound produced")
     name = "speech-%s-%06d.wav" % (
         time.strftime("%Y%m%d-%H%M%S"),
         time.time_ns() // 1000 % 1000000,
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     try:
         SERVER = ThreadingHTTPServer(("127.0.0.1", PORT), Service)
     except OSError as e:
-        raise SystemExit("voix : le port %d est deja pris (%s) - aucune voix n a ete annoncee"
+        raise SystemExit("voice: port %d is already taken (%s) - no voice was announced"
                          % (PORT, e))
     print("voix prete : %s, voix %d, sur 127.0.0.1:%d, chargee en %d ms"
           % (MODEL, SID, PORT, LOAD_MS), flush=True)

@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Upgrade an installed editor to the newest patch in its release line"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- editors upgrade --no-banner --no-pager --non-interactive
@@ -54,13 +54,13 @@ COMMAND: |
 
 ARGS:
   - {name: editor, type: text}   # facultatif
-  - {name: all, type: text}   # true pour poser --all ; Upgrade every installed editor that has a newer patch
-  - {name: replace, type: text}   # true pour poser --replace ; Uninstall the old editor after the upgrade succeeds
-  - {name: remove_old, type: text}   # true pour poser --remove-old ; Alias for --replace
+  - {name: all, type: text}   # true to set --all ; Upgrade every installed editor that has a newer patch
+  - {name: replace, type: text}   # true to set --replace ; Uninstall the old editor after the upgrade succeeds
+  - {name: remove_old, type: text}   # true to set --remove-old ; Alias for --replace
   - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
   - {name: module, type: text}   # Extra module to install, on top of the modules carried over (repeatabl
-  - {name: no_modules, type: text}   # true pour poser --no-modules ; Skip carrying over the current editor’s modules
-  - {name: yes, type: text}   # true pour poser --yes ; Skip confirmation prompts
-  - {name: accept_eula, type: text}   # true pour poser --accept-eula ; Accept module license agreements automatically
-  - {name: dry_run, type: text}   # true pour poser --dry-run ; Show available upgrades without installing
-  - {name: check, type: text}   # true pour poser --check ; Alias for --dry-run
+  - {name: no_modules, type: text}   # true to set --no-modules ; Skip carrying over the current editor’s modules
+  - {name: yes, type: text}   # true to set --yes ; Skip confirmation prompts
+  - {name: accept_eula, type: text}   # true to set --accept-eula ; Accept module license agreements automatically
+  - {name: dry_run, type: text}   # true to set --dry-run ; Show available upgrades without installing
+  - {name: check, type: text}   # true to set --check ; Alias for --dry-run

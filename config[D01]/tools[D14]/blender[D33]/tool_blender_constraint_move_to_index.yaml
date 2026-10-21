@@ -19,5 +19,5 @@ op: "constraint.move_to_index"
 
 ARGS:
   - {name: constraint, type: text}
-  - {name: owner, type: text}          # un de : OBJECT | BONE
+  - {name: owner, type: text}          # one of: OBJECT | BONE
   - {name: index, type: int}

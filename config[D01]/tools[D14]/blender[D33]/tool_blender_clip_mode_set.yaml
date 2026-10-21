@@ -18,4 +18,4 @@ machine: "blender"
 op: "clip.mode_set"
 
 ARGS:
-  - {name: mode, type: text}          # un de : TRACKING | MASK
+  - {name: mode, type: text}          # one of: TRACKING | MASK

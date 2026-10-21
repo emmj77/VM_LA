@@ -4,15 +4,15 @@ date: "2026-10-17"
 tags: ["web-search", "web", "recherche", "rapport"]
 
 SUMMARY:
-  101: "Chercher sur le web, ramener la reponse sourcee -- ou en faire un RAPPORT ecrit."
-  102: "web_search trouve les pages ; web_extract lit UNE page en propre."
-  103: "On cherche, on LIT la meilleure page, et on repond en citant l'URL."
-  104: "Rapport ECRIT demande ? meme chemin, plus write_file : le rapport dit ses sources."
+  101: "Search the web, bring back the sourced answer -- or turn it into a WRITTEN report."
+  102: "web_search finds the pages; web_extract reads ONE page cleanly."
+  103: "Search, READ the best page, and answer citing the URL."
+  104: "A WRITTEN report asked for? same road, plus write_file: the report names its sources."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "web_search"
   201: "web_extract"
@@ -23,9 +23,9 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Si web_search ne rend rien : reformuler la requete avec des mots DISTINCTIFS, jamais la repeter telle quelle."
-  601: "Pas de source trouvee : le rapport ecrit dit ce qui MANQUE, il n'invente pas."
+  600: "If web_search returns nothing: rephrase the request with DISTINCTIVE words, never repeat it as is."
+  601: "No source found: the written report says what is MISSING, it does not invent."

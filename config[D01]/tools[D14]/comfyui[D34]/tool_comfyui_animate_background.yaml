@@ -35,7 +35,7 @@ COMMAND: |
   SERVICEK=http://127.0.0.1:5678
   curl -sf --max-time 10 "$SERVICEK/health" >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_no_answer)""$SERVICEK" >&2; exit 1; }
   K() { curl -sS --max-time "$2" -H 'Content-Type: application/json' -d "$1" "$SERVICEK/"; }
-  calque_seul() {          # $1 = le calque a rendre, $2 = le PNG de sortie
+  calque_seul() {          # $1 = the layer to render, $2 = the output PNG
     K "$(jq -cn --arg p "$FILE" '{action:"open_file",params:{path:$p}}')" 180 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_cannot_open_p)""$FILE" >&2; return 1; }
     LIST=$(K '{"action":"list_layers","params":{}}' 60)
     NAMES=$(printf '%s' "$LIST" | jq -r '.layers[].name')
@@ -106,10 +106,10 @@ COMMAND: |
   printf '%s\n' "$(msg backdrop_summary '%s')""$OUTPUT" "$(wc -c < "$OUTPUT")" "$TW" "$TH"
 
 ARGS:
-  - {name: source, type: path}                # le dessin .kra, relatif a l'espace du skill
-  - {name: colour, type: text}                # le calque de couleur (vide : couleur)
-  - {name: ink, type: text}                   # le calque d'encrage (vide : encrage)
+  - {name: source, type: path}                # the .kra drawing, relative to the space of the skill
+  - {name: colour, type: text}                # the layer de couleur (vide : couleur)
+  - {name: ink, type: text}                   # the layer d'encrage (vide : encrage)
   - {name: under, type: text}                 # the EXISTING background layer, or where to write the decor (empty: fond/décors)
-  - {name: output, type: path}                # le PNG du decor, dans l'espace du skill
-  - {name: keep, type: enum, values: [kra, file, ""]}   # kra : ecrit dans le .kra ; file : PNG seul
-  - {name: style, type: text, stdin: true}    # le decor, en texte libre : par l'ENTREE STANDARD
+  - {name: output, type: path}                # the decor PNG, in the space of the skill
+  - {name: keep, type: enum, values: [kra, file, ""]}   # kra: writes into the .kra; file: PNG only
+  - {name: style, type: text, stdin: true}    # the decor, free text: on STANDARD INPUT

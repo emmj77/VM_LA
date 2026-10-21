@@ -18,4 +18,4 @@ machine: "blender"
 op: "palette.sort"
 
 ARGS:
-  - {name: type, type: text}          # un de : HSV | SVH | VHS | LUMINANCE
+  - {name: type, type: text}          # one of: HSV | SVH | VHS | LUMINANCE

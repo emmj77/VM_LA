@@ -22,5 +22,5 @@ ARGS:
   - {name: xend, type: int}
   - {name: ystart, type: int}
   - {name: yend, type: int}
-  - {name: flip, type: text}          # true|false, vide pour ne rien poser
+  - {name: flip, type: text}          # true|false, empty to set nothing
   - {name: cursor, type: int}

@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["git", "commit", "diff", "revue", "review", "version"]
 
 SUMMARY:
-  101: "Manipuler Git : lire l'etat, relire un diff, committer."
-  102: "shell_run porte git ; read_file ouvre les fichiers touches."
-  103: "On ne commit que ce qui a ete LU et NOMME ; on NOMME la ligne qui casse."
+  101: "Work with Git: read the state, re-read a diff, commit."
+  102: "shell_run carries git; read_file opens the touched files."
+  103: "Only what was READ and NAMED is committed; the line that breaks is NAMED."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "shell_run"
   201: "read_file"
@@ -22,8 +22,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Rien a committer, ou depot absent : le dire, ne pas forcer."
+  600: "Nothing to commit, or no repository: say it, force nothing."

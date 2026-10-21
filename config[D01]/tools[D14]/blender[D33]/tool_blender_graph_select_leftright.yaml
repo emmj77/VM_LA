@@ -18,5 +18,5 @@ machine: "blender"
 op: "graph.select_leftright"
 
 ARGS:
-  - {name: mode, type: text}          # un de : LEFT | RIGHT | CHECK
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # one of: LEFT | RIGHT | CHECK
+  - {name: extend, type: text}          # true|false, empty to set nothing

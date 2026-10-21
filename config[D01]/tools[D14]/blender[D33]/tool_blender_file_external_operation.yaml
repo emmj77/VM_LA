@@ -18,4 +18,4 @@ machine: "blender"
 op: "file.external_operation"
 
 ARGS:
-  - {name: operation, type: text}          # un de : OPEN | FOLDER_OPEN | EDIT | NEW | FIND | SHOW | PLAY | BROWSE | PREVIEW | PRINT | INSTALL | RUNAS | PROPERTIES | FOLDER_FIND | CMD
+  - {name: operation, type: text}          # one of: OPEN | FOLDER_OPEN | EDIT | NEW | FIND | SHOW | PLAY | BROWSE | PREVIEW | PRINT | INSTALL | RUNAS | PROPERTIES | FOLDER_FIND | CMD

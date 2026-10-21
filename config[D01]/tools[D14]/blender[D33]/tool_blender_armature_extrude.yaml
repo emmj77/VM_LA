@@ -18,4 +18,4 @@ machine: "blender"
 op: "armature.extrude"
 
 ARGS:
-  - {name: forked, type: text}          # true|false, vide pour ne rien poser
+  - {name: forked, type: text}          # true|false, empty to set nothing

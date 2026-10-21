@@ -18,4 +18,4 @@ machine: "blender"
 op: "render.generate_texture_cache"
 
 ARGS:
-  - {name: generate_sequences, type: text}          # true|false, vide pour ne rien poser
+  - {name: generate_sequences, type: text}          # true|false, empty to set nothing

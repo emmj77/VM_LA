@@ -18,5 +18,5 @@ machine: "blender"
 op: "mesh.select_boundary_loop_multi"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: delimit_edge_loop, type: text}          # un de : SEAM | SHARP | NGONS | INNER_CORNERS | OUTER_CORNERS
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: delimit_edge_loop, type: text}          # one of: SEAM | SHARP | NGONS | INNER_CORNERS | OUTER_CORNERS

@@ -18,9 +18,9 @@ machine: "blender"
 op: "ui.view_item_select"
 
 ARGS:
-  - {name: wait_to_deselect_others, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_select_on_click, type: text}          # true|false, vide pour ne rien poser
+  - {name: wait_to_deselect_others, type: text}          # true|false, empty to set nothing
+  - {name: use_select_on_click, type: text}          # true|false, empty to set nothing
   - {name: mouse_x, type: int}
   - {name: mouse_y, type: int}
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: range_select, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: range_select, type: text}          # true|false, empty to set nothing

@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Publish a local project to a new GitHub or GitLab repository, or adopt one it already has"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- projects link vcs --no-banner --no-pager --non-interactive
@@ -69,12 +69,12 @@ ARGS:
   - {name: git_remote_protocol, type: text}   # Transport for the new remote: https or ssh (default https)
   - {name: git_description, type: text}   # Description for a new repository
   - {name: git_token, type: text}   # Personal access token; overrides your Git credential manager (prefer -
-  - {name: git_token_stdin, type: text}   # true pour poser --git-token-stdin ; Read the personal access token from stdin (CI-safe)
-  - {name: no_initial_commit, type: text}   # true pour poser --no-initial-commit ; Skip the automatic initial commit and push
-  - {name: git_lfs, type: text}   # true pour poser --git-lfs ; Initialize Git LFS before the first commit (new repositories only)
+  - {name: git_token_stdin, type: text}   # true to set --git-token-stdin ; Read the personal access token from stdin (CI-safe)
+  - {name: no_initial_commit, type: text}   # true to set --no-initial-commit ; Skip the automatic initial commit and push
+  - {name: git_lfs, type: text}   # true to set --git-lfs ; Initialize Git LFS before the first commit (new repositories only)
   - {name: vcs_region, type: text}   # UVCS region for the organization's subscription (first use only).
-  - {name: dry_run, type: text}   # true pour poser --dry-run ; Show what Unity Version Control setup creates, then exit without creat
-  - {name: rollback, type: text}   # true pour poser --rollback ; Undo a half-finished link instead of resuming it
-  - {name: delete_remote, type: text}   # true pour poser --delete-remote ; With --rollback, also delete the remote repository when it has no comm
+  - {name: dry_run, type: text}   # true to set --dry-run ; Show what Unity Version Control setup creates, then exit without creat
+  - {name: rollback, type: text}   # true to set --rollback ; Undo a half-finished link instead of resuming it
+  - {name: delete_remote, type: text}   # true to set --delete-remote ; With --rollback, also delete the remote repository when it has no comm
   - {name: cloud_org, type: text}   # Cloud organization id or name (for --vcs uvcs on a project not yet clo
   - {name: cloud_project, type: text}   # Existing Unity Cloud project id or name to use (for --vcs uvcs).

@@ -18,9 +18,9 @@ machine: "blender"
 op: "object.make_single_user"
 
 ARGS:
-  - {name: type, type: text}          # un de : SELECTED_OBJECTS | ALL
-  - {name: object, type: text}          # true|false, vide pour ne rien poser
-  - {name: obdata, type: text}          # true|false, vide pour ne rien poser
-  - {name: material, type: text}          # true|false, vide pour ne rien poser
-  - {name: animation, type: text}          # true|false, vide pour ne rien poser
-  - {name: obdata_animation, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: SELECTED_OBJECTS | ALL
+  - {name: object, type: text}          # true|false, empty to set nothing
+  - {name: obdata, type: text}          # true|false, empty to set nothing
+  - {name: material, type: text}          # true|false, empty to set nothing
+  - {name: animation, type: text}          # true|false, empty to set nothing
+  - {name: obdata_animation, type: text}          # true|false, empty to set nothing

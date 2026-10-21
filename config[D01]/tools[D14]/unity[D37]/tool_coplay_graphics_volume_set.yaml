@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "a post-process volume's settings: effect | properties (op picks which)"
 
 COMMAND: |
-  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
   case "{{op}}" in
   effect)

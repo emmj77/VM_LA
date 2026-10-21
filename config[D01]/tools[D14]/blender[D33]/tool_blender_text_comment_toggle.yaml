@@ -18,4 +18,4 @@ machine: "blender"
 op: "text.comment_toggle"
 
 ARGS:
-  - {name: type, type: text}          # un de : TOGGLE | COMMENT | UNCOMMENT
+  - {name: type, type: text}          # one of: TOGGLE | COMMENT | UNCOMMENT

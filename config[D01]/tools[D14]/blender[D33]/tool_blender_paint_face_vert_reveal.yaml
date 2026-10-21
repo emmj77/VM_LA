@@ -18,4 +18,4 @@ machine: "blender"
 op: "paint.face_vert_reveal"
 
 ARGS:
-  - {name: select, type: text}          # true|false, vide pour ne rien poser
+  - {name: select, type: text}          # true|false, empty to set nothing

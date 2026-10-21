@@ -18,5 +18,5 @@ machine: "blender"
 op: "mesh.normals_tools"
 
 ARGS:
-  - {name: mode, type: text}          # un de : COPY | PASTE | ADD | MULTIPLY | RESET
-  - {name: absolute, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # one of: COPY | PASTE | ADD | MULTIPLY | RESET
+  - {name: absolute, type: text}          # true|false, empty to set nothing

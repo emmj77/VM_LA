@@ -19,4 +19,4 @@ op: "object.ocean_bake"
 
 ARGS:
   - {name: modifier, type: text}
-  - {name: free, type: text}          # true|false, vide pour ne rien poser
+  - {name: free, type: text}          # true|false, empty to set nothing

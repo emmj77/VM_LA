@@ -19,4 +19,4 @@ op: "graph.shear"
 
 ARGS:
   - {name: factor, type: text}
-  - {name: direction, type: text}          # un de : FROM_LEFT | FROM_RIGHT
+  - {name: direction, type: text}          # one of: FROM_LEFT | FROM_RIGHT

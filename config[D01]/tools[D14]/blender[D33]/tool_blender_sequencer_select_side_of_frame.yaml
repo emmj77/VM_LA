@@ -18,5 +18,5 @@ machine: "blender"
 op: "sequencer.select_side_of_frame"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: side, type: text}          # un de : LEFT | RIGHT | CURRENT
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: side, type: text}          # one of: LEFT | RIGHT | CURRENT

@@ -147,5 +147,5 @@ COMMAND: |
   rm -f "$W"
 
 ARGS:
-  - {name: words, type: text}            # les words, separes par des espaces ; vide pour la carte
-  - {name: ls, type: text}             # tout | familles | une sous-famille (mesh, animation...)
+  - {name: words, type: text}            # the words, separated by spaces; empty for the whole map
+  - {name: ls, type: text}             # all | families | one sub-family (mesh, animation...)

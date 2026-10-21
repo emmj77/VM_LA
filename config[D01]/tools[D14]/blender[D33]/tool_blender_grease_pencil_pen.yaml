@@ -18,17 +18,17 @@ machine: "blender"
 op: "grease_pencil.pen"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
-  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
-  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
-  - {name: select_passthrough, type: text}          # true|false, vide pour ne rien poser
-  - {name: extrude_point, type: text}          # true|false, vide pour ne rien poser
-  - {name: extrude_handle, type: text}          # un de : AUTO | VECTOR
-  - {name: delete_point, type: text}          # true|false, vide pour ne rien poser
-  - {name: insert_point, type: text}          # true|false, vide pour ne rien poser
-  - {name: move_segment, type: text}          # true|false, vide pour ne rien poser
-  - {name: select_point, type: text}          # true|false, vide pour ne rien poser
-  - {name: move_point, type: text}          # true|false, vide pour ne rien poser
-  - {name: cycle_handle_type, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: deselect, type: text}          # true|false, empty to set nothing
+  - {name: toggle, type: text}          # true|false, empty to set nothing
+  - {name: deselect_all, type: text}          # true|false, empty to set nothing
+  - {name: select_passthrough, type: text}          # true|false, empty to set nothing
+  - {name: extrude_point, type: text}          # true|false, empty to set nothing
+  - {name: extrude_handle, type: text}          # one of: AUTO | VECTOR
+  - {name: delete_point, type: text}          # true|false, empty to set nothing
+  - {name: insert_point, type: text}          # true|false, empty to set nothing
+  - {name: move_segment, type: text}          # true|false, empty to set nothing
+  - {name: select_point, type: text}          # true|false, empty to set nothing
+  - {name: move_point, type: text}          # true|false, empty to set nothing
+  - {name: cycle_handle_type, type: text}          # true|false, empty to set nothing
   - {name: size, type: text}

@@ -18,4 +18,4 @@ machine: "blender"
 op: "transform.select_orientation"
 
 ARGS:
-  - {name: orientation, type: text}          # un de :
+  - {name: orientation, type: text}          # one of:

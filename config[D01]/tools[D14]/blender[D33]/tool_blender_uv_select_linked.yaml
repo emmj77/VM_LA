@@ -18,4 +18,4 @@ machine: "blender"
 op: "uv.select_linked"
 
 ARGS:
-  - {name: delimit, type: text}          # un de : SEAM | SHARP | MATERIAL
+  - {name: delimit, type: text}          # one of: SEAM | SHARP | MATERIAL

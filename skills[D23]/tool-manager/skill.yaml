@@ -4,19 +4,19 @@ date: "2026-10-19"
 tags: ["tool-manager", "forge", "outil", "outils", "table", "skill", "palette", "ajouter", "retirer", "activer"]
 
 SUMMARY:
-  101: "Modifier le HARNAIS : la table des tools, ou une skill et sa palette."
-  102: "list_tools d abord : on ne devine pas un id libre, et on n ecrase pas une ligne."
-  103: "Chaque geste qui ECRIT demande un feu vert HUMAIN, NOMME, une seule fois."
-  104: "Le corps d un tool est un FICHIER (config/tools/<machine>/tool_<nom>.yaml), jamais une ligne."
+  101: "Change the HARNESS: the tool table, or a skill and its toolset."
+  102: "list_tools first: a free id is never guessed, and a line is never overwritten."
+  103: "Every act that WRITES asks for a HUMAN go, NAMED, only once."
+  104: "A tool body is a FILE (config/tools/<machine>/tool_<name>.yaml), never a line."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-# LA SEULE SKILL QUI PORTE CE DROIT, ET CE N EST PAS UN DETAIL : `table_manage` ecrit dans la table,
-# `skill_manage` ecrit dans un mode d emploi. Ce sont les deux choses qui DEFINISSENT le harnais.
-# Avec APPROVAL: true, chacun de ces gestes exige un feu vert humain qui NOMME le geste et ne sert
-# qu une fois (work/approve). Sans feu vert, le geste est refuse -- et la boucle ecrit la demande
-# pour que l humain puisse la voir et la signer (approval.sh allow <tool> <geste>).
+  # THE ONLY SKILL THAT CARRIES THIS RIGHT, AND IT IS NO DETAIL: `table_manage` writes in the table,
+  # `skill_manage` writes in a manual. Those are the two things that DEFINE the harness.
+  # With APPROVAL: true, each of these acts needs a human go that NAMES the act and serves
+  # only once (work/approve). Without the go, the act is refused -- and the loop writes the request
+  # so the human can see it and sign it (approval.sh allow <tool> <act>).
 APPROVAL: true
 TOOLS:
   200: "table_manage"
@@ -28,10 +28,10 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Refus sans feu vert : l humain doit approuver CE geste-la (approval.sh allow <tool> <geste>). Ne le contourne pas, ne le repete pas en esperant qu il passe : demande-le."
-  601: "table_manage refuse de retirer un MANAGER (table_manage, skill_manage, todo...). C est voulu : un harnais ne se coupe pas la main."
-  602: "Le corps d un tool doit porter tool:, RULES:, DESCRIPTION:, COMMAND:, ARGS: et nommer LE MEME tool. Refuse sinon : la ligne serait muette."
+  600: "Refused without a go: the human must approve THIS act (approval.sh allow <tool> <act>). Never work around it, never repeat it hoping"
+  601: "table_manage refuses to remove a MANAGER (table_manage, skill_manage, todo...). That is deliberate: a harness does not cut off its own hand."
+  602: "A tool body must carry tool:, RULES:, DESCRIPTION:, COMMAND:, ARGS: and name THE SAME tool. Refused otherwise: the line would be silent."

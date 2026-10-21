@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.origin_set"
 
 ARGS:
-  - {name: type, type: text}          # un de : GEOMETRY_ORIGIN | ORIGIN_GEOMETRY | ORIGIN_CURSOR | ORIGIN_CENTER_OF_MASS | ORIGIN_CENTER_OF_VOLUME
-  - {name: center, type: text}          # un de : MEDIAN | BOUNDS
+  - {name: type, type: text}          # one of: GEOMETRY_ORIGIN | ORIGIN_GEOMETRY | ORIGIN_CURSOR | ORIGIN_CENTER_OF_MASS | ORIGIN_CENTER_OF_VOLUME
+  - {name: center, type: text}          # one of: MEDIAN | BOUNDS

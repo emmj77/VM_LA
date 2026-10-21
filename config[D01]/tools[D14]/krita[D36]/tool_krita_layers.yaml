@@ -18,7 +18,7 @@ COMMAND: |
   SERVICE=$(krita_url) || exit 1
   REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$(jq -cn "{\"action\":\"list_layers\",\"params\":{}}")" "$SERVICE/")
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   printf '%s' "$REP" | jq -r '.layers[] | "  " + .name + "  " + .type + "  visible=" + (.visible|tostring) + "  opacity=" + (.opacity|tostring)'
   printf '%s\n' "$(msg layer_s)""$(printf '%s' "$REP" | jq -r .count)"
 

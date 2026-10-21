@@ -18,6 +18,6 @@ machine: "blender"
 op: "outliner.orphans_purge"
 
 ARGS:
-  - {name: do_local_ids, type: text}          # true|false, vide pour ne rien poser
-  - {name: do_linked_ids, type: text}          # true|false, vide pour ne rien poser
-  - {name: do_recursive, type: text}          # true|false, vide pour ne rien poser
+  - {name: do_local_ids, type: text}          # true|false, empty to set nothing
+  - {name: do_linked_ids, type: text}          # true|false, empty to set nothing
+  - {name: do_recursive, type: text}          # true|false, empty to set nothing

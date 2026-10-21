@@ -18,4 +18,4 @@ machine: "blender"
 op: "text.convert_whitespace"
 
 ARGS:
-  - {name: type, type: text}          # un de : SPACES | TABS
+  - {name: type, type: text}          # one of: SPACES | TABS

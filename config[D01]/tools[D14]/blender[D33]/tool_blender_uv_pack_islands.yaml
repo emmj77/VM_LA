@@ -18,13 +18,13 @@ machine: "blender"
 op: "uv.pack_islands"
 
 ARGS:
-  - {name: udim_source, type: text}          # un de : CLOSEST_UDIM | ACTIVE_UDIM | ORIGINAL_AABB | CUSTOM_REGION
-  - {name: rotate, type: text}          # true|false, vide pour ne rien poser
-  - {name: rotate_method, type: text}          # un de : ANY | CARDINAL | AXIS_ALIGNED | AXIS_ALIGNED_X | AXIS_ALIGNED_Y
-  - {name: scale, type: text}          # true|false, vide pour ne rien poser
-  - {name: merge_overlap, type: text}          # true|false, vide pour ne rien poser
-  - {name: margin_method, type: text}          # un de : SCALED | ADD | FRACTION
+  - {name: udim_source, type: text}          # one of: CLOSEST_UDIM | ACTIVE_UDIM | ORIGINAL_AABB | CUSTOM_REGION
+  - {name: rotate, type: text}          # true|false, empty to set nothing
+  - {name: rotate_method, type: text}          # one of: ANY | CARDINAL | AXIS_ALIGNED | AXIS_ALIGNED_X | AXIS_ALIGNED_Y
+  - {name: scale, type: text}          # true|false, empty to set nothing
+  - {name: merge_overlap, type: text}          # true|false, empty to set nothing
+  - {name: margin_method, type: text}          # one of: SCALED | ADD | FRACTION
   - {name: margin, type: text}
-  - {name: pin, type: text}          # true|false, vide pour ne rien poser
-  - {name: pin_method, type: text}          # un de : SCALE | ROTATION | ROTATION_SCALE | LOCKED
-  - {name: shape_method, type: text}          # un de : CONCAVE | CONVEX | AABB
+  - {name: pin, type: text}          # true|false, empty to set nothing
+  - {name: pin_method, type: text}          # one of: SCALE | ROTATION | ROTATION_SCALE | LOCKED
+  - {name: shape_method, type: text}          # one of: CONCAVE | CONVEX | AABB

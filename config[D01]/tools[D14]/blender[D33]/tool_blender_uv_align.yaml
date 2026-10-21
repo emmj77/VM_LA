@@ -18,5 +18,5 @@ machine: "blender"
 op: "uv.align"
 
 ARGS:
-  - {name: axis, type: text}          # un de : ALIGN_S | ALIGN_T | ALIGN_U | ALIGN_AUTO | ALIGN_X | ALIGN_Y
-  - {name: position_mode, type: text}          # un de : MEAN | MIN | MAX
+  - {name: axis, type: text}          # one of: ALIGN_S | ALIGN_T | ALIGN_U | ALIGN_AUTO | ALIGN_X | ALIGN_Y
+  - {name: position_mode, type: text}          # one of: MEAN | MIN | MAX

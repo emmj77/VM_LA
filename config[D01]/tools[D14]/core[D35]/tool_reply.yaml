@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "speaks (talk), asks the human (ask) or returns the reply (answer), depending on the mode"
 
 COMMAND: |
-  # le texte du modele est la reponse ; sans texte, l entree fait foi
+  # the model text is the answer; without text, the input holds
   _t="{{text}}"
   [ -n "$_t" ] || _t=$(cat)
   printf '%s\n' "$_t"

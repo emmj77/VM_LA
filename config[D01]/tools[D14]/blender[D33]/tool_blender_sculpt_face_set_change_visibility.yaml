@@ -18,5 +18,5 @@ machine: "blender"
 op: "sculpt.face_set_change_visibility"
 
 ARGS:
-  - {name: mode, type: text}          # un de : TOGGLE | SHOW_ACTIVE | HIDE_ACTIVE
+  - {name: mode, type: text}          # one of: TOGGLE | SHOW_ACTIVE | HIDE_ACTIVE
   - {name: active_face_set, type: int}

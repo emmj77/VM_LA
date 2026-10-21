@@ -18,10 +18,10 @@ machine: "blender"
 op: "mesh.edgering_select"
 
 ARGS:
-  - {name: delimit_edge_ring, type: text}          # un de : SEAM | SHARP | MATERIAL | NGONS
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
-  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: delimit_edge_ring, type: text}          # one of: SEAM | SHARP | MATERIAL | NGONS
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: deselect, type: text}          # true|false, empty to set nothing
+  - {name: toggle, type: text}          # true|false, empty to set nothing
   - {name: object_index, type: int}
   - {name: edge_index, type: int}
   - {name: vert_index, type: int}

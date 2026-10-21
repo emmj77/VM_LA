@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Write MCP server config for an AI agent client"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- mcp configure --no-banner --no-pager --non-interactive
@@ -45,8 +45,8 @@ COMMAND: |
 
 ARGS:
   - {name: client, type: text}   # facultatif
-  - {name: list, type: text}   # true pour poser --list ; List all supported clients and their config paths
-  - {name: local, type: text}   # true pour poser --local ; Write project-local config (for clients that support it, e.g. cursor, 
-  - {name: yes, type: text}   # true pour poser --yes ; Skip the 'already exists, update?' confirmation prompt
-  - {name: dry_run, type: text}   # true pour poser --dry-run ; Print the entry that would be added or changed, without modifying any 
+  - {name: list, type: text}   # true to set --list ; List all supported clients and their config paths
+  - {name: local, type: text}   # true to set --local ; Write project-local config (for clients that support it, e.g. cursor, 
+  - {name: yes, type: text}   # true to set --yes ; Skip the 'already exists, update?' confirmation prompt
+  - {name: dry_run, type: text}   # true to set --dry-run ; Print the entry that would be added or changed, without modifying any 
   - {name: server, type: text}   # Which Unity MCP server to target (default: editor)

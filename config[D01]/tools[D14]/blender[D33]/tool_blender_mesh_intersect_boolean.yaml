@@ -18,8 +18,8 @@ machine: "blender"
 op: "mesh.intersect_boolean"
 
 ARGS:
-  - {name: operation, type: text}          # un de : INTERSECT | UNION | DIFFERENCE
-  - {name: use_swap, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_self, type: text}          # true|false, vide pour ne rien poser
+  - {name: operation, type: text}          # one of: INTERSECT | UNION | DIFFERENCE
+  - {name: use_swap, type: text}          # true|false, empty to set nothing
+  - {name: use_self, type: text}          # true|false, empty to set nothing
   - {name: threshold, type: text}
-  - {name: solver, type: text}          # un de : FLOAT | EXACT
+  - {name: solver, type: text}          # one of: FLOAT | EXACT

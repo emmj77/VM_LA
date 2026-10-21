@@ -18,4 +18,4 @@ machine: "blender"
 op: "sequencer.change_effect_type"
 
 ARGS:
-  - {name: type, type: text}          # un de : CROSS | ADD | SUBTRACT | ALPHA_OVER | ALPHA_UNDER | GAMMA_CROSS | MULTIPLY | WIPE | GLOW | COLOR | SPEED | MULTICAM | ADJUSTMENT | GAUSSIAN_BLUR | TEXT | COLORMIX | COMPOSITOR
+  - {name: type, type: text}          # one of: CROSS | ADD | SUBTRACT | ALPHA_OVER | ALPHA_UNDER | GAMMA_CROSS | MULTIPLY | WIPE | GLOW | COLOR | SPEED | MULTICAM | ADJUSTMENT | GAUSSIAN_BLUR | TEXT | COLORMIX | COMPOSITOR

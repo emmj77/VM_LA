@@ -1,6 +1,6 @@
 # id: U06
-# UN MODELE, PAS UNE UNITE VIVANTE : install.sh remplace @ROOT@ par la racine reelle et
-# pose le fichier dans ~/.config/systemd/user/. Le depot porte la source, le poste porte l'unite.
+# A TEMPLATE, NOT A LIVE UNIT: install.sh replaces @ROOT@ par la racine reelle et
+# sets the file in ~/.config/systemd/user/. The repo carries the source, the station carries the unit.
 [Unit]
 Description=LA - audio purge, every 10 minutes
 

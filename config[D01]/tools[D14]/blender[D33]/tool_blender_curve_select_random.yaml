@@ -20,4 +20,4 @@ op: "curve.select_random"
 ARGS:
   - {name: ratio, type: text}
   - {name: seed, type: int}
-  - {name: action, type: text}          # un de : SELECT | DESELECT
+  - {name: action, type: text}          # one of: SELECT | DESELECT

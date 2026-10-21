@@ -18,4 +18,4 @@ machine: "blender"
 op: "geometry.geometry_randomization"
 
 ARGS:
-  - {name: value, type: text}          # true|false, vide pour ne rien poser
+  - {name: value, type: text}          # true|false, empty to set nothing

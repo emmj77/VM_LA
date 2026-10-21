@@ -18,4 +18,4 @@ machine: "blender"
 op: "text.resolve_conflict"
 
 ARGS:
-  - {name: resolution, type: text}          # un de : IGNORE | RELOAD | SAVE | MAKE_INTERNAL
+  - {name: resolution, type: text}          # one of: IGNORE | RELOAD | SAVE | MAKE_INTERNAL

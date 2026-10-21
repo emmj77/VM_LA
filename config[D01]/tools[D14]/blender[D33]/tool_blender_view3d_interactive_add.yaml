@@ -18,9 +18,9 @@ machine: "blender"
 op: "view3d.interactive_add"
 
 ARGS:
-  - {name: primitive_type, type: text}          # un de : CUBE | CYLINDER | CONE | SPHERE_UV | SPHERE_ICO
-  - {name: plane_origin_base, type: text}          # un de : EDGE | CENTER
-  - {name: plane_origin_depth, type: text}          # un de : EDGE | CENTER
-  - {name: plane_aspect_base, type: text}          # un de : FREE | FIXED
-  - {name: plane_aspect_depth, type: text}          # un de : FREE | FIXED
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: primitive_type, type: text}          # one of: CUBE | CYLINDER | CONE | SPHERE_UV | SPHERE_ICO
+  - {name: plane_origin_base, type: text}          # one of: EDGE | CENTER
+  - {name: plane_origin_depth, type: text}          # one of: EDGE | CENTER
+  - {name: plane_aspect_base, type: text}          # one of: FREE | FIXED
+  - {name: plane_aspect_depth, type: text}          # one of: FREE | FIXED
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing

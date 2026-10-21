@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.quick_smoke"
 
 ARGS:
-  - {name: style, type: text}          # un de : SMOKE | FIRE | BOTH
-  - {name: show_flows, type: text}          # true|false, vide pour ne rien poser
+  - {name: style, type: text}          # one of: SMOKE | FIRE | BOTH
+  - {name: show_flows, type: text}          # true|false, empty to set nothing

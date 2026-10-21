@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["computer-debug", "debug", "systeme", "pc"]
 
 SUMMARY:
-  101: "Quand la machine ne va pas bien : lire les traces, poser le diagnostic, proposer le correctif."
-  102: "On regarde d'abord la charge, puis les erreurs recentes : jamais l'inverse."
-  103: "Un diagnostic sans la trace qui le fonde n'est pas un diagnostic."
+  101: "When the machine is unwell: read the traces, set the diagnosis, propose the fix."
+  102: "The load is looked at first, then the recent errors: never the other way round."
+  103: "A diagnosis without the trace it rests on is not a diagnosis."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "shell_run"
   201: "process_list"
@@ -23,8 +23,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "shell_run ne rend rien : lire le message d'erreur et le NOMMER, ne pas relancer la meme commande."
+  600: "shell_run returns nothing: read the error message and NAME it, never relaunch the same command."

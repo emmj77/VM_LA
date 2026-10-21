@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   case "{{include_explicit}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'include_explicit' 'run_tests')""{{include_explicit}}" >&2; exit 1 ;; esac
   case "{{async_tests}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'async_tests' 'run_tests')""{{async_tests}}" >&2; exit 1 ;; esac
   set -- command --project-path "$P" run_tests
@@ -41,6 +41,6 @@ ARGS:
   - {name: mode, type: text}
   - {name: filter, type: text}
   - {name: filter_type, type: text}
-  - {name: include_explicit, type: text}          # true|false, vide pour ne rien poser
-  - {name: async_tests, type: text}          # true|false, vide pour ne rien poser
+  - {name: include_explicit, type: text}          # true|false, empty to set nothing
+  - {name: async_tests, type: text}          # true|false, empty to set nothing
   - {name: timeout, type: int}

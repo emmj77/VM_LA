@@ -40,7 +40,7 @@ COMMAND: |
     '{action:"draw_shape", params:({ shape:$shape, x:$x, y:$y, width:$width, height:$height, fill:(if $fill=="" then null else $fill=="true" end), stroke:(if $stroke=="" then null else $stroke=="true" end), x2:$x2, y2:$y2, line_width:$line_width } | with_entries(select(.value != null and .value != "")))}')
   REP=$(curl -sS --max-time 180 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
 
 ARGS:

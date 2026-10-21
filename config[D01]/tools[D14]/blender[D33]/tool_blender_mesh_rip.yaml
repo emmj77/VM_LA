@@ -18,12 +18,12 @@ machine: "blender"
 op: "mesh.rip"
 
 ARGS:
-  - {name: mirror, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_proportional_edit, type: text}          # true|false, vide pour ne rien poser
-  - {name: proportional_edit_falloff, type: text}          # un de : SMOOTH | SPHERE | ROOT | INVERSE_SQUARE | SHARP | LINEAR | CONSTANT | RANDOM
+  - {name: mirror, type: text}          # true|false, empty to set nothing
+  - {name: use_proportional_edit, type: text}          # true|false, empty to set nothing
+  - {name: proportional_edit_falloff, type: text}          # one of: SMOOTH | SPHERE | ROOT | INVERSE_SQUARE | SHARP | LINEAR | CONSTANT | RANDOM
   - {name: proportional_size, type: text}
-  - {name: use_proportional_connected, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_proportional_projected, type: text}          # true|false, vide pour ne rien poser
-  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_accurate, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_fill, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_proportional_connected, type: text}          # true|false, empty to set nothing
+  - {name: use_proportional_projected, type: text}          # true|false, empty to set nothing
+  - {name: release_confirm, type: text}          # true|false, empty to set nothing
+  - {name: use_accurate, type: text}          # true|false, empty to set nothing
+  - {name: use_fill, type: text}          # true|false, empty to set nothing

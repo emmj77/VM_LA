@@ -18,4 +18,4 @@ machine: "blender"
 op: "dpaint.output_toggle"
 
 ARGS:
-  - {name: output, type: text}          # un de : A | B
+  - {name: output, type: text}          # one of: A | B

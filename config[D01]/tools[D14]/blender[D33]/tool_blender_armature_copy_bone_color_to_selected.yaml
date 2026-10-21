@@ -18,4 +18,4 @@ machine: "blender"
 op: "armature.copy_bone_color_to_selected"
 
 ARGS:
-  - {name: bone_type, type: text}          # un de : EDIT | POSE
+  - {name: bone_type, type: text}          # one of: EDIT | POSE

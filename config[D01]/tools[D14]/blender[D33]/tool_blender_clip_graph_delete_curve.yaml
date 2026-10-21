@@ -18,4 +18,4 @@ machine: "blender"
 op: "clip.graph_delete_curve"
 
 ARGS:
-  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: confirm, type: text}          # true|false, empty to set nothing

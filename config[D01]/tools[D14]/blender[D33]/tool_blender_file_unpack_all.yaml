@@ -18,4 +18,4 @@ machine: "blender"
 op: "file.unpack_all"
 
 ARGS:
-  - {name: method, type: text}          # un de : USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL | KEEP | REMOVE
+  - {name: method, type: text}          # one of: USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL | KEEP | REMOVE

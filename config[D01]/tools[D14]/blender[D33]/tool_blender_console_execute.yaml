@@ -18,4 +18,4 @@ machine: "blender"
 op: "console.execute"
 
 ARGS:
-  - {name: interactive, type: text}          # true|false, vide pour ne rien poser
+  - {name: interactive, type: text}          # true|false, empty to set nothing

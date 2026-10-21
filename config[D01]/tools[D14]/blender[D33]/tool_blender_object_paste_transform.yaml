@@ -18,9 +18,9 @@ machine: "blender"
 op: "object.paste_transform"
 
 ARGS:
-  - {name: method, type: text}          # un de : CURRENT | EXISTING_KEYS | BAKE
+  - {name: method, type: text}          # one of: CURRENT | EXISTING_KEYS | BAKE
   - {name: bake_step, type: int}
-  - {name: use_mirror, type: text}          # true|false, vide pour ne rien poser
-  - {name: mirror_axis_loc, type: text}          # un de : x | y | z
-  - {name: mirror_axis_rot, type: text}          # un de : x | y | z
-  - {name: use_relative, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_mirror, type: text}          # true|false, empty to set nothing
+  - {name: mirror_axis_loc, type: text}          # one of: x | y | z
+  - {name: mirror_axis_rot, type: text}          # one of: x | y | z
+  - {name: use_relative, type: text}          # true|false, empty to set nothing

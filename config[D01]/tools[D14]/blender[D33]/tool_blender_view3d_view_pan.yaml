@@ -18,4 +18,4 @@ machine: "blender"
 op: "view3d.view_pan"
 
 ARGS:
-  - {name: type, type: text}          # un de : PANLEFT | PANRIGHT | PANUP | PANDOWN
+  - {name: type, type: text}          # one of: PANLEFT | PANRIGHT | PANUP | PANDOWN

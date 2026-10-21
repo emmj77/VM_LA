@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["write-spec", "spec", "conception"]
 
 SUMMARY:
-  101: "Ecrire une section de la spec du skill actif, bornee par un plafond."
-  102: "write_spec ecrit ; read_file relit la section."
-  103: "La spec DECRIT l'architecture, elle ne l'annote pas."
+  101: "Write one section of the active skill spec, bounded by a ceiling."
+  102: "write_spec writes; read_file re-reads the section."
+  103: "The spec DESCRIBES the architecture, it does not annotate it."
 RULES:
   create_subfolder: false
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "write_spec"
   201: "read_file"
@@ -21,8 +21,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".yaml"
 ERROR:
-  600: "Le plafond de la section est depasse, ou le skill actif est absent : le dire."
+  600: "The section ceiling is exceeded, or the active skill is absent: say it."

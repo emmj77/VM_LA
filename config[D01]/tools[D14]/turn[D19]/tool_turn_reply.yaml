@@ -15,9 +15,9 @@ DESCRIPTION: "the words of the answer, on the stream and on the board"
 COMMAND: |
   _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
-  # la reponse est le texte rendu par l outil reply ; a defaut, le contenu du modele
+  # the answer is the text the reply tool returned; failing that, the model content
   _r=$(jq -r '[.calls[] | select(.tool == "reply")] | last | .result | fromjson? | .result // empty' "$(cfg abs turn)" 2>/dev/null)
-  # a defaut : ce que le modele a dit. certains ecrivent leur appel en texte : on en tire le texte
+  # failing that: what the model said. some write their call as text: the text is pulled out of it
   if [ -z "$_r" ]; then
     _c=$(_turn_get '.reply_msg.content // ""')
     case $_c in
@@ -29,7 +29,7 @@ COMMAND: |
   printf '%s\n' "$_r" | write_atomic "$(cfg abs reply_stream)"
   printf '%s\n' "$_r"
   _tr reply "$(printf '%s' "$_r" | wc -c) bytes"
-  # la reponse finale arme le sommeil automatique : 580 s, puis le timer reveille le modele (loi 1577)
+  # the final answer arms the automatic sleep: 580 s, then the timer wakes the model (law 1577)
   _as=$(cfg num loop.autosleep 580) || _as=580
   systemctl --user stop la-autosleep.timer >/dev/null 2>&1
   _c="'${LA_TOOL:-}' engine engine.turn 'text=reveil: le sommeil de $_as secondes est arrive a son terme'"

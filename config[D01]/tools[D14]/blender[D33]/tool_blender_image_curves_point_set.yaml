@@ -18,5 +18,5 @@ machine: "blender"
 op: "image.curves_point_set"
 
 ARGS:
-  - {name: point, type: text}          # un de : BLACK_POINT | WHITE_POINT
+  - {name: point, type: text}          # one of: BLACK_POINT | WHITE_POINT
   - {name: size, type: int}

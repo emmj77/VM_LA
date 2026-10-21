@@ -18,4 +18,4 @@ machine: "blender"
 op: "sculpt.face_sets_create"
 
 ARGS:
-  - {name: mode, type: text}          # un de : MASKED | VISIBLE | ALL | SELECTION
+  - {name: mode, type: text}          # one of: MASKED | VISIBLE | ALL | SELECTION

@@ -19,5 +19,5 @@ op: "sculpt.paint_mask_slice"
 
 ARGS:
   - {name: mask_threshold, type: text}
-  - {name: fill_holes, type: text}          # true|false, vide pour ne rien poser
-  - {name: new_object, type: text}          # true|false, vide pour ne rien poser
+  - {name: fill_holes, type: text}          # true|false, empty to set nothing
+  - {name: new_object, type: text}          # true|false, empty to set nothing

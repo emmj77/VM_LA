@@ -18,11 +18,11 @@ machine: "blender"
 op: "mesh.wireframe"
 
 ARGS:
-  - {name: use_boundary, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_even_offset, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_relative_offset, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_replace, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_boundary, type: text}          # true|false, empty to set nothing
+  - {name: use_even_offset, type: text}          # true|false, empty to set nothing
+  - {name: use_relative_offset, type: text}          # true|false, empty to set nothing
+  - {name: use_replace, type: text}          # true|false, empty to set nothing
   - {name: thickness, type: text}
   - {name: offset, type: text}
-  - {name: use_crease, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_crease, type: text}          # true|false, empty to set nothing
   - {name: crease_weight, type: text}

@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Print diagnostic info about your Unity CLI environment"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- doctor --no-banner --no-pager --non-interactive
@@ -37,5 +37,5 @@ COMMAND: |
   printf '%s\n' "$OUT"
 
 ARGS:
-  - {name: ci, type: text}   # true pour poser --ci ; Run preflight checks and exit non-zero when the environment cannot bui
+  - {name: ci, type: text}   # true to set --ci ; Run preflight checks and exit non-zero when the environment cannot bui
   - {name: tail, type: text}   # Number of recent log lines to include (default: 20)

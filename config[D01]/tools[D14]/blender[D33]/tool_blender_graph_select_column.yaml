@@ -18,4 +18,4 @@ machine: "blender"
 op: "graph.select_column"
 
 ARGS:
-  - {name: mode, type: text}          # un de : KEYS | CFRA | MARKERS_COLUMN | MARKERS_BETWEEN
+  - {name: mode, type: text}          # one of: KEYS | CFRA | MARKERS_COLUMN | MARKERS_BETWEEN

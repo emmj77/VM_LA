@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Create a new GameObject."
 
 COMMAND: |
-  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
   set -f
   set -- gameobject create
@@ -48,7 +48,7 @@ COMMAND: |
   printf '%s\n' "$OUT"
 
 ARGS:
-  - {name: primitive, type: text}          # un de : Cube | Sphere | Cylinder | Plane | Capsule | Quad
+  - {name: primitive, type: text}          # one of: Cube | Sphere | Cylinder | Plane | Capsule | Quad
   - {name: position, type: text}          # 3 nombres : x y z
   - {name: rotation, type: text}          # 3 nombres : x y z
   - {name: scale, type: text}          # 3 nombres : x y z
@@ -56,6 +56,6 @@ ARGS:
   - {name: tag, type: text}
   - {name: layer, type: text}
   - {name: components, type: text}
-  - {name: save_prefab, type: text}          # true pour poser le drapeau, vide sinon
+  - {name: save_prefab, type: text}          # true to set the flag, empty otherwise
   - {name: prefab_path, type: text}
   - {name: name, type: text}

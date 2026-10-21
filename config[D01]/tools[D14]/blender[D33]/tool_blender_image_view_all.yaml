@@ -18,4 +18,4 @@ machine: "blender"
 op: "image.view_all"
 
 ARGS:
-  - {name: fit_view, type: text}          # true|false, vide pour ne rien poser
+  - {name: fit_view, type: text}          # true|false, empty to set nothing

@@ -18,5 +18,5 @@ machine: "blender"
 op: "mesh.dissolve_verts"
 
 ARGS:
-  - {name: use_face_split, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_boundary_tear, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_face_split, type: text}          # true|false, empty to set nothing
+  - {name: use_boundary_tear, type: text}          # true|false, empty to set nothing

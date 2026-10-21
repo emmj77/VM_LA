@@ -19,6 +19,6 @@ op: "mesh.remove_doubles"
 
 ARGS:
   - {name: threshold, type: text}
-  - {name: use_centroid, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_unselected, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_sharp_edge_from_normals, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_centroid, type: text}          # true|false, empty to set nothing
+  - {name: use_unselected, type: text}          # true|false, empty to set nothing
+  - {name: use_sharp_edge_from_normals, type: text}          # true|false, empty to set nothing

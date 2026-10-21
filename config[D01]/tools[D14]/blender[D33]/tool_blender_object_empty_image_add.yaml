@@ -19,34 +19,34 @@ op: "object.empty_image_add"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: hide_props_region, type: text}          # true|false, vide pour ne rien poser
-  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_backup, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_image, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_movie, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_python, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_font, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_sound, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_text, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_archive, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_btx, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_alembic, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_usd, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_obj, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_volume, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_blenlib, type: text}          # true|false, vide pour ne rien poser
+  - {name: hide_props_region, type: text}          # true|false, empty to set nothing
+  - {name: check_existing, type: text}          # true|false, empty to set nothing
+  - {name: filter_blender, type: text}          # true|false, empty to set nothing
+  - {name: filter_backup, type: text}          # true|false, empty to set nothing
+  - {name: filter_image, type: text}          # true|false, empty to set nothing
+  - {name: filter_movie, type: text}          # true|false, empty to set nothing
+  - {name: filter_python, type: text}          # true|false, empty to set nothing
+  - {name: filter_font, type: text}          # true|false, empty to set nothing
+  - {name: filter_sound, type: text}          # true|false, empty to set nothing
+  - {name: filter_text, type: text}          # true|false, empty to set nothing
+  - {name: filter_archive, type: text}          # true|false, empty to set nothing
+  - {name: filter_btx, type: text}          # true|false, empty to set nothing
+  - {name: filter_alembic, type: text}          # true|false, empty to set nothing
+  - {name: filter_usd, type: text}          # true|false, empty to set nothing
+  - {name: filter_obj, type: text}          # true|false, empty to set nothing
+  - {name: filter_volume, type: text}          # true|false, empty to set nothing
+  - {name: filter_folder, type: text}          # true|false, empty to set nothing
+  - {name: filter_blenlib, type: text}          # true|false, empty to set nothing
   - {name: filemode, type: int}
-  - {name: relative_path, type: text}          # true|false, vide pour ne rien poser
-  - {name: show_multiview, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_multiview, type: text}          # true|false, vide pour ne rien poser
-  - {name: display_type, type: text}          # un de : DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
-  - {name: sort_method, type: text}          # un de : DEFAULT | FILE_SORT_ALPHA | FILE_SORT_EXTENSION | FILE_SORT_TIME | FILE_SORT_SIZE | ASSET_CATALOG
+  - {name: relative_path, type: text}          # true|false, empty to set nothing
+  - {name: show_multiview, type: text}          # true|false, empty to set nothing
+  - {name: use_multiview, type: text}          # true|false, empty to set nothing
+  - {name: display_type, type: text}          # one of: DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
+  - {name: sort_method, type: text}          # one of: DEFAULT | FILE_SORT_ALPHA | FILE_SORT_EXTENSION | FILE_SORT_TIME | FILE_SORT_SIZE | ASSET_CATALOG
   - {name: name, type: text}
   - {name: session_uid, type: int}
-  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
-  - {name: location, type: text}          # 3 valeurs separees par des virgules
-  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
-  - {name: scale, type: text}          # 3 valeurs separees par des virgules
-  - {name: background, type: text}          # true|false, vide pour ne rien poser
+  - {name: align, type: text}          # one of: WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 values separated by commas
+  - {name: rotation, type: text}          # 3 values separated by commas
+  - {name: scale, type: text}          # 3 values separated by commas
+  - {name: background, type: text}          # true|false, empty to set nothing

@@ -18,4 +18,4 @@ machine: "blender"
 op: "graph.local_view"
 
 ARGS:
-  - {name: frame_selected, type: text}          # true|false, vide pour ne rien poser
+  - {name: frame_selected, type: text}          # true|false, empty to set nothing

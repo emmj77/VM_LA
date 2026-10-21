@@ -18,4 +18,4 @@ machine: "blender"
 op: "clip.select_grouped"
 
 ARGS:
-  - {name: group, type: text}          # un de : KEYFRAMED | ESTIMATED | TRACKED | LOCKED | DISABLED | COLOR | FAILED
+  - {name: group, type: text}          # one of: KEYFRAMED | ESTIMATED | TRACKED | LOCKED | DISABLED | COLOR | FAILED

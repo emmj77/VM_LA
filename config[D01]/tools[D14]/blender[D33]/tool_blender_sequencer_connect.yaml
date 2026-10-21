@@ -18,4 +18,4 @@ machine: "blender"
 op: "sequencer.connect"
 
 ARGS:
-  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
+  - {name: toggle, type: text}          # true|false, empty to set nothing

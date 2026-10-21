@@ -19,4 +19,4 @@ op: "sculpt.sample_detail_size"
 
 ARGS:
   - {name: location, type: int}
-  - {name: mode, type: text}          # un de : DYNTOPO | VOXEL
+  - {name: mode, type: text}          # one of: DYNTOPO | VOXEL

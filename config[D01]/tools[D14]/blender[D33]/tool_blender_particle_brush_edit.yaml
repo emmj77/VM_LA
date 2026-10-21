@@ -19,4 +19,4 @@ op: "particle.brush_edit"
 
 ARGS:
   - {name: stroke, type: text}
-  - {name: pen_flip, type: text}          # true|false, vide pour ne rien poser
+  - {name: pen_flip, type: text}          # true|false, empty to set nothing

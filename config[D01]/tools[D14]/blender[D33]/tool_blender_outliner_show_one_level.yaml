@@ -18,4 +18,4 @@ machine: "blender"
 op: "outliner.show_one_level"
 
 ARGS:
-  - {name: open, type: text}          # true|false, vide pour ne rien poser
+  - {name: open, type: text}          # true|false, empty to set nothing

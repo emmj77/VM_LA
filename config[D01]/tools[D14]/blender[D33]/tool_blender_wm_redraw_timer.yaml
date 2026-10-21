@@ -18,6 +18,6 @@ machine: "blender"
 op: "wm.redraw_timer"
 
 ARGS:
-  - {name: type, type: text}          # un de : DRAW | DRAW_SWAP | DRAW_WIN | DRAW_WIN_SWAP | ANIM_STEP | ANIM_PLAY | UNDO
+  - {name: type, type: text}          # one of: DRAW | DRAW_SWAP | DRAW_WIN | DRAW_WIN_SWAP | ANIM_STEP | ANIM_PLAY | UNDO
   - {name: iterations, type: int}
   - {name: time_limit, type: text}

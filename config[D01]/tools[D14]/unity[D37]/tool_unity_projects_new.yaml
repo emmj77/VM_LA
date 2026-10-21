@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Create a new Unity project (non-interactive, CI-friendly)"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- projects new --no-banner --no-pager --non-interactive
@@ -47,4 +47,4 @@ ARGS:
   - {name: editor_version, type: text}   # Unity editor version (e.g. 6000.0.26f1, latest, lts)
   - {name: template, type: text}   # Template name or package ID (e.g. com.unity.template.3d)
   - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
-  - {name: open, type: text}   # true pour poser --open ; Open the project in the Editor after creation
+  - {name: open, type: text}   # true to set --open ; Open the project in the Editor after creation

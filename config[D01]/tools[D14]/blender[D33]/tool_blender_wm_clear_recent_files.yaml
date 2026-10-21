@@ -18,4 +18,4 @@ machine: "blender"
 op: "wm.clear_recent_files"
 
 ARGS:
-  - {name: remove, type: text}          # un de : ALL | MISSING
+  - {name: remove, type: text}          # one of: ALL | MISSING

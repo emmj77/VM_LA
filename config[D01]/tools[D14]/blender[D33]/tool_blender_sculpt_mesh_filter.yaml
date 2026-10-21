@@ -23,9 +23,9 @@ ARGS:
   - {name: strength, type: text}
   - {name: iteration_count, type: int}
   - {name: event_history, type: text}
-  - {name: type, type: text}          # un de : SMOOTH | SCALE | INFLATE | SPHERE | RANDOM | RELAX | RELAX_FACE_SETS | SURFACE_SMOOTH | SHARPEN | ENHANCE_DETAILS | ERASE_DISPLACEMENT
-  - {name: deform_axis, type: text}          # un de : X | Y | Z
-  - {name: orientation, type: text}          # un de : LOCAL | WORLD | VIEW
+  - {name: type, type: text}          # one of: SMOOTH | SCALE | INFLATE | SPHERE | RANDOM | RELAX | RELAX_FACE_SETS | SURFACE_SMOOTH | SHARPEN | ENHANCE_DETAILS | ERASE_DISPLACEMENT
+  - {name: deform_axis, type: text}          # one of: X | Y | Z
+  - {name: orientation, type: text}          # one of: LOCAL | WORLD | VIEW
   - {name: surface_smooth_shape_preservation, type: text}
   - {name: surface_smooth_current_vertex, type: text}
   - {name: sharpen_smooth_ratio, type: text}

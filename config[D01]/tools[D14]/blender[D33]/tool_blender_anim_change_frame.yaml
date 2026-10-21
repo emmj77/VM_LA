@@ -19,6 +19,6 @@ op: "anim.change_frame"
 
 ARGS:
   - {name: frame, type: text}
-  - {name: snap, type: text}          # true|false, vide pour ne rien poser
-  - {name: seq_solo_preview, type: text}          # true|false, vide pour ne rien poser
-  - {name: pass_through_on_strip_handles, type: text}          # true|false, vide pour ne rien poser
+  - {name: snap, type: text}          # true|false, empty to set nothing
+  - {name: seq_solo_preview, type: text}          # true|false, empty to set nothing
+  - {name: pass_through_on_strip_handles, type: text}          # true|false, empty to set nothing

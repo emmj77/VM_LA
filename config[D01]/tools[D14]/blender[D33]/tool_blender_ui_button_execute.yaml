@@ -18,4 +18,4 @@ machine: "blender"
 op: "ui.button_execute"
 
 ARGS:
-  - {name: skip_depressed, type: text}          # true|false, vide pour ne rien poser
+  - {name: skip_depressed, type: text}          # true|false, empty to set nothing

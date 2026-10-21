@@ -1,17 +1,17 @@
 id: "K13"
 skill: "list-files"
 date: "2026-10-17"
-tags: ["list-files", "dossier", "lister", "fichier"]
+tags: ["list-files", "folder", "list", "file"]
 
 SUMMARY:
-  101: "Lister un dossier : ce qu'il contient, nommes."
-  102: "list_dir montre le dossier ; search affine par motif."
-  103: "On rend la liste TELLE QU'ON L'A LUE, pas de memoire."
+  101: "List a folder: what it holds, named."
+  102: "list_dir shows the folder; search narrows by pattern."
+  103: "The list is passed on AS IT WAS READ, no memory."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "list_dir"
   201: "search"
@@ -21,8 +21,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Dossier absent : le dire et nommer le chemin, ne pas inventer un contenu."
+  600: "Folder missing: say it and name the path, never invent a content."

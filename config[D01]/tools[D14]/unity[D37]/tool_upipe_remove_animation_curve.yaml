@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -n "{{clip}}" ] || { printf '%s\n' "$(msg argument_required 'clip' 'remove_animation_curve')" >&2; exit 1; }
   [ -n "{{type}}" ] || { printf '%s\n' "$(msg argument_required 'type' 'remove_animation_curve')" >&2; exit 1; }
   [ -n "{{property}}" ] || { printf '%s\n' "$(msg argument_required 'property' 'remove_animation_curve')" >&2; exit 1; }
@@ -45,5 +45,5 @@ ARGS:
   - {name: path, type: text}
   - {name: type, type: text}
   - {name: property, type: text}
-  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
-  - {name: dry_run, type: text}          # true|false, vide pour ne rien poser
+  - {name: confirm, type: text}          # true|false, empty to set nothing
+  - {name: dry_run, type: text}          # true|false, empty to set nothing

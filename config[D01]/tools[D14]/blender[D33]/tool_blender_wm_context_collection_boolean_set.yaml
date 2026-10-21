@@ -20,4 +20,4 @@ op: "wm.context_collection_boolean_set"
 ARGS:
   - {name: data_path_iter, type: text}
   - {name: data_path_item, type: text}
-  - {name: type, type: text}          # un de : TOGGLE | ENABLE | DISABLE
+  - {name: type, type: text}          # one of: TOGGLE | ENABLE | DISABLE

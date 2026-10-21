@@ -18,9 +18,9 @@ machine: "blender"
 op: "object.empty_add"
 
 ARGS:
-  - {name: type, type: text}          # un de : PLAIN_AXES | ARROWS | SINGLE_ARROW | CIRCLE | CUBE | SPHERE | CONE | IMAGE
+  - {name: type, type: text}          # one of: PLAIN_AXES | ARROWS | SINGLE_ARROW | CIRCLE | CUBE | SPHERE | CONE | IMAGE
   - {name: radius, type: text}
-  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
-  - {name: location, type: text}          # 3 valeurs separees par des virgules
-  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
-  - {name: scale, type: text}          # 3 valeurs separees par des virgules
+  - {name: align, type: text}          # one of: WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 values separated by commas
+  - {name: rotation, type: text}          # 3 values separated by commas
+  - {name: scale, type: text}          # 3 values separated by commas

@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.flip_normals"
 
 ARGS:
-  - {name: only_clnors, type: text}          # true|false, vide pour ne rien poser
+  - {name: only_clnors, type: text}          # true|false, empty to set nothing

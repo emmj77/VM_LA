@@ -18,6 +18,6 @@ machine: "blender"
 op: "graph.equalize_handles"
 
 ARGS:
-  - {name: side, type: text}          # un de : LEFT | RIGHT | BOTH
+  - {name: side, type: text}          # one of: LEFT | RIGHT | BOTH
   - {name: handle_length, type: text}
-  - {name: flatten, type: text}          # true|false, vide pour ne rien poser
+  - {name: flatten, type: text}          # true|false, empty to set nothing

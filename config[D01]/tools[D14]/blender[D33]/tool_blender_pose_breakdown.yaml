@@ -21,5 +21,5 @@ ARGS:
   - {name: factor, type: text}
   - {name: prev_frame, type: int}
   - {name: next_frame, type: int}
-  - {name: channels, type: text}          # un de : ALL | LOC | ROT | SIZE | BBONE | CUSTOM
-  - {name: axis_lock, type: text}          # un de : FREE | X | Y | Z
+  - {name: channels, type: text}          # one of: ALL | LOC | ROT | SIZE | BBONE | CUSTOM
+  - {name: axis_lock, type: text}          # one of: FREE | X | Y | Z

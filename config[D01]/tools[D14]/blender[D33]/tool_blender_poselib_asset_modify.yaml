@@ -18,4 +18,4 @@ machine: "blender"
 op: "poselib.asset_modify"
 
 ARGS:
-  - {name: mode, type: text}          # un de : ADJUST | REPLACE | ADD | REMOVE
+  - {name: mode, type: text}          # one of: ADJUST | REPLACE | ADD | REMOVE

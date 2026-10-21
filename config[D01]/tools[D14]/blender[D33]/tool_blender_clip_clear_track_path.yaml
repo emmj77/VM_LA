@@ -18,5 +18,5 @@ machine: "blender"
 op: "clip.clear_track_path"
 
 ARGS:
-  - {name: action, type: text}          # un de : UPTO | REMAINED | ALL
-  - {name: clear_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: action, type: text}          # one of: UPTO | REMAINED | ALL
+  - {name: clear_active, type: text}          # true|false, empty to set nothing

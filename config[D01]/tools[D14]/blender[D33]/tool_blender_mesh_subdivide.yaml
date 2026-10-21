@@ -20,8 +20,8 @@ op: "mesh.subdivide"
 ARGS:
   - {name: number_cuts, type: int}
   - {name: smoothness, type: text}
-  - {name: ngon, type: text}          # true|false, vide pour ne rien poser
-  - {name: quadcorner, type: text}          # un de : INNERVERT | PATH | STRAIGHT_CUT | FAN
+  - {name: ngon, type: text}          # true|false, empty to set nothing
+  - {name: quadcorner, type: text}          # one of: INNERVERT | PATH | STRAIGHT_CUT | FAN
   - {name: fractal, type: text}
   - {name: fractal_along_normal, type: text}
   - {name: seed, type: int}

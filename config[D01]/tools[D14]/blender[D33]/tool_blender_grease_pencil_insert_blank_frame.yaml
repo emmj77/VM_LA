@@ -18,5 +18,5 @@ machine: "blender"
 op: "grease_pencil.insert_blank_frame"
 
 ARGS:
-  - {name: all_layers, type: text}          # true|false, vide pour ne rien poser
+  - {name: all_layers, type: text}          # true|false, empty to set nothing
   - {name: duration, type: int}

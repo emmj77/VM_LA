@@ -19,4 +19,4 @@ op: "sequencer.strip_modifier_move"
 
 ARGS:
   - {name: name, type: text}
-  - {name: direction, type: text}          # un de : UP | DOWN
+  - {name: direction, type: text}          # one of: UP | DOWN

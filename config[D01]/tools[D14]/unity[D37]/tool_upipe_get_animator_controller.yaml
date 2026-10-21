@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -n "{{controller}}" ] || { printf '%s\n' "$(msg argument_required 'controller' 'get_animator_controller')" >&2; exit 1; }
   set -- command --project-path "$P" get_animator_controller
   [ -n "{{controller}}" ] && set -- "$@" --controller "{{controller}}"

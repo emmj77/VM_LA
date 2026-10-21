@@ -4,38 +4,38 @@ date: "2026-10-19"
 tags: ["tunnel", "telephone", "wireguard", "wg0", "appairage", "route"]
 
 SUMMARY:
-  100: "AMENER LE TELEPHONE JUSQU AU PONT, ET LE PROUVER PAR LA MACHINE."
-  101: "Ceci n est pas une recette : c est une ROUTE FERMEE (PERMANENT_TODO: true)."
-  102: "A chaque etape, le harnais ne t ouvre QUE les outils nommes sur la ligne de l etape."
-  103: "Tu n as pas le choix du suivant, et tu n as pas a le choisir : il s ouvre quand la"
-  104: "machine a dit oui -- c est-a-dire quand TOUS les outils de l etape ont rendu ok."
-  105: "Une etape qui refuse (wg absent, conf illisible) ne se ferme pas : dis ce qui manque."
-  110: "CE QUE FAIT LE TELEPHONE, ET CE QU IL NE FAIT PAS"
-  111: "Le tunnel porte le pont du telephone (bridge). Le pont ecoute en 127.0.0.1 : il ne"
-  112: "s ouvre pas sur le reseau, c est le tunnel qui amene le telephone jusqu a lui."
-  113: "Lever le tunnel n ouvre AUCUN service : il pose une adresse (10.10.0.1/24) et un port"
-  114: "d ecoute UDP. Ce qui passe ensuite, c est le pont, et il a sa propre porte."
-  120: "LES QUATRE GESTES, DANS CET ORDRE, SANS EN SAUTER UN"
-  121: "1. LIRE : tunnel_status. On ne leve pas ce qui est deja debout, on ne couche pas ce"
-  122: "   qui ne l est pas. L etat se lit AVANT le geste, toujours."
-  123: "2. LEVER : tunnel_up. Il refuse une interface deja debout, une conf absente, un sudo"
-  124: "   qui veut un mot de passe. Ce qu il monte, il le dit, et il le dit par la machine."
-  125: "3. CONSTATER : tunnel_status de nouveau. C est le fait qui ferme l etape, pas la"
-  126: "   parole de tunnel_up. Adresse, port qui ecoute, pair qui a parle : trois choses."
-  127: "4. RENDRE : reply. Quatre lignes au plus : ce qui est debout, l adresse, le port, et"
-  128: "   ce qui reste a faire cote telephone."
-  130: "CE QUE TU NE FAIS PAS ICI : descendre le tunnel sans qu on te le demande, ouvrir le"
-  131: "pont sur le reseau, ni promettre que le telephone est joignable avant que l etape 3"
-  132: "ait vu une adresse ET un port qui ecoute."
+  100: "BRING THE PHONE UP TO THE BRIDGE, AND PROVE IT WITH THE MACHINE."
+  101: "This is not a recipe: it is a CLOSED ROUTE (PERMANENT_TODO: true)."
+  102: "At every step, the harness opens ONLY the tools named on the step line."
+  103: "You do not choose the next one, and you do not have to choose it: it opens when the"
+  104: "machine said yes -- that is, when ALL the tools of the step returned ok."
+  105: "A step that refuses (wg missing, conf unreadable) does not close: say what is missing."
+  110: "WHAT THE PHONE DOES, AND WHAT IT DOES NOT DO"
+  111: "The tunnel carries the phone bridge. The bridge listens on 127.0.0.1: it does not"
+  112: "open on the network: it is the tunnel that brings the phone up to it."
+  113: "Raising the tunnel opens NO service: it sets an address (10.10.0.1/24) and a port"
+  114: "listen on UDP. What passes next is the bridge, and it has its own door."
+  120: "THE FOUR ACTS, IN THIS ORDER, WITHOUT SKIPPING ONE"
+  121: "1. READ: tunnel_status. What already stands is not raised, what does not stand"
+  122: "   is not laid down. The state is read BEFORE the act, always."
+  123: "2. RAISE: tunnel_up. It refuses an interface already up, a missing conf, a sudo"
+  124: "   that wants a password. What it mounts, it says, and it says it through the machine."
+  125: "3. CHECK: tunnel_status again. The fact closes the step, not the"
+  126: "   word of tunnel_up. Address, listening port, peer that spoke: three things."
+  127: "4. REPORT: reply. Four lines at most: what stands, the address, the port, and"
+  128: "   what remains to be done on the phone side."
+  130: "WHAT YOU DO NOT DO HERE: lay the tunnel down without being asked, open the"
+  131: "bridge on the network, nor promise the phone is reachable before step 3"
+  132: "has seen an address AND a listening port."
 
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
 
-# APPROVAL: false -- ET CE N EST PAS UN OUBLI. Les trois tools de tunnel ne sont pas dans GATED :
-# la regle de MOUSSA (19/10) est courte et nommee (« juste install_program et download_file »).
-# Ce qui borne ce skill, c est le TUNNEL lui-meme : chaque etape ferme le perimetre a ses outils.
+  # APPROVAL: false -- AND IT IS NOT AN OVERSIGHT. The three tunnel tools are not in GATED:
+  # MOUSSA's rule (19/10) is short and named ("just install_program and download_file").
+  # What bounds this skill is the TUNNEL itself: every step closes the toolset on its tools.
 APPROVAL: false
 PERMANENT_TODO: true
 
@@ -49,18 +49,18 @@ DOCS:
   300: "TUNNEL_trois_skills_a_juger"
 
 PLAN:
-  400: "PLAN phone-tunnel : amener le telephone jusqu au pont, et le prouver"
-  401: "[progress] lire l etat du tunnel -- tools: tunnel_status"
-  402: "[todo] lever wg0 et le dire -- tools: tunnel_up"
-  403: "[todo] constater ce qui est monte -- tools: tunnel_status"
+  400: "PLAN phone-tunnel: bring the phone up to the bridge, and prove it"
+  401: "[progress] read the tunnel state -- tools: tunnel_status"
+  402: "[todo] raise wg0 and say it -- tools: tunnel_up"
+  403: "[todo] state what is mounted -- tools: tunnel_status"
   404: "[todo] rendre compte au telephone -- tools: reply"
 
 WRITABLE_WORKSPACE:
-  # le tunnel n ECRIT rien : il lit l etat de la machine et il rend compte. Le workspace est la
-  # seule chose qu il puisse toucher, et il n en a pas besoin -- il est declare pour la forme que
-  # le harnais exige, et il ne sert a aucune etape.
+  # the tunnel WRITES nothing: it reads the machine state and reports. The workspace is the
+  # only thing it could touch, and it has no need of it -- it is declared for the form the
+  # harness demands, and it serves no step.
   workspace: "work/"
   type-file: ".md .yaml .txt .json"
 ERROR:
-  600: "tunnel_status/tunnel_up/tunnel_down n existent pas ou ont ete coupes : la route est morte, dis-le"
-  601: "sudo reclame un mot de passe : aucun geste de tunnel n est possible depuis ici, dis-le"
+  600: "tunnel_status/tunnel_up/tunnel_down do not exist or were cut: the route is dead, say it"
+  601: "sudo asks for a password: no tunnel act is possible from here, say it"

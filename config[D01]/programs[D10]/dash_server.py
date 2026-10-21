@@ -176,8 +176,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         p = urlsplit(self.path).path
-        # un ping n est pas une visite : la table sonde la page toutes les quinze secondes,
-        # et ce sondage la tenait eveillee pour toujours.
+        # a ping is not a visit: the table probes the page every fifteen seconds,
+        # and that probing kept it awake for ever.
         if p == "/ping":
             return self.reply(200, b'{"state": "alive", "door": "dashboard"}', "application/json")
         TOUCH[0] = time.time()

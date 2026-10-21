@@ -18,7 +18,7 @@ machine: "blender"
 op: "mesh.select_axis"
 
 ARGS:
-  - {name: orientation, type: text}          # un de : GLOBAL | LOCAL | NORMAL | GIMBAL | VIEW | CURSOR | PARENT
-  - {name: sign, type: text}          # un de : POS | NEG | ALIGN
-  - {name: axis, type: text}          # un de : X | Y | Z
+  - {name: orientation, type: text}          # one of: GLOBAL | LOCAL | NORMAL | GIMBAL | VIEW | CURSOR | PARENT
+  - {name: sign, type: text}          # one of: POS | NEG | ALIGN
+  - {name: axis, type: text}          # one of: X | Y | Z
   - {name: threshold, type: text}

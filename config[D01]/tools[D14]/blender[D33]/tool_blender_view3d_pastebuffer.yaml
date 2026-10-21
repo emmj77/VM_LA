@@ -18,5 +18,5 @@ machine: "blender"
 op: "view3d.pastebuffer"
 
 ARGS:
-  - {name: autoselect, type: text}          # true|false, vide pour ne rien poser
-  - {name: active_collection, type: text}          # true|false, vide pour ne rien poser
+  - {name: autoselect, type: text}          # true|false, empty to set nothing
+  - {name: active_collection, type: text}          # true|false, empty to set nothing

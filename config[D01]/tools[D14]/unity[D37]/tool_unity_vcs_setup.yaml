@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Get this project into version control and push a first commit, asking only what cannot be detected"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- vcs setup --no-banner --no-pager --non-interactive
@@ -65,11 +65,11 @@ ARGS:
   - {name: git_remote_protocol, type: text}   # Transport for the new remote: https or ssh (default https)
   - {name: git_description, type: text}   # Description for a new repository
   - {name: git_token, type: text}   # Personal access token; overrides your Git credential manager (prefer -
-  - {name: git_token_stdin, type: text}   # true pour poser --git-token-stdin ; Read the personal access token from stdin (CI-safe)
-  - {name: no_initial_commit, type: text}   # true pour poser --no-initial-commit ; Skip the automatic initial commit and push
-  - {name: git_lfs, type: text}   # true pour poser --git-lfs ; Initialize Git LFS before the first commit (new repositories only)
+  - {name: git_token_stdin, type: text}   # true to set --git-token-stdin ; Read the personal access token from stdin (CI-safe)
+  - {name: no_initial_commit, type: text}   # true to set --no-initial-commit ; Skip the automatic initial commit and push
+  - {name: git_lfs, type: text}   # true to set --git-lfs ; Initialize Git LFS before the first commit (new repositories only)
   - {name: vcs_region, type: text}   # UVCS region for the organization's subscription (first use only).
-  - {name: dry_run, type: text}   # true pour poser --dry-run ; Show what Unity Version Control setup creates, then exit without creat
+  - {name: dry_run, type: text}   # true to set --dry-run ; Show what Unity Version Control setup creates, then exit without creat
   - {name: preset, type: text}   # Preset to fill in every option you did not pass. Defaults to your save
   - {name: save_preset, type: text}   # After a successful run, save its choices under this name and make it y
   - {name: cloud_org, type: text}   # Cloud organization id or name (for --vcs uvcs on a project not yet clo

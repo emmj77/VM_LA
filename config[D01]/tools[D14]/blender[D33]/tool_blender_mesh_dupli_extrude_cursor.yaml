@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.dupli_extrude_cursor"
 
 ARGS:
-  - {name: rotate_source, type: text}          # true|false, vide pour ne rien poser
+  - {name: rotate_source, type: text}          # true|false, empty to set nothing

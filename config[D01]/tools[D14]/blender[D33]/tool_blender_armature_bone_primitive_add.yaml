@@ -19,7 +19,7 @@ op: "armature.bone_primitive_add"
 
 ARGS:
   - {name: name, type: text}
-  - {name: space, type: text}          # un de : OBJECT | WORLD
-  - {name: align, type: text}          # un de : UP | AXES | 3D_CURSOR | 3D_VIEW
+  - {name: space, type: text}          # one of: OBJECT | WORLD
+  - {name: align, type: text}          # one of: UP | AXES | 3D_CURSOR | 3D_VIEW
   - {name: length, type: text}
-  - {name: use_deform, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_deform, type: text}          # true|false, empty to set nothing

@@ -18,4 +18,4 @@ machine: "blender"
 op: "screen.workspace_cycle"
 
 ARGS:
-  - {name: direction, type: text}          # un de : PREV | NEXT
+  - {name: direction, type: text}          # one of: PREV | NEXT

@@ -18,4 +18,4 @@ machine: "blender"
 op: "graph.easing_type"
 
 ARGS:
-  - {name: type, type: text}          # un de : AUTO | EASE_IN | EASE_OUT | EASE_IN_OUT
+  - {name: type, type: text}          # one of: AUTO | EASE_IN | EASE_OUT | EASE_IN_OUT

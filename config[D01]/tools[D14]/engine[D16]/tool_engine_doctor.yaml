@@ -27,8 +27,8 @@ COMMAND: |
   ' "$_reg")
   case $_op in
   json|short|light|all)
-  # LES CONTROLES TOURNENT ENSEMBLE (MOUSSA, 21/10) : chacun paie le demarrage du moteur, un par
-  # un ils prenaient 34 s. On les lance tous, puis on lit les reponses dans l ordre du plan.
+  # THE CONTROLS RUN TOGETHER (MOUSSA, 21/10): each pays the engine start, one by
+  # one they took 34 s. All are launched, then the answers are read in the order of the plan.
   _pf=$(tmpfile plan) || exit 0
   : > "$_pf"
   _i=0

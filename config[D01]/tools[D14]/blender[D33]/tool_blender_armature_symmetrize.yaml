@@ -18,5 +18,5 @@ machine: "blender"
 op: "armature.symmetrize"
 
 ARGS:
-  - {name: direction, type: text}          # un de : NEGATIVE_X | POSITIVE_X
-  - {name: copy_bone_colors, type: text}          # true|false, vide pour ne rien poser
+  - {name: direction, type: text}          # one of: NEGATIVE_X | POSITIVE_X
+  - {name: copy_bone_colors, type: text}          # true|false, empty to set nothing

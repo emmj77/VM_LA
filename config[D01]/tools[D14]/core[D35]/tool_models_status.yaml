@@ -24,4 +24,4 @@ COMMAND: |
   HS=$(printf '%s' "$H" | sed '$d' | jq -r '.status // empty' 2>/dev/null); [ -n "$HS" ] || HS="HTTP $HC"
   printf 'joignable: oui ; health: %s ; modele servi: %s\n' "$HS" "$MO"
 
-ARGS: []                    # aucun argument : ce tool se nomme seul
+ARGS: []                    # no argument: this tool names itself

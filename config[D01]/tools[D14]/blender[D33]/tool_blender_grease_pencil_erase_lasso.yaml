@@ -19,6 +19,6 @@ op: "grease_pencil.erase_lasso"
 
 ARGS:
   - {name: path, type: text}
-  - {name: use_smooth_stroke, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_smooth_stroke, type: text}          # true|false, empty to set nothing
   - {name: smooth_stroke_factor, type: text}
   - {name: smooth_stroke_radius, type: int}

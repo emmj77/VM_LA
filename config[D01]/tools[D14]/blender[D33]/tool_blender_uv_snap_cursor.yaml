@@ -18,4 +18,4 @@ machine: "blender"
 op: "uv.snap_cursor"
 
 ARGS:
-  - {name: target, type: text}          # un de : PIXELS | SELECTED | ORIGIN
+  - {name: target, type: text}          # one of: PIXELS | SELECTED | ORIGIN

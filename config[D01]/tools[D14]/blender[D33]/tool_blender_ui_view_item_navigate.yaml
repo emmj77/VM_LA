@@ -18,4 +18,4 @@ machine: "blender"
 op: "ui.view_item_navigate"
 
 ARGS:
-  - {name: direction, type: text}          # un de : UP | DOWN | LEFT | RIGHT
+  - {name: direction, type: text}          # one of: UP | DOWN | LEFT | RIGHT

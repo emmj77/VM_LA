@@ -19,11 +19,11 @@ COMMAND: |
   A=$(command -v agent-browser 2>/dev/null || echo /usr/local/bin/agent-browser)
   [ -x "$A" ] || { echo "refuse: agent-browser not found" >&2 ; exit 1 ; }
   # A real Chrome on the persistent profile: the bundled browser announces webdriver=true and
-  # « HeadlessChrome », and every captcha fails. Here we hold on to it over CDP.
+  # HeadlessChrome, and every captcha fails. Here we hold on to it over CDP.
   PORT=9222
   if ! curl -s --max-time 2 "http://127.0.0.1:$PORT/json/version" >/dev/null 2>&1; then
     # headless passes, but only with a real Chrome fingerprint: without --user-agent
-    # the binary announces « HeadlessChrome » and the captchas fail in a loop.
+    # the binary announces HeadlessChrome and the captchas fail in a loop.
     /usr/bin/chromium --headless=new --remote-debugging-port=$PORT \
       --user-data-dir=/home/moussa/.agent-browser/profile --profile-directory=Default \
       --no-first-run --no-default-browser-check \
@@ -52,8 +52,8 @@ COMMAND: |
     sleep 1; j=$((j+1))
   done
   $B click "[role=textbox]" >/dev/null 2>&1 || { echo "refuse : champ de saisie introuvable" >&2 ; exit 1 ; }
-  # frappe humaine : un caractere a la fois, 70-220 ms, pause plus longue entre les mots.
-  # dash n'a pas $RANDOM : l'entropie vient de /dev/urandom.
+  # human typing: one character at a time, 70-220 ms, a longer pause between words.
+  # dash has no $RANDOM: entropy comes from /dev/urandom.
   for w in $Q; do
     for c in $(printf '%s' "$w" | fold -w1); do
       $B keyboard type "$c" >/dev/null 2>&1 || { echo "refuse : frappe impossible" >&2 ; exit 1 ; }

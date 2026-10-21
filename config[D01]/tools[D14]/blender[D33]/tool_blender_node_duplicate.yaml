@@ -18,5 +18,5 @@ machine: "blender"
 op: "node.duplicate"
 
 ARGS:
-  - {name: keep_inputs, type: text}          # true|false, vide pour ne rien poser
-  - {name: linked, type: text}          # true|false, vide pour ne rien poser
+  - {name: keep_inputs, type: text}          # true|false, empty to set nothing
+  - {name: linked, type: text}          # true|false, empty to set nothing

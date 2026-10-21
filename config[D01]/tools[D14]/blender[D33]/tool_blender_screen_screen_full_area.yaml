@@ -18,4 +18,4 @@ machine: "blender"
 op: "screen.screen_full_area"
 
 ARGS:
-  - {name: use_hide_panels, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_hide_panels, type: text}          # true|false, empty to set nothing

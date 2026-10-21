@@ -18,4 +18,4 @@ machine: "blender"
 op: "info.select_all"
 
 ARGS:
-  - {name: action, type: text}          # un de : TOGGLE | SELECT | DESELECT | INVERT
+  - {name: action, type: text}          # one of: TOGGLE | SELECT | DESELECT | INVERT

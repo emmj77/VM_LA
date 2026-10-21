@@ -18,5 +18,5 @@ machine: "blender"
 op: "mesh.select_mirror"
 
 ARGS:
-  - {name: axis, type: text}          # un de : X | Y | Z
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: axis, type: text}          # one of: X | Y | Z
+  - {name: extend, type: text}          # true|false, empty to set nothing

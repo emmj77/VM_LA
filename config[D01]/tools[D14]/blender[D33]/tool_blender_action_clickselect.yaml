@@ -18,11 +18,11 @@ machine: "blender"
 op: "action.clickselect"
 
 ARGS:
-  - {name: wait_to_deselect_others, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_select_on_click, type: text}          # true|false, vide pour ne rien poser
+  - {name: wait_to_deselect_others, type: text}          # true|false, empty to set nothing
+  - {name: use_select_on_click, type: text}          # true|false, empty to set nothing
   - {name: mouse_x, type: int}
   - {name: mouse_y, type: int}
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
-  - {name: column, type: text}          # true|false, vide pour ne rien poser
-  - {name: channel, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: deselect_all, type: text}          # true|false, empty to set nothing
+  - {name: column, type: text}          # true|false, empty to set nothing
+  - {name: channel, type: text}          # true|false, empty to set nothing

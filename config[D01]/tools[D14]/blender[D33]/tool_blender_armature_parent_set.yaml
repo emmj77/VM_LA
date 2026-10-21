@@ -18,4 +18,4 @@ machine: "blender"
 op: "armature.parent_set"
 
 ARGS:
-  - {name: type, type: text}          # un de : CONNECTED | OFFSET
+  - {name: type, type: text}          # one of: CONNECTED | OFFSET

@@ -19,4 +19,4 @@ op: "info.select_pick"
 
 ARGS:
   - {name: report_index, type: int}
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, empty to set nothing

@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   case "{{confirm}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'confirm' 'clear_baked_lighting')""{{confirm}}" >&2; exit 1 ;; esac
   case "{{include_disk_cache}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'include_disk_cache' 'clear_baked_lighting')""{{include_disk_cache}}" >&2; exit 1 ;; esac
   case "{{dry_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'dry_run' 'clear_baked_lighting')""{{dry_run}}" >&2; exit 1 ;; esac
@@ -36,6 +36,6 @@ COMMAND: |
   printf '%s\n' "$OUT" | jq -c '.data'
 
 ARGS:
-  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
-  - {name: include_disk_cache, type: text}          # true|false, vide pour ne rien poser
-  - {name: dry_run, type: text}          # true|false, vide pour ne rien poser
+  - {name: confirm, type: text}          # true|false, empty to set nothing
+  - {name: include_disk_cache, type: text}          # true|false, empty to set nothing
+  - {name: dry_run, type: text}          # true|false, empty to set nothing

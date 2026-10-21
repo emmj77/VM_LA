@@ -4,22 +4,22 @@ date: "2026-10-17"
 tags: ["search-memory", "memoire", "souvenir", "session"]
 
 SUMMARY:
-  101: "Chercher dans la memoire et les sessions passees."
-  102: "search_memory cherche la note ; search_sessions, la conversation ; load_memory charge."
-  103: "On cite ce qui a ETE trouve, avec sa source ; on ne reconstitue pas de memoire."
+  101: "Search the memory and the past sessions."
+  102: "search_memory searches the note; search_sessions, the conversation; load_memory loads."
+  103: "What WAS FOUND is cited, with its source; memory is never rebuilt."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   203: "load_doc"
   204: "mkdir"
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .txt"
 ERROR:
-  600: "Rien trouve : le dire, et proposer un autre mot-cle."
+  600: "Nothing found: say it, and offer another keyword."

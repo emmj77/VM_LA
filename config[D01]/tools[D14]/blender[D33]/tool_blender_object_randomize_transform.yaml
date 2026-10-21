@@ -19,11 +19,11 @@ op: "object.randomize_transform"
 
 ARGS:
   - {name: random_seed, type: int}
-  - {name: use_delta, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_loc, type: text}          # true|false, vide pour ne rien poser
-  - {name: loc, type: text}          # 3 valeurs separees par des virgules
-  - {name: use_rot, type: text}          # true|false, vide pour ne rien poser
-  - {name: rot, type: text}          # 3 valeurs separees par des virgules
-  - {name: use_scale, type: text}          # true|false, vide pour ne rien poser
-  - {name: scale_even, type: text}          # true|false, vide pour ne rien poser
-  - {name: scale, type: text}          # 3 valeurs separees par des virgules
+  - {name: use_delta, type: text}          # true|false, empty to set nothing
+  - {name: use_loc, type: text}          # true|false, empty to set nothing
+  - {name: loc, type: text}          # 3 values separated by commas
+  - {name: use_rot, type: text}          # true|false, empty to set nothing
+  - {name: rot, type: text}          # 3 values separated by commas
+  - {name: use_scale, type: text}          # true|false, empty to set nothing
+  - {name: scale_even, type: text}          # true|false, empty to set nothing
+  - {name: scale, type: text}          # 3 values separated by commas

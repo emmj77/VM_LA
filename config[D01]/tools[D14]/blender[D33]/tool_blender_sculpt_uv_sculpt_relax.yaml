@@ -18,5 +18,5 @@ machine: "blender"
 op: "sculpt.uv_sculpt_relax"
 
 ARGS:
-  - {name: use_invert, type: text}          # true|false, vide pour ne rien poser
-  - {name: relax_method, type: text}          # un de : LAPLACIAN | HC | COTAN
+  - {name: use_invert, type: text}          # true|false, empty to set nothing
+  - {name: relax_method, type: text}          # one of: LAPLACIAN | HC | COTAN

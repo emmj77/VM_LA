@@ -38,7 +38,7 @@ COMMAND: |
     printf '== THE ACTIVE SKILL ==\n'
     _sk=$(skl_skill 2>/dev/null)
     if [ -n "$_sk" ]; then printf 'skill : %s\n' "$_sk"; else printf 'no skill loaded : no skill is active\n'; fi
-    # rien de charge : trois skills probables, une ligne bornee, c'est tout
+    # nothing loaded: three likely skills, one bounded line, that is all
     if [ -z "$_sk" ] && [ -n "$_req" ]; then
       _fd=$(find "$(dirname "$(dirname "$LA_CONFIG")")" -maxdepth 1 -type d -name 'filter\[D*\]' -print 2>/dev/null | head -n 1)
       _fm="$_fd/skills.bin"

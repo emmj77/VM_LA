@@ -20,13 +20,13 @@ op: "import_anim.bvh"
 ARGS:
   - {name: filepath, type: text}
   - {name: filter_glob, type: text}
-  - {name: target, type: text}          # un de : ARMATURE | OBJECT
+  - {name: target, type: text}          # one of: ARMATURE | OBJECT
   - {name: global_scale, type: text}
   - {name: frame_start, type: int}
-  - {name: use_fps_scale, type: text}          # true|false, vide pour ne rien poser
-  - {name: update_scene_fps, type: text}          # true|false, vide pour ne rien poser
-  - {name: update_scene_duration, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_cyclic, type: text}          # true|false, vide pour ne rien poser
-  - {name: rotate_mode, type: text}          # un de : QUATERNION | NATIVE | XYZ | XZY | YXZ | YZX | ZXY | ZYX
-  - {name: axis_forward, type: text}          # un de : X | Y | Z | -X | -Y | -Z
-  - {name: axis_up, type: text}          # un de : X | Y | Z | -X | -Y | -Z
+  - {name: use_fps_scale, type: text}          # true|false, empty to set nothing
+  - {name: update_scene_fps, type: text}          # true|false, empty to set nothing
+  - {name: update_scene_duration, type: text}          # true|false, empty to set nothing
+  - {name: use_cyclic, type: text}          # true|false, empty to set nothing
+  - {name: rotate_mode, type: text}          # one of: QUATERNION | NATIVE | XYZ | XZY | YXZ | YZX | ZXY | ZYX
+  - {name: axis_forward, type: text}          # one of: X | Y | Z | -X | -Y | -Z
+  - {name: axis_up, type: text}          # one of: X | Y | Z | -X | -Y | -Z

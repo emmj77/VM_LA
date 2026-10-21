@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   case "{{include_inactive}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'include_inactive' 'find_gameobjects')""{{include_inactive}}" >&2; exit 1 ;; esac
   set -- command --project-path "$P" find_gameobjects
   [ -n "{{name}}" ] && set -- "$@" --name "{{name}}"
@@ -40,4 +40,4 @@ ARGS:
   - {name: tag, type: text}
   - {name: type, type: text}
   - {name: hierarchy_path, type: text}
-  - {name: include_inactive, type: text}          # true|false, vide pour ne rien poser
+  - {name: include_inactive, type: text}          # true|false, empty to set nothing

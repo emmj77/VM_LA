@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.transforms_to_deltas"
 
 ARGS:
-  - {name: mode, type: text}          # un de : ALL | LOC | ROT | SCALE
-  - {name: reset_values, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # one of: ALL | LOC | ROT | SCALE
+  - {name: reset_values, type: text}          # true|false, empty to set nothing

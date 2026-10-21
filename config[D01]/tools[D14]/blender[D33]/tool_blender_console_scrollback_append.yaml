@@ -19,4 +19,4 @@ op: "console.scrollback_append"
 
 ARGS:
   - {name: text, type: text}
-  - {name: type, type: text}          # un de : OUTPUT | INPUT | INFO | ERROR
+  - {name: type, type: text}          # one of: OUTPUT | INPUT | INFO | ERROR

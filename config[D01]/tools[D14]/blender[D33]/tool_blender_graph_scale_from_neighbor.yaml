@@ -19,4 +19,4 @@ op: "graph.scale_from_neighbor"
 
 ARGS:
   - {name: factor, type: text}
-  - {name: anchor, type: text}          # un de : LEFT | RIGHT
+  - {name: anchor, type: text}          # one of: LEFT | RIGHT

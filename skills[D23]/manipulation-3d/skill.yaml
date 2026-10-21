@@ -6,13 +6,13 @@ tags: ["manipulation-3d", "3d", "mesh", "glb", "fbx"]
 SUMMARY:
   101: "L'atelier 3D : image -> glb, mesh -> fbx, mesh -> png, mesurer, inspecter."
   102: "image2glb produit ; mesh-convert2fbx et mesh-render2png exportent."
-  103: "On MESURE et on REGARDE avant de dire que le mesh tient."
-  104: "Variantes Pixal3D (meme pipeline, autres reglages) : pixal3d-optimise (rapide), -memesgraines (rapide, graines fixes), -ref-cold (new seeds), -texture2048 (texture 2048)."
+  103: "The mesh is MEASURED and LOOKED at before saying it holds."
+  104: "Pixal3D variants (same pipeline, other settings): pixal3d-optimise (fast), -memesgraines (fast, fixed seeds), -ref-cold (new seeds),"
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "image2glb"
   201: "mesh-convert2fbx"
@@ -30,8 +30,8 @@ TOOLS:
 DOCS:
   300: "3d"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".glb .gltf .fbx .obj .png .jpg .webp"
 ERROR:
-  600: "Le mesh ou le serveur ne repond pas : le dire (mesh-inspect / comfyui), ne pas forcer."
+  600: "The mesh or the server does not answer: say it (mesh-inspect / comfyui), do not force."

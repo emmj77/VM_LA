@@ -4,32 +4,32 @@ date: "2026-10-20"
 tags: ["web", "agent-browser", "gemini", "image", "lecture"]
 
 SUMMARY:
-  101: "Lire une page, generer une image sur Gemini : c'est agent-browser qui pilote Chromium, pas un moteur maison."
-  102: "Un outil LA est un YAML qui passe par le moteur au shell : aucun .sh, aucun .py, jamais."
-  103: "Le profil Chromium de Moussa porte sa session Google : pas de connexion a refaire, pas de profil a recopier."
-  104: "Les references [ref=eN] meurent a chaque nouveau snapshot : une lecture, puis une action, jamais deux."
-  105: "Le moteur coupe a 200 lignes et 4000 octets : un outil qui rend du texte s'arrete a 180 lignes."
-  106: "Frappe : touche par touche, un mot a la fois, pauses irregulieres — inserttext (collage) se voit et fait sonner l'antibot."
-  107: "Headless passe sur ChatGPT et DeepSeek, a condition de lancer chromium --headless=new avec --user-agent d'un vrai Chrome : c'est la chaine « HeadlessChrome » et webdriver=true qui font echouer l'antibot, pas l'absence d'ecran."
-  108: "Un captcha, lui, ne se resout pas sans ecran : si un jour il en apparait un, il faudra la fenetre visible."
-  111: "Le navigateur integre d'agent-browser annonce webdriver=true et « HeadlessChrome » : tout captcha echoue. On lance /usr/bin/chromium --remote-debugging-port=9222 sur le profil persistant et on s'y raccroche avec --cdp 9222."
-  109: "dash n'a pas $RANDOM : l'entropie des pauses de frappe vient de od -An -N1 -tu1 /dev/urandom."
-  110: "ChatGPT est derriere Cloudflare : en headless la page reste sur « Just a moment ». On travaille en fenetre reelle sur :99."
-  112: "Piege mesure : --download-path rend 0 fichier. Sans ce drapeau, le fichier arrive sous un identifiant dans le dossier de la cible, et la commande sort en erreur meme quand elle a reussi."
+  101: "Read a page, generate an image on Gemini: agent-browser drives Chromium, not a home-made engine."
+  102: "An LA tool is a YAML that goes through the engine to the shell: no .sh, no .py, never."
+  103: "Moussa's Chromium profile carries his Google session: no sign-in to redo, no profile to copy."
+  104: "The [ref=eN] references die at every new snapshot: one read, then one action, never two."
+  105: "The engine cuts at 200 lines and 4000 bytes: a tool that returns text stops at 180 lines."
+  106: "Typing: key by key, one word at a time, irregular pauses - inserttext (paste) is seen and trips the antibot."
+  107: "Headless passes on ChatGPT and DeepSeek, provided chromium --headless=new runs with the --user-agent of a real Chrome: it is the HeadlessChrome + webdriver=true chain that makes the antibot fail, not the absence of a screen."
+  108: "A captcha, though, is not solved without a screen: if one ever appears, the visible window will be needed."
+  111: "The bundled agent-browser announces webdriver=true and HeadlessChrome: every captcha fails. So /usr/bin/chromium --remote-debugging-port=9222 runs on the persistent profile and we hold on to it with --cdp 9222."
+  109: "dash has no $RANDOM: the entropy of the typing pauses comes from od -An -N1 -tu1 /dev/urandom."
+  110: "ChatGPT sits behind Cloudflare: headless the page stays on 'Just a moment'. Work in a real window on :99."
+  112: "Measured trap: --download-path returns 0 file. Without that flag, the file lands under an identifier in the target folder, and the command exits on error even when it succeeded."
 
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".jpg .png .webp .md .txt"
 
 ERROR:
-  600: "Gemini sans image, agent-browser absent, page injoignable : le dire avec la raison, ne pas reessayer a l'aveugle."
+  600: "Gemini without image, agent-browser missing, page unreachable: say it with the reason, never retry blindly."
 
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
 
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 
 TOOLS:
   200: "web_read"

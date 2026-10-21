@@ -18,6 +18,6 @@ machine: "blender"
 op: "outliner.select_walk"
 
 ARGS:
-  - {name: direction, type: text}          # un de : UP | DOWN | LEFT | RIGHT
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: toggle_all, type: text}          # true|false, vide pour ne rien poser
+  - {name: direction, type: text}          # one of: UP | DOWN | LEFT | RIGHT
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: toggle_all, type: text}          # true|false, empty to set nothing

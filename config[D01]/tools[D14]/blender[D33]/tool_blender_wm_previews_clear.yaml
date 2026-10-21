@@ -18,4 +18,4 @@ machine: "blender"
 op: "wm.previews_clear"
 
 ARGS:
-  - {name: id_type, type: text}          # un de : ALL | GEOMETRY | SHADING | SCENE | COLLECTION | OBJECT | MATERIAL | LIGHT | WORLD | TEXTURE | IMAGE
+  - {name: id_type, type: text}          # one of: ALL | GEOMETRY | SHADING | SCENE | COLLECTION | OBJECT | MATERIAL | LIGHT | WORLD | TEXTURE | IMAGE

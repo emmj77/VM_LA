@@ -18,10 +18,10 @@ machine: "blender"
 op: "object.quick_explode"
 
 ARGS:
-  - {name: style, type: text}          # un de : EXPLODE | BLEND
+  - {name: style, type: text}          # one of: EXPLODE | BLEND
   - {name: amount, type: int}
   - {name: frame_duration, type: int}
   - {name: frame_start, type: int}
   - {name: frame_end, type: int}
   - {name: velocity, type: text}
-  - {name: fade, type: text}          # true|false, vide pour ne rien poser
+  - {name: fade, type: text}          # true|false, empty to set nothing

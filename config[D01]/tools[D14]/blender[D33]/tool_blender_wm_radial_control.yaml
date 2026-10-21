@@ -28,5 +28,5 @@ ARGS:
   - {name: fill_color_override_test_path, type: text}
   - {name: zoom_path, type: text}
   - {name: image_id, type: text}
-  - {name: secondary_tex, type: text}          # true|false, vide pour ne rien poser
-  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: secondary_tex, type: text}          # true|false, empty to set nothing
+  - {name: release_confirm, type: text}          # true|false, empty to set nothing

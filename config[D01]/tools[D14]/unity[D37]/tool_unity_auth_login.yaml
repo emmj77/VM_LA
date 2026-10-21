@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Sign in to your Unity account (opens browser, or pass --client-id/--client-secret for a service account)"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- auth login --no-banner --no-pager --non-interactive
@@ -42,5 +42,5 @@ COMMAND: |
 ARGS:
   - {name: client_id, type: text}   # Service-account key ID for non-interactive sign-in
   - {name: client_secret, type: text}   # Service-account secret key (prefer --secret-from-stdin in shared shell
-  - {name: secret_from_stdin, type: text}   # true pour poser --secret-from-stdin ; Read the service-account secret from stdin (keeps it out of argv / ps)
-  - {name: no_store, type: text}   # true pour poser --no-store ; Do not persist credentials to the keyring (mint in-process only)
+  - {name: secret_from_stdin, type: text}   # true to set --secret-from-stdin ; Read the service-account secret from stdin (keeps it out of argv / ps)
+  - {name: no_store, type: text}   # true to set --no-store ; Do not persist credentials to the keyring (mint in-process only)

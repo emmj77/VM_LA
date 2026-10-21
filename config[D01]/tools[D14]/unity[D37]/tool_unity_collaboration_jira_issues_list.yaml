@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "List Jira issues across an organization"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- collaboration jira issues list --no-banner --no-pager --non-interactive
@@ -45,5 +45,5 @@ ARGS:
   - {name: profile, type: text}   # Filter profile (repeatable): all|active|resolved|unresolved|draft|send
   - {name: next, type: text}   # Pagination token from a previous page
   - {name: limit, type: text}   # Max results per page (1–100, default 10)
-  - {name: all, type: text}   # true pour poser --all ; Fetch all issue associations
+  - {name: all, type: text}   # true to set --all ; Fetch all issue associations
   - {name: sort, type: text}   # Sort order: Ascending or Descending

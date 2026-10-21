@@ -19,11 +19,11 @@ op: "export_anim.bvh"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
+  - {name: check_existing, type: text}          # true|false, empty to set nothing
   - {name: filter_glob, type: text}
   - {name: global_scale, type: text}
   - {name: frame_start, type: int}
   - {name: frame_end, type: int}
-  - {name: rotate_mode, type: text}          # un de : NATIVE | XYZ | XZY | YXZ | YZX | ZXY | ZYX
-  - {name: root_transform_only, type: text}          # true|false, vide pour ne rien poser
-  - {name: sort_children_by_names, type: text}          # true|false, vide pour ne rien poser
+  - {name: rotate_mode, type: text}          # one of: NATIVE | XYZ | XZY | YXZ | YZX | ZXY | ZYX
+  - {name: root_transform_only, type: text}          # true|false, empty to set nothing
+  - {name: sort_children_by_names, type: text}          # true|false, empty to set nothing

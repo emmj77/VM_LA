@@ -18,5 +18,5 @@ machine: "blender"
 op: "view3d.cursor3d"
 
 ARGS:
-  - {name: use_depth, type: text}          # true|false, vide pour ne rien poser
-  - {name: orientation, type: text}          # un de : NONE | VIEW | XFORM | GEOM
+  - {name: use_depth, type: text}          # true|false, empty to set nothing
+  - {name: orientation, type: text}          # one of: NONE | VIEW | XFORM | GEOM

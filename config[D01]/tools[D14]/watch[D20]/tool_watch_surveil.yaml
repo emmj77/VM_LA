@@ -1,4 +1,4 @@
-# la surveillance : un sommeil qui se repete tout seul et reveille le modele avec sa mission.
+# the watch: a sleep that repeats by itself and wakes the model with its mission.
 id: "W003"
 tool: "watch.surveil"
 date: "2026-10-21"
@@ -31,7 +31,7 @@ COMMAND: |
     jq -cn --arg t "$_target" --argjson e "$_every" --argjson m "$_max" --arg u "$_u" \
       '{target:$t,every:$e,max:$m,count:0,state:"running",unit:$u}' | write_atomic "$_j"
 
-    # une commande en ligne, construite ici : systemd la repete, le compte se fait dedans
+    # one command line, built here: systemd repeats it, the count happens inside
     _cmd="c=\$(( \$(jq -r '.count // 0' '$_j' 2>/dev/null) + 1 )); jq --argjson c \"\$c\" '.count = \$c' '$_j' > '$_j.t' && mv -f '$_j.t' '$_j'; printf 'le reveil de surveillance %s/%s : %s\\n' \"\$c\" '$_max' '$_target' >> '$_d/request.txt'; '${LA_TOOL:-}' engine engine.turn 'text=reveil: continue la surveillance : $_target'; [ \"\$c\" -ge '$_max' ] && systemctl --user stop '$_u.timer'"
     systemd-run --user --unit="$_u" --on-active="${_every}s" \
       --timer-property=AccuracySec=1s --timer-property=OnUnitActiveSec="${_every}s" \

@@ -18,4 +18,4 @@ machine: "blender"
 op: "rigidbody.shape_change"
 
 ARGS:
-  - {name: type, type: text}          # un de : BOX | SPHERE | CAPSULE | CYLINDER | CONE | CONVEX_HULL | MESH | COMPOUND
+  - {name: type, type: text}          # one of: BOX | SPHERE | CAPSULE | CYLINDER | CONE | CONVEX_HULL | MESH | COMPOUND

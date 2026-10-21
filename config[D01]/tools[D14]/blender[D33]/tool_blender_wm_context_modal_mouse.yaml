@@ -22,5 +22,5 @@ ARGS:
   - {name: data_path_item, type: text}
   - {name: header_text, type: text}
   - {name: input_scale, type: text}
-  - {name: invert, type: text}          # true|false, vide pour ne rien poser
+  - {name: invert, type: text}          # true|false, empty to set nothing
   - {name: initial_x, type: int}

@@ -18,7 +18,7 @@ machine: "blender"
 op: "image.invert"
 
 ARGS:
-  - {name: invert_r, type: text}          # true|false, vide pour ne rien poser
-  - {name: invert_g, type: text}          # true|false, vide pour ne rien poser
-  - {name: invert_b, type: text}          # true|false, vide pour ne rien poser
-  - {name: invert_a, type: text}          # true|false, vide pour ne rien poser
+  - {name: invert_r, type: text}          # true|false, empty to set nothing
+  - {name: invert_g, type: text}          # true|false, empty to set nothing
+  - {name: invert_b, type: text}          # true|false, empty to set nothing
+  - {name: invert_a, type: text}          # true|false, empty to set nothing

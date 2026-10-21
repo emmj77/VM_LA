@@ -45,4 +45,4 @@ COMMAND: |
   printf '%s\n' "$(msg body_example)""${F#$ROOT/}"
 
 ARGS:
-  - {name: tool, type: text}          # le nom exact du tool, tel que tools_find le rend
+  - {name: tool, type: text}          # the exact tool name, as tools_find returns it

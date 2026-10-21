@@ -21,18 +21,18 @@ COMMAND: |
     _p=$(cfg path "$_d" 2>/dev/null) || continue
     [ -d "$_p" ] || continue
     for _f in $(find "$_p" -type f \( -name '*.sh' -o -name '*.py' \) 2>/dev/null); do
-      # board.py parle francais a l humain (MOUSSA, 21/10) : le docteur l ignore
+      # board.py speaks French to the human (MOUSSA, 21/10): the doctor ignores it
       case ${_f##*/} in board.py) continue ;; esac
       _n=$((_n + 1))
-      # LE FRANCAIS VIT DANS LES COMMENTAIRES ET DANS texts.yaml (MOUSSA, 21/10). On ne
-      # regarde que le code .sh/.py, hors lignes de commentaire, et le motif d avant
-      # avait des doubles barres obliques : il attrapait tout fichier avec un chiffre.
+      # FRENCH LIVES IN THE COMMENTS AND IN texts.yaml (MOUSSA, 21/10). Only
+      # the .sh/.py code is looked at, outside comment lines, and the earlier pattern
+      # had double backslashes: it caught any file holding a digit.
       _h=$(LC_ALL=C grep -nP '[^\x00-\x7F]' "$_f" 2>/dev/null | grep -vcP '^[0-9]+:[[:space:]]*#' 2>/dev/null)
       [ "${_h:-0}" = 0 ] || { _bad=$((_bad + 1)); printf 'FAULT %s carries %s line(s) with a french letter\n' "${_f#$ROOT/}" "$_h"; }
     done
   done
   for _w in $(cfg list lists.french 2>/dev/null); do
-    # un mot francais dans un COMMENTAIRE est permis (MOUSSA, 21/10) : on ne compte que le code
+    # a French word in a COMMENT is allowed (MOUSSA, 21/10): only the code is counted
     _c=$(LC_ALL=C grep -rIn --include='*.sh' --include='*.py' --exclude='board.py' "\b$_w\b" "$(cfg path engine)" "$(cfg path programs)" 2>/dev/null | grep -vP '^[^:]+:[0-9]+:[[:space:]]*#' | wc -l | tr -d ' ')
     [ "$_c" = 0 ] || { _bad=$((_bad + 1)); printf 'FAULT the word "%s" lives in %s file(s)\n' "$_w" "$_c"; }
   done

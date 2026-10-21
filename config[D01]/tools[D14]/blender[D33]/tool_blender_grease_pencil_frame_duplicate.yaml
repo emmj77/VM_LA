@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.frame_duplicate"
 
 ARGS:
-  - {name: all, type: text}          # true|false, vide pour ne rien poser
+  - {name: all, type: text}          # true|false, empty to set nothing

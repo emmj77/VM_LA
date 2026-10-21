@@ -18,4 +18,4 @@ machine: "blender"
 op: "clip.refine_markers"
 
 ARGS:
-  - {name: backwards, type: text}          # true|false, vide pour ne rien poser
+  - {name: backwards, type: text}          # true|false, empty to set nothing

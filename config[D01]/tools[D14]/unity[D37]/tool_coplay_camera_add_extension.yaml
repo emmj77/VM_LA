@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Add extension to CinemachineCamera."
 
 COMMAND: |
-  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
   set -f
   set -- camera add-extension
@@ -32,7 +32,7 @@ COMMAND: |
   printf '%s\n' "$OUT"
 
 ARGS:
-  - {name: search_method, type: text}          # un de : by_id | by_name | by_path
+  - {name: search_method, type: text}          # one of: by_id | by_name | by_path
   - {name: props, type: text}
   - {name: target, type: text}
   - {name: extension_type, type: text}

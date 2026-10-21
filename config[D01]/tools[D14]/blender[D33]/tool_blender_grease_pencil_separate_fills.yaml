@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.separate_fills"
 
 ARGS:
-  - {name: individual, type: text}          # true|false, vide pour ne rien poser
+  - {name: individual, type: text}          # true|false, empty to set nothing

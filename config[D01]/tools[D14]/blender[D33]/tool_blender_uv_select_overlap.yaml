@@ -18,4 +18,4 @@ machine: "blender"
 op: "uv.select_overlap"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, empty to set nothing

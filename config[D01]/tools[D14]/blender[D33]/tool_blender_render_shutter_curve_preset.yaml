@@ -18,4 +18,4 @@ machine: "blender"
 op: "render.shutter_curve_preset"
 
 ARGS:
-  - {name: shape, type: text}          # un de : SHARP | SMOOTH | MAX | LINE | ROUND | ROOT
+  - {name: shape, type: text}          # one of: SHARP | SMOOTH | MAX | LINE | ROUND | ROOT

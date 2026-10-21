@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -n "{{condition}}" ] || { printf '%s\n' "$(msg argument_required 'condition' 'wait_for')" >&2; exit 1; }
   case "{{return_history}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'return_history' 'wait_for')""{{return_history}}" >&2; exit 1 ;; esac
   case "{{tolerate_missing}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'tolerate_missing' 'wait_for')""{{tolerate_missing}}" >&2; exit 1 ;; esac
@@ -46,7 +46,7 @@ ARGS:
   - {name: timeout_s, type: int}
   - {name: poll_interval_ms, type: int}
   - {name: on_met, type: text}
-  - {name: return_history, type: text}          # true|false, vide pour ne rien poser
-  - {name: tolerate_missing, type: text}          # true|false, vide pour ne rien poser
-  - {name: async, type: text}          # true|false, vide pour ne rien poser
+  - {name: return_history, type: text}          # true|false, empty to set nothing
+  - {name: tolerate_missing, type: text}          # true|false, empty to set nothing
+  - {name: async, type: text}          # true|false, empty to set nothing
   - {name: op, type: text}

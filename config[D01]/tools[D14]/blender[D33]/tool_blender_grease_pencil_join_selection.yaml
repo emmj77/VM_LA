@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.join_selection"
 
 ARGS:
-  - {name: type, type: text}          # un de : JOINSTROKES | SPLITCOPY | SPLIT
+  - {name: type, type: text}          # one of: JOINSTROKES | SPLITCOPY | SPLIT

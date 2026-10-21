@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.select_linked"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: type, type: text}          # un de : OBDATA | MATERIAL | DUPGROUP | PARTICLE | LIBRARY | LIBRARY_OBDATA
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: type, type: text}          # one of: OBDATA | MATERIAL | DUPGROUP | PARTICLE | LIBRARY | LIBRARY_OBDATA

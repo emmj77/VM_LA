@@ -18,5 +18,5 @@ machine: "blender"
 op: "image.unpack"
 
 ARGS:
-  - {name: method, type: text}          # un de : REMOVE | USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL
+  - {name: method, type: text}          # one of: REMOVE | USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL
   - {name: id, type: text}

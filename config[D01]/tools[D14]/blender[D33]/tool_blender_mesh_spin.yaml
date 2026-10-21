@@ -19,9 +19,9 @@ op: "mesh.spin"
 
 ARGS:
   - {name: steps, type: int}
-  - {name: dupli, type: text}          # true|false, vide pour ne rien poser
+  - {name: dupli, type: text}          # true|false, empty to set nothing
   - {name: angle, type: text}
-  - {name: use_auto_merge, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_normal_flip, type: text}          # true|false, vide pour ne rien poser
-  - {name: center, type: text}          # 3 valeurs separees par des virgules
-  - {name: axis, type: text}          # 3 valeurs separees par des virgules
+  - {name: use_auto_merge, type: text}          # true|false, empty to set nothing
+  - {name: use_normal_flip, type: text}          # true|false, empty to set nothing
+  - {name: center, type: text}          # 3 values separated by commas
+  - {name: axis, type: text}          # 3 values separated by commas

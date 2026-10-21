@@ -18,5 +18,5 @@ machine: "blender"
 op: "sequencer.strip_jump"
 
 ARGS:
-  - {name: next, type: text}          # true|false, vide pour ne rien poser
-  - {name: center, type: text}          # true|false, vide pour ne rien poser
+  - {name: next, type: text}          # true|false, empty to set nothing
+  - {name: center, type: text}          # true|false, empty to set nothing

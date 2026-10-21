@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Create a new annotation on a target"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- collaboration annotations create --no-banner --no-pager --non-interactive
@@ -61,4 +61,4 @@ ARGS:
   - {name: local_space, type: text}   # Local-space anchor as a JSON object (parentId, position, cameraPositio
   - {name: time, type: text}   # Playback time as a JSON object (timeScale, timeStamp)
   - {name: attachments, type: text}   # Attachments as a JSON array of attachment objects
-  - {name: unresolve_root_annotation, type: text}   # true pour poser --unresolve-root-annotation ; When replying, unresolve the root annotation's thread
+  - {name: unresolve_root_annotation, type: text}   # true to set --unresolve-root-annotation ; When replying, unresolve the root annotation's thread

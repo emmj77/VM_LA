@@ -18,11 +18,11 @@ machine: "blender"
 op: "gpencil.annotate"
 
 ARGS:
-  - {name: mode, type: text}          # un de : DRAW | DRAW_STRAIGHT | DRAW_POLY | ERASER
-  - {name: arrowstyle_start, type: text}          # un de : NONE | ARROW | ARROW_OPEN | ARROW_OPEN_INVERTED | DIAMOND
-  - {name: arrowstyle_end, type: text}          # un de : NONE | ARROW | ARROW_OPEN | ARROW_OPEN_INVERTED | DIAMOND
-  - {name: use_stabilizer, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # one of: DRAW | DRAW_STRAIGHT | DRAW_POLY | ERASER
+  - {name: arrowstyle_start, type: text}          # one of: NONE | ARROW | ARROW_OPEN | ARROW_OPEN_INVERTED | DIAMOND
+  - {name: arrowstyle_end, type: text}          # one of: NONE | ARROW | ARROW_OPEN | ARROW_OPEN_INVERTED | DIAMOND
+  - {name: use_stabilizer, type: text}          # true|false, empty to set nothing
   - {name: stabilizer_factor, type: text}
   - {name: stabilizer_radius, type: int}
   - {name: stroke, type: text}
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing

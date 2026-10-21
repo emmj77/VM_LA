@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Show or set the default editor version used when no version is specified"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- editors default --no-banner --no-pager --non-interactive
@@ -38,4 +38,4 @@ COMMAND: |
 
 ARGS:
   - {name: version, type: text}   # facultatif
-  - {name: unset, type: text}   # true pour poser --unset ; Clear the stored default editor version
+  - {name: unset, type: text}   # true to set --unset ; Clear the stored default editor version

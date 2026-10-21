@@ -18,4 +18,4 @@ machine: "blender"
 op: "sequencer.select_side"
 
 ARGS:
-  - {name: side, type: text}          # un de : MOUSE | LEFT | RIGHT | BOTH | NO_CHANGE
+  - {name: side, type: text}          # one of: MOUSE | LEFT | RIGHT | BOTH | NO_CHANGE

@@ -1,22 +1,22 @@
 {
-  "id": "20261021-062809",
-  "prompt": "dis bonjour en un mot",
+  "id": "20261021-074919",
+  "prompt": "reveil: le sommeil de 580 secondes est arrive a son terme",
   "agent": "agent_one",
   "skill": "",
   "project": "",
   "engine": "cloud",
   "model": "deepseek-v4.1-flash",
-  "started": 1792564089,
+  "started": 1792568959,
   "status": "done",
   "family": "agent",
   "calls": [
     {
       "tool": "reply",
-      "args": "{\"mode\":\"answer\",\"form\":\"text\",\"text\":\"Bonjour.\"}",
-      "result": "{\"status\":\"ok\",\"tool\":\"reply\",\"line\":\"# le texte du modele est la reponse ; sans texte, l entree fait foi\\n_t=\\\"Bonjour.\\\"\\n[ -n \\\"$_t\\\" ] || _t=$(cat)\\nprintf '%s\\\\n' \\\"$_t\\\"\",\"result\":\"Bonjour.\",\"ts\":1792564106,\"return\":\"\"}"
+      "args": "{\"mode\":\"talk\",\"form\":\"text\",\"text\":\"Réveil du sommeil terminé, je reprends.\"}",
+      "result": "{\"status\":\"ok\",\"tool\":\"reply\",\"line\":\"# le texte du modele est la reponse ; sans texte, l entree fait foi\\n_t=\\\"Réveil du sommeil terminé, je reprends.\\\"\\n[ -n \\\"$_t\\\" ] || _t=$(cat)\\nprintf '%s\\\\n' \\\"$_t\\\"\",\"result\":\"Réveil du sommeil terminé, je reprends.\",\"ts\":1792568978,\"return\":\"\"}"
     }
   ],
-  "tokens": 2860,
+  "tokens": 2115,
   "reply": "",
   "messages": [
     {
@@ -25,18 +25,19 @@
     },
     {
       "role": "user",
-      "content": "dis bonjour en un mot"
+      "content": "reveil: le sommeil de 580 secondes est arrive a son terme"
     },
     {
       "role": "tool",
-      "tool_call_id": "call_s73041t6",
-      "content": "{\"status\":\"ok\",\"tool\":\"reply\",\"line\":\"# le texte du modele est la reponse ; sans texte, l entree fait foi\\n_t=\\\"Bonjour.\\\"\\n[ -n \\\"$_t\\\" ] || _t=$(cat)\\nprintf '%s\\\\n' \\\"$_t\\\"\",\"result\":\"Bonjour.\",\"ts\":1792564106,\"return\":\"\"}"
+      "tool_call_id": "call_cqt4rj6i",
+      "content": "{\"status\":\"ok\",\"tool\":\"reply\",\"line\":\"# le texte du modele est la reponse ; sans texte, l entree fait foi\\n_t=\\\"Réveil du sommeil terminé, je reprends.\\\"\\n[ -n \\\"$_t\\\" ] || _t=$(cat)\\nprintf '%s\\\\n' \\\"$_t\\\"\",\"result\":\"Réveil du sommeil terminé, je reprends.\",\"ts\":1792568978,\"return\":\"\"}"
     },
     {
       "role": "assistant",
       "content": ""
     }
   ],
+  "effort": "none",
   "tools": [
     {
       "type": "function",
@@ -265,7 +266,7 @@
       "type": "function",
       "function": {
         "name": "sleep",
-        "description": "makes the turn wait for the chosen duration, and never longer",
+        "description": "puts the session to rest in systemd; when the wait is over the timer wakes the model itself, with no judge in between",
         "parameters": {
           "type": "object",
           "properties": {
@@ -324,6 +325,24 @@
     {
       "type": "function",
       "function": {
+        "name": "load_skill",
+        "description": "loads a skill : writes skills/.active ; its TOOLS become the tools the model may call (the skill must be in the project's list)",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
         "name": "sticky_note",
         "description": "Reads, replaces, appends to or clears the note the agent writes for itself: a short text kept identical in the stable part of the prompt, so the cache holds from one turn to the next.",
         "parameters": {
@@ -372,20 +391,661 @@
           ]
         }
       }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "animatediff-video",
+        "description": "text-to-video (AnimateDiff, 16 frames) via ComfyUI",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "out": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "prompt",
+            "out"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_animate_background",
+        "description": "builds the decor around the character with the anima model and its inpainting LLLite, and writes it into the existing background layer (under the colour and ink)",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "colour": {
+              "type": "string"
+            },
+            "ink": {
+              "type": "string"
+            },
+            "under": {
+              "type": "string"
+            },
+            "output": {
+              "type": "string"
+            },
+            "keep": {
+              "type": "string"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "colour",
+            "ink",
+            "under",
+            "output",
+            "keep",
+            "style"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_clean_lines",
+        "description": "cleans the ink line of a .kra drawing (removes specks, closes micro-holes, thickens it) and writes it back into a new layer",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "layer": {
+              "type": "string"
+            },
+            "clean": {
+              "type": "string"
+            },
+            "output": {
+              "type": "string"
+            },
+            "output_layer": {
+              "type": "string"
+            },
+            "keep": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "layer",
+            "clean",
+            "output",
+            "output_layer",
+            "keep"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_coherence",
+        "description": "draws one recurring character and holds it : identity from a face, clothes from a full sheet, silhouette from a controlnet, pose from a reference",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "character": {
+              "type": "string"
+            },
+            "costume": {
+              "type": "string"
+            },
+            "pose": {
+              "type": "string"
+            },
+            "subject": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "character",
+            "costume",
+            "pose",
+            "subject"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_colorize",
+        "description": "colourises an ink drawing: the drawing machine proposes colours (lineart controlnet), the aplatisseur flattens them into the regions closed by the ink, Krita takes the flat back into a new layer",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "layer": {
+              "type": "string"
+            },
+            "output": {
+              "type": "string"
+            },
+            "output_layer": {
+              "type": "string"
+            },
+            "keep": {
+              "type": "string"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "layer",
+            "output",
+            "output_layer",
+            "keep",
+            "style"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_colorize_batch",
+        "description": "colourises every .kra of a folder, one by one, the same way comfyui_colorize does it for one",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "folder": {
+              "type": "string"
+            },
+            "layer": {
+              "type": "string"
+            },
+            "limit": {
+              "type": "string"
+            },
+            "output_layer": {
+              "type": "string"
+            },
+            "keep": {
+              "type": "string"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "folder",
+            "layer",
+            "limit",
+            "output_layer",
+            "keep",
+            "style"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_colorize_under_lines",
+        "description": "hollows the colour where the ink line passes, so the line stays clean on top, and writes it back into a new layer",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "layer": {
+              "type": "string"
+            },
+            "colour": {
+              "type": "string"
+            },
+            "thicken": {
+              "type": "string"
+            },
+            "output": {
+              "type": "string"
+            },
+            "output_layer": {
+              "type": "string"
+            },
+            "keep": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "layer",
+            "colour",
+            "thicken",
+            "output",
+            "output_layer",
+            "keep"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_enlarge",
+        "description": "enlarges a drawing (a .kra flat, or an image) with the drawing machine's ESRGAN model, then scales it back to the wanted size",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "factor": {
+              "type": "string"
+            },
+            "output": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "factor",
+            "output"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_find_layers",
+        "description": "lists the .kra files of a folder and each one's layers (name, visibility, offset) with a guessed role",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "folder": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "folder"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_generate",
+        "description": "posts an image to ComfyUI and files it in the workspace, returns its path",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "width": {
+              "type": "string"
+            },
+            "height": {
+              "type": "string"
+            },
+            "steps": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "prompt",
+            "width",
+            "height",
+            "steps"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_render_drawing",
+        "description": "flattens a .kra into a png or a jpg, on white or transparent, and resizes it on demand",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "max_side": {
+              "type": "string"
+            },
+            "format": {
+              "type": "string"
+            },
+            "fond": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "max_side",
+            "format",
+            "fond"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_status",
+        "description": "says whether the service answers on 127.0.0.1:8188 and its queue",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_style",
+        "description": "draws a new image from free text, taking its palette and mood from a reference image (ipadapter)",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "type": "string"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "image",
+            "style"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "comfyui_variants",
+        "description": "draws N variants of the same drawing (one seed each) and builds a contact sheet to judge them",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "layer": {
+              "type": "string"
+            },
+            "count": {
+              "type": "string"
+            },
+            "output": {
+              "type": "string"
+            },
+            "style": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source",
+            "layer",
+            "count",
+            "output",
+            "style"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "flux-txt2img",
+        "description": "text-to-image (FLUX.1-dev, 1024x1024) via ComfyUI",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "out": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "prompt",
+            "out"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "list_dir",
+        "description": "lists a project directory, one entry per line, directories marked with a slash",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "load_doc",
+        "description": "reads the docs NAMED by the active skill (DOCS): the web, a machine, or a path",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "topic": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "topic"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "mkdir",
+        "description": "creates a folder (and its parents) inside writable_workspace",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "sd15-txt2img",
+        "description": "text-to-image (SD 1.5, 512x512) via ComfyUI",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "out": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "prompt",
+            "out"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "sdxl-img2img",
+        "description": "image-to-image (SDXL) via ComfyUI",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "type": "string"
+            },
+            "prompt": {
+              "type": "string"
+            },
+            "out": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "image",
+            "prompt",
+            "out"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "sdxl-inpaint",
+        "description": "inpainting (SDXL, image + masque) via ComfyUI",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "type": "string"
+            },
+            "mask": {
+              "type": "string"
+            },
+            "prompt": {
+              "type": "string"
+            },
+            "out": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "image",
+            "mask",
+            "prompt",
+            "out"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "sdxl-txt2img",
+        "description": "text-to-image (SDXL, 1024x1024) via ComfyUI",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "out": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "prompt",
+            "out"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "upscale-4x",
+        "description": "upscales an image x4 (ESRGAN) via ComfyUI",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "type": "string"
+            },
+            "out": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "image",
+            "out"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "wan-t2v",
+        "description": "text-to-video (Wan 2.x, ~33 frames) via ComfyUI",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "out": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "prompt",
+            "out"
+          ]
+        }
+      }
     }
   ],
   "reply_msg": {
     "role": "assistant",
     "content": "",
-    "reasoning": "The user asks: \"dis bonjour en un mot\" — say hello in one word. No skill active. I respond with reply, one sentence, nothing else.\n\nMode answer since it's a simple request? The instruction: \"Sans skill active, je reponds par reply et rien d autre.\" One word: \"Bonjour.\"",
     "tool_calls": [
       {
-        "id": "call_s73041t6",
+        "id": "call_cqt4rj6i",
         "index": 0,
         "type": "function",
         "function": {
           "name": "reply",
-          "arguments": "{\"mode\":\"answer\",\"form\":\"text\",\"text\":\"Bonjour.\"}"
+          "arguments": "{\"mode\":\"talk\",\"form\":\"text\",\"text\":\"Réveil du sommeil terminé, je reprends.\"}"
         }
       }
     ]

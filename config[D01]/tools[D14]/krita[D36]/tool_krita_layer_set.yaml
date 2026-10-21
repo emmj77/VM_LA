@@ -31,10 +31,10 @@ COMMAND: |
   esac
   REP=$(curl -sS --max-time 40 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   printf '%s : %s\n' "$NAME" "$(printf '%s' "$REP" | jq -c .)"
 
 ARGS:
-  - {name: name, type: text}                   # le calque
-  - {name: what, type: enum, values: [visibility, opacity, rename]}   # le reglage
-  - {name: value, type: text}                  # true/false . un nombre de 0 a 1 . le nouveau nom
+  - {name: name, type: text}                   # the layer
+  - {name: what, type: enum, values: [visibility, opacity, rename]}   # the setting
+  - {name: value, type: text}                  # true/false . a number from 0 to 1 . the new name

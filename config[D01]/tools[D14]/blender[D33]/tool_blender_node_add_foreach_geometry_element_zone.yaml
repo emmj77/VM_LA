@@ -19,5 +19,5 @@ op: "node.add_foreach_geometry_element_zone"
 
 ARGS:
   - {name: settings, type: text}
-  - {name: use_transform, type: text}          # true|false, vide pour ne rien poser
-  - {name: offset, type: text}          # 2 valeurs separees par des virgules
+  - {name: use_transform, type: text}          # true|false, empty to set nothing
+  - {name: offset, type: text}          # 2 values separated by commas

@@ -18,5 +18,5 @@ machine: "blender"
 op: "clip.graph_select"
 
 ARGS:
-  - {name: location, type: text}          # 2 valeurs separees par des virgules
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: location, type: text}          # 2 values separated by commas
+  - {name: extend, type: text}          # true|false, empty to set nothing

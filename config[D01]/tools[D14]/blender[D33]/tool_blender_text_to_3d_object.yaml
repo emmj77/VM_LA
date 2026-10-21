@@ -18,4 +18,4 @@ machine: "blender"
 op: "text.to_3d_object"
 
 ARGS:
-  - {name: split_lines, type: text}          # true|false, vide pour ne rien poser
+  - {name: split_lines, type: text}          # true|false, empty to set nothing

@@ -63,3 +63,6 @@ config/*.db-wal
 config/*.db-shm
 skills/.active
 config*/conf*/.env
+
+# LES SONDES TEMPORAIRES DU DOCTEUR : un nom tire au hasard, jamais du source.
+config\[D01\]/state\[D12\]/tmp/

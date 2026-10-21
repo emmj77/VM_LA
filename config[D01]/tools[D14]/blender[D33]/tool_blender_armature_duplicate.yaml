@@ -18,4 +18,4 @@ machine: "blender"
 op: "armature.duplicate"
 
 ARGS:
-  - {name: do_flip_names, type: text}          # true|false, vide pour ne rien poser
+  - {name: do_flip_names, type: text}          # true|false, empty to set nothing

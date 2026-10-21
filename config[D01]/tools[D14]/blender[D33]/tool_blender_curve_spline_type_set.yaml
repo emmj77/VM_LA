@@ -18,5 +18,5 @@ machine: "blender"
 op: "curve.spline_type_set"
 
 ARGS:
-  - {name: type, type: text}          # un de : POLY | BEZIER | NURBS
-  - {name: use_handles, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: POLY | BEZIER | NURBS
+  - {name: use_handles, type: text}          # true|false, empty to set nothing

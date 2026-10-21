@@ -19,7 +19,7 @@ COMMAND: |
   [ -r "$PROCS/spec.sh" ] || { echo "refused: the spec brick is missing ($PROCS/spec.sh)" >&2 ; exit 1 ; }
   . "$PROCS/spec.sh"
   LAW="{{law}}"
-  if [ -n "$LAW" ]; then   # UNE loi, par son numero. Jamais le fichier, jamais deux lois.
+  if [ -n "$LAW" ]; then   # ONE law, by its number. Never the file, never two laws.
     case "$LAW" in *[!0-9]*) printf '%s\n' "$(msg malformed_law_law_law "$LAW")" >&2 ; exit 1 ;; esac
     [ -n "$SEC" ] || SEC=free
     F="$SPEC_FILE"

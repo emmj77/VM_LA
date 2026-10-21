@@ -19,10 +19,10 @@ op: "pointcloud.attribute_set"
 
 ARGS:
   - {name: value_float, type: text}
-  - {name: value_float_vector_2d, type: text}          # 2 valeurs separees par des virgules
-  - {name: value_float_vector_3d, type: text}          # 3 valeurs separees par des virgules
-  - {name: value_float_vector_4d, type: text}          # 4 valeurs separees par des virgules
+  - {name: value_float_vector_2d, type: text}          # 2 values separated by commas
+  - {name: value_float_vector_3d, type: text}          # 3 values separated by commas
+  - {name: value_float_vector_4d, type: text}          # 4 values separated by commas
   - {name: value_int, type: int}
   - {name: value_int_vector_2d, type: int}
-  - {name: value_color, type: text}          # 4 valeurs separees par des virgules
-  - {name: value_bool, type: text}          # true|false, vide pour ne rien poser
+  - {name: value_color, type: text}          # 4 values separated by commas
+  - {name: value_bool, type: text}          # true|false, empty to set nothing

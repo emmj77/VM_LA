@@ -5,4 +5,4 @@ stamp: "2026-10-19T02:05:26Z"
 exchanges: "1-3"
 bound: "12 lines, 800 bytes, held by session_note.sh"
 summary:
-  101: "ME confirme son retard d'une minute après le tour précédent ; AGENT corrige et précise la date exacte des tours ; les données fournies sont vérifiées sur l'horodatage."
+  101: "ME confirms its one-minute delay after the previous turn; AGENT corrects and gives the exact time of the turns; the data supplied is checked against the timestamp."

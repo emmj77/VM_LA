@@ -19,4 +19,4 @@ op: "constraint.limitdistance_reset"
 
 ARGS:
   - {name: constraint, type: text}
-  - {name: owner, type: text}          # un de : OBJECT | BONE
+  - {name: owner, type: text}          # one of: OBJECT | BONE

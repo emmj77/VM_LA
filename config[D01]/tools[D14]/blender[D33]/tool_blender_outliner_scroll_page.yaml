@@ -18,4 +18,4 @@ machine: "blender"
 op: "outliner.scroll_page"
 
 ARGS:
-  - {name: up, type: text}          # true|false, vide pour ne rien poser
+  - {name: up, type: text}          # true|false, empty to set nothing

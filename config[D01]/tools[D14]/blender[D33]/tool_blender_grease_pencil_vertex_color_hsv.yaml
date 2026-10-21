@@ -18,7 +18,7 @@ machine: "blender"
 op: "grease_pencil.vertex_color_hsv"
 
 ARGS:
-  - {name: mode, type: text}          # un de : STROKE | FILL | BOTH
+  - {name: mode, type: text}          # one of: STROKE | FILL | BOTH
   - {name: h, type: text}
   - {name: s, type: text}
   - {name: v, type: text}

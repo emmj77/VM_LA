@@ -20,11 +20,11 @@ op: "wm.previews_batch_clear"
 ARGS:
   - {name: files, type: text}
   - {name: directory, type: text}
-  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_scenes, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_collections, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_objects, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_intern_data, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_trusted, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_backups, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_blender, type: text}          # true|false, empty to set nothing
+  - {name: filter_folder, type: text}          # true|false, empty to set nothing
+  - {name: use_scenes, type: text}          # true|false, empty to set nothing
+  - {name: use_collections, type: text}          # true|false, empty to set nothing
+  - {name: use_objects, type: text}          # true|false, empty to set nothing
+  - {name: use_intern_data, type: text}          # true|false, empty to set nothing
+  - {name: use_trusted, type: text}          # true|false, empty to set nothing
+  - {name: use_backups, type: text}          # true|false, empty to set nothing

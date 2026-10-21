@@ -19,4 +19,4 @@ op: "sequencer.fades_add"
 
 ARGS:
   - {name: duration_seconds, type: text}
-  - {name: type, type: text}          # un de : IN_OUT | IN | OUT | CURSOR_FROM | CURSOR_TO
+  - {name: type, type: text}          # one of: IN_OUT | IN | OUT | CURSOR_FROM | CURSOR_TO

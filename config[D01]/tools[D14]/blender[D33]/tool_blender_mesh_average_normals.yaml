@@ -18,6 +18,6 @@ machine: "blender"
 op: "mesh.average_normals"
 
 ARGS:
-  - {name: average_type, type: text}          # un de : CUSTOM_NORMAL | FACE_AREA | CORNER_ANGLE
+  - {name: average_type, type: text}          # one of: CUSTOM_NORMAL | FACE_AREA | CORNER_ANGLE
   - {name: weight, type: int}
   - {name: threshold, type: text}

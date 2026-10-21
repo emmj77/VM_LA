@@ -18,5 +18,5 @@ machine: "blender"
 op: "screen.animation_play"
 
 ARGS:
-  - {name: reverse, type: text}          # true|false, vide pour ne rien poser
-  - {name: sync, type: text}          # true|false, vide pour ne rien poser
+  - {name: reverse, type: text}          # true|false, empty to set nothing
+  - {name: sync, type: text}          # true|false, empty to set nothing

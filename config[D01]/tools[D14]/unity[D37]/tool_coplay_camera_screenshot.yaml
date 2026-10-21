@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Capture a screenshot from a camera."
 
 COMMAND: |
-  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
   set -f
   set -- camera screenshot
@@ -39,9 +39,9 @@ ARGS:
   - {name: camera_ref, type: text}
   - {name: file_name, type: text}
   - {name: super_size, type: int}
-  - {name: include_image, type: text}          # true pour poser le drapeau, vide sinon
+  - {name: include_image, type: text}          # true to set the flag, empty otherwise
   - {name: max_resolution, type: int}
-  - {name: capture_source, type: text}          # un de : game_view | scene_view
-  - {name: batch, type: text}          # un de : surround | orbit
+  - {name: capture_source, type: text}          # one of: game_view | scene_view
+  - {name: batch, type: text}          # one of: surround | orbit
   - {name: view_target, type: text}
   - {name: output_folder, type: text}

@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.select_grouped"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: type, type: text}          # un de : CHILDREN_RECURSIVE | CHILDREN | PARENT | SIBLINGS | TYPE | COLLECTION | HOOK | PASS | COLOR | KEYINGSET | LIGHT_TYPE
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: type, type: text}          # one of: CHILDREN_RECURSIVE | CHILDREN | PARENT | SIBLINGS | TYPE | COLLECTION | HOOK | PASS | COLOR | KEYINGSET | LIGHT_TYPE

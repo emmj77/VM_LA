@@ -20,4 +20,4 @@ op: "grease_pencil.move_to_layer"
 ARGS:
   - {name: target_layer_name, type: text}
   - {name: target_group_name, type: text}
-  - {name: add_new_layer, type: text}          # true|false, vide pour ne rien poser
+  - {name: add_new_layer, type: text}          # true|false, empty to set nothing

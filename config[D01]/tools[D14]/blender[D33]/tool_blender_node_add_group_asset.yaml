@@ -18,6 +18,6 @@ machine: "blender"
 op: "node.add_group_asset"
 
 ARGS:
-  - {name: asset_library_type, type: text}          # un de : ALL | LOCAL | ESSENTIALS | ONLINE_ESSENTIALS | CUSTOM
+  - {name: asset_library_type, type: text}          # one of: ALL | LOCAL | ESSENTIALS | ONLINE_ESSENTIALS | CUSTOM
   - {name: asset_library_identifier, type: text}
   - {name: relative_asset_identifier, type: text}

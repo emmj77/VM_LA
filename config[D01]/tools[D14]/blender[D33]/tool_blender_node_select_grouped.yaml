@@ -18,5 +18,5 @@ machine: "blender"
 op: "node.select_grouped"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: type, type: text}          # un de : TYPE | COLOR | PREFIX | SUFFIX
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: type, type: text}          # one of: TYPE | COLOR | PREFIX | SUFFIX

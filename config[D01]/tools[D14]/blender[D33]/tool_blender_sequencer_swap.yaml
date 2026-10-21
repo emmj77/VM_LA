@@ -18,4 +18,4 @@ machine: "blender"
 op: "sequencer.swap"
 
 ARGS:
-  - {name: side, type: text}          # un de : LEFT | RIGHT
+  - {name: side, type: text}          # one of: LEFT | RIGHT

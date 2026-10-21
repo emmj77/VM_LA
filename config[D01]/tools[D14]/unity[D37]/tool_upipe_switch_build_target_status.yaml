@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   set -- command --project-path "$P" switch_build_target_status
 
   OUT=$(timeout 90 "$CLI" --no-banner --no-pager --non-interactive --format json "$@" </dev/null 2>&1)
@@ -30,4 +30,4 @@ COMMAND: |
   printf '%s\n' "$OUT" | jq -c '.data'
 
 ARGS:
-  []                    # aucun argument : cette commande ne lit rien
+  []                    # no argument: this command reads nothing

@@ -18,5 +18,5 @@ machine: "blender"
 op: "grease_pencil.select_similar"
 
 ARGS:
-  - {name: mode, type: text}          # un de : LAYER | MATERIAL | VERTEX_COLOR | RADIUS | OPACITY
+  - {name: mode, type: text}          # one of: LAYER | MATERIAL | VERTEX_COLOR | RADIUS | OPACITY
   - {name: threshold, type: text}

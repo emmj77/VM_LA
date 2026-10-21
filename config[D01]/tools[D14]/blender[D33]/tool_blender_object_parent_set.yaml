@@ -18,6 +18,6 @@ machine: "blender"
 op: "object.parent_set"
 
 ARGS:
-  - {name: type, type: text}          # un de : OBJECT | ARMATURE | ARMATURE_NAME | ARMATURE_AUTO | ARMATURE_ENVELOPE | BONE | BONE_RELATIVE | CURVE | FOLLOW | PATH_CONST | LATTICE | VERTEX | VERTEX_TRI
-  - {name: xmirror, type: text}          # true|false, vide pour ne rien poser
-  - {name: keep_transform, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: OBJECT | ARMATURE | ARMATURE_NAME | ARMATURE_AUTO | ARMATURE_ENVELOPE | BONE | BONE_RELATIVE | CURVE | FOLLOW | PATH_CONST | LATTICE | VERTEX | VERTEX_TRI
+  - {name: xmirror, type: text}          # true|false, empty to set nothing
+  - {name: keep_transform, type: text}          # true|false, empty to set nothing

@@ -19,5 +19,5 @@ op: "uv.remove_doubles"
 
 ARGS:
   - {name: threshold, type: text}
-  - {name: use_unselected, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_shared_vertex, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_unselected, type: text}          # true|false, empty to set nothing
+  - {name: use_shared_vertex, type: text}          # true|false, empty to set nothing

@@ -18,6 +18,6 @@ machine: "blender"
 op: "armature.calculate_roll"
 
 ARGS:
-  - {name: type, type: text}          # un de : POS_X | POS_Z | GLOBAL_POS_X | GLOBAL_POS_Y | GLOBAL_POS_Z | NEG_X | NEG_Z | GLOBAL_NEG_X | GLOBAL_NEG_Y | GLOBAL_NEG_Z | ACTIVE | VIEW | CURSOR
-  - {name: axis_flip, type: text}          # true|false, vide pour ne rien poser
-  - {name: axis_only, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: POS_X | POS_Z | GLOBAL_POS_X | GLOBAL_POS_Y | GLOBAL_POS_Z | NEG_X | NEG_Z | GLOBAL_NEG_X | GLOBAL_NEG_Y | GLOBAL_NEG_Z | ACTIVE | VIEW | CURSOR
+  - {name: axis_flip, type: text}          # true|false, empty to set nothing
+  - {name: axis_only, type: text}          # true|false, empty to set nothing

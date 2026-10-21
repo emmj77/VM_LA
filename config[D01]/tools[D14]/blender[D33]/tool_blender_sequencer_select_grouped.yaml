@@ -18,6 +18,6 @@ machine: "blender"
 op: "sequencer.select_grouped"
 
 ARGS:
-  - {name: type, type: text}          # un de : TYPE | TYPE_BASIC | TYPE_EFFECT | DATA | EFFECT | EFFECT_LINK | OVERLAP
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_active_channel, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: TYPE | TYPE_BASIC | TYPE_EFFECT | DATA | EFFECT | EFFECT_LINK | OVERLAP
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: use_active_channel, type: text}          # true|false, empty to set nothing

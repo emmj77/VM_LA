@@ -18,4 +18,4 @@ machine: "blender"
 op: "image.rotate_orthogonal"
 
 ARGS:
-  - {name: degrees, type: text}          # un de : 90 | 180 | 270
+  - {name: degrees, type: text}          # one of: 90 | 180 | 270

@@ -19,63 +19,63 @@ op: "wm.usd_import"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_backup, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_image, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_movie, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_python, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_font, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_sound, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_text, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_archive, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_btx, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_alembic, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_usd, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_obj, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_volume, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_blenlib, type: text}          # true|false, vide pour ne rien poser
+  - {name: check_existing, type: text}          # true|false, empty to set nothing
+  - {name: filter_blender, type: text}          # true|false, empty to set nothing
+  - {name: filter_backup, type: text}          # true|false, empty to set nothing
+  - {name: filter_image, type: text}          # true|false, empty to set nothing
+  - {name: filter_movie, type: text}          # true|false, empty to set nothing
+  - {name: filter_python, type: text}          # true|false, empty to set nothing
+  - {name: filter_font, type: text}          # true|false, empty to set nothing
+  - {name: filter_sound, type: text}          # true|false, empty to set nothing
+  - {name: filter_text, type: text}          # true|false, empty to set nothing
+  - {name: filter_archive, type: text}          # true|false, empty to set nothing
+  - {name: filter_btx, type: text}          # true|false, empty to set nothing
+  - {name: filter_alembic, type: text}          # true|false, empty to set nothing
+  - {name: filter_usd, type: text}          # true|false, empty to set nothing
+  - {name: filter_obj, type: text}          # true|false, empty to set nothing
+  - {name: filter_volume, type: text}          # true|false, empty to set nothing
+  - {name: filter_folder, type: text}          # true|false, empty to set nothing
+  - {name: filter_blenlib, type: text}          # true|false, empty to set nothing
   - {name: filemode, type: int}
-  - {name: relative_path, type: text}          # true|false, vide pour ne rien poser
-  - {name: display_type, type: text}          # un de : DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
-  - {name: sort_method, type: text}          # un de :
+  - {name: relative_path, type: text}          # true|false, empty to set nothing
+  - {name: display_type, type: text}          # one of: DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
+  - {name: sort_method, type: text}          # one of:
   - {name: filter_glob, type: text}
   - {name: scale, type: text}
-  - {name: set_frame_range, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_cameras, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_curves, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_lights, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_materials, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_meshes, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_volumes, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_shapes, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_skeletons, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_blendshapes, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_points, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_subdivision, type: text}          # true|false, vide pour ne rien poser
-  - {name: support_scene_instancing, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_visible_only, type: text}          # true|false, vide pour ne rien poser
-  - {name: create_collection, type: text}          # true|false, vide pour ne rien poser
-  - {name: read_mesh_uvs, type: text}          # true|false, vide pour ne rien poser
-  - {name: read_mesh_colors, type: text}          # true|false, vide pour ne rien poser
-  - {name: read_mesh_attributes, type: text}          # true|false, vide pour ne rien poser
+  - {name: set_frame_range, type: text}          # true|false, empty to set nothing
+  - {name: import_cameras, type: text}          # true|false, empty to set nothing
+  - {name: import_curves, type: text}          # true|false, empty to set nothing
+  - {name: import_lights, type: text}          # true|false, empty to set nothing
+  - {name: import_materials, type: text}          # true|false, empty to set nothing
+  - {name: import_meshes, type: text}          # true|false, empty to set nothing
+  - {name: import_volumes, type: text}          # true|false, empty to set nothing
+  - {name: import_shapes, type: text}          # true|false, empty to set nothing
+  - {name: import_skeletons, type: text}          # true|false, empty to set nothing
+  - {name: import_blendshapes, type: text}          # true|false, empty to set nothing
+  - {name: import_points, type: text}          # true|false, empty to set nothing
+  - {name: import_subdivision, type: text}          # true|false, empty to set nothing
+  - {name: support_scene_instancing, type: text}          # true|false, empty to set nothing
+  - {name: import_visible_only, type: text}          # true|false, empty to set nothing
+  - {name: create_collection, type: text}          # true|false, empty to set nothing
+  - {name: read_mesh_uvs, type: text}          # true|false, empty to set nothing
+  - {name: read_mesh_colors, type: text}          # true|false, empty to set nothing
+  - {name: read_mesh_attributes, type: text}          # true|false, empty to set nothing
   - {name: prim_path_mask, type: text}
-  - {name: import_guide, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_proxy, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_render, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_all_materials, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_usd_preview, type: text}          # true|false, vide pour ne rien poser
-  - {name: set_material_blend, type: text}          # true|false, vide pour ne rien poser
+  - {name: import_guide, type: text}          # true|false, empty to set nothing
+  - {name: import_proxy, type: text}          # true|false, empty to set nothing
+  - {name: import_render, type: text}          # true|false, empty to set nothing
+  - {name: import_all_materials, type: text}          # true|false, empty to set nothing
+  - {name: import_usd_preview, type: text}          # true|false, empty to set nothing
+  - {name: set_material_blend, type: text}          # true|false, empty to set nothing
   - {name: light_intensity_scale, type: text}
-  - {name: mtl_purpose, type: text}          # un de : MTL_ALL_PURPOSE | MTL_PREVIEW | MTL_FULL
-  - {name: mtl_name_collision_mode, type: text}          # un de : MAKE_UNIQUE | REFERENCE_EXISTING
-  - {name: import_textures_mode, type: text}          # un de : IMPORT_NONE | IMPORT_PACK | IMPORT_COPY
+  - {name: mtl_purpose, type: text}          # one of: MTL_ALL_PURPOSE | MTL_PREVIEW | MTL_FULL
+  - {name: mtl_name_collision_mode, type: text}          # one of: MAKE_UNIQUE | REFERENCE_EXISTING
+  - {name: import_textures_mode, type: text}          # one of: IMPORT_NONE | IMPORT_PACK | IMPORT_COPY
   - {name: import_textures_dir, type: text}
-  - {name: tex_name_collision_mode, type: text}          # un de : USE_EXISTING | OVERWRITE
-  - {name: property_import_mode, type: text}          # un de : NONE | USER | ALL
-  - {name: validate_meshes, type: text}          # true|false, vide pour ne rien poser
-  - {name: create_world_material, type: text}          # true|false, vide pour ne rien poser
-  - {name: import_defined_only, type: text}          # true|false, vide pour ne rien poser
-  - {name: merge_parent_xform, type: text}          # true|false, vide pour ne rien poser
-  - {name: apply_unit_conversion_scale, type: text}          # true|false, vide pour ne rien poser
+  - {name: tex_name_collision_mode, type: text}          # one of: USE_EXISTING | OVERWRITE
+  - {name: property_import_mode, type: text}          # one of: NONE | USER | ALL
+  - {name: validate_meshes, type: text}          # true|false, empty to set nothing
+  - {name: create_world_material, type: text}          # true|false, empty to set nothing
+  - {name: import_defined_only, type: text}          # true|false, empty to set nothing
+  - {name: merge_parent_xform, type: text}          # true|false, empty to set nothing
+  - {name: apply_unit_conversion_scale, type: text}          # true|false, empty to set nothing

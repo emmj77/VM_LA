@@ -18,5 +18,5 @@ machine: "blender"
 op: "pose.paste"
 
 ARGS:
-  - {name: flipped, type: text}          # true|false, vide pour ne rien poser
-  - {name: selected_mask, type: text}          # true|false, vide pour ne rien poser
+  - {name: flipped, type: text}          # true|false, empty to set nothing
+  - {name: selected_mask, type: text}          # true|false, empty to set nothing

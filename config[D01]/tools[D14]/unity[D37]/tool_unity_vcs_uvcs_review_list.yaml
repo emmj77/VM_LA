@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "List the code reviews on this repository"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- vcs uvcs review list --no-banner --no-pager --non-interactive

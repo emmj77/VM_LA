@@ -58,8 +58,8 @@ COMMAND: |
     printf 'ok|LA|sessions|%s exch. / %s msg\n' "${_ex:-0}" "${_w:-0}"
     # THE RESIDENTS : one line each, what they weigh
     _n=0; _mo=0; _tot_u=0
-    # UN SEUL FICHIER TEMPORAIRE, ECRASE A CHAQUE LECTURE (MOUSSA, 21/10) : un nom aleatoire
-    # poussait un fichier de 99 octets a la corbeille a chaque appel de l applet.
+    # ONE TEMPORARY FILE, OVERWRITTEN AT EVERY READ (MOUSSA, 21/10): a random name
+    # pushed a 99-byte file to the trash at every applet call.
     _tf="$LA_STATE/board.tmp"
     _to="$LA_STATE/board2.tmp"
     : > "$_tf"; : > "$_to"
@@ -82,7 +82,7 @@ COMMAND: |
     _tot=$(awk '/MemTotal/{printf "%d", $2/1048576}' /proc/meminfo 2>/dev/null)
     _rck=ok; [ "$_n" = "${_tot_u:-0}" ] || _rck=ko
     { printf '%s|POWER|residents|%s/%s\n' "$_rck" "$_n" "${_tot_u:-0}"; cat "$_tf"; cat "$_to"; }
-    # LE TUNNEL : son etat, et les deux gestes vivent dans le menu de l applet
+    # THE TUNNEL: its state, and the two acts live in the applet menu
     _ts=$(timeout 10 tailscale status 2>/dev/null | grep -c '^100\.')
     if timeout 10 tailscale status >/dev/null 2>&1; then
       printf 'ok|POWER|tailscale|up, %s pair(s)\n' "${_ts:-0}"
@@ -128,8 +128,8 @@ COMMAND: |
     _ex=$(sqlite3 "$_se" 'select count(distinct exchange) from messages;' 2>/dev/null) || _ex=0
     _sess=$(grep -v '^#' "$_u" 2>/dev/null | tail -n 200 | jq -s 'max_by(.session) | .session // 0' 2>/dev/null)
     _tk=$(grep -v '^#' "$_u" 2>/dev/null | tail -n 500 | jq -s --argjson s "${_sess:-0}" '[.[] | select(.session == $s) | .tokens] | add // 0' 2>/dev/null)
-    # LE MODELE ET SES FRERES (MOUSSA, 21/10) : la page remplit sa liste avec engines,
-    # et coche l alias actif. Sans ces deux champs l entete tombait sur du vide.
+    # THE MODEL AND ITS BROTHERS (MOUSSA, 21/10): the page fills its list with engines,
+    # and ticks the active alias. Without those two fields the header fell on emptiness.
     _ae=$(cfg str active_engine 2>/dev/null)
     _eng=$(_flat | awk -F'\t' '$1 ~ /^engines\.[a-z_0-9]+\.model$/ { a = $1 ; sub(/^engines\./, "", a) ; sub(/\.model$/, "", a) ; print a }' \
       | while IFS= read -r _k; do

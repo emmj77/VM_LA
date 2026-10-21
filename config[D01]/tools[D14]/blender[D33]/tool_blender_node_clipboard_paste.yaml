@@ -18,4 +18,4 @@ machine: "blender"
 op: "node.clipboard_paste"
 
 ARGS:
-  - {name: offset, type: text}          # 2 valeurs separees par des virgules
+  - {name: offset, type: text}          # 2 values separated by commas

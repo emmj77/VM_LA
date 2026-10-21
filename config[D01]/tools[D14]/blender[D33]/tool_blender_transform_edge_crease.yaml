@@ -19,6 +19,6 @@ op: "transform.edge_crease"
 
 ARGS:
   - {name: value, type: text}
-  - {name: snap, type: text}          # true|false, vide pour ne rien poser
-  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_accurate, type: text}          # true|false, vide pour ne rien poser
+  - {name: snap, type: text}          # true|false, empty to set nothing
+  - {name: release_confirm, type: text}          # true|false, empty to set nothing
+  - {name: use_accurate, type: text}          # true|false, empty to set nothing

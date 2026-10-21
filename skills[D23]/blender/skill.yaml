@@ -4,14 +4,14 @@ date: "2026-10-18"
 tags: ["blender", "bpy", "3d"]
 
 SUMMARY:
-  101: "Blender 5.2 par bpy : 2498 operateurs ; la palette ne porte que la porte, l inventaire se fouille."
-  102: "blender_tools_find 'mots' : 3 reponses ou moins rendent la FICHE complete ; au-dela, 12 noms puis tool_show."
-  103: "blender_tools_find '' tout : la liste par famille (READ, WRITE, MANAGE), 40 lignes au plus."
+  101: "Blender 5.2 through bpy: 2498 operators; the toolset carries only the door, the inventory is searched."
+  102: "blender_tools_find 'words': 3 answers or fewer return the FULL card; beyond, 12 names then tool_show."
+  103: "blender_tools_find '' everything: the list by family (READ, WRITE, MANAGE), 40 lines at most."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "blender_tools_find"
   201: "tool_show"
@@ -23,11 +23,11 @@ TOOLS:
 DOCS:
   300: "blender"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
-  # le dossier config/tools/blender : tout son inventaire est dans le perimetre
+  # the folder config/tools/blender: its whole inventory is in the toolset
   tools: "blender"
   type-file: ".blend .py .obj .fbx .glb .stl .png"
 ERROR:
-  600: "Blender refuse par un motif de contexte (vue, selection) : le dire tel quel, ne pas relancer a l'aveugle (524 operateurs sur 2498 repondent en --background)."
+  600: "Blender refuses on a context motive (view, selection): say it as is, do not relaunch blindly (524 operators out of 2498 answer in --background)."
 

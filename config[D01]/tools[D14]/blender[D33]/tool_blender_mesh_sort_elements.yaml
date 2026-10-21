@@ -18,7 +18,7 @@ machine: "blender"
 op: "mesh.sort_elements"
 
 ARGS:
-  - {name: type, type: text}          # un de : VIEW_ZAXIS | VIEW_XAXIS | CURSOR_DISTANCE | MATERIAL | SELECTED | RANDOMIZE | REVERSE
-  - {name: elements, type: text}          # un de : VERT | EDGE | FACE
-  - {name: reverse, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: VIEW_ZAXIS | VIEW_XAXIS | CURSOR_DISTANCE | MATERIAL | SELECTED | RANDOMIZE | REVERSE
+  - {name: elements, type: text}          # one of: VERT | EDGE | FACE
+  - {name: reverse, type: text}          # true|false, empty to set nothing
   - {name: seed, type: int}

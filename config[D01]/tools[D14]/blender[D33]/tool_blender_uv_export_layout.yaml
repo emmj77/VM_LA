@@ -19,10 +19,10 @@ op: "uv.export_layout"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: export_all, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_tiles, type: text}          # un de : NONE | UDIM | UV
-  - {name: modified, type: text}          # true|false, vide pour ne rien poser
-  - {name: mode, type: text}          # un de : SVG | EPS | PNG
+  - {name: export_all, type: text}          # true|false, empty to set nothing
+  - {name: export_tiles, type: text}          # one of: NONE | UDIM | UV
+  - {name: modified, type: text}          # true|false, empty to set nothing
+  - {name: mode, type: text}          # one of: SVG | EPS | PNG
   - {name: size, type: int}
   - {name: opacity, type: text}
-  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
+  - {name: check_existing, type: text}          # true|false, empty to set nothing

@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.assign_property_defaults"
 
 ARGS:
-  - {name: process_data, type: text}          # true|false, vide pour ne rien poser
-  - {name: process_bones, type: text}          # true|false, vide pour ne rien poser
+  - {name: process_data, type: text}          # true|false, empty to set nothing
+  - {name: process_bones, type: text}          # true|false, empty to set nothing

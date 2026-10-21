@@ -19,11 +19,11 @@ op: "object.collection_external_asset_drop"
 
 ARGS:
   - {name: session_uid, type: int}
-  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
-  - {name: location, type: text}          # 3 valeurs separees par des virgules
-  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
-  - {name: scale, type: text}          # 3 valeurs separees par des virgules
-  - {name: use_instance, type: text}          # true|false, vide pour ne rien poser
+  - {name: align, type: text}          # one of: WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 values separated by commas
+  - {name: rotation, type: text}          # 3 values separated by commas
+  - {name: scale, type: text}          # 3 values separated by commas
+  - {name: use_instance, type: text}          # true|false, empty to set nothing
   - {name: drop_x, type: int}
   - {name: drop_y, type: int}
-  - {name: collection, type: text}          # un de :
+  - {name: collection, type: text}          # one of:

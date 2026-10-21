@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.vertex_group_normalize_all"
 
 ARGS:
-  - {name: lock_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_active, type: text}          # true|false, empty to set nothing

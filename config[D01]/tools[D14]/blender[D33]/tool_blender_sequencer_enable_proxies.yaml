@@ -18,8 +18,8 @@ machine: "blender"
 op: "sequencer.enable_proxies"
 
 ARGS:
-  - {name: proxy_25, type: text}          # true|false, vide pour ne rien poser
-  - {name: proxy_50, type: text}          # true|false, vide pour ne rien poser
-  - {name: proxy_75, type: text}          # true|false, vide pour ne rien poser
-  - {name: proxy_100, type: text}          # true|false, vide pour ne rien poser
-  - {name: overwrite, type: text}          # true|false, vide pour ne rien poser
+  - {name: proxy_25, type: text}          # true|false, empty to set nothing
+  - {name: proxy_50, type: text}          # true|false, empty to set nothing
+  - {name: proxy_75, type: text}          # true|false, empty to set nothing
+  - {name: proxy_100, type: text}          # true|false, empty to set nothing
+  - {name: overwrite, type: text}          # true|false, empty to set nothing

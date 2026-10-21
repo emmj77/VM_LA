@@ -18,8 +18,8 @@ machine: "blender"
 op: "uv.project_from_view"
 
 ARGS:
-  - {name: orthographic, type: text}          # true|false, vide pour ne rien poser
-  - {name: camera_bounds, type: text}          # true|false, vide pour ne rien poser
-  - {name: correct_aspect, type: text}          # true|false, vide pour ne rien poser
-  - {name: clip_to_bounds, type: text}          # true|false, vide pour ne rien poser
-  - {name: scale_to_bounds, type: text}          # true|false, vide pour ne rien poser
+  - {name: orthographic, type: text}          # true|false, empty to set nothing
+  - {name: camera_bounds, type: text}          # true|false, empty to set nothing
+  - {name: correct_aspect, type: text}          # true|false, empty to set nothing
+  - {name: clip_to_bounds, type: text}          # true|false, empty to set nothing
+  - {name: scale_to_bounds, type: text}          # true|false, empty to set nothing

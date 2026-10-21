@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.shade_auto_smooth"
 
 ARGS:
-  - {name: use_auto_smooth, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_auto_smooth, type: text}          # true|false, empty to set nothing
   - {name: angle, type: text}

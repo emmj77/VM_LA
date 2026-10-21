@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Clone a remote repository and register the Unity project it contains"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- projects clone --no-banner --no-pager --non-interactive
@@ -54,5 +54,5 @@ ARGS:
   - {name: path, type: text}   # Destination directory for the clone; defaults to the default projects 
   - {name: project_path, type: text}   # Subpath of the project to register when the repository holds more than
   - {name: git_token, type: text}   # Personal access token (github/gitlab); overrides your Git credential m
-  - {name: git_token_stdin, type: text}   # true pour poser --git-token-stdin ; Read the personal access token from stdin (CI-safe)
-  - {name: no_lfs, type: text}   # true pour poser --no-lfs ; Skip downloading Git LFS assets; leave pointer files in place
+  - {name: git_token_stdin, type: text}   # true to set --git-token-stdin ; Read the personal access token from stdin (CI-safe)
+  - {name: no_lfs, type: text}   # true to set --no-lfs ; Skip downloading Git LFS assets; leave pointer files in place

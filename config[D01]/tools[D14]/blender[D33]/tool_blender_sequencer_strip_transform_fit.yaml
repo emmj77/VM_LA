@@ -18,4 +18,4 @@ machine: "blender"
 op: "sequencer.strip_transform_fit"
 
 ARGS:
-  - {name: fit_method, type: text}          # un de : FIT | FILL | STRETCH | ORIGINAL
+  - {name: fit_method, type: text}          # one of: FIT | FILL | STRETCH | ORIGINAL

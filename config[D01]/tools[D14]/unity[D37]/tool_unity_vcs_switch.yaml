@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Switch branches safely: refuse while an Editor holds the project, then report the reimport the switch causes"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- vcs switch --no-banner --no-pager --non-interactive
@@ -51,9 +51,9 @@ COMMAND: |
 ARGS:
   - {name: branch, type: text}
   - {name: path, type: text}   # facultatif
-  - {name: dry_run, type: text}   # true pour poser --dry-run ; Run every check and report what would be reimported, then change nothing
-  - {name: allow_dirty, type: text}   # true pour poser --allow-dirty ; Carry uncommitted changes across the switch
-  - {name: discard_changes, type: text}   # true pour poser --discard-changes ; Discard uncommitted changes to tracked files
-  - {name: close_editor, type: text}   # true pour poser --close-editor ; Ask the Editor holding this project to quit, then switch
-  - {name: force, type: text}   # true pour poser --force ; Switch even while an Editor holds the project
-  - {name: yes, type: text}   # true pour poser --yes ; Answer yes to every confirmation
+  - {name: dry_run, type: text}   # true to set --dry-run ; Run every check and report what would be reimported, then change nothing
+  - {name: allow_dirty, type: text}   # true to set --allow-dirty ; Carry uncommitted changes across the switch
+  - {name: discard_changes, type: text}   # true to set --discard-changes ; Discard uncommitted changes to tracked files
+  - {name: close_editor, type: text}   # true to set --close-editor ; Ask the Editor holding this project to quit, then switch
+  - {name: force, type: text}   # true to set --force ; Switch even while an Editor holds the project
+  - {name: yes, type: text}   # true to set --yes ; Answer yes to every confirmation

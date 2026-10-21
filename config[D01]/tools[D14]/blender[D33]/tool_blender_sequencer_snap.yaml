@@ -19,5 +19,5 @@ op: "sequencer.snap"
 
 ARGS:
   - {name: frame, type: int}
-  - {name: side, type: text}          # un de : LEFT | RIGHT
-  - {name: keep_offset, type: text}          # true|false, vide pour ne rien poser
+  - {name: side, type: text}          # one of: LEFT | RIGHT
+  - {name: keep_offset, type: text}          # true|false, empty to set nothing

@@ -18,5 +18,5 @@ machine: "blender"
 op: "uv.seams_from_islands"
 
 ARGS:
-  - {name: mark_seams, type: text}          # true|false, vide pour ne rien poser
-  - {name: mark_sharp, type: text}          # true|false, vide pour ne rien poser
+  - {name: mark_seams, type: text}          # true|false, empty to set nothing
+  - {name: mark_sharp, type: text}          # true|false, empty to set nothing

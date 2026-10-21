@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -n "{{timeline}}" ] || { printf '%s\n' "$(msg argument_required 'timeline' 'add_timeline_track')" >&2; exit 1; }
   [ -n "{{trackType}}" ] || { printf '%s\n' "$(msg argument_required 'trackType' 'add_timeline_track')" >&2; exit 1; }
   case "{{dry_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'dry_run' 'add_timeline_track')""{{dry_run}}" >&2; exit 1 ;; esac
@@ -42,4 +42,4 @@ ARGS:
   - {name: trackType, type: text}
   - {name: name, type: text}
   - {name: parentTrack, type: text}
-  - {name: dry_run, type: text}          # true|false, vide pour ne rien poser
+  - {name: dry_run, type: text}          # true|false, empty to set nothing

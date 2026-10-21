@@ -18,4 +18,4 @@ machine: "blender"
 op: "sequencer.change_scene"
 
 ARGS:
-  - {name: scene, type: text}          # un de :
+  - {name: scene, type: text}          # one of:

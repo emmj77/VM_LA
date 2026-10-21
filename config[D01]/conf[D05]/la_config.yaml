@@ -77,7 +77,7 @@ machine:
 agents:
   main: "agent_one"
   names: "agent_one agent_001_jarvis agent_002_paul agent_003_albert agent_004_eleonore"
-  chat: "config[D01]/data[D06]/agent_chat.jsonl"   # le chat entre agents, une ligne par message
+  chat: "config[D01]/data[D06]/agent_chat.jsonl"   # the chat between agents, one line per message
   human: "user"
   voice: "voice"
   run_chars: 120
@@ -268,7 +268,7 @@ lists:                                        # the names the code never carries
   audio_patterns: [speech-*.wav, voice-*.wav]
   french: [coffre, dossier, moteur, outil, tache, etape, racine, sortie, fiche, ranger, regle, veille, juge, seuil, borne, gabarit, brouillon, porte, perimetre]
 
-owners:                                       # qui lit quoi : un fait, un proprietaire
+owners:                                       # who reads what: one fact, one owner
   - {fact: extensions, owner: la}
   - {fact: api, owner: turn.call}
   - {fact: date, owner: doctor.manifest}
@@ -650,7 +650,7 @@ schema:
     max: 65535
     why: la porte du pont (le telephone s y connecte)
 
-# THE TABLE (board.py, l autre agent) : ses donnees vivent ici, pas dans son code.
+# THE TABLE (board.py, the other agent): its data lives here, not in its code.
 board:
   columns: 82
   lines: 50
@@ -659,7 +659,7 @@ board:
     - {name: asr, unit: la-asr, port: 8080, probe: ready}
     - {name: tts, unit: la-tts, port: 8090, probe: health}
   appoints:
-    # bridge : board.py le porte lui-meme. dash : la page, qui s ouvre et se ferme seule.
+    # bridge: board.py carries it itself. dash: the page, which opens and closes by itself.
     - {name: dash, port: 8771, unit: la-dash.service}
     - {name: vision, port: 1234, probe: health, word: "it wakes on demand"}
   instruments:

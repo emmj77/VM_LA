@@ -29,8 +29,8 @@ COMMAND: |
   "$A" --profile /home/moussa/.agent-browser/profile --restore open https://gemini.google.com/app >/dev/null 2>&1 || { echo "refuse : Gemini ne s'ouvre pas" >&2 ; exit 1 ; }
   S1=$("$A" snapshot 2>/dev/null)
   printf '%s' "$S1" | grep -qiE 'sign in|se connecter' && {
-    echo "refuse : aucune session Google dans le profil Chromium — se connecter une fois : agent-browser --profile /home/moussa/.agent-browser/profile --headed --restore open https://gemini.google.com/app" >&2 ; exit 1 ; }
-  # la zone de saisie de Gemini est un contenteditable : on la vide avant d'ecrire
+    echo "refuse: no Google session in the Chromium profile — sign in once: agent-browser --profile /home/moussa/.agent-browser/profile --headed --restore open https://gemini.google.com/app" >&2 ; exit 1 ; }
+  # the Gemini input box is a contenteditable: it is emptied before writing
   "$A" click "[role=textbox]" >/dev/null 2>&1 || { echo "refuse : champ de saisie Gemini introuvable (page changee ?)" >&2 ; exit 1 ; }
   "$A" press "Control+a" >/dev/null 2>&1
   "$A" keyboard inserttext "$P" >/dev/null 2>&1 || { echo "refuse : ecriture impossible dans le champ" >&2 ; exit 1 ; }
@@ -42,15 +42,15 @@ COMMAND: |
     sleep 3; i=$((i+1))
     "$A" snapshot 2>/dev/null | grep -qiE "charger l.image|download (the )?(full|original)" && break
   done
-  # chaque snapshot perime les references precedentes : on reprend une reference fraiche
-  # et on reessaie, parce que Gemini re-rend le bouton entre deux lectures.
+  # every snapshot expires the previous refs: a fresh ref is taken again
+  # and it is retried, because Gemini re-renders the button between two reads.
   T=$(mktemp -d); k=0; F=
   while [ "$k" -lt 3 ]; do
     k=$((k+1))
     REF=$("$A" snapshot 2>/dev/null | grep -iE "charger l.image|download (the )?(full|original)" | grep -o 'ref=e[0-9]*' | tail -1 | cut -d= -f2)
     [ -n "$REF" ] || { sleep 5 ; continue ; }
-    # sans --download-path : le drapeau fait rendre 0 fichier. Le binaire ecrit un nom
-    # d'identifiant dans le dossier de la cible, et sort en erreur meme quand ca marche.
+    # without --download-path: the flag returns 0 file. The binary writes a name
+    # of an identifier in the target folder, and exits on error even when it works.
     "$A" download "@$REF" "$T/$N.jpg" >/dev/null 2>&1
     sleep 5
     F=$(find "$T" -maxdepth 1 -type f | head -1)

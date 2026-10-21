@@ -52,4 +52,4 @@ COMMAND: |
   done
 
 ARGS:
-  - {name: folder, type: path}                 # le dossier des dessins, relatif a la racine du projet
+  - {name: folder, type: path}                 # the folder of the drawings, relative to the project root

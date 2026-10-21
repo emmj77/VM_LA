@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.remove_fill_guides"
 
 ARGS:
-  - {name: mode, type: text}          # un de : ACTIVE_FRAME | ALL_FRAMES
+  - {name: mode, type: text}          # one of: ACTIVE_FRAME | ALL_FRAMES

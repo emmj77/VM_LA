@@ -18,7 +18,7 @@ machine: "blender"
 op: "clip.detect_features"
 
 ARGS:
-  - {name: placement, type: text}          # un de : FRAME | INSIDE_GPENCIL | OUTSIDE_GPENCIL
+  - {name: placement, type: text}          # one of: FRAME | INSIDE_GPENCIL | OUTSIDE_GPENCIL
   - {name: margin, type: int}
   - {name: threshold, type: text}
   - {name: min_distance, type: int}

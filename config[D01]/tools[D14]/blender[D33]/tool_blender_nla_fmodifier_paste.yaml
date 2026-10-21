@@ -18,5 +18,5 @@ machine: "blender"
 op: "nla.fmodifier_paste"
 
 ARGS:
-  - {name: only_active, type: text}          # true|false, vide pour ne rien poser
-  - {name: replace, type: text}          # true|false, vide pour ne rien poser
+  - {name: only_active, type: text}          # true|false, empty to set nothing
+  - {name: replace, type: text}          # true|false, empty to set nothing

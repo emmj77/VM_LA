@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Open a Unity project by name, fuzzy title match, or path"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- projects open --no-banner --no-pager --non-interactive
@@ -50,4 +50,4 @@ ARGS:
   - {name: build_target, type: text}   # Pass -buildTarget to Unity (e.g. StandaloneOSX)
   - {name: build_target_group, type: text}   # Pass -buildTargetGroup to Unity
   - {name: args, type: text}   # Extra arguments passed to Unity
-  - {name: wait, type: text}   # true pour poser --wait ; Wait for the Editor to exit instead of returning right away
+  - {name: wait, type: text}   # true to set --wait ; Wait for the Editor to exit instead of returning right away

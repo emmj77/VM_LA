@@ -23,11 +23,11 @@ COMMAND: |
   esac
   REP=$(curl -sS --max-time 40 -H 'Content-Type: application/json' -d "$(jq -cn --arg c "$COLOUR" '{action:"set_color",params:{color:$c}}')" "$SERVICE/")
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   REP=$(curl -sS --max-time 180 -H 'Content-Type: application/json' -d '{"action":"fill_selection","params":{}}' "$SERVICE/")
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   printf 'rempli de %s\n' "$COLOUR"
 
 ARGS:
-  - {name: color, type: text}                  # la couleur, #rrggbb
+  - {name: color, type: text}                  # the colour, #rrggbb

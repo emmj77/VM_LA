@@ -14,7 +14,7 @@ RULES:
 DESCRIPTION: "one of the four services, in the foreground: it hands its process over and never comes back"
 COMMAND: |
 
-  # une borne de 0 veut dire aucune borne : le service prend la main et la garde
+  # a bound of 0 means no bound: the service takes the hand and holds it
   _n="{{name}}"
   case $_n in
     models)    exec dash -c "$(shell_cmd llama serve "$(cfg str models.local)")" ;;

@@ -21,9 +21,9 @@ ARGS:
   - {name: name, type: text}
   - {name: width, type: int}
   - {name: height, type: int}
-  - {name: color, type: text}          # 4 valeurs separees par des virgules
-  - {name: alpha, type: text}          # true|false, vide pour ne rien poser
-  - {name: generated_type, type: text}          # un de : BLANK | UV_GRID | COLOR_GRID
-  - {name: float, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_stereo_3d, type: text}          # true|false, vide pour ne rien poser
-  - {name: tiled, type: text}          # true|false, vide pour ne rien poser
+  - {name: color, type: text}          # 4 values separated by commas
+  - {name: alpha, type: text}          # true|false, empty to set nothing
+  - {name: generated_type, type: text}          # one of: BLANK | UV_GRID | COLOR_GRID
+  - {name: float, type: text}          # true|false, empty to set nothing
+  - {name: use_stereo_3d, type: text}          # true|false, empty to set nothing
+  - {name: tiled, type: text}          # true|false, empty to set nothing

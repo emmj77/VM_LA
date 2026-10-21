@@ -64,7 +64,7 @@ COMMAND: |
   printf "image : %s (%s, %s octets)\n" "$OUT" "${SIZE:-?}" "$(wc -c < "$OUT")"
 
 ARGS:
-  - {name: source, type: path}                              # le .kra, relatif a l'espace du skill
-  - {name: max_side, type: int}                             # le plus grand cote, en pixels (vide : taille du document)
-  - {name: format, type: enum, values: [png, jpg, ""]}      # le format (vide : png)
-  - {name: fond, type: enum, values: [white, transparent, ""]}   # le fond (vide : blanc)
+  - {name: source, type: path}                              # the .kra, relative to the space of the skill
+  - {name: max_side, type: int}                             # the longest side, in pixels (empty: the document size)
+  - {name: format, type: enum, values: [png, jpg, ""]}      # the format (empty: png)
+  - {name: fond, type: enum, values: [white, transparent, ""]}   # the background (empty: white)

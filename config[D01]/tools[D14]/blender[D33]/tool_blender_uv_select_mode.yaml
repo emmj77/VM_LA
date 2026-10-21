@@ -18,4 +18,4 @@ machine: "blender"
 op: "uv.select_mode"
 
 ARGS:
-  - {name: type, type: text}          # un de : VERTEX | EDGE | FACE
+  - {name: type, type: text}          # one of: VERTEX | EDGE | FACE

@@ -19,5 +19,5 @@ op: "object.select_pattern"
 
 ARGS:
   - {name: pattern, type: text}
-  - {name: case_sensitive, type: text}          # true|false, vide pour ne rien poser
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: case_sensitive, type: text}          # true|false, empty to set nothing
+  - {name: extend, type: text}          # true|false, empty to set nothing

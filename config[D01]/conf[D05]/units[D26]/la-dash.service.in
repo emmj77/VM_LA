@@ -1,8 +1,8 @@
 # id: U04
-# UN MODELE, PAS UNE UNITE VIVANTE : install.sh remplace @ROOT@ par la racine reelle et
-# pose le fichier dans ~/.config/systemd/user/. Le depot porte la source, le poste porte l'unite.
+# A TEMPLATE, NOT A LIVE UNIT: install.sh replaces @ROOT@ par la racine reelle et
+# sets the file in ~/.config/systemd/user/. The repo carries the source, the station carries the unit.
 [Unit]
-Description=LA - la page du poste (dash.py, une porte sur le harnais)
+Description=LA - the station page (dash.py, a door on the harness)
 Documentation=file://@ROOT@/projects/la/spec.yaml
 After=network.target
 

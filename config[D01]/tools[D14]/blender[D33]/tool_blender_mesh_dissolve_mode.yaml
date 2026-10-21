@@ -18,8 +18,8 @@ machine: "blender"
 op: "mesh.dissolve_mode"
 
 ARGS:
-  - {name: use_verts, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_verts, type: text}          # true|false, empty to set nothing
   - {name: angle_threshold, type: text}
-  - {name: use_preserve_quads, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_face_split, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_boundary_tear, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_preserve_quads, type: text}          # true|false, empty to set nothing
+  - {name: use_face_split, type: text}          # true|false, empty to set nothing
+  - {name: use_boundary_tear, type: text}          # true|false, empty to set nothing

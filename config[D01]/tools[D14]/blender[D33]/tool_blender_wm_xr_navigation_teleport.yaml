@@ -18,11 +18,11 @@ machine: "blender"
 op: "wm.xr_navigation_teleport"
 
 ARGS:
-  - {name: selectable_only, type: text}          # true|false, vide pour ne rien poser
+  - {name: selectable_only, type: text}          # true|false, empty to set nothing
   - {name: force, type: text}
   - {name: range, type: text}
   - {name: ray_line_width, type: text}
   - {name: destination_indicator_width, type: text}
-  - {name: hit_color, type: text}          # 4 valeurs separees par des virgules
-  - {name: miss_color, type: text}          # 4 valeurs separees par des virgules
-  - {name: fallback_color, type: text}          # 4 valeurs separees par des virgules
+  - {name: hit_color, type: text}          # 4 values separated by commas
+  - {name: miss_color, type: text}          # 4 values separated by commas
+  - {name: fallback_color, type: text}          # 4 values separated by commas

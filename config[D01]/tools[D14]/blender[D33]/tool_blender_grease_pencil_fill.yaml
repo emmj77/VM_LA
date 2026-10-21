@@ -18,5 +18,5 @@ machine: "blender"
 op: "grease_pencil.fill"
 
 ARGS:
-  - {name: invert, type: text}          # true|false, vide pour ne rien poser
-  - {name: precision, type: text}          # true|false, vide pour ne rien poser
+  - {name: invert, type: text}          # true|false, empty to set nothing
+  - {name: precision, type: text}          # true|false, empty to set nothing

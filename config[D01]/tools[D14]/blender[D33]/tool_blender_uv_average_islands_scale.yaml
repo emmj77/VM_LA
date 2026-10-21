@@ -18,5 +18,5 @@ machine: "blender"
 op: "uv.average_islands_scale"
 
 ARGS:
-  - {name: scale_uv, type: text}          # true|false, vide pour ne rien poser
-  - {name: shear, type: text}          # true|false, vide pour ne rien poser
+  - {name: scale_uv, type: text}          # true|false, empty to set nothing
+  - {name: shear, type: text}          # true|false, empty to set nothing

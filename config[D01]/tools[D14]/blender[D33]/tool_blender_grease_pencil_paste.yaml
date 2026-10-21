@@ -18,6 +18,6 @@ machine: "blender"
 op: "grease_pencil.paste"
 
 ARGS:
-  - {name: type, type: text}          # un de : ACTIVE | LAYER
-  - {name: paste_back, type: text}          # true|false, vide pour ne rien poser
-  - {name: keep_world_transform, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: ACTIVE | LAYER
+  - {name: paste_back, type: text}          # true|false, empty to set nothing
+  - {name: keep_world_transform, type: text}          # true|false, empty to set nothing

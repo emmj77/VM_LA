@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.select_edge_loop_multi"
 
 ARGS:
-  - {name: delimit_edge_loop, type: text}          # un de : SEAM | SHARP | NGONS | INNER_CORNERS | OUTER_CORNERS
+  - {name: delimit_edge_loop, type: text}          # one of: SEAM | SHARP | NGONS | INNER_CORNERS | OUTER_CORNERS

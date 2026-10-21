@@ -18,5 +18,5 @@ machine: "blender"
 op: "paint.mask_flood_fill"
 
 ARGS:
-  - {name: mode, type: text}          # un de : VALUE | VALUE_INVERSE | INVERT
+  - {name: mode, type: text}          # one of: VALUE | VALUE_INVERSE | INVERT
   - {name: value, type: text}

@@ -5,13 +5,13 @@ tags: ["comfyui", "image", "dessin", "generer", "krita"]
 
 SUMMARY:
   101: "L'atelier image : generer (txt2img/video), colorier, nettoyer, styler, agrandir."
-  102: "comfyui_status dit si le serveur repond ; les comfyui_* et les workflows font le geste."
-  103: "On REGARDE le resultat (fast_analyze_img) avant de le rendre."
+  102: "comfyui_status says whether the server answers; the comfyui_* tools and the workflows make the act."
+  103: "The result is LOOKED at (fast_analyze_img) before it is returned."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "comfyui_status"
   201: "comfyui_generate"
@@ -41,8 +41,8 @@ TOOLS:
 DOCS:
   300: "comfyui"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".png .jpg .webp .kra .mp4 .gif"
 ERROR:
-  600: "Le serveur ne repond pas : le dire (comfyui_status), ne pas lancer a l'aveugle."
+  600: "The server does not answer: say it (comfyui_status), do not launch blindly."

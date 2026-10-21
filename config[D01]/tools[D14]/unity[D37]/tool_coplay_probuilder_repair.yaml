@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Auto-fix degenerate triangles and unused..."
 
 COMMAND: |
-  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
   set -f
   set -- probuilder repair
@@ -29,5 +29,5 @@ COMMAND: |
   printf '%s\n' "$OUT"
 
 ARGS:
-  - {name: search_method, type: text}          # un de : by_name | by_path | by_id | by_tag | by_layer
+  - {name: search_method, type: text}          # one of: by_name | by_path | by_id | by_tag | by_layer
   - {name: target, type: text}

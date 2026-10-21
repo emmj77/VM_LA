@@ -18,9 +18,9 @@ machine: "blender"
 op: "mesh.select_non_manifold"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_wire, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_boundary, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_multi_face, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_non_contiguous, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_verts, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: use_wire, type: text}          # true|false, empty to set nothing
+  - {name: use_boundary, type: text}          # true|false, empty to set nothing
+  - {name: use_multi_face, type: text}          # true|false, empty to set nothing
+  - {name: use_non_contiguous, type: text}          # true|false, empty to set nothing
+  - {name: use_verts, type: text}          # true|false, empty to set nothing

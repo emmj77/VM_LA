@@ -92,8 +92,8 @@ loop_turn() {
     [ "${_rep:-0}" -gt 0 ] 2>/dev/null && { _ltr step "stopped: the answer is said"; break; }
     _after=$(_turn_get '.calls | length')
     if [ "$_after" -le "$_before" ]; then
-      # le modele n a rien appele : on lui redemande une reponse, meme vide,
-      # pour que l humain puisse parler a tout moment (retry du tour)
+      # the model called nothing: it is asked again for an answer, even empty,
+      # so the human can speak at any time (turn retry)
       _try=$(_turn_get '.retry // 0')
       _rt=$(cfg num loop.retry 1) || _rt=1
       if [ "${_try:-0}" -lt "$_rt" ] 2>/dev/null; then

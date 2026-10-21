@@ -18,9 +18,9 @@ machine: "blender"
 op: "mesh.point_normals"
 
 ARGS:
-  - {name: mode, type: text}          # un de : COORDINATES | MOUSE
-  - {name: invert, type: text}          # true|false, vide pour ne rien poser
-  - {name: align, type: text}          # true|false, vide pour ne rien poser
-  - {name: target_location, type: text}          # 3 valeurs separees par des virgules
-  - {name: spherize, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # one of: COORDINATES | MOUSE
+  - {name: invert, type: text}          # true|false, empty to set nothing
+  - {name: align, type: text}          # true|false, empty to set nothing
+  - {name: target_location, type: text}          # 3 values separated by commas
+  - {name: spherize, type: text}          # true|false, empty to set nothing
   - {name: spherize_strength, type: text}

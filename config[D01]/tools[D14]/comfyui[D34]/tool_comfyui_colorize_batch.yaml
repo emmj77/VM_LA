@@ -35,7 +35,7 @@ COMMAND: |
   SERVICEK=http://127.0.0.1:5678
   curl -sf --max-time 10 "$SERVICEK/health" >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_no_answer)""$SERVICEK" >&2; exit 1; }
   K() { curl -sS --max-time "$2" -H 'Content-Type: application/json' -d "$1" "$SERVICEK/"; }
-  calque_seul() {          # $1 = le calque a rendre, $2 = le PNG de sortie
+  calque_seul() {          # $1 = the layer to render, $2 = the output PNG
     K "$(jq -cn --arg p "$FILE" '{action:"open_file",params:{path:$p}}')" 180 | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg krita_cannot_open_p)""$FILE" >&2; return 1; }
     LIST=$(K '{"action":"list_layers","params":{}}' 60)
     NAMES=$(printf '%s' "$LIST" | jq -r '.layers[].name')
@@ -50,7 +50,7 @@ COMMAND: |
     if printf '%s' "$CACHES" | grep -q . ; then printf '%s\n' "$CACHES" | while IFS= read -r N; do K "$(jq -cn --arg n "$N" '{action:"set_layer_visibility",params:{name:$n,visible:false}}')" 30 >/dev/null; done; fi
     return 0
   }
-  rendre() {              # $1 = graphe deja construit ; pose $RENDER, ou refuse et sort
+  rendre() {              # $1 = the graph already built; sets $RENDER, or refuses and exits
     R=$(jq -cn --argjson p "$1" '{prompt:$p,client_id:"la"}' | curl -s -H 'Content-Type: application/json' --data-binary @- "$SERVICE/prompt")
     PID=$(printf '%s' "$R" | jq -r '.prompt_id // empty')
     [ -n "$PID" ] || { printf '%s\n' "$(msg graph_rejected)""$(printf '%s' "$R" | jq -c '.error // .node_errors // .' | cut -c1-400)" >&2; exit 1; }
@@ -65,7 +65,7 @@ COMMAND: |
     curl -s -G --data-urlencode "filename=$(printf '%s' "$IMG" | cut -f1)" --data-urlencode "subfolder=$(printf '%s' "$IMG" | cut -f2)" --data-urlencode "type=$(printf '%s' "$IMG" | cut -f3)" "$SERVICE/view" -o "$RENDER"
     [ -s "$RENDER" ] || { printf '%s\n' "$(msg render_not_down)" >&2; exit 1; }
   }
-  aplatir() {              # $1 = masque, $2 = guide, $3 = sortie ; pose le compte des regions
+  aplatir() {              # $1 = mask, $2 = guide, $3 = output; sets the region count
     RA=$(curl -sS --max-time 600 -H 'Content-Type: application/json' -d "$(jq -cn --arg m "$1" --arg g "$2" --arg o "$3" '{mask:$m,guide:$g,out:$o}')" "$APLAT/")
     printf '%s' "$RA" | jq -e '.status == "ok"' >/dev/null 2>&1 || { printf '%s\n' "$(msg flattener_refused)""$(printf '%s' "$RA" | jq -r '.error.message // "reponse illisible"')" >&2; exit 1; }
     REGIONS=$(printf '%s' "$RA" | jq -r .regions); GRANDES=$(printf '%s' "$RA" | jq -r .grandes); PETITES=$(printf '%s' "$RA" | jq -r .petites)
@@ -114,9 +114,9 @@ COMMAND: |
   [ "$OK" -gt 0 ] || { printf '%s\n' "$(msg no_drawing_coloured)" >&2; exit 1; }
 
 ARGS:
-  - {name: folder, type: path}                # le dossier de .kra, relatif a l'espace du skill
-  - {name: layer, type: text}                 # le calque d'encrage = le masque (vide : encrage)
-  - {name: limit, type: int}                  # le plafond de dessins, 1 a 20 (vide : 10)
-  - {name: output_layer, type: text}          # le nom du calque neuf (vide : couleur)
-  - {name: keep, type: enum, values: [kra, file, ""]}   # kra : chaque .kra est ecrit ; file : PNG a cote
-  - {name: style, type: text, stdin: true}    # le sujet, en texte libre : par l'ENTREE STANDARD
+  - {name: folder, type: path}                # the folder of .kra files, relative to the space of the skill
+  - {name: layer, type: text}                 # the ink layer = the mask (empty: encrage)
+  - {name: limit, type: int}                  # the drawing ceiling, 1 to 20 (empty: 10)
+  - {name: output_layer, type: text}          # the new layer name (empty: colour)
+  - {name: keep, type: enum, values: [kra, file, ""]}   # kra: every .kra is written; file: PNG alongside
+  - {name: style, type: text, stdin: true}    # the subject, free text: on STANDARD INPUT

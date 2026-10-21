@@ -18,5 +18,5 @@ machine: "blender"
 op: "sequencer.strip_modifier_copy"
 
 ARGS:
-  - {name: type, type: text}          # un de : REPLACE | APPEND
+  - {name: type, type: text}          # one of: REPLACE | APPEND
   - {name: modifier, type: text}

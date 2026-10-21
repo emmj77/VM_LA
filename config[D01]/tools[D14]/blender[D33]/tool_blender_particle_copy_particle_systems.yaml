@@ -18,6 +18,6 @@ machine: "blender"
 op: "particle.copy_particle_systems"
 
 ARGS:
-  - {name: space, type: text}          # un de : OBJECT | WORLD
-  - {name: remove_target_particles, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: space, type: text}          # one of: OBJECT | WORLD
+  - {name: remove_target_particles, type: text}          # true|false, empty to set nothing
+  - {name: use_active, type: text}          # true|false, empty to set nothing

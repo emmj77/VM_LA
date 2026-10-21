@@ -18,4 +18,4 @@ machine: "blender"
 op: "paint.hide_show_masked"
 
 ARGS:
-  - {name: action, type: text}          # un de : HIDE | SHOW
+  - {name: action, type: text}          # one of: HIDE | SHOW

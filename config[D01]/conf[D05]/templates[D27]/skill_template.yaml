@@ -1,45 +1,45 @@
 # id: Q02
-skill: "{{name}}"            # le nom de la skill
-date: "{{date}}"             # la date de pose
-tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE la skill, et ouvre ses tools
+skill: "{{name}}"            # the skill name
+date: "{{date}}"             # the date it was set
+tags: ["{{name}}"]           # a tag seen in the prompt LOADS the skill, and opens its tools
 
-SUMMARY:                      # pour le head secondaire, tant que la skill est chargee
-  101: "..."                 # une loi de resume, 100 octets au plus
+SUMMARY:                      # for the secondary head, while the skill is loaded
+  101: "..."                 # one summary law, 100 bytes at most
   102: "..."
   110: "..."
 RULES:                       # under SUMMARY: the laws the HARNESS applies
   create_subfolder: true          # subfolders are allowed
   execute_code: false
   max_section_lines: 100   # the ceiling of one section, in lines
-APPROVAL: false              # CETTE SKILL A-T-ELLE LE DROIT DE MODIFIER LE HARNAIS ?
-                             # true : chaque geste qui touche la TABLE ou une SKILL (table_manage,
-                             # skill_manage) demande un FEU VERT HUMAIN, a chaque appel, et le
-                             # feu vert ne vaut QUE pour le geste nomme (state/approve, fenetre de
-                             # approval.window secondes, une seule fois). false : ces gestes sont
-                             # refuses, comme partout ailleurs. Aucune skill ne met true par
-                             # defaut : ecrire dans la table, c'est ecrire dans le harnais.
-PERMANENT_TODO: false        # LE PLAN EST-IL UN TUNNEL ? (une route fermee, pas une suggestion)
-                             # true : le PLAN est ecrit ICI par l humain, et la boucle s en sert :
-                             #   - le TODO OBLIGATOIRE tombe (le plan est deja ouvert) ;
-                             #   - la PALETTE du tour se ferme aux outils de l ETAPE COURANTE ;
-                             #   - l etape se ferme quand TOUS ses outils ont rendu status: ok, et
-                             #     c est la BOUCLE qui la ferme, jamais le modele.
-                             # Une etape = UNE ligne, 100 octets, ses outils nommes a la fin :
+APPROVAL: false              # MAY THIS SKILL TOUCH THE HARNESS?
+                             # true: every act touching the TABLE or a SKILL (table_manage,
+                             # skill_manage) asks for a HUMAN GO, at every call, and the
+                             # the go holds ONLY for the named act (state/approve, window of
+                             # approval.window seconds, once). false: these acts are
+                             # refused, as everywhere else. No skill sets true by
+                             # default: writing in the table is writing in the harness.
+PERMANENT_TODO: false        # IS THE PLAN A TUNNEL? (a closed route, not a suggestion)
+                             # true: the PLAN is written HERE by the human, and the loop uses it:
+                             #   - the MANDATORY TODO is dropped (the plan is already open);
+                             #   - the turn TOOLSET closes on the tools of the CURRENT STEP;
+                             #   - the step closes when ALL its tools returned status: ok, and
+                             #     the LOOP closes it, never the model.
+                             # One step = ONE line, 100 bytes, its tools named at the end:
                              #   401: "[progress] lire l etat -- tools: tunnel_status"
                              #   402: "[todo] lever wg0 -- tools: tunnel_up, tunnel_status"
-                             # false : le plan est un JOURNAL, le modele l ecrit et le mene.
-                             # Une skill qui met true n a pas besoin d autre chose : le plan EST la route.
-TOOLS:                       # les tools que ce skill ouvre, et eux seuls (200 a 299)
-  200: "..."              # une ligne, un nom de tool
+                             # false: the plan is a JOURNAL, the model writes it and drives it.
+                             # A skill that sets true needs nothing else: the plan IS the route.
+TOOLS:                       # the tools this skill opens, and them alone (200 to 299)
+  200: "..."              # one line, one tool name
   201: "..."
-DOCS:                        # la source : le NOM d un fichier, OU d un dossier (sans chemin)
-  300: "..."                 # le modele le cherche et lit le seul fichier utile ; sinon "web_search"
-PLAN:                        # 20 lignes au plus, DEUX par tache (400 a 419)
-  400: "tache : ..."         # une tache par pas de deux
+DOCS:                        # the source: the NAME of a file, OR of a folder (no path)
+  300: "..."                 # the model searches it and reads the one useful file; otherwise "web_search"
+PLAN:                        # 20 lines at most, TWO per task (400 to 419)
+  400: "tache : ..."         # one task per step of two
   401: "etat : todo | in_progress | done"
-WRITABLE_WORKSPACE:          # l espace d ecriture : deux choses, et deux seulement
-  workspace: "work/"        # les dossiers de travail
-  type-file: ".md .yaml .sh .json .txt"   # les types de fichier acceptes
+WRITABLE_WORKSPACE:          # the write space: two things, and only two
+  workspace: "work/"        # the working folders
+  type-file: ".md .yaml .sh .json .txt"   # the file types accepted
 ERROR:                       # what the skill says when a tool refuses
   600: "..."
 # NO STEPS BLOCK (dropped 19/10): nothing applied it, neither the loop nor the engine.
@@ -47,7 +47,7 @@ ERROR:                       # what the skill says when a tool refuses
 # PERMANENT PLAN (PERMANENT_TODO: true, see above): each step names its tools, the harness closes
 # the toolset on them and opens it on a fact.
 
-# LE PORTEUR : la machine que cette skill tient ouverte pendant qu elle vit (facultatif).
-# Il nomme une action de la famille engine qui sait start|stop (ex : engine.models).
-# load_skill l ouvre en chargeant la skill, et le ferme quand une AUTRE skill prend la place.
+# THE CARRIER: the machine this skill holds open while it lives (optional).
+# It names an action of the engine family that knows start|stop (e.g. engine.models).
+# load_skill opens it by loading the skill, and closes it when ANOTHER skill takes the place.
 PORTEUR: ""

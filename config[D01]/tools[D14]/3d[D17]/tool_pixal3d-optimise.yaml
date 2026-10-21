@@ -12,7 +12,7 @@ RULES:
   count: false
   paths: write
 
-DESCRIPTION: "image -> 3D (Pixal3D), variante optimisee (res reduite, moins d'etapes, seeds 2042+)"
+DESCRIPTION: "image -> 3D (Pixal3D), optimised variant (reduced res, fewer steps, seeds 2042+)"
 
 COMMAND: |
   I=$(cat); [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }

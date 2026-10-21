@@ -23,7 +23,7 @@ COMMAND: |
 
   case $_op in
   files)
-    # chaque section du fichier de liste porte le chemin de son modele : on le lit, on ne le devine pas
+    # each section of the list file carries the path of its model: it is read, never guessed
     [ -r "$_ini" ] || { printf 'FAULT the model list is missing: %s\n' "$_ini"; exit 0; }
     _n=0
     _list=$(awk '
@@ -41,7 +41,7 @@ COMMAND: |
     done
     ;;
   binary)
-    # le binaire qui sert tous les modeles, et les capacites dont le routeur depend
+    # the binary that serves every model, and the capabilities the router relies on
     [ -x "$_bin" ] || { printf 'FAULT the llama-server is not there: %s\n' "$_bin"; exit 0; }
     for _c in --models-preset --models-max --reranking --embeddings; do
       "$_bin" --help 2>&1 | grep -q -- "$_c" && printf 'ok %s knows %s\n' "$(basename "$_bin")" "$_c" \
@@ -49,7 +49,7 @@ COMMAND: |
     done
     ;;
   router)
-    # le service unique : actif, ses drapeaux, et ce qu il annonce sur son port
+    # the single service: active, its flags, and what it announces on its port
     _u=$(cfg str units.models.unit) || _u=la-models.service
     _st=$(systemctl --user is-active "$_u" 2>/dev/null)
     case $_st in
@@ -70,7 +70,7 @@ COMMAND: |
     fi
     ;;
   residents)
-    # ce qui occupe vraiment la memoire, modele par modele
+    # what really occupies memory, model by model
     for _p in $(pgrep -f 'llama-server' 2>/dev/null); do
       _rss=$(awk '/VmRSS/ { print int($2 / 1024) }' "/proc/$_p/status" 2>/dev/null)
       _nm=$(ps -o args= -p "$_p" 2>/dev/null | cut -c1-70)

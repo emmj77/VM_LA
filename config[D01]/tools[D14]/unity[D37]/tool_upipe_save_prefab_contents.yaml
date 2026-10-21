@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -n "{{prefab}}" ] || { printf '%s\n' "$(msg argument_required 'prefab' 'save_prefab_contents')" >&2; exit 1; }
   case "{{active}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'active' 'save_prefab_contents')""{{active}}" >&2; exit 1 ;; esac
   set -- command --project-path "$P" save_prefab_contents
@@ -41,4 +41,4 @@ ARGS:
   - {name: rename_child, type: text}
   - {name: new_name, type: text}
   - {name: set_active_child, type: text}
-  - {name: active, type: text}          # true|false, vide pour ne rien poser
+  - {name: active, type: text}          # true|false, empty to set nothing

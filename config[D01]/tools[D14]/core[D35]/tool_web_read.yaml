@@ -24,12 +24,12 @@ COMMAND: |
   OUT=$("$A" --profile /home/moussa/.agent-browser/profile read "$U" 2>&1)
   case "$OUT" in
     ''|✗*|*"Read request failed"*)
-      # le lecteur direct peut etre refuse par un hote : on rend la page et on lit le texte
+      # a host may refuse the direct reader: the page is returned and the text read
       "$A" --profile /home/moussa/.agent-browser/profile open "$U" >/dev/null 2>&1 || { echo "refuse : page injoignable" >&2 ; exit 1 ; }
       OUT=$("$A" eval "document.body.innerText" 2>/dev/null | sed 's/\\n/\n/g') ;;
   esac
   [ -n "$OUT" ] || { echo "refuse : page vide" >&2 ; exit 1 ; }
-  # le moteur plafonne a 200 lignes ET 4000 octets : on reste sous les deux
+  # the engine caps at 200 lines AND 4000 bytes: both stay under
   printf '%s' "$OUT" | head -n 180 | head -c 3500 | iconv -c -f utf-8 -t utf-8
 
 ARGS:

@@ -19,5 +19,5 @@ op: "object.subdivision_set"
 
 ARGS:
   - {name: level, type: int}
-  - {name: relative, type: text}          # true|false, vide pour ne rien poser
-  - {name: ensure_modifier, type: text}          # true|false, vide pour ne rien poser
+  - {name: relative, type: text}          # true|false, empty to set nothing
+  - {name: ensure_modifier, type: text}          # true|false, empty to set nothing

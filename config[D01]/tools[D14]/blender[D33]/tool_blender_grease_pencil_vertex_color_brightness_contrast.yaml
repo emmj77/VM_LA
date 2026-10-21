@@ -18,6 +18,6 @@ machine: "blender"
 op: "grease_pencil.vertex_color_brightness_contrast"
 
 ARGS:
-  - {name: mode, type: text}          # un de : STROKE | FILL | BOTH
+  - {name: mode, type: text}          # one of: STROKE | FILL | BOTH
   - {name: brightness, type: text}
   - {name: contrast, type: text}

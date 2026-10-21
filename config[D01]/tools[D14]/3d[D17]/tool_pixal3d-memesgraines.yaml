@@ -12,7 +12,7 @@ RULES:
   count: false
   paths: write
 
-DESCRIPTION: "image -> 3D (Pixal3D), variante rapide a graines FIXES (memes que la base)"
+DESCRIPTION: "image -> 3D (Pixal3D), fast variant with FIXED seeds (same as the base)"
 
 COMMAND: |
   I=$(cat); [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }

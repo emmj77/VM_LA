@@ -23,8 +23,8 @@ COMMAND: |
   _unit() {   # $1 name, $2 what it runs, $3 description
     _f="$_ud/$1.service"
     if [ "$2" = dashboard ]; then
-      # LA PAGE A SA PORTE : la socket l eveille a la premiere visite, et le service
-      # s arrete de lui-meme quand plus personne ne regarde (il sort en 0).
+      # THE PAGE HAS ITS OWN DOOR: the socket wakes it on the first visit, and the service
+      # stops by itself when nobody watches any more (it exits 0).
       _sp=$(cfg num ports.dash) || _sp=8771
       {
         printf '[Unit]\nDescription=%s\nAfter=la-dash.socket\nRequires=la-dash.socket\n\n' "$3"

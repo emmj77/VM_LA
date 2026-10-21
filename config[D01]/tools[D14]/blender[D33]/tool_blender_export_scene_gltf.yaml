@@ -19,112 +19,112 @@ op: "export_scene.gltf"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_import_convert_lighting_mode, type: text}          # un de : SPEC | COMPAT | RAW
+  - {name: check_existing, type: text}          # true|false, empty to set nothing
+  - {name: export_import_convert_lighting_mode, type: text}          # one of: SPEC | COMPAT | RAW
   - {name: gltf_export_id, type: text}
-  - {name: export_use_gltfpack, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_gltfpack_tc, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_use_gltfpack, type: text}          # true|false, empty to set nothing
+  - {name: export_gltfpack_tc, type: text}          # true|false, empty to set nothing
   - {name: export_gltfpack_tq, type: int}
   - {name: export_gltfpack_si, type: text}
-  - {name: export_gltfpack_sa, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_gltfpack_slb, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_gltfpack_sa, type: text}          # true|false, empty to set nothing
+  - {name: export_gltfpack_slb, type: text}          # true|false, empty to set nothing
   - {name: export_gltfpack_vp, type: int}
   - {name: export_gltfpack_vt, type: int}
   - {name: export_gltfpack_vn, type: int}
   - {name: export_gltfpack_vc, type: int}
-  - {name: export_gltfpack_vpi, type: text}          # un de : Integer | Normalized | Floating-point
-  - {name: export_gltfpack_noq, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_gltfpack_kn, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_format, type: text}          # un de :
-  - {name: ui_tab, type: text}          # un de : GENERAL | MESHES | OBJECTS | ANIMATION
+  - {name: export_gltfpack_vpi, type: text}          # one of: Integer | Normalized | Floating-point
+  - {name: export_gltfpack_noq, type: text}          # true|false, empty to set nothing
+  - {name: export_gltfpack_kn, type: text}          # true|false, empty to set nothing
+  - {name: export_format, type: text}          # one of:
+  - {name: ui_tab, type: text}          # one of: GENERAL | MESHES | OBJECTS | ANIMATION
   - {name: export_copyright, type: text}
-  - {name: export_image_format, type: text}          # un de : AUTO | JPEG | WEBP | NONE
-  - {name: export_image_add_webp, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_image_webp_fallback, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_image_format, type: text}          # one of: AUTO | JPEG | WEBP | NONE
+  - {name: export_image_add_webp, type: text}          # true|false, empty to set nothing
+  - {name: export_image_webp_fallback, type: text}          # true|false, empty to set nothing
   - {name: export_texture_dir, type: text}
   - {name: export_jpeg_quality, type: int}
   - {name: export_image_quality, type: int}
-  - {name: export_keep_originals, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_texcoords, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_normals, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_gn_mesh, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_meshopt_compression_enable, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_meshopt_extension, type: text}          # un de : EXT_meshopt_compression | KHR_meshopt_compression
-  - {name: export_draco_mesh_compression_enable, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_keep_originals, type: text}          # true|false, empty to set nothing
+  - {name: export_texcoords, type: text}          # true|false, empty to set nothing
+  - {name: export_normals, type: text}          # true|false, empty to set nothing
+  - {name: export_gn_mesh, type: text}          # true|false, empty to set nothing
+  - {name: export_meshopt_compression_enable, type: text}          # true|false, empty to set nothing
+  - {name: export_meshopt_extension, type: text}          # one of: EXT_meshopt_compression | KHR_meshopt_compression
+  - {name: export_draco_mesh_compression_enable, type: text}          # true|false, empty to set nothing
   - {name: export_draco_mesh_compression_level, type: int}
   - {name: export_draco_position_quantization, type: int}
   - {name: export_draco_normal_quantization, type: int}
   - {name: export_draco_texcoord_quantization, type: int}
   - {name: export_draco_color_quantization, type: int}
   - {name: export_draco_generic_quantization, type: int}
-  - {name: export_tangents, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_materials, type: text}          # un de : EXPORT | PLACEHOLDER | VIEWPORT | NONE
-  - {name: export_unused_images, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_unused_textures, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_vertex_color, type: text}          # un de : MATERIAL | ACTIVE | NAME | NONE
+  - {name: export_tangents, type: text}          # true|false, empty to set nothing
+  - {name: export_materials, type: text}          # one of: EXPORT | PLACEHOLDER | VIEWPORT | NONE
+  - {name: export_unused_images, type: text}          # true|false, empty to set nothing
+  - {name: export_unused_textures, type: text}          # true|false, empty to set nothing
+  - {name: export_vertex_color, type: text}          # one of: MATERIAL | ACTIVE | NAME | NONE
   - {name: export_vertex_color_name, type: text}
-  - {name: export_all_vertex_colors, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_active_vertex_color_when_no_material, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_attributes, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_mesh_edges, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_mesh_vertices, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_cameras, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_selection, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_visible, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_renderable, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_active_collection_with_nested, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_active_collection, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_active_scene, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_all_vertex_colors, type: text}          # true|false, empty to set nothing
+  - {name: export_active_vertex_color_when_no_material, type: text}          # true|false, empty to set nothing
+  - {name: export_attributes, type: text}          # true|false, empty to set nothing
+  - {name: use_mesh_edges, type: text}          # true|false, empty to set nothing
+  - {name: use_mesh_vertices, type: text}          # true|false, empty to set nothing
+  - {name: export_cameras, type: text}          # true|false, empty to set nothing
+  - {name: use_selection, type: text}          # true|false, empty to set nothing
+  - {name: use_visible, type: text}          # true|false, empty to set nothing
+  - {name: use_renderable, type: text}          # true|false, empty to set nothing
+  - {name: use_active_collection_with_nested, type: text}          # true|false, empty to set nothing
+  - {name: use_active_collection, type: text}          # true|false, empty to set nothing
+  - {name: use_active_scene, type: text}          # true|false, empty to set nothing
   - {name: collection, type: text}
-  - {name: at_collection_center, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_extras, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_yup, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_apply, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_shared_accessors, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_animations, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_frame_range, type: text}          # true|false, vide pour ne rien poser
+  - {name: at_collection_center, type: text}          # true|false, empty to set nothing
+  - {name: export_extras, type: text}          # true|false, empty to set nothing
+  - {name: export_yup, type: text}          # true|false, empty to set nothing
+  - {name: export_apply, type: text}          # true|false, empty to set nothing
+  - {name: export_shared_accessors, type: text}          # true|false, empty to set nothing
+  - {name: export_animations, type: text}          # true|false, empty to set nothing
+  - {name: export_frame_range, type: text}          # true|false, empty to set nothing
   - {name: export_frame_step, type: int}
-  - {name: export_force_sampling, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_sampling_interpolation_fallback, type: text}          # un de : LINEAR | STEP
-  - {name: export_pointer_animation, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_animation_mode, type: text}          # un de : ACTIONS | ACTIVE_ACTIONS | BROADCAST | NLA_TRACKS | SCENE
+  - {name: export_force_sampling, type: text}          # true|false, empty to set nothing
+  - {name: export_sampling_interpolation_fallback, type: text}          # one of: LINEAR | STEP
+  - {name: export_pointer_animation, type: text}          # true|false, empty to set nothing
+  - {name: export_animation_mode, type: text}          # one of: ACTIONS | ACTIVE_ACTIONS | BROADCAST | NLA_TRACKS | SCENE
   - {name: export_nla_strips_merged_animation_name, type: text}
-  - {name: export_def_bones, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_hierarchy_flatten_bones, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_hierarchy_flatten_objs, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_armature_object_remove, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_leaf_bone, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_optimize_animation_size, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_optimize_animation_keep_anim_armature, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_optimize_animation_keep_anim_object, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_optimize_disable_viewport, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_negative_frame, type: text}          # un de : SLIDE | CROP
-  - {name: export_anim_slide_to_zero, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_bake_animation, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_merge_animation, type: text}          # un de : NLA_TRACK | ACTION | NONE
-  - {name: export_anim_single_armature, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_reset_pose_bones, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_current_frame, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_rest_position_armature, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_anim_scene_split_object, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_skins, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_def_bones, type: text}          # true|false, empty to set nothing
+  - {name: export_hierarchy_flatten_bones, type: text}          # true|false, empty to set nothing
+  - {name: export_hierarchy_flatten_objs, type: text}          # true|false, empty to set nothing
+  - {name: export_armature_object_remove, type: text}          # true|false, empty to set nothing
+  - {name: export_leaf_bone, type: text}          # true|false, empty to set nothing
+  - {name: export_optimize_animation_size, type: text}          # true|false, empty to set nothing
+  - {name: export_optimize_animation_keep_anim_armature, type: text}          # true|false, empty to set nothing
+  - {name: export_optimize_animation_keep_anim_object, type: text}          # true|false, empty to set nothing
+  - {name: export_optimize_disable_viewport, type: text}          # true|false, empty to set nothing
+  - {name: export_negative_frame, type: text}          # one of: SLIDE | CROP
+  - {name: export_anim_slide_to_zero, type: text}          # true|false, empty to set nothing
+  - {name: export_bake_animation, type: text}          # true|false, empty to set nothing
+  - {name: export_merge_animation, type: text}          # one of: NLA_TRACK | ACTION | NONE
+  - {name: export_anim_single_armature, type: text}          # true|false, empty to set nothing
+  - {name: export_reset_pose_bones, type: text}          # true|false, empty to set nothing
+  - {name: export_current_frame, type: text}          # true|false, empty to set nothing
+  - {name: export_rest_position_armature, type: text}          # true|false, empty to set nothing
+  - {name: export_anim_scene_split_object, type: text}          # true|false, empty to set nothing
+  - {name: export_skins, type: text}          # true|false, empty to set nothing
   - {name: export_influence_nb, type: int}
-  - {name: export_all_influences, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_morph, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_morph_normal, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_morph_tangent, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_morph_animation, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_morph_reset_sk_data, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_lights, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_try_sparse_sk, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_try_omit_sparse_sk, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_gpu_instances, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_action_filter, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_convert_animation_pointer, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_nla_strips, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_original_specular, type: text}          # true|false, vide pour ne rien poser
-  - {name: will_save_settings, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_hierarchy_full_collections, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_extra_animations, type: text}          # true|false, vide pour ne rien poser
+  - {name: export_all_influences, type: text}          # true|false, empty to set nothing
+  - {name: export_morph, type: text}          # true|false, empty to set nothing
+  - {name: export_morph_normal, type: text}          # true|false, empty to set nothing
+  - {name: export_morph_tangent, type: text}          # true|false, empty to set nothing
+  - {name: export_morph_animation, type: text}          # true|false, empty to set nothing
+  - {name: export_morph_reset_sk_data, type: text}          # true|false, empty to set nothing
+  - {name: export_lights, type: text}          # true|false, empty to set nothing
+  - {name: export_try_sparse_sk, type: text}          # true|false, empty to set nothing
+  - {name: export_try_omit_sparse_sk, type: text}          # true|false, empty to set nothing
+  - {name: export_gpu_instances, type: text}          # true|false, empty to set nothing
+  - {name: export_action_filter, type: text}          # true|false, empty to set nothing
+  - {name: export_convert_animation_pointer, type: text}          # true|false, empty to set nothing
+  - {name: export_nla_strips, type: text}          # true|false, empty to set nothing
+  - {name: export_original_specular, type: text}          # true|false, empty to set nothing
+  - {name: will_save_settings, type: text}          # true|false, empty to set nothing
+  - {name: export_hierarchy_full_collections, type: text}          # true|false, empty to set nothing
+  - {name: export_extra_animations, type: text}          # true|false, empty to set nothing
   - {name: export_loglevel, type: int}
   - {name: filter_glob, type: text}

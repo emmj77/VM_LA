@@ -18,4 +18,4 @@ machine: "blender"
 op: "view3d.toggle_shading"
 
 ARGS:
-  - {name: type, type: text}          # un de : WIREFRAME | SOLID | MATERIAL | RENDERED
+  - {name: type, type: text}          # one of: WIREFRAME | SOLID | MATERIAL | RENDERED

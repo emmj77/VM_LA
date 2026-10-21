@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.edge_split"
 
 ARGS:
-  - {name: type, type: text}          # un de : EDGE | VERT
+  - {name: type, type: text}          # one of: EDGE | VERT

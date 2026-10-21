@@ -19,4 +19,4 @@ op: "grease_pencil.primitive_curve"
 
 ARGS:
   - {name: subdivision, type: int}
-  - {name: type, type: text}          # un de : BOX | LINE | POLYLINE | CIRCLE | ARC | CURVE
+  - {name: type, type: text}          # one of: BOX | LINE | POLYLINE | CIRCLE | ARC | CURVE

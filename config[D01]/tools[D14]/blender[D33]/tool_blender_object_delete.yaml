@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.delete"
 
 ARGS:
-  - {name: use_global, type: text}          # true|false, vide pour ne rien poser
-  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_global, type: text}          # true|false, empty to set nothing
+  - {name: confirm, type: text}          # true|false, empty to set nothing

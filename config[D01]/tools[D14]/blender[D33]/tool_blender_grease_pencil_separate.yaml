@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.separate"
 
 ARGS:
-  - {name: mode, type: text}          # un de : SELECTED | MATERIAL | LAYER
+  - {name: mode, type: text}          # one of: SELECTED | MATERIAL | LAYER

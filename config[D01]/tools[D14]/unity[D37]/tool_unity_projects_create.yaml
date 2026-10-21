@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Create a new Unity project and register it in the Hub"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- projects create --no-banner --no-pager --non-interactive
@@ -68,9 +68,9 @@ ARGS:
   - {name: editor_version, type: text}   # Unity editor version (e.g. 6000.0.26f1, latest, lts)
   - {name: template, type: text}   # Template package name (e.g. com.unity.template.3d)
   - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
-  - {name: open, type: text}   # true pour poser --open ; Open the project in the Editor after creation
-  - {name: cloud, type: text}   # true pour poser --cloud ; Enable Unity Cloud with a new project
-  - {name: no_cloud, type: text}   # true pour poser --no-cloud ; Create the project without enabling Unity Cloud
+  - {name: open, type: text}   # true to set --open ; Open the project in the Editor after creation
+  - {name: cloud, type: text}   # true to set --cloud ; Enable Unity Cloud with a new project
+  - {name: no_cloud, type: text}   # true to set --no-cloud ; Create the project without enabling Unity Cloud
   - {name: cloud_org, type: text}   # Organization for the Unity Cloud project (id or name); overrides UNITY
   - {name: cloud_project, type: text}   # Use an existing Unity Cloud project (id or name) instead of creating o
   - {name: vcs, type: text}   # Create and link a git repository: github, gitlab, or a self-hosted hos
@@ -81,7 +81,7 @@ ARGS:
   - {name: git_remote_protocol, type: text}   # Transport for the remote: https or ssh (default https)
   - {name: git_description, type: text}   # Description for the new repository
   - {name: git_token, type: text}   # Personal access token; overrides your Git credential manager (prefer -
-  - {name: git_token_stdin, type: text}   # true pour poser --git-token-stdin ; Read the personal access token from stdin (CI-safe)
-  - {name: no_initial_commit, type: text}   # true pour poser --no-initial-commit ; Skip the automatic initial commit and push
-  - {name: git_lfs, type: text}   # true pour poser --git-lfs ; Initialize Git LFS before the first commit
+  - {name: git_token_stdin, type: text}   # true to set --git-token-stdin ; Read the personal access token from stdin (CI-safe)
+  - {name: no_initial_commit, type: text}   # true to set --no-initial-commit ; Skip the automatic initial commit and push
+  - {name: git_lfs, type: text}   # true to set --git-lfs ; Initialize Git LFS before the first commit
   - {name: vcs_region, type: text}   # UVCS region for the organization's subscription (first use only).

@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Search Jira issues in a project configuration"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- collaboration jira issues search --no-banner --no-pager --non-interactive
@@ -44,4 +44,4 @@ ARGS:
   - {name: project_path, type: text}   # Path to the Unity project (defaults to the current directory); used to
   - {name: jira_project_config_id, type: text}   # The Jira project configuration ID to search
   - {name: query, type: text}   # Plain-text search query (not JQL)
-  - {name: include_subtasks, type: text}   # true pour poser --include-subtasks ; Include sub-tasks in the results
+  - {name: include_subtasks, type: text}   # true to set --include-subtasks ; Include sub-tasks in the results

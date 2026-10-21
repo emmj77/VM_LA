@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Delete a user-generated custom template"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- templates delete --no-banner --no-pager --non-interactive
@@ -41,4 +41,4 @@ COMMAND: |
 ARGS:
   - {name: name, type: text}
   - {name: editor, type: text}   # Unity editor version (uses stored default if omitted)
-  - {name: yes, type: text}   # true pour poser --yes ; Skip confirmation prompt
+  - {name: yes, type: text}   # true to set --yes ; Skip confirmation prompt

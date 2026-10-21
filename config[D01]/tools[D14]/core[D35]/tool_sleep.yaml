@@ -19,7 +19,7 @@ COMMAND: |
 
   S={{seconds}}
   _u="la-sleep-$(date +%s)"
-  # tout tient dans le corps : systemd execute la commande, aucun fichier de plus
+  # everything sits in the body: systemd runs the command, no extra file
   _c="'${LA_TOOL:-}' engine engine.turn 'text=reveil: le sommeil de $S secondes est arrive a son terme'"
   systemd-run --user --unit="$_u" --on-active="${S}s" \
     --timer-property=AccuracySec=1s --collect /bin/dash -c "$_c" >/dev/null 2>&1 \

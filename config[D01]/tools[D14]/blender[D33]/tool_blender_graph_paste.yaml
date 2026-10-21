@@ -18,7 +18,7 @@ machine: "blender"
 op: "graph.paste"
 
 ARGS:
-  - {name: offset, type: text}          # un de : START | END | RELATIVE | NONE
-  - {name: value_offset, type: text}          # un de : LEFT_KEY | RIGHT_KEY | CURRENT_FRAME | CURSOR_VALUE | NONE
-  - {name: merge, type: text}          # un de : MIX | OVER_ALL | OVER_RANGE | OVER_RANGE_ALL
-  - {name: flipped, type: text}          # true|false, vide pour ne rien poser
+  - {name: offset, type: text}          # one of: START | END | RELATIVE | NONE
+  - {name: value_offset, type: text}          # one of: LEFT_KEY | RIGHT_KEY | CURRENT_FRAME | CURSOR_VALUE | NONE
+  - {name: merge, type: text}          # one of: MIX | OVER_ALL | OVER_RANGE | OVER_RANGE_ALL
+  - {name: flipped, type: text}          # true|false, empty to set nothing

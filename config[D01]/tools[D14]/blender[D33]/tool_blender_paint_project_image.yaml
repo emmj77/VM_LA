@@ -18,4 +18,4 @@ machine: "blender"
 op: "paint.project_image"
 
 ARGS:
-  - {name: image, type: text}          # un de :
+  - {name: image, type: text}          # one of:

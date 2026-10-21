@@ -22,9 +22,9 @@ COMMAND: |
     _name=$(_turn_get ".reply_msg.tool_calls[$_n].function.name")
     _args=$(_turn_get ".reply_msg.tool_calls[$_n].function.arguments")
     _cid=$(_turn_get ".reply_msg.tool_calls[$_n].id")
-    # chaque valeur arrive en un seul mot, apostrophes comprises : sans ca "la boucle marche" devenait "la"
+    # every value arrives as one word, apostrophes included: without that "la boucle marche" became "la"
     _pairs=$(printf '%s' "$_args" | jq -r 'to_entries[] | "\(.key)=\(.value | tostring)" | @sh' 2>/dev/null | tr '\n' ' ')
-    # le geste appartient au modele : la porte le lit dans le registre commun, pas dans celui du moteur
+    # the call belongs to the model: the door reads it in the common register, not in the engine one
     _line=$(eval "LA_FROM=model run_call \"$_name\" $_pairs")
     _msgs=$(jq -n --arg cid "$_cid" --arg c "$_line" '[{role:"tool",tool_call_id:$cid,content:$c}]')
     _turn_set_json '(.messages = (.messages + $v))' "$_msgs"

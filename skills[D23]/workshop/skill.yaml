@@ -4,16 +4,16 @@ date: "2026-10-14"
 tags: ["workshop", "skill", "table", "spec"]
 
 SUMMARY:
-  101: "Tenir l'atelier : les skills, la table des tools, et la spec du skill actif."
-  102: "skill_manage tient un skill PAR CHAMP ; table_manage tient la table elle-meme."
-  103: "write_spec ecrit UNE section de la spec du skill actif, bornee par cap."
-  104: "load_doc me rend la doc du skill actif avant un tool sensible."
+  101: "Hold the workshop: the skills, the tool table, and the spec of the active skill."
+  102: "skill_manage holds one skill FIELD BY FIELD; table_manage holds the table itself."
+  103: "write_spec writes ONE section of the active skill spec, bounded by cap."
+  104: "load_doc returns the doc of the active skill before a sensitive tool."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section: 5
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "skill_manage"
   201: "table_manage"
@@ -26,7 +26,7 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:

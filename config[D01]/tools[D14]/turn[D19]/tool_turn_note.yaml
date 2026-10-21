@@ -29,8 +29,8 @@ COMMAND: |
   if [ "$_n" -gt "$_keep" ]; then
     _t=$(tmpfile memory) && tail -n "$_keep" "$_f" > "$_t" 2>/dev/null && mv -f -- "$_t" "$_f"
   fi
-  # le cache du modele est purge sauf sa tete : on rejoue la tete seule, un token
-  # le serveur garde le prefixe commun (la tete) et jette le reste du fil
+  # the model cache is purged except its head: only the head is replayed, one token
+  # the server keeps the common prefix (the head) and drops the rest of the thread
   _head=$(jq -r '.messages[0].content // ""' "$(cfg abs turn)" 2>/dev/null | cut -c1-4000)
   if [ -n "$_head" ]; then
     _al=$(jq -r '.engine // "main"' "$(cfg abs turn)" 2>/dev/null)
@@ -42,7 +42,7 @@ COMMAND: |
     *"$_m"*) _local=1 ;;
     *)       _local=0 ;;
     esac
-    # la purge ne concerne que le modele servi ici
+    # the purge concerns only the model served here
     if [ -n "$_m" ] && [ "$_local" = 1 ]; then
       jq -cn --arg m "$_m" --arg h "$_head" \
         '{model:$m,messages:[{role:"system",content:$h}],max_tokens:1,cache_prompt:true,stream:false}' \
@@ -51,7 +51,7 @@ COMMAND: |
         && _tr note "kv purge, la tete reste"
     fi
   fi
-  # le noyau reprend la page cache des residents : la memoire ne grossit pas sans fin
+  # the kernel takes back the page cache of the residents: memory does not grow without end
   run_call engine.purge "op=all" >/dev/null 2>&1
   _turn_set '(.status = "done")'
   _tr note "turn closed"

@@ -5,21 +5,21 @@ tags: ["debug", "terminal", "host"]
 HUMAN_ONLY: true
 
 SUMMARY:
-  101: "Le terminal libre : toute la machine, sous bubblewrap, avec la liste de blocage des binaires (rm et la famille disque)."
-  102: "Le chargement est HUMAIN seulement : la porte refuse le modele ; 'la skill load debug' passe."
-  103: "Chaque commande part dans state/terminal_libre.log ; la sortie est brute, code de sortie compris."
+  101: "The free terminal: the whole machine, under bubblewrap, with the binary blocklist (rm and the disk family)."
+  102: "The load is HUMAN only: the door refuses the model; 'la skill load debug' passes."
+  103: "Every command is journaled in state/free_terminal.log; the output is raw, exit code included."
 RULES:
   create_subfolder: false
   execute_code: true
   max_section_lines: 100
 APPROVAL: false
 TOOLS:
-  200: "terminal_libre"
+  200: "free_terminal"
   201: "reply"
 DOCS:
 PLAN:
 WRITABLE_WORKSPACE:
   workspace: "/"
-  type-file: "tout ce que la machine accepte"
+  type-file: "anything the machine accepts"
 ERROR:
-  600: "Un binaire de la liste de blocage n existe pas dans la cage : ne pas le rappeler, il est masque."
+  600: "A binary of the blocklist does not exist in the cage: never call it again, it is masked."

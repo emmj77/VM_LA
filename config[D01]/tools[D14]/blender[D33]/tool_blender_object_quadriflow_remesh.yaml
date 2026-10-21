@@ -18,12 +18,12 @@ machine: "blender"
 op: "object.quadriflow_remesh"
 
 ARGS:
-  - {name: use_mesh_symmetry, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_preserve_sharp, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_preserve_boundary, type: text}          # true|false, vide pour ne rien poser
-  - {name: preserve_attributes, type: text}          # true|false, vide pour ne rien poser
-  - {name: smooth_normals, type: text}          # true|false, vide pour ne rien poser
-  - {name: mode, type: text}          # un de : RATIO | EDGE | FACES
+  - {name: use_mesh_symmetry, type: text}          # true|false, empty to set nothing
+  - {name: use_preserve_sharp, type: text}          # true|false, empty to set nothing
+  - {name: use_preserve_boundary, type: text}          # true|false, empty to set nothing
+  - {name: preserve_attributes, type: text}          # true|false, empty to set nothing
+  - {name: smooth_normals, type: text}          # true|false, empty to set nothing
+  - {name: mode, type: text}          # one of: RATIO | EDGE | FACES
   - {name: target_ratio, type: text}
   - {name: target_edge_length, type: text}
   - {name: target_faces, type: int}

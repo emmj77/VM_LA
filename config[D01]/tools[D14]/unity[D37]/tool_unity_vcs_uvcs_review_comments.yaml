@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Read a review's comments with the file and line each one is anchored to"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- vcs uvcs review comments --no-banner --no-pager --non-interactive
@@ -45,5 +45,5 @@ ARGS:
   - {name: review, type: text}   # The review to read, by id
   - {name: changeset, type: text}   # Read the review attached to this changeset instead
   - {name: branch, type: text}   # Read the review attached to this branch instead
-  - {name: all_activity, type: text}   # true pour poser --all-activity ; Include status changes and reviewer requests, not just file comments
+  - {name: all_activity, type: text}   # true to set --all-activity ; Include status changes and reviewer requests, not just file comments
   - {name: limit, type: text}   # How many rows to return (default 50, max 500)

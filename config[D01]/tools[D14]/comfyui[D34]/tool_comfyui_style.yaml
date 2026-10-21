@@ -78,5 +78,5 @@ COMMAND: |
   printf "image : %s (%s octets, graine %s)\n" "$OUTPUT" "$(wc -c < "$OUTPUT")" "$GRAINE"
 
 ARGS:
-  - {name: image, type: path}                  # la reference, relative a l'espace du skill (familie WRITE)
-  - {name: style, type: text, stdin: true}     # le sujet, en texte libre : par l'ENTREE STANDARD
+  - {name: image, type: path}                  # the reference, relative to the space of the skill (family WRITE)
+  - {name: style, type: text, stdin: true}     # the subject, free text: on STANDARD INPUT

@@ -11,7 +11,7 @@ RULES:
   create_subfolder: false
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "table_manage"
   201: "read_file"
@@ -25,4 +25,4 @@ WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".yaml"
 ERROR:
-  600: "La table ne repond pas, ou la ligne visee est absente : le dire."
+  600: "The table does not answer, or the target row is missing: say it."

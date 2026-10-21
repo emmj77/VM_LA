@@ -18,4 +18,4 @@ machine: "blender"
 op: "paint.vertex_color_set"
 
 ARGS:
-  - {name: use_alpha, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_alpha, type: text}          # true|false, empty to set nothing

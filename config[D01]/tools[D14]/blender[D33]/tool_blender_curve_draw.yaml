@@ -19,8 +19,8 @@ op: "curve.draw"
 
 ARGS:
   - {name: error_threshold, type: text}
-  - {name: fit_method, type: text}          # un de : REFIT | SPLIT
+  - {name: fit_method, type: text}          # one of: REFIT | SPLIT
   - {name: corner_angle, type: text}
-  - {name: use_cyclic, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_cyclic, type: text}          # true|false, empty to set nothing
   - {name: stroke, type: text}
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing

@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Set a renderer's material color directly."
 
 COMMAND: |
-  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
   set -f
   set -- material set-renderer-color
@@ -38,8 +38,8 @@ COMMAND: |
   printf '%s\n' "$OUT"
 
 ARGS:
-  - {name: search_method, type: text}          # un de : by_id | by_name | by_path | by_tag | by_layer | by_component
-  - {name: mode, type: text}          # un de : shared | instance | property_block | create_unique
+  - {name: search_method, type: text}          # one of: by_id | by_name | by_path | by_tag | by_layer | by_component
+  - {name: mode, type: text}          # one of: shared | instance | property_block | create_unique
   - {name: target, type: text}
   - {name: r, type: text}
   - {name: g, type: text}

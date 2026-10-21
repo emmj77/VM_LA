@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.set_material"
 
 ARGS:
-  - {name: slot, type: text}          # un de : DEFAULT
+  - {name: slot, type: text}          # one of: DEFAULT

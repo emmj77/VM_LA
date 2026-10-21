@@ -1,17 +1,17 @@
 id: "K06"
 skill: "delegate-work"
 date: "2026-10-17"
-tags: ["delegate-work", "deleguer", "sous-agent", "tache"]
+tags: ["delegate-work", "delegate", "sub-agent", "task"]
 
 SUMMARY:
-  101: "Deleguer une tache a un sous-agent, et lire son verdict."
-  102: "delegate_task confie la tache ; on ne fait PAS le travail soi-meme."
-  103: "On rend le RESULTAT rendu par le sous-agent, jamais un suppose."
+  101: "Delegate a task to a sub-agent, and read its verdict."
+  102: "delegate_task hands the task over; the work is NOT done here."
+  103: "The RESULT the sub-agent returned is passed on, never a guess."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "delegate_task"
   201: "read_file"
@@ -21,8 +21,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .txt .json"
 ERROR:
-  600: "Le sous-agent n'a rien rendu : le dire, ne pas fabriquer un resultat."
+  600: "The sub-agent returned nothing: say it, never build a result."

@@ -19,6 +19,6 @@ op: "node.add_node"
 
 ARGS:
   - {name: settings, type: text}
-  - {name: use_transform, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_transform, type: text}          # true|false, empty to set nothing
   - {name: type, type: text}
   - {name: visible_output, type: text}

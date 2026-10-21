@@ -24,7 +24,7 @@ COMMAND: |
   _n=0
   while IFS="$(printf '\t')" read -r _k _p _id; do
     _n=$((_n + 1))
-    # les entrees d etat naissent a l usage : leur absence au repos n est pas un defaut
+    # the state entries are born in use: their absence at rest is not a fault
     case $_id in N[0-9]*) continue ;; esac
     case $_k in dir) _a=$(cfg where "$_p") ;; *) _a=$(cfg where "$_p") ;; esac
     [ -e "$_a" ] || printf '%s\t%s\n' "$_k" "$_p" >> "$_t.miss"

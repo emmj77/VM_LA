@@ -20,6 +20,6 @@ op: "image.open_images"
 ARGS:
   - {name: directory, type: text}
   - {name: files, type: text}
-  - {name: relative_path, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_sequence_detection, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_udim_detection, type: text}          # true|false, vide pour ne rien poser
+  - {name: relative_path, type: text}          # true|false, empty to set nothing
+  - {name: use_sequence_detection, type: text}          # true|false, empty to set nothing
+  - {name: use_udim_detection, type: text}          # true|false, empty to set nothing

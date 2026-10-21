@@ -18,8 +18,8 @@ machine: "blender"
 op: "wm.set_stereo_3d"
 
 ARGS:
-  - {name: display_mode, type: text}          # un de : ANAGLYPH | INTERLACE | TIMESEQUENTIAL | SIDEBYSIDE | TOPBOTTOM
-  - {name: anaglyph_type, type: text}          # un de : RED_CYAN | GREEN_MAGENTA | YELLOW_BLUE
-  - {name: interlace_type, type: text}          # un de : ROW_INTERLEAVED | COLUMN_INTERLEAVED | CHECKERBOARD_INTERLEAVED
-  - {name: use_interlace_swap, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_sidebyside_crosseyed, type: text}          # true|false, vide pour ne rien poser
+  - {name: display_mode, type: text}          # one of: ANAGLYPH | INTERLACE | TIMESEQUENTIAL | SIDEBYSIDE | TOPBOTTOM
+  - {name: anaglyph_type, type: text}          # one of: RED_CYAN | GREEN_MAGENTA | YELLOW_BLUE
+  - {name: interlace_type, type: text}          # one of: ROW_INTERLEAVED | COLUMN_INTERLEAVED | CHECKERBOARD_INTERLEAVED
+  - {name: use_interlace_swap, type: text}          # true|false, empty to set nothing
+  - {name: use_sidebyside_crosseyed, type: text}          # true|false, empty to set nothing

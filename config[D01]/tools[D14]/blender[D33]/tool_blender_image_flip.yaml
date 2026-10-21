@@ -18,5 +18,5 @@ machine: "blender"
 op: "image.flip"
 
 ARGS:
-  - {name: use_flip_x, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_flip_y, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_flip_x, type: text}          # true|false, empty to set nothing
+  - {name: use_flip_y, type: text}          # true|false, empty to set nothing

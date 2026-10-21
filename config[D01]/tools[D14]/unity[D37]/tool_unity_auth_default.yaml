@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Show or set the default account for a Unity project"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- auth default --no-banner --no-pager --non-interactive
@@ -40,4 +40,4 @@ COMMAND: |
 ARGS:
   - {name: account, type: text}   # facultatif
   - {name: project, type: text}   # Path inside the Unity project (defaults to the current directory)
-  - {name: clear, type: text}   # true pour poser --clear ; Remove the project's default account
+  - {name: clear, type: text}   # true to set --clear ; Remove the project's default account

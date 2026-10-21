@@ -19,7 +19,7 @@ op: "sculpt_curves.select_random"
 
 ARGS:
   - {name: seed, type: int}
-  - {name: partial, type: text}          # true|false, vide pour ne rien poser
+  - {name: partial, type: text}          # true|false, empty to set nothing
   - {name: probability, type: text}
   - {name: min, type: text}
-  - {name: constant_per_curve, type: text}          # true|false, vide pour ne rien poser
+  - {name: constant_per_curve, type: text}          # true|false, empty to set nothing

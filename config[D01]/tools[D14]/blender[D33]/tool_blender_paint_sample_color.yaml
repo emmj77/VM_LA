@@ -19,5 +19,5 @@ op: "paint.sample_color"
 
 ARGS:
   - {name: location, type: int}
-  - {name: merged, type: text}          # true|false, vide pour ne rien poser
-  - {name: palette, type: text}          # true|false, vide pour ne rien poser
+  - {name: merged, type: text}          # true|false, empty to set nothing
+  - {name: palette, type: text}          # true|false, empty to set nothing

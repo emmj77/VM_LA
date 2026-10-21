@@ -18,4 +18,4 @@ machine: "blender"
 op: "grease_pencil.caps_set"
 
 ARGS:
-  - {name: type, type: text}          # un de : ROUND | FLAT | START | END
+  - {name: type, type: text}          # one of: ROUND | FLAT | START | END

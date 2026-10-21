@@ -18,4 +18,4 @@ machine: "blender"
 op: "curves.snap_curves_to_surface"
 
 ARGS:
-  - {name: attach_mode, type: text}          # un de : NEAREST | DEFORM
+  - {name: attach_mode, type: text}          # one of: NEAREST | DEFORM

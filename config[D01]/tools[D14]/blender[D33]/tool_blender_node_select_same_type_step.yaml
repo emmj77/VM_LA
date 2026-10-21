@@ -18,4 +18,4 @@ machine: "blender"
 op: "node.select_same_type_step"
 
 ARGS:
-  - {name: prev, type: text}          # true|false, vide pour ne rien poser
+  - {name: prev, type: text}          # true|false, empty to set nothing

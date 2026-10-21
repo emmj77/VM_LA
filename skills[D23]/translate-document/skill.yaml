@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["translate-document", "traduire", "langue", "document"]
 
 SUMMARY:
-  101: "Traduire un document d'une langue a une autre, fidelement."
-  102: "read_file lit la source ; write_file pose la traduction."
-  103: "On ne traduit que ce qui est LU ; les noms propres ne se rendent pas."
+  101: "Translate a document from one language to another, faithfully."
+  102: "read_file reads the source; write_file sets the translation down."
+  103: "Only what was READ is translated; proper names are not rendered."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "read_file"
   201: "write_file"
@@ -23,8 +23,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Source illisible : le dire et nommer le chemin, jamais inventer un texte."
+  600: "Source unreadable: say it and name the path, never invent a text."

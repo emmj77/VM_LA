@@ -18,10 +18,10 @@ machine: "blender"
 op: "paint.weight_gradient"
 
 ARGS:
-  - {name: type, type: text}          # un de : LINEAR | RADIAL
+  - {name: type, type: text}          # one of: LINEAR | RADIAL
   - {name: xstart, type: int}
   - {name: xend, type: int}
   - {name: ystart, type: int}
   - {name: yend, type: int}
-  - {name: flip, type: text}          # true|false, vide pour ne rien poser
+  - {name: flip, type: text}          # true|false, empty to set nothing
   - {name: cursor, type: int}

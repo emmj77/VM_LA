@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Pack a Unity project into a portable template archive"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- templates pack --no-banner --no-pager --non-interactive
@@ -53,6 +53,6 @@ ARGS:
   - {name: display_name, type: text}   # Human-readable template name (e.g. 'My Template')
   - {name: description, type: text}   # Short description of the template
   - {name: template_version, type: text}   # Template version (e.g. 1.0.0) — use --template-version to avoid confli
-  - {name: keep_embedded_packages, type: text}   # true pour poser --keep-embedded-packages ; Keep embedded packages in the template archive
-  - {name: keep_project_settings, type: text}   # true pour poser --keep-project-settings ; Keep project settings in the template archive
-  - {name: overwrite, type: text}   # true pour poser --overwrite ; Replace the output file if it already exists
+  - {name: keep_embedded_packages, type: text}   # true to set --keep-embedded-packages ; Keep embedded packages in the template archive
+  - {name: keep_project_settings, type: text}   # true to set --keep-project-settings ; Keep project settings in the template archive
+  - {name: overwrite, type: text}   # true to set --overwrite ; Replace the output file if it already exists

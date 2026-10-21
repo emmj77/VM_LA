@@ -18,5 +18,5 @@ machine: "blender"
 op: "mesh.quads_convert_to_tris"
 
 ARGS:
-  - {name: quad_method, type: text}          # un de : BEAUTY | FIXED | FIXED_ALTERNATE | SHORTEST_DIAGONAL | LONGEST_DIAGONAL
-  - {name: ngon_method, type: text}          # un de : BEAUTY | CLIP
+  - {name: quad_method, type: text}          # one of: BEAUTY | FIXED | FIXED_ALTERNATE | SHORTEST_DIAGONAL | LONGEST_DIAGONAL
+  - {name: ngon_method, type: text}          # one of: BEAUTY | CLIP

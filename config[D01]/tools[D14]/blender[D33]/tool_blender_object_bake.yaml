@@ -18,25 +18,25 @@ machine: "blender"
 op: "object.bake"
 
 ARGS:
-  - {name: type, type: text}          # un de : COMBINED | AO | SHADOW | POSITION | NORMAL | UV | ROUGHNESS | EMIT | ENVIRONMENT | DIFFUSE | GLOSSY | TRANSMISSION
-  - {name: pass_filter, type: text}          # un de : NONE | EMIT | DIRECT | INDIRECT | COLOR | DIFFUSE | GLOSSY | TRANSMISSION
+  - {name: type, type: text}          # one of: COMBINED | AO | SHADOW | POSITION | NORMAL | UV | ROUGHNESS | EMIT | ENVIRONMENT | DIFFUSE | GLOSSY | TRANSMISSION
+  - {name: pass_filter, type: text}          # one of: NONE | EMIT | DIRECT | INDIRECT | COLOR | DIFFUSE | GLOSSY | TRANSMISSION
   - {name: filepath, type: text}
   - {name: width, type: int}
   - {name: height, type: int}
   - {name: margin, type: int}
-  - {name: margin_type, type: text}          # un de : ADJACENT_FACES | EXTEND
-  - {name: use_selected_to_active, type: text}          # true|false, vide pour ne rien poser
+  - {name: margin_type, type: text}          # one of: ADJACENT_FACES | EXTEND
+  - {name: use_selected_to_active, type: text}          # true|false, empty to set nothing
   - {name: max_ray_distance, type: text}
   - {name: cage_extrusion, type: text}
   - {name: cage_object, type: text}
-  - {name: normal_space, type: text}          # un de : OBJECT | TANGENT
-  - {name: normal_r, type: text}          # un de : POS_X | POS_Y | POS_Z | NEG_X | NEG_Y | NEG_Z
-  - {name: normal_g, type: text}          # un de : POS_X | POS_Y | POS_Z | NEG_X | NEG_Y | NEG_Z
-  - {name: normal_b, type: text}          # un de : POS_X | POS_Y | POS_Z | NEG_X | NEG_Y | NEG_Z
-  - {name: target, type: text}          # un de : IMAGE_TEXTURES | VERTEX_COLORS
-  - {name: save_mode, type: text}          # un de : INTERNAL | EXTERNAL
-  - {name: use_clear, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_cage, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_split_materials, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_automatic_name, type: text}          # true|false, vide pour ne rien poser
+  - {name: normal_space, type: text}          # one of: OBJECT | TANGENT
+  - {name: normal_r, type: text}          # one of: POS_X | POS_Y | POS_Z | NEG_X | NEG_Y | NEG_Z
+  - {name: normal_g, type: text}          # one of: POS_X | POS_Y | POS_Z | NEG_X | NEG_Y | NEG_Z
+  - {name: normal_b, type: text}          # one of: POS_X | POS_Y | POS_Z | NEG_X | NEG_Y | NEG_Z
+  - {name: target, type: text}          # one of: IMAGE_TEXTURES | VERTEX_COLORS
+  - {name: save_mode, type: text}          # one of: INTERNAL | EXTERNAL
+  - {name: use_clear, type: text}          # true|false, empty to set nothing
+  - {name: use_cage, type: text}          # true|false, empty to set nothing
+  - {name: use_split_materials, type: text}          # true|false, empty to set nothing
+  - {name: use_automatic_name, type: text}          # true|false, empty to set nothing
   - {name: uv_layer, type: text}

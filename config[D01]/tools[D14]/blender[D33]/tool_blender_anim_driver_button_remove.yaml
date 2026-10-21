@@ -18,4 +18,4 @@ machine: "blender"
 op: "anim.driver_button_remove"
 
 ARGS:
-  - {name: all, type: text}          # true|false, vide pour ne rien poser
+  - {name: all, type: text}          # true|false, empty to set nothing

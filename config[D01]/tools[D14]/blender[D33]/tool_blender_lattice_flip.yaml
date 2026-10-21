@@ -18,4 +18,4 @@ machine: "blender"
 op: "lattice.flip"
 
 ARGS:
-  - {name: axis, type: text}          # un de : U | V | W
+  - {name: axis, type: text}          # one of: U | V | W

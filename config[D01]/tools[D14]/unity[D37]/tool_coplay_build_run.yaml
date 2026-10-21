@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Trigger a player build."
 
 COMMAND: |
-  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
   set -f
   set -- build run
@@ -39,9 +39,9 @@ COMMAND: |
 ARGS:
   - {name: target, type: text}
   - {name: output_path, type: text}
-  - {name: development, type: text}          # true pour poser le drapeau, vide sinon
-  - {name: scripting_backend, type: text}          # un de : mono | il2cpp
-  - {name: subtarget, type: text}          # un de : player | server
+  - {name: development, type: text}          # true to set the flag, empty otherwise
+  - {name: scripting_backend, type: text}          # one of: mono | il2cpp
+  - {name: subtarget, type: text}          # one of: player | server
   - {name: profile, type: text}
-  - {name: clean, type: text}          # true pour poser le drapeau, vide sinon
-  - {name: auto_run, type: text}          # true pour poser le drapeau, vide sinon
+  - {name: clean, type: text}          # true to set the flag, empty otherwise
+  - {name: auto_run, type: text}          # true to set the flag, empty otherwise

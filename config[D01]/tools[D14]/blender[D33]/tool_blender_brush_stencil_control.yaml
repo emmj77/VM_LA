@@ -18,5 +18,5 @@ machine: "blender"
 op: "brush.stencil_control"
 
 ARGS:
-  - {name: mode, type: text}          # un de : TRANSLATION | SCALE | ROTATION
-  - {name: texmode, type: text}          # un de : PRIMARY | SECONDARY
+  - {name: mode, type: text}          # one of: TRANSLATION | SCALE | ROTATION
+  - {name: texmode, type: text}          # one of: PRIMARY | SECONDARY

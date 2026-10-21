@@ -18,6 +18,6 @@ machine: "blender"
 op: "wm.batch_rename"
 
 ARGS:
-  - {name: data_type, type: text}          # un de : OBJECT | COLLECTION | MATERIAL | MESH | CURVE | META | VOLUME | GREASEPENCIL | ARMATURE | LATTICE | LIGHT | LIGHT_PROBE | CAMERA | SPEAKER | BONE | NODE | SEQUENCE_STRIP | ACTION_CLIP | SCENE | BRUSH
-  - {name: data_source, type: text}          # un de : SELECT | ALL
+  - {name: data_type, type: text}          # one of: OBJECT | COLLECTION | MATERIAL | MESH | CURVE | META | VOLUME | GREASEPENCIL | ARMATURE | LATTICE | LIGHT | LIGHT_PROBE | CAMERA | SPEAKER | BONE | NODE | SEQUENCE_STRIP | ACTION_CLIP | SCENE | BRUSH
+  - {name: data_source, type: text}          # one of: SELECT | ALL
   - {name: actions, type: text}

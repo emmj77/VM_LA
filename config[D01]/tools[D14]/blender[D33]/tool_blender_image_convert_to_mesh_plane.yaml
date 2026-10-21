@@ -18,16 +18,16 @@ machine: "blender"
 op: "image.convert_to_mesh_plane"
 
 ARGS:
-  - {name: interpolation, type: text}          # un de : Linear | Closest | Cubic | Smart
-  - {name: extension, type: text}          # un de : CLIP | EXTEND | REPEAT
-  - {name: use_auto_refresh, type: text}          # true|false, vide pour ne rien poser
-  - {name: relative, type: text}          # true|false, vide pour ne rien poser
-  - {name: shader, type: text}          # un de : PRINCIPLED | SHADELESS | EMISSION
+  - {name: interpolation, type: text}          # one of: Linear | Closest | Cubic | Smart
+  - {name: extension, type: text}          # one of: CLIP | EXTEND | REPEAT
+  - {name: use_auto_refresh, type: text}          # true|false, empty to set nothing
+  - {name: relative, type: text}          # true|false, empty to set nothing
+  - {name: shader, type: text}          # one of: PRINCIPLED | SHADELESS | EMISSION
   - {name: emit_strength, type: text}
-  - {name: use_transparency, type: text}          # true|false, vide pour ne rien poser
-  - {name: render_method, type: text}          # un de : DITHERED | BLENDED
-  - {name: use_backface_culling, type: text}          # true|false, vide pour ne rien poser
-  - {name: show_transparent_back, type: text}          # true|false, vide pour ne rien poser
-  - {name: overwrite_material, type: text}          # true|false, vide pour ne rien poser
-  - {name: name_from, type: text}          # un de : OBJECT | IMAGE
-  - {name: delete_ref, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_transparency, type: text}          # true|false, empty to set nothing
+  - {name: render_method, type: text}          # one of: DITHERED | BLENDED
+  - {name: use_backface_culling, type: text}          # true|false, empty to set nothing
+  - {name: show_transparent_back, type: text}          # true|false, empty to set nothing
+  - {name: overwrite_material, type: text}          # true|false, empty to set nothing
+  - {name: name_from, type: text}          # one of: OBJECT | IMAGE
+  - {name: delete_ref, type: text}          # true|false, empty to set nothing

@@ -19,5 +19,5 @@ op: "mesh.poke"
 
 ARGS:
   - {name: offset, type: text}
-  - {name: use_relative_offset, type: text}          # true|false, vide pour ne rien poser
-  - {name: center_mode, type: text}          # un de : MEDIAN_WEIGHTED | MEDIAN | BOUNDS
+  - {name: use_relative_offset, type: text}          # true|false, empty to set nothing
+  - {name: center_mode, type: text}          # one of: MEDIAN_WEIGHTED | MEDIAN | BOUNDS

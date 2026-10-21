@@ -45,11 +45,11 @@ COMMAND: |
     done
   fi
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   [ -s "$OUTPUT" ] || { printf '%s\n' "$(msg layer_gave_nothing_empty)""$COUCHE" "$OUTPUT" >&2; exit 1; }
   SIZE=$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$OUTPUT" 2>/dev/null | tr ',' 'x')
   printf '%s\n' "$(msg layer_exported_bytes)""$COUCHE" "$OUTPUT" "$SIZE" "$(wc -c < "$OUTPUT")"
 
 ARGS:
-  - {name: layer, type: text}                 # le nom du calque a regarder
-  - {name: path, type: path}                  # ou ecrire le PNG, dans l'espace du skill
+  - {name: layer, type: text}                 # the layer name to look at
+  - {name: path, type: path}                  # where to write the PNG, in the space of the skill

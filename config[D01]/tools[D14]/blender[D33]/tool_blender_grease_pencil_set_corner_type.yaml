@@ -18,5 +18,5 @@ machine: "blender"
 op: "grease_pencil.set_corner_type"
 
 ARGS:
-  - {name: corner_type, type: text}          # un de : ROUND | FLAT | SHARP
+  - {name: corner_type, type: text}          # one of: ROUND | FLAT | SHARP
   - {name: miter_angle, type: text}

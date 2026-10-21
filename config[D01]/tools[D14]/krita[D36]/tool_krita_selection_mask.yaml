@@ -21,7 +21,7 @@ COMMAND: |
   case "$MASQUE" in *.png) ;; *) printf '%s\n' "$(msg mask_must_be_png)""$MASQUE" >&2; exit 1 ;; esac
   REP=$(curl -sS --max-time 240 -H 'Content-Type: application/json' -d "$(jq -cn --arg p "$MASQUE" '{action:"load_selection",params:{path:$p,format:"png"}}')" "$SERVICE/")
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   G="{{grow}}"
   case "$G" in ''|*[!0-9]*) ;; *)
     REP2=$(curl -sS --max-time 90 -H 'Content-Type: application/json' \
@@ -31,5 +31,5 @@ COMMAND: |
   printf '%s\n' "$(msg selection_set)""$MASQUE"
 
 ARGS:
-  - {name: mask, type: path}                   # le masque PNG, relatif a l'espace du skill
+  - {name: mask, type: path}                   # the PNG mask, relative to the space of the skill
   - {name: grow, type: int}                    # l'epaissir de N pixels (vide : tel quel)

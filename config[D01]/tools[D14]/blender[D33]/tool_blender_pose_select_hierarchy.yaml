@@ -18,5 +18,5 @@ machine: "blender"
 op: "pose.select_hierarchy"
 
 ARGS:
-  - {name: direction, type: text}          # un de : PARENT | CHILD
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: direction, type: text}          # one of: PARENT | CHILD
+  - {name: extend, type: text}          # true|false, empty to set nothing

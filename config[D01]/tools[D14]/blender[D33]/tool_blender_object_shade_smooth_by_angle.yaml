@@ -19,4 +19,4 @@ op: "object.shade_smooth_by_angle"
 
 ARGS:
   - {name: angle, type: text}
-  - {name: keep_sharp_edges, type: text}          # true|false, vide pour ne rien poser
+  - {name: keep_sharp_edges, type: text}          # true|false, empty to set nothing

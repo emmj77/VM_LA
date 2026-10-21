@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["analyze-image", "image", "vision", "voir"]
 
 SUMMARY:
-  101: "Analyser une image : ce qu'elle montre, jusque dans le detail."
-  102: "vision_analyze lit l'image ; fast_analyze_img l'ouvre a l'oeil."
-  103: "On decrit ce qui est VU ; au doute, on refait l'appel SEUL (jamais groupe)."
+  101: "Analyse an image: what it shows, down to the detail."
+  102: "vision_analyze reads the image; fast_analyze_img opens it to the eye."
+  103: "What is SEEN is described; in doubt, the call is made again ALONE (never grouped)."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "vision_analyze"
   201: "fast_analyze_img"
@@ -26,8 +26,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".png .jpg .webp"
 ERROR:
-  600: "Image illisible ou absente : le dire, nommer le chemin, ne pas decrire de memoire."
+  600: "Image unreadable or absent: say it, name the path, do not describe from memory."

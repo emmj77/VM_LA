@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'create_animator_controller')" >&2; exit 1; }
   case "{{confirm}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'confirm' 'create_animator_controller')""{{confirm}}" >&2; exit 1 ;; esac
   case "{{dry_run}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'dry_run' 'create_animator_controller')""{{dry_run}}" >&2; exit 1 ;; esac
@@ -37,5 +37,5 @@ COMMAND: |
 
 ARGS:
   - {name: path, type: text}
-  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
-  - {name: dry_run, type: text}          # true|false, vide pour ne rien poser
+  - {name: confirm, type: text}          # true|false, empty to set nothing
+  - {name: dry_run, type: text}          # true|false, empty to set nothing

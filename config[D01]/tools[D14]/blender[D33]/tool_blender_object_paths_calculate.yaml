@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.paths_calculate"
 
 ARGS:
-  - {name: display_type, type: text}          # un de : CURRENT_FRAME | RANGE
-  - {name: range, type: text}          # un de : KEYS_ALL | KEYS_SELECTED | SCENE | MANUAL
+  - {name: display_type, type: text}          # one of: CURRENT_FRAME | RANGE
+  - {name: range, type: text}          # one of: KEYS_ALL | KEYS_SELECTED | SCENE | MANUAL

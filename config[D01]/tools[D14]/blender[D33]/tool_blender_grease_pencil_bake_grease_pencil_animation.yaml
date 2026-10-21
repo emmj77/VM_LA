@@ -21,6 +21,6 @@ ARGS:
   - {name: frame_start, type: int}
   - {name: frame_end, type: int}
   - {name: step, type: int}
-  - {name: only_selected, type: text}          # true|false, vide pour ne rien poser
+  - {name: only_selected, type: text}          # true|false, empty to set nothing
   - {name: frame_target, type: int}
-  - {name: project_type, type: text}          # un de : KEEP | FRONT | SIDE | TOP | VIEW | CURSOR
+  - {name: project_type, type: text}          # one of: KEEP | FRONT | SIDE | TOP | VIEW | CURSOR

@@ -18,11 +18,11 @@ machine: "blender"
 op: "nla.select_box"
 
 ARGS:
-  - {name: axis_range, type: text}          # true|false, vide pour ne rien poser
-  - {name: tweak, type: text}          # true|false, vide pour ne rien poser
+  - {name: axis_range, type: text}          # true|false, empty to set nothing
+  - {name: tweak, type: text}          # true|false, empty to set nothing
   - {name: xmin, type: int}
   - {name: xmax, type: int}
   - {name: ymin, type: int}
   - {name: ymax, type: int}
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
-  - {name: mode, type: text}          # un de : SET | ADD | SUB
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing
+  - {name: mode, type: text}          # one of: SET | ADD | SUB

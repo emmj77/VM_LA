@@ -18,4 +18,4 @@ machine: "blender"
 op: "sequencer.strip_transform_clear"
 
 ARGS:
-  - {name: property, type: text}          # un de : POSITION | SCALE | ROTATION | ALL
+  - {name: property, type: text}          # one of: POSITION | SCALE | ROTATION | ALL

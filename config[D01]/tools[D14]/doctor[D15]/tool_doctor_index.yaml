@@ -21,7 +21,7 @@ COMMAND: |
     _n=0; _miss=0
     _tf=$(tmpfile idxmiss) || exit 0
     : > "$_tf"
-    # les entrees d etat (id N..) naissent a l usage : elles ne sont pas un defaut absentes
+    # the state entries (id N..) are born in use: their absence is not a fault
     grep -oE '\{id: "[^"]+", name: "[^"]+"' "$_ix" \
       | sed 's/^{id: "//; s/", name: "/\t/; s/"$//' | while IFS="$(printf '\t')" read -r _id _p; do
       case $_id in N[0-9]*) continue ;; esac

@@ -18,5 +18,5 @@ machine: "blender"
 op: "object.duplicates_make_real"
 
 ARGS:
-  - {name: use_base_parent, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_hierarchy, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_base_parent, type: text}          # true|false, empty to set nothing
+  - {name: use_hierarchy, type: text}          # true|false, empty to set nothing

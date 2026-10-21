@@ -19,44 +19,44 @@ op: "export_scene.fbx"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
+  - {name: check_existing, type: text}          # true|false, empty to set nothing
   - {name: filter_glob, type: text}
-  - {name: use_selection, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_visible, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_active_collection, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_selection, type: text}          # true|false, empty to set nothing
+  - {name: use_visible, type: text}          # true|false, empty to set nothing
+  - {name: use_active_collection, type: text}          # true|false, empty to set nothing
   - {name: collection, type: text}
   - {name: global_scale, type: text}
-  - {name: apply_unit_scale, type: text}          # true|false, vide pour ne rien poser
-  - {name: apply_scale_options, type: text}          # un de : FBX_SCALE_NONE | FBX_SCALE_UNITS | FBX_SCALE_CUSTOM | FBX_SCALE_ALL
-  - {name: use_space_transform, type: text}          # true|false, vide pour ne rien poser
-  - {name: bake_space_transform, type: text}          # true|false, vide pour ne rien poser
-  - {name: object_types, type: text}          # un de : EMPTY | CAMERA | LIGHT | ARMATURE | MESH | OTHER
-  - {name: use_mesh_modifiers, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_mesh_modifiers_render, type: text}          # true|false, vide pour ne rien poser
-  - {name: mesh_smooth_type, type: text}          # un de : OFF | FACE | EDGE | SMOOTH_GROUP
-  - {name: colors_type, type: text}          # un de : NONE | SRGB | LINEAR
-  - {name: prioritize_active_color, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_subsurf, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_mesh_edges, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_tspace, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_triangles, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_custom_props, type: text}          # true|false, vide pour ne rien poser
-  - {name: add_leaf_bones, type: text}          # true|false, vide pour ne rien poser
-  - {name: primary_bone_axis, type: text}          # un de : X | Y | Z | -X | -Y | -Z
-  - {name: secondary_bone_axis, type: text}          # un de : X | Y | Z | -X | -Y | -Z
-  - {name: use_armature_deform_only, type: text}          # true|false, vide pour ne rien poser
-  - {name: armature_nodetype, type: text}          # un de : NULL | ROOT | LIMBNODE
-  - {name: bake_anim, type: text}          # true|false, vide pour ne rien poser
-  - {name: bake_anim_use_all_bones, type: text}          # true|false, vide pour ne rien poser
-  - {name: bake_anim_use_nla_strips, type: text}          # true|false, vide pour ne rien poser
-  - {name: bake_anim_use_all_actions, type: text}          # true|false, vide pour ne rien poser
-  - {name: bake_anim_force_startend_keying, type: text}          # true|false, vide pour ne rien poser
+  - {name: apply_unit_scale, type: text}          # true|false, empty to set nothing
+  - {name: apply_scale_options, type: text}          # one of: FBX_SCALE_NONE | FBX_SCALE_UNITS | FBX_SCALE_CUSTOM | FBX_SCALE_ALL
+  - {name: use_space_transform, type: text}          # true|false, empty to set nothing
+  - {name: bake_space_transform, type: text}          # true|false, empty to set nothing
+  - {name: object_types, type: text}          # one of: EMPTY | CAMERA | LIGHT | ARMATURE | MESH | OTHER
+  - {name: use_mesh_modifiers, type: text}          # true|false, empty to set nothing
+  - {name: use_mesh_modifiers_render, type: text}          # true|false, empty to set nothing
+  - {name: mesh_smooth_type, type: text}          # one of: OFF | FACE | EDGE | SMOOTH_GROUP
+  - {name: colors_type, type: text}          # one of: NONE | SRGB | LINEAR
+  - {name: prioritize_active_color, type: text}          # true|false, empty to set nothing
+  - {name: use_subsurf, type: text}          # true|false, empty to set nothing
+  - {name: use_mesh_edges, type: text}          # true|false, empty to set nothing
+  - {name: use_tspace, type: text}          # true|false, empty to set nothing
+  - {name: use_triangles, type: text}          # true|false, empty to set nothing
+  - {name: use_custom_props, type: text}          # true|false, empty to set nothing
+  - {name: add_leaf_bones, type: text}          # true|false, empty to set nothing
+  - {name: primary_bone_axis, type: text}          # one of: X | Y | Z | -X | -Y | -Z
+  - {name: secondary_bone_axis, type: text}          # one of: X | Y | Z | -X | -Y | -Z
+  - {name: use_armature_deform_only, type: text}          # true|false, empty to set nothing
+  - {name: armature_nodetype, type: text}          # one of: NULL | ROOT | LIMBNODE
+  - {name: bake_anim, type: text}          # true|false, empty to set nothing
+  - {name: bake_anim_use_all_bones, type: text}          # true|false, empty to set nothing
+  - {name: bake_anim_use_nla_strips, type: text}          # true|false, empty to set nothing
+  - {name: bake_anim_use_all_actions, type: text}          # true|false, empty to set nothing
+  - {name: bake_anim_force_startend_keying, type: text}          # true|false, empty to set nothing
   - {name: bake_anim_step, type: text}
   - {name: bake_anim_simplify_factor, type: text}
-  - {name: path_mode, type: text}          # un de : AUTO | ABSOLUTE | RELATIVE | MATCH | STRIP | COPY
-  - {name: embed_textures, type: text}          # true|false, vide pour ne rien poser
-  - {name: batch_mode, type: text}          # un de : OFF | SCENE | COLLECTION | SCENE_COLLECTION | ACTIVE_SCENE_COLLECTION
-  - {name: use_batch_own_dir, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_metadata, type: text}          # true|false, vide pour ne rien poser
-  - {name: axis_forward, type: text}          # un de : X | Y | Z | -X | -Y | -Z
-  - {name: axis_up, type: text}          # un de : X | Y | Z | -X | -Y | -Z
+  - {name: path_mode, type: text}          # one of: AUTO | ABSOLUTE | RELATIVE | MATCH | STRIP | COPY
+  - {name: embed_textures, type: text}          # true|false, empty to set nothing
+  - {name: batch_mode, type: text}          # one of: OFF | SCENE | COLLECTION | SCENE_COLLECTION | ACTIVE_SCENE_COLLECTION
+  - {name: use_batch_own_dir, type: text}          # true|false, empty to set nothing
+  - {name: use_metadata, type: text}          # true|false, empty to set nothing
+  - {name: axis_forward, type: text}          # one of: X | Y | Z | -X | -Y | -Z
+  - {name: axis_up, type: text}          # one of: X | Y | Z | -X | -Y | -Z

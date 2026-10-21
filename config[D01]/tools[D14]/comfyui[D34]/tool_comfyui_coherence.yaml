@@ -26,7 +26,7 @@ COMMAND: |
   [ -n "{{pose}}" ] && { POSE="$W/{{pose}}"; [ -f "$POSE" ] || { printf '%s\n' "$(msg pose_reference_missing '%s')""$POSE" >&2; exit 1; }; }
   curl -sf "$SERVICE/system_stats" >/dev/null 2>&1 \
     || { printf '%s\n' "$(msg comfy_service_no_answer)""$SERVICE" >&2; exit 1; }
-  envoie() {  # $1 = un fichier ; rend le nom distant, ou rien
+  envoie() {  # $1 = a file; returns the remote name, or nothing
     curl -s -F "image=@$1" -F "type=input" -F "subfolder=" -F "overwrite=true" "$SERVICE/upload/image" \
       | jq -r '.name // empty'
   }
@@ -128,7 +128,7 @@ COMMAND: |
     "$(printf '%s' "$G" | jq -r 'length')"
 
 ARGS:
-  - {name: character, type: path}             # le VISAGE de reference (l'identite)
-  - {name: costume, type: path}                # la planche entiere du costume (vide : pas de costume)
-  - {name: pose, type: path}                   # la POSE de reference (vide : pose libre)
-  - {name: subject, type: text, stdin: true}     # le texte libre : par l'ENTREE STANDARD
+  - {name: character, type: path}             # the reference FACE (the identity)
+  - {name: costume, type: path}                # the full costume sheet (empty: no costume)
+  - {name: pose, type: path}                   # the reference POSE (empty: free pose)
+  - {name: subject, type: text, stdin: true}     # the free text: on STANDARD INPUT

@@ -18,10 +18,10 @@ machine: "blender"
 op: "mesh.knife_tool"
 
 ARGS:
-  - {name: use_occlude_geometry, type: text}          # true|false, vide pour ne rien poser
-  - {name: only_selected, type: text}          # true|false, vide pour ne rien poser
-  - {name: xray, type: text}          # true|false, vide pour ne rien poser
-  - {name: visible_measurements, type: text}          # un de : NONE | BOTH | DISTANCE | ANGLE
-  - {name: angle_snapping, type: text}          # un de : NONE | SCREEN | RELATIVE
+  - {name: use_occlude_geometry, type: text}          # true|false, empty to set nothing
+  - {name: only_selected, type: text}          # true|false, empty to set nothing
+  - {name: xray, type: text}          # true|false, empty to set nothing
+  - {name: visible_measurements, type: text}          # one of: NONE | BOTH | DISTANCE | ANGLE
+  - {name: angle_snapping, type: text}          # one of: NONE | SCREEN | RELATIVE
   - {name: angle_snapping_increment, type: text}
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing

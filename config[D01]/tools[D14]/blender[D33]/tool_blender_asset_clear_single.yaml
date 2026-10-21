@@ -18,4 +18,4 @@ machine: "blender"
 op: "asset.clear_single"
 
 ARGS:
-  - {name: set_fake_user, type: text}          # true|false, vide pour ne rien poser
+  - {name: set_fake_user, type: text}          # true|false, empty to set nothing

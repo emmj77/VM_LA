@@ -18,10 +18,10 @@ machine: "blender"
 op: "mesh.primitive_cube_add_gizmo"
 
 ARGS:
-  - {name: calc_uvs, type: text}          # true|false, vide pour ne rien poser
-  - {name: enter_editmode, type: text}          # true|false, vide pour ne rien poser
-  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
-  - {name: location, type: text}          # 3 valeurs separees par des virgules
-  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
-  - {name: scale, type: text}          # 3 valeurs separees par des virgules
-  - {name: matrix, type: text}          # 16 valeurs separees par des virgules
+  - {name: calc_uvs, type: text}          # true|false, empty to set nothing
+  - {name: enter_editmode, type: text}          # true|false, empty to set nothing
+  - {name: align, type: text}          # one of: WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 values separated by commas
+  - {name: rotation, type: text}          # 3 values separated by commas
+  - {name: scale, type: text}          # 3 values separated by commas
+  - {name: matrix, type: text}          # 16 values separated by commas

@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["manage-processes", "process", "kill"]
 
 SUMMARY:
-  101: "Voir et arreter un processus de la machine."
-  102: "process_list filtre par motif ; kill arrete un pid (jamais le sien ni ses ancetres)."
-  103: "On NOMME le processus avant de l'arreter."
+  101: "See and stop a process of the machine."
+  102: "process_list filters by pattern; kill stops a pid (never its own, never its ancestors)."
+  103: "The process is NAMED before it is stopped."
 RULES:
   create_subfolder: false
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "process_list"
   202: "list_dir"
@@ -20,7 +20,7 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
 ERROR:
-  600: "process_list ne repond pas, ou le pid est introuvable : le dire, ne pas forcer."
+  600: "process_list does not answer, or the pid is not found: say it, do not force."

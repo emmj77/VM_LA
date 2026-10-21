@@ -18,5 +18,5 @@ machine: "blender"
 op: "font.style_set"
 
 ARGS:
-  - {name: style, type: text}          # un de : BOLD | ITALIC | UNDERLINE | SMALL_CAPS
-  - {name: clear, type: text}          # true|false, vide pour ne rien poser
+  - {name: style, type: text}          # one of: BOLD | ITALIC | UNDERLINE | SMALL_CAPS
+  - {name: clear, type: text}          # true|false, empty to set nothing

@@ -20,4 +20,4 @@ op: "asset.screenshot_preview"
 ARGS:
   - {name: p1, type: int}
   - {name: p2, type: int}
-  - {name: force_square, type: text}          # true|false, vide pour ne rien poser
+  - {name: force_square, type: text}          # true|false, empty to set nothing

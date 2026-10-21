@@ -29,7 +29,7 @@ COMMAND: |
     '{action:"select_by_color", params:({ tolerance:$tolerance, contiguous:(if $contiguous=="" then null else $contiguous=="true" end), x:$x, y:$y } | with_entries(select(.value != null and .value != "")))}')
   REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
 
 ARGS:

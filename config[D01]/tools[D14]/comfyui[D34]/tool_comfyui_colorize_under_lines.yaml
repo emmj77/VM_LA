@@ -69,10 +69,10 @@ COMMAND: |
   esac
 
 ARGS:
-  - {name: source, type: path}                # le dessin, relatif a l'espace du skill
-  - {name: layer, type: text}                 # le calque du trait (vide : encrage)
-  - {name: colour, type: path}                # l'image de couleur, relative a l'espace du skill
-  - {name: thicken, type: int}                # l'epaississement du trait, en pixels (vide : 1)
-  - {name: output, type: path}                # le PNG de sortie, dans l'espace du skill
-  - {name: output_layer, type: text}          # le nom du calque neuf (vide : couleur_sous_trait)
-  - {name: keep, type: enum, values: [kra, file, ""]}   # kra : rentre dans le .kra ; file : PNG seul
+  - {name: source, type: path}                # the drawing, relative to the space of the skill
+  - {name: layer, type: text}                 # the line layer (empty: encrage)
+  - {name: colour, type: path}                # the colour image, relative to the space of the skill
+  - {name: thicken, type: int}                # the line thickening, in pixels (empty: 1)
+  - {name: output, type: path}                # the output PNG, in the space of the skill
+  - {name: output_layer, type: text}          # the layer name neuf (vide : couleur_sous_trait)
+  - {name: keep, type: enum, values: [kra, file, ""]}   # kra: goes into the .kra; file: PNG only

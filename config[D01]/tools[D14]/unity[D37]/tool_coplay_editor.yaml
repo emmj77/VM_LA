@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "the Unity editor: add-layer | add-tag | console | custom-tool | deploy | menu | pause | play | poll-test | redo | refresh | remove-layer | remove-tag | restore | stop | tests | tool | undo (op picks which)"
 
 COMMAND: |
-  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing)" >&2; exit 1; }
   case "{{op}}" in
   add-layer)

@@ -20,8 +20,8 @@ COMMAND: |
   [ -n "$NAME" ] || { printf '%s\n' "$(msg layer_name_required)" >&2; exit 1; }
   REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$(jq -cn --arg n "$NAME" '{action:"select_layer",params:{name:$n}}')" "$SERVICE/")
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   printf '%s\n' "$(msg active_layer)""$(printf '%s' "$REP" | jq -r .name)"
 
 ARGS:
-  - {name: name, type: text}                   # le nom du calque
+  - {name: name, type: text}                   # the layer name

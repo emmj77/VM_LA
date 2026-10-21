@@ -19,26 +19,26 @@ op: "wm.alembic_export"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: check_existing, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_blender, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_backup, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_image, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_movie, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_python, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_font, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_sound, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_text, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_archive, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_btx, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_alembic, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_usd, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_obj, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_volume, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
-  - {name: filter_blenlib, type: text}          # true|false, vide pour ne rien poser
+  - {name: check_existing, type: text}          # true|false, empty to set nothing
+  - {name: filter_blender, type: text}          # true|false, empty to set nothing
+  - {name: filter_backup, type: text}          # true|false, empty to set nothing
+  - {name: filter_image, type: text}          # true|false, empty to set nothing
+  - {name: filter_movie, type: text}          # true|false, empty to set nothing
+  - {name: filter_python, type: text}          # true|false, empty to set nothing
+  - {name: filter_font, type: text}          # true|false, empty to set nothing
+  - {name: filter_sound, type: text}          # true|false, empty to set nothing
+  - {name: filter_text, type: text}          # true|false, empty to set nothing
+  - {name: filter_archive, type: text}          # true|false, empty to set nothing
+  - {name: filter_btx, type: text}          # true|false, empty to set nothing
+  - {name: filter_alembic, type: text}          # true|false, empty to set nothing
+  - {name: filter_usd, type: text}          # true|false, empty to set nothing
+  - {name: filter_obj, type: text}          # true|false, empty to set nothing
+  - {name: filter_volume, type: text}          # true|false, empty to set nothing
+  - {name: filter_folder, type: text}          # true|false, empty to set nothing
+  - {name: filter_blenlib, type: text}          # true|false, empty to set nothing
   - {name: filemode, type: int}
-  - {name: display_type, type: text}          # un de : DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
-  - {name: sort_method, type: text}          # un de :
+  - {name: display_type, type: text}          # one of: DEFAULT | LIST_VERTICAL | LIST_HORIZONTAL | THUMBNAIL
+  - {name: sort_method, type: text}          # one of:
   - {name: filter_glob, type: text}
   - {name: start, type: int}
   - {name: end, type: int}
@@ -46,26 +46,26 @@ ARGS:
   - {name: gsamples, type: int}
   - {name: sh_open, type: text}
   - {name: sh_close, type: text}
-  - {name: selected, type: text}          # true|false, vide pour ne rien poser
-  - {name: flatten, type: text}          # true|false, vide pour ne rien poser
+  - {name: selected, type: text}          # true|false, empty to set nothing
+  - {name: flatten, type: text}          # true|false, empty to set nothing
   - {name: collection, type: text}
-  - {name: uvs, type: text}          # true|false, vide pour ne rien poser
-  - {name: packuv, type: text}          # true|false, vide pour ne rien poser
-  - {name: normals, type: text}          # true|false, vide pour ne rien poser
-  - {name: vcolors, type: text}          # true|false, vide pour ne rien poser
-  - {name: orcos, type: text}          # true|false, vide pour ne rien poser
-  - {name: face_sets, type: text}          # true|false, vide pour ne rien poser
-  - {name: subdiv_schema, type: text}          # true|false, vide pour ne rien poser
-  - {name: apply_subdiv, type: text}          # true|false, vide pour ne rien poser
-  - {name: curves_as_mesh, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_instancing, type: text}          # true|false, vide pour ne rien poser
+  - {name: uvs, type: text}          # true|false, empty to set nothing
+  - {name: packuv, type: text}          # true|false, empty to set nothing
+  - {name: normals, type: text}          # true|false, empty to set nothing
+  - {name: vcolors, type: text}          # true|false, empty to set nothing
+  - {name: orcos, type: text}          # true|false, empty to set nothing
+  - {name: face_sets, type: text}          # true|false, empty to set nothing
+  - {name: subdiv_schema, type: text}          # true|false, empty to set nothing
+  - {name: apply_subdiv, type: text}          # true|false, empty to set nothing
+  - {name: curves_as_mesh, type: text}          # true|false, empty to set nothing
+  - {name: use_instancing, type: text}          # true|false, empty to set nothing
   - {name: global_scale, type: text}
-  - {name: triangulate, type: text}          # true|false, vide pour ne rien poser
-  - {name: quad_method, type: text}          # un de : BEAUTY | FIXED | FIXED_ALTERNATE | SHORTEST_DIAGONAL | LONGEST_DIAGONAL
-  - {name: ngon_method, type: text}          # un de : BEAUTY | CLIP
-  - {name: export_hair, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_particles, type: text}          # true|false, vide pour ne rien poser
-  - {name: export_custom_properties, type: text}          # true|false, vide pour ne rien poser
-  - {name: as_background_job, type: text}          # true|false, vide pour ne rien poser
-  - {name: evaluation_mode, type: text}          # un de : RENDER | VIEWPORT
-  - {name: init_scene_frame_range, type: text}          # true|false, vide pour ne rien poser
+  - {name: triangulate, type: text}          # true|false, empty to set nothing
+  - {name: quad_method, type: text}          # one of: BEAUTY | FIXED | FIXED_ALTERNATE | SHORTEST_DIAGONAL | LONGEST_DIAGONAL
+  - {name: ngon_method, type: text}          # one of: BEAUTY | CLIP
+  - {name: export_hair, type: text}          # true|false, empty to set nothing
+  - {name: export_particles, type: text}          # true|false, empty to set nothing
+  - {name: export_custom_properties, type: text}          # true|false, empty to set nothing
+  - {name: as_background_job, type: text}          # true|false, empty to set nothing
+  - {name: evaluation_mode, type: text}          # one of: RENDER | VIEWPORT
+  - {name: init_scene_frame_range, type: text}          # true|false, empty to set nothing

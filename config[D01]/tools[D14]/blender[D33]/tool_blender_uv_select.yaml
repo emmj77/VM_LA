@@ -18,9 +18,9 @@ machine: "blender"
 op: "uv.select"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
-  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
-  - {name: deselect_all, type: text}          # true|false, vide pour ne rien poser
-  - {name: select_passthrough, type: text}          # true|false, vide pour ne rien poser
-  - {name: location, type: text}          # 2 valeurs separees par des virgules
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: deselect, type: text}          # true|false, empty to set nothing
+  - {name: toggle, type: text}          # true|false, empty to set nothing
+  - {name: deselect_all, type: text}          # true|false, empty to set nothing
+  - {name: select_passthrough, type: text}          # true|false, empty to set nothing
+  - {name: location, type: text}          # 2 values separated by commas

@@ -18,10 +18,10 @@ machine: "blender"
 op: "uv.select_box"
 
 ARGS:
-  - {name: pinned, type: text}          # true|false, vide pour ne rien poser
+  - {name: pinned, type: text}          # true|false, empty to set nothing
   - {name: xmin, type: int}
   - {name: xmax, type: int}
   - {name: ymin, type: int}
   - {name: ymax, type: int}
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
-  - {name: mode, type: text}          # un de : SET | ADD | SUB
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing
+  - {name: mode, type: text}          # one of: SET | ADD | SUB

@@ -21,7 +21,7 @@ ARGS:
   - {name: repeat, type: int}
   - {name: lambda_factor, type: text}
   - {name: lambda_border, type: text}
-  - {name: use_x, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_y, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_z, type: text}          # true|false, vide pour ne rien poser
-  - {name: preserve_volume, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_x, type: text}          # true|false, empty to set nothing
+  - {name: use_y, type: text}          # true|false, empty to set nothing
+  - {name: use_z, type: text}          # true|false, empty to set nothing
+  - {name: preserve_volume, type: text}          # true|false, empty to set nothing

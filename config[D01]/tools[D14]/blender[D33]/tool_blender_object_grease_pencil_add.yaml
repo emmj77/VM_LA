@@ -18,13 +18,13 @@ machine: "blender"
 op: "object.grease_pencil_add"
 
 ARGS:
-  - {name: type, type: text}          # un de : EMPTY | STROKE | MONKEY | LINEART_SCENE | LINEART_COLLECTION | LINEART_OBJECT
-  - {name: use_in_front, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: EMPTY | STROKE | MONKEY | LINEART_SCENE | LINEART_COLLECTION | LINEART_OBJECT
+  - {name: use_in_front, type: text}          # true|false, empty to set nothing
   - {name: stroke_depth_offset, type: text}
-  - {name: use_lights, type: text}          # true|false, vide pour ne rien poser
-  - {name: stroke_depth_order, type: text}          # un de : 2D | 3D
+  - {name: use_lights, type: text}          # true|false, empty to set nothing
+  - {name: stroke_depth_order, type: text}          # one of: 2D | 3D
   - {name: radius, type: text}
-  - {name: align, type: text}          # un de : WORLD | VIEW | CURSOR
-  - {name: location, type: text}          # 3 valeurs separees par des virgules
-  - {name: rotation, type: text}          # 3 valeurs separees par des virgules
-  - {name: scale, type: text}          # 3 valeurs separees par des virgules
+  - {name: align, type: text}          # one of: WORLD | VIEW | CURSOR
+  - {name: location, type: text}          # 3 values separated by commas
+  - {name: rotation, type: text}          # 3 values separated by commas
+  - {name: scale, type: text}          # 3 values separated by commas

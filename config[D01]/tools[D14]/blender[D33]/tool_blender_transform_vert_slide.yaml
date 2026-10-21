@@ -19,20 +19,20 @@ op: "transform.vert_slide"
 
 ARGS:
   - {name: value, type: text}
-  - {name: use_even, type: text}          # true|false, vide pour ne rien poser
-  - {name: flipped, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_clamp, type: text}          # true|false, vide pour ne rien poser
-  - {name: direction, type: text}          # 3 valeurs separees par des virgules
-  - {name: mirror, type: text}          # true|false, vide pour ne rien poser
-  - {name: snap, type: text}          # true|false, vide pour ne rien poser
-  - {name: snap_elements, type: text}          # un de : INCREMENT | GRID | VERTEX | EDGE | FACE | VOLUME | EDGE_MIDPOINT | EDGE_PERPENDICULAR | FACE_MIDPOINT | FACE_PROJECT | FACE_NEAREST
-  - {name: use_snap_project, type: text}          # true|false, vide pour ne rien poser
-  - {name: snap_target, type: text}          # un de : CLOSEST | CENTER | MEDIAN | ACTIVE
-  - {name: use_snap_self, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_snap_edit, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_snap_nonedit, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_snap_selectable, type: text}          # true|false, vide pour ne rien poser
-  - {name: snap_point, type: text}          # 3 valeurs separees par des virgules
-  - {name: correct_uv, type: text}          # true|false, vide pour ne rien poser
-  - {name: release_confirm, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_accurate, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_even, type: text}          # true|false, empty to set nothing
+  - {name: flipped, type: text}          # true|false, empty to set nothing
+  - {name: use_clamp, type: text}          # true|false, empty to set nothing
+  - {name: direction, type: text}          # 3 values separated by commas
+  - {name: mirror, type: text}          # true|false, empty to set nothing
+  - {name: snap, type: text}          # true|false, empty to set nothing
+  - {name: snap_elements, type: text}          # one of: INCREMENT | GRID | VERTEX | EDGE | FACE | VOLUME | EDGE_MIDPOINT | EDGE_PERPENDICULAR | FACE_MIDPOINT | FACE_PROJECT | FACE_NEAREST
+  - {name: use_snap_project, type: text}          # true|false, empty to set nothing
+  - {name: snap_target, type: text}          # one of: CLOSEST | CENTER | MEDIAN | ACTIVE
+  - {name: use_snap_self, type: text}          # true|false, empty to set nothing
+  - {name: use_snap_edit, type: text}          # true|false, empty to set nothing
+  - {name: use_snap_nonedit, type: text}          # true|false, empty to set nothing
+  - {name: use_snap_selectable, type: text}          # true|false, empty to set nothing
+  - {name: snap_point, type: text}          # 3 values separated by commas
+  - {name: correct_uv, type: text}          # true|false, empty to set nothing
+  - {name: release_confirm, type: text}          # true|false, empty to set nothing
+  - {name: use_accurate, type: text}          # true|false, empty to set nothing

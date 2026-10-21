@@ -19,4 +19,4 @@ op: "image.resize"
 
 ARGS:
   - {name: size, type: int}
-  - {name: all_udims, type: text}          # true|false, vide pour ne rien poser
+  - {name: all_udims, type: text}          # true|false, empty to set nothing

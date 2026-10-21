@@ -18,4 +18,4 @@ machine: "blender"
 op: "clip.view_zoom_in"
 
 ARGS:
-  - {name: location, type: text}          # 2 valeurs separees par des virgules
+  - {name: location, type: text}          # 2 values separated by commas

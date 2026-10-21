@@ -18,4 +18,4 @@ machine: "blender"
 op: "node.group_edit"
 
 ARGS:
-  - {name: exit, type: text}          # true|false, vide pour ne rien poser
+  - {name: exit, type: text}          # true|false, empty to set nothing

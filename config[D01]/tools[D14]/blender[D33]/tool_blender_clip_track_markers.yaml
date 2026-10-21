@@ -18,5 +18,5 @@ machine: "blender"
 op: "clip.track_markers"
 
 ARGS:
-  - {name: backwards, type: text}          # true|false, vide pour ne rien poser
-  - {name: sequence, type: text}          # true|false, vide pour ne rien poser
+  - {name: backwards, type: text}          # true|false, empty to set nothing
+  - {name: sequence, type: text}          # true|false, empty to set nothing

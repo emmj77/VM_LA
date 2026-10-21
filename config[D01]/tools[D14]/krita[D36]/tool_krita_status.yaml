@@ -20,4 +20,4 @@ COMMAND: |
   CAP=$(curl -sS --max-time 20 -H 'Content-Type: application/json' -d '{"action":"get_capabilities","params":{}}' "$SERVICE/")
   printf '%s\n' "$(msg machine_announces)""$(printf '%s' "$CAP" | jq -c .)"
 
-ARGS: []                    # aucun argument : ce tool se nomme seul
+ARGS: []                    # no argument: this tool names itself

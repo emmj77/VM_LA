@@ -18,4 +18,4 @@ machine: "blender"
 op: "object.shaderfx_add"
 
 ARGS:
-  - {name: type, type: text}          # un de : FX_BLUR | FX_COLORIZE | FX_FLIP | FX_GLOW | FX_PIXEL | FX_RIM | FX_SHADOW | FX_SWIRL | FX_WAVE
+  - {name: type, type: text}          # one of: FX_BLUR | FX_COLORIZE | FX_FLIP | FX_GLOW | FX_PIXEL | FX_RIM | FX_SHADOW | FX_SWIRL | FX_WAVE

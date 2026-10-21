@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Add modules to an installed editor"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- editors module add --no-banner --no-pager --non-interactive
@@ -48,8 +48,8 @@ COMMAND: |
 ARGS:
   - {name: version, type: text}
   - {name: module, type: text}   # Module ID(s) to add
-  - {name: all, type: text}   # true pour poser --all ; Add all available modules
+  - {name: all, type: text}   # true to set --all ; Add all available modules
   - {name: architecture, type: text}   # Editor architecture (x86_64 or arm64)
-  - {name: child_modules, type: text}   # true pour poser --child-modules ; Install all child modules automatically
-  - {name: no_child_modules, type: text}   # true pour poser --no-child-modules ; Do not install child modules automatically
-  - {name: accept_eula, type: text}   # true pour poser --accept-eula ; Accept all module license agreements automatically
+  - {name: child_modules, type: text}   # true to set --child-modules ; Install all child modules automatically
+  - {name: no_child_modules, type: text}   # true to set --no-child-modules ; Do not install child modules automatically
+  - {name: accept_eula, type: text}   # true to set --accept-eula ; Accept all module license agreements automatically

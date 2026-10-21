@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -n "{{path}}" ] || { printf '%s\n' "$(msg argument_required 'path' 'create_asset')" >&2; exit 1; }
   [ -n "{{type}}" ] || { printf '%s\n' "$(msg argument_required 'type' 'create_asset')" >&2; exit 1; }
   case "{{confirm}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'confirm' 'create_asset')""{{confirm}}" >&2; exit 1 ;; esac
@@ -42,5 +42,5 @@ ARGS:
   - {name: path, type: text}
   - {name: type, type: text}
   - {name: shader, type: text}
-  - {name: confirm, type: text}          # true|false, vide pour ne rien poser
-  - {name: dry_run, type: text}          # true|false, vide pour ne rien poser
+  - {name: confirm, type: text}          # true|false, empty to set nothing
+  - {name: dry_run, type: text}          # true|false, empty to set nothing

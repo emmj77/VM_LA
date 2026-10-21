@@ -18,7 +18,7 @@ machine: "blender"
 op: "preferences.theme_install"
 
 ARGS:
-  - {name: overwrite, type: text}          # true|false, vide pour ne rien poser
+  - {name: overwrite, type: text}          # true|false, empty to set nothing
   - {name: filepath, type: text}
-  - {name: filter_folder, type: text}          # true|false, vide pour ne rien poser
+  - {name: filter_folder, type: text}          # true|false, empty to set nothing
   - {name: filter_glob, type: text}

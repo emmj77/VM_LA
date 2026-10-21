@@ -18,5 +18,5 @@ machine: "blender"
 op: "node.add_group_input_node"
 
 ARGS:
-  - {name: only_selected_sockets, type: text}          # true|false, vide pour ne rien poser
-  - {name: all_panel_contents, type: text}          # true|false, vide pour ne rien poser
+  - {name: only_selected_sockets, type: text}          # true|false, empty to set nothing
+  - {name: all_panel_contents, type: text}          # true|false, empty to set nothing

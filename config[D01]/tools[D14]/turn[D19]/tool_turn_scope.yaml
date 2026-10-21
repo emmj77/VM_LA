@@ -66,13 +66,13 @@ COMMAND: |
       _ix=$(printf '%s' "$_r" | jq -c --argjson k "$_top" \
         '.results | sort_by(-.relevance_score) | .[:$k] | map(.index)' 2>/dev/null)
       if [ -n "$_ix" ] && [ "$_ix" != "null" ]; then
-        # les noms gardes, un par un, puis le filtre : chaque etape se verifie
+        # the kept names, one by one, then the filter: every step is checked
         _names=""
         for _k in $(printf '%s' "$_ix" | jq -r '.[]' 2>/dev/null); do
           _nm=$(printf '%s' "$_arr" | jq -r --argjson q "$_k" '.[$q].function.name // empty' 2>/dev/null)
           [ -n "$_nm" ] && _names="$_names $_nm"
         done
-        # seul reply est intouchable : la boucle doit pouvoir dire sa phrase
+        # only reply is untouchable: the loop must be able to say its word
         _names="$_names reply"
         _arr=$(printf '%s' "$_arr" | jq -c --arg n "$_names" \
           'map(select(.function.name as $x | ($n | split(" ") | index($x)) != null))' 2>/dev/null) || _arr=$_arr

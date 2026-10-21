@@ -22,26 +22,26 @@ ARGS:
   - {name: directory, type: text}
   - {name: filter_glob, type: text}
   - {name: files, type: text}
-  - {name: ui_tab, type: text}          # un de : MAIN | ARMATURE
-  - {name: use_manual_orientation, type: text}          # true|false, vide pour ne rien poser
+  - {name: ui_tab, type: text}          # one of: MAIN | ARMATURE
+  - {name: use_manual_orientation, type: text}          # true|false, empty to set nothing
   - {name: global_scale, type: text}
-  - {name: bake_space_transform, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_custom_normals, type: text}          # true|false, vide pour ne rien poser
-  - {name: colors_type, type: text}          # un de : NONE | SRGB | LINEAR
-  - {name: use_image_search, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_alpha_decals, type: text}          # true|false, vide pour ne rien poser
+  - {name: bake_space_transform, type: text}          # true|false, empty to set nothing
+  - {name: use_custom_normals, type: text}          # true|false, empty to set nothing
+  - {name: colors_type, type: text}          # one of: NONE | SRGB | LINEAR
+  - {name: use_image_search, type: text}          # true|false, empty to set nothing
+  - {name: use_alpha_decals, type: text}          # true|false, empty to set nothing
   - {name: decal_offset, type: text}
-  - {name: use_anim, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_anim, type: text}          # true|false, empty to set nothing
   - {name: anim_offset, type: text}
-  - {name: use_subsurf, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_custom_props, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_custom_props_enum_as_string, type: text}          # true|false, vide pour ne rien poser
-  - {name: ignore_leaf_bones, type: text}          # true|false, vide pour ne rien poser
-  - {name: force_connect_children, type: text}          # true|false, vide pour ne rien poser
-  - {name: automatic_bone_orientation, type: text}          # true|false, vide pour ne rien poser
-  - {name: primary_bone_axis, type: text}          # un de : X | Y | Z | -X | -Y | -Z
-  - {name: secondary_bone_axis, type: text}          # un de : X | Y | Z | -X | -Y | -Z
-  - {name: use_prepost_rot, type: text}          # true|false, vide pour ne rien poser
-  - {name: mtl_name_collision_mode, type: text}          # un de : MAKE_UNIQUE | REFERENCE_EXISTING
-  - {name: axis_forward, type: text}          # un de : X | Y | Z | -X | -Y | -Z
-  - {name: axis_up, type: text}          # un de : X | Y | Z | -X | -Y | -Z
+  - {name: use_subsurf, type: text}          # true|false, empty to set nothing
+  - {name: use_custom_props, type: text}          # true|false, empty to set nothing
+  - {name: use_custom_props_enum_as_string, type: text}          # true|false, empty to set nothing
+  - {name: ignore_leaf_bones, type: text}          # true|false, empty to set nothing
+  - {name: force_connect_children, type: text}          # true|false, empty to set nothing
+  - {name: automatic_bone_orientation, type: text}          # true|false, empty to set nothing
+  - {name: primary_bone_axis, type: text}          # one of: X | Y | Z | -X | -Y | -Z
+  - {name: secondary_bone_axis, type: text}          # one of: X | Y | Z | -X | -Y | -Z
+  - {name: use_prepost_rot, type: text}          # true|false, empty to set nothing
+  - {name: mtl_name_collision_mode, type: text}          # one of: MAKE_UNIQUE | REFERENCE_EXISTING
+  - {name: axis_forward, type: text}          # one of: X | Y | Z | -X | -Y | -Z
+  - {name: axis_up, type: text}          # one of: X | Y | Z | -X | -Y | -Z

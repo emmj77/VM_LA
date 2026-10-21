@@ -19,7 +19,7 @@ op: "node.swap_zone"
 
 ARGS:
   - {name: settings, type: text}
-  - {name: offset, type: text}          # 2 valeurs separees par des virgules
+  - {name: offset, type: text}          # 2 values separated by commas
   - {name: input_node_type, type: text}
   - {name: output_node_type, type: text}
-  - {name: add_default_geometry_link, type: text}          # true|false, vide pour ne rien poser
+  - {name: add_default_geometry_link, type: text}          # true|false, empty to set nothing

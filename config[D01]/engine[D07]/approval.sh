@@ -15,7 +15,7 @@ _ap_sig() {
   printf '%s' "$1" | openssl dgst -sha256 -hmac "$_k" -r | cut -d' ' -f1
 }
 
-# _ap_trace <word> <line> : une ligne de trace, par le corps qui la possede
+# _ap_trace <word> <line>: one trace line, through the body that owns it
 _ap_trace() { printf '%s %s\n' "${1:-approve}" "${2:-}" | run_call engine.trace op=line >/dev/null; }
 
 approval_request() {

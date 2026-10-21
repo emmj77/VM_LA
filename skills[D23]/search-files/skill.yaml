@@ -1,17 +1,17 @@
 id: "K22"
 skill: "search-files"
 date: "2026-10-17"
-tags: ["search-files", "fichier", "chercher", "trouver"]
+tags: ["search-files", "file", "search", "find"]
 
 SUMMARY:
-  101: "Chercher un fichier par son NOM ou par son CONTENU."
-  102: "search cherche le nom, puis l'interieur ; list_dir montre un dossier."
-  103: "On nomme le chemin TROUVE, jamais un chemin suppose."
+  101: "Search a file by its NAME or by its CONTENT."
+  102: "search looks for the name, then the inside; list_dir shows a folder."
+  103: "The path FOUND is named, never a supposed path."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "search"
   201: "list_dir"
@@ -21,8 +21,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Rien trouve : le dire, et proposer une racine plus large, jamais inventer un chemin."
+  600: "Nothing found: say it, and offer a wider root, never invent a path."

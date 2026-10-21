@@ -19,5 +19,5 @@ op: "mesh.flatten"
 
 ARGS:
   - {name: factor, type: text}
-  - {name: method, type: text}          # un de : BEST_FIT | NORMAL | VIEW
-  - {name: lock, type: text}          # 3 valeurs separees par des virgules
+  - {name: method, type: text}          # one of: BEST_FIT | NORMAL | VIEW
+  - {name: lock, type: text}          # 3 values separated by commas

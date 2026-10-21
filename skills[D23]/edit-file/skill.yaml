@@ -1,17 +1,17 @@
 id: "K09"
 skill: "edit-file"
 date: "2026-10-17"
-tags: ["edit-file", "corriger", "editer", "fichier"]
+tags: ["edit-file", "fix", "edit", "file"]
 
 SUMMARY:
-  101: "Corriger un fichier : lire, changer, reposer."
-  102: "read_file lit ; write_file repose le fichier corrige."
-  103: "On ne change QUE ce qu'on a LU ; le reste reste tel quel."
+  101: "Fix a file: read, change, put back."
+  102: "read_file reads; write_file puts the corrected file back."
+  103: "Only what was READ is changed; the rest stays as is."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "read_file"
   201: "write_file"
@@ -22,8 +22,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Fichier absent : le dire et nommer le chemin, ne pas le creer d'office."
+  600: "File missing: say it and name the path, never create it on sight."

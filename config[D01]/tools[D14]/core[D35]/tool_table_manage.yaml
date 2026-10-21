@@ -32,7 +32,7 @@ COMMAND: |
   TOOLS="$RACINE/config/tools"
   DIRS='core 3d blender comfyui krita unity'
 
-  corps() {  # $1 = nom de tool : ecrit le chemin si le fichier existe
+  corps() {  # $1 = tool name: writes the path when the file exists
     for D in $DIRS; do
       [ -f "$TOOLS/$D/tool_$1.yaml" ] && { printf '%s\n' "$TOOLS/$D/tool_$1.yaml"; return 0; }
     done
@@ -86,7 +86,7 @@ COMMAND: |
   fin() { [ -n "$TD" ] || return 0; rm -f "$TD"/* 2>/dev/null; rmdir "$TD" 2>/dev/null; }
   trap fin EXIT INT TERM HUP
 
-  ligne() {  # $1 = id : pose DEB (debut du bloc) et END (debut du bloc suivant)
+  ligne() {  # $1 = id: sets DEB (start of the block) and END (start of the next block)
     DEB=$(grep -n "^  - id: $1[[:space:]]*$" "$TBL" | head -n 1 | cut -d: -f1)
     [ -n "$DEB" ] || return 1
     END=$(grep -n '^  - id: ' "$TBL" | cut -d: -f1 | while IFS= read -r n; do [ "$n" -gt "$DEB" ] && { printf '%s\n' "$n"; break; }; done)

@@ -18,15 +18,15 @@ machine: "blender"
 op: "wm.xr_navigation_fly"
 
 ARGS:
-  - {name: mode, type: text}          # un de : FORWARD | BACK | LEFT | RIGHT | UP | DOWN | TURNLEFT | TURNRIGHT | VIEWER_FORWARD | VIEWER_BACK | VIEWER_LEFT | VIEWER_RIGHT | CONTROLLER_FORWARD
+  - {name: mode, type: text}          # one of: FORWARD | BACK | LEFT | RIGHT | UP | DOWN | TURNLEFT | TURNRIGHT | VIEWER_FORWARD | VIEWER_BACK | VIEWER_LEFT | VIEWER_RIGHT | CONTROLLER_FORWARD
   - {name: snap_turn_threshold, type: text}
-  - {name: lock_location_z, type: text}          # true|false, vide pour ne rien poser
-  - {name: lock_direction, type: text}          # true|false, vide pour ne rien poser
-  - {name: speed_frame_based, type: text}          # true|false, vide pour ne rien poser
+  - {name: lock_location_z, type: text}          # true|false, empty to set nothing
+  - {name: lock_direction, type: text}          # true|false, empty to set nothing
+  - {name: speed_frame_based, type: text}          # true|false, empty to set nothing
   - {name: turn_speed_factor, type: text}
   - {name: fly_speed_factor, type: text}
-  - {name: speed_interpolation0, type: text}          # 2 valeurs separees par des virgules
-  - {name: speed_interpolation1, type: text}          # 2 valeurs separees par des virgules
-  - {name: alt_mode, type: text}          # un de : FORWARD | BACK | LEFT | RIGHT | UP | DOWN | TURNLEFT | TURNRIGHT | VIEWER_FORWARD | VIEWER_BACK | VIEWER_LEFT | VIEWER_RIGHT | CONTROLLER_FORWARD
-  - {name: alt_lock_location_z, type: text}          # true|false, vide pour ne rien poser
-  - {name: alt_lock_direction, type: text}          # true|false, vide pour ne rien poser
+  - {name: speed_interpolation0, type: text}          # 2 values separated by commas
+  - {name: speed_interpolation1, type: text}          # 2 values separated by commas
+  - {name: alt_mode, type: text}          # one of: FORWARD | BACK | LEFT | RIGHT | UP | DOWN | TURNLEFT | TURNRIGHT | VIEWER_FORWARD | VIEWER_BACK | VIEWER_LEFT | VIEWER_RIGHT | CONTROLLER_FORWARD
+  - {name: alt_lock_location_z, type: text}          # true|false, empty to set nothing
+  - {name: alt_lock_direction, type: text}          # true|false, empty to set nothing

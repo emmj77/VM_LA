@@ -22,6 +22,6 @@ ARGS:
   - {name: xmax, type: int}
   - {name: ymin, type: int}
   - {name: ymax, type: int}
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
-  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing
+  - {name: deselect, type: text}          # true|false, empty to set nothing
+  - {name: extend, type: text}          # true|false, empty to set nothing

@@ -18,5 +18,5 @@ machine: "blender"
 op: "paintcurve.slide"
 
 ARGS:
-  - {name: align, type: text}          # true|false, vide pour ne rien poser
-  - {name: select, type: text}          # true|false, vide pour ne rien poser
+  - {name: align, type: text}          # true|false, empty to set nothing
+  - {name: select, type: text}          # true|false, empty to set nothing

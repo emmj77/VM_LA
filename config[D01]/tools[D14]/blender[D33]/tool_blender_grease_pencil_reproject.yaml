@@ -18,6 +18,6 @@ machine: "blender"
 op: "grease_pencil.reproject"
 
 ARGS:
-  - {name: type, type: text}          # un de : FRONT | SIDE | TOP | VIEW | SURFACE | CURSOR
-  - {name: keep_original, type: text}          # true|false, vide pour ne rien poser
+  - {name: type, type: text}          # one of: FRONT | SIDE | TOP | VIEW | SURFACE | CURSOR
+  - {name: keep_original, type: text}          # true|false, empty to set nothing
   - {name: offset, type: text}

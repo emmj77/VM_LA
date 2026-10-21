@@ -21,4 +21,4 @@ ARGS:
   - {name: session_uid, type: int}
   - {name: modifier_name, type: text}
   - {name: bake_id, type: int}
-  - {name: method, type: text}          # un de : USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL
+  - {name: method, type: text}          # one of: USE_LOCAL | WRITE_LOCAL | USE_ORIGINAL | WRITE_ORIGINAL

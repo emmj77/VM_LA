@@ -19,6 +19,6 @@ op: "sequencer.slip"
 
 ARGS:
   - {name: offset, type: text}
-  - {name: slip_keyframes, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_cursor_position, type: text}          # true|false, vide pour ne rien poser
-  - {name: ignore_connections, type: text}          # true|false, vide pour ne rien poser
+  - {name: slip_keyframes, type: text}          # true|false, empty to set nothing
+  - {name: use_cursor_position, type: text}          # true|false, empty to set nothing
+  - {name: ignore_connections, type: text}          # true|false, empty to set nothing

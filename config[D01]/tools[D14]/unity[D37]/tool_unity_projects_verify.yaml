@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Check a project for integrity problems that break a build, without launching the Editor"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- projects verify --no-banner --no-pager --non-interactive
@@ -40,6 +40,6 @@ COMMAND: |
 
 ARGS:
   - {name: project, type: text}   # facultatif
-  - {name: strict, type: text}   # true pour poser --strict ; Treat warnings as errors
+  - {name: strict, type: text}   # true to set --strict ; Treat warnings as errors
   - {name: check, type: text}   # Run only these checks, comma-separated. Choices: META_MISSING, META_OR
   - {name: expect_editor, type: text}   # Editor version this project is expected to target, for the drift check

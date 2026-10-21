@@ -23,9 +23,9 @@ COMMAND: |
   REP=$(curl -sS --max-time 240 -H 'Content-Type: application/json' \
     -d "$(jq -cn --arg p "$IMAGE" --arg n "$NAME" '{action:"import_image",params:{path:$p,name:$n}}')" "$SERVICE/")
   printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
-    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "reponse illisible de la machine"')" >&2; exit 1; }
+    || { printf '%s\n' "$(msg refused_generic)""$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"')" >&2; exit 1; }
   printf '%s\n' "$(msg layer_image_set_x)""$NAME" "$(printf '%s' "$REP" | jq -r .width)" "$(printf '%s' "$REP" | jq -r .height)"
 
 ARGS:
-  - {name: image, type: path}                 # l'image, relative a l'espace du skill
-  - {name: name, type: text}                  # le nom du calque neuf (vide : le nom du fichier)
+  - {name: image, type: path}                 # the image, relative to the space of the skill
+  - {name: name, type: text}                  # the new layer name (empty: the file name)

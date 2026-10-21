@@ -24,7 +24,7 @@ COMMAND: |
   CAP=40
   K=12
 
-  _args() {  # $1 = le nom du tool
+  _args() {  # $1 = the tool name
     _f=""
     for _d in "$ROOT"/config/tools/*/ ; do
       [ -f "$_d/tool_$1.yaml" ] && { _f="$_d/tool_$1.yaml" ; break ; }

@@ -18,6 +18,6 @@ machine: "blender"
 op: "object.mode_set_with_submode"
 
 ARGS:
-  - {name: mode, type: text}          # un de : OBJECT | EDIT | POSE | SCULPT | VERTEX_PAINT | WEIGHT_PAINT | TEXTURE_PAINT | PARTICLE_EDIT | EDIT_GPENCIL | SCULPT_GREASE_PENCIL | PAINT_GREASE_PENCIL | WEIGHT_GREASE_PENCIL | VERTEX_GREASE_PENCIL | SCULPT_CURVES
-  - {name: toggle, type: text}          # true|false, vide pour ne rien poser
-  - {name: mesh_select_mode, type: text}          # un de : VERT | EDGE | FACE
+  - {name: mode, type: text}          # one of: OBJECT | EDIT | POSE | SCULPT | VERTEX_PAINT | WEIGHT_PAINT | TEXTURE_PAINT | PARTICLE_EDIT | EDIT_GPENCIL | SCULPT_GREASE_PENCIL | PAINT_GREASE_PENCIL | WEIGHT_GREASE_PENCIL | VERTEX_GREASE_PENCIL | SCULPT_CURVES
+  - {name: toggle, type: text}          # true|false, empty to set nothing
+  - {name: mesh_select_mode, type: text}          # one of: VERT | EDGE | FACE

@@ -19,4 +19,4 @@ op: "mesh.set_sharpness_by_angle"
 
 ARGS:
   - {name: angle, type: text}
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: extend, type: text}          # true|false, empty to set nothing

@@ -18,5 +18,5 @@ machine: "blender"
 op: "pose.select_grouped"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: type, type: text}          # un de : COLLECTION | COLOR | KEYINGSET | CHILDREN | CHILDREN_IMMEDIATE | PARENT | SIBLINGS
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: type, type: text}          # one of: COLLECTION | COLOR | KEYINGSET | CHILDREN | CHILDREN_IMMEDIATE | PARENT | SIBLINGS

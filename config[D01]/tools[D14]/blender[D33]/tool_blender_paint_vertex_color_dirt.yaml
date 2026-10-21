@@ -22,5 +22,5 @@ ARGS:
   - {name: blur_iterations, type: int}
   - {name: clean_angle, type: text}
   - {name: dirt_angle, type: text}
-  - {name: dirt_only, type: text}          # true|false, vide pour ne rien poser
-  - {name: normalize, type: text}          # true|false, vide pour ne rien poser
+  - {name: dirt_only, type: text}          # true|false, empty to set nothing
+  - {name: normalize, type: text}          # true|false, empty to set nothing

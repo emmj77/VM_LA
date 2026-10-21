@@ -24,7 +24,7 @@ COMMAND: |
   _model=$(cfg str "engines.$_al.model")
   _mt=$(cfg num "engines.$_al.max_tokens") || _mt=4096
   _tc=$(cfg str "engines.$_al.tool_choice") || _tc=auto
-  # l effort du tour vient du reranker : il part avec la requete
+  # the effort of the turn comes from the reranker: it leaves with the request
   _ef=$(jq -r '.effort // ""' "$(cfg abs turn)" 2>/dev/null)
   [ -n "$_ef" ] || _ef=$(cfg str "engines.$_al.reasoning_effort") || _ef=""
   _to=$(cfg num loop.timeout) || _to=600

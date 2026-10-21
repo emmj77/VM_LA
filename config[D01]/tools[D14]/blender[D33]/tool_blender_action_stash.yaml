@@ -18,4 +18,4 @@ machine: "blender"
 op: "action.stash"
 
 ARGS:
-  - {name: create_new, type: text}          # true|false, vide pour ne rien poser
+  - {name: create_new, type: text}          # true|false, empty to set nothing

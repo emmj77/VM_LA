@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["summarize-document", "resume", "document"]
 
 SUMMARY:
-  101: "Resumer un document long en un texte court et FIDELE."
-  102: "read_file lit le document ; write_file pose le resume."
-  103: "On ne resume que ce qui est LU : rien d'invente."
+  101: "Summarise a long document into a short and FAITHFUL text."
+  102: "read_file reads the document; write_file sets the summary down."
+  103: "Only what is READ is summarised: nothing invented."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "read_file"
   201: "write_file"
@@ -22,8 +22,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Document illisible : le dire, et nommer le chemin, plutot que de deviner."
+  600: "Document unreadable: say it, and name the path, rather than guess."

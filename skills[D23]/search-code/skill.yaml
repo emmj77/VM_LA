@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["search-code", "code", "chercher", "ast"]
 
 SUMMARY:
-  101: "Chercher dans le code par sa FORME (ast) ou son texte."
-  102: "ast_grep_search cherche par la forme ; search, par le texte."
-  103: "On cite le fichier ET la ligne, jamais un extrait de memoire."
+  101: "Search the code by its SHAPE (ast) or its text."
+  102: "ast_grep_search searches by shape; search, by text."
+  103: "The file AND the line are cited, never an excerpt from memory."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "ast_grep_search"
   201: "search"
@@ -23,8 +23,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt .py .c .cs .js"
 ERROR:
-  600: "Aucun resultat : le dire, et proposer un motif plus large."
+  600: "No result: say it, and offer a wider pattern."

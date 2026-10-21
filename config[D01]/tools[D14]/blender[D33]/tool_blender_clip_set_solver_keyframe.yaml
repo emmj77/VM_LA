@@ -18,4 +18,4 @@ machine: "blender"
 op: "clip.set_solver_keyframe"
 
 ARGS:
-  - {name: keyframe, type: text}          # un de : KEYFRAME_A | KEYFRAME_B
+  - {name: keyframe, type: text}          # one of: KEYFRAME_A | KEYFRAME_B

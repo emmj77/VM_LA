@@ -19,4 +19,4 @@ op: "wm.call_panel"
 
 ARGS:
   - {name: name, type: text}
-  - {name: keep_open, type: text}          # true|false, vide pour ne rien poser
+  - {name: keep_open, type: text}          # true|false, empty to set nothing

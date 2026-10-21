@@ -18,5 +18,5 @@ machine: "blender"
 op: "uv.pin"
 
 ARGS:
-  - {name: clear, type: text}          # true|false, vide pour ne rien poser
-  - {name: invert, type: text}          # true|false, vide pour ne rien poser
+  - {name: clear, type: text}          # true|false, empty to set nothing
+  - {name: invert, type: text}          # true|false, empty to set nothing

@@ -18,8 +18,8 @@ machine: "blender"
 op: "uv.arrange_islands"
 
 ARGS:
-  - {name: initial_position, type: text}          # un de : BOUNDING_BOX | UV_GRID | ACTIVE_UDIM | CURSOR
-  - {name: axis, type: text}          # un de : X | Y
-  - {name: align, type: text}          # un de : MIN | MAX | CENTER | NONE
-  - {name: order, type: text}          # un de : LARGE_TO_SMALL | SMALL_TO_LARGE | Fixed
+  - {name: initial_position, type: text}          # one of: BOUNDING_BOX | UV_GRID | ACTIVE_UDIM | CURSOR
+  - {name: axis, type: text}          # one of: X | Y
+  - {name: align, type: text}          # one of: MIN | MAX | CENTER | NONE
+  - {name: order, type: text}          # one of: LARGE_TO_SMALL | SMALL_TO_LARGE | Fixed
   - {name: margin, type: text}

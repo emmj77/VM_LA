@@ -19,6 +19,6 @@ op: "paint.image_paint"
 
 ARGS:
   - {name: stroke, type: text}
-  - {name: mode, type: text}          # un de : NORMAL | INVERT
-  - {name: brush_toggle, type: text}          # un de : None | SMOOTH | ERASE | MASK
-  - {name: pen_flip, type: text}          # true|false, vide pour ne rien poser
+  - {name: mode, type: text}          # one of: NORMAL | INVERT
+  - {name: brush_toggle, type: text}          # one of: None | SMOOTH | ERASE | MASK
+  - {name: pen_flip, type: text}          # true|false, empty to set nothing

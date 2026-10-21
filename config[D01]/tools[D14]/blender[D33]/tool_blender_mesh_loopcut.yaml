@@ -20,7 +20,7 @@ op: "mesh.loopcut"
 ARGS:
   - {name: number_cuts, type: int}
   - {name: smoothness, type: text}
-  - {name: falloff, type: text}          # un de : SMOOTH | SPHERE | ROOT | INVERSE_SQUARE | SHARP | LINEAR
+  - {name: falloff, type: text}          # one of: SMOOTH | SPHERE | ROOT | INVERSE_SQUARE | SHARP | LINEAR
   - {name: object_index, type: int}
   - {name: edge_index, type: int}
-  - {name: mesh_select_mode_init, type: text}          # 3 valeurs separees par des virgules
+  - {name: mesh_select_mode_init, type: text}          # 3 values separated by commas

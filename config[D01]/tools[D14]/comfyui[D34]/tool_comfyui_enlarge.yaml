@@ -67,6 +67,6 @@ COMMAND: |
   printf '%s\n' "$(msg upscaled_summary '%s' '%s')""$FACTEUR" "$OUTPUT" "$VOULU" "$(wc -c < "$OUTPUT")" "$SIZE4"
 
 ARGS:
-  - {name: source, type: path}                # le dessin (.kra ou image), relatif a l'espace du skill
-  - {name: factor, type: int}                 # le facteur d'agrandissement, 1 a 4 (vide : 2)
-  - {name: output, type: path}                # le PNG de sortie, dans l'espace du skill (vide : un nom date)
+  - {name: source, type: path}                # the drawing (.kra or image), relative to the space of the skill
+  - {name: factor, type: int}                 # the enlargement factor, 1 to 4 (empty: 2)
+  - {name: output, type: path}                # the output PNG, in the space of the skill (empty: a dated name)

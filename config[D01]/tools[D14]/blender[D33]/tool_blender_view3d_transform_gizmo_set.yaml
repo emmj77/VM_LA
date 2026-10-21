@@ -18,5 +18,5 @@ machine: "blender"
 op: "view3d.transform_gizmo_set"
 
 ARGS:
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
-  - {name: type, type: text}          # un de : TRANSLATE | ROTATE | SCALE
+  - {name: extend, type: text}          # true|false, empty to set nothing
+  - {name: type, type: text}          # one of: TRANSLATE | ROTATE | SCALE

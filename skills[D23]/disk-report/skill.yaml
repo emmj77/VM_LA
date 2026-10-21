@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["disk-report", "disque", "espace", "systeme"]
 
 SUMMARY:
-  101: "Faire le point sur l'espace disque : ou est le gras."
-  102: "shell_run porte df et du ; on lit du PLUS GROS au plus petit."
-  103: "On NOMME ce qui occupe, avec son chiffre."
+  101: "Take stock of the disk space: where the fat is."
+  102: "shell_run carries df and du; it is read from BIGGEST to smallest."
+  103: "What occupies is NAMED, with its figure."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "shell_run"
   201: "read_file"
@@ -21,8 +21,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Un dossier illisible : le dire, continuer sur le reste, jamais bloquer."
+  600: "An unreadable folder: say it, carry on with the rest, never block."

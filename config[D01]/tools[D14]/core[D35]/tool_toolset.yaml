@@ -43,4 +43,4 @@ COMMAND: |
   rm -f "$W" "$W.names"
   exit $RC
 
-ARGS: []                    # aucun argument : ce tool se nomme seul
+ARGS: []                    # no argument: this tool names itself

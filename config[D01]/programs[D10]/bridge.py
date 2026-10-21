@@ -278,7 +278,7 @@ def _watch_once():
     except Exception:
         seen = set()
     events = []
-    # le sommeil depose son retour ici quand systemd arrive a echeance
+    # the sleep drops its return here when systemd reaches its deadline
     ev_f = _turn_file("watch.event")
     if os.path.isfile(ev_f):
         try:
@@ -358,7 +358,7 @@ def _turn_file(name):
 
 
 def _trace_events():
-    """les evenements du tour courant, dans l ordre ou ils sont arrives"""
+    """the events of the current turn, in the order they arrived"""
     out = []
     try:
         with open(_turn_file("trace.jsonl"), "r", errors="replace") as f:
@@ -422,7 +422,7 @@ def summary_text():
     try:
         import calendar
         when = calendar.timegm(time.strptime(st, "%Y-%m-%dT%H:%M:%SZ"))
-        if (time.time() - when) > 86400:      # plus vieux qu un jour : il ne dit plus rien
+        if (time.time() - when) > 86400:      # older than a day: it says nothing any more
             return "no summary yet"
     except (ValueError, TypeError):
         pass
@@ -473,7 +473,7 @@ def head_snapshot():
             continue
         buf.append(line)
     flush()
-    out = [x for x in out if x["label"].strip().lower() != "the human"]   # pas de section Human
+    out = [x for x in out if x["label"].strip().lower() != "the human"]   # no Human section
     main = str((conf().get("agents") or {}).get("main") or "")
     summ = summary_text()
     for x in out:
@@ -559,8 +559,8 @@ class Handler(BaseHTTPRequestHandler):
                 if not f or not os.path.isfile(f):
                     return self.json({"error": "the apk is not built here"}, 404)
                 return self.file(f, TYPES[".apk"], download="LA-app.apk")
-            # LE MODELE, LU DANS la_config (MOUSSA, 21/10) : l app demande sa liste ici et
-            # change d adresse ici ; sans ces routes elle restait sans modele.
+            # THE MODEL, READ IN la_config (MOUSSA, 21/10): the app asks for its list here and
+            # changes address here; without these routes it stayed without a model.
             if p == "/engine":
                 if method == "POST":
                     alias = ""
@@ -570,7 +570,7 @@ class Handler(BaseHTTPRequestHandler):
                         alias = ""
                     if not alias:
                         return self.json({"error": "alias expected"}, 400)
-                    # la ligne arrive sur l entree du corps, jamais en argument
+                    # the line arrives on the body input, never as an argument
                     said = ask("engine", "engine.commands", ["op=line"], feed="/model " + alias)
                     if isinstance(said, dict):
                         said = said.get("result") or said.get("line") or said
@@ -583,8 +583,8 @@ class Handler(BaseHTTPRequestHandler):
                                     "provider": e.get("provider", ""),
                                     "active": e.get("alias", "") == cur})
                 return self.json({"engines": engines, "model": st.get("model") if isinstance(st, dict) else {}})
-            # LA VOIX (MOUSSA, 21/10) : l app demande /tts pour lire une phrase et /transcribe
-            # pour ecouter ; ces deux routes manquaient, d ou l absence de son et de micro.
+            # THE VOICE (MOUSSA, 21/10): the app asks /tts to read a sentence and /transcribe
+            # to listen; both routes were missing, hence no sound and no microphone.
             if p == "/tts":
                 text = ""
                 try:
@@ -630,17 +630,17 @@ class Handler(BaseHTTPRequestHandler):
                         os.rmdir(tmp)
                     except OSError:
                         pass
-            # LES ROUTES QUE L APP DEMANDE SANS PREFIXE (MOUSSA, 21/10) : elle lit /state,
-            # /agents, /history, /skills, /projects, /toolmap. Elles rendent le meme JSON que
-            # /api/*, jamais une page : du HTML la casse (JSONObject sur une chaine).
+            # THE ROUTES THE APP ASKS WITHOUT PREFIX (MOUSSA, 21/10): it reads /state,
+            # /agents, /history, /skills, /projects, /toolmap. They return the same JSON as
+            # /api/*, never a page: HTML breaks it (JSONObject on a string).
             if p in ("/state", "/agents", "/history", "/skills", "/projects", "/toolmap"):
                 return self.api("/api" + p, u.query, method, body)
             if p == "/journal":
-                # le bandeau des outils : une entree par geste, dans l ordre
+                # the tool banner: one entry per act, in order
                 return self.json([str(e.get("text") or "") for e in _trace_events()
                                   if e.get("kind") == "tool" and (e.get("text") or "").strip()])
             if p == "/thinking":
-                # le thinking depliable : ce que le modele a pense, puis les pas du tour
+                # the expandable thinking: what the model thought, then the steps of the turn
                 lines = []
                 try:
                     with open(_turn_file("turn.json"), "r", errors="replace") as f:
@@ -656,14 +656,14 @@ class Handler(BaseHTTPRequestHandler):
                 lines = [l for l in (_thinking_keep(x) for x in lines) if l]
                 return self.json(lines)
             if p == "/approval":
-                # un OBJET, jamais une chaine : l app le passe a JSONObject et casse sinon
+                # an OBJECT, never a string: the app passes it to JSONObject and breaks otherwise
                 _said = ask("engine", "engine.approve", ["op=status"])
                 if isinstance(_said, dict):
                     _said = _said.get("result") or ""
                 _wait = os.path.isfile(os.path.join(os.environ.get("LA_STATE", "."), "approve.request"))
                 return self.json({"signed": str(_said), "waiting": _wait})
             if p in ("/approve", "/deny"):
-                # le corps lit le geste sur son entree : /approve signe celui qui attend
+                # the body reads the act on its input: /approve signs the one waiting
                 _g = ""
                 try:
                     _b = json.loads(body or b"{}")
@@ -671,7 +671,7 @@ class Handler(BaseHTTPRequestHandler):
                 except Exception:
                     _g = (body or b"").decode("utf-8", "replace").strip()
                 if not _g:
-                    # sans corps : on signe le geste qui attend
+                    # without a body: the waiting act is signed
                     try:
                         with open(state_file("approve.request"), "r", errors="replace") as f:
                             for line in f:
@@ -690,7 +690,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.json({"state": "stopped", "ts": now()})
             if p.startswith("/static/"):
                 return self.file(self.inside(os.environ["LA_PAGE"], p[len("/static/"):]))
-            # le telephone : son app, son icone et le service worker qui la met a jour
+            # the phone: its app, its icon and the service worker that updates it
             if p in ("/widget", "/widget.html"):
                 return self.file(os.path.join(os.environ["LA_PAGE"], "widget.html"), "text/html; charset=utf-8")
             if p == "/manifest.webmanifest":
@@ -699,7 +699,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.file(os.path.join(os.environ["LA_PAGE"], "widget-icon.svg"), "image/svg+xml")
             if p == "/sw.js":
                 return self.file(os.path.join(os.environ["LA_PAGE"], "widget-sw.js"), "text/javascript; charset=utf-8")
-            # LES PANNEAUX DE LA PAGE : ils appartiennent a la page, pas au pont.
+            # THE PANELS OF THE PAGE: they belong to the page, not to the bridge.
             if p in ("/say", "/command", "/voice", "/image", "/delegate"):
                 if method != "POST":
                     return self.json({"error": "POST expected for %s" % p}, 405)
@@ -881,7 +881,7 @@ class Handler(BaseHTTPRequestHandler):
     def work(self, p, body, query):
         payload = self.object(body)
         if p == "/say":
-            # une phrase de l app fait le tour MAINTENANT : l app attend la reponse, pas une file
+            # a sentence from the app runs the turn NOW: the app waits for the answer, not a queue
             text = str(payload.get("text") or body.decode("utf-8", "replace")).strip()
             if not text:
                 return self.json({"error": "a text is expected"}, 400)
@@ -989,13 +989,13 @@ def main():
     for d in ("LA_STATE", "LA_AUDIO"):
         os.makedirs(os.environ[d], exist_ok=True)
     port = int(os.environ["LA_PORT_BRIDGE"])
-    threading.Thread(target=warm, daemon=True).start()   # la page ouvre sans attendre
+    threading.Thread(target=warm, daemon=True).start()   # the page opens without waiting
     threading.Thread(target=watch_loop, daemon=True).start()   # the automatic rest and its judge
     srv = ThreadingHTTPServer((os.environ.get("LA_BRIDGE_HOST") or os.environ["LA_HOST"], port), Handler)
     sys.stderr.write("bridge: listening on %s:%d\n" % (srv.server_address[0], port))
     subprocess.run(["dash", os.environ["LA_TOOL"], "engine", "engine.residents", "op=join"],
                    input="dash:" + str(os.getpid()), capture_output=True, text=True, timeout=20)
-    # L APP PARLE HTTPS SUR LA PORTE TLS (MOUSSA, 21/10) : le meme service, la meme page, la
+    # THE APP SPEAKS HTTPS ON THE TLS DOOR (MOUSSA, 21/10): the same service, the same page, the
     # the same door, but encrypted, with the certificate of the project.
     tls_port = int(os.environ.get("LA_PORT_TLS") or 0)
     cert, key = os.environ.get("LA_CERT"), os.environ.get("LA_KEY")

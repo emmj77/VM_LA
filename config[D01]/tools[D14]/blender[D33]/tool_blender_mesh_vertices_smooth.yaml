@@ -20,7 +20,7 @@ op: "mesh.vertices_smooth"
 ARGS:
   - {name: factor, type: text}
   - {name: repeat, type: int}
-  - {name: xaxis, type: text}          # true|false, vide pour ne rien poser
-  - {name: yaxis, type: text}          # true|false, vide pour ne rien poser
-  - {name: zaxis, type: text}          # true|false, vide pour ne rien poser
-  - {name: wait_for_input, type: text}          # true|false, vide pour ne rien poser
+  - {name: xaxis, type: text}          # true|false, empty to set nothing
+  - {name: yaxis, type: text}          # true|false, empty to set nothing
+  - {name: zaxis, type: text}          # true|false, empty to set nothing
+  - {name: wait_for_input, type: text}          # true|false, empty to set nothing

@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Create a Unity Cloud organization"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- cloud org create --no-banner --no-pager --non-interactive
@@ -41,4 +41,4 @@ COMMAND: |
 ARGS:
   - {name: name, type: text}
   - {name: industry, type: text}   # Industry the organization works in
-  - {name: set_default, type: text}   # true pour poser --set-default ; Set the new organization as the active default
+  - {name: set_default, type: text}   # true to set --set-default ; Set the new organization as the active default

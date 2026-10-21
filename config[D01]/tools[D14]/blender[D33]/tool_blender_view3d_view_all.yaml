@@ -18,5 +18,5 @@ machine: "blender"
 op: "view3d.view_all"
 
 ARGS:
-  - {name: use_all_regions, type: text}          # true|false, vide pour ne rien poser
-  - {name: center, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_all_regions, type: text}          # true|false, empty to set nothing
+  - {name: center, type: text}          # true|false, empty to set nothing

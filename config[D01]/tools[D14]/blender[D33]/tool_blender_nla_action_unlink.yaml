@@ -18,4 +18,4 @@ machine: "blender"
 op: "nla.action_unlink"
 
 ARGS:
-  - {name: force_delete, type: text}          # true|false, vide pour ne rien poser
+  - {name: force_delete, type: text}          # true|false, empty to set nothing

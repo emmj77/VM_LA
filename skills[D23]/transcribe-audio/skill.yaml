@@ -4,14 +4,14 @@ date: "2026-10-17"
 tags: ["transcribe-audio", "audio", "transcription", "voix"]
 
 SUMMARY:
-  101: "Transcrire un audio en Texte."
-  102: "transcribe ecrit la transcription ; write_file la pose dans un fichier."
-  103: "On transcrit ce qui est ENTENDU ; un passage doute se marque [inaudible]."
+  101: "Transcribe an audio into Text."
+  102: "transcribe writes the transcription; write_file puts it in a file."
+  103: "Only what is HEARD is transcribed; a doubtful passage is marked [inaudible]."
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 TOOLS:
   200: "transcribe"
   201: "write_file"
@@ -21,8 +21,8 @@ TOOLS:
 DOCS:
   300: "web_search"
 PLAN:
-PERIMETER:
+WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-  600: "Audio illisible : le dire, ne pas inventer une phrase."
+  600: "Audio unreadable: say it, do not invent a sentence."

@@ -19,4 +19,4 @@ op: "object.grease_pencil_dash_modifier_segment_move"
 
 ARGS:
   - {name: modifier, type: text}
-  - {name: type, type: text}          # un de : UP | DOWN
+  - {name: type, type: text}          # one of: UP | DOWN

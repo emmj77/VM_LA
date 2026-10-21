@@ -12,7 +12,7 @@ RULES:
   count: false
   paths: write
 
-DESCRIPTION: "image -> 3D (Pixal3D), variant fixed reference (graines neuves 1042+, le reste comme la base)"
+DESCRIPTION: "image -> 3D (Pixal3D), variant fixed reference (fresh seeds 1042+, the rest like the base)"
 
 COMMAND: |
   I=$(cat); [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }

@@ -18,10 +18,10 @@ machine: "blender"
 op: "render.render"
 
 ARGS:
-  - {name: animation, type: text}          # true|false, vide pour ne rien poser
-  - {name: write_still, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_viewport, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_sequencer_scene, type: text}          # true|false, vide pour ne rien poser
+  - {name: animation, type: text}          # true|false, empty to set nothing
+  - {name: write_still, type: text}          # true|false, empty to set nothing
+  - {name: use_viewport, type: text}          # true|false, empty to set nothing
+  - {name: use_sequencer_scene, type: text}          # true|false, empty to set nothing
   - {name: layer, type: text}
   - {name: scene, type: text}
   - {name: frame_start, type: int}

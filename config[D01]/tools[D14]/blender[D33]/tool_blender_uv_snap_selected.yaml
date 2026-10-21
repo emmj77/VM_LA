@@ -18,4 +18,4 @@ machine: "blender"
 op: "uv.snap_selected"
 
 ARGS:
-  - {name: target, type: text}          # un de : PIXELS | CURSOR | CURSOR_OFFSET | ADJACENT_UNSELECTED
+  - {name: target, type: text}          # one of: PIXELS | CURSOR | CURSOR_OFFSET | ADJACENT_UNSELECTED

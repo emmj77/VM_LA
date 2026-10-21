@@ -20,10 +20,10 @@ op: "wm.properties_edit"
 ARGS:
   - {name: data_path, type: text}
   - {name: property_name, type: text}
-  - {name: property_type, type: text}          # un de : FLOAT | FLOAT_ARRAY | INT | INT_ARRAY | BOOL | BOOL_ARRAY | STRING | DATA_BLOCK | PYTHON
-  - {name: is_overridable_library, type: text}          # true|false, vide pour ne rien poser
+  - {name: property_type, type: text}          # one of: FLOAT | FLOAT_ARRAY | INT | INT_ARRAY | BOOL | BOOL_ARRAY | STRING | DATA_BLOCK | PYTHON
+  - {name: is_overridable_library, type: text}          # true|false, empty to set nothing
   - {name: description, type: text}
-  - {name: use_soft_limits, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_soft_limits, type: text}          # true|false, empty to set nothing
   - {name: array_length, type: int}
   - {name: default_int, type: int}
   - {name: min_int, type: int}
@@ -31,15 +31,15 @@ ARGS:
   - {name: soft_min_int, type: int}
   - {name: soft_max_int, type: int}
   - {name: step_int, type: int}
-  - {name: default_bool, type: text}          # 32 valeurs separees par des virgules
-  - {name: default_float, type: text}          # 32 valeurs separees par des virgules
+  - {name: default_bool, type: text}          # 32 values separated by commas
+  - {name: default_float, type: text}          # 32 values separated by commas
   - {name: min_float, type: text}
   - {name: max_float, type: text}
   - {name: soft_min_float, type: text}
   - {name: soft_max_float, type: text}
   - {name: precision, type: int}
   - {name: step_float, type: text}
-  - {name: subtype, type: text}          # un de :
+  - {name: subtype, type: text}          # one of:
   - {name: default_string, type: text}
-  - {name: id_type, type: text}          # un de : ACTION | ARMATURE | BRUSH | CACHEFILE | CAMERA | COLLECTION | CURVE | CURVES | FONT | GREASEPENCIL | GREASEPENCIL_V3 | IMAGE | KEY | LATTICE | LIBRARY | LIGHT | LIGHT_PROBE | LINESTYLE | MASK | MATERIAL | MESH | META | MOVIECLIP | NODETREE | OBJECT | PAINTCURVE | PALETTE | PARTICLE | POINTCLOUD | SCENE | SCREEN | SOUND | SPEAKER | TEXT | TEXTURE | VOLUME | WINDOWMANAGER | WORKSPACE | WORLD
+  - {name: id_type, type: text}          # one of: ACTION | ARMATURE | BRUSH | CACHEFILE | CAMERA | COLLECTION | CURVE | CURVES | FONT | GREASEPENCIL | GREASEPENCIL_V3 | IMAGE | KEY | LATTICE | LIBRARY | LIGHT | LIGHT_PROBE | LINESTYLE | MASK | MATERIAL | MESH | META | MOVIECLIP | NODETREE | OBJECT | PAINTCURVE | PALETTE | PARTICLE | POINTCLOUD | SCENE | SCREEN | SOUND | SPEAKER | TEXT | TEXTURE | VOLUME | WINDOWMANAGER | WORKSPACE | WORLD
   - {name: eval_string, type: text}

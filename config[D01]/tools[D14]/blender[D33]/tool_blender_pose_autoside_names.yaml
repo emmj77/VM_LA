@@ -18,4 +18,4 @@ machine: "blender"
 op: "pose.autoside_names"
 
 ARGS:
-  - {name: axis, type: text}          # un de : XAXIS | YAXIS | ZAXIS
+  - {name: axis, type: text}          # one of: XAXIS | YAXIS | ZAXIS

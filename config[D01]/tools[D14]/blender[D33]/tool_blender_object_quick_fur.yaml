@@ -18,10 +18,10 @@ machine: "blender"
 op: "object.quick_fur"
 
 ARGS:
-  - {name: density, type: text}          # un de : LOW | MEDIUM | HIGH
+  - {name: density, type: text}          # one of: LOW | MEDIUM | HIGH
   - {name: length, type: text}
   - {name: radius, type: text}
   - {name: view_percentage, type: text}
-  - {name: apply_hair_guides, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_noise, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_frizz, type: text}          # true|false, vide pour ne rien poser
+  - {name: apply_hair_guides, type: text}          # true|false, empty to set nothing
+  - {name: use_noise, type: text}          # true|false, empty to set nothing
+  - {name: use_frizz, type: text}          # true|false, empty to set nothing

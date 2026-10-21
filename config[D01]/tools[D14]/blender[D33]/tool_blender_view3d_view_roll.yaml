@@ -19,4 +19,4 @@ op: "view3d.view_roll"
 
 ARGS:
   - {name: angle, type: text}
-  - {name: type, type: text}          # un de : ANGLE | LEFT | RIGHT
+  - {name: type, type: text}          # one of: ANGLE | LEFT | RIGHT

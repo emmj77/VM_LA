@@ -18,7 +18,7 @@ machine: "blender"
 op: "grease_pencil.outline"
 
 ARGS:
-  - {name: type, type: text}          # un de : VIEW | FRONT | SIDE | TOP | CURSOR | CAMERA
+  - {name: type, type: text}          # one of: VIEW | FRONT | SIDE | TOP | CURSOR | CAMERA
   - {name: radius, type: text}
   - {name: offset_factor, type: text}
   - {name: corner_subdivisions, type: int}

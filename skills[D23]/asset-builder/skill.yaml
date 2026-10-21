@@ -7,14 +7,14 @@ SUMMARY:
   101: "Forge a 3D asset step by step: one JSON document, parts, a validated .glb."
   102: "Each step is a command; the code is only ONE step, on stdin, never a command."
   103: "An asset is never said to hold without having LOOKED at it and measured it."
-  104: "La porte est `final` : elle refuse une vue sans verdict, un validateur sale, un budget dépassé."
+  104: "The door is `final`: it refuses a view without a verdict, a dirty validator, a spent budget."
 
 RULES:
   create_subfolder: true
   execute_code: true
   max_section_lines: 100
 
-APPROVAL: false              # cette skill ne modifie pas le harnais
+APPROVAL: false              # this skill does not touch the harness
 
 TOOLS:
   200: "asset_builder_new"
@@ -60,4 +60,4 @@ WRITABLE_WORKSPACE:
   type-file: ".json .glb .png .js"
 
 ERROR:
-  600: "Un .glb sale, une vue vide ou une part qui flotte : le dire avec la mesure, corriger, refaire la vue. Jamais valider à l'aveugle."
+  600: "A dirty .glb, an empty view or a floating part: say it with the measurement, fix, redo the view. Never validate blind."

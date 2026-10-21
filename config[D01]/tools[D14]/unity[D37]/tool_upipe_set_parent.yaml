@@ -21,7 +21,7 @@ COMMAND: |
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -n "{{target}}" ] || { printf '%s\n' "$(msg argument_required 'target' 'set_parent')" >&2; exit 1; }
   case "{{world_position_stays}}" in ''|true|false) ;; *) printf '%s\n' "$(msg bad_boolean_in 'world_position_stays' 'set_parent')""{{world_position_stays}}" >&2; exit 1 ;; esac
   set -- command --project-path "$P" set_parent
@@ -37,4 +37,4 @@ COMMAND: |
 ARGS:
   - {name: target, type: text}
   - {name: parent, type: text}
-  - {name: world_position_stays, type: text}          # true|false, vide pour ne rien poser
+  - {name: world_position_stays, type: text}          # true|false, empty to set nothing

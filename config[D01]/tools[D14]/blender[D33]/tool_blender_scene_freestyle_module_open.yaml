@@ -19,4 +19,4 @@ op: "scene.freestyle_module_open"
 
 ARGS:
   - {name: filepath, type: text}
-  - {name: make_internal, type: text}          # true|false, vide pour ne rien poser
+  - {name: make_internal, type: text}          # true|false, empty to set nothing

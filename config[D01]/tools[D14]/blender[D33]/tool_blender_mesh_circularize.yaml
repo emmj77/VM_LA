@@ -19,10 +19,10 @@ op: "mesh.circularize"
 
 ARGS:
   - {name: factor, type: text}
-  - {name: fit_method, type: text}          # un de : LEAST_SQUARE | CONTRACT
+  - {name: fit_method, type: text}          # one of: LEAST_SQUARE | CONTRACT
   - {name: angle, type: text}
-  - {name: use_custom_radius, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_custom_radius, type: text}          # true|false, empty to set nothing
   - {name: custom_radius, type: text}
-  - {name: regular, type: text}          # true|false, vide pour ne rien poser
+  - {name: regular, type: text}          # true|false, empty to set nothing
   - {name: flatten, type: text}
-  - {name: lock, type: text}          # 3 valeurs separees par des virgules
+  - {name: lock, type: text}          # 3 values separated by commas

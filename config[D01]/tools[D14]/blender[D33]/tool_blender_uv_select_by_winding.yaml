@@ -18,5 +18,5 @@ machine: "blender"
 op: "uv.select_by_winding"
 
 ARGS:
-  - {name: winding, type: text}          # un de : POSITIVE | NEGATIVE
-  - {name: extend, type: text}          # true|false, vide pour ne rien poser
+  - {name: winding, type: text}          # one of: POSITIVE | NEGATIVE
+  - {name: extend, type: text}          # true|false, empty to set nothing

@@ -18,4 +18,4 @@ machine: "blender"
 op: "rigidbody.constraint_add"
 
 ARGS:
-  - {name: type, type: text}          # un de : FIXED | POINT | HINGE | SLIDER | PISTON | GENERIC | GENERIC_SPRING | MOTOR
+  - {name: type, type: text}          # one of: FIXED | POINT | HINGE | SLIDER | PISTON | GENERIC | GENERIC_SPRING | MOTOR

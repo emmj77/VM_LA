@@ -18,5 +18,5 @@ machine: "blender"
 op: "node.link_drag_operation_test"
 
 ARGS:
-  - {name: find_link_operations, type: text}          # true|false, vide pour ne rien poser
+  - {name: find_link_operations, type: text}          # true|false, empty to set nothing
   - {name: link_operation_index, type: int}

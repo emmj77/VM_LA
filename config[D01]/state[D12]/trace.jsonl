@@ -293,3 +293,376 @@
 {"ts":1792564111,"kind":"reply","text":"8 bytes"}
 {"ts":1792564114,"kind":"note","text":"turn closed"}
 {"ts":1792564115,"kind":"step","text":"turn done in 26s, 0 calls, ok"}
+{"ts":1792564470,"kind":"watch","text":"wake say dis bonjour"}
+{"ts":1792564479,"kind":"watch","text":"wake say dis bonjour"}
+{"ts":1792564585,"kind":"turn","text":"start"}
+{"ts":1792564587,"kind":"facts","text":"20261021-063626"}
+{"ts":1792564590,"kind":"second","text":"agent"}
+{"ts":1792564593,"kind":"effort","text":"low"}
+{"ts":1792564597,"kind":"scope","text":"16 of 16 tools"}
+{"ts":1792564600,"kind":"prompt","text":"21 bytes"}
+{"ts":1792564604,"kind":"call","text":"2810 tokens"}
+{"ts":1792564608,"kind":"tool","text":"reply: ok"}
+{"ts":1792564609,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792564611,"kind":"reply","text":"8 bytes"}
+{"ts":1792564614,"kind":"note","text":"turn closed"}
+{"ts":1792564615,"kind":"step","text":"turn done in 29s, 0 calls, ok"}
+{"ts":1792564648,"kind":"turn","text":"start"}
+{"ts":1792564650,"kind":"facts","text":"20261021-063729"}
+{"ts":1792564652,"kind":"second","text":"agent"}
+{"ts":1792564655,"kind":"effort","text":"medium"}
+{"ts":1792564660,"kind":"scope","text":"16 of 16 tools"}
+{"ts":1792564662,"kind":"prompt","text":"69 bytes"}
+{"ts":1792564669,"kind":"call","text":"3397 tokens"}
+{"ts":1792564673,"kind":"tool","text":"reply: ok"}
+{"ts":1792564674,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792564676,"kind":"reply","text":"290 bytes"}
+{"ts":1792564678,"kind":"note","text":"turn closed"}
+{"ts":1792564679,"kind":"step","text":"turn done in 30s, 0 calls, ok"}
+{"ts":1792564731,"kind":"turn","text":"start"}
+{"ts":1792564734,"kind":"facts","text":"20261021-063852"}
+{"ts":1792564736,"kind":"second","text":"agent"}
+{"ts":1792564738,"kind":"effort","text":"none"}
+{"ts":1792564743,"kind":"scope","text":"16 of 16 tools"}
+{"ts":1792564746,"kind":"prompt","text":"7 bytes"}
+{"ts":1792564750,"kind":"call","text":"2785 tokens"}
+{"ts":1792564754,"kind":"tool","text":"reply: ok"}
+{"ts":1792564755,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792564758,"kind":"reply","text":"90 bytes"}
+{"ts":1792564760,"kind":"note","text":"turn closed"}
+{"ts":1792564762,"kind":"step","text":"turn done in 29s, 0 calls, ok"}
+{"ts":1792564821,"kind":"turn","text":"start"}
+{"ts":1792564823,"kind":"facts","text":"20261021-064022"}
+{"ts":1792564826,"kind":"second","text":"human"}
+{"ts":1792564828,"kind":"effort","text":"none"}
+{"ts":1792564833,"kind":"scope","text":"demande 16 garde 8"}
+{"ts":1792564834,"kind":"scope","text":"16 of 16 tools"}
+{"ts":1792564837,"kind":"prompt","text":"7 bytes"}
+{"ts":1792564841,"kind":"call","text":"2789 tokens"}
+{"ts":1792564845,"kind":"tool","text":"reply: ok"}
+{"ts":1792564846,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792564849,"kind":"reply","text":"100 bytes"}
+{"ts":1792564851,"kind":"note","text":"turn closed"}
+{"ts":1792564852,"kind":"step","text":"turn done in 30s, 0 calls, ok"}
+{"ts":1792564888,"kind":"scope","text":"demande 16 garde 8"}
+{"ts":1792564890,"kind":"scope","text":"16 of 16 tools"}
+{"ts":1792564903,"kind":"scope","text":"demande 16 garde 8 modele bge-reranker-v2-m3-Q4_K_M port 8091"}
+{"ts":1792564904,"kind":"scope","text":"rerank 909 octets"}
+{"ts":1792564905,"kind":"scope","text":"16 of 16 tools"}
+{"ts":1792564919,"kind":"scope","text":"demande 16 garde 8 modele bge-reranker-v2-m3-Q4_K_M port 8091"}
+{"ts":1792564920,"kind":"scope","text":"rerank 909 octets"}
+{"ts":1792564922,"kind":"scope","text":"ix=[11,0,6,1,3,12,4,7]"}
+{"ts":1792564923,"kind":"scope","text":"noms=load_doc read_file read_text_in_img reply skill_list sticky_note reply kill tools_list sleep skill_list vision.image skill_view transcribe vision.read read_text_in_img search_web fetch_url load_doc list_dir read_file write_file todo tools_list transcribe write_file "}
+{"ts":1792564924,"kind":"scope","text":"16 of 16 tools"}
+{"ts":1792564971,"kind":"scope","text":"demande 16 garde 5 modele bge-reranker-v2-m3-Q4_K_M port 8091"}
+{"ts":1792564972,"kind":"scope","text":"rerank 909 octets"}
+{"ts":1792564973,"kind":"scope","text":"ix=[11,0,6,1,3]"}
+{"ts":1792564974,"kind":"scope","text":"16 of 16 tools"}
+{"ts":1792565011,"kind":"scope","text":"demande 16 garde 5 modele bge-reranker-v2-m3-Q4_K_M port 8091"}
+{"ts":1792565012,"kind":"scope","text":"rerank 909 octets"}
+{"ts":1792565014,"kind":"scope","text":"ix=[11,0,6,1,3]"}
+{"ts":1792565015,"kind":"scope","text":"garde: read_text_in_img reply transcribe read_file write_file sticky_note reply kill tools_list sleep skill_list vision.image skill_view transcribe vision.read read_text_in_img search_web fetch_url load_doc list_dir read_file write_file todo reply"}
+{"ts":1792565016,"kind":"scope","text":"16 of 16 tools"}
+{"ts":1792565039,"kind":"scope","text":"demande 16 garde 5 modele bge-reranker-v2-m3-Q4_K_M port 8091"}
+{"ts":1792565041,"kind":"scope","text":"rerank 909 octets"}
+{"ts":1792565042,"kind":"scope","text":"ix=[11,0,6,1,3]"}
+{"ts":1792565043,"kind":"scope","text":"garde: read_text_in_img reply transcribe read_file write_file reply"}
+{"ts":1792565044,"kind":"scope","text":"5 of 16 tools"}
+{"ts":1792565058,"kind":"turn","text":"start"}
+{"ts":1792565061,"kind":"facts","text":"20261021-064419"}
+{"ts":1792565063,"kind":"second","text":"agent"}
+{"ts":1792565065,"kind":"effort","text":"low"}
+{"ts":1792565070,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792565073,"kind":"prompt","text":"17 bytes"}
+{"ts":1792565078,"kind":"call","text":"2269 tokens"}
+{"ts":1792565081,"kind":"tool","text":"reply: ok"}
+{"ts":1792565083,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792565085,"kind":"reply","text":"175 bytes"}
+{"ts":1792565088,"kind":"note","text":"turn closed"}
+{"ts":1792565089,"kind":"step","text":"turn done in 30s, 0 calls, ok"}
+{"ts":1792565637,"kind":"watch","text":"wake process finished: la-probe3.service failed"}
+{"ts":1792565641,"kind":"watch","text":"wake system reading: load 0.40, memory 30%"}
+{"ts":1792565662,"kind":"watch","text":"wake process finished: la-probe3.service failed"}
+{"ts":1792565682,"kind":"watch","text":"wake process finished: la-probe4.service failed"}
+{"ts":1792565686,"kind":"wake","text":"process finished: la-probe4.service failed"}
+{"ts":1792565691,"kind":"turn","text":"start"}
+{"ts":1792565692,"kind":"facts","text":"20261021-065452"}
+{"ts":1792565694,"kind":"second","text":"agent"}
+{"ts":1792565697,"kind":"effort","text":"medium"}
+{"ts":1792565702,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792565704,"kind":"prompt","text":"50 bytes"}
+{"ts":1792565710,"kind":"call","text":"2572 tokens"}
+{"ts":1792565714,"kind":"tool","text":"reply: ok"}
+{"ts":1792565716,"kind":"tool","text":"read_file: refused"}
+{"ts":1792565719,"kind":"tool","text":"read_file: refused"}
+{"ts":1792565720,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792565722,"kind":"reply","text":"32 bytes"}
+{"ts":1792565724,"kind":"note","text":"turn closed"}
+{"ts":1792565724,"kind":"step","text":"turn done in 33s, 0 calls, ok"}
+{"ts":1792565739,"kind":"turn","text":"start"}
+{"ts":1792565741,"kind":"facts","text":"20261021-065540"}
+{"ts":1792565744,"kind":"second","text":"agent"}
+{"ts":1792565746,"kind":"effort","text":"none"}
+{"ts":1792565751,"kind":"scope","text":"5 of 16 tools"}
+{"ts":1792565753,"kind":"prompt","text":"7 bytes"}
+{"ts":1792565757,"kind":"call","text":"2006 tokens"}
+{"ts":1792565761,"kind":"tool","text":"reply: ok"}
+{"ts":1792565762,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792565764,"kind":"reply","text":"97 bytes"}
+{"ts":1792565766,"kind":"note","text":"turn closed"}
+{"ts":1792565768,"kind":"step","text":"turn done in 27s, 0 calls, ok"}
+{"ts":1792565877,"kind":"turn","text":"start"}
+{"ts":1792565879,"kind":"facts","text":"20261021-065758"}
+{"ts":1792565882,"kind":"second","text":"agent"}
+{"ts":1792565884,"kind":"effort","text":"none"}
+{"ts":1792565888,"kind":"scope","text":"5 of 16 tools"}
+{"ts":1792565890,"kind":"prompt","text":"7 bytes"}
+{"ts":1792565894,"kind":"call","text":"2006 tokens"}
+{"ts":1792565898,"kind":"tool","text":"reply: ok"}
+{"ts":1792565899,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792565901,"kind":"reply","text":"109 bytes"}
+{"ts":1792565904,"kind":"note","text":"turn closed"}
+{"ts":1792565905,"kind":"step","text":"turn done in 27s, 0 calls, ok"}
+{"ts":1792565921,"kind":"watch","text":"wake process finished: la-probe6.service failed"}
+{"ts":1792565924,"kind":"wake","text":"process finished: la-probe6.service failed"}
+{"ts":1792565928,"kind":"turn","text":"start"}
+{"ts":1792565930,"kind":"facts","text":"20261021-065849"}
+{"ts":1792565933,"kind":"second","text":"agent"}
+{"ts":1792565935,"kind":"effort","text":"medium"}
+{"ts":1792565940,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792565942,"kind":"prompt","text":"50 bytes"}
+{"ts":1792565948,"kind":"call","text":"2561 tokens"}
+{"ts":1792565951,"kind":"tool","text":"reply: ok"}
+{"ts":1792565953,"kind":"tool","text":"list_dir: ok"}
+{"ts":1792565955,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792565957,"kind":"reply","text":"65 bytes"}
+{"ts":1792565959,"kind":"note","text":"turn closed"}
+{"ts":1792565960,"kind":"step","text":"turn done in 31s, 0 calls, ok"}
+{"ts":1792566199,"kind":"watch","text":"wake process finished: le sommeil de 15 secondes est arrive a son terme"}
+{"ts":1792566203,"kind":"wake","text":"process finished: le sommeil de 15 secondes est arrive a son terme"}
+{"ts":1792566207,"kind":"turn","text":"start"}
+{"ts":1792566209,"kind":"facts","text":"20261021-070328"}
+{"ts":1792566212,"kind":"second","text":"human"}
+{"ts":1792566214,"kind":"effort","text":"high"}
+{"ts":1792566219,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792566221,"kind":"prompt","text":"74 bytes"}
+{"ts":1792566226,"kind":"call","text":"2468 tokens"}
+{"ts":1792566230,"kind":"tool","text":"reply: ok"}
+{"ts":1792566231,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792566233,"kind":"reply","text":"102 bytes"}
+{"ts":1792566235,"kind":"note","text":"turn closed"}
+{"ts":1792566237,"kind":"step","text":"turn done in 28s, 0 calls, ok"}
+{"ts":1792566364,"kind":"surveil","text":"marque posee, reveil dans 15s"}
+{"ts":1792566391,"kind":"watch","text":"wake process finished: la surveillance de 15 secondes est arrivee a son terme"}
+{"ts":1792566395,"kind":"wake","text":"process finished: la surveillance de 15 secondes est arrivee a son terme"}
+{"ts":1792566399,"kind":"turn","text":"start"}
+{"ts":1792566401,"kind":"facts","text":"20261021-070640"}
+{"ts":1792566403,"kind":"second","text":"agent"}
+{"ts":1792566406,"kind":"effort","text":"high"}
+{"ts":1792566411,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792566413,"kind":"prompt","text":"80 bytes"}
+{"ts":1792566418,"kind":"call","text":"2423 tokens"}
+{"ts":1792566422,"kind":"tool","text":"reply: ok"}
+{"ts":1792566423,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792566423,"kind":"surveil","text":"marque posee, reveil dans 15s"}
+{"ts":1792566425,"kind":"reply","text":"155 bytes"}
+{"ts":1792566428,"kind":"note","text":"turn closed"}
+{"ts":1792566429,"kind":"step","text":"turn done in 29s, 0 calls, ok"}
+{"ts":1792566445,"kind":"turn","text":"start"}
+{"ts":1792566447,"kind":"facts","text":"20261021-070726"}
+{"ts":1792566449,"kind":"second","text":"agent"}
+{"ts":1792566452,"kind":"effort","text":"none"}
+{"ts":1792566457,"kind":"scope","text":"5 of 16 tools"}
+{"ts":1792566459,"kind":"prompt","text":"7 bytes"}
+{"ts":1792566470,"kind":"call","text":"2010 tokens"}
+{"ts":1792566474,"kind":"tool","text":"reply: ok"}
+{"ts":1792566475,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792566477,"kind":"reply","text":"119 bytes"}
+{"ts":1792566480,"kind":"note","text":"turn closed"}
+{"ts":1792566481,"kind":"step","text":"turn done in 35s, 0 calls, ok"}
+{"ts":1792566493,"kind":"watch","text":"wake process finished: la surveillance de 15 secondes est arrivee a son terme"}
+{"ts":1792566497,"kind":"wake","text":"process finished: la surveillance de 15 secondes est arrivee a son terme"}
+{"ts":1792566501,"kind":"turn","text":"start"}
+{"ts":1792566503,"kind":"facts","text":"20261021-070822"}
+{"ts":1792566505,"kind":"second","text":"agent"}
+{"ts":1792566508,"kind":"effort","text":"high"}
+{"ts":1792566512,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792566515,"kind":"prompt","text":"80 bytes"}
+{"ts":1792566520,"kind":"call","text":"2388 tokens"}
+{"ts":1792566523,"kind":"tool","text":"reply: ok"}
+{"ts":1792566524,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792566526,"kind":"reply","text":"115 bytes"}
+{"ts":1792566529,"kind":"note","text":"turn closed"}
+{"ts":1792566530,"kind":"step","text":"turn done in 28s, 0 calls, ok"}
+{"ts":1792566540,"kind":"purge","text":"memoire rendue au noyau"}
+{"ts":1792566563,"kind":"turn","text":"start"}
+{"ts":1792566565,"kind":"facts","text":"20261021-070924"}
+{"ts":1792566567,"kind":"second","text":"agent"}
+{"ts":1792566570,"kind":"effort","text":"none"}
+{"ts":1792566575,"kind":"scope","text":"5 of 16 tools"}
+{"ts":1792566578,"kind":"prompt","text":"7 bytes"}
+{"ts":1792566582,"kind":"call","text":"2017 tokens"}
+{"ts":1792566586,"kind":"tool","text":"reply: ok"}
+{"ts":1792566587,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792566590,"kind":"reply","text":"150 bytes"}
+{"ts":1792566606,"kind":"purge","text":"memoire rendue au noyau"}
+{"ts":1792566607,"kind":"note","text":"turn closed"}
+{"ts":1792566608,"kind":"step","text":"turn done in 44s, 0 calls, ok"}
+{"ts":1792566810,"kind":"surveil","text":"arme toutes les 30s, 12 fois : le pont et le telechargement "}
+{"ts":1792566851,"kind":"watch","text":"wake process finished: la surveillance continue (1/12) : le pont et le telechargement"}
+{"ts":1792566854,"kind":"wake","text":"process finished: la surveillance continue (1/12) : le pont et le telechargement"}
+{"ts":1792566859,"kind":"turn","text":"start"}
+{"ts":1792566861,"kind":"facts","text":"20261021-071420"}
+{"ts":1792566864,"kind":"second","text":"agent"}
+{"ts":1792566866,"kind":"effort","text":"high"}
+{"ts":1792566872,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792566874,"kind":"prompt","text":"88 bytes"}
+{"ts":1792566881,"kind":"call","text":"2634 tokens"}
+{"ts":1792566885,"kind":"tool","text":"reply: ok"}
+{"ts":1792566886,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792566888,"kind":"reply","text":"173 bytes"}
+{"ts":1792566923,"kind":"purge","text":"memoire rendue au noyau"}
+{"ts":1792566924,"kind":"note","text":"turn closed"}
+{"ts":1792566925,"kind":"step","text":"turn done in 65s, 0 calls, ok"}
+{"ts":1792566960,"kind":"watch","text":"wake process finished: la surveillance continue (2/12) : le pont et le telechargement"}
+{"ts":1792566963,"kind":"wake","text":"process finished: la surveillance continue (2/12) : le pont et le telechargement"}
+{"ts":1792566967,"kind":"turn","text":"start"}
+{"ts":1792566969,"kind":"facts","text":"20261021-071608"}
+{"ts":1792566971,"kind":"second","text":"human"}
+{"ts":1792566973,"kind":"effort","text":"high"}
+{"ts":1792566978,"kind":"purge","text":"le froid rendu, les poids gardes"}
+{"ts":1792566978,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792566980,"kind":"prompt","text":"88 bytes"}
+{"ts":1792566986,"kind":"call","text":"2870 tokens"}
+{"ts":1792566990,"kind":"tool","text":"reply: ok"}
+{"ts":1792566991,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792566993,"kind":"reply","text":"209 bytes"}
+{"ts":1792566998,"kind":"purge","text":"le froid rendu, les poids gardes"}
+{"ts":1792566998,"kind":"purge","text":"le froid rendu, les poids gardes"}
+{"ts":1792566999,"kind":"note","text":"turn closed"}
+{"ts":1792567000,"kind":"step","text":"turn done in 32s, 0 calls, ok"}
+{"ts":1792568028,"kind":"turn","text":"start"}
+{"ts":1792568030,"kind":"facts","text":"20261021-073349"}
+{"ts":1792568033,"kind":"second","text":"agent"}
+{"ts":1792568035,"kind":"effort","text":"medium"}
+{"ts":1792568040,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792568043,"kind":"prompt","text":"56 bytes"}
+{"ts":1792568047,"kind":"call","text":"2308 tokens"}
+{"ts":1792568051,"kind":"tool","text":"reply: ok"}
+{"ts":1792568052,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792568054,"kind":"reply","text":"101 bytes"}
+{"ts":1792568058,"kind":"purge","text":"le froid rendu, les poids gardes"}
+{"ts":1792568060,"kind":"note","text":"turn closed"}
+{"ts":1792568061,"kind":"step","text":"turn done in 32s, 0 calls, ok"}
+{"ts":1792568077,"kind":"surveil","text":"programmee une fois, toutes les 30s, 12 fois : le pont et le telechargement "}
+{"ts":1792568110,"kind":"turn","text":"start"}
+{"ts":1792568112,"kind":"facts","text":"20261021-073511"}
+{"ts":1792568114,"kind":"second","text":"agent"}
+{"ts":1792568117,"kind":"effort","text":"high"}
+{"ts":1792568122,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792568124,"kind":"prompt","text":"64 bytes"}
+{"ts":1792568129,"kind":"call","text":"2735 tokens"}
+{"ts":1792568133,"kind":"tool","text":"reply: ok"}
+{"ts":1792568134,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792568136,"kind":"reply","text":"103 bytes"}
+{"ts":1792568140,"kind":"purge","text":"le froid rendu, les poids gardes"}
+{"ts":1792568141,"kind":"note","text":"turn closed"}
+{"ts":1792568142,"kind":"step","text":"turn done in 31s, 0 calls, ok"}
+{"ts":1792568148,"kind":"turn","text":"start"}
+{"ts":1792568151,"kind":"facts","text":"20261021-073549"}
+{"ts":1792568153,"kind":"second","text":"human"}
+{"ts":1792568155,"kind":"effort","text":"high"}
+{"ts":1792568160,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792568163,"kind":"prompt","text":"64 bytes"}
+{"ts":1792568176,"kind":"call","text":"2595 tokens"}
+{"ts":1792568178,"kind":"turn","text":"start"}
+{"ts":1792568180,"kind":"facts","text":"20261021-073619"}
+{"ts":1792568183,"kind":"second","text":"agent"}
+{"ts":1792568185,"kind":"effort","text":"high"}
+{"ts":1792568189,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792568192,"kind":"prompt","text":"64 bytes"}
+{"ts":1792568197,"kind":"call","text":"2675 tokens"}
+{"ts":1792568200,"kind":"tool","text":"reply: ok"}
+{"ts":1792568201,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792568203,"kind":"reply","text":"151 bytes"}
+{"ts":1792568207,"kind":"purge","text":"le froid rendu, les poids gardes"}
+{"ts":1792568208,"kind":"note","text":"turn closed"}
+{"ts":1792568209,"kind":"step","text":"turn done in 30s, 0 calls, ok"}
+{"ts":1792568214,"kind":"turn","text":"start"}
+{"ts":1792568216,"kind":"facts","text":"20261021-073655"}
+{"ts":1792568219,"kind":"second","text":"agent"}
+{"ts":1792568221,"kind":"effort","text":"high"}
+{"ts":1792568226,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792568228,"kind":"prompt","text":"64 bytes"}
+{"ts":1792568233,"kind":"call","text":"2706 tokens"}
+{"ts":1792568236,"kind":"tool","text":"reply: ok"}
+{"ts":1792568238,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792568240,"kind":"reply","text":"172 bytes"}
+{"ts":1792568241,"kind":"reply","text":"sommeil auto 580s arme"}
+{"ts":1792568244,"kind":"purge","text":"le froid rendu, les poids gardes"}
+{"ts":1792568246,"kind":"note","text":"turn closed"}
+{"ts":1792568247,"kind":"step","text":"turn done in 32s, 0 calls, ok"}
+{"ts":1792568331,"kind":"surveil","text":"programmee une fois, toutes les 15s, 12 fois : le pont "}
+{"ts":1792568347,"kind":"turn","text":"start"}
+{"ts":1792568349,"kind":"facts","text":"20261021-073908"}
+{"ts":1792568351,"kind":"second","text":"agent"}
+{"ts":1792568354,"kind":"effort","text":"medium"}
+{"ts":1792568359,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792568362,"kind":"prompt","text":"56 bytes"}
+{"ts":1792568365,"kind":"call","text":"2244 tokens"}
+{"ts":1792568368,"kind":"tool","text":"reply: ok"}
+{"ts":1792568370,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792568372,"kind":"reply","text":"76 bytes"}
+{"ts":1792568373,"kind":"reply","text":"sommeil auto 580s arme"}
+{"ts":1792568377,"kind":"purge","text":"le froid rendu, les poids gardes"}
+{"ts":1792568378,"kind":"note","text":"turn closed"}
+{"ts":1792568379,"kind":"step","text":"turn done in 31s, 0 calls, ok"}
+{"ts":1792568379,"kind":"turn","text":"start"}
+{"ts":1792568381,"kind":"facts","text":"20261021-073940"}
+{"ts":1792568384,"kind":"second","text":"agent"}
+{"ts":1792568386,"kind":"effort","text":"high"}
+{"ts":1792568391,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792568958,"kind":"turn","text":"start"}
+{"ts":1792568960,"kind":"facts","text":"20261021-074919"}
+{"ts":1792568963,"kind":"second","text":"agent"}
+{"ts":1792568965,"kind":"effort","text":"none"}
+{"ts":1792568970,"kind":"scope","text":"6 of 16 tools"}
+{"ts":1792568972,"kind":"prompt","text":"57 bytes"}
+{"ts":1792568976,"kind":"call","text":"2115 tokens"}
+{"ts":1792568979,"kind":"tool","text":"reply: ok"}
+{"ts":1792568981,"kind":"step","text":"stopped: the answer is said"}
+{"ts":1792568983,"kind":"reply","text":"41 bytes"}
+{"ts":1792568988,"kind":"purge","text":"le froid rendu, les poids gardes"}
+{"ts":1792568989,"kind":"note","text":"turn closed"}
+{"ts":1792568990,"kind":"step","text":"turn done in 31s, 0 calls, ok"}
+{"ts":1792606760,"kind":"prompt","text":"43 bytes"}
+{"ts":1792606802,"kind":"prompt","text":"43 bytes"}
+{"ts":1792606806,"kind":"prompt","text":"48 bytes"}
+{"ts":1792606831,"kind":"prompt","text":"43 bytes"}
+{"ts":1792606834,"kind":"prompt","text":"48 bytes"}
+{"ts":1792606838,"kind":"prompt","text":"32 bytes"}
+{"ts":1792606842,"kind":"prompt","text":"38 bytes"}
+{"ts":1792606849,"kind":"prompt","text":"32 bytes"}
+{"ts":1792606856,"kind":"prompt","text":"32 bytes"}
+{"ts":1792611788,"kind":"step","text":"tunnel: step 401 closed, the route of phone-tunnel moved on"}
+{"ts":1792611799,"kind":"step","text":"tunnel: state[D12]/probe.route cannot be read, step 401 stays open"}
+{"ts":1792611801,"kind":"step","text":"tunnel: state[D12]/probe.route cannot be read, step 401 stays open"}
+{"ts":1792611812,"kind":"step","text":"tunnel: no effect on config[D01]/state[D12]/probe.route (8 bytes), step 401 stays open"}
+{"ts":1792611815,"kind":"step","text":"tunnel: step 401 closed, the route of phone-tunnel moved on"}
+{"ts":1792611845,"kind":"scope","text":"17 of 17 tools"}
+{"ts":1792611850,"kind":"scope","text":"17 of 17 tools"}
+{"ts":1792611894,"kind":"scope","text":"17 of 17 tools"}
+{"ts":1792611905,"kind":"scope","text":"17 of 17 tools"}
+{"ts":1792611933,"kind":"scope","text":"41 of 41 tools"}
+{"ts":1792612606,"kind":"step","text":"advance: step 401 closed, the plan of phone-tunnel moved on"}
+{"ts":1792612638,"kind":"scope","text":"17 of 17 tools"}
+{"ts":1792612644,"kind":"scope","text":"17 of 17 tools"}
+{"ts":1792612651,"kind":"scope","text":"17 of 17 tools"}
+{"ts":1792612677,"kind":"scope","text":"17 of 17 tools"}
+{"ts":1792612683,"kind":"scope","text":"18 of 18 tools"}
+{"ts":1792612690,"kind":"scope","text":"17 of 17 tools"}
+{"ts":1792612729,"kind":"scope","text":"41 of 41 tools"}
+{"ts":1792612736,"kind":"scope","text":"28 of 28 tools"}
+{"ts":1792612743,"kind":"scope","text":"18 of 18 tools"}
+{"ts":1792612853,"kind":"scope","text":"18 of 18 tools"}
+{"ts":1792612861,"kind":"scope","text":"41 of 41 tools"}

@@ -18,7 +18,7 @@ machine: "blender"
 op: "sequencer.strip_modifier_add_node_group"
 
 ARGS:
-  - {name: asset_library_type, type: text}          # un de : ALL | LOCAL | ESSENTIALS | ONLINE_ESSENTIALS | CUSTOM
+  - {name: asset_library_type, type: text}          # one of: ALL | LOCAL | ESSENTIALS | ONLINE_ESSENTIALS | CUSTOM
   - {name: asset_library_identifier, type: text}
   - {name: relative_asset_identifier, type: text}
   - {name: session_uid, type: int}

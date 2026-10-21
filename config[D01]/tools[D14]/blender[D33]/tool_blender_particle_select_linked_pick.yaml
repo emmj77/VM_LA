@@ -18,5 +18,5 @@ machine: "blender"
 op: "particle.select_linked_pick"
 
 ARGS:
-  - {name: deselect, type: text}          # true|false, vide pour ne rien poser
+  - {name: deselect, type: text}          # true|false, empty to set nothing
   - {name: location, type: int}

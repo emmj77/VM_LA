@@ -1,34 +1,34 @@
 id: "K08"
 skill: "download-file"
 date: "2026-10-19"
-tags: ["telechargement", "fichier", "https", "sha256", "download_file"]
+tags: ["download", "file", "https", "sha256", "download_file"]
 
 SUMMARY:
-  100: "FAIRE ENTRER UN FICHIER DU DEHORS, LE MONTRER, ET NE JAMAIS L EXECUTER."
-  101: "MOUSSA, 19/10 : « l agent a tendance a dl de maniere anarchique ». C est ce desordre"
-  102: "que cette skill empeche : un fichier a la fois, un nom valide, une empreinte rendue."
-  110: "LA REGLE, EN TROIS PHRASES"
-  111: "1. On telecharge dans l espace de travail (work/), jamais dans le systeme. Le nom du"
-  112: "   fichier ne porte ni / ni .. : il ne peut pas sortir du dossier."
-  113: "2. Le tool rend la TAILLE et l EMPREINTE sha256. Un fichier entre sans empreinte est un"
-  114: "   fichier qu on ne peut pas verifier : on ne s en sert pas."
-  115: "3. On EXECUTE JAMAIS ce qui vient d entrer. Un binaire telecharge reste un fichier ; s il"
-  116: "   faut l installer, c est install_program (paquet du depot) ou un geste signe a la main."
-  120: "CE QUE TU NE FAIS PAS ICI"
-  121: "Pas de http (le fichier traverserait en clair), pas de ftp, pas de file://. Pas de"
-  122: "boucle de telechargement : un fichier, une adresse, un nom. Pas de « curl | bash » :"
-  123: "ce n est pas un telechargement, c est une execution deguisee, et elle est refusee."
-  130: "L APPROBATION : cette skill porte APPROVAL: true, et download_file est dans GATED. Tout"
-  131: "telechargement demande donc un FEU VERT HUMAIN NOMME (work/approve), une fois, dans la"
-  132: "fenetre. C est la seule facon d avoir un journal de ce qui est entre, et par qui."
+  100: "BRING A FILE IN FROM OUTSIDE, SHOW IT, AND NEVER RUN IT."
+  101: "MOUSSA, 19/10: 'the agent tends to download in an anarchic way'. This disorder"
+  102: "is what this skill prevents: one file at a time, a valid name, a fingerprint returned."
+  110: "THE RULE, IN THREE SENTENCES"
+  111: "1. The download goes into the workspace (work/), never into the system. The file"
+  112: "   name carries neither / nor ..: it cannot leave the folder."
+  113: "2. The tool returns the SIZE and the sha256 FINGERPRINT. A file that comes in without a fingerprint is a"
+  114: "   file that cannot be checked: it is not used."
+  115: "3. What came in is NEVER RUN. A downloaded binary stays a file; if it"
+  116: "   must be installed, that is install_program (repository package) or an act signed by hand."
+  120: "WHAT YOU DO NOT DO HERE"
+  121: "No http (the file would cross in clear), no ftp, no file://. No"
+  122: "download loop: one file, one address, one name. No curl pipe to bash:"
+  123: "that is not a download, it is a disguised execution, and it is refused."
+  130: "THE APPROVAL: this skill carries APPROVAL: true, and download_file is in GATED. Every"
+  131: "download therefore asks for a NAMED HUMAN GO (work/approve), once, inside the"
+  132: "window. It is the only way to keep a journal of what came in, and through whom."
 
 RULES:
   create_subfolder: true
   execute_code: false
   max_section_lines: 100
 
-# L AGENT TELECHARGE MAL QUAND PERSONNE NE REGARDE (constat de MOUSSA). Le droit existe, mais il se
-# signe : download_file est dans GATED, donc chaque appel demande un feu vert nomme et frais.
+  # THE AGENT DOWNLOADS BADLY WHEN NOBODY WATCHES (MOUSSA's observation). The right exists, but it is
+  # signed: download_file is in GATED, so every call asks for a named and fresh go.
 APPROVAL: true
 PERMANENT_TODO: false
 
@@ -43,18 +43,18 @@ DOCS:
   300: "TUNNEL_trois_skills_a_juger"
 
 PLAN:
-  400: "tache : faire entrer un fichier et le prouver"
+  400: "task: bring a file in and prove it"
   401: "etat : todo"
 
-PERIMETER:
-  # LE DEDANS D UN TELECHARGEMENT, C EST LE DOSSIER DE TELECHARGEMENT DE L HUMAIN (MOUSSA, 19/10).
-  # Ecrit en ABSOLU et non en relatif a la racine : le moteur resout les deux, mais un relatif
-  # (« work/ ») enverrait les fichiers dans l espace de travail de l agent, ou l humain ne les
-  # verrait jamais. C est le seul dossier de ce projet qui sorte de l arborescence, et il sort
-  # pour une raison : c est la que MOUSSA regarde.
+WRITABLE_WORKSPACE:
+  # THE INSIDE OF A DOWNLOAD IS THE DOWNLOAD FOLDER OF THE HUMAN (MOUSSA, 19/10).
+  # Written as an ABSOLUTE path, not relative to the root: the engine resolves both, but a relative
+  # ("work/") would send the files into the agent workspace, where the human would
+  # never see them. It is the only folder of this project that leaves the tree, and it leaves
+  # for one reason: it is where MOUSSA looks.
   workspace: "/home/moussa/Téléchargements"
   type-file: ".deb .rpm .AppImage .tar.gz .tgz .zip .whl .gguf .onnx .md .yaml .txt .json .sh .conf .pdf .png .jpg"
 
 ERROR:
-  600: "le fichier est deja la : on ne l ecrase pas, on donne un autre nom"
-  601: "l empreinte ne correspond pas a celle annoncee par la source : le fichier n est pas celui qu on croit"
+  600: "the file is already there: it is not overwritten, another name is given"
+  601: "the fingerprint does not match the one the source announced: the file is not what it is thought to be"

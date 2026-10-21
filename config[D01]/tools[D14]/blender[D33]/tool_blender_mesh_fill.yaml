@@ -18,4 +18,4 @@ machine: "blender"
 op: "mesh.fill"
 
 ARGS:
-  - {name: use_beauty, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_beauty, type: text}          # true|false, empty to set nothing

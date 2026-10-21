@@ -19,10 +19,10 @@ op: "uv.randomize_uv_transform"
 
 ARGS:
   - {name: random_seed, type: int}
-  - {name: use_loc, type: text}          # true|false, vide pour ne rien poser
-  - {name: loc, type: text}          # 2 valeurs separees par des virgules
-  - {name: use_rot, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_loc, type: text}          # true|false, empty to set nothing
+  - {name: loc, type: text}          # 2 values separated by commas
+  - {name: use_rot, type: text}          # true|false, empty to set nothing
   - {name: rot, type: text}
-  - {name: use_scale, type: text}          # true|false, vide pour ne rien poser
-  - {name: scale_even, type: text}          # true|false, vide pour ne rien poser
-  - {name: scale, type: text}          # 2 valeurs separees par des virgules
+  - {name: use_scale, type: text}          # true|false, empty to set nothing
+  - {name: scale_even, type: text}          # true|false, empty to set nothing
+  - {name: scale, type: text}          # 2 values separated by commas

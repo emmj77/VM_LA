@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "Add a layer to an AnimatorController."
 
 COMMAND: |
-  CLI=${LA_UNITY_MCP:-}   # unity: mcp dans la_config, pose par le moteur
+  CLI=${LA_UNITY_MCP:-}   # unity: mcp in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_mcp_missing_paths)" >&2; exit 1; }
   set -f
   set -- animation controller add-layer
@@ -33,6 +33,6 @@ COMMAND: |
 
 ARGS:
   - {name: weight, type: text}
-  - {name: blending_mode, type: text}          # un de : override | additive
+  - {name: blending_mode, type: text}          # one of: override | additive
   - {name: controller_path, type: text}
   - {name: layer_name, type: text}

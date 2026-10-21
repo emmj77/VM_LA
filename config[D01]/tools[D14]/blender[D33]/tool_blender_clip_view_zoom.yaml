@@ -19,4 +19,4 @@ op: "clip.view_zoom"
 
 ARGS:
   - {name: factor, type: text}
-  - {name: use_cursor_init, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_cursor_init, type: text}          # true|false, empty to set nothing

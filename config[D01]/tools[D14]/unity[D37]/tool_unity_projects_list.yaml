@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "List Unity projects registered in the Hub"
 
 COMMAND: |
-  CLI=${LA_UNITY_CLI:-}   # unity: cli dans la_config, pose par le moteur
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
   [ -x "$CLI" ] || { printf '%s\n' "$(msg unity_cli_missing)" >&2; exit 1; }
   set -f
   set -- projects list --no-banner --no-pager --non-interactive
@@ -53,12 +53,12 @@ COMMAND: |
 
 ARGS:
   - {name: pattern, type: text}   # facultatif
-  - {name: verbose, type: text}   # true pour poser --verbose ; Show all columns (name, path, version, modified, cloud, pipeline)
-  - {name: editor_version, type: text}   # true pour poser --editor-version ; Show editor version column
-  - {name: modified, type: text}   # true pour poser --modified ; Show last-modified column
-  - {name: cloud, type: text}   # true pour poser --cloud ; Show the Unity Cloud project id column
-  - {name: pipeline, type: text}   # true pour poser --pipeline ; Show render pipeline column
-  - {name: vcs, type: text}   # true pour poser --vcs ; Show VCS provider and repository column
-  - {name: all, type: text}   # true pour poser --all ; Print all projects without paging
+  - {name: verbose, type: text}   # true to set --verbose ; Show all columns (name, path, version, modified, cloud, pipeline)
+  - {name: editor_version, type: text}   # true to set --editor-version ; Show editor version column
+  - {name: modified, type: text}   # true to set --modified ; Show last-modified column
+  - {name: cloud, type: text}   # true to set --cloud ; Show the Unity Cloud project id column
+  - {name: pipeline, type: text}   # true to set --pipeline ; Show render pipeline column
+  - {name: vcs, type: text}   # true to set --vcs ; Show VCS provider and repository column
+  - {name: all, type: text}   # true to set --all ; Print all projects without paging
   - {name: limit, type: text}   # Projects per page (default: 10)
-  - {name: watch, type: text}   # true pour poser --watch ; Watch for project list changes and refresh output (Ctrl-C to stop)
+  - {name: watch, type: text}   # true to set --watch ; Watch for project list changes and refresh output (Ctrl-C to stop)

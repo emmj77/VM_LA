@@ -19,5 +19,5 @@ op: "object.link_to_collection"
 
 ARGS:
   - {name: collection_uid, type: int}
-  - {name: is_new, type: text}          # true|false, vide pour ne rien poser
+  - {name: is_new, type: text}          # true|false, empty to set nothing
   - {name: new_collection_name, type: text}

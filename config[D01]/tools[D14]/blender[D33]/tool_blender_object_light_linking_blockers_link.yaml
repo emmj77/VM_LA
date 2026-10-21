@@ -18,4 +18,4 @@ machine: "blender"
 op: "object.light_linking_blockers_link"
 
 ARGS:
-  - {name: link_state, type: text}          # un de : INCLUDE | EXCLUDE
+  - {name: link_state, type: text}          # one of: INCLUDE | EXCLUDE

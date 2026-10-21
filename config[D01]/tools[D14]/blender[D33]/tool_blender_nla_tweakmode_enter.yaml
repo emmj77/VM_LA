@@ -18,5 +18,5 @@ machine: "blender"
 op: "nla.tweakmode_enter"
 
 ARGS:
-  - {name: isolate_action, type: text}          # true|false, vide pour ne rien poser
-  - {name: use_upper_stack_evaluation, type: text}          # true|false, vide pour ne rien poser
+  - {name: isolate_action, type: text}          # true|false, empty to set nothing
+  - {name: use_upper_stack_evaluation, type: text}          # true|false, empty to set nothing

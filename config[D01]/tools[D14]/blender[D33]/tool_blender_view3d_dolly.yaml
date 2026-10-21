@@ -21,4 +21,4 @@ ARGS:
   - {name: mx, type: int}
   - {name: my, type: int}
   - {name: delta, type: int}
-  - {name: use_cursor_init, type: text}          # true|false, vide pour ne rien poser
+  - {name: use_cursor_init, type: text}          # true|false, empty to set nothing

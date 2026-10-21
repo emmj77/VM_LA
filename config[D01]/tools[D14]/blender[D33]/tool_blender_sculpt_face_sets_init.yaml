@@ -18,5 +18,5 @@ machine: "blender"
 op: "sculpt.face_sets_init"
 
 ARGS:
-  - {name: mode, type: text}          # un de : LOOSE_PARTS | MATERIALS | NORMALS | UV_SEAMS | CREASES | BEVEL_WEIGHT | SHARP_EDGES | FACE_SET_BOUNDARIES
+  - {name: mode, type: text}          # one of: LOOSE_PARTS | MATERIALS | NORMALS | UV_SEAMS | CREASES | BEVEL_WEIGHT | SHARP_EDGES | FACE_SET_BOUNDARIES
   - {name: threshold, type: text}
