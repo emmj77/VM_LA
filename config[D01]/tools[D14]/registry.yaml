@@ -19950,6 +19950,14 @@
   guardrail: false
   enabled: true
   visible: false
+- id: "G078"
+  tool: "voice_keywords"
+  family: MANAGE
+  sub_family: ""
+  doc: ""
+  guardrail: false
+  enabled: true
+  visible: true
 - id: "G077"
   tool: "terminal_libre"
   family: MANAGE

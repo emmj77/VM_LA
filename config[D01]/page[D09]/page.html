@@ -428,6 +428,9 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
 </head>
 <body>
 
+<!-- les commandes -->
+
+
 <!-- ===================== L EN-TETE : l etat, sur toutes les pages ===================== -->
 <header id="head">
   <div class="brand">LA<span class="dim">· tableau de bord</span></div>
@@ -1294,7 +1297,7 @@ async function loadSkills() {
   if (parts[0] === 'skills' && parts[1] && parts[1] !== S.skill) openSkill(decodeURIComponent(parts[1]));
 }
 
-const SEC_ORDER = ['SUMMARY', 'RULES', 'TOOLS', 'DOCS', 'PLAN', 'PERIMETER', 'ERROR'];
+const SEC_ORDER = ['SUMMARY', 'RULES', 'TOOLS', 'DOCS', 'PLAN', 'WRITABLE_WORKSPACE', 'ERROR'];
 
 async function openSkill(name) {
   S.skill = name;

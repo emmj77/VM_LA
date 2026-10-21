@@ -18,11 +18,12 @@
 3d[D17]	config[D01]/tools[D14]/3d[D17]
 ARCHITECTURE_LA.txt	ARCHITECTURE_LA.txt
 DECISION.txt	DECISION.txt
+INDEX_A_JOUR.txt	INDEX_A_JOUR.txt
 LA-CONVENTIONS.md	docs[D28]/LA-CONVENTIONS.md
 PISTES-micromodeles.md	docs[D28]/PISTES-micromodeles.md
 PLAN-doctor-refactor-2026-10-20.md	docs[D28]/PLAN-doctor-refactor-2026-10-20.md
+SKILL-TUNNEL.md	docs[D28]/SKILL-TUNNEL.md
 SLM-tool-use-only.md	docs[D28]/SLM-tool-use-only.md
-TUNNEL_three_skills_to_judge.md	docs[D28]/TUNNEL_three_skills_to_judge.md
 VM_LA	/home/moussa/Documents/VM_LA
 __pycache__	config[D01]/programs[D10]/__pycache__
 agent-browser.md	skills[D23]/web-agent/agent-browser.md
@@ -41,7 +42,6 @@ blender[D33]	config[D01]/tools[D14]/blender[D33]
 blocked_commands.txt	config[D01]/conf[D05]/blocked_commands.txt
 board.cpython-313.pyc	config[D01]/programs[D10]/__pycache__/board.cpython-313.pyc
 board.py	config[D01]/programs[D10]/board.py
-board.tmp	config[D01]/state[D12]/board.tmp
 board2.tmp	config[D01]/state[D12]/board2.tmp
 boot.sh	config[D01]/engine[D07]/boot.sh
 bridge-cert.pem	config[D01]/certs[D04]/bridge-cert.pem
@@ -74,6 +74,9 @@ disk-report	skills[D23]/disk-report
 docs[D28]	docs[D28]
 doctor.cache	config[D01]/state[D12]/doctor.cache
 doctor[D15]	config[D01]/tools[D14]/doctor[D15]
+doctor_manifest.pRcYml	config[D01]/state[D12]/tmp/doctor_manifest.pRcYml
+doctor_tools.0xwd5Q	config[D01]/state[D12]/tmp/doctor_tools.0xwd5Q
+doctor_tools.GYuiIZ	config[D01]/state[D12]/tmp/doctor_tools.GYuiIZ
 download-file	skills[D23]/download-file
 edit-file	skills[D23]/edit-file
 edit-table	skills[D23]/edit-table
@@ -88,9 +91,12 @@ filter[D08]	config[D01]/filter[D08]
 fs.sh	config[D01]/engine[D07]/fs.sh
 git	skills[D23]/git
 icons	config[D01]/applet[D02]/icons
+idxextra.kY01Kk	config[D01]/state[D12]/tmp/idxextra.kY01Kk
+idxmiss.LuMly2	config[D01]/state[D12]/tmp/idxmiss.LuMly2
 index_la.yaml	config[D01]/conf[D05]/index_la.yaml
 install.sh	config[D01]/conf[D05]/install.sh
 judge.txt	config[D01]/filter[D08]/judge.txt
+keysused.D4MPmV	config[D01]/state[D12]/tmp/keysused.D4MPmV
 krita	skills[D23]/krita
 krita[D36]	config[D01]/tools[D14]/krita[D36]
 la-active.svg	config[D01]/applet[D02]/icons/la-active.svg
@@ -116,7 +122,10 @@ memory.db	config[D01]/data[D06]/memory.db
 metadata.json	config[D01]/applet[D02]/metadata.json
 models-bench	skills[D23]/models-bench
 msg.sh	config[D01]/engine[D07]/msg.sh
-note.txt	config[D01]/state[D12]/note.txt
+new.1792609872.board.tmp	config[D01]/state[D12]/new.1792609872.board.tmp
+new.1792609872.note.txt	config[D01]/state[D12]/new.1792609872.note.txt
+new.1792609872.reply.stream	config[D01]/state[D12]/new.1792609872.reply.stream
+new.1792609872.request.txt	config[D01]/state[D12]/new.1792609872.request.txt
 page.html	config[D01]/page[D09]/page.html
 page[D09]	config[D01]/page[D09]
 phone-tunnel	skills[D23]/phone-tunnel
@@ -140,13 +149,9 @@ read_file.1792549063.txt	config[D01]/state[D12]/returns[D13]/read_file.179254906
 registry-engine.yaml	config[D01]/tools[D14]/engine[D16]/registry-engine.yaml
 registry.yaml	config[D01]/tools[D14]/registry.yaml
 registry_template.yaml	config[D01]/conf[D05]/templates[D27]/registry_template.yaml
-reply.stream	config[D01]/state[D12]/reply.stream
-request.txt	config[D01]/state[D12]/request.txt
 requests.txt	config[D01]/filter[D08]/requests.txt
 returns[D13]	config[D01]/state[D12]/returns[D13]
 run.sh	config[D01]/engine[D07]/run.sh
-say.done	config[D01]/state[D12]/say.done
-say.queue	config[D01]/state[D12]/say.queue
 scripts_centralises_06_07_2026.md	docs[D28]/scripts_centralises_06_07_2026.md
 search-code	skills[D23]/search-code
 search-files	skills[D23]/search-files
@@ -196,7 +201,6 @@ skill.yaml	skills[D23]/web-search/skill.yaml
 skill.yaml	skills[D23]/workshop/skill.yaml
 skill.yaml	skills[D23]/write-spec/skill.yaml
 skill_template.yaml	config[D01]/conf[D05]/templates[D27]/skill_template.yaml
-skills-tunnel-nouveau-format.md	docs[D28]/skills-tunnel-nouveau-format.md
 skills.bin	config[D01]/filter[D08]/skills.bin
 skills.txt	config[D01]/filter[D08]/skills.txt
 skills.vec	config[D01]/filter[D08]/skills.vec
@@ -214,6 +218,8 @@ speech-20261021-062119-146597.wav	config[D01]/audio[D03]/speech-20261021-062119-
 state-registry.md	docs[D28]/state-registry.md
 state[D12]	config[D01]/state[D12]
 step.sh	config[D01]/engine[D07]/step.sh
+stop.1792610039.say.done	config[D01]/state[D12]/stop.1792610039.say.done
+stop.1792610039.say.queue	config[D01]/state[D12]/stop.1792610039.say.queue
 stylesheet.css	config[D01]/applet[D02]/stylesheet.css
 summarize-document	skills[D23]/summarize-document
 supreme-pmc	projects[D21]/supreme-pmc
@@ -2768,6 +2774,7 @@ tool_vec.db	config[D01]/data[D06]/tool_vec.db
 tool_vision_analyze.yaml	config[D01]/tools[D14]/core[D35]/tool_vision_analyze.yaml
 tool_vision_image.yaml	config[D01]/tools[D14]/core[D35]/tool_vision_image.yaml
 tool_vision_read.yaml	config[D01]/tools[D14]/core[D35]/tool_vision_read.yaml
+tool_voice_keywords.yaml	config[D01]/tools[D14]/core[D35]/tool_voice_keywords.yaml
 tool_wan-t2v.yaml	config[D01]/tools[D14]/comfyui[D34]/tool_wan-t2v.yaml
 tool_watch_judge.yaml	config[D01]/tools[D14]/watch[D20]/tool_watch_judge.yaml
 tool_watch_surveil.yaml	config[D01]/tools[D14]/watch[D20]/tool_watch_surveil.yaml
@@ -2793,6 +2800,8 @@ units[D26]	config[D01]/conf[D05]/units[D26]
 unity	skills[D23]/unity
 unity[D37]	config[D01]/tools[D14]/unity[D37]
 usage.jsonl	config[D01]/data[D06]/usage.jsonl
+voice_keywords.py	config[D01]/programs[D10]/voice_keywords.py
+voice_keywords.txt	config[D01]/conf[D05]/voice_keywords.txt
 watch.armed	config[D01]/state[D12]/watch.armed
 watch.cpython-314.pyc	config[D01]/programs[D10]/__pycache__/watch.cpython-314.pyc
 watch.py	config[D01]/programs[D10]/watch.py

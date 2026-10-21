@@ -29,6 +29,9 @@ date: "2026-10-21"
 # what the machine offers; nothing here belongs to the repo
 machine:
   threads: 8
+  kws:
+    root: "/home/moussa/Applications/sherpa-onnx/kws-en/sherpa-onnx-kws-zipformer-gigaspeech-3.3M-2024-01-01"
+    python: "/home/moussa/Applications/sherpa-onnx/.venv/bin/python"
   llama:
     bin: "/home/moussa/Applications/llama.cpp/build_cuda/bin/llama-server"
     gguf: "/home/moussa/LLM_GGUF"
@@ -395,6 +398,9 @@ commands:
   - id: "V13"
     name: "tool"
     act: tool_call
+  - id: "V14"
+    name: "voice keywords"
+    tool: voice_keywords
 
 # the head of every prompt, in zones: the prefix that never moves (prompt cache)
 head:
