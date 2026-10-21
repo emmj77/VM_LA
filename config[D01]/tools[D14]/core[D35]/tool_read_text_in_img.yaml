@@ -24,7 +24,7 @@ COMMAND: |
   esac
   _I=$(cfg str machine.ocr.bin)
   [ -x "$_I" ] || { printf '%s\n' "$(msg indra_missing_machine)" >&2 ; exit 1 ; }
-  T=$("$_I" "$F" --format text 2>/dev/null | sed -e 's/[[:space:]]*$//' -e '/^$/d')
+  T=$("$_I" "$F" --format text --model-dir "$(cfg str machine.ocr.models)" 2>/dev/null | sed -e 's/[[:space:]]*$//' -e '/^$/d')
   if [ -z "$T" ]; then
     printf '%s\n' "$(msg text_found_image_path)"
     exit 0

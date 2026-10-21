@@ -43,7 +43,8 @@ machine:
     host: "127.0.0.1"
     port: 5678
   ocr:                                        # what reads the text out of an image
-    bin: "/mnt/hermes_workspace/hermes/tools/indra-env/bin/indra-ocr"
+    bin: "/home/moussa/Applications/indra-ocr/.venv/bin/indra-ocr"
+    models: "/home/moussa/LLM_GGUF/indra-ocr"
   app:
     apk: "/home/moussa/Applications/LA-app.apk"
   browser:                                    # the window of the page, as it was
