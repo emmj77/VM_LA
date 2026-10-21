@@ -55,9 +55,9 @@ files:
   - {id: "C04", name: "pipeline.yaml", role: "the turn as ordered steps: facts second scope prompt call tools reply note"}
   - {id: "C05", name: "second.head", role: "the second head: its prompt"}
   - {id: "C06", name: "texts.yaml", role: "every phrase: refusals, turn, board, bridge, voice, doctor"}
-  - {id: "C10", name: "blocked_commands.txt", role: "the blocklist of the free terminal: one command name per line, masked to /dev/null in the cage"}
   - {id: "C08", name: "second.yaml", role: "the second head kinds and bounds"}
   - {id: "C09", name: "llama_preset.ini", role: "the llama.cpp preset of the local engine"}
+  - {id: "C10", name: "blocked_commands.txt", role: "the blocklist of the free terminal: one command name per line, masked to /dev/null in the cage"}
   - {id: "E01", name: "approval.sh", role: "the human door: a signed go is checked here, never asked by a tool"}
   - {id: "E02", name: "args.sh", role: "declared arguments to a command line: path enum int bool text"}
   - {id: "E03", name: "boot.sh", role: "the only sourced line: it finds the master file, loads cfg, then every brick by its key"}
