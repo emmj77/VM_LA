@@ -19,8 +19,8 @@ COMMAND: |
   F="$W/{{source}}"; [ -f "$F" ] || F="$ROOT/{{source}}"
   [ -f "$F" ] || { printf 'refused: the image is missing (%s)\n' "{{source}}" >&2 ; exit 1 ; }
   O="$W/{{out}}"
-  if [ -z "{{out}}" ]; then _b=$(basename "$F"); O="$(dirname "$F")/${_b%.*}.repaired.png"; fi
-  run_call comfyui_pixel_job "op=inpaint" "image=$F" "out=$O" "zone={{zone}}"
+  _r=$(run_call comfyui_pixel_job "op=inpaint" "image=$F" "out=$O" "zone={{zone}}") || { printf '%s\n' "$(printf '%s' "$_r" | jq -r '.result // "refused"' 2>/dev/null)" >&2 ; exit 1 ; }
+  printf '%s\n' "$(printf '%s' "$_r" | jq -r '.result // empty' 2>/dev/null)"
 
 ARGS:
   - {name: source, type: path}
