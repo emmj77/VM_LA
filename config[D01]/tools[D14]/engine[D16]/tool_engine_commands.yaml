@@ -24,22 +24,16 @@ COMMAND: |
     LA_FROM=engine "$_d" board "$_b" 2>&1
     ;;
   line)
-    _l=$(printf '%s' "$_in" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    _l=$(printf '%s' "$_in" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's#^/##')
     [ -n "$_l" ] || { printf 'FAULT line wants a command on the input\n'; exit 0; }
-    _c=$(printf '%s' "$_l" | awk '{ print $1 }')
-    _a=$(printf '%s' "$_l" | sed 's/^[^ ]*[ ]*//')
+    _c=${_l%% *}
     case $_c in
-    /doctor)  run_call engine.doctor "op=${_a:-short}" ;;
-    /stop)    printf 'stop\n' | write_atomic "$(cfg abs stop)"; printf 'ok the turn is asked to stop\n' ;;
-    /start)   gio trash -- "$(cfg abs stop)" 2>/dev/null; printf 'ok the stop is lifted\n' ;;
-    /model)   if [ -n "$_a" ]; then printf '%s' "$_a" | run_call engine.switch op=take | jq -r '.result // .' 2>/dev/null
-              else run_call engine.switch op=list | jq -r '.result // .' 2>/dev/null; fi ;;
-    /to)      printf '%s' "$_l" | run_call engine.commands op=say ;;
-    /say)     printf '%s' "$_a" | run_call engine.commands op=say ;;
-    /update)  run_call engine.update "op=${_a:-check}" ;;
-    /doctor*) run_call engine.doctor "op=${_a:-short}" ;;
-    /help|/|"") printf 'ok commands: /doctor /doctor <op> /stop /start /model <alias> /to <name> <text> /update /help\n' ;;
-    *)        printf 'note %s is not a command the engine knows\n' "$_c" ;;
+    to)     printf '/%s' "$_l" | run_call engine.commands op=say ;;
+    say)    printf '%s' "${_l#say }" | run_call engine.commands op=say ;;
+    update) run_call engine.update "op=$(printf '%s' "${_l#update }" | sed -e 's/^--//' -e 's/^$//')" ;;
+    *)
+      if cmd_has "$_c"; then set -- $_l; cmd_run "$@"
+      else printf 'note /%s is not a command of the master file\n' "$_c"; fi ;;
     esac
     ;;
   app)
@@ -97,7 +91,7 @@ COMMAND: |
       _d=$(cfg path skills) || exit 0
       [ -e "$_d/$_n" ] && { printf 'FAULT the skill %s already exists\n' "$_n"; exit 0; }
       mkdir -p "$_d/$_n" || { printf 'FAULT cannot create\n'; exit 0; }
-      printf 'tool: "%s"\ndate: "%s"\nPERIMETER:\n  workspace: "%s"\n  tools: ""\nTOOLS: []\nSUMMARY:\n  1: "%s"\n' \
+      printf 'tool: "%s"\ndate: "%s"\nWRITABLE_WORKSPACE:\n  workspace: "%s"\n  tools: ""\nTOOLS: []\nSUMMARY:\n  1: "%s"\n' \
         "$_n" "$(date +%%Y-%%m-%%d)" "$_n" "$_n" > "$_d/$_n/skill.yaml"
       printf 'ok skill %s written\n' "${_d#$ROOT/}/$_n"
       ;;

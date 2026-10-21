@@ -2,7 +2,7 @@
 == THE HUMAN ==
 you are talking with User (user) ; the agent answering is agent_one
 == THE ACTIVE PROJECT ==
-no project loaded : the perimeter is wide (every skill is reachable)
+no project loaded : the palette is wide (every skill is reachable)
 == THE ACTIVE SKILL ==
 no skill loaded : no skill is active (skills[D33]/.active is absent or empty)
 summary : none ; the active skill summary section is empty
@@ -21,7 +21,7 @@ agent_005_claire  idle : no turn runs
 == THE MESSAGES ==
 no message for me
 == THE TOOLS STATE ==
-no family open : the perimeter is wide
+no family open : the palette is wide
 always visible : reply kill tools_list sleep skill_list skill_view transcribe vision.read load_skill project_list project_view load_pr
 == HOW THE DEMAND READS ==
 judged_family : KRITA 0.26

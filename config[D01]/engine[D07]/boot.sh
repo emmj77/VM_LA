@@ -19,8 +19,9 @@ LC_ALL=C
 export LC_ALL
 . "$HERE/cfg.sh" || { echo "boot: cfg failed" >&2; return 1 2>/dev/null || exit 1; }
 for b in msg fs tab skl canon shape args cap run shell approval step; do
-  p=$(cfg abs "$b") || { echo "boot: no such brick: $b" >&2; return 1 2>/dev/null || exit 1; }
-  [ -n "$p" ] || { echo "boot: no such brick: $b" >&2; return 1 2>/dev/null || exit 1; }
+  p=$(cfg abs "$b" 2>/dev/null)
+  [ -n "$p" ] && [ -f "$p" ] || p="$HERE/$b.sh"
+  [ -f "$p" ] || { echo "boot: no such brick: $b" >&2; return 1 2>/dev/null || exit 1; }
   . "$p" || { echo "boot: cannot load $b" >&2; return 1 2>/dev/null || exit 1; }
 done
 # the names a program reads: one origin, one moment, never a path built by hand

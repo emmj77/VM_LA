@@ -23,7 +23,7 @@ COMMAND: |
       [ -f "$_s" ] || continue
       _n=$((_n + 1))
       _nm=$(basename -- "$(dirname -- "$_s")")
-      grep -q '^PERIMETER:' "$_s" || printf 'FAULT skill %s carries no PERIMETER\n' "$_nm"
+      grep -q '^WRITABLE_WORKSPACE:' "$_s" || printf 'FAULT skill %s carries no WRITABLE_WORKSPACE\n' "$_nm"
       grep -q '^  workspace:' "$_s" || printf 'FAULT skill %s carries no workspace\n' "$_nm"
       grep -q '^TOOLS:' "$_s" || printf 'FAULT skill %s carries no TOOLS\n' "$_nm"
     done
