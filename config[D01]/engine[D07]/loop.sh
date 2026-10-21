@@ -3,7 +3,16 @@
 _ltr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace op=line >/dev/null; }
 # role: the turn. one at a time, the steps of the pipeline in order, the calls repeated while there are some.
 
-# loop_steps : the pipeline split where it repeats: before call, the cycle, after tools
+# loop_steps : the pipeline split where it repeats: before call, the cycle, after the end
+# _step_end : the last step of the cycle. `advance` when the pipeline carries it (the plan
+# moves there), `tools` otherwise : the order of the file alone decides, nothing else.
+_step_end() {
+  for _s in $(step_list); do
+    [ "$_s" = advance ] && { printf 'advance\n'; return 0; }
+  done
+  printf 'tools\n'
+}
+
 loop_before() {
   _seen=0
   for _s in $(step_list); do
@@ -12,17 +21,19 @@ loop_before() {
   done
 }
 loop_cycle() {
+  _end=$(_step_end)
   _seen=0
   for _s in $(step_list); do
     if [ "$_s" = call ]; then _seen=1; fi
     if [ "$_seen" = 1 ]; then printf '%s\n' "$_s"; fi
-    [ "$_s" = tools ] && break
+    [ "$_s" = "$_end" ] && break
   done
 }
 loop_after() {
+  _end=$(_step_end)
   _seen=0
   for _s in $(step_list); do
-    [ "$_s" = tools ] && { _seen=1; continue; }
+    [ "$_s" = "$_end" ] && { _seen=1; continue; }
     [ "$_seen" = 1 ] && printf '%s\n' "$_s"
   done
 }

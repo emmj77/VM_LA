@@ -15,6 +15,7 @@ DESCRIPTION: "mark a task done"
 COMMAND: |
   _s=$(skl_skill 2>/dev/null)
   [ -n "$_s" ] || { printf 'note no armed skill: the plan has nowhere to live\n'; exit 0; }
+  skl_plan_is_closed "$_s" && { printf 'FAULT %s\n' "$(msg refusals.plan_is_closed)"; exit 0; }
   _f="$(cfg path skills)/$_s/skill.yaml"
   [ -r "$_f" ] || { printf 'FAULT %s carries no skill.yaml\n' "$_s"; exit 0; }
   id=$(cat | awk '{ print $1 }')

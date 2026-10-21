@@ -53,9 +53,9 @@ PLAN:
   401: "[progress] lire l etat du tunnel -- tools: tunnel_status"
   402: "[todo] lever wg0 et le dire -- tools: tunnel_up"
   403: "[todo] constater ce qui est monte -- tools: tunnel_status"
-  404: "[todo] rendre compte au telephone"
+  404: "[todo] rendre compte au telephone -- tools: reply"
 
-PERIMETER:
+WRITABLE_WORKSPACE:
   # le tunnel n ECRIT rien : il lit l etat de la machine et il rend compte. Le workspace est la
   # seule chose qu il puisse toucher, et il n en a pas besoin -- il est declare pour la forme que
   # le harnais exige, et il ne sert a aucune etape.

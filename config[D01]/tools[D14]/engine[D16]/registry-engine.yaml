@@ -286,6 +286,14 @@
   guardrail: true
   enabled: true
   visible: false
+- id: "T010"
+  tool: "turn.advance"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
 - id: "W001"
   tool: "watch.judge"
   family: WATCH

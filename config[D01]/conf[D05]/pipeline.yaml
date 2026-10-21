@@ -9,5 +9,6 @@ steps:
   - prompt
   - call
   - tools
+  - advance
   - reply
   - note

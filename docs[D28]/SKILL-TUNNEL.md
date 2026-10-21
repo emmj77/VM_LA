@@ -22,7 +22,7 @@ Ecrit le 2026-10-21. Corpus sans accent. Prose francaise, identifiants anglais (
 
 ## 1. DEFINITION
 
-Un tunnel est une skill dont la route est ecrite par l'humain, et dont chaque etape
+Un tunnel est une skill dont le plan ferme est ecrite par l'humain, et dont chaque etape
 n'ouvre au modele QU'UN outil. Le modele remplit un moule ; il ne choisit ni l'ordre,
 ni le plan, ni l'outil suivant. L'etape suivante s'ouvre sur un FAIT lu dans la machine,
 jamais sur la parole du modele. Le tunnel est la ROUTE ; le plan est son journal.
@@ -49,7 +49,7 @@ Trois piliers (lois 1020, 705, 1512, 1123-1125) :
 Consequence pour le tunnel : l'avance doit etre lue APRES `tools` et AVANT le `scope`
 du tour suivant. C'est exactement l'emplacement d'une etape de pipeline a ajouter.
 
-### 2.2 La palette — trois constructeurs, dont un mort
+### 2.2 Le toolset — trois constructeurs, dont un mort
 
 (a) `turn.scope` (tools/turn/tool_turn_scope.yaml) : c'est LUI qui produit le tableau
     `tools` envoye a l'API.
@@ -70,14 +70,14 @@ du tour suivant. C'est exactement l'emplacement d'une etape de pipeline a ajoute
 
     tool_allowed() { skl_permanent "$1" && return 0 ; skl_carries "$1" "$2" ; }
 
-    C'est le refus reel : un outil hors palette est refuse AVANT execution.
+    C'est le refus reel : un outil hors toolset est refuse AVANT execution.
 
-(c) `tools_list` (core/tool_toolset.yaml) : reconstruit la palette a la main. Il est
+(c) `tools_list` (core/tool_toolset.yaml) : reconstruit le toolset a la main. Il est
     MORT aujourd'hui : il lit `$ROOT/config/la_config.yaml` et `$ROOT/config/la_tools.yaml`,
     deux chemins qui n'existent pas (le maitre est `config[D01]/conf[D05]/la_config.yaml`).
     Il devra passer par le meme constructeur, pas par une troisieme lecture.
 
-Regle de pose : un seul constructeur (`skl_palette`), trois lecteurs. Deux lectures
+Regle de pose : un seul constructeur (`skl_toolset`), trois lecteurs. Deux lectures
 qui divergent font un modele qui appelle un outil que la porte refuse.
 
 ### 2.3 La porte — run.sh, dans l'ordre
@@ -118,9 +118,9 @@ le moteur a tenir le curseur dans la skill (decision 2).
 
 ### 2.6 Le gabarit — conf/templates/skill_template.yaml
 
-`PERMANENT_TODO: true` y est documente (le plan est une route, la palette se ferme sur
+`PERMANENT_TODO: true` y est documente (le plan est un plan ferme, le toolset se ferme sur
 l'etape courante, c'est la boucle qui ferme). Le bloc `STEPS` y a ete RETIRE le 19/10 :
-« une route qu'on ne peut pas appliquer est une suggestion de plus ». `set_steps` repond
+« un plan ferme qu'on ne peut pas appliquer est une suggestion de plus ». `set_steps` repond
 `steps_gone` (texts.yaml). Rien dans le code ne lit `PERMANENT_TODO`.
 
 ---
@@ -132,7 +132,7 @@ l'etape courante, c'est la boucle qui ferme). Le bloc `STEPS` y a ete RETIRE le 
 | qui lit PERMANENT_TODO | `grep -rn PERMANENT_TODO engine/ programs/ tools/` | 0 |
 | qui lit le suffixe `-- tools:` d'une ligne de plan | `grep -rn -- "tools:" engine/ programs/` | 0 |
 | qui lit STEPS | `grep -rln STEPS engine/ tools/` | 0 |
-| la palette est-elle coupee par etape | `tool_turn_scope.yaml` | non : permanent + toute la skill |
+| le toolset est-elle coupee par etape | `tool_turn_scope.yaml` | non : permanent + toute la skill |
 | les 4 outils tunnel sont-ils au registre | `grep -n 'tool: "tunnel' registry.yaml` | 4 (status, up, down, provision) |
 | `tools_list` est-il vivant | `ls $ROOT/config/la_config.yaml` | non : chemin inexistant |
 | `plan_status` appele par turn.prompt | `grep -rn plan_status` | 1 hit : l'appel seul, la fonction n'existe pas |
@@ -162,7 +162,7 @@ Regles de forme, refusees a la pose (loi 1014) :
   - `-- bytes: <chemin>@<taille>` : condition de delta (facultative, voir 5.4) ;
   - `-- max: <n>` : plafond de lignes pour l'outil de l'etape (facultatif).
 
-Ce que la route ne porte JAMAIS : ni consigne d'interdiction, ni nom d'un outil qu'elle
+Ce que le plan ferme ne porte JAMAIS : ni consigne d'interdiction, ni nom d'un outil qu'elle
 ne donne pas. Ce qui n'est pas envoye n'a pas besoin d'etre refuse (lois 705, 1512).
 
 ---
@@ -180,26 +180,26 @@ Le curseur n'est pas un fichier de plus : c'est le marqueur de la ligne de plan.
 L'ecriture de la ligne appartient au moteur, jamais au modele (loi 2404). Le geste est
 une reecriture d'UNE ligne par son id, comme `plan.progress` : `awk` puis `mv -f`.
 
-### 5.2 T1 — `skl_palette` : un constructeur, trois lecteurs
+### 5.2 T1 — `skl_toolset` : un constructeur, trois lecteurs
 
 Nouvelle fonction dans `engine/skl.sh`, a cote de `skl_toolset` :
 
-    skl_palette   # les noms des outils du tour, un par ligne
+    skl_toolset   # les noms des outils du tour, un par ligne
                   # tunnel ouvert -> l'outil de la ligne [progress], et lui seul
                   # sinon         -> skl_toolset (toute la skill)
                   # + la liste permanente, toujours
 
 Les trois lecteurs s'y branchent : `turn.scope` (le tableau envoye a l'API),
 `tool_allowed` (le refus de la porte), `tools_list` (la vue du modele).
-Un seul endroit decide du perimetre ; la palette et le refus ne peuvent plus diverger.
+Un seul endroit decide du perimetre ; le toolset et le refus ne peuvent plus diverger.
 
 ### 5.3 T2 — `turn.scope` : la coupe du reranker saute en tunnel
 
-Si `skl_palette` repond un tunnel ouvert, le classement ne s'applique pas : l'outil de
+Si `skl_toolset` repond un tunnel ouvert, le classement ne s'applique pas : l'outil de
 l'etape reste, meme s'il n'est pas dans le haut du classement. Sans ca, la coupe a 30 %
 peut retirer l'outil attendu et le tour est perdu.
 
-### 5.4 T3 — `turn.tunnel` : l'avance, apres `tools`
+### 5.4 T3 — `turn.advance` : l'avance, apres `tools`
 
 Un corps neuf, famille TURN (donc dans `registry-engine.yaml`), et UNE ligne dans
 `pipeline.yaml` apres `tools` :
@@ -227,14 +227,14 @@ Algorithme, a chaque tour :
 ### 5.5 T4 — `plan.*` fermes dans un tunnel
 
 `plan.add`, `plan.change`, `plan.progress`, `plan.done` refusent quand la skill armee
-porte `PERMANENT_TODO: true` et qu'une ligne `[progress]` existe : « la route avance par
+porte `PERMANENT_TODO: true` et qu'une ligne `[progress]` existe : « le plan ferme avance par
 la machine, pas par le plan » (loi 2404). La lecture reste ouverte.
 
 ### 5.6 T5 — les refus nommes (texts.yaml, section refusals)
 
-    tunnel_route_open:  'REFUSED: the route advances by the machine, not the plan.'
+    plan_is_closed:  'REFUSED: the route advances by the machine, not the plan.'
     tunnel_one_tool:    'REFUSED: one tool per step, and that one is on the route line.'
-    tunnel_no_effect:   'BOUND: the file did not move (bytes %s -> %s). The step stays open.'
+    step_no_effect:   'BOUND: the file did not move (bytes %s -> %s). The step stays open.'
     tunnel_step_shape:  'REFUSED: a route line is [mark] text -- tools: <one> [-- bytes: p@s] [-- max: n].'
 
 Tout refus nomme la ligne fautive (loi 1309) : un refus muet est un bug deguise.
@@ -311,7 +311,7 @@ ils n'ont pas besoin d'etre ouverts par la skill.
     413: "[todo] section 5 tiers -- tools: section_append -- max: 3 -- bytes: work/spec.md@0"
     414: "[todo] rendre -- tools: answer"
 
-Les sections 3..N et leur ordre sont graves dans la route ; le modele ne peut ni en
+Les sections 3..N et leur ordre sont graves dans le plan ferme ; le modele ne peut ni en
 ajouter, ni en sauter, ni les renommer. Une section par etape, son titre dans la
 consigne : `section_append` refuse un appel si la ligne courante ne porte pas son
 numero de section.
@@ -333,8 +333,8 @@ une consigne textuelle : une phrase ne tient nulle part (lois 383, 1803).
 ### 6.5 Ordre de pose de create_spec
 
   1 les neuf corps (un YAML chacun), sans les ouvrir a aucune skill ;
-  2 la skill `create_spec` : TOOLS = les neuf, PLAN = la route, PERMANENT_TODO: true ;
-  3 `doctor` sur la route (la touche T6) ;
+  2 la skill `create_spec` : TOOLS = les neuf, PLAN = le plan ferme, PERMANENT_TODO: true ;
+  3 `doctor` sur le plan ferme (la touche T6) ;
   4 un essai reel sur un projet neuf, et la lecture de la trace.
 
 Hors route, et assume : le WATCHER qui tient la section « arborescence » de la spec.

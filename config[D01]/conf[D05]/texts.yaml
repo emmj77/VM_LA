@@ -7,6 +7,8 @@ refusals:
   approval_required: 'REFUSED: this tool waits for a human signature.'
   timeout: 'REFUSED: no answer within the allowed time.'
   path_outside_canon: 'REFUSED: the path leaves the canon.'
+  plan_is_closed: 'the step advances by the machine, not the plan'
+  step_no_effect: 'the file %s did not move (%s bytes), the step stays open'
 # french in code is forbidden
 kra_file_unreadable: 'refused: the .kra file %s cannot be read'
 document_has_no_topic: 'refused: the document names no topic for %s'

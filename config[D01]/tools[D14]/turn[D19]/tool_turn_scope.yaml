@@ -45,11 +45,14 @@ COMMAND: |
   done
   # le reranker coupe la palette : chaque outil est note contre la demande du tour
   _n=$(printf '%s' "$_arr" | jq 'length')
-  # la coupe garde le haut du classement : 30% de la palette, jamais moins de trois
+  # la coupe garde le haut du classement : 30% de la palette, jamais moins de trois.
+  # dans un tunnel elle ne s applique pas : l outil de l etape ne se discute pas.
   _pct=$(cfg num loop.share 30) || _pct=30
   _top=$(( (_n * _pct + 99) / 100 ))
   [ "$_top" -lt 3 ] && _top=3
-  if [ "${_n:-0}" -gt "$_top" ]; then
+  _tun=0
+  skl_plan_step 2>/dev/null && _tun=1
+  if [ "$_tun" != 1 ] && [ "${_n:-0}" -gt "$_top" ]; then
     _q=$(jq -r '.prompt // ""' "$(cfg abs turn)" 2>/dev/null)
     _m=$(cfg str models.rerank) || _m=""
     _h=$(cfg str models.host 127.0.0.1)
