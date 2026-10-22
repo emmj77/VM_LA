@@ -60,8 +60,12 @@ export LA_CAP_BYTES="$(cfg num limits.return_bytes)"
 export LA_CAP_LINES="$(cfg num limits.engine_lines)"
 unset b p
 # ROOT is the tree root and never moves. W is where an armed project writes.
+# A LOADED PROJECT HAS PRIORITY: its own write space stands, and the skill's workspace adds
+# nothing to it. The skill's workspace only speaks when no project is loaded.
 W=$(canon_root 2>/dev/null)
-[ -n "$W" ] || W=$ROOT
-_s=$(skl_workspace 2>/dev/null) && [ -n "$_s" ] && W="$W/${_s%/}"
-unset _s
+if [ -z "$W" ]; then
+  W=$ROOT
+  _s=$(skl_workspace 2>/dev/null) && [ -n "$_s" ] && W="$W/${_s%/}"
+  unset _s
+fi
 export LA_WRITEABLE_WORKSPACE="$W"
