@@ -34,7 +34,9 @@ COMMAND: |
       printf 'FAULT a body reads %s and la_config carries it nowhere\n' "$_k"
       _bad=$((_bad + 1))
     done < "$_tf"
-    printf 'note %s name(s) asked by the bodies, %s unknown to the config\n' "$_n" "$_bad"
+    # un compte a zero faute est un rapport, pas un avertissement
+    _w=report; [ "${_bad:-0}" = 0 ] || _w=note
+    printf '%s %s name(s) asked by the bodies, %s unknown to the config\n' "$_w" "$_n" "$_bad"
     exit 0
   fi
 

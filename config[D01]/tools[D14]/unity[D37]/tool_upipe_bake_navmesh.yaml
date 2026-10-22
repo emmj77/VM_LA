@@ -15,9 +15,9 @@ RULES:
 DESCRIPTION: "Trigger an async legacy NavMesh bake of the open scene(s) via UnityEditor.AI.NavMeshBuilder. Returns immediately; poll `navmesh_bake_status` until completed."
 
 COMMAND: |
-  PROJ=$(sed -n '1p' "$ROOT/projects/.active" 2>/dev/null | tr -d '\r')
+  PROJ=$(sed -n '1p' "$(cfg abs project_active)" 2>/dev/null | tr -d '\r')
   P=
-  [ -n "$PROJ" ] && P=$(sed -n 's/^path:[[:space:]]*//p' "$ROOT/projects/$PROJ/project.yml" 2>/dev/null | head -1 | tr -d '"')
+  [ -n "$PROJ" ] && P=$(sed -n 's/^path:[[:space:]]*//p' "$(project_dir "$PROJ")/project.yml" 2>/dev/null | head -1 | tr -d '"')
   [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
   case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
   [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }

@@ -60,7 +60,7 @@ COMMAND: |
   WANT_SK="{{skills}}"
   SET=''
   if [ -n "$WANT_SK" ]; then
-    PAF="${LA_STATE_PROJECT:-$ROOT/projects/.active}"
+    PAF="${LA_STATE_PROJECT:-$(cfg abs project_active)}"
     PNAME=$(sed -n '1p' "$PAF" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
     DECL=''
     if [ -n "$PNAME" ]; then
@@ -88,7 +88,7 @@ COMMAND: |
   fi
 
   for PA in "$(cfg path skills)/.active:$ROOT/config/$FROM.skill" \
-            "$ROOT/projects/.active:$ROOT/config/$FROM.project" ; do
+            "$(cfg abs project_active):$ROOT/config/$FROM.project" ; do
     SRC=${PA%%:*} ; DST=${PA#*:}
     [ -f "$SRC" ] || continue
     V=$(sed -n '1p' "$SRC" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')

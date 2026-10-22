@@ -17,6 +17,7 @@ COMMAND: |
   _reg=$(cfg abs registry_engine) || { printf 'FAULT no engine register\n'; exit 0; }
   _f=0
   _n=0
+  _r=0
   _k=0
   _j='[]'
   _names=$(awk '
@@ -68,9 +69,11 @@ COMMAND: |
     _j=$(printf '%s' "$_j" | jq --arg c "$_c.$_o" --arg r "$_res" '. + [{control:$c, said:$r}]' 2>/dev/null)
     while IFS= read -r _l; do
       case $_l in
-        FAULT*) _f=$((_f + 1)) ; [ "$_op" = all ] && printf '  %s\n' "$_l" ;;
-        note*)  _n=$((_n + 1)) ; [ "$_op" = all ] && printf '  %s\n' "$_l" ;;
-        ok*)    _k=$((_k + 1)) ; [ "$_op" = all ] && printf '  %s\n' "$_l" ;;
+        # chaque ligne porte le controle qui l a dite : une faute sans son nom ne se repare pas
+        FAULT*) _f=$((_f + 1)) ; [ "$_op" = all ] && printf '  %s %s: %s\n' FAULT "$_c.$_o" "$_l" ;;
+        note*)  _n=$((_n + 1)) ; [ "$_op" = all ] && printf '  %s %s: %s\n' note "$_c.$_o" "$_l" ;;
+        report*) _r=$((_r + 1)) ; [ "$_op" = all ] && printf '  %s %s: %s\n' report "$_c.$_o" "$_l" ;;
+        ok*)    _k=$((_k + 1)) ; [ "$_op" = all ] && printf '  %s %s: %s\n' ok "$_c.$_o" "$_l" ;;
       esac
     done <<EOF
   $_res
@@ -80,7 +83,7 @@ COMMAND: |
   ;;
   *) printf 'FAULT unknown op %s\n' "$_op" ;;
   esac
-  printf '%s fault(s), %s note(s), %s ok\n' "$_f" "$_n" "$_k"
+  printf '%s fault(s), %s note(s), %s report(s), %s ok\n' "$_f" "$_n" "$_r" "$_k"
   _c=$(cfg abs doctor_cache 2>/dev/null)
   [ -n "$_c" ] && printf '%s fault(s), %s note(s)\n' "$_f" "$_n" | write_atomic "$_c" 2>/dev/null
   [ "$_f" = 0 ]

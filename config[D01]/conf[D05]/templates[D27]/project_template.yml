@@ -7,6 +7,7 @@ tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE le projet
 RULES:                       # les regles du projet : son etat, ses skills, sa pile
   enabled: true              # le projet est-il actif ? (true | false)
   writeable: true            # le fichier est-il editable ? (true | false)
+  workspace: "work/"         # LE SEUL ESPACE OU SES SKILLS ECRIVENT ; vide, rien n est nomme
   skillset:                  # LE JEU DE SKILLS : tout ce qui s ouvre pour ce projet, et rien d autre
     1: "skill-un"
     2: "skill-deux"

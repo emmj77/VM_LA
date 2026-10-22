@@ -166,6 +166,14 @@
   guardrail: true
   enabled: true
   visible: false
+- id: D023
+  tool: "doctor.skills"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
 - id: E001
   tool: "engine.approve"
   family: ENGINE

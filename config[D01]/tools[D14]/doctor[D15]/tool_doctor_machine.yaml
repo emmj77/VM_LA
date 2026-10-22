@@ -22,7 +22,7 @@ COMMAND: |
     for _u in $(_flat | awk -F'\t' '$1 ~ /^units\.[a-z_]+\.unit$/ { k = $1; sub(/^units\./, "", k); sub(/\.unit$/, "", k); print k }'); do
       _n=$((_n + 1))
       _un=$(cfg str "units.$_u.unit") || continue
-      _pt=$(cfg num "units.$_u.port") || { printf 'note %s carries no port\n' "$_u"; continue; }
+      _pt=$(cfg num "units.$_u.port") || { printf 'report %s carries no port: it listens, it does not answer\n' "$_u"; continue; }
       _pb=$(cfg str "units.$_u.probe") || _pb=/
       if ! systemctl --user is-active --quiet "$_un" 2>/dev/null; then
         printf 'note %s is stopped (%s): a body that needs it will refuse\n' "$_un" "$_pt"
@@ -53,7 +53,7 @@ COMMAND: |
   benches)
     _d=${LA_BENCHES:-}
     if [ -z "$_d" ]; then
-      printf 'note no bench declared (LA_BENCHES): a work artefact, not the repo\n'
+      printf 'report no bench declared (LA_BENCHES): a work artefact, not the repo\n'
     elif [ -x "$_d/banc_selecteur.sh" ]; then
       _b=$(timeout "$(cfg num limits.bench_timeout 120)" dash "$_d/banc_selecteur.sh" 2>&1 | tail -n 1)
       case $_b in
@@ -77,7 +77,7 @@ COMMAND: |
         "")      printf 'FAULT tailscale says nothing\n' ;;
         *)       printf 'FAULT tailscale is %s\n' "$_st" ;;
       esac
-      printf 'note %s line(s) of peers\n' "${_pe:-0}"
+      printf 'report %s line(s) of peers\n' "${_pe:-0}"
     fi
     _bd=$(cfg num ports.bridge) || _bd=8770
     _bl=$(ss -ltn 2>/dev/null | awk -v p=":$_bd" '$4 ~ p"$" { n++ } END { print n+0 }')

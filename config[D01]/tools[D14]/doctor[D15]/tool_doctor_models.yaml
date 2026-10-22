@@ -17,8 +17,8 @@ COMMAND: |
   _op=${1:-router}
   _h=$(cfg str models.host 127.0.0.1)
   _pt=$(cfg num models.port 8091) || _pt=8091
-  _ini=$(cfg str models.preset) || _ini="$(cfg str machine.llama.gguf)/models.ini"
-  [ -r "$_ini" ] || _ini="$(cfg str models.dir)/models.ini"
+  # la liste des modeles est le preset du document, resolu contre la racine : aucun models.ini
+  _ini=$(cfg abs llama_preset 2>/dev/null) || _ini=$(cfg str models.preset)
   _bin=$(cfg str machine.llama.bin) || exit 0
 
   case $_op in

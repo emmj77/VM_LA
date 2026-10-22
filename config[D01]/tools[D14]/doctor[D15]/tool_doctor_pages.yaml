@@ -46,7 +46,7 @@ COMMAND: |
           bad += 1
       else:
           print("ok %s compiles, %d line(s) of script" % (name, code.count("\n") + 1))
-  print("note %d broken page(s) out of 2" % bad)
+  print("%s %d broken page(s) out of 2" % ("report" if not bad else "note", bad))
   PY
   exit 0
 

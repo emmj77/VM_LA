@@ -53,7 +53,7 @@ COMMAND: |
         printf 'FAULT the last turn names %s and the audio folder does not hold it\n' "$_v"
       fi
     else
-      printf 'note the last turn carries no wav in turn.json\n'
+      printf 'report the last turn carries no wav in turn.json\n'
     fi
   fi
   exit 0

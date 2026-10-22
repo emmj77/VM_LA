@@ -1,0 +1,126 @@
+id: "D023"
+tool: "doctor.skills"
+date: "2026-10-22"
+tags: ["manage", "shell", "file", "find"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "les skills et ce qu elles ouvrent : un corps que nulle skill ne nomme, un DOCS vide, une skill sans outil, une skill ou un projet sans espace d ecriture"
+
+COMMAND: |
+  _op=${1:-all}
+  _S=$(cfg path skills) || exit 0
+  _T=$(cfg path tools) || exit 0
+  _P=$(cfg path projects) || exit 0
+  _named=$(tmpfile sknamed) || exit 1
+  _bodies=$(tmpfile skbodies) || exit 1
+  trap 'rm -f "$_named" "$_bodies"' EXIT INT TERM HUP
+
+  # ce qu une skill ouvre : les noms de son SKILL_TOOL_SET, avec ou sans guillemets
+  awk '
+    /^SKILL_TOOL_SET:/ { inb = 1 ; next }
+    inb && /^[A-Z_]+:/ { inb = 0 }
+    inb && /:[[:space:]]*[^[:space:]]/ {
+      v = $0 ; sub(/^[^:]*:[[:space:]]*/, "", v) ; gsub(/"/, "", v) ; print v
+    }
+  ' "$_S"/*/skill.yaml 2>/dev/null | sort -u > "$_named"
+
+  # un corps existe quand le fichier porte COMMAND ; une declaration de machine n en a pas
+  find "$_T" -name 'tool_*.yaml' -exec grep -l '^COMMAND:' {} + 2>/dev/null \
+    | while IFS= read -r _f; do
+        _n=$(awk '/^tool:/ { v = $0 ; sub(/^tool:[ \t]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_f")
+        [ -n "$_n" ] && printf '%s\n' "$_n"
+      done | sort -u > "$_bodies"
+
+  case $_op in
+  all|orphans)
+    _o=$(comm -23 "$_bodies" "$_named")
+    _n=$(printf '%s' "$_o" | grep -c .)
+    if [ "${_n:-0}" = 0 ]; then
+      printf 'ok every body is named by a skill\n'
+    else
+      # un corps que nulle skill ne nomme ne peut pas etre appele par le modele ;
+      # les corps du moteur, eux, sont appeles par le moteur : ils se declarent, ils ne fautent pas
+      printf '%s\n' "$_o" | awk '{ n = $0 ; if (index(n, ".") > 0) sub(/\..*/, "", n) ; else sub(/_.*/, "", n) ; print n }' \
+        | sort | uniq -c | sort -rn \
+        | while read -r _c _f; do
+            _ex=$(printf '%s\n' "$_o" | grep -E "^${_f}([._]|$)" | head -3 | paste -sd, -)
+            case $_f in
+              engine|doctor|turn|watch|tunnel)
+                printf 'report %s body(ies) of %s, called by the engine, no skill names them (%s)\n' "$_c" "$_f" "$_ex" ;;
+              *)
+                printf 'note %s body(ies) of %s in no skill: the model cannot call them (%s)\n' "$_c" "$_f" "$_ex" ;;
+            esac
+          done
+    fi
+    ;;
+  esac
+
+  case $_op in
+  all|docs)
+    _d=0
+    for _k in "$_S"/*/skill.yaml; do
+      [ -f "$_k" ] || continue
+      # DOCS ouvre les references ; vide, la skill ne dit pas ou lire
+      _c=$(awk '/^DOCS:/ { d = 1 ; next } d && /^[A-Z_]+:/ { d = 0 } d && /"/ { n++ } END { print n + 0 }' "$_k")
+      [ "${_c:-0}" -gt 0 ] && continue
+      _d=$((_d + 1))
+      printf 'FAULT skill %s: its DOCS section is empty, so it opens no reference\n' "$(basename "$(dirname "$_k")")"
+    done
+    [ "$_d" = 0 ] && printf 'report no skill carries an empty DOCS\n'
+    ;;
+  esac
+
+  case $_op in
+  all|empty)
+    _e=0
+    for _k in "$_S"/*/skill.yaml; do
+      [ -f "$_k" ] || continue
+      _c=$(awk '/^SKILL_TOOL_SET:/ { s = 1 ; next } s && /^[A-Z_]+:/ { s = 0 } s && /:[[:space:]]*[^[:space:]]/ { n++ } END { print n + 0 }' "$_k")
+      [ "${_c:-0}" -gt 0 ] && continue
+      _e=$((_e + 1))
+      printf 'FAULT skill %s: it opens no tool, so it teaches nothing to do\n' "$(basename "$(dirname "$_k")")"
+    done
+    [ "$_e" = 0 ] && printf 'report no skill is without a tool\n'
+    ;;
+  esac
+
+  case $_op in
+  all|workspace)
+    _w=0
+    for _k in "$_S"/*/skill.yaml; do
+      [ -f "$_k" ] || continue
+      _v=$(awk '/^WRITABLE_WORKSPACE:/ { w = 1 ; next } w && /^[A-Z_]+:/ { w = 0 }
+                w && /^[[:space:]]*workspace:/ { v = $0 ; sub(/^[^:]*:[[:space:]]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_k")
+      [ -n "$_v" ] && continue
+      _w=$((_w + 1))
+      printf 'FAULT skill %s: no writable workspace, nothing says where its writes land\n' "$(basename "$(dirname "$_k")")"
+    done
+    # un projet sans espace d ecriture ouvre ses skills sans dire ou elles ecrivent
+    for _k in "$_P"/*/project.yml; do
+      [ -f "$_k" ] || continue
+      _v=$(awk '/^RULES:/ { r = 1 ; next } r && /^[A-Z_]+:/ { r = 0 }
+                r && /^[[:space:]]+workspace:/ { v = $0 ; sub(/^[^:]*:[[:space:]]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_k")
+      [ -n "$_v" ] && continue
+      _w=$((_w + 1))
+      printf 'FAULT project %s: no writable workspace, its skills write nowhere named\n' "$(basename "$(dirname "$_k")")"
+    done
+    [ "$_w" = 0 ] && printf 'report every skill and every project names its writable workspace\n'
+    ;;
+  esac
+
+  case $_op in
+  orphans|docs|empty|workspace|all) ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: orphans,docs,empty,workspace}

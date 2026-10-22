@@ -31,7 +31,8 @@ COMMAND: |
     cat "$_t1"
     _miss=$(grep -c . "$_t1")
     _n=$(grep -cE 'name: "' "$_ix")
-    printf 'note %s path(s) in the index, %s absent from the disk\n' "$_n" "${_miss:-0}"
+    _w=report; [ "${_miss:-0}" = 0 ] || _w=note
+    printf '%s %s path(s) in the index, %s absent from the disk\n' "$_w" "$_n" "${_miss:-0}"
     _t2=$(tmpfile idxextra)
     ( cd "$ROOT" && find . -type f \( -name '*.yaml' -o -name '*.yml' -o -name '*.sh' -o -name '*.py' -o -name '*.md' -o -name '*.txt' -o -name '*.json' -o -name '*.html' -o -name '*.css' -o -name '*.js' \
           -o -name '*.kt' -o -name '*.xml' -o -name '*.gradle' -o -name '*.properties' -o -name '*.pem' -o -name '*.pro' \) \
@@ -43,7 +44,8 @@ COMMAND: |
       grep -qF "name: \"$(basename -- "$_f")\"" "$_ix" || printf 'note %s is on the disk and the index does not name it\n' "$_f"
     done > "$_t2"
     cat "$_t2"
-    printf 'note %s file(s) on the disk and outside the index\n' "$(grep -c . "$_t2")"
+    _c=$(grep -c . "$_t2"); _w=report; [ "${_c:-0}" = 0 ] || _w=note
+    printf '%s %s file(s) on the disk and outside the index\n' "$_w" "$_c"
     rm -f "$_t1" "$_t2"
     ;;
   apk)

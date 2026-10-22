@@ -51,7 +51,7 @@ COMMAND: |
         continue ;;
     esac
     WWS=
-    PAC=$(sed -n '1p' "${LA_STATE_PROJECT:-$ROOT/projects/.active}" 2>/dev/null | tr -d '\r')
+    PAC=$(sed -n '1p' "${LA_STATE_PROJECT:-$(cfg abs project_active)}" 2>/dev/null | tr -d '\r')
     PJL="$ROOT/projects/*/project.yml"
     if [ -n "$PAC" ] && [ -f "$ROOT/projects/$PAC/project.yml" ]; then
       PJL="$ROOT/projects/$PAC/project.yml $ROOT/projects/*/project.yml"

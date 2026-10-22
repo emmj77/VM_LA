@@ -59,7 +59,8 @@ COMMAND: |
 
   for b in bad[:25]:
       print("FAULT", b)
-  print("note %d text key(s) read, %d static msg call(s), %d without argument" % (len(items), total, bare))
+  print("%s %d text key(s) read, %d static msg call(s), %d without argument"
+          % ("report" if not bare else "note", len(items), total, bare))
   print("%s %d call(s) print a message that waits for a name and gets none" % ("ok" if not bad else "FAULT", len(bad)))
   ' "$_root"
   exit 0

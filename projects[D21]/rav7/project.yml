@@ -7,6 +7,7 @@ tags: ["rav7", "modele-ra", "graphe", "proc", "alpine"]
 RULES:
   enabled: true
   writeable: true
+  workspace: "work/"
   skillset:                  # les skills que le projet ouvre, rien d autre
     1: "search-code"
     2: "edit-file"

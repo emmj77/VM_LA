@@ -7,6 +7,7 @@ tags: ["webtoon-destin", "destin", "dessin", "storyboard"]
 RULES:
   enabled: true
   writeable: true
+  workspace: "work/"
   skillset:                  # les skills que le projet ouvre, rien d autre
     1: "comfyui"
     2: "krita"

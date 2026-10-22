@@ -34,7 +34,8 @@ COMMAND: |
       _o=$((_o + 1))
     fi
   done
-  printf 'note %s file(s) in state, %s named by nobody\n' "$_tot" "$_o"
+  _w=report; [ "${_o:-0}" = 0 ] || _w=note
+  printf '%s %s file(s) in state, %s named by nobody\n' "$_w" "$_tot" "$_o"
   exit 0
 
 ARGS:
