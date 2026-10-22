@@ -255,12 +255,17 @@ cfg() {
 
 # channel_set <label> : the row of the table, read in one pass and kept for the process. an
 # undeclared label takes the model row, and an empty cell counts as yes: the door stays shut.
+# channel_label : the label of the caller, read once, right here. an empty label is the model, so
+# a caller that says nothing is held to the strict row; no other file spells LA_FROM.
+channel_label() { printf '%s' "${LA_FROM:-model}" ; }
+
 channel_set() {
   _l=${1:-model}
-  set -- $(awk -v l="$_l" '/^channels:/{c=1;next} c&&/^[^ #]/{c=0} c&&/^  [a-z]/{r=$1;sub(/:.*/,"",r);next} c&&r&&/^    /{k=$1;sub(/:.*/,"",k);v=$2;sub(/#.*/,"",v);gsub(/[ \t]/,"",v);if(r==l)g[k]=v;else if(r=="model")m[k]=v} END{n=split("self gate capture approval",K," ");for(i=1;i<=n;i++)printf "%s ",(K[i] in g)?g[K[i]]:((K[i] in m)?m[K[i]]:(K[i]=="self"?"no":"yes"))}' "${LA_CONF:?}")
+  set -- $(awk -v l="$_l" '/^channels:/{c=1;next} c&&/^[^ #]/{c=0} c&&/^  [a-z]/{r=$1;sub(/:.*/,"",r);next} c&&r&&/^    /{k=$1;sub(/:.*/,"",k);v=$2;sub(/#.*/,"",v);gsub(/[ \t]/,"",v);if(r==l)g[k]=v;else if(r=="model")m[k]=v} END{n=split("self gate capture approval",K," ");for(i=1;i<=n;i++){v=(K[i] in g)?g[K[i]]:((K[i] in m)?m[K[i]]:(K[i]=="self"?"no":"yes"));printf "%s ",(v=="no"||v=="off"||v=="false"||v=="0")?"no":"yes"}}' "${LA_CONF:?}")
   LA_SELF=${1:-yes} ; LA_GATE=${2:-yes} ; LA_CAPTURE=${3:-yes} ; LA_APPROVAL=${4:-yes}
   LA_CHANNEL=$_l
-  export LA_SELF LA_GATE LA_CAPTURE LA_APPROVAL LA_CHANNEL
+  # no export: a decision belongs to the process of the door that took it; a child that changes
+  # label calls channel_set itself, an inherited flag would answer for the parent label
 }
 
 # project_dir <name> : the folder of a project, even when its name carries an id (la[D22])

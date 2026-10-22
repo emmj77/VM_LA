@@ -93,7 +93,10 @@ shell_exec() {
   # a bound of 0: no bound at all. the call keeps the hand and holds it (a service).
   _lim="timeout $_to"
   [ "$_to" = 0 ] && _lim=""
-  _out=$(LA_DIR="$_eng" ROOT="$ROOT" W="$W" LA_HOME="$LA_HOME" LA_CONF="$LA_CONF" \
+  # the label and the four decisions of THIS call travel with the body: one body, one label,
+  # nothing inherited from a parent that spoke for another label
+  _out=$(LA_FROM="$(channel_label)" LA_DIR="$_eng" ROOT="$ROOT" W="$W" LA_HOME="$LA_HOME" LA_CONF="$LA_CONF" \
+    LA_SELF="$LA_SELF" LA_GATE="$LA_GATE" LA_CAPTURE="$LA_CAPTURE" LA_APPROVAL="$LA_APPROVAL" \
     $_lim dash -c "$_pre
 $_c" dash "$@" 2>&1)
   _rc=$?

@@ -74,3 +74,10 @@ LA_android_app*/.gradle/
 LA_android_app*/.kotlin/
 # CE FICHIER DIT OU EST LE SDK SUR CETTE STATION : il se refait, il ne se partage pas.
 LA_android_app*/local.properties
+
+# LE BRUIT DE LA MACHINE, QUELLE QUE SOIT LA FORME DES IDS : le motif `config/audio/`
+# ne mordait plus rien depuis que les dossiers portent leur id (config[D01]/audio[D03]/).
+# audio et state sont des produits de la machine, jamais du source.
+config*/audio*/
+config*/state*/
+.hermes-tmp.*
