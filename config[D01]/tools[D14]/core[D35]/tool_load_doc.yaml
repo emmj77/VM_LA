@@ -66,7 +66,7 @@ COMMAND: |
       [ -n "$WWS" ] && break
     done
     P=
-    for C in "$(cfg path tools)/$R" "$WWS" "$ROOT/$R" "$(cfg path docs)/$R" "$(cfg path skills)/$A/$R" "$(cfg path skills)/$R" \
+    for C in "$(cfg path tools)/$R" "$WWS" "$ROOT/$R" "$(cfg path skills)/$A/$R" "$(cfg path skills)/$R" \
              ${WS:+"$ROOT/$WS/$R"}; do
       case "$C" in *..*) continue ;; esac
       [ -e "$C" ] || continue

@@ -124,7 +124,7 @@ appele par `shell_exec` au retour de l outil, jamais par le modele).
     1  skills/<nom>/skill.yaml : PERMANENT_TODO: true, PLAN (400 + pas), SKILL_TOOL_SET,
        DOCS, WRITABLE_WORKSPACE, ERROR
     2  chaque nom de `tools` existe au registre (registry.yaml)
-    3  le doc nomme dans DOCS existe sur le disque : tools/, la racine, docs/, skills/<nom>/,
+    3  le doc nomme dans DOCS existe sur le disque : tools/, la racine, skills/<nom>/,
        skills/ — sinon la porte ne lache que load_doc et la route ne demarre jamais
     4  APPROVAL: false justifie : les outils de la route vivent hors GATED
     5  un agent arme : la skill load <nom> (l humain), ou la charge par la porte

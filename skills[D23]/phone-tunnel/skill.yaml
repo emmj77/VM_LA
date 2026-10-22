@@ -32,7 +32,7 @@ SKILL_TOOL_SET:
   G002: "read_file"
 
 DOCS:
-  300: "skilltunelfone.txt"
+  300: "tunnel.md"
 
 PLAN:
   400: "the phone on the bridge, proven"

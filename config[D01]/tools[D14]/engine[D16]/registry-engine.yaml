@@ -134,6 +134,54 @@
   guardrail: true
   enabled: true
   visible: false
+- id: "D017"
+  tool: "doctor.voice"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: "D018"
+  tool: "doctor.arguments"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: "D019"
+  tool: "doctor.pages"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: "D020"
+  tool: "doctor.state"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: "D021"
+  tool: "doctor.turn"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: "D022"
+  tool: "doctor.perms"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
 - id: "E008"
   tool: "engine.models"
   family: ENGINE
@@ -286,14 +334,6 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "T010"
-  tool: "turn.advance"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
 - id: "W001"
   tool: "watch.judge"
   family: WATCH
@@ -302,9 +342,9 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "E018"
-  tool: "engine.say"
-  family: ENGINE
+- id: "G025"
+  tool: "voice_text"
+  family: REPLY
   sub_family: ""
   doc: ""
   guardrail: true
