@@ -426,6 +426,10 @@ commands:
     name: "cmds"
     act: cmds
     # le panneau des commandes, dans le terminal : fleches, Entree
+  - id: "V25"
+    name: "cli"
+    act: cli
+    # le cli textuel de board.py : il prend le terminal, comme « cmds »
   - id: "V06"
     name: "skill list"
     tool: skill_list

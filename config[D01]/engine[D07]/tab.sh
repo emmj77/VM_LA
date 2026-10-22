@@ -246,6 +246,11 @@ cmd_run() {
       _sel=$(whiptail "$@" 3>&1 1>&2 2>&3) || exit 0
       [ -n "$_sel" ] && cmd_run "$_sel"
       ;;
+    cli)
+      # the textual cli: a real terminal only, it takes the screen over
+      if [ ! -t 0 ] || [ ! -t 1 ]; then printf 'note cli wants a terminal\n'; exit 0; fi
+      exec python3 "${LA_BOARD:?board.py introuvable}" --cli
+      ;;
     tool_call)    LA_FROM=human; export LA_FROM; run_call "$@" ;;
     *)            printf 'no act: %s\n' "$_act" >&2; return 1 ;;
   esac
