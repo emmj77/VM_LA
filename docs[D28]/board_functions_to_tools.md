@@ -146,25 +146,30 @@ La santé et l'inventaire. Voici **tous** les outils du docteur, avec leurs `op`
 ## 5. Le board ne recalcule plus — chaque fonction de board.py part dans son outil
 
 `engine.board` (E020) perd tout son Python. Voici **chaque fonction de `board.py`**
-(102 entrées) et sa destination. **La 4ᵉ colonne = l'outil où la fonction part** ;
-« — » = reste dans board (rendu, TUI, HTTP, utilitaire). On sait exactement ce qu'on
-met où.
+(102 entrées) et sa destination. **La 4ᵉ colonne = où la fonction va** :
+- un **outil** de la machine — `engine.*` (moteur) ou `doctor.*` (docteur) — que le
+  board **utilise** (ce ne sont pas « les outils du board », c'est normal) ;
+- ou la **brique de base `cfg`** / le **registre de base** — lire la config ou son
+  propre registre (la base, pas un outil) ;
+- ou « — » — reste dans board (rendu, TUI, HTTP, util).
+
+On sait exactement, ligne par ligne, ce qui sort de `board.py` et où ça va.
 
 | fonction board.py (l.) | rôle | état | outil cible (4ᵉ) |
 |---|---|---|---|
 | `state_dir` (35) | chemins d'état | reste | — (util) |
-| `num` (40) | un nombre de section | reste | — (util) |
-| `_cfg` (53) | la config | part | `config_list` G080 |
+| `num` (40) | lit un nombre de la config | base | `cfg` (brique de base) |
+| `_cfg` (53) | la config | base | `cfg` (brique de base) |
 | `bridge` (62) · `bridge_ping` (81) · `bridge_state` (86) | appels au pont HTTP | reste | — (porte HTTP) |
 | `read_head` (90) | snapshot de tête | part | `head_state` (à vérifier) |
 | `_units` (94) · `alive` (284) | units / vivant résidents | part | `engine.residents` |
 | `_git_state` (119, +`one`) · `read_git` (638) | état git | part | `engine.update` (`op=check`) |
 | `_engine` (129) · `read_engine` (625) | endpoint / provider | part | `engine.board` / `engine.switch` |
 | `_db_counts` (145) · `_db_query` (151) · `class model` (216) | comptes / sql / tokens sur sessions.db | part | `engine.stat` (`op=exchanges·tools·cost`) |
-| `_table` (161, = `laconf.table()`) | lit les lignes du registre (`registry-*.yaml`) | part | `table_manage` G018 (`op=list`) |
+| `_table` (161, = `laconf.table()`) | lit les lignes du registre (`registry-*.yaml`) | base | registre (base, le board lit son propre registre) |
 | `read_table` (570) | intégrité : registre contre les corps → manquants, doublons | part | `doctor.tools` D010 (`op=table`) |
-| `read_registry` (495) | lit la table `id`↔`outil` depuis `la_config` | part | `config_list` G080 |
-| `class laconf` (189) · `dotted` (206) | accès config | part | `config_list` G080 |
+| `read_registry` (495) | lit la table `id`↔`outil` depuis `la_config` | base | `cfg` (brique de base) |
+| `class laconf` (189) · `dotted` (206) | accès config | base | `cfg` (brique de base) |
 | `_port` (239) · `run` (268) | parse port / lance cmd | reste | — (util) |
 | `probe` (277) · `_rss_port` (379) · `size_of` (526) · `read_instruments` (478) · `read_machine_name` (690) | ports / mémoire / instruments / machine | part | `doctor.machine` |
 | `weight` (292) · `line` (302, +`build`) · `ago` (717) · `short` (960) · `tint` (1027) · `_footer` (1048) · `human_count` (1169) · `shorten` (1183) | mise en forme | reste | — (rendu) |
@@ -176,34 +181,35 @@ met où.
 | `read_doctor` (621) | cache docteur | part | `engine.doctor` |
 | `read_traffic` (645) | trafic sessions / journal | part | `engine.stat` / `engine.trace` |
 | `read_turn` (668) · `_tool_line` (1242) · `class Tailer` (1208) | le canal vivant | part | `engine.trace` |
-| `read_state` (1188) | lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) | part | `config_list` G080 (`cfg str <clé>`) |
+| `read_state` (1188) | lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) | base | `cfg` (brique de base, `cfg str <clé>`) |
 | `_read_history` (1499, dans Cli) | historique | part | `engine.hist` |
 | `one_turn` (1258, +`stream`) | un tour | part | `engine.turn` |
 | `control` (734) · `_expand` (866) · `_ratio_of` (879) · `board_object` (915, +`row`) · `sections` (976) · `one_line` (1013) · `snapshot` (1196) | composition du board | reste | — (rendu board) |
 | `_sigwinch` (1023) · `_keys` (1037) · `tui` (1054) · `class Cli` (1297, +24 méthodes) · `cli` (1700) · `main` (1705) | interface terminal | reste | — (TUI) |
 | `base` (1146) · `http` (1150) · `door_line` (1162) | appels HTTP | reste | — (HTTP) |
 
-**Toutes les fonctions qui « partent » existent déjà comme outils** — aucune à
-réinventer. Là où un outil ne rend pas la donnée exacte d'une ligne (ex.
-`engine.stat op=exchanges` disait « 28 messages » au lieu des échanges distincts), on
-**ajuste son `op` de quelques lignes** — jamais un lecteur parallèle.
+**Les outils cibles existent déjà** (`engine.*` / `doctor.*`) ; les lectures de config
+et de registre vont à la **base `cfg`** — rien à inventer. Là où un outil ne rend pas la
+donnée exacte d'une ligne (ex. `engine.stat op=exchanges` disait « 28 messages » au lieu
+des échanges distincts), on **ajuste son `op` de quelques lignes** — jamais un lecteur
+parallèle.
 
-**Un outil sert l'agent ET les trois sorties — c'est le but** (« une source, trois
-endpoints »). `engine.trace` écrit le canal (agent) et le board en lit la queue ;
-`engine.stat` compte `sessions.db` pour le board ET pour l'agent ; `skill_list` /
-`project_list` listent pour l'agent ET pour l'app. **Mais** chaque cible doit être la
-**bonne** fonction : `_db_query` (SQL brut sur `sessions.db`) va dans `engine.stat`,
-**pas** dans `search_sessions` (recherche sémantique, outil d'agent). Corrigé.
+**Le board (la machine) n'entre PAS ses fonctions de base dans les outils normaux.**
+Lire la config / le registre = la **brique base `cfg`**, jamais `config_list` G080 —
+celui-ci est l'outil de l'agent pour *lister les réglages modifiables*, autre chose. Le
+board **utilise** quand même les outils `engine.*` / `doctor.*` pour les données vivantes
+(`engine.trace`, `engine.stat`, `doctor.machine`…) : « le moteur utilise les outils, ce
+ne sont pas les outils du moteur — c'est normal ». Et chaque cible = la **bonne**
+fonction : `_db_query` (SQL brut) → `engine.stat`, **pas** `search_sessions`.
 
-Et `read_state` n'est **pas** un `skill_list`/`project_list` : il lit la 1ʳᵉ ligne d'un
-chemin de config (`skill_active`, `project_active`) — c'est une **lecture de config**,
-donc il rejoint `config_list` G080, exactement comme `class laconf` et `dotted`. Un seul
-domicile, jamais deux.
+`read_state` n'est **pas** un `skill_list`/`project_list`, et **pas** `config_list` non
+plus : il lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) =
+**base `cfg`**, comme `class laconf`, `dotted`, `_cfg` et `num`. Un seul domicile : base.
 
-Les trois du registre ne sont **pas** un fourre-tout : `_table` lit la table
-(→ `table_manage`, cœur), `read_table` vérifie le registre **contre les corps**
-(→ `doctor.tools`, docteur), `read_registry` lit `id`↔`outil` depuis `la_config`
-(→ `config_list`, cœur). Trois fonctions distinctes, trois domiciles distincts.
+Les trois du registre : `_table` lit la table (`registry-*.yaml`) → **base** (le board
+lit son propre registre) ; `read_table` vérifie le registre **contre les corps**
+→ `doctor.tools` (docteur) ; `read_registry` lit `id`↔`outil` de `la_config` → **base
+`cfg`**. Trois fonctions, trois domiciles — et aucun n'est un outil d'agent.
 
 ## 6. Route par route — les trois sorties, et l'outil existant qui y répond
 
