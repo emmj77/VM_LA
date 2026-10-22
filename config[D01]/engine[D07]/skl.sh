@@ -279,14 +279,8 @@ skl_gate() {
   if [ -n "$_l" ]; then printf '%s\n' "$_l" reply; return 0; fi
   _n=$(skl_skill 2>/dev/null)
   [ -n "$_n" ] || { table_permanents; return 0; }
-  _st=$(skl_plan_step "$_n" 2>/dev/null)
-  case $? in
-    3) table_permanents ; return 0 ;;
-  esac
-  {
-    table_permanents
-    skl_tools_map "$_n" | awk -F'\t' '{ print $2 }'
-  } | awk 'NF && !seen[$0]++'
+  # a loaded skill carries ITS OWN palette, and nothing of the out-of-skill set
+  skl_tools_map "$_n" | awk -F'\t' '{ print $2 }' | awk 'NF && !seen[$0]++'
   return 0
 }
 
@@ -305,13 +299,16 @@ _skl_gate_check() {
     printf '%s\n' "$_l" | grep -qxF -- update_todo && return 5
     return 4
   fi
-  skl_permanent "$_t" && return 0
   _n=$(skl_skill 2>/dev/null)
-  [ -n "$_n" ] || return 1
-  _st=$(skl_plan_step "$_n" 2>/dev/null)
-  [ $? = 3 ] && return 1
-  skl_plan_is_closed "$_n" 2>/dev/null || { [ "$_t" = update_todo ] && return 0; [ "$_t" = todo ] && return 0; }
+  if [ -z "$_n" ]; then
+    # out of skill: the permanent basics are the toolset
+    skl_permanent "$_t" && return 0
+    return 1
+  fi
+  # a loaded skill carries its own palette; only the explicitly flagged tools ride along
   skl_carries "$_t" "" && return 0
+  table_with_skill "$_t" && return 0
+  [ -n "$(skl_project)" ] && table_with_project "$_t" && return 0
   return 1
 }
 
