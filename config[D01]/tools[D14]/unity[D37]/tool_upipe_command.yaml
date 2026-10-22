@@ -1,0 +1,79 @@
+id: "U900"
+tool: "upipe_command"
+date: "2026-10-22"
+tags: ["unity", "unity", "project", "run"]
+
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: |
+  the unified pipeline, the commands that take no argument: the project is the armed one, the
+  operation is the only word that changes. one tool for the 44 the same gesture carried.
+  - audit_status: Get the status of the last audit: `idle` | `scanning` | `completed` | `failed` | `interrupted` | `unavailab...
+  - bake_navmesh_surfaces: Bake NavMeshSurface components (AI Navigation package). v1 stub: returns package_not_found when the package...
+  - build_status: Status of the current/most recent build: idle | queued | building | completed, with the full BuildReport (f...
+  - cancel_lighting_bake: Cancel an in-progress lighting bake (Lightmapping.Cancel()).
+  - cancel_navmesh_bake: Cancel an in-progress NavMesh bake (NavMeshBuilder.Cancel()).
+  - cancel_occlusion_bake: Cancel an in-progress occlusion bake (StaticOcclusionCulling.Cancel()).
+  - cancel_tests: Cancel running test execution. No parameters.
+  - clear_console: Clear the captured log buffer and the Unity Editor console. No parameters.
+  - codereload_status: Show current code reload registry status and statistics. No parameters.
+  - console_status: Console ground truth and buffer counters without pulling entries: compile-failure flag, Editor console coun...
+  - editor_focus: Bring the Unity Editor window to the foreground. No parameters.
+  - editor_pause: Toggle pause state of Unity Editor play mode (calling it again while paused resumes play mode). No parameters.
+  - editor_play: Enter Unity Editor play mode. No parameters.
+  - editor_status: Get detailed Unity Editor status and state information. No parameters.
+  - editor_stop: Exit Unity Editor play mode. No parameters.
+  - get_audio_settings: Read project Audio settings (volume, rolloff scale, doppler factor). No parameters.
+  - get_authoring_root: Get the base folder (under Assets/) that bare authoring paths resolve against. No parameters.
+  - get_build_settings: Read the current build configuration from EditorUserBuildSettings / EditorBuildSettings. No parameters.
+  - get_graphics_settings: Read GraphicsSettings (default render pipeline). No parameters.
+  - get_input_settings: Read the legacy Input Manager axes (names and count). No parameters.
+  - get_lighting_settings: Read the active LightingSettings (lightmapper, bounces, resolution, directional mode, AO, etc.).
+  - get_navmesh_settings: Read the default agent's legacy NavMesh bake settings (agentRadius/Height/Slope/Climb, minRegionArea, voxel...
+  - get_performance_stats: Read render, memory, and frame-timing stats (structured, read-only). No parameters.
+  - get_physics_settings: Read Physics settings (gravity, solver iterations, bounce threshold). No parameters.
+  - get_player_settings: Read PlayerSettings (company/product/version, scripting backend, API level). No parameters.
+  - get_quality_settings: Read QualitySettings (current level, level names, vSync, anti-aliasing). No parameters.
+  - get_runtime_pipeline_settings: Read Pipeline Runtime settings (enableInBuilds, port, requestTimeoutMs, enableAuditLogging, autoStart, maxW...
+  - get_selection: Read the current Editor selection as structured object identities. No parameters.
+  - get_tags_layers: Read the project's tags and (named) layers. No parameters.
+  - get_time_settings: Read Time settings (fixedDeltaTime, maximumDeltaTime, timeScale). No parameters.
+  - lighting_bake_status: Get the status of the last lighting bake: idle | baking | completed.
+  - list_build_profiles: List Build Profile assets in the project (Unity 6 only). Returns feature_unavailable on earlier versions. N...
+  - list_build_targets: List the known BuildTarget values with their group and whether build support is installed. No parameters.
+  - list_open_scenes: List all currently open scenes with their load/active/dirty state. No parameters.
+  - navmesh_bake_status: Get the status of the last NavMesh bake: idle | baking | completed.
+  - occlusion_bake_status: Get the status of the last occlusion bake: idle | baking | completed.
+  - package_resolve: Resolve/refresh packages from the manifest (re-fetch and re-link). May trigger a recompile/domain reload —...
+  - package_status: Status of the last async package operation (add/remove/resolve): idle | in_progress | completed | failed, w...
+  - recompile: Force a script recompile (works while unfocused/minimized). Poll recompile_status for completion. No parame...
+  - recompile_status: Get the status of the last recompile: idle | triggered | compiling | completed | up_to_date. No parameters.
+  - runtime_status: Get comprehensive runtime application status. No parameters.
+  - save_all: Save all open scenes that have unsaved changes. No parameters.
+  - switch_build_target_status: Status of the last target switch: idle | switching | completed (with success + activeBuildTarget). No param...
+  - test_status: Get status of running async test execution. No parameters.
+
+COMMAND: |
+  PROJ=$(sed -n '1p' "$(cfg abs project_active)" 2>/dev/null | tr -d '\r')
+  P=
+  [ -n "$PROJ" ] && P=$(sed -n 's/^path:[[:space:]]*//p' "$(project_dir "$PROJ")/project.yml" 2>/dev/null | head -1 | tr -d '"')
+  [ -n "$P" ] || { printf '%s\n' "$(msg no_project_loaded)" >&2; exit 1; }
+  case "$P" in /*) ;; *) P="$HOME/$P" ;; esac
+  [ -d "$P" ] || { printf '%s\n' "$(msg project_missing '%s')""$P" >&2; exit 1; }
+  CLI=${LA_UNITY_CLI:-}   # unity: cli in la_config, set by the engine
+  set -- command --project-path "$P" "{{op}}"
+
+  OUT=$(timeout 90 "$CLI" --no-banner --no-pager --non-interactive --format json "$@" </dev/null 2>&1)
+  printf '%s' "$OUT" | jq -e '.success == true' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)" "$(printf '%s' "$OUT" | jq -r '.errors[0].message // .errors[0].code // "reponse illisible du CLI"' 2>/dev/null || printf '%s' "$OUT")" >&2; exit 1; }
+  printf '%s\n' "$OUT" | jq -c '.data'
+
+ARGS:
+  - {name: op, type: enum, values: audit_status,bake_navmesh_surfaces,build_status,cancel_lighting_bake,cancel_navmesh_bake,cancel_occlusion_bake,cancel_tests,clear_console,codereload_status,console_status,editor_focus,editor_pause,editor_play,editor_status,editor_stop,get_audio_settings,get_authoring_root,get_build_settings,get_graphics_settings,get_input_settings,get_lighting_settings,get_navmesh_settings,get_performance_stats,get_physics_settings,get_player_settings,get_quality_settings,get_runtime_pipeline_settings,get_selection,get_tags_layers,get_time_settings,lighting_bake_status,list_build_profiles,list_build_targets,list_open_scenes,navmesh_bake_status,occlusion_bake_status,package_resolve,package_status,recompile,recompile_status,runtime_status,save_all,switch_build_target_status,test_status}

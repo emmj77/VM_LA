@@ -15462,14 +15462,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: K018
-  tool: "krita_ai_generate"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: K019
   tool: "krita_ai_list_controls"
   family: KRITA
@@ -15480,14 +15472,6 @@
   visible: true
 - id: K020
   tool: "krita_ai_list_jobs"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: K021
-  tool: "krita_ai_list_regions"
   family: KRITA
   sub_family: ""
   doc: ""
@@ -15574,14 +15558,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: K032
-  tool: "krita_ai_status"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: K033
   tool: "krita_batch"
   family: KRITA
@@ -15600,14 +15576,6 @@
   visible: true
 - id: K035
   tool: "krita_clear"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: K036
-  tool: "krita_clear_selection"
   family: KRITA
   sub_family: ""
   doc: ""
@@ -15638,14 +15606,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: K040
-  tool: "krita_deselect"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: K041
   tool: "krita_draw_shape"
   family: KRITA
@@ -15654,24 +15614,8 @@
   guardrail: true
   enabled: true
   visible: true
-- id: K042
-  tool: "krita_fill_selection"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: K043
   tool: "krita_get_canvas"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: K044
-  tool: "krita_get_canvas_info"
   family: KRITA
   sub_family: ""
   doc: ""
@@ -15694,30 +15638,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: K047
-  tool: "krita_get_current_brush"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: K048
-  tool: "krita_get_current_color"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: K049
-  tool: "krita_get_security_status"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: K050
   tool: "krita_grow_selection"
   family: KRITA
@@ -15726,24 +15646,8 @@
   guardrail: true
   enabled: true
   visible: true
-- id: K051
-  tool: "krita_invert_selection"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: K052
   tool: "krita_list_brushes"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: K053
-  tool: "krita_list_selection_channels"
   family: KRITA
   sub_family: ""
   doc: ""
@@ -15768,14 +15672,6 @@
   visible: true
 - id: K056
   tool: "krita_new_canvas"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: K057
-  tool: "krita_redo"
   family: KRITA
   sub_family: ""
   doc: ""
@@ -15870,22 +15766,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: K069
-  tool: "krita_selection_info"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: K070
-  tool: "krita_selection_stats"
-  family: KRITA
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: K071
   tool: "krita_set_brush"
   family: KRITA
@@ -15942,8 +15822,8 @@
   guardrail: true
   enabled: true
   visible: true
-- id: K078
-  tool: "krita_undo"
+- id: K900
+  tool: "krita_action"
   family: KRITA
   sub_family: ""
   doc: ""
@@ -16038,14 +15918,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U012
-  tool: "upipe_audit_status"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U013
   tool: "upipe_bake_lighting"
   family: UNITY
@@ -16062,14 +15934,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U015
-  tool: "upipe_bake_navmesh_surfaces"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U016
   tool: "upipe_bake_occlusion_culling"
   family: UNITY
@@ -16080,46 +15944,6 @@
   visible: true
 - id: U017
   tool: "upipe_build"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U018
-  tool: "upipe_build_status"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U019
-  tool: "upipe_cancel_lighting_bake"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U020
-  tool: "upipe_cancel_navmesh_bake"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U021
-  tool: "upipe_cancel_occlusion_bake"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U022
-  tool: "upipe_cancel_tests"
   family: UNITY
   sub_family: ""
   doc: ""
@@ -16174,14 +15998,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U029
-  tool: "upipe_clear_console"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U030
   tool: "upipe_clear_navmesh"
   family: UNITY
@@ -16198,24 +16014,8 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U032
-  tool: "upipe_codereload_status"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U033
   tool: "upipe_console"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U034
-  tool: "upipe_console_status"
   family: UNITY
   sub_family: ""
   doc: ""
@@ -16334,46 +16134,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U049
-  tool: "upipe_editor_focus"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U050
-  tool: "upipe_editor_pause"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U051
-  tool: "upipe_editor_play"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U052
-  tool: "upipe_editor_status"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U053
-  tool: "upipe_editor_stop"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U054
   tool: "upipe_find_assets"
   family: UNITY
@@ -16406,40 +16166,8 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U058
-  tool: "upipe_get_audio_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U059
-  tool: "upipe_get_authoring_root"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U060
-  tool: "upipe_get_build_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U061
   tool: "upipe_get_component_properties"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U062
-  tool: "upipe_get_graphics_settings"
   family: UNITY
   sub_family: ""
   doc: ""
@@ -16454,22 +16182,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U064
-  tool: "upipe_get_input_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U065
-  tool: "upipe_get_lighting_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U066
   tool: "upipe_get_material_properties"
   family: UNITY
@@ -16478,64 +16190,8 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U067
-  tool: "upipe_get_navmesh_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U068
-  tool: "upipe_get_performance_stats"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U069
-  tool: "upipe_get_physics_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U070
-  tool: "upipe_get_player_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U071
-  tool: "upipe_get_quality_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U072
-  tool: "upipe_get_runtime_pipeline_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U073
   tool: "upipe_get_scene_hierarchy"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U074
-  tool: "upipe_get_selection"
   family: UNITY
   sub_family: ""
   doc: ""
@@ -16558,22 +16214,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U077
-  tool: "upipe_get_tags_layers"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U078
-  tool: "upipe_get_time_settings"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U079
   tool: "upipe_get_timeline"
   family: UNITY
@@ -16584,38 +16224,6 @@
   visible: true
 - id: U080
   tool: "upipe_instantiate_prefab"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U081
-  tool: "upipe_lighting_bake_status"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U082
-  tool: "upipe_list_build_profiles"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U083
-  tool: "upipe_list_build_targets"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U084
-  tool: "upipe_list_open_scenes"
   family: UNITY
   sub_family: ""
   doc: ""
@@ -16654,22 +16262,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U089
-  tool: "upipe_navmesh_bake_status"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U090
-  tool: "upipe_occlusion_bake_status"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U091
   tool: "upipe_open_scene"
   family: UNITY
@@ -16694,24 +16286,8 @@
   guardrail: true
   enabled: true
   visible: true
-- id: U094
-  tool: "upipe_package_resolve"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: U095
   tool: "upipe_package_search"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U096
-  tool: "upipe_package_status"
   family: UNITY
   sub_family: ""
   doc: ""
@@ -16728,22 +16304,6 @@
   visible: true
 - id: U098
   tool: "upipe_read_text_file"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U099
-  tool: "upipe_recompile"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U100
-  tool: "upipe_recompile_status"
   family: UNITY
   sub_family: ""
   doc: ""
@@ -16808,22 +16368,6 @@
   visible: true
 - id: U108
   tool: "upipe_run_tests"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U109
-  tool: "upipe_runtime_status"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U110
-  tool: "upipe_save_all"
   family: UNITY
   sub_family: ""
   doc: ""
@@ -17096,22 +16640,6 @@
   visible: true
 - id: U144
   tool: "upipe_switch_build_target"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U145
-  tool: "upipe_switch_build_target_status"
-  family: UNITY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: U146
-  tool: "upipe_test_status"
   family: UNITY
   sub_family: ""
   doc: ""
@@ -19800,6 +19328,14 @@
   visible: true
 - id: U482
   tool: "coplay_vfx_trail"
+  family: UNITY
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: true
+- id: U900
+  tool: "upipe_command"
   family: UNITY
   sub_family: ""
   doc: ""

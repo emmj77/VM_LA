@@ -1,0 +1,44 @@
+id: "K900"
+tool: "krita_action"
+date: "2026-10-22"
+tags: ["krita", "krita", "img", "run"]
+
+RULES:
+  enabled: true
+  timeout: 180
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: |
+  the krita actions that take no argument: the action is the only word that changes.
+  one tool for the 16 the same gesture carried.
+  - ai_generate: ai_generate
+  - ai_list_regions: ai_list_regions
+  - ai_status: ai_status
+  - clear_selection: Clear the content of the selection on the active layer
+  - deselect: Remove the active selection
+  - fill_selection: Fill the current selection with foreground color
+  - get_canvas_info: Get information about the current canvas
+  - get_current_brush: Get the current brush preset and properties
+  - get_current_color: Get the current foreground and background colors
+  - get_security_status: Return current security limits and usage
+  - invert_selection: Invert the current selection
+  - list_selection_channels: List all saved selection channels
+  - redo: Redo last undone action
+  - selection_info: Get information about the current selection
+  - selection_stats: Get statistics about the current selection
+  - undo: Undo last action
+
+COMMAND: |
+  SERVICE=$(krita_url) || exit 1
+  D=$(jq -cn --arg a "{{action}}" '{action:$a, params:({  } | with_entries(select(.value != null and .value != "")))}')
+  REP=$(curl -sS --max-time 60 -H 'Content-Type: application/json' -d "$D" "$SERVICE/")
+  printf '%s' "$REP" | jq -e '.status == "ok"' >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg refused_generic)" "$(printf '%s' "$REP" | jq -r '.error.message // "unreadable answer"' 2>/dev/null || printf '%s' "$REP")" >&2; exit 1; }
+  printf '%s\n' "$(printf '%s' "$REP" | jq -c .)"
+
+ARGS:
+  - {name: action, type: enum, values: ai_generate,ai_list_regions,ai_status,clear_selection,deselect,fill_selection,get_canvas_info,get_current_brush,get_current_color,get_security_status,invert_selection,list_selection_channels,redo,selection_info,selection_stats,undo}
