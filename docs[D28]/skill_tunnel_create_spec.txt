@@ -1,0 +1,113 @@
+================================================================================
+
+           SKILL TUNNEL : CREATE_SPEC (Guide Étape par Étape)
+
+================================================================================
+
+
+
+PRINCIPIUM : DEFAULT DENY & CLOSED-LOOP GROUNDING
+
+L'agent n'a pas la liberté de générer du contenu au fil de l'eau. Chaque étape 
+
+est verrouillée par une réduction dynamique du toolset, un contrôle strict sur 
+
+le disque (vérification par octets/watcher) et l'alternance obligatoire 
+
+append ⇄ read.
+
+
+
+--------------------------------------------------------------------------------
+
+ÉTAPES DU TUNNEL CREATE_SPEC
+
+--------------------------------------------------------------------------------
+
+
+
+ÉTAPE 1 : SCAFFOLDING ET INITIALISATION PHYSIQUE
+
+- Création physique de l'arborescence des dossiers et des fichiers cibles.
+
+- Verrouillage du workspace : l'agent ne peut pas créer de fichiers ou dossiers 
+
+  hors du périmètre défini.
+
+
+
+ÉTAPE 2 : ACTIVATION DU DÉMON / WATCHER
+
+- Lancement de la surveillance en temps réel de l'arborescence.
+
+- Synchronisation en direct entre le disque dur et le contexte de l'agent.
+
+- Vérification physique des modifications au niveau des octets (anti-bluff).
+
+
+
+ÉTAPE 3 : DOCUMENTATION DU SQUELETTE (FICHIER PAR FICHIER)
+
+- Description du rôle exact de chaque fichier initialisé.
+
+- Utilisation d'arguments contraints (arguments fermés).
+
+- Rédaction par micro-chunks (3 à 5 lignes max par appel).
+
+
+
+ÉTAPE 4 : CONVENTIONS DE NOMMAGE ET RÔLES
+
+- Fixation des normes de nommage (variables, fonctions, fichiers).
+
+- Définition explicite du rôle des agents et sous-agents intervenant sur le projet.
+
+
+
+ÉTAPE 5 : RÈGLES ET SECTION DES INTERDITS (RULES / ANTI-PATTERNS)
+
+- Établissement de la liste stricte des interdictions (frameworks non autorisés, 
+
+  dépendances bannies, pratiques proscrites).
+
+- Injection directe de ces règles dans la strate "Core Spec" du hit secondaire.
+
+
+
+ÉTAPE 6 : FLUX DE DONNÉES, STACK TECHNIQUE ET CAS D'ERREUR
+
+- Spécification des flux de données et choix d'architecture définitifs.
+
+- Définition de la gestion des dépendances et de la prise en charge des erreurs.
+
+
+
+ÉTAPE 7 : RÉDACTION EN BOUCLE FERMÉE (APPEND ⇄ READ)
+
+- Application du cycle forcé : 1 `append` d'un chunk (3-5 lignes) ➔ 1 `read` 
+
+  obligatoire du fichier réel.
+
+- Mise à jour systématique des tâches (todos) avec validation par le harness.
+
+
+
+--------------------------------------------------------------------------------
+
+SÉCURITÉ & PROTOCOLE D'ÉCHEC DU HARNESS
+
+--------------------------------------------------------------------------------
+
+- L'outil `reply` (modes : ask, answer, talk) reste toujours accessible.
+
+- En cas de deviation ou d'erreur sur l'outil :
+
+  1. Interception immédiate par le harness.
+
+  2. Injection de l'erreur + re-tentative forcée (retry).
+
+  3. Réduction maximale du toolset à l'outil attendu uniquement (+ schéma complet
+
+     de l'outil retourné en cas d'erreur de structure).
+
+================================================================================

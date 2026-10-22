@@ -65,6 +65,12 @@ l'opération en enum, la connaissance des fiches dans la DESCRIPTION, un seul fi
 8. **Boucle longue** : test de tenue (plusieurs heures).
 9. **Tests de chargement** : skill load/unload, projets, todos, app Android.
 11. **Compacteur** : chercher plus léger et meilleur parmi les modèles récents.
+12. corriger le flux sonore ne marche plus
+13. corriger l'affichage du reasonning dans l'app android l'affichage se fait dans  une bulle puis se mets sur le fond sans bulle
+14. corriger le streaming
+15. ❯ corriger : la cli
+{"status":"refused","tool":"cli","line":"","result":"REFUSED: no such tool here.","ts":1792652405,"return":""}
+RENFORCER LA SOLIDITE L'APP BUG TROP SOUVENT
 
 Et trois trous connus du moteur :
 

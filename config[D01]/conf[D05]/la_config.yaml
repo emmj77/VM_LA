@@ -240,7 +240,7 @@ loop:
   big_todo_every: 15
   update_every: 10
   timeout: 600
-  share: 30
+  share: 50
   speech_tries: 2
   load_tries: 8
   answer_tokens: 2048

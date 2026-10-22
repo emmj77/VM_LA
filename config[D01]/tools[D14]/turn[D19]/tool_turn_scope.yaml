@@ -15,7 +15,9 @@ DESCRIPTION: "the tools of this turn and nothing more, as the provider wants the
 COMMAND: |
 
   [ -f "$(cfg abs registry)" ] || { printf 'FAULT no register\n' ; exit 0 ; }
-  _names=$(skl_gate | sort -u | grep -v '^$')
+  # reply and kill_proc live in the primary head: always offered, never reranked
+  _base="reply kill_proc"
+  _names=$( { printf '%s\n' $_base; skl_gate; } | sort -u | grep -v '^$')
   _arr='[]'
   for _n in $_names; do
     [ -n "$_n" ] || continue
@@ -39,19 +41,21 @@ COMMAND: |
       '{type:"function",function:{name:$n,description:$d,parameters:{type:"object",properties:$pr,required:$rq}}}')
     _arr=$(printf '%s' "$_arr" | jq --argjson o "$_obj" '. + [$o]')
   done
-  # the permanents ride free: the same tools every turn, the reranker never cuts them
-  _perm=$(table_permanents | tr '\n' ' ')
-  # the pool the reranker may cut is the tour's own tools: the gate's grant minus the permanents
-  _arrpool=$(printf '%s' "$_arr" | jq -c --arg perm "$_perm" 'map(select(.function.name as $x | ($perm | split(" ") | index($x)) == null))')
+  # reply and kill_proc ride free: they sit in the primary head, the reranker never cuts them
+  # the pool the reranker may cut is everything else: the gate's grant minus the base
+  _arrpool=$(printf '%s' "$_arr" | jq -c --arg base "$_base" 'map(select(.function.name as $x | ($base | split(" ") | index($x)) == null))')
   _n=$(printf '%s' "$_arrpool" | jq 'length')
-  # the cut keeps the top of the ranking: 30% of the tour's tools, never fewer than three.
+  # the cut keeps the top of the ranking: 50% of the pool, never fewer than one.
   # inside a closed plan it does not apply: the step's tool is not up for discussion.
-  _pct=$(cfg num loop.share 30) || _pct=30
+  _pct=$(cfg num loop.share 50) || _pct=50
   _top=$(( (_n * _pct + 99) / 100 ))
-  [ "$_top" -lt 3 ] && _top=3
+  [ "$_top" -lt 1 ] && _top=1
   _closed=0
   [ -n "$(skl_lock)" ] && _closed=1
-  if [ "$_closed" != 1 ] && [ "${_n:-0}" -gt "$_top" ]; then
+  # the cut only bites inside a skill: out of skill the agent keeps its whole base,
+  # else skill_list/load_skill would be cut and it could never enter a skill
+  _armed=$(skl_skill 2>/dev/null || true)
+  if [ "$_closed" != 1 ] && [ -n "$_armed" ] && [ "${_n:-0}" -gt "$_top" ]; then
     _q=$(jq -r '.prompt // ""' "$(cfg abs turn)" 2>/dev/null)
     _m=$(cfg str models.rerank) || _m=""
     _h=$(cfg str models.host 127.0.0.1)
@@ -66,7 +70,7 @@ COMMAND: |
         '.results | sort_by(-.relevance_score) | .[:$k] | map(.index)' 2>/dev/null)
       if [ -n "$_ix" ] && [ "$_ix" != "null" ]; then
         # the kept pool names, one by one; the permanents and reply ride free
-        _keep="$_perm reply"
+        _keep="$_base"
         for _k in $(printf '%s' "$_ix" | jq -r '.[]' 2>/dev/null); do
           _nm=$(printf '%s' "$_arrpool" | jq -r --argjson q "$_k" '.[$q].function.name // empty' 2>/dev/null)
           [ -n "$_nm" ] && _keep="$_keep $_nm"
@@ -77,8 +81,12 @@ COMMAND: |
       fi
     fi
   fi
+  # the base is pinned to the front: the stable prefix the provider caches
+  _baseobjs=$(printf '%s' "$_arr" | jq -c --arg b "$_base" 'map(select(.function.name as $x | ($b | split(" ") | index($x)) != null))')
+  _restobjs=$(printf '%s' "$_arr" | jq -c --arg b "$_base" 'map(select(.function.name as $x | ($b | split(" ") | index($x)) == null))')
+  _arr=$(jq -c -n --argjson a "$_baseobjs" --argjson r "$_restobjs" '$a + $r')
   _turn_set_json '(.tools = $v)' "$_arr"
-  trace_line scope "$(printf '%s' "$_arr" | jq 'length') tools ($_n in the pool, permanents free)"
+  trace_line scope "$(printf '%s' "$_arr" | jq 'length') tools ($_n in the pool, base free)"
   exit 0
 
 ARGS: []
