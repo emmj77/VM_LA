@@ -139,7 +139,7 @@ _cfg_map_build() {
   _m=$LA_STATE/tree.map
   { find "$ROOT" \( -name .git -o -name node_modules \) -prune -o \( -type f -print -o -type d -print \) ; } 2>/dev/null \
     | while IFS= read -r _x; do
-        printf '%s\t%s\n' "$(basename -- "$_x")" "${_x#$ROOT/}"
+        printf '%s\t%s\n' "$(basename -- "$_x")" "${_x#"$ROOT"/}"
       done | sort -u > "$_m.new" 2>/dev/null
   [ -s "$_m.new" ] && mv "$_m.new" "$_m"
 }

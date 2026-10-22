@@ -117,7 +117,7 @@ _door_cmd() {
 }
 
 # _door_register : the register the caller is allowed to read
-_door_register() { [ "$LA_SELF" = yes ] && cfg abs registry-engine || cfg abs registry; }
+_door_register() { if [ "$LA_SELF" = yes ]; then cfg abs registry-engine; else cfg abs registry; fi; }
 
 # run_call <name> [key=value ...] : the whole door, one shape out
 # 0 ok, 3 a human must sign, 124 the bound was reached, 1 refused

@@ -129,7 +129,7 @@ shell_run() {
 krita_url() {
   _h=$(cfg str machine.krita.host) || return 1
   _p=$(cfg num machine.krita.port) || return 1
-  [ -n "$_h" ] && [ -n "$_p" ] || { printf '%s\n' "$(msg krita_noport)" >&2; return 1; }
+  if [ -z "$_h" ] || [ -z "$_p" ]; then printf '%s\n' "$(msg krita_noport)" >&2; return 1; fi
   _s="http://$_h:$_p"
   curl -sf --max-time 10 "$_s/health" >/dev/null 2>&1 \
     || { printf '%s\n' "$(msg krita_down "$_s")" >&2; return 1; }

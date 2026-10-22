@@ -6,7 +6,7 @@ HERE=${LA_DIR:?boot: LA_DIR is not set, boot is only sourced by la.sh}
 LA_HOME=$(dirname -- "$HERE")
 ROOT=$(dirname -- "$LA_HOME")
 LA_CONF=$(find "$LA_HOME" -maxdepth 2 -name la_config.yaml -print 2>/dev/null | head -n 1)
-[ -n "$LA_CONF" ] && [ -r "$LA_CONF" ] || { echo "boot: no master file in $LA_HOME" >&2; return 1 2>/dev/null || exit 1; }
+if [ -z "$LA_CONF" ] || [ ! -r "$LA_CONF" ]; then echo "boot: no master file in $LA_HOME" >&2; return 1; fi
 # the INDEX: the only list of folders and files. the document checks it, cfg reads it.
 LA_INDEX=$(find "$LA_HOME" -maxdepth 3 -name index_la.yaml -print 2>/dev/null | head -n 1)
 [ -n "$LA_INDEX" ] && [ -r "$LA_INDEX" ] || { echo "boot: no index in $LA_HOME" >&2; return 1 2>/dev/null || exit 1; }

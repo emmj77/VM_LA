@@ -107,7 +107,7 @@ _sec_note() {
 _sec_agents() {
   printf '== THE AGENTS ==\n'
   _main=$(cfg str agents.main jarvis)
-  _st=$(jq -r '.status // "idle"' "$_t" 2>/dev/null)
+  _st=$(_turn_get '.status // "idle"')
   _al=$(cfg num head.second_agents_lines 30) || _al=30
   _ac=$(cfg num head.second_agents_chars 2000) || _ac=2000
   for _a in $(cfg str agents.names "$_main"); do
