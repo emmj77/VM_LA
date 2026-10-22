@@ -526,6 +526,17 @@
   with_skill: false
   with_project: false
   visible: false
+- id: E028
+  tool: "engine.config"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
+  visible: false
 - id: T001
   tool: "turn.call"
   family: TURN

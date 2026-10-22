@@ -86,7 +86,7 @@ devient mince (il compose, §5).
 | E025 | engine.uninstall | ce que l'install a posé, retiré | units·command·desktop·applet·certs |
 | E026 | engine.wake | un réveil | — |
 | E027 | engine.purge | rendre le cache froid | all·list·la-asr·la-tts·la-models·la-bridge |
-| E028 | engine.config | lit une clé de config/état de la machine (NOUVEAU) | str·get |
+| E028 | engine.config | lit une clé pointée de config/état (créé ✓) | str·num·list·has |
 
 **Total moteur = 26 outils** (dont `engine.config` E028 ; `engine.doctor` E005 parti au docteur).
 
@@ -158,10 +158,10 @@ On ne transfère **jamais** une fonction moteur dans un outil qui n'est pas du m
 
 | fonction board.py (l.) | rôle | état | outil cible (4ᵉ) |
 |---|---|---|---|
-| `state_dir` (35) | chemins d'état | reste | — (util) |
+| `state_dir` (35) | chemins d'état | part | `engine.config` (Engine — chemins) |
 | `num` (40) | lit un nombre de la config | part | `engine.config` (Engine) |
 | `_cfg` (53) | la config | part | `engine.config` (Engine) |
-| `bridge` (62) · `bridge_ping` (81) · `bridge_state` (86) | appels au pont HTTP | reste | — (porte HTTP) |
+| `bridge` (62) · `bridge_ping` (81) · `bridge_state` (86) | appels au pont HTTP | sh | `engine.board` (sh — via `curl`) |
 | `read_head` (90) | snapshot de tête | part | `head_state` (à vérifier) |
 | `_units` (94) · `alive` (284) | units / vivant résidents | part | `engine.residents` |
 | `_git_state` (119, +`one`) · `read_git` (638) | état git | part | `engine.update` (`op=check`) |
@@ -171,9 +171,9 @@ On ne transfère **jamais** une fonction moteur dans un outil qui n'est pas du m
 | `read_table` (570) | intégrité : registre contre les corps → manquants, doublons | part | `doctor.tools` D010 (`op=table`) |
 | `read_registry` (495) | lit la table `id`↔`outil` depuis `la_config` | part | `engine.map` (Engine) |
 | `class laconf` (189) · `dotted` (206) | accès config | part | `engine.config` (Engine) |
-| `_port` (239) · `run` (268) | parse port / lance cmd | reste | — (util) |
+| `_port` (239) · `run` (268) | parse port / lance cmd | sh | `engine.board` (sh — util) |
 | `probe` (277) · `_rss_port` (379) · `size_of` (526) · `read_instruments` (478) · `read_machine_name` (690) | ports / mémoire / instruments / machine | part | `doctor.machine` |
-| `weight` (292) · `line` (302, +`build`) · `ago` (717) · `short` (960) · `tint` (1027) · `_footer` (1048) · `human_count` (1169) · `shorten` (1183) | mise en forme | reste | — (rendu) |
+| `weight` (292) · `line` (302, +`build`) · `ago` (717) · `short` (960) · `tint` (1027) · `_footer` (1048) · `human_count` (1169) · `shorten` (1183) | mise en forme | sh | `engine.board` (sh — mise en forme `awk`/`printf`) |
 | `_router_models` (330) | routeur modèles | part | `engine.models` |
 | `read_residents` (340) | résidents | part | `engine.residents` |
 | `_appoint_rows` (368) · `read_appoints` (394) · `read_approval` (410) · `_approval_gesture` (903) | approbations / geste | part | `engine.approve` (`op=view`) |
@@ -185,9 +185,9 @@ On ne transfère **jamais** une fonction moteur dans un outil qui n'est pas du m
 | `read_state` (1188) | lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) | part | `engine.config` (Engine) |
 | `_read_history` (1499, dans Cli) | historique | part | `engine.hist` |
 | `one_turn` (1258, +`stream`) | un tour | part | `engine.turn` |
-| `control` (734) · `_expand` (866) · `_ratio_of` (879) · `board_object` (915, +`row`) · `sections` (976) · `one_line` (1013) · `snapshot` (1196) | composition du board | reste | — (rendu board) |
-| `_sigwinch` (1023) · `_keys` (1037) · `tui` (1054) · `class Cli` (1297, +24 méthodes) · `cli` (1700) · `main` (1705) | interface terminal | reste | — (TUI) |
-| `base` (1146) · `http` (1150) · `door_line` (1162) | appels HTTP | reste | — (HTTP) |
+| `control` (734) · `_expand` (866) · `_ratio_of` (879) · `board_object` (915, +`row`) · `sections` (976) · `one_line` (1013) · `snapshot` (1196) | composition du board | sh | `engine.board` (sh — composition, appels parallèles) |
+| `_sigwinch` (1023) · `_keys` (1037) · `tui` (1054) · `class Cli` (1297, +24 méthodes) · `cli` (1700) · `main` (1705) | interface terminal | reste | — (TUI — **Python seul, sh impossible**) |
+| `base` (1146) · `http` (1150) · `door_line` (1162) | serveur HTTP du board | à retirer | — (le dashboard `dash_server.py` possède déjà l'HTTP) |
 
 **Les zones cibles existent** (`engine.*` / `doctor.*` / `G…`). La config et l'état iront
 dans un petit **`engine.config`** (lire une clé — Engine), le registre dans
@@ -227,12 +227,25 @@ moteur → Engine, contrôle → Doctor. Jamais l'agent pour du moteur.
 **Tout existe sauf peut-être 4 petits** : `agent_list`, `list_commands`, `head_state`,
 `version` — à vérifier, souvent déjà couverts (`tools_list`, `config_list`).
 
-## 7. Ce qui reste dans board.py (pas un outil)
+## 6 bis. SH ou Python ? — la mesure (ce que j'avais dit de faux)
 
-Composition et rendu seulement : `control()`, `board_object()`, `sections()`,
-`one_line()` (assemblent), `line()`, `tint()`, `_footer()`, `short()`, `weight()`,
-`ago()` (formatent), `tui()`, `Cli`, `Tailer`, `snapshot()`, `main` (le terminal),
-`run()`, `probe()`, `_port()`, `num()`, `state_dir()` (petits utilitaires).
+J'avais dit « le rendu reste du code, pas du shell ». **Faux, et voici la preuve chiffrée :**
+- `sh -c true` = **2 ms**/process ; `python3 -c pass` = **26 ms**/process → les deux langages démarrent en ms. **La lenteur n'est pas le langage.**
+- 1 `run_call` complet = **~1,4 s** : c'est `boot.sh` qui **re-parse les 801 lignes de la config** à chaque appel, pas le shell.
+- **Séquentiel** = N × 1,4 s = le « 34 s » de `engine.doctor` (~24 contrôles). **Parallèle** = ~1 démarrage : 4 séq = 6 775 ms → 4 par = 778 ms (**×8,7**).
+- Donc **tout le rendu/agrégation de board est faisable en sh** (compose par `run_call`, formate par `awk`/`printf`, JSON par `printf`/`jq`). Seule exception réelle : le **TUI interactif**. Le coût de démarrage se règle par la **résidence** (moteur chaud en RAM) ou l'appel **in-process** (sourcer une fois).
+
+## 7. Ce qui reste dans board.py — **le TUI, et lui seul**
+
+Correction (après mesure) : ce n'est PAS « le rendu reste en Python ». **Tout le rendu et
+l'agrégation deviennent SH** → l'outil `engine.board` (composition : `control`,
+`board_object`, `sections`, `one_line`, `snapshot`, `_expand`, `_ratio_of` ; mise en forme :
+`line`, `weight`, `ago`, `short`, `tint`, `_footer`, `human_count`, `shorten` ; utils :
+`_port`, `run`, `bridge*`).
+Seule l'**interface terminal interactive** ne peut pas être du sh : `tui`, `class Cli`
+(402 l., clavier/resize/curseur, mode brut `termios`/`select`/`SIGWINCH`), `_keys`,
+`_sigwinch`, `cli`, `main`. Le sh POSIX n'a aucune de ces primitives → **TUI = Python**.
+Après migration, `board.py` ≈ **le TUI**.
 
 ## 8. Comptes et ordre (on ne l'exécute PAS maintenant)
 
@@ -243,6 +256,8 @@ Composition et rendu seulement : `control()`, `board_object()`, `sections()`,
   et seulement s'ils ne sont pas déjà couverts. Le reste = **router** les trois sorties
   par la porte sur ces outils (le pont lit en direct aujourd'hui) + **décomposer board**
   pour qu'il compose.
-- Ordre, sur ton feu vert : décomposer `board` (chaque `read_*` → son outil existant,
-  un commit par lecteur, sortie prouvée), puis router le pont. On ne branche rien tant
-  que tu n'as pas validé.
+- **Ordre validé (4 phases, un commit par tranche, moteur jamais touché = apothéose) :**
+  1. **Finir les outils** — `engine.config` (E028 ✓ créé) + corriger les `op` qui n'émettent pas la donnée exacte du board (`engine.stat op=exchanges`, `engine.approve op=view`, `engine.trace`, `doctor.machine` MB). Chacun testé par la porte.
+  2. **Rebrancher les lecteurs de board** sur ces outils (parité prouvée, ligne par ligne).
+  3. **Sortir le rendu** (`control/sections/one_line/footer/board_object/mise en forme`) → données LAConfig + outil `engine.board` en sh.
+  4. **`board.py` = TUI seule.**

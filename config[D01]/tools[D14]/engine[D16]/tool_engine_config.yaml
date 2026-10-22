@@ -1,0 +1,29 @@
+# an action of the engine. the model never sees it; the engine calls it by name.
+id: "E028"
+tool: "engine.config"
+date: "2026-10-22"
+tags: ["manage", "shell", "config", "read"]
+RULES:
+  enabled: true
+  timeout: 15
+  writable_workspace: "read"
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "reads the config: one dotted key (str/num/list/has), nothing else"
+COMMAND: |
+  _op=${1:-str}
+  _k=$2
+  [ -n "$_k" ] || { printf 'FAULT key required\n'; exit 0; }
+  case $_op in
+  str)  cfg str  "$_k" ;;
+  num)  cfg num  "$_k" ;;
+  list) cfg list "$_k" ;;
+  has)  if cfg has "$_k"; then printf 'yes\n'; else printf 'no\n'; fi ;;
+  *)    printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+ARGS:
+  - {name: op, type: enum, values: str,num,list,has}
+  - {name: key, type: text}
