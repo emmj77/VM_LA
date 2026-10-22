@@ -19,20 +19,20 @@ COMMAND: |
   case $_op in
   tree)
     _n=0; _miss=0
-    _tf=$(tmpfile idxmiss) || exit 0
-    : > "$_tf"
+    _t1=$(tmpfile idxmiss) || exit 0
+    : > "$_t1"
     # the state entries (id N..) are born in use: their absence is not a fault
     grep -oE '\{id: "[^"]+", name: "[^"]+"' "$_ix" \
       | sed 's/^{id: "//; s/", name: "/\t/; s/"$//' | while IFS="$(printf '\t')" read -r _id _p; do
       case $_id in N[0-9]*) continue ;; esac
       _a=$(cfg where "$_p")
       [ -e "$_a" ] || printf 'FAULT the index names %s and the disk holds nothing\n' "$_p"
-    done > "$_tf"
-    cat "$_tf"
-    _miss=$(grep -c . "$_tf")
+    done > "$_t1"
+    cat "$_t1"
+    _miss=$(grep -c . "$_t1")
     _n=$(grep -cE 'name: "' "$_ix")
     printf 'note %s path(s) in the index, %s absent from the disk\n' "$_n" "${_miss:-0}"
-    _tf=$(tmpfile idxextra)
+    _t2=$(tmpfile idxextra)
     ( cd "$ROOT" && find . -type f \( -name '*.yaml' -o -name '*.yml' -o -name '*.sh' -o -name '*.py' -o -name '*.md' -o -name '*.txt' -o -name '*.json' -o -name '*.html' -o -name '*.css' -o -name '*.js' \
           -o -name '*.kt' -o -name '*.xml' -o -name '*.gradle' -o -name '*.properties' -o -name '*.pem' -o -name '*.pro' \) \
         -not -path './.git*' -not -path './work*' -not -path './skills*' -not -path './projects*' -not -path './docs*' \
@@ -41,9 +41,10 @@ COMMAND: |
         -not -path './LA_android_app*/.gradle/*' -not -path './LA_android_app*/.kotlin/*' \
         -not -name 'tool_*.yaml' -not -path '*/__pycache__/*' ) | sed 's|^\./||' | sort | while IFS= read -r _f; do
       grep -qF "name: \"$(basename -- "$_f")\"" "$_ix" || printf 'note %s is on the disk and the index does not name it\n' "$_f"
-    done > "$_tf"
-    cat "$_tf"
-    printf 'note %s file(s) on the disk and outside the index\n' "$(grep -c . "$_tf")"
+    done > "$_t2"
+    cat "$_t2"
+    printf 'note %s file(s) on the disk and outside the index\n' "$(grep -c . "$_t2")"
+    rm -f "$_t1" "$_t2"
     ;;
   apk)
     # THE PHONE SIDE: the apk the source builds against the one the bridge serves.
