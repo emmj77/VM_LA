@@ -154,14 +154,14 @@ run_call() {
   [ -n "$_nm" ] && _name=$_nm
   _bid=$(_door_field "$_body" id)
   if [ -n "$_bid" ] && [ "$_bid" != "$_id" ]; then
-    shape_fail "$_name" "" refusals.arity
+    shape_fail "$_name" "" refusals.id_mismatch
     return 1
   fi
   _bfam=$(_door_field "$_body" family)
   _bfam=$(lower "$_bfam")
   _rfam=$(lower "$_rfam")
   if [ -n "$_bfam" ] && [ -n "$_rfam" ] && [ "$_bfam" != "$_rfam" ]; then
-    shape_fail "$_name" "" refusals.arity
+    shape_fail "$_name" "" refusals.family_mismatch
     return 1
   fi
 
@@ -194,14 +194,14 @@ run_call() {
       fi
       # nothing named, nothing piped, and the body asks for it: the refusal says the shape
       if [ -z "$_v" ] && [ "$_req" != 0 ]; then
-        _door_arity_fail "$_name" "$_body" refusals.arity
+        _door_arity_fail "$_name" "$_body" refusals.missing_arg "$_n"
         return 1
       fi
     fi
     if [ -z "$_v" ] && [ "$_t" != bool ]; then
       _w=''                             # declared optional: the body decides
     else
-      _w=$(args_line "$_t" "$_v" $_vals) || { _door_arity_fail "$_name" "$_body" refusals.arity; return 1; }
+      _w=$(args_line "$_t" "$_v" $_vals) || { _door_arity_fail "$_name" "$_body" refusals.bad_value "$_n"; return 1; }
     fi
     _args="$_args $_w"
   done
@@ -239,7 +239,7 @@ run_call() {
     _m=$(_door_field "$_body" machine)
     _o=$(_door_field "$_body" op)
     if [ -z "$_m" ] || [ -z "$_o" ]; then
-      shape_fail "$_name" "" refusals.arity
+      shape_fail "$_name" "" refusals.bad_body
       return 1
     fi
     _cmd="$_m --op $_o"
@@ -267,10 +267,10 @@ run_call() {
     fi
   done
   case $_cmd in
-    *"{{"*) _door_arity_fail "$_name" "$_body" refusals.arity; return 1 ;;
+    *"{{"*) _door_arity_fail "$_name" "$_body" refusals.unfilled; return 1 ;;
   esac
   # a body that came out empty is a call that would answer ok with nothing in it
-  [ -n "$_cmd" ] || { _door_arity_fail "$_name" "$_body" refusals.arity; return 1 ; }
+  [ -n "$_cmd" ] || { _door_arity_fail "$_name" "$_body" refusals.empty_call; return 1 ; }
 
   # 11 run: the door launches nothing. it hands the text and the arguments to the runner
   # one road for the engine, shell_exec (shell.sh): one way in, one timeout, one form.

@@ -3,6 +3,13 @@ refusals:
   human_only_skill: 'REFUSED: %s loads from the human door only.'
   tool_unknown: 'REFUSED: no such tool here.'
   arity: 'REFUSED: the arguments do not match the body.'
+  id_mismatch: 'REFUSED: the register id and the body id disagree.'
+  family_mismatch: 'REFUSED: the register family and the body family disagree.'
+  missing_arg: "REFUSED: the argument '%s' is required and was not given."
+  bad_value: "REFUSED: the value of '%s' does not fit its declared type."
+  bad_body: 'REFUSED: the body names neither a command nor a machine/op.'
+  unfilled: 'REFUSED: an argument hole was left unfilled in the call.'
+  empty_call: 'REFUSED: the call came out empty.'
   tool_not_allowed: 'REFUSED: this tool is not allowed by the active skill.'
   approval_required: 'REFUSED: this tool waits for a human signature.'
   timeout: 'REFUSED: no answer within the allowed time.'
