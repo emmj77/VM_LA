@@ -9,9 +9,9 @@ SUMMARY:
   103: "The process is NAMED before it is stopped."
 RULES:
   create_subfolder: false
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G013: "process_list"
@@ -25,3 +25,4 @@ WRITABLE_WORKSPACE:
   workspace: "work/"
 ERROR:
   600: "process_list does not answer, or the pid is not found: say it, do not force."
+PORTEUR: ""

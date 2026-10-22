@@ -17,19 +17,12 @@ SUMMARY:
   110: "ChatGPT sits behind Cloudflare: headless the page stays on 'Just a moment'. Work in a real window on :99."
   112: "Measured trap: --download-path returns 0 file. Without that flag, the file lands under an identifier in the target folder, and the command exits on error even when it succeeded."
 
-WRITABLE_WORKSPACE:
-  workspace: "work/"
-  type-file: ".jpg .png .webp .md .txt"
-
-ERROR:
-  600: "Gemini without image, agent-browser missing, page unreachable: say it with the reason, never retry blindly."
-
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 
 SKILL_TOOL_SET:
@@ -40,3 +33,14 @@ SKILL_TOOL_SET:
 
 DOCS:
   300: "agent-browser.md"
+
+PLAN:
+
+WRITABLE_WORKSPACE:
+  workspace: "work/"
+  type-file: ".jpg .png .webp .md .txt"
+
+ERROR:
+  600: "Gemini without image, agent-browser missing, page unreachable: say it with the reason, never retry blindly."
+
+PORTEUR: ""

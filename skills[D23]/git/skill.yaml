@@ -9,9 +9,9 @@ SUMMARY:
   103: "Only what was READ and NAMED is committed; the line that breaks is NAMED."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G014: "shell_run"
@@ -28,3 +28,4 @@ WRITABLE_WORKSPACE:
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
   600: "Nothing to commit, or no repository: say it, force nothing."
+PORTEUR: ""

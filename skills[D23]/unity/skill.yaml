@@ -9,9 +9,9 @@ SUMMARY:
   103: "The 216 CLI commands come from `unity commands --format json`; the direct code channels are set aside (shell, plugin, --execute-method)"
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G061: "unity_tools_find"
@@ -37,3 +37,4 @@ WRITABLE_WORKSPACE:
   type-file: ".cs .unity .prefab .asset .anim .json .md"
 ERROR:
   600: "The editor does not answer: unity_status, then say it; a build or a play blocks compilation."
+PORTEUR: ""

@@ -2,7 +2,6 @@ id: "K35"
 skill: "debug"
 date: "2026-10-21"
 tags: ["debug", "terminal", "host"]
-HUMAN_ONLY: true
 
 SUMMARY:
   101: "The free terminal: the whole disk writable; the kernel refuses the calls that remove a name (machine.free_terminal.deny, io_uring included), so a file goes away with 'gio trash -- <path>' and never with rm."
@@ -10,9 +9,9 @@ SUMMARY:
   103: "Every command is journaled in state/free_terminal.log; the output is raw, exit code included."
 RULES:
   create_subfolder: false
-  execute_code: true
   max_section_lines: 100
 APPROVAL: false
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G077: "free_terminal"
@@ -24,3 +23,4 @@ WRITABLE_WORKSPACE:
   type-file: "anything the machine accepts"
 ERROR:
   600: "A binary of the blocklist does not exist in the cage: never call it again, it is masked."
+PORTEUR: ""

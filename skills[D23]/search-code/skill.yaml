@@ -9,9 +9,9 @@ SUMMARY:
   103: "The file AND the line are cited, never an excerpt from memory."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G011: "ast_grep_search"
@@ -29,3 +29,4 @@ WRITABLE_WORKSPACE:
   type-file: ".md .yaml .sh .json .txt .py .c .cs .js"
 ERROR:
   600: "No result: say it, and offer a wider pattern."
+PORTEUR: ""

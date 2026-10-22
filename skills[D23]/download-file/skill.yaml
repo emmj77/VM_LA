@@ -24,12 +24,12 @@ SUMMARY:
 
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 
   # THE AGENT DOWNLOADS BADLY WHEN NOBODY WATCHES (MOUSSA's observation). The right exists, but it is
   # signed: download_file is in GATED, so every call asks for a named and fresh go.
 APPROVAL: true
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 
 SKILL_TOOL_SET:
@@ -58,3 +58,4 @@ WRITABLE_WORKSPACE:
 ERROR:
   600: "the file is already there: it is not overwritten, another name is given"
   601: "the fingerprint does not match the one the source announced: the file is not what it is thought to be"
+PORTEUR: ""

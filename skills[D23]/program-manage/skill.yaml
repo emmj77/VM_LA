@@ -11,13 +11,13 @@ SUMMARY:
 
 RULES:
   create_subfolder: false
-  execute_code: false
   max_section_lines: 100
 
   # NOT BECAUSE IT WRITES IN THE HARNESS, BUT BECAUSE IT WRITES IN THE MACHINE:
   # install_program / uninstall_program set and remove packages. Every act named in GATED
   # asks for a named go, once, inside the approval.window seconds (300).
 APPROVAL: true
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G045: "install_program"
@@ -41,3 +41,4 @@ ERROR:
   601: "Removal without its double: remove nothing, ask again for the name."
   602: "sudo asking for a password: refuse, do not wait (the call is --non-interactive)."
   603: "Program not found: say where it was looked for, and what sits next to it."
+PORTEUR: ""

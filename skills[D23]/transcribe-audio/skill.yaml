@@ -9,9 +9,9 @@ SUMMARY:
   103: "Only what is HEARD is transcribed; a doubtful passage is marked [inaudible]."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G021: "transcribe"
@@ -27,3 +27,4 @@ WRITABLE_WORKSPACE:
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
   600: "Audio unreadable: say it, do not invent a sentence."
+PORTEUR: ""

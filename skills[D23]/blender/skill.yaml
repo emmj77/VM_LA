@@ -9,9 +9,9 @@ SUMMARY:
   103: "blender_tools_find '' everything: the list by family (READ, WRITE, MANAGE), 40 lines at most."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G059: "blender_tools_find"
@@ -31,4 +31,4 @@ WRITABLE_WORKSPACE:
   type-file: ".blend .py .obj .fbx .glb .stl .png"
 ERROR:
   600: "Blender refuses on a context motive (view, selection): say it as is, do not relaunch blindly (524 operators out of 2498 answer in --background)."
-
+PORTEUR: ""

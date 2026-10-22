@@ -10,7 +10,6 @@ SUMMARY:
   104: "A tool body is a FILE (config/tools/<machine>/tool_<name>.yaml), never a line."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
   # THE ONLY SKILL THAT CARRIES THIS RIGHT, AND IT IS NO DETAIL: `table_manage` writes in the table,
   # `skill_manage` writes in a manual. Those are the two things that DEFINE the harness.
@@ -18,6 +17,7 @@ RULES:
   # only once (work/approve). Without the go, the act is refused -- and the loop writes the request
   # so the human can see it and sign it (approval.sh allow <tool> <act>).
 APPROVAL: true
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G018: "table_manage"
@@ -36,3 +36,4 @@ ERROR:
   600: "Refused without a go: the human must approve THIS act (approval.sh allow <tool> <act>). Never work around it, never repeat it hoping"
   601: "table_manage refuses to remove a MANAGER (table_manage, skill_manage, todo...). That is deliberate: a harness does not cut off its own hand."
   602: "A tool body must carry tool:, RULES:, DESCRIPTION:, COMMAND:, ARGS: and name THE SAME tool. Refused otherwise: the line would be silent."
+PORTEUR: ""

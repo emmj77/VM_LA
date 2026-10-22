@@ -9,9 +9,9 @@ SUMMARY:
   103: "The RESULT the sub-agent returned is passed on, never a guess."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G008: "delegate_task"
@@ -27,3 +27,4 @@ WRITABLE_WORKSPACE:
   type-file: ".md .txt .json"
 ERROR:
   600: "The sub-agent returned nothing: say it, never build a result."
+PORTEUR: ""

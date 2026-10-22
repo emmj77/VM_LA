@@ -9,9 +9,9 @@ SUMMARY:
   103: "The ids are NEVER renumbered (laws 1019-1020)."
 RULES:
   create_subfolder: false
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G018: "table_manage"
@@ -27,3 +27,4 @@ WRITABLE_WORKSPACE:
   type-file: ".yaml"
 ERROR:
   600: "The table does not answer, or the target row is missing: say it."
+PORTEUR: ""

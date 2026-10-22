@@ -11,10 +11,10 @@ SUMMARY:
 
 RULES:
   create_subfolder: true
-  execute_code: true
   max_section_lines: 100
 
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 
 SKILL_TOOL_SET:
@@ -62,3 +62,4 @@ WRITABLE_WORKSPACE:
 
 ERROR:
   600: "A dirty .glb, an empty view or a floating part: say it with the measurement, fix, redo the view. Never validate blind."
+PORTEUR: ""

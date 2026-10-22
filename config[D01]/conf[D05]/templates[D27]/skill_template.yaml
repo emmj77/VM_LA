@@ -1,4 +1,4 @@
-# id: Q02
+id: "K00"                    # the identity of the skill, quoted; never called in a turn
 skill: "{{name}}"            # the skill name
 date: "{{date}}"             # the date it was set
 tags: ["{{name}}"]           # a tag seen in the prompt LOADS the skill, and opens its tools
@@ -12,11 +12,12 @@ RULES:                       # under SUMMARY: the laws the HARNESS applies
   max_section_lines: 100     # the ceiling of one section, in lines
 APPROVAL: false              # MAY THIS SKILL TOUCH THE HARNESS?
                              # true: every act touching the TABLE or a SKILL (table_manage,
-                             # skill_manage) asks for a HUMAN GO, at every call, and the
-                             # the go holds ONLY for the named act (state/approve, window of
-                             # approval.window seconds, once). false: these acts are
-                             # refused, as everywhere else. No skill sets true by
-                             # default: writing in the table is writing in the harness.
+                             # skill_manage) asks for a HUMAN GO, at every call, and the go
+                             # holds ONLY for the named act (state/approve, window of
+                             # approval.window seconds, once). false: these acts are refused,
+                             # as everywhere else.
+HUMAN_ONLY: false            # MAY THE MODEL LOAD IT? false: yes. true: the human alone, and
+                             # the model gets a named refusal (load_skill reads this, first).
 PERMANENT_TODO: false        # IS THE PLAN A TUNNEL? (a closed route, not a suggestion)
                              # true: the PLAN is written HERE by the human, and the loop uses it:
                              #   - the MANDATORY TODO is dropped (the plan is already open);
@@ -27,7 +28,6 @@ PERMANENT_TODO: false        # IS THE PLAN A TUNNEL? (a closed route, not a sugg
                              #   401: "[in_progress] read the state -- tools: tunnel_status"
                              #   402: "[todo] raise wg0 -- tools: tunnel_up"
                              # false: the plan is a JOURNAL, the model writes it and drives it.
-                             # A skill that sets true needs nothing else: the plan IS the route.
 SKILL_TOOL_SET:              # THE one name: the tools this skill opens, and them alone (200 to 299)
   200: "..."                 # one line, one tool name
   201: "..."
@@ -44,12 +44,7 @@ WRITABLE_WORKSPACE:          # the write space: two things, and only two
   type-file: ".md .yaml .sh .json .txt"   # the file types accepted
 ERROR:                       # what the skill says when a tool refuses
   600: "..."
-# NO STEPS BLOCK (dropped 19/10): nothing applied it, neither the loop nor the engine.
-# A route that cannot be applied is one suggestion more. The route, when one is needed, is the
-# PERMANENT PLAN (PERMANENT_TODO: true, see above): each step names its ONE tool, the harness
-# closes the toolset on it and opens it on a fact.
-
-# THE CARRIER: the machine this skill holds open while it lives (optional).
-# It names an action of the engine family that knows start|stop (e.g. engine.models).
-# load_skill opens it by loading the skill, and closes it when ANOTHER skill takes the place.
-PORTEUR: ""
+PORTEUR: ""                  # the carrier: the machine this skill holds open while it lives. It
+                             # names an engine action that knows start|stop (e.g. engine.models).
+                             # load_skill opens it by loading the skill, and closes it when
+                             # ANOTHER skill takes the place. empty: no carrier.

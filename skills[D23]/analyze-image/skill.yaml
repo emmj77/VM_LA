@@ -9,9 +9,9 @@ SUMMARY:
   103: "What is SEEN is described; in doubt, the call is made again ALONE (never grouped)."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   V001: "api_analyze_img"
@@ -32,3 +32,4 @@ WRITABLE_WORKSPACE:
   type-file: ".png .jpg .webp"
 ERROR:
   600: "Image unreadable or absent: say it, name the path, do not describe from memory."
+PORTEUR: ""

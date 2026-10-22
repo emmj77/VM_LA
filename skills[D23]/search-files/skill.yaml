@@ -9,9 +9,9 @@ SUMMARY:
   103: "The path FOUND is named, never a supposed path."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G005: "search"
@@ -27,3 +27,4 @@ WRITABLE_WORKSPACE:
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
   600: "Nothing found: say it, and offer a wider root, never invent a path."
+PORTEUR: ""

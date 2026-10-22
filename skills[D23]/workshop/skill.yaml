@@ -10,10 +10,9 @@ SUMMARY:
   104: "load_doc returns the doc of the active skill before a sensitive tool."
 RULES:
   create_subfolder: true
-  execute_code: false
-  max_section: 5
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G017: "skill_manage"
@@ -31,4 +30,4 @@ WRITABLE_WORKSPACE:
   workspace: "work/"
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
-SECTIONS:
+PORTEUR: ""

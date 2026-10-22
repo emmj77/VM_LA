@@ -10,9 +10,9 @@ SUMMARY:
   104: "A WRITTEN report asked for? same road, plus write_file: the report names its sources."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G031: "web_search"
@@ -30,3 +30,4 @@ WRITABLE_WORKSPACE:
 ERROR:
   600: "If web_search returns nothing: rephrase the request with DISTINCTIVE words, never repeat it as is."
   601: "No source found: the written report says what is MISSING, it does not invent."
+PORTEUR: ""

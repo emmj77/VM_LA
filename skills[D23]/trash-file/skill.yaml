@@ -9,9 +9,9 @@ SUMMARY:
   103: "The target is NAMED, no pattern is guessed."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G006: "trash_file"
@@ -26,3 +26,4 @@ WRITABLE_WORKSPACE:
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
   600: "Target missing: say it, force nothing."
+PORTEUR: ""

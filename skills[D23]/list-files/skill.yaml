@@ -9,9 +9,9 @@ SUMMARY:
   103: "The list is passed on AS IT WAS READ, no memory."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G003: "list_dir"
@@ -27,3 +27,4 @@ WRITABLE_WORKSPACE:
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
   600: "Folder missing: say it and name the path, never invent a content."
+PORTEUR: ""

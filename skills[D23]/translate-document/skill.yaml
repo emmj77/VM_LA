@@ -9,9 +9,9 @@ SUMMARY:
   103: "Only what was READ is translated; proper names are not rendered."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G002: "read_file"
@@ -29,3 +29,4 @@ WRITABLE_WORKSPACE:
   type-file: ".md .yaml .sh .json .txt"
 ERROR:
   600: "Source unreadable: say it and name the path, never invent a text."
+PORTEUR: ""

@@ -22,6 +22,7 @@ RULES:
 # APPROVAL: false -- the three tunnel tools are outside GATED; what bounds this skill is the
 # tunnel itself: every step closes the toolset on the one tool it names.
 APPROVAL: false
+HUMAN_ONLY: false
 PERMANENT_TODO: true
 
 SKILL_TOOL_SET:
@@ -48,3 +49,4 @@ WRITABLE_WORKSPACE:
 ERROR:
   600: "tunnel_status/tunnel_up/tunnel_down do not exist or were cut: the route is dead, say it"
   601: "sudo asks for a password: no tunnel act is possible from here, say it"
+PORTEUR: ""

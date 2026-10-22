@@ -9,9 +9,9 @@ SUMMARY:
   103: "What WAS FOUND is cited, with its source; memory is never rebuilt."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G022: "load_doc"
@@ -24,3 +24,4 @@ WRITABLE_WORKSPACE:
   type-file: ".md .txt"
 ERROR:
   600: "Nothing found: say it, and offer another keyword."
+PORTEUR: ""

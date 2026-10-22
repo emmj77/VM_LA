@@ -9,9 +9,9 @@ SUMMARY:
   103: "The EXACT path queried is returned, with its value."
 RULES:
   create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
 PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G012: "yq_query"
@@ -27,3 +27,4 @@ WRITABLE_WORKSPACE:
   type-file: ".yaml .yml"
 ERROR:
   600: "The path lands on nothing: say it, and show the neighbouring keys."
+PORTEUR: ""

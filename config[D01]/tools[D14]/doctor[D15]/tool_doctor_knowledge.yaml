@@ -27,6 +27,40 @@ COMMAND: |
       grep -q '^  workspace:' "$_s" || printf 'FAULT skill %s carries no workspace\n' "$_nm"
       grep -q '^SKILL_TOOL_SET:' "$_s" || printf 'FAULT skill %s carries no SKILL_TOOL_SET\n' "$_nm"
     done
+    # the gabarit is the single reference: a key it does not name, a key it names and the skill
+    # does not carry, or keys out of its order, are faults.
+    python3 - "$_d" <<'PY'
+  import sys, os, glob, yaml
+  skd = sys.argv[1]
+  root = os.path.dirname(skd)
+  t = glob.glob(os.path.join(root, 'config*', 'conf*', 'templates*', 'skill_template.yaml'))
+  if not t:
+      print('FAULT the gabarit skill_template.yaml is missing')
+  else:
+      tpl = yaml.safe_load(open(t[0], encoding='utf-8')) or {}
+      tk = list(tpl)
+      trk = set((tpl.get('RULES') or {}).keys())
+      for n in sorted(os.listdir(skd)):
+          p = os.path.join(skd, n, 'skill.yaml')
+          if not os.path.isfile(p):
+              continue
+          try:
+              d = yaml.safe_load(open(p, encoding='utf-8')) or {}
+          except Exception as e:
+              print('FAULT skill %s does not parse: %s' % (n, e))
+              continue
+          for k in d:
+              if k not in tk:
+                  print('FAULT skill %s carries %s, which the gabarit does not name' % (n, k))
+          for k in tk:
+              if k not in d:
+                  print('FAULT skill %s misses %s, which the gabarit names' % (n, k))
+          for k in (d.get('RULES') or {}):
+              if k not in trk:
+                  print('FAULT skill %s carries RULES.%s, which the gabarit does not name' % (n, k))
+          if list(d) != [k for k in tk if k in d]:
+              print('FAULT skill %s keeps its keys out of the gabarit order' % n)
+  PY
     [ "$_n" -gt 0 ] && printf 'ok %s skill(s) read\n' "$_n" || printf 'FAULT no skill in skills\n'
     ;;
   active)
