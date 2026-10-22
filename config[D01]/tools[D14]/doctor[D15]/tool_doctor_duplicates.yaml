@@ -2,7 +2,7 @@
 id: "D013"
 tool: "doctor.duplicates"
 date: "2026-10-22"
-tags: ["manage", "duplicate", "clone", "copy"]
+tags: ["manage", "shell", "file", "find"]
 RULES:
   enabled: true
   timeout: 120

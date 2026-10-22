@@ -374,6 +374,17 @@ def read_residents():
 
 
 
+def _appoint_rows(appoints, flag=False):
+    """the lines of the appointed units: one loop, two callers, the flag says who carries it"""
+    for name, port, code, word, silent, unit in appoints:
+        if unit:
+            yield (name, code + (" · :%d" % port if port else ""), silent)
+            continue
+        _rss = 0 if silent else _rss_port(port)
+        yield (name, ("silent" if silent else "answers " + code) + " · :%d" % port
+               + ("" if silent else " · %d MB" % _rss), flag and silent)
+
+
 def _rss_port(port):
     try:
         p = subprocess.run(["ss", "-ltnp", "sport = :%d" % port], capture_output=True, text=True, timeout=4).stdout
@@ -781,14 +792,7 @@ def control(light=False):
                   len([r for r in res if not r[5]]) != len(res)))
         L.append(("table", "absente" if table is None else "%d/%d" % (table[0], table[1]),
                   table is None or bool(table[2] or table[3])))
-        for name, port, code, word, silent, unit in appoints:
-            if unit:
-                L.append((name, code + (" · :%d" % port if port else ""), silent))
-                continue
-            _rss = 0 if silent else _rss_port(port)
-            L.append((name, ("silent" if silent else "answers " + code) + " · :%d" % port
-                         + ("" if silent else " · %d MB" % _rss),
-                      False))
+        L.extend(_appoint_rows(appoints, True))
         for name, v, ok, what in instr:
             L.append((name,
                       (v + " · 0 MB · no port") if ok else ("ABSENT (" + what + ") · 0 MB · no port"),
@@ -864,13 +868,7 @@ def control(light=False):
         up = bridge_ping()
         _ena = run(["systemctl", "--user", "is-enabled", "la-bridge"], timeout=4)[1].strip() or "disabled"
         L.append(("bridge", _ena, _ena != "enabled"))
-    for name, port, code, word, silent, unit in appoints:
-        if unit:
-            L.append((name, code + (" · :%d" % port if port else ""), silent))
-            continue
-        _rss = 0 if silent else _rss_port(port)
-        L.append((name, ("silent" if silent else "answers " + code) + " · :%d" % port
-                     + ("" if silent else " · %d MB" % _rss), False))
+    L.extend(_appoint_rows(appoints))
     return L, faults, res, appoints, table, canon, doctor, traffic
 
 

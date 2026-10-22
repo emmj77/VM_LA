@@ -2,13 +2,12 @@
 # role: the register. the five names of the document, the bodies proven in the old engine:
 # table_block, table_index, block_by_id, body_of, count. one file in, lines out, TABLE carries it.
 
-# table_block <table> <id> : the lines of one entry, from "id:" to the line before the next entry
+# _block <table> <id> : the lines of one entry, from "id:" to the line before the next entry
 # the indent of the table does not matter: the anchor is "- id:" wherever it sits.
-table_block() {
+_block() {
   _t=${1:-}
-  _id=${2:-}
   [ -f "$_t" ] || return 1
-  awk -v id="$_id" '
+  awk -v id="${2:-}" '
     /^[ \t]*- id:[ \t]*/ {
       if (on) { exit }
       v = $0
@@ -21,6 +20,9 @@ table_block() {
     END { if (!on) exit 1 }
   ' "$_t"
 }
+
+# table_block <table> <id> : the entry, in the table the caller names
+table_block() { _block "${1:-}" "${2:-}" ; }
 
 # table_entry <table> <id|name> : the entry, whether it is given by its id or by its name
 table_entry() {
@@ -111,20 +113,7 @@ table_index() {
 }
 
 # block_by_id <id> : the block of an id in the table carried by TABLE, one pass, no temp file
-block_by_id() {
-  awk -v id="${1:-}" '
-    /^[ \t]*- id:[ \t]*/ {
-      if (on) exit
-      v = $0
-      sub(/^[ \t]*- id:[ \t]*/, "", v)
-      gsub(/["\047]/, "", v)
-      sub(/[ \t].*$/, "", v)
-      if (v == id) on = 1
-    }
-    on { print }
-    END { if (!on) exit 1 }
-  ' "$TABLE"
-}
+block_by_id() { _block "$TABLE" "${1:-}" ; }
 
 # body_of <id> : what the document calls the block of an id
 body_of() { block_by_id "$@"; }

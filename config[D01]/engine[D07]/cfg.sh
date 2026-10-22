@@ -212,24 +212,18 @@ _cfg_family() {
     }' "$LA_INDEX" 2>/dev/null
 }
 
-cfg_path() {
-  _n=$(cfg_dir "$1") || return 1
+# _cfg_place <resolver> <key> : one name in, one place out, in the state or in the tree
+_cfg_place() {
+  _n=$("$1" "${2:-}") || return 1
   [ -n "$_n" ] || return 1
   case $(_cfg_family "$_n") in N[0-9]*) printf '%s/%s\n' "$LA_STATE" "$_n" ; return 0 ;; esac
-  _p=$(_cfg_locate "$_n")
-  [ -n "$_p" ] || _p=$_n
+  _p=$(_cfg_locate "$_n") ; [ -n "$_p" ] || _p=$_n
   realpath -m -- "$(_cfg_here "$_p")"
 }
 
-# cfg_abs <file key> : a file key resolved against the root
-cfg_abs() {
-  _n=$(cfg_file "$1") || return 1
-  [ -n "$_n" ] || return 1
-  case $(_cfg_family "$_n") in N[0-9]*) printf '%s/%s\n' "$LA_STATE" "$_n" ; return 0 ;; esac
-  _p=$(_cfg_locate "$_n")
-  [ -n "$_p" ] || _p=$_n
-  realpath -m -- "$(_cfg_here "$_p")"
-}
+# cfg_path <folder key> : a folder of the tree. cfg_abs <file key> : a file, against the root
+cfg_path() { _cfg_place cfg_dir "${1:-}" ; }
+cfg_abs() { _cfg_place cfg_file "${1:-}" ; }
 
 # cfg <verb> <arg> : the one word the rest of the engine uses
 cfg() {
