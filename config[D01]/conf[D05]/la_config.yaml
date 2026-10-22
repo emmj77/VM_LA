@@ -254,6 +254,7 @@ doctor:
 # every bound the engine applies
 limits:
   said_window: 10
+  doc_lines: 8
   live_lines: 40
   return_keep: 200
   vision_tokens: 1024
@@ -587,6 +588,12 @@ schema:
     min: 1
     max: 8
     why: combien de fois un message sans parole est redemande
+  - section: limits
+    key: doc_lines
+    kind: int
+    min: 2
+    max: 40
+    why: la doc de la skill chargee, en lignes dans la tete secondaire
   - section: second
     key: order
     kind: order

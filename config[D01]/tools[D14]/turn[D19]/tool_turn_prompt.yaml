@@ -13,7 +13,6 @@ RULES:
   paths: write
 DESCRIPTION: "the messages: the head first, then what the human asked"
 COMMAND: |
-  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   # the stable prefix: the head, zone by zone, in the order the config holds them
   _who=$(cfg str head.name "LA")
@@ -44,12 +43,21 @@ COMMAND: |
   _req=$(_turn_get '.prompt' 2>/dev/null)
   [ -n "$_req" ] || _req=${PROMPT:-}
   _second=$(
+    printf '== THE CHANNEL ==\n'
+    printf 'channel : %s ; input : %s\n' "$(_turn_get '.channel // "cli"')" "$(_turn_get '.input // "text"')"
     printf '== THE HUMAN ==\n'
     printf 'you are talking with the human (%s) ; the agent answering is %s\n' \
       "$(cfg str agents.human user)" "$(cfg str agents.main jarvis)"
     printf '== THE ACTIVE PROJECT ==\n'
     _pr=$(skl_project 2>/dev/null)
     if [ -n "$_pr" ]; then printf 'project : %s\n' "$_pr"; else printf 'no project loaded : every skill is reachable\n'; fi
+    # the project's rules, a minima : what its manifest declares, stack included
+    if [ -n "$_pr" ]; then
+      _pf=$(skl_big_file 2>/dev/null)
+      if [ -n "$_pf" ]; then
+        awk '/^RULES:/ { f = 1 ; next } f && /^[^ \t]/ { f = 0 } f && /[a-z]/ && !/^[ \t]*#/ { sub(/^[ \t]+/, "") ; print "rule : " $0 }' "$_pf" | head -n 6
+      fi
+    fi
     printf '== THE ACTIVE SKILL ==\n'
     _sk=$(skl_skill 2>/dev/null)
     if [ -n "$_sk" ]; then printf 'skill : %s\n' "$_sk"; else printf 'no skill loaded : no skill is active\n'; fi
@@ -63,6 +71,26 @@ COMMAND: |
           | awk '{ o = ""; for (i = 1; i <= NF; i += 2) o = o (i > 1 ? " · " : "") $i " " sprintf("%.2f", $(i+1)); print o }')
         [ -n "$_pp" ] && printf 'skills probables : %s\n' "$_pp"
       fi
+    fi
+    # the skill's doc, in short : the agent keeps it in view ; it never grows long
+    if [ -n "$_sk" ]; then
+      _sd=$(cfg path skills) ; case $_sd in /*) ;; *) _sd="$ROOT/$_sd" ;; esac
+      _td=$(cfg path tools) ; case $_td in /*) ;; *) _td="$ROOT/$_td" ;; esac
+      _dl=$(cfg num limits.doc_lines 8) || _dl=8
+      _dn=0
+      for _dname in $(sed -n '/^DOCS:/,/^[^[:space:]]/p' "$_sd/$_sk/skill.yaml" 2>/dev/null \
+                      | sed -n 's/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
+                      | sed -e 's/^"//' -e 's/"[[:space:]]*$//' | grep -v '^$'); do
+        _dn=$((_dn+1)) ; [ "$_dn" -le 2 ] || break
+        case $_dname in
+          web_search|web|none) printf 'doc %s : on the web, take the official source\n' "$_dname" ; continue ;;
+        esac
+        _df=""
+        for _c in "$_td/$_dname" "$ROOT/$_dname" "$_sd/$_sk/$_dname" "$_sd/$_dname"; do
+          [ -f "$_c" ] && { _df=$_c ; break ; }
+        done
+        if [ -n "$_df" ]; then printf 'doc %s :\n' "$_dname" ; head -n "$_dl" -- "$_df" ; else printf 'doc %s : not on disk\n' "$_dname" ; fi
+      done
     fi
     printf '== THE LOCAL MODEL SUMMARY ==\n'
     _sf=$(cfg abs second 2>/dev/null)
@@ -80,6 +108,23 @@ COMMAND: |
     printf '== THE LOADED SKILL PLAN ==\n'
     _pl=$(plan_status 2>/dev/null | head -n 8)
     if [ -n "$_pl" ]; then printf '%s\n' "$_pl"; else printf 'no open plan\n'; fi
+    _bpf=$(skl_big_file 2>/dev/null)
+    if [ -n "$_bpf" ]; then
+      printf '== THE PROJECT PLAN ==\n'
+      _bpt=$(_skl_big_body "$_bpf" 2>/dev/null)
+      if [ -z "$_bpt" ]; then printf 'the big plan is not written\n' ; else
+        printf '%s\n' "$_bpt" | awk '
+          { l = $0 ; sub(/^[ \t]*[0-9]+:[ \t]*"?/, "", l) ; sub(/"?[ \t]*$/, "", l)
+            if (l ~ /^\[in_progress\]/) { sub(/^\[in_progress\][ \t]*/, "", l) ; ip = l }
+            else if (l ~ /^\[completed\]/) { sub(/^\[completed\][ \t]*/, "", l) ; lc = l }
+            else if (l ~ /^\[todo\]/) { sub(/^\[todo\][ \t]*/, "", l) ; if (nx == "") nx = l } }
+          END {
+            if (lc != "") printf "done : %s\n", lc
+            printf "now  : %s\n", (ip != "" ? ip : "nothing in progress")
+            printf "next : %s\n", (nx != "" ? nx : "nothing left")
+          }'
+      fi
+    fi
     printf '== THE STICKY NOTE ==\n'
     _sn=$(cfg abs note 2>/dev/null)
     if [ -n "$_sn" ] && [ -s "$_sn" ]; then head -c 1200 "$_sn"; printf '\n'; else printf 'the note is empty\n'; fi
@@ -111,7 +156,7 @@ COMMAND: |
   [ -n "$_u" ] || _u=${PROMPT:-}
   _msgs=$(jq -n --arg s "$_sys" --arg u "$_u" '[{role:"system",content:$s},{role:"user",content:$u}]')
   _turn_set_json '(.messages = $v)' "$_msgs"
-  _tr prompt "$(printf '%s' "$_u" | wc -c) bytes"
+  trace_line prompt "$(printf '%s' "$_u" | wc -c) bytes"
   exit 0
 
 ARGS: []
