@@ -1,0 +1,64 @@
+id: "G078"
+tool: "load_spec"
+date: "2026-10-22"
+tags: ["read", "shell", "project", "load"]
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "loads the SPEC of the loaded project into the turn: all of it, one section, or a range of its lines. the load opens app_spec, once"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  P=$(sed -n '1p' "$(cfg path projects)/.active" 2>/dev/null | tr -d '\r')
+  [ -n "$P" ] || { printf 'no active project: nothing to load\n' >&2 ; exit 1 ; }
+  D=$(project_dir "$P") || exit 1
+  F="$D/project.yml"
+  [ -f "$F" ] || { printf 'the manifest is not there: %s\n' "$F" >&2 ; exit 1 ; }
+  python3 - "$F" "$P" "{{section}}" "{{from}}" "{{to}}" <<'PY'
+  import sys, yaml
+  f, name, sec, frm, to = [a.strip() for a in sys.argv[1:6]]
+  d = yaml.safe_load(open(f, encoding='utf-8')) or {}
+  sp = d.get('SPEC') or {}
+  if not sp:
+      sys.exit('the project carries no SPEC zone: say it, do not fabricate one')
+  cap = int(((sp.get('cap') or {}).get('chars_per_line')) or 100)
+  secs = [k for k, v in sp.items() if isinstance(v, list)]
+  if sec and sec not in secs:
+      sys.exit('the section %s does not exist: naming it is the act of create-spec' % sec)
+  lo = int(frm) if frm.isdigit() and int(frm) > 0 else None
+  hi = int(to) if to.isdigit() and int(to) > 0 else lo
+  print('spec %s %s (%s), %d section(s), %d statement(s), cap %d bytes'
+        % (name, sp.get('version', '?'), sp.get('state', '?'), len(secs),
+           sum(len(sp[k]) for k in secs), cap))
+  rows = []
+  for k in ([sec] if sec else secs):
+      for i, t in enumerate(sp[k], 1):
+          rows.append((k, i, t))
+  last = None
+  shown = 0
+  for n, (k, i, t) in enumerate(rows, 1):
+      if lo and (n < lo or n > hi):
+          continue
+      if k != last:
+          print(k)
+          last = k
+      print(' [%d] %s' % (n, t))
+      shown += 1
+  if lo and not shown:
+      sys.exit('%s holds %d line(s): %s is not one of them' % (sec or 'the spec', len(rows), frm or to))
+  PY
+  _tf=$(cfg abs turn)
+  [ -s "$_tf" ] && _turn_set ".spec = \"$P\"" 2>/dev/null
+  exit 0
+
+ARGS:
+  - {name: section, type: text, required: false}
+  - {name: from, type: text, required: false}
+  - {name: to, type: text, required: false}

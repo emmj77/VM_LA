@@ -4,14 +4,12 @@ date: "2026-10-22"
 tags: ["spec", "canon", "project", "statement"]
 
 SUMMARY:
-  100: "The ONE skill that reads, corrects and verifies the SPEC zone of the loaded project."
-  101: "It creates nothing: a new section is the act of create-spec, a route. Here the section exists."
-  102: "It changes one statement at a time: write one, replace the one at a number, drop one."
-  103: "Every statement is one line, 100 bytes at most, and holds a fact the machine can read."
-  104: "What it cannot prove, it names: it never fills a hole with a plausible sentence."
-  110: "read: spec_read names every section and numbers every statement."
-  111: "write: spec_set writes a statement in an existing section; spec_drop takes one out."
-  112: "audit: spec_check names the three keys, every empty statement, every byte over the cap, every repeat."
+  100: "The ONE skill that loads and appends the SPEC of the loaded project. Two acts, nothing else."
+  101: "load_spec: all of the canon, one section, or a range of its lines. It opens app_spec, once."
+  102: "app_spec: one or two statements, at the offset it is told. It comes after load_spec, or it is refused."
+  103: "No section is named here: naming it is the act of create-spec. No line is ever dropped."
+  104: "A statement is one line, one fact, 100 bytes at most. What cannot be proven is reported, never invented."
+  110: "the order is the law: load, then append, once. after a write, load again to write again."
 
 RULES:
   create_subfolder: false
@@ -23,16 +21,14 @@ HUMAN_ONLY: false
 PERMANENT_TODO: false
 
 SKILL_TOOL_SET:
-  G078: "spec_read"
-  G079: "spec_set"
-  G080: "spec_drop"
-  G081: "spec_check"
+  G078: "load_spec"
+  G079: "app_spec"
   G002: "read_file"
 
 DOCS:
-  300: "manage-spec: read the canon with spec_read, change one statement with spec_set or spec_drop, audit it with spec_check."
-  301: "a section is never named here: create-spec names it. a statement is one line, one fact, 100 bytes at most."
-  302: "a statement the machine cannot hold is reported to the human, never replaced by a sentence that sounds right."
+  300: "manage-spec: load_spec reads the canon (all, a section, a range of lines) and opens app_spec for this turn."
+  301: "app_spec writes one or two statements at the offset it is told, in a section that exists, then closes."
+  302: "no section is named here (create-spec names it), no statement is dropped, nothing is invented: what cannot hold is said."
 
 PLAN:
 
@@ -42,4 +38,5 @@ WRITABLE_WORKSPACE:
 ERROR:
   600: "the project carries no SPEC zone: say it, do not fabricate one"
   601: "the statement is longer than cap.chars_per_line: cut it, or ask the human"
+  602: "app_spec without load_spec, or a second write in the same turn: load again first"
 PORTEUR: ""

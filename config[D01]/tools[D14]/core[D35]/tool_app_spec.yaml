@@ -1,0 +1,91 @@
+id: "G079"
+tool: "app_spec"
+date: "2026-10-22"
+tags: ["write", "shell", "project", "add"]
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "appends one or two statements at a given offset of an existing SPEC section. comes after load_spec, once per turn, and names no section"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  P=$(sed -n '1p' "$(cfg path projects)/.active" 2>/dev/null | tr -d '\r')
+  [ -n "$P" ] || { printf 'no active project: nothing to write\n' >&2 ; exit 1 ; }
+  D=$(project_dir "$P") || exit 1
+  F="$D/project.yml"
+  [ -f "$F" ] || { printf 'the manifest is not there: %s\n' "$F" >&2 ; exit 1 ; }
+  _tf=$(cfg abs turn)
+  _sp=$([ -s "$_tf" ] && jq -r '.spec // ""' "$_tf" 2>/dev/null)
+  [ "$_sp" = "$P" ] || { printf 'app_spec comes after load_spec: load the canon of %s first, in this turn\n' "$P" >&2 ; exit 1 ; }
+  python3 - "$F" "{{section}}" "{{after}}" "{{lines}}" "$P" <<'PY'
+  import sys, yaml, os, re
+  f, sec, at, lines, name = sys.argv[1], sys.argv[2].strip(), sys.argv[3].strip(), sys.argv[4], sys.argv[5]
+  d = yaml.safe_load(open(f, encoding='utf-8')) or {}
+  sp = d.get('SPEC') or {}
+  if not sp:
+      sys.exit('the project carries no SPEC zone: say it, do not fabricate one')
+  secs = [k for k, v in sp.items() if isinstance(v, list)]
+  if sec not in secs:
+      sys.exit('the section %s does not exist: naming it is the act of create-spec' % sec)
+  cap = int(((sp.get('cap') or {}).get('chars_per_line')) or 100)
+  at = at or '0'
+  if not at.isdigit():
+      sys.exit('after says where the line lands: a statement number, 0 for the head')
+  new = [x.strip() for x in lines.split(';')]
+  new = [x for x in new if x]
+  if not new:
+      sys.exit('nothing to write: no line given')
+  if len(new) > 2:
+      sys.exit('%d lines asked: two at most, one write at a time' % len(new))
+  for x in new:
+      if len(x.encode()) > cap:
+          sys.exit('the line is %d bytes, the cap is %d' % (len(x.encode()), cap))
+  src = open(f, encoding='utf-8').read().split('\n')
+  hdr = re.compile(r'^  ' + re.escape(sec) + r':(\s|$)')
+  top = re.compile(r'^[^ \t]')
+  sec2 = re.compile(r'^  [A-Za-z_]+:')
+  i = next((k for k, l in enumerate(src) if re.match(r'^SPEC:', l)), None)
+  h = next((k for k in range(i + 1, len(src)) if hdr.match(src[k])), None)
+  if h is None:
+      sys.exit('the section %s has no place in the file' % sec)
+  end = len(src)
+  for k in range(h + 1, len(src)):
+      if top.match(src[k]) or sec2.match(src[k]):
+          end = k
+          break
+  marks = [k for k in range(h + 1, end) if src[k].startswith('    - ')]
+  n = int(at)
+  if n > len(marks):
+      sys.exit('the section %s holds %d statement(s): after=%d lands nowhere' % (sec, len(marks), n))
+  pos = (marks[n - 1] + 1) if n > 0 else h + 1
+  for x in reversed(new):
+      esc = x.replace('\\', '\\\\').replace('"', '\\"')
+      src.insert(pos, '    - "%s"' % esc)
+  out = '\n'.join(src)
+  try:
+      chk = yaml.safe_load(out) or {}
+  except Exception as e:
+      sys.exit('the edit would break the manifest: %s' % e)
+  if len(chk['SPEC'][sec]) != len(sp[sec]) + len(new):
+      sys.exit('the edit did not land in %s: nothing written' % sec)
+  t = f + '.tmp'
+  open(t, 'w', encoding='utf-8').write(out)
+  os.replace(t, f)
+  print('ok spec %s: %d line(s) written in %s, after %d (%d now)'
+        % (name, len(new), sec, n, len(chk['SPEC'][sec])))
+  PY
+  _rc=$?
+  [ "$_rc" -eq 0 ] && _turn_set '.spec = ""' 2>/dev/null
+  exit "$_rc"
+
+ARGS:
+  - {name: section, type: text}
+  - {name: after, type: text, required: false}
+  - {name: lines, type: text}

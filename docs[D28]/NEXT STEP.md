@@ -2,11 +2,10 @@
 
 ## Ce qui est fait
 
-- **manage-spec** (K36), quatre outils, un par acte : `spec_read` (lire une section ou tout le canon,
-  énoncés numérotés), `spec_set` (écrire un énoncé nouveau, ou remplacer celui d'un numéro),
-  `spec_drop` (ôter l'énoncé d'un numéro), `spec_check` (audit : les trois clés, chaque section, chaque
-  énoncé contre le plafond, chaque répétition). Aucun ne **nomme** une section : nommer est l'acte de
-  `create-spec`.
+- **manage-spec** (K36), deux outils, deux actes : `load_spec` (tout le canon, une section, ou une
+  plage de lignes, numerotees d un bout a l autre) et `app_spec` (une ou deux lignes, a l offset dit,
+  dans une section qui existe). `app_spec` ne passe qu apres un `load_spec` du meme tour, et le load
+  se ferme apres une ecriture : une ecriture par load. Aucun outil ne nomme une section.
 - **La route** : le pas est une donnée (`text`, `tools`, `close`) ; le moteur ferme le pas sur le fait
   (`skl_step_close`, au retour de l'outil) ; `at:` dans le `skill.yaml` dit où l'on en est.
 - **Le doc** : la section `DOCS` est le doc, jamais vide, et les trois formes se mêlent.
@@ -19,17 +18,18 @@ présence de la section à la fin est la preuve du dernier pas.
 
     400: "a section of the canon that was not there, and holds"
     at: 401
-    401 read    [spec_read, read_file]      close: ["scaffolding"]   lire ce qui tient
-    402 name    [spec_open, spec_read]      close: ["<section>"]     nommer la section, vide
-    403 write   [spec_set, spec_read]       close: ["<section>"]     poser les énoncés, un par un
-    404 audit   [spec_check, spec_read]     close: ["ok spec"]       l'audit passe sans faute
-    405 report  [reply]                     close: []                dire ce qui a été nommé
+    401 read    [load_spec, read_file]     close: ["scaffolding"]   lire ce qui tient
+    402 name    [open_spec, load_spec]     close: ["<section>"]     nommer la section, vide
+    403 write   [load_spec, app_spec]       close: ["<section>"]     poser les enonces, deux par deux
+    404 prove   [load_spec, read_file]      close: ["<section>"]     la section est la, et tient
+    405 report  [reply]                     close: []                dire ce qui a ete nomme
 
 Deux décisions à prendre avant de l'écrire :
 
-1. `spec_open <section>` — l'outil qui pose la section vide : `spec_open` ou `spec_begin` ?
-2. La preuve du pas 404 : le littéral `ok spec` suffit-il, ou faut-il exiger le compte
-   (`7 section(s)`) pour prouver que la section est bien entrée ?
+1. L'outil qui **nomme** la section vide — son nom, et son unique argument : `open_spec <section>` ?
+   Il exige une section absente, et pose la clé vide dans le `SPEC`.
+2. `create-spec` écrit-elle aussi ses premiers énoncés (`load_spec` + `app_spec` dans la route), ou
+   ouvre-t-elle la section et passe-t-elle la main à `manage-spec` ?
 
 ## Reste ouvert (ancienne liste, à trancher)
 
