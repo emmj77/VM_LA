@@ -101,7 +101,9 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `skl.sh` · `tool_allowed` | tool_allowed <name> <id> : the two doors at once, the name for the master file, the id for the skill |
 | `skl.sh` · `approval_of` | approval_of <body> : what the body says a human must carry, empty when nothing |
 | `skl.sh` · `is_gated` | is_gated <body> : true when the call waits for a human signature |
-| `run.sh` · `_gate` | the same check at the door: only the engine is exempt. The human label is declared by the caller, and the cli carries it, so it exempts nothing |
+| `run.sh` · `_gate` | the same check at the door, through `channel_is`: a label whose row lifts the approval passes, no other does |
+| `la_config` · `channels:` | the table: `self`, `model`, `approval` per label. An undeclared label takes the model row, so a new transport is shut until it is written down |
+| `cfg.sh` · `channel_is` | `channel_is <label> <rule>`: the only reader of that table. An empty answer counts as yes; no surface decides a rule by itself |
 | `step.sh` · `_turn_file` | the path of state/turn.json |
 | `step.sh` · `_turn_get` | one field of turn.json, as a jq expression |
 | `step.sh` · `_turn_set` | rewrites turn.json with a jq filter, atomically |
@@ -366,6 +368,7 @@ No number, no prefix: the name IS the id.
 The name is a file name: lowercase, `a-z 0-9 _ -`, one word. A name that does not fit is refused.
 The chat runs between agents only: no other name ever enters `from` or `to`.
 The LAUNCHER poses the name (`LA_FROM`), the model never chooses it (law 206).
+The name grants nothing by itself: the `channels:` table says what it carries (`self`, `model`, `approval`), and `channel_is` is its only reader. A label nobody wrote down takes the model row.
 `agents.names` in the master file is the ONLY list; `agents.main` names the principal and is one of them.
 
 ## the environment
@@ -429,7 +432,7 @@ Every `LA_*` name the code carries as a whole word, 99 of them: exported by boot
 | `LA_EMBED_MODEL` | the embedding model the memory bodies ask for |
 | `LA_EMBED_PORT` | where the embedding model listens, for the memory bodies |
 | `LA_ENV` | the key file, conf/.env: the secrets never travel by argument |
-| `LA_FROM` | who called the door: engine, model, human. The caller declares it, so it grants no exemption to a gated body; the engine alone is exempt |
+| `LA_FROM` | the label the launcher poses: engine, model, human, app. It carries only what the `channels:` row says, read through `channel_is` |
 | `LA_GGUF_DIR` | where the quantised models sit, for a body that reads one |
 | `LA_HOME` | the home of the machine, used only by the installer and the uninstaller |
 | `LA_HOST` | the address the bridge listens on, from machine.host |

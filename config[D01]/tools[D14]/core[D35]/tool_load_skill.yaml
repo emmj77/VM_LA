@@ -25,7 +25,7 @@ COMMAND: |
   if [ -L "$SK/$SLUG" ]; then printf '%s\n' "$(msg target_symlink "$SLUG")" >&2 ; exit 1 ; fi
   [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { printf '%s\n' "$(msg skill_absent_file "$SLUG")" >&2 ; exit 1 ; }
   H=$(sed -n 's/^HUMAN_ONLY:[[:space:]]*//p' "$C" | head -n 1 | sed -e 's/#.*$//' | tr -d ' ')
-  if [ "$H" = true ] && [ "${LA_FROM:-model}" = model ]; then
+  if [ "$H" = true ] && channel_is "${LA_FROM:-model}" model; then
     printf '%s\n' "$(msg refusals.human_only_skill "$SLUG")" >&2 ; exit 1
   fi
   PROCS=${PROCS:-$(cfg path programs 2>/dev/null)}
@@ -41,7 +41,7 @@ COMMAND: |
     printf '%s\n' "$PSK" | grep -qxF -- "$SLUG" \
       || { printf '%s\n' "$(msg project_skill_absent "$PNAME" "$SLUG" "$(printf '%s ' $PSK)")" >&2 ; exit 1 ; }
   fi
-  if [ "${LA_FROM:-model}" = model ]; then
+  if channel_is "${LA_FROM:-model}" model; then
     if ! approval_ok load_skill "name=$SLUG"; then
       approval_request load_skill "name=$SLUG" >/dev/null 2>&1
       printf '%s\n' "$(msg refusals.approval_required)" >&2 ; exit 3

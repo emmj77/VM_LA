@@ -288,6 +288,24 @@ limits:
   head_bytes: 1000
   poll_ms: 1500
 
+channels:                                     # what a label carries: one table, read by channel_is.
+  engine:                                     # an undeclared label takes the model row, so a new
+    self: yes                                 # transport is shut until it is written down here.
+    model: no
+    approval: no
+  model:
+    self: no
+    model: yes
+    approval: yes
+  human:
+    self: no
+    model: no
+    approval: yes
+  app:
+    self: no
+    model: no
+    approval: yes
+
 active_skill: ""
 active_project: ""
 

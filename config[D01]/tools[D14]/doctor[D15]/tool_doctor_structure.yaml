@@ -33,6 +33,8 @@ COMMAND: |
       [ -f "$_f" ] || continue
       _n=$((_n + 1))
       dash -n "$_f" 2>/dev/null || printf 'FAULT dash cannot read %s\n' "${_f##*/}"
+      [ "${_f##*/}" = cfg.sh ] || [ "$(grep -c LA_FROM "$_f")" = "$(grep LA_FROM "$_f" | grep -c 'channel_is\|LA_FROM=\|LA_FROM:-')" ] \
+        || printf 'FAULT %s holds a channel rule of its own, the table is in cfg.sh\n' "${_f##*/}"
     done
     [ "$_n" -gt 0 ] && printf 'ok %s brick(s), syntax held\n' "$_n" \
       || printf 'FAULT no brick in the engine\n'

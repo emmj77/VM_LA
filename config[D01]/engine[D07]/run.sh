@@ -117,13 +117,7 @@ _door_cmd() {
 }
 
 # _door_register : the register the caller is allowed to read
-_door_register() {
-  if [ "${LA_FROM:-model}" = engine ]; then
-    cfg abs registry-engine
-  else
-    cfg abs registry
-  fi
-}
+_door_register() { channel_is "${LA_FROM:-model}" self && cfg abs registry-engine || cfg abs registry; }
 
 # run_call <name> [key=value ...] : the whole door, one shape out
 # 0 ok, 3 a human must sign, 124 the bound was reached, 1 refused
@@ -170,20 +164,19 @@ run_call() {
     return 1
   fi
 
-  # 5 the tools the active skill allows ; an engine call answers to nobody
+  # 5 the tools the active skill allows: the model alone is held to it
   # a permanent tool passes anywhere, the others need the toolset of the active skill
-  case ${LA_FROM:-model} in
-    engine|human) : ;;
-    *) skl_gate "$_name"; _rc=$?
-       case $_rc in
-         0) : ;;
-         2) shape_fail "$_name" "" refusals.doc_first "$(skl_skill)"; return 1 ;;
-         3) shape_fail "$_name" "" refusals.plan_first; return 1 ;;
-         5) shape_fail "$_name" "" refusals.overdue "$(cfg num loop.todo_every 5)"; return 1 ;;
-         4) shape_fail "$_name" "" refusals.not_on_step; return 1 ;;
-         *) shape_fail "$_name" "" refusals.tool_not_allowed; return 1 ;;
-       esac ;;
-  esac
+  if channel_is "${LA_FROM:-model}" model; then
+    skl_gate "$_name"; _rc=$?
+    case $_rc in
+      0) : ;;
+      2) shape_fail "$_name" "" refusals.doc_first "$(skl_skill)"; return 1 ;;
+      3) shape_fail "$_name" "" refusals.plan_first; return 1 ;;
+      5) shape_fail "$_name" "" refusals.overdue "$(cfg num loop.todo_every 5)"; return 1 ;;
+      4) shape_fail "$_name" "" refusals.not_on_step; return 1 ;;
+      *) shape_fail "$_name" "" refusals.tool_not_allowed; return 1 ;;
+    esac
+  fi
 
   # 6 arity and 7 types
   _decl=$(_door_decl "$_body")
@@ -238,11 +231,8 @@ run_call() {
     esac
   done
 
-  # 9 approval : a gated body waits for a signed go, whatever the caller calls itself
-  # the human label is declared by the caller, and the cli carries it: it cannot exempt a gated body
-  _gate=1
-  case ${LA_FROM:-model} in engine) _gate=0 ;; esac
-  if [ "$_gate" = 1 ] && is_gated "$_body"; then
+  # 9 approval : a gated body waits for a signed go; only a label whose row lifts it is exempt
+  if channel_is "${LA_FROM:-model}" approval && is_gated "$_body"; then
     if approval_ok "$_name" "$@"; then
       :
     else

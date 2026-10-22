@@ -57,10 +57,16 @@ def now():
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
+def door(kind, tool, args=(), feed=None, secs=200, channel=None):
+    """the one way out. an engine call is the engine; every other call is a transport."""
+    return subprocess.run(["dash", os.environ["LA_TOOL"], kind] + ([tool] if tool else []) + list(args),
+                          input=feed, capture_output=True, text=True, timeout=secs,
+                          env=dict(os.environ, LA_FROM=channel or ("engine" if kind == "engine" else "app")))
+
+
 def ask(kind, tool, args, feed=None, secs=240):
     """one round trip to the door, unwrapped: the bridge never decides anything itself"""
-    run = subprocess.run(["dash", os.environ["LA_TOOL"], kind, tool] + args,
-                         input=feed, capture_output=True, text=True, timeout=secs)
+    run = door(kind, tool, args, feed, secs)
     txt = (run.stdout or "").strip()
     try:
         d = json.loads(txt)
@@ -77,8 +83,7 @@ def ask(kind, tool, args, feed=None, secs=240):
 
 def delegate(tool, args, secs=120):
     """the only thing this file does besides transport: it hands the work to the door"""
-    cmd = ["dash", os.environ["LA_TOOL"], "tool", tool] + args
-    p = subprocess.run(cmd, capture_output=True, text=True, timeout=secs)
+    p = door("tool", tool, args, secs=secs)
     return {"tool": tool, "rc": p.returncode, "out": (p.stdout or "").strip(),
             "err": (p.stderr or "").strip()}
 
@@ -294,8 +299,7 @@ def _keep_turn(prompt, reply):
         body = json.dumps({"exchange": ex, "role": role, "content": content,
                            "reasoning": thought if role == "assistant" else ""})
         try:
-            r = subprocess.run(["dash", os.environ["LA_TOOL"], "engine", "engine.hist", "op=add"],
-                               input=body, capture_output=True, text=True, timeout=20)
+            r = door("engine", "engine.hist", ["op=add"], feed=body, secs=20)
             if r.returncode or '"status":"ok"' not in (r.stdout or ""):
                 sys.stderr.write("hist add %s: %s\n" % (role, (r.stdout or r.stderr or "")[:160]))
         except Exception as e:
@@ -801,10 +805,6 @@ class Handler(BaseHTTPRequestHandler):
             return self.json({"ok": True, "op": _op, "said": said,
                               "approval": approval_view()})
 
-        def door(kind, tool, args, feed=None, secs=200):
-            return subprocess.run(["dash", os.environ["LA_TOOL"], kind, tool] + args,
-                                  input=feed, capture_output=True, text=True, timeout=secs)
-
         def as_json(run, fallback=None):
             txt = (run.stdout or "").strip()
             if not txt:
@@ -881,8 +881,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.json({"ok": r.returncode == 0, "op": what,
                               "text": str(got.get("text") or (r.stdout or "").strip())})
         if name == "version":
-            r = subprocess.run(["dash", os.environ["LA_TOOL"], "version"],
-                               capture_output=True, text=True, timeout=60)
+            r = door("version", "", secs=60)
             return self.json({"ok": r.returncode == 0, "version": (r.stdout or "").strip()})
         if name == "update":
             what = rest[0] if rest else "check"
