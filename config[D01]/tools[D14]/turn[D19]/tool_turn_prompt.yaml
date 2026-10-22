@@ -117,7 +117,8 @@ COMMAND: |
   }
   _sec_plan() {
     printf '== THE LOADED SKILL PLAN ==\n'
-    _pl=$(plan_status 2>/dev/null | head -n 8)
+    _pll=$(cfg num head.second_plan_lines 8) || _pll=8
+    _pl=$(plan_status 2>/dev/null | head -n "$_pll")
     if [ -n "$_pl" ]; then printf '%s\n' "$_pl"; else printf 'no open plan\n'; fi
   }
   _sec_project_plan() {
@@ -147,28 +148,33 @@ COMMAND: |
     printf '== THE AGENTS ==\n'
     _main=$(cfg str agents.main jarvis)
     _st=$(jq -r '.status // "idle"' "$_t" 2>/dev/null)
+    _al=$(cfg num head.second_agents_lines 30) || _al=30
+    _ac=$(cfg num head.second_agents_chars 2000) || _ac=2000
     for _a in $(cfg str agents.names "$_main"); do
       if [ "$_a" = "$_main" ] && [ "$_st" = running ]; then
         printf '%s  active : a turn runs\n' "$_a"
       else
         printf '%s  idle : no turn runs\n' "$_a"
       fi
-    done
+    done | head -n "$_al" | awk -v c="$_ac" '{ print substr($0,1,c) }'
   }
   _sec_chat() {
     printf '== THE CHAT ==\n'
     _cf=$(cfg str agents.chat 2>/dev/null)
     case $_cf in ""|/*) ;; *) _cf="$LA_ROOT/$_cf" ;; esac
+    _ml=$(cfg num head.second_msg_lines 6) || _ml=6
+    _mc=$(cfg num head.second_msg_chars 120) || _mc=120
     if [ -n "$_cf" ] && [ -s "$_cf" ]; then
-      grep '^{' "$_cf" | tail -n 6 | jq -r '(.from // "?") + " -> " + (.to // "?") + " : " + ((.body // "") | .[0:120])' 2>/dev/null
+      grep '^{' "$_cf" | tail -n "$_ml" | jq -r --argjson mc "$_mc" '(.from // "?") + " -> " + (.to // "?") + " : " + ((.body // "") | .[0:$mc])' 2>/dev/null
     else
       printf 'the chat is empty\n'
     fi
   }
   _sec_toolset() {
     printf '== THE TOOLSET ==\n'
+    _tln=$(cfg num head.second_tools_lines 40) || _tln=40
     _tl=$(printf '%s' "$(_turn_get '.tools')" | jq -r '.[]? | select(.function.name != "reply" and .function.name != "kill_proc" and .function.name != "toolset") | "- " + .function.name + " : " + (.function.description // "")' 2>/dev/null)
-    [ -n "$_tl" ] && printf '%s\n' "$_tl" || printf 'no tool\n'
+    [ -n "$_tl" ] && printf '%s\n' "$_tl" | head -n "$_tln" || printf 'no tool\n'
   }
 
   _second=$(

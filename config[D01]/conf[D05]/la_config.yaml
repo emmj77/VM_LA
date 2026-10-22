@@ -477,6 +477,13 @@ head:
   # the order of the secondary head sections, from the most stable to the most volatile.
   # the code emits exactly these, in this order; reorder here, never in the shell.
   second_order: "channel human project skill summary plan project_plan note agents chat toolset"
+  # the window of each section, in the config: raise a number to give that section more room
+  second_agents_lines: 30
+  second_agents_chars: 2000
+  second_msg_lines: 6
+  second_msg_chars: 120
+  second_plan_lines: 8
+  second_tools_lines: 40
   source: "agent"
   date: "2026-10-15"
   WHERE:
@@ -620,43 +627,43 @@ schema:
     min: 2
     max: 40
     why: la doc de la skill chargee, en lignes dans la tete secondaire
-  - section: second
-    key: agents_lines
+  - section: head
+    key: second_agents_lines
     kind: int
     min: 3
     max: 30
     why: la fenetre des agents, en lignes
-  - section: second
-    key: agents_chars
+  - section: head
+    key: second_agents_chars
     kind: int
     min: 200
     max: 4000
     step: 50
     why: la fenetre des agents, en octets
-  - section: second
-    key: msg_lines
-    kind: int
-    min: 4
-    max: 60
-    why: la fenetre des messages, en lignes
-  - section: second
-    key: msg_chars
-    kind: int
-    min: 400
-    max: 6000
-    step: 100
-    why: la fenetre des messages, en octets
-  - section: second
-    key: plan_lines
-    kind: int
-    min: 4
-    max: 40
-    why: la fenetre du plan, en lignes
-  - section: second
-    key: tools_lines
+  - section: head
+    key: second_msg_lines
     kind: int
     min: 1
-    max: 20
+    max: 60
+    why: la fenetre des messages, en lignes
+  - section: head
+    key: second_msg_chars
+    kind: int
+    min: 40
+    max: 6000
+    step: 10
+    why: la fenetre des messages, en octets
+  - section: head
+    key: second_plan_lines
+    kind: int
+    min: 1
+    max: 40
+    why: la fenetre du plan, en lignes
+  - section: head
+    key: second_tools_lines
+    kind: int
+    min: 1
+    max: 64
     why: la fenetre des tools, en lignes
   - section: agents
     key: main
