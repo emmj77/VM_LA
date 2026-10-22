@@ -232,7 +232,6 @@ class model(object):
 
 TABLE = os.environ.get("LA_CONFIG") or laconf.path("table", "")
 CONF = os.environ.get("LA_CONF") or laconf.path("config", "")
-ENGINE = os.path.join(laconf.path("engine", ""), "engine.sh")
 GGUF = os.environ.get("LA_GGUF_DIR") or laconf.path("gguf", "")
 JOURNALS = laconf.path("bridge_log", "config/state/bridge.log")
 FILTER = laconf.path("filter", "")
