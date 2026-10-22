@@ -58,6 +58,20 @@ COMMAND: |
           for k in (d.get('RULES') or {}):
               if k not in trk:
                   print('FAULT skill %s carries RULES.%s, which the gabarit does not name' % (n, k))
+          if str(d.get('PERMANENT_TODO')).lower() == 'true':
+              plan = d.get('PLAN') or {}
+              steps = {str(k): v for k, v in plan.items() if isinstance(v, dict)}
+              if not steps:
+                  print('FAULT skill %s is a route and names no step' % n)
+              for k in sorted(steps):
+                  v = steps[k]
+                  if 'tools' not in v:
+                      print('FAULT skill %s step %s names no tools' % (n, k))
+                  if 'close' not in v:
+                      print('FAULT skill %s step %s carries no close' % (n, k))
+              at = plan.get('at')
+              if at is not None and str(at) != 'done' and str(at) not in steps:
+                  print('FAULT skill %s holds at %s, which is not one of its steps' % (n, at))
           if list(d) != [k for k in tk if k in d]:
               print('FAULT skill %s keeps its keys out of the gabarit order' % n)
   PY

@@ -71,15 +71,18 @@ skl_plan_src() {
   skl_plan_file
 }
 
-# skl_plan_step [name] : the step the plan holds open, four fields, TAB between them :
+# skl_plan_step [name] : the step the plan holds open, four fields, TAB between them.
+# a ROUTE (the plan is in the skill.yaml, the step is a mapping):
+#   id<TAB>tools (csv)<TAB>close (csv)<TAB>text
+# a JOURNAL (the agent's file, the step is a marked line):
 #   id<TAB>tool<TAB>bytes<TAB>max
-# 0 an open step, 2 no plan at all, 3 the plan is finished (every marked line is completed).
-# a [todo] with no [in_progress] is read as the open step : the next advance repairs it.
+# 0 an open step, 2 no plan at all, 3 the plan is finished.
 skl_plan_step() {
   _n=${1:-$(skl_skill)}
+  if skl_plan_is_closed "$_n" 2>/dev/null; then _skl_step_route "$_n"; return $?; fi
   _src=$(skl_plan_src "$_n" 2>/dev/null) || return 2
   [ -r "$_src" ] || return 2
-  _route=0 ; skl_plan_is_closed "$_n" 2>/dev/null && _route=1
+  _route=0
   awk -v route="$_route" '
     /^PLAN:[ \t]*$/ { inplan = 1; next }
     route && inplan && /^[^ \t]/ { inplan = 0 }
@@ -105,6 +108,115 @@ skl_plan_step() {
       }
       printf "%s\t%s\t%s\t%s\n", step, tool, bytes, mx
     }' "$_src"
+}
+
+# _skl_step_route [name] : the open step of a route. the plan is a mapping : PLAN.at names the
+# step, the step carries text, tools, close. nothing here knows a skill by its name.
+_skl_step_route() {
+  _f=$(skl_step_file "${1:-}") || return 2
+  _flat "$_f" | awk -F'\t' '
+    $1 == "PLAN.at" { at = $2 ; next }
+    $1 ~ /^PLAN\.[0-9]+\./ {
+      k = $1 ; sub(/^PLAN\./, "", k)
+      fld = k ; sub(/^[0-9]+\./, "", fld)
+      sub(/\..*$/, "", k)
+      if (fld == "text") text[k] = $2
+      else if (fld == "tools") tools[k] = $2
+      else if (fld == "close") cls[k] = $2
+    }
+    END {
+      n = 0 ; for (k in text) n++
+      if (!n) exit 2
+      if (at == "done") exit 3
+      if (at == "") { for (k in text) if (at == "" || k + 0 < at + 0) at = k }
+      if (!(at in text)) exit 2
+      t = tools[at] ; if (t ~ /^\[/) t = substr(t, 2)
+      if (t ~ /\] *$/) t = substr(t, 1, length(t) - 1)
+      c = cls[at] ; if (c ~ /^\[/) c = substr(c, 2)
+      if (c ~ /\] *$/) c = substr(c, 1, length(c) - 1)
+      printf "%s\t%s\t%s\t%s\n", at, t, c, text[at]
+    }'
+}
+
+# skl_step_tools [name] : the tools of the open step, one per line. a route names a SET, a
+# journal names one tool. an empty answer means the step holds no tool of its own.
+skl_step_tools() {
+  _n=${1:-$(skl_skill)}
+  _st=$(skl_plan_step "$_n" 2>/dev/null) || return 1
+  if skl_plan_is_closed "$_n" 2>/dev/null; then
+    printf '%s' "$_st" | awk -F'\t' '{ print $2 }' | tr ',' '\n' \
+      | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' | grep -v '^$'
+    return 0
+  fi
+  printf '%s' "$_st" | awk -F'\t' '$2 != "" { print $2 }'
+}
+
+# _skl_step_at <file> <id|empty> : the PLAN.at key takes that value, in the skill.yaml itself.
+# inserted right under PLAN: when absent, removed when the value is empty.
+_skl_step_at() {
+  _f=${1:?} ; _v=${2:-}
+  _t=$(tmpfile at) || return 1
+  if grep -q '^[ \t][ \t]*at:' "$_f"; then
+    awk -v v="$_v" '/^[ \t]+at:/ { if (v != "") printf "  at: %s\n", v ; next } { print }' "$_f" > "$_t"
+  else
+    [ -n "$_v" ] || return 0
+    awk -v v="$_v" '/^PLAN:[ \t]*$/ && !d { print ; printf "  at: %s\n", v ; d = 1 ; next } { print }' "$_f" > "$_t"
+  fi
+  python3 -c 'import sys,yaml;yaml.safe_load(open(sys.argv[1],encoding="utf-8"))' "$_t" 2>/dev/null \
+    || { rm -f -- "$_t" ; return 1 ; }
+  write_atomic "$_f" < "$_t" || { rm -f -- "$_t" ; return 1 ; }
+  rm -f -- "$_t"
+}
+
+# skl_step_close <tool> <return text> : THE engine closes the open step of a route, on the fact.
+# the tool must be one the step names. the fact: status ok (the caller holds it), and either the
+# step's close literals are all in the return, or the step names none and the return begins with
+# "ok ". reply is the voice: its word is the fact, it closes on ok alone.
+# 0 closed, and the line leaves ; 1 not this step, or not met, and the line says what is missing.
+skl_step_close() {
+  _t=${1:-} ; _r=${2:-}
+  [ -n "$_t" ] || return 1
+  case ${LA_FROM:-model} in engine) return 1 ;; esac
+  _n=$(skl_skill 2>/dev/null) || return 1
+  [ -n "$_n" ] || return 1
+  skl_plan_is_closed "$_n" 2>/dev/null || return 1
+  _st=$(skl_plan_step "$_n" 2>/dev/null) || return 1
+  _id=$(printf '%s' "$_st" | awk -F'\t' '{ print $1 }')
+  _tools=$(printf '%s' "$_st" | awk -F'\t' '{ print $2 }')
+  _close=$(printf '%s' "$_st" | awk -F'\t' '{ print $3 }')
+  printf '%s\n' "$_tools" | tr ',' '\n' \
+    | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' | grep -qxF -- "$_t" || return 1
+  if [ "$_t" != reply ]; then
+    if [ -z "$_close" ]; then
+      case "$_r" in
+        "ok "*) ;;
+        *) printf 'the step %s stays open: the return of %s does not begin with ok\n' "$_id" "$_t"
+           return 1 ;;
+      esac
+    else
+      _miss=$(printf '%s\n' "$_close" | tr ',' '\n' \
+        | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//' -e 's/^"//' -e 's/"$//' | grep -v '^$' \
+        | while IFS= read -r _l; do
+            printf '%s' "$_r" | grep -qF -- "$_l" || { printf '%s' "$_l" ; break ; }
+          done)
+      [ -z "$_miss" ] || { printf 'the step %s stays open: %s is not in the return of %s\n' \
+                             "$_id" "$_miss" "$_t" ; return 1 ; }
+    fi
+  fi
+  _f=$(skl_step_file "$_n") || return 1
+  _next=$(_flat "$_f" | awk -F'\t' -v a="$_id" '
+    $1 ~ /^PLAN\.[0-9]+\.text$/ {
+      k = $1 ; sub(/^PLAN\./, "", k) ; sub(/\.text$/, "", k)
+      if (k + 0 > a + 0 && (nx == "" || k + 0 < nx + 0)) nx = k
+    }
+    END { if (nx != "") print nx }')
+  _skl_step_at "$_f" "${_next:-done}" || return 1
+  if [ -n "$_next" ]; then
+    printf 'ok the step %s of %s is closed: the step now open is %s\n' "$_id" "$_n" "$_next"
+  else
+    printf 'ok the step %s of %s is closed: the route is complete, at is done\n' "$_id" "$_n"
+  fi
+  return 0
 }
 
 # skl_plan_stamp : the turn number a journal plan was last touched at, empty when the header
@@ -145,8 +257,9 @@ skl_lock() {
     3) return 0 ;;
   esac
   if skl_plan_is_closed "$_n" 2>/dev/null; then
-    _t=$(printf '%s' "$_st" | awk -F'\t' '{ print $2 }')
-    printf '%s\n' "${_t:-update_todo}"
+    _set=$(skl_step_tools "$_n" 2>/dev/null)
+    if [ -n "$_set" ]; then printf '%s\n' "$_set"; return 0; fi
+    printf 'reply\n'
     return 0
   fi
   _pe=$(cfg num loop.todo_every 5) || _pe=5
@@ -184,14 +297,12 @@ _skl_gate_check() {
   [ -n "$_t" ] || return 1
   _l=$(skl_lock)
   if [ -n "$_l" ]; then
-    [ "$_t" = "$_l" ] && return 0
+    printf '%s\n' "$_l" | grep -qxF -- "$_t" && return 0
     [ "$_t" = reply ] && return 0
-    case $_l in
-      load_doc) return 2 ;;
-      todo) return 3 ;;
-      update_todo) return 5 ;;
-      *) return 4 ;;
-    esac
+    printf '%s\n' "$_l" | grep -qxF -- load_doc && return 2
+    printf '%s\n' "$_l" | grep -qxF -- todo && return 3
+    printf '%s\n' "$_l" | grep -qxF -- update_todo && return 5
+    return 4
   fi
   skl_permanent "$_t" && return 0
   _n=$(skl_skill 2>/dev/null)

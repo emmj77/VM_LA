@@ -98,7 +98,7 @@ shell_exec() {
 $_c" dash "$@" 2>&1)
   _rc=$?
   if [ "$_rc" -eq 124 ]; then
-    shape timeout "$_x" "$_c" "$(msg refusals.timeout "$_to")" ""
+    shape timeout "$_x" "$_c" "$(msg refusals.timeout "$_to")" "124"
     return 124
   fi
   # an engine call feeds the turn, not the model: no cap, no returns entry
@@ -106,8 +106,13 @@ $_c" dash "$@" 2>&1)
     engine|human) _res=$_out ;;
     *) _res=$(printf '%s' "$_out" | cap_return "$_x") ;;
   esac
-  [ "$_rc" -eq 0 ] && { shape_ok "$_x" "$_c" "$_res" ""; return 0; }
-  shape refused "$_x" "$_c" "$_res" ""
+  # a route closes its step on the fact it has just read: the engine, never the model
+  if [ "$_rc" -eq 0 ]; then
+    _sc=$(skl_step_close "$_x" "$_res" 2>/dev/null)
+    [ -n "$_sc" ] && _res=$(printf '%s\n%s' "$_res" "$_sc")
+  fi
+  [ "$_rc" -eq 0 ] && { shape_ok "$_x" "$_c" "$_res" "0"; return 0; }
+  shape refused "$_x" "$_c" "$_res" "$_rc"
   return "$_rc"
 }
 

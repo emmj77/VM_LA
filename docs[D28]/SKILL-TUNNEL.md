@@ -22,6 +22,7 @@ C est elle, et rien d autre, qui fait basculer le moteur (`engine/skl.sh`) :
 
     PLAN:
       400: "phone on the bridge, proven"
+  at: 401            # ecrit par le moteur : l id du pas courant, puis done
       401:
         text:  "read what stands"
         tools: [tunnel_status, read_file]
@@ -75,7 +76,7 @@ tableau envoye au modele), la porte `run.sh` (le refus avant execution), et `loo
 `tools`, le moteur evalue `close` :
 
     status ok   ET   le texte commence par "ok "   ET   chaque litteral de close est present
-    vrai  ->  le pas passe [completed], le suivant [in_progress], la ligne 400 est restampee
+    vrai  ->  le pas passe [completed], le suivant [in_progress], la cle at du plan prend son id
     faux  ->  rien ne bouge, et le refus nomme ce qui manque :
               "the step stays open: 10.10.0.1 is not in the return of tunnel_status"
 
@@ -89,7 +90,7 @@ Quatre gestes, et aucun ne connait une skill par son nom :
     - lire le manifeste (la FORME du YAML, jamais le sens d une route) ;
     - ouvrir exactement les `tools` du pas, plus `reply` ;
     - evaluer `close` : status, prefixe, litteraux ;
-    - restamper la ligne 400 et faire avancer.
+    - ecrire at: lid du pas suivant (ou le vider : la route est faite).
 
 Une route qui veut une preuve nouvelle n ajoute pas de bash : elle ajoute un litteral dans
 `close`. Si une preuve depasse un jour les litteraux (un octet, un port en ecoute), c est
@@ -111,18 +112,19 @@ La route ne s efface pas : elle reste dans son `skill.yaml`, prete a repartir.
 | la porte | `engine/skl.sh` | `skl_gate`, `_skl_gate_check` |
 | les outils ouverts | `tools/turn/tool_toolset.yaml` | lit `skl_gate`, mappe les noms |
 | le refus avant execution | `engine/run.sh` | `run_call`, meme `skl_gate` |
-| la validation du pas | `engine/skl.sh` | `skl_close_check` : status, prefixe, litteraux |
+| la validation du pas | `engine/skl.sh` | `skl_step_close` : status, prefixe, litteraux ; appele par `shell_exec` |
 | la fin | `engine/loop.sh` | `skl_turn_end` decharge la skill |
 | la trace | `engine/step.sh` | `trace_line`, seul ecrivain du journal |
 
-Un seul endroit decide du perimetre (`skl_gate`), un seul valide le pas (`skl_close_check`).
+Un seul endroit decide du perimetre (`skl_gate`), un seul valide le pas (`skl_step_close`,
+appele par `shell_exec` au retour de l outil, jamais par le modele).
 
 ## 8. Prerequis — une route qui en manque un est morte
 
     1  skills/<nom>/skill.yaml : PERMANENT_TODO: true, PLAN (400 + pas), SKILL_TOOL_SET,
        DOCS, WRITABLE_WORKSPACE, ERROR
     2  chaque nom de `tools` existe au registre (registry.yaml)
-    3  le doc nomme dans DOCS existe sur le disque : tools/, la racine, skills/<nom>/,
+    3  le doc nomme dans DOCS existe sur le disque : tools/, la racine, docs/, skills/<nom>/,
        skills/ — sinon la porte ne lache que load_doc et la route ne demarre jamais
     4  APPROVAL: false justifie : les outils de la route vivent hors GATED
     5  un agent arme : la skill load <nom> (l humain), ou la charge par la porte
@@ -134,7 +136,7 @@ Un seul endroit decide du perimetre (`skl_gate`), un seul valide le pas (`skl_cl
     - `-- tools:` disparait ; `tools:` le remplace, et c est un JEU : plusieurs outils par
       pas, jamais un seul — un pas a un seul outil est un pas de script ;
     - sur une route, `update_todo` disparait : le moteur ferme le pas sur la preuve ;
-    - `skl_plan_step` sort le pas entier ; un validateur neuf, `skl_close_check`, rend vrai
+    - `skl_plan_step` sort le pas entier ; un validateur neuf, `skl_step_close`, rend vrai
       ou faux et nomme le litteral manquant ;
     - le docteur refuse une route dont un pas n a pas de `close` ;
     - les routes existantes sont reecrites au nouveau pas (phone-tunnel d abord).
