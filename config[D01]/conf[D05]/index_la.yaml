@@ -43,6 +43,7 @@ files:
   - {id: "A01", name: "ARCHITECTURE_LA.txt", role: "the architecture: how the machine is put together"}
   - {id: "A02", name: "DECISION.txt", role: "the decisions that shaped the engine"}
   - {id: "A03", name: "LA-CONVENTIONS.md", role: "every name of the engine, one line each"}
+  - {id: "A04", name: "INDEX_A_JOUR.txt", role: "the short index the human reads: what changed, and when"}
   - {id: "B01", name: "memory.db", role: "the durable memory: one note per turn"}
   - {id: "B02", name: "sessions.db", role: "messages, returns, vectors, usage, meta"}
   - {id: "B03", name: "terminal_return.db", role: "what a terminal call returned, kept whole"}
@@ -85,6 +86,8 @@ files:
   - {id: "F11", name: "test_raw.txt", role: "the test requests with their labels, as written"}
   - {id: "F12", name: "test_expected.txt", role: "the expected answer of every test line"}
   - {id: "F13", name: "test_seen.txt", role: "what the model answered on the test set"}
+  - {id: "F14", name: "skills.txt", role: "the training lines of the skills filter: one label, one request"}
+  - {id: "F15", name: "skills_judge.txt", role: "the judging lines of the skills filter"}
   - {id: "G01", name: "applet.js", role: "reads the doctor short output, keeps it, paints"}
   - {id: "G02", name: "metadata.json", role: "the applet identity: uuid, name, version"}
   - {id: "G03", name: "settings-schema.json", role: "what the applet lets you set"}
@@ -122,7 +125,6 @@ files:
   - {id: "Q01", name: "tool_template.yaml", role: "the gabarit of a tool body"}
   - {id: "Q02", name: "skill_template.yaml", role: "the gabarit of a skill"}
   - {id: "Q03", name: "project_template.yml", role: "the gabarit of a project file"}
-  - {id: "Q04", name: "specs_template.yaml", role: "the gabarit of a spec"}
   - {id: "Q05", name: "registry_template.yaml", role: "the gabarit of the register"}
   - {id: "Q06", name: "code_template.yaml", role: "the gabarit of a code file: its header, and what it never does"}
   - {id: "R02", name: ".gitignore", role: "what never enters git: keys, databases, audio, state, work"}
