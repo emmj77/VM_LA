@@ -253,11 +253,18 @@ cfg() {
   esac
 }
 
-# channel_is <channel> <self|model|approval> : what a label carries, read from the channels table.
-# an undeclared label takes the model row, and an empty answer counts as yes: the door stays shut.
+# channel_is <channel> <self|model|capture|approval> : what a label carries, read from the channels
+# table once per label and kept for the life of the process. an undeclared label takes the model
+# row, and an empty answer counts as yes: the door stays shut.
 channel_is() {
-  _v=$(cfg str "channels.${1:-model}.${2:-model}" 2>/dev/null) || _v=$(cfg str "channels.model.${2:-model}" 2>/dev/null)
-  case ${_v:-yes} in no|off|false|0) return 1 ;; esac
+  _k="|${1:-model}.${2:-model}="
+  case $LA_CHANNELS in
+    *"$_k"*) _v=${LA_CHANNELS##*"$_k"} ; _v=${_v%%|*} ;;
+    *) _v=$(cfg str "channels.${1:-model}.${2:-model}" 2>/dev/null) ||
+         _v=$(cfg str "channels.model.${2:-model}" 2>/dev/null)
+       LA_CHANNELS="$LA_CHANNELS$_k${_v:-yes}|" ;;
+  esac
+  case $_v in no|off|false|0) return 1 ;; esac
 }
 
 # project_dir <name> : the folder of a project, even when its name carries an id (la[D22])

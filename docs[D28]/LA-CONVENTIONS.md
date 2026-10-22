@@ -102,8 +102,8 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `skl.sh` · `approval_of` | approval_of <body> : what the body says a human must carry, empty when nothing |
 | `skl.sh` · `is_gated` | is_gated <body> : true when the call waits for a human signature |
 | `run.sh` · `_gate` | the same check at the door, through `channel_is`: a label whose row lifts the approval passes, no other does |
-| `la_config` · `channels:` | the table: `self`, `model`, `approval` per label. An undeclared label takes the model row, so a new transport is shut until it is written down |
-| `cfg.sh` · `channel_is` | `channel_is <label> <rule>`: the only reader of that table. An empty answer counts as yes; no surface decides a rule by itself |
+| `la_config` · `channels:` | the table: `self`, `model`, `capture`, `approval` per label. An undeclared label takes the model row, so a new transport is shut until it is written down |
+| `cfg.sh` · `channel_is` | `channel_is <label> <rule>`: the only reader of that table, read once per label and kept for the process. An empty answer counts as yes; no surface decides a rule by itself |
 | `step.sh` · `_turn_file` | the path of state/turn.json |
 | `step.sh` · `_turn_get` | one field of turn.json, as a jq expression |
 | `step.sh` · `_turn_set` | rewrites turn.json with a jq filter, atomically |

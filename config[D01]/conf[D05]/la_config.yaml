@@ -292,18 +292,17 @@ channels:                                     # what a label carries: one table,
   engine:                                     # an undeclared label takes the model row, so a new
     self: yes                                 # transport is shut until it is written down here.
     model: no
+    capture: no
     approval: no
   model:
     self: no
     model: yes
+    capture: yes
     approval: yes
   human:
     self: no
     model: no
-    approval: yes
-  app:
-    self: no
-    model: no
+    capture: no
     approval: yes
 
 active_skill: ""

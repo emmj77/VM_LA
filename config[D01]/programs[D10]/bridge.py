@@ -61,7 +61,7 @@ def door(kind, tool, args=(), feed=None, secs=200, channel=None):
     """the one way out. an engine call is the engine; every other call is a transport."""
     return subprocess.run(["dash", os.environ["LA_TOOL"], kind] + ([tool] if tool else []) + list(args),
                           input=feed, capture_output=True, text=True, timeout=secs,
-                          env=dict(os.environ, LA_FROM=channel or ("engine" if kind == "engine" else "app")))
+                          env=dict(os.environ, LA_FROM=channel or ("engine" if kind == "engine" else "model")))
 
 
 def ask(kind, tool, args, feed=None, secs=240):
