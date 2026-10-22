@@ -42,7 +42,6 @@ dirs:
 
 files:
   - {id: "A01", name: "ARCHITECTURE_LA.txt", role: "the architecture: how the machine is put together"}
-  - {id: "A02", name: "DECISION.txt", role: "the decisions that shaped the engine"}
   - {id: "B01", name: "memory.db", role: "the durable memory: one note per turn"}
   - {id: "B02", name: "sessions.db", role: "messages, returns, vectors, usage, meta"}
   - {id: "B03", name: "terminal_return.db", role: "what a terminal call returned, kept whole"}
