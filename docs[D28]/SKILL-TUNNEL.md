@@ -6,8 +6,8 @@ Corpus sans accent, prose francaise, identifiants anglais.
 ## 1. Une phrase
 
 Une skill tunnel est une ROUTE FERMEE : son plan est ecrit dans son propre `skill.yaml`, et
-le moteur n ouvre au modele, tour apres tour, que les outils du pas courant. Le modele ne
-choisit ni le plan, ni l ordre, ni l outil : il remplit un moule.
+le moteur n ouvre au modele, tour apres tour, que le JEU d outils du pas courant. Le modele
+ne choisit ni le plan, ni l ordre, ni l etape : il travaille dans le jeu qu on lui ouvre.
 
 ## 2. La marque
 
@@ -24,26 +24,35 @@ C est elle, et rien d autre, qui fait basculer le moteur (`engine/skl.sh`) :
       400: "phone on the bridge, proven"
       401:
         text:  "read what stands"
-        tools: [tunnel_status]
+        tools: [tunnel_status, read_file]
         close: ["10.10.0.1", "@"]
       402:
-        text:  "raise wg0"
-        tools: [tunnel_up]
-        close: []
+        text:  "raise wg0, or lower it first if the profile is lost"
+        tools: [tunnel_up, tunnel_down, tunnel_status]
+        close: ["10.10.0.1"]
       403:
         text:  "prove it by the fact"
         tools: [tunnel_status]
-        close: ["10.10.0.1", "@"]
+        close: ["10.10.0.1", "@", "peer"]
       404:
         text:  "report four lines"
         tools: [reply]
         close: []
 
   - `text`  : une ligne, 100 octets au plus ;
-  - `tools` : la liste EXACTE des outils que ce pas ouvre (`reply` vient en plus, toujours) ;
-  - `close` : les preuves. Chaque litteral doit apparaitre dans le retour de l outil du pas.
-              Liste vide : la seule preuve est `status ok` plus le texte qui commence par
-              `ok `.
+  - `tools` : le JEU des outils que ce pas ouvre (`reply` vient en plus, toujours) ;
+  - `close` : les preuves. Chaque litteral doit apparaitre dans le retour de l outil que le
+              pas a servi. Liste vide : la seule preuve est `status ok` plus le texte qui
+              commence par `ok `.
+
+**Un pas ouvre un jeu, jamais un seul outil.** C est ce qui justifie un modele : si chaque
+pas n ouvrait qu un outil, avec une suite connue d avance, la route entiere serait un script
+python et le modele n aurait rien a y faire. Ce que le modele apporte, c est la latitude
+DANS l etape : plusieurs outils ouverts, il choisit lequel, avec quels arguments, il lit le
+retour, il insiste ou il change de voie — `tunnel_down` avant `tunnel_up` quand le profil est
+perdu, par exemple. Le moteur, lui, ne connait du pas que le jeu qu il ouvre et sa porte de
+sortie (`close`). Un pas dont le jeu tient en un seul outil est le signe d un pas qui devrait
+etre un script, pas une etape.
 
 Tout ce qui est propre a une skill vit ici, dans la donnee. Le moteur ne connait le nom
 d aucun outil d aucune skill : il lit trois champs et il applique.
@@ -122,7 +131,8 @@ Un seul endroit decide du perimetre (`skl_gate`), un seul valide le pas (`skl_cl
 ## 9. Ce que la version 2 change, a valider avant de coder
 
     - le pas : une ligne de texte -> un mapping a trois cles ;
-    - `-- tools:` disparait ; `tools:` le remplace, et accepte plusieurs outils ;
+    - `-- tools:` disparait ; `tools:` le remplace, et c est un JEU : plusieurs outils par
+      pas, jamais un seul — un pas a un seul outil est un pas de script ;
     - sur une route, `update_todo` disparait : le moteur ferme le pas sur la preuve ;
     - `skl_plan_step` sort le pas entier ; un validateur neuf, `skl_close_check`, rend vrai
       ou faux et nomme le litteral manquant ;
