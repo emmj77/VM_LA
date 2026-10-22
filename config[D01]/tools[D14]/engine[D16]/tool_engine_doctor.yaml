@@ -26,7 +26,12 @@ COMMAND: |
                         if (fam == "DOCTOR" && name != "") print name }
   ' "$_reg")
   case $_op in
-  json|short|light|all)
+  json|short|light|all|badge)
+  # LE BADGE N EST PAS L AUDIT : il ne lance que les controles declares dans la config
+  if [ "$_op" = badge ]; then
+    _b=$(cfg list doctor.badge 2>/dev/null | tr -d '"')
+    [ -n "$_b" ] && _names=$_b
+  fi
   # THE CONTROLS RUN TOGETHER (MOUSSA, 21/10): each pays the engine start, one by
   # one they took 34 s. All are launched, then the answers are read in the order of the plan.
   _pf=$(tmpfile plan) || exit 0
@@ -82,4 +87,4 @@ COMMAND: |
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: short,light,json,all}
+  - {name: op, type: enum, values: short,light,json,all,badge}

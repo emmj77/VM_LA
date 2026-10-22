@@ -20,7 +20,9 @@ _ap_trace() { printf '%s %s\n' "${1:-approve}" "${2:-}" | run_call engine.trace 
 
 approval_request() {
   _d=$(_ap_digest "$*")
-  { printf 'tool: %s\n' "$1"; printf 'digest: %s\n' "$_d"; printf 'ts: %s\n' "$(date +%s)"; } |
+  # le geste ENTIER est ecrit noir sur blanc : les trois fronts le lisent, aucun ne le devine
+  { printf 'tool: %s\n' "$1"; printf 'gesture: %s\n' "$*"; printf 'digest: %s\n' "$_d"
+    printf 'ts: %s\n' "$(date +%s)"; } |
     write_atomic "$(cfg abs approve_request)" || return 1
   _ap_trace approve "requested: $1"
   return 3
@@ -44,9 +46,12 @@ approval_grant() {
   _d=$(_door_field "$_f" digest)
   _s=$(_ap_sig "$_d") || return 3
   _n=$(_door_field "$_f" tool)
-  { printf 'tool: %s\n' "$_n"; printf 'digest: %s\n' "$_d"
+  _g=$(_door_field "$_f" gesture)
+  { printf 'tool: %s\n' "$_n"; printf 'gesture: %s\n' "${_g:-$_n}"; printf 'digest: %s\n' "$_d"
     printf 'ts: %s\n' "$(_door_field "$_f" ts)"; printf 'sig: %s\n' "$_s"; } |
     write_atomic "$(cfg abs approve)"
+  # a granted request leaves the board: the file is the human's eye, it clears with the answer
+  gio trash -- "$_f" 2>/dev/null
   _ap_trace approve "granted: $_n"
   return 0
 }

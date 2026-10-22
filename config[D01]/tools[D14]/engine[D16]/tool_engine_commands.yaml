@@ -55,10 +55,28 @@ COMMAND: |
     _pf=$(cfg str machine.browser.profile)
     _cl=$(cfg str machine.browser.class LA-Dashboard)
     _wn=$(cfg str machine.browser.window 1500,950)
+    # UNE FENETRE DEJA OUVERTE N A PAS BESOIN D UN SECOND CHROMIUM : le second rejoint la
+    # session existante et n affiche rien. On met la sienne devant, c est tout.
+    _win() { xdotool search --class "$_cl" 2>/dev/null | tail -1; }
+    _w=$(_win)
+    if [ -n "$_w" ]; then
+      xdotool windowactivate --sync "$_w" 2>/dev/null || :
+      wmctrl -i -a "$_w" 2>/dev/null || :
+      printf 'ok the page was already open on %s, brought forward\n' "$_pt"
+      exit 0
+    fi
     mkdir -p "$_pf" 2>/dev/null || :
     setsid "$_b" "--app=$_base/" "--user-data-dir=$_pf" "--class=$_cl" \
       --no-first-run --no-default-browser-check "--window-size=$_wn" >/dev/null 2>&1 &
-    printf 'ok the page is open in its window on %s\n' "$_pt"
+    # on ne dit pas « c est ouvert » sans l avoir vu : la fenetre est cherchee, six secondes
+    _i=0
+    while [ "$_i" -lt 24 ]; do _w=$(_win); [ -n "$_w" ] && break; sleep 0.25; _i=$((_i + 1)); done
+    if [ -n "$_w" ]; then
+      xdotool windowactivate --sync "$_w" 2>/dev/null || :
+      printf 'ok the page is open in its window on %s\n' "$_pt"
+    else
+      printf 'note the browser ran but opened no window (profile %s)\n' "$_pf"
+    fi
     ;;
   cli)
     printf 'ok reading on the input\n'

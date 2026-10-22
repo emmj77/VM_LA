@@ -409,7 +409,7 @@ def read_approval():
     import pathlib
     w = pathlib.Path(state_dir())
     try:
-        win = num("approval", "window", 300) or 300
+        win = num("limits", "approval_window", 300) or 300
     except Exception:
         win = 300
     request = None
@@ -417,19 +417,32 @@ def read_approval():
     if f.is_file():
         try:
             t = f.read_text(errors="replace").splitlines()
-            words = (t[0].strip() if t else "").split()
-            if words and words[-1].isdigit():
-                words = words[:-1]
-            request = (words[0] if words else "illisible",
-                   words[1] if len(words) > 1 else "",
-                   int(_t.time() - f.stat().st_mtime))
+            field = {}
+            for ln in t:
+                if ":" in ln:
+                    k, v = ln.split(":", 1)
+                    field[k.strip()] = v.strip()
+            tool = field.get("tool", "")
+            # le geste est ecrit par la porte ; a defaut, le nom suffit a designer la demande
+            gesture = field.get("gesture") or tool
+            request = (tool or "illisible", gesture,
+                       int(_t.time() - f.stat().st_mtime), field.get("digest", ""))
         except Exception:
-            request = ("illisible", "", 0)
-    # une demande signee n est plus une demande : la signature prime
+            request = ("illisible", "", 0, "")
+    # UNE REGLE, LA MEME PARTOUT : une demande est satisfaite quand la signature porte SON digest
+    # et qu elle vit encore. L age des fichiers ne dit rien de cela.
     if request is not None:
         sig = w / "approve"
         try:
-            if sig.is_file() and sig.stat().st_mtime >= f.stat().st_mtime:
+            sdig, sts = "", 0
+            if sig.is_file():
+                for ln in sig.read_text(errors="replace").splitlines():
+                    if ln.startswith("digest:"):
+                        sdig = ln.split(":", 1)[1].strip()
+                    elif ln.startswith("ts:") and ln.split(":", 1)[1].strip().isdigit():
+                        sts = int(ln.split(":", 1)[1])
+            # la signature satisfait CETTE demande si elle porte son digest et qu elle vit encore
+            if request[3] and sdig == request[3] and sts and (int(_t.time()) - sts) <= win:
                 request = None
         except OSError:
             pass
@@ -439,7 +452,11 @@ def read_approval():
         try:
             t = g.read_text(errors="replace").splitlines()
             left = int(win - (_t.time() - g.stat().st_mtime))
-            signal = ((t[0].strip() if t else "illisible"), max(0, left))
+            geste = ""
+            for ln in t:
+                if ln.startswith("gesture:"):
+                    geste = ln.split(":", 1)[1].strip()
+            signal = ((geste or (t[0].strip() if t else "illisible")), max(0, left))
         except Exception:
             signal = ("illisible", 0)
     rights = []
@@ -735,11 +752,12 @@ def control(light=False):
     L.append(("LA status", "active" if not faults else "disabled", bool(faults)))
     request, signal, rights, _win = read_approval()
     if request:
-        L.append(("approbation", "%s %s -- asked %ds ago" % (request[0], request[1], request[2]), True))
+        # une seule ligne « approbation » : c est la demande qui attend, avec son geste entier
+        L.append(("approbation", "%s -- asked %ds ago" % (request[1] or request[0], request[2]), True))
     if signal:
         L.append(("feu vert", "%s -- %ds" % (signal[0], signal[1]), False))
-    # la ligne dit COMBIEN de skills demandent une signature
-    L.append(("approbation", str(len(rights)), False))
+    # ce n est pas une demande : c est le nombre de skills qui exigent une signature. Autre titre.
+    L.append(("skills à signer", str(len(rights)), False))
     # le cli est un programme qu on OUVRE : vert quand une session tourne, rouge quand personne ne l a ouvert.
     # on lit les arguments exacts dans /proc : un pgrep -f se prendrait pour lui-meme.
     _cli_pid = ""
@@ -892,6 +910,18 @@ def _ratio_of(title, verdict, total_ram):
     return None, None
 
 
+def _approval_gesture():
+    """le geste de la demande, tel que la porte l a ecrit : les fronts ne le devinent pas"""
+    try:
+        with open(os.path.join(state_dir(), "approve.request"), "r", errors="replace") as f:
+            for line in f:
+                if line.startswith("gesture:"):
+                    return line.split(":", 1)[1].strip()
+    except OSError:
+        pass
+    return ""
+
+
 def board_object():
     """l etat mesure, tel qu il est : ni largeur, ni colonne, ni couleur, ni langage d ecran"""
     L, faults, *_ = control()
@@ -922,7 +952,12 @@ def board_object():
                 if i in used:
                     continue
                 used.add(i)
-                rows.append(row(name, value, fault))
+                r = row(name, value, fault)
+                if name.lower() == "approbation":
+                    _g = _approval_gesture()
+                    if _g:
+                        r["gesture"] = _g
+                rows.append(r)
         out.append({"name": sec.get("name", ""), "icon": sec.get("icon", ""), "rows": rows})
     rest = [row(n, v, f) for i, (n, v, f) in enumerate(L) if i not in used]
     if rest:
@@ -1225,7 +1260,7 @@ def _tool_line(e, width=120):
             return None, True
         args = ((e.get("tool_call") or {}).get("function") or {}).get("arguments") or ""
         line = "%s %s" % (fn, args)
-    if "mode=answer" in line and " -> " in line:
+    if re.match(r"reply\b", line) and " -> " in line:
         line = line.split(" -> ")[0]
     return shorten(line, width), (eng.get("status") or "ok") == "ok"
 

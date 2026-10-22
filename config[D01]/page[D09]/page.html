@@ -154,6 +154,15 @@ h2 .dim{font-size:11px;letter-spacing:0;text-transform:none}
              justify-content:center;font-size:10px;background:var(--panel3);color:var(--fg2)}
 .msg .who .t{font-family:var(--mono);letter-spacing:0;text-transform:none;color:var(--dim2)}
 .msg .body{white-space:pre-wrap;word-break:break-word;font-size:13.5px;color:var(--fg)}
+/* UNE COMMANDE SE LIT COMME UNE COMMANDE : son nom en tete, ses lignes en liste. */
+.msg.geste .who .cmdname{font-family:var(--mono);letter-spacing:0;text-transform:none;
+  color:var(--acc);font-weight:600}
+ul.cmdlist{margin:7px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:3px;
+  font-family:var(--mono);font-size:12.5px;color:var(--fg);white-space:pre-wrap}
+ul.cmdlist li{word-break:break-word}
+ul.cmdlist li.dim{color:var(--dim)}
+ul.cmdlist li.pick{cursor:pointer;border-radius:4px;margin-left:-6px;padding:1px 6px}
+ul.cmdlist li.pick:hover{background:var(--panel3);color:var(--fg)}
 .msg.me{margin-left:auto;background:var(--acc-soft);border-color:#1d3f60;border-right:2px solid var(--acc)}
 .msg.me .who{color:#7fb2e8}
 .msg.me .who .g{background:#16324c;color:#9cc8f5}
@@ -424,9 +433,30 @@ aside#head-panel{border-left:1px solid var(--line);background:var(--bg2);min-hei
 aside#head-panel{width:360px;min-width:220px;max-width:52%;flex:0 0 auto;display:flex;flex-direction:column}
 /* rail icons: outline, never a black blob */
 nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
+
+/* l approbation : le bandeau que l app montre deja. Meme objet, meme geste.
+   HORS FLUX : le body est une grille a quatre zones (head, rail, main) ; un enfant de plus
+   la decalerait, et c est la page entiere qui tombe. */
+.approval{position:fixed;top:calc(var(--s3) + 52px);left:50%;transform:translateX(-50%);
+  z-index:60;display:flex;gap:var(--s3);align-items:center;flex-wrap:wrap;
+  padding:var(--s2) var(--s4);max-width:calc(100vw - 2 * var(--s5));
+  background:var(--warn-soft);border:1px solid var(--warn);border-radius:var(--r2);
+  box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.approval .a-mark{font-size:17px}
+.approval .a-who{font-weight:600;font-variant-numeric:tabular-nums}
+.approval .a-age{font-size:12px}
 </style>
 </head>
 <body>
+
+<!-- l approbation : le meme objet que l app et l applet. Un feu vert n est pas une commande. -->
+<div id="approval" class="approval hid" role="alert">
+  <span class="a-mark" aria-hidden="true">✍</span>
+  <span class="a-who" id="approval-who"></span>
+  <span class="a-age dim" id="approval-age"></span>
+  <button type="button" id="approval-yes" class="primary">Approuver</button>
+  <button type="button" id="approval-no" class="ghost">Refuser</button>
+</div>
 
 <!-- the commands -->
 
@@ -742,6 +772,54 @@ function shortTime(ts) {
   return m ? m[1] : '';
 }
 
+/* UNE COMMANDE SE LIT COMME UNE COMMANDE : « /name » en tete, ses lignes en liste.
+   Le texte du fichier maitre arrive en colonnes : chaque ligne devient un point de liste. */
+function cmdBubble(name, text) {
+  const m = el('div', 'msg geste');
+  const w = el('div', 'who');
+  w.appendChild(el('span', 'g', glyph(name)));
+  w.appendChild(el('span', 'cmdname', name));
+  m.appendChild(w);
+  const ul = el('ul', 'cmdlist');
+  String(text || '').split('\n').map((l) => l.replace(/\s+$/, '')).filter((l) => l.trim())
+    .forEach((l) => ul.appendChild(el('li', null, l)));
+  if (!ul.childNodes.length) ul.appendChild(el('li', 'dim', '(rien)'));
+  m.appendChild(ul);
+  return m;
+}
+
+/* LA LISTE DES COMMANDES, DANS LE CHAT : chaque ligne est « /name », un clic la met dans le champ.
+   Une seule source : /api/commands, qui lit le fichier maitre. */
+const COMMANDS = [];
+
+async function loadCommands() {
+  try {
+    const d = await api('/api/commands');
+    COMMANDS.length = 0;
+    (d.commands || []).forEach((c) => COMMANDS.push(c));
+  } catch (e) { /* la liste n est pas vitale */ }
+}
+
+function paintCommands() {
+  if (!COMMANDS.length) return;
+  const old = document.getElementById('cmd-list');
+  if (old) old.remove();
+  const m = cmdBubble('/commandes',
+    COMMANDS.map((c) => '/' + c.name + (c.arg ? '  <' + c.arg + '>' : '')).join('\n'));
+  m.id = 'cmd-list';
+  m.querySelectorAll('li').forEach((li, i) => {
+    const c = COMMANDS[i];
+    li.classList.add('pick');
+    li.title = c.what || '';
+    li.addEventListener('click', () => {
+      $('#say').value = '/' + c.name + (c.arg ? ' ' : '');
+      $('#say').focus();
+    });
+  });
+  $('#feed').appendChild(m);
+  $('#feed').scrollTop = $('#feed').scrollHeight;
+}
+
 function bubble(kind, who, text, extra, ts) {
   const m = el('div', 'msg ' + kind);
   let w = null;
@@ -912,7 +990,11 @@ async function send(text) {
     const d = await api('/api/cmd', { line: text });
     const kind = d.kind === 'boundary' ? 'boundary' : d.kind === 'agent' ? 'agent'
       : d.kind === 'doctor' ? 'doct' : (d.ok ? 'note' : 'note ko');
-    const m = bubble(kind, kind === 'boundary' ? 'session' : ('geste · ' + text.split(' ')[0]), d.text || '');
+    const nom = text.split(' ')[0];
+    // le docteur garde sa bulle : sa reponse est une fiche, pas une liste
+    const m = d.kind === 'doctor'
+      ? bubble('doct', nom, d.text || '')
+      : cmdBubble(nom, d.text || '');
     $('#feed').appendChild(m);
     $('#feed').scrollTop = $('#feed').scrollHeight;
     if (d.kind === 'doctor') doctorBadge(d);
@@ -1493,8 +1575,41 @@ function startPoll() {
   S.timer = setInterval(() => { refresh(false).catch(() => {}); }, S.pollMs || 1500);
 }
 
+/* ------------------------------------------------------------------ l approbation
+   Le pont donne UN objet : { pending, tool, gesture, phrase, age }. L app le dessine deja ;
+   la page dessine le meme, et signe par /api/approve — un feu vert n est pas une commande. */
+async function paintApproval() {
+  const box = $('#approval');
+  if (!box) return;
+  let d = {};
+  try { d = await api('/api/approval'); } catch (e) { return; }
+  if (!d || !d.pending) { box.classList.add('hid'); return; }
+  box.classList.remove('hid');
+  $('#approval-who').textContent = d.phrase || d.gesture || '(geste sans nom)';
+  const age = Math.round(d.age || 0);
+  $('#approval-age').textContent = age < 2 ? 'à l instant' : ('il y a ' + age + ' s');
+}
+
+async function signApproval(yes) {
+  const b = $('#approval-yes');
+  if (b) b.disabled = true;
+  try {
+    const d = await api(yes ? '/api/approve' : '/api/deny', {});
+    const a = (d && d.approval) || {};
+    toast(yes ? ('Feu vert : ' + (a.signed || 'signé')) : 'Demande refusée', yes ? 'ok' : 'ko');
+  } catch (e) {
+    toast('la signature n a pas passé', 'ko');
+  } finally {
+    if (b) b.disabled = false;
+    paintApproval();
+  }
+}
+
 /* ------------------------------------------------------------------ the startup */
 function bind() {
+  const yes = $('#approval-yes'), no = $('#approval-no');
+  if (yes) yes.addEventListener('click', () => signApproval(true));
+  if (no) no.addEventListener('click', () => signApproval(false));
   document.querySelectorAll('#rail button').forEach((b) => {
     b.addEventListener('click', () => goto(b.dataset.page));
   });
@@ -1508,6 +1623,10 @@ function bind() {
   $('#maj-apply').addEventListener('click', () => majApply());
   $('#say').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); send($('#say').value); }
+  });
+  // un « / » seul ouvre la liste des commandes, dans le chat
+  $('#say').addEventListener('input', () => {
+    if ($('#say').value.trim() === '/') paintCommands();
   });
   $('#residents').addEventListener('click', async () => {
     const b = $('#residents');
@@ -1604,8 +1723,16 @@ function bind() {
     S.state = await api('/api/state');
     head();
     startPoll();
-    doctorBadge(await api('/api/cmd', { line: '/doctor' }));
+    // l approbation se relit moins souvent que l etat : elle ne bouge qu a la demande d un outil
+    paintApproval();
+    setInterval(() => { paintApproval().catch(() => {}); }, 5000);
+    // le docteur prend une trentaine de secondes : il ne doit pas retenir l ouverture.
+    // la page s ouvre, le badge se remplit quand il a fini.
+    api('/api/cmd', { line: '/doctor badge' }).then(doctorBadge).catch(() => {});
     await loadHistory();
+    // la liste des commandes vit dans le chat : « /name », cliquable
+    await loadCommands();
+    if (!$('#feed').querySelector('.msg')) paintCommands();
     const h = location.hash.slice(1).split('/')[0];
     if (h && h !== 'chat' && LOAD[h]) goto(h);
     $('#say').focus();

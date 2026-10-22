@@ -1,8 +1,8 @@
 # id: E06
 # role: the only reader of the master file. every value the code uses comes from here.
 
-# flatten the master file into "dotted.key<TAB>value" lines
-_flat() {
+# _flat_raw <fichier> : la table aplatie, telle que le maitre l ecrit
+_flat_raw() {
   _f=${1:-$LA_CONF}
   awk '
     /^[ \t]*#/ { next }
@@ -43,6 +43,24 @@ _flat() {
   ' "$_f"
 }
 
+# LE MAITRE EST LU UNE FOIS PAR PROCESSUS : trente-cinq lectures d un fichier de quarante
+# kilo, c etait une seconde a chaque commande. La signature (taille.date) dit si le maitre a
+# bouge ; sinon la table deja aplatie est resservie, sous-shells compris.
+_flat() {
+  _f=${1:-$LA_CONF}
+  if [ "$_f" = "$LA_CONF" ] && [ -n "${LA_FLAT_SIG:-}" ]; then
+    _sg=$(stat -c '%s.%Y' "$_f" 2>/dev/null)
+    [ "$_sg" = "$LA_FLAT_SIG" ] && { printf '%s\n' "$LA_FLAT"; return 0; }
+  fi
+  _t=$(_flat_raw "$_f")
+  if [ "$_f" = "$LA_CONF" ]; then
+    LA_FLAT=$_t
+    LA_FLAT_SIG=$(stat -c '%s.%Y' "$_f" 2>/dev/null)
+    export LA_FLAT LA_FLAT_SIG
+  fi
+  printf '%s\n' "$_t"
+}
+
 # conf_str <dotted.key> : the value, empty if absent
 conf_str() {
   _v=$(_flat | awk -F'\t' -v k="$1" '$1 == k { print $2; exit }')
@@ -74,13 +92,21 @@ conf_has() {
   _flat | awk -F'\t' -v k="$1" '$1 == k || index($1, k ".") == 1 { f = 1 } END { exit(f ? 0 : 1) }'
 }
 
+# _cfg_exts : les extensions que l index connait, lues une fois et gardees
+_cfg_exts() {
+  if [ -n "${LA_EXTS:-}" ]; then printf '%s\n' "$LA_EXTS"; return 0; fi
+  LA_EXTS=$(conf_list extensions 2>/dev/null | tr '\n' ' ')
+  export LA_EXTS
+  printf '%s\n' "$LA_EXTS"
+}
+
 # the tree, read as the document writes it: a name, its id, then the comment.
 # a directory carries [Dxx] in its name; a file carries its id in the third column.
 # the path is rebuilt from the indentation, so the reader never needs the box drawing.
 _cfg_tree() {
   # the INDEX is the only list: folders and files, each with its id.
-  _exts=$(conf_list extensions 2>/dev/null | tr '
-' ' ')
+  _exts=$(_cfg_exts)
+
   awk -v want="$1" -v kind="$2" -v exts="$_exts" '
     BEGIN { gsub(/-/, "_", want) }
     function k_of(n,   k, ext) {

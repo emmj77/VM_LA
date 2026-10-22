@@ -241,6 +241,7 @@ cmd_run() {
                     run_call engine.switch op=list | jq -r '.result // .' 2>/dev/null
                   fi ;;
     doctor)       run_call engine.doctor "op=${1:-short}" ;;
+    app)          run_call engine.commands op=app ;;
     tool_call)    LA_FROM=human; export LA_FROM; run_call "$@" ;;
     *)            printf 'no act: %s\n' "$_act" >&2; return 1 ;;
   esac

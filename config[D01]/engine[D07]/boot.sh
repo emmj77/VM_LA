@@ -18,6 +18,8 @@ LA_STATE_BOOT=$(find "$LA_HOME" -maxdepth 2 -type d -name 'state\[D*\]' -print 2
 LC_ALL=C
 export LC_ALL
 . "$HERE/cfg.sh" || { echo "boot: cfg failed" >&2; return 1 2>/dev/null || exit 1; }
+# le maitre est lu et aplati UNE fois : les trente-cinq lectures qui suivaient etaient une seconde
+_flat >/dev/null 2>&1 || :
 for b in msg fs tab skl canon shape args cap run shell approval step; do
   p=$(cfg abs "$b" 2>/dev/null)
   [ -n "$p" ] && [ -f "$p" ] || p="$HERE/$b.sh"

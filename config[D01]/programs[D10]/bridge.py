@@ -178,6 +178,56 @@ def cached(key, ttl, fn):
     return hit[1]
 
 
+def approval_window():
+    """la duree de validite d un feu vert : une seule cle dans la config, jamais deux"""
+    try:
+        v = (conf("limits") or {}).get("approval_window")
+        return int(v) if v else 300
+    except Exception:
+        return 300
+
+
+def _fields(path):
+    """les lignes « cle: valeur » d un fichier d etat, ou None s il n existe pas"""
+    d = {}
+    try:
+        with open(path, "r", encoding="utf-8", errors="replace") as f:
+            for line in f:
+                if ":" in line:
+                    k, v = line.split(":", 1)
+                    d[k.strip()] = v.strip()
+    except OSError:
+        return None
+    return d
+
+
+def approval_view():
+    """LA demande en attente, telle que les trois fronts la dessinent : un objet, jamais une
+    phrase a decouper. L app, la page et l applet lisent ceci et rien d autre."""
+    st = os.environ.get("LA_STATE", ".")
+    out = {"pending": False, "tool": "", "gesture": "", "phrase": "", "age": 0,
+           "signed": "", "left": 0, "window": approval_window()}
+    sig = _fields(os.path.join(st, "approve"))
+    if sig:
+        out["signed"] = sig.get("tool", "")
+        ts = sig.get("ts", "")
+        if ts.isdigit():
+            out["left"] = max(0, out["window"] - (int(time.time()) - int(ts)))
+    req = _fields(os.path.join(st, "approve.request"))
+    if req:
+        tool = req.get("tool", "")
+        gesture = req.get("gesture") or tool
+        ts = req.get("ts", "")
+        age = max(0, int(time.time()) - int(ts)) if ts.isdigit() else 0
+        # UNE REGLE, LA MEME PARTOUT : une demande est satisfaite quand la signature porte SON
+        # digest et qu elle vit encore. L age des fichiers ne dit rien de cela.
+        done = (bool(sig) and sig.get("digest") == req.get("digest") and out["left"] > 0)
+        if not done:
+            out.update({"pending": True, "tool": tool, "gesture": gesture, "age": age,
+                        "phrase": "le moteur demande %s" % (gesture or tool)})
+    return out
+
+
 def board_json():
     """le board tel que board.py le mesure : le pont transporte, il ne calcule rien.
     le menu (sections, ordre, icones) vient de la_config, pas d ici."""
@@ -678,12 +728,9 @@ class Handler(BaseHTTPRequestHandler):
                 lines = [l for l in (_thinking_keep(x) for x in lines) if l]
                 return self.json(lines)
             if p == "/approval":
-                # an OBJECT, never a string: the app passes it to JSONObject and breaks otherwise
-                _said = ask("engine", "engine.approve", ["op=status"])
-                if isinstance(_said, dict):
-                    _said = _said.get("result") or ""
-                _wait = os.path.isfile(os.path.join(os.environ.get("LA_STATE", "."), "approve.request"))
-                return self.json({"signed": str(_said), "waiting": _wait})
+                # un OBJET, jamais une phrase : l app le passe a JSONObject et casse sinon.
+                # pending / tool / gesture / phrase / age : le meme contrat pour les trois fronts.
+                return self.json(approval_view())
             if p in ("/approve", "/deny"):
                 # the body reads the act on its input: /approve signs the one waiting
                 _g = ""
@@ -693,18 +740,15 @@ class Handler(BaseHTTPRequestHandler):
                 except Exception:
                     _g = (body or b"").decode("utf-8", "replace").strip()
                 if not _g:
-                    # without a body: the waiting act is signed
-                    try:
-                        with open(state_file("approve.request"), "r", errors="replace") as f:
-                            for line in f:
-                                if line.startswith("tool:"):
-                                    _g = line.split(":", 1)[1].strip()
-                                    break
-                    except OSError:
-                        pass
+                    # sans corps : c est le geste qui attend qui est signe, et seulement s il attend
+                    _g = (approval_view().get("gesture") or "").strip()
                 _op = "allow" if p == "/approve" else "deny"
+                if not _g:
+                    return self.json({"ok": False, "text": "rien n attend",
+                                      "approval": approval_view()})
                 said = ask("engine", "engine.approve", ["op=" + _op], feed=_g)
-                return self.json({"ok": True, "op": _op, "said": said})
+                return self.json({"ok": True, "op": _op, "said": said,
+                                  "approval": approval_view()})
             if p.startswith("/audio/"):
                 return self.file(self.inside(os.environ["LA_AUDIO"], p[len("/audio/"):]))
             if p == "/stop":
@@ -749,6 +793,23 @@ class Handler(BaseHTTPRequestHandler):
 
         if name in ("skills", "projects", "toolmap", "agents"):
             return self.json(self.panels(name))
+
+        # ---- l approbation : la meme reponse pour la page, l app et l applet.
+        # la page signe par ICI, pas par /command : un feu vert n est pas une commande.
+        if name == "approval":
+            return self.json(approval_view())
+        if name in ("approve", "deny"):
+            view = approval_view()
+            if not view.get("pending"):
+                # rien n attend : on ne signe pas le vide, et on ne fait pas parler la porte
+                return self.json({"ok": False, "text": "rien n attend", "approval": view})
+            _g = str(payload.get("tool") or payload.get("gesture") or "").strip()
+            if not _g:
+                _g = (view.get("gesture") or "").strip()
+            _op = "allow" if name == "approve" else "deny"
+            said = ask("engine", "engine.approve", ["op=" + _op], feed=_g)
+            return self.json({"ok": True, "op": _op, "said": said,
+                              "approval": approval_view()})
 
         def door(kind, tool, args, feed=None, secs=200):
             return subprocess.run(["dash", os.environ["LA_TOOL"], kind, tool] + args,
@@ -801,6 +862,11 @@ class Handler(BaseHTTPRequestHandler):
                 return self.json({"ok": False, "error": "a line is expected"}, 400)
             r = door("engine", "engine.commands", ["op=line"], feed=line, secs=600)
             got = as_json(r, {"ok": r.returncode == 0, "text": (r.stderr or "").strip()})
+            # la porte rend une enveloppe : la page veut le RESULTAT et le code, pas l enveloppe
+            if isinstance(got, dict) and "result" in got:
+                got["text"] = str(got.get("result") or "")
+                got["rc"] = int(str(got.get("return") or 0) or 0)
+                got["ok"] = got["rc"] == 0
             if "text" not in got:
                 got = {"ok": got.get("ok", True), "text": json.dumps(got)[:400]}
             return self.json(got)
@@ -919,8 +985,8 @@ class Handler(BaseHTTPRequestHandler):
             line = str(payload.get("line") or query or "").strip()
             if not line:
                 return self.json({"error": "a line is expected"}, 400)
-            # la ligne se lit sur l entree, par la porte du moteur : elle ne passe pas par
-            # la porte humaine, qui ne connait pas les gestes du moteur (l oreille, par exemple)
+            # the line is read on the input, through the engine door: it does not go through
+            # the human door, which does not know the engine's gestures (the ear, for one)
             return self.json(ask("engine", "engine.commands", ["op=line"], feed=line, secs=180))
         if p == "/delegate":
             tool = str(payload.get("tool") or "").strip()

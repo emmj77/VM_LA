@@ -232,10 +232,10 @@ loop:
   max_tokens: 0
   max_calls: 0
   max_seconds: 0
-  plan_every: 5
+  todo_every: 5
   plan_steps: 12
   plan_chars: 100
-  big_every: 15
+  big_todo_every: 15
   update_every: 10
   timeout: 600
   share: 30
@@ -244,6 +244,11 @@ loop:
   answer_tokens: 2048
   error_chars: 200
   desc_chars: 40
+
+# LE BADGE DU TABLEAU N EST PAS UN AUDIT : trois controles, deux secondes, pas cent dix-sept.
+# le nom des controles vit ici, comme tout le reste.
+doctor:
+  badge: ["doctor.machine", "doctor.models", "doctor.language"]
 
 # every bound the engine applies
 limits:
@@ -393,6 +398,10 @@ commands:
   - id: "V22"
     name: "listen off"
     act: listen_off
+  - id: "V23"
+    name: "app"
+    act: app
+    # le raccourci du bureau passe par la : une seule porte, « la app »
   - id: "V06"
     name: "skill list"
     tool: skill_list
@@ -529,7 +538,7 @@ schema:
     step: 4000
     why: le budget en octets de tout ce que le modele lit
   - section: loop
-    key: plan_every
+    key: todo_every
     kind: int
     min: 1
     max: 50
@@ -547,7 +556,7 @@ schema:
     max: 400
     why: une ligne du plan, en caracteres, au plus
   - section: loop
-    key: big_every
+    key: big_todo_every
     kind: int
     min: 5
     max: 60

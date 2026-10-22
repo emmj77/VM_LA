@@ -19,7 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 PAGE = os.environ.get("LA_PAGE") or os.path.join(ROOT, "page[D09]")
 BRIDGE = os.environ.get("LA_BRIDGE_URL") or "http://127.0.0.1:8770"
-IDLE = int(os.environ.get("LA_DASH_IDLE") or 120)
+IDLE = int(os.environ.get("LA_DASH_IDLE") or 900)
 PAGE_ROUTES = ("/", "/m", "/chat", "/doctor", "/plan", "/models")
 MASTER = os.environ.get("LA_CONFIG") or os.path.join(ROOT, "conf[D05]", "la_config.yaml")
 ENGINE = os.environ.get("LA_ENGINE") or os.path.join(ROOT, "engine[D07]", "la.sh")
@@ -55,47 +55,13 @@ def commands():
 
 
 def commands_html():
-    cs = commands()
-    if not cs:
-        return ""
-    h = ['<div id="cmds"><style>'
-         '#cmds{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;background:#0d0d0d;'
-         'border-bottom:1px solid #222;align-items:center}'
-         '#cmds form{display:flex;gap:6px;margin:0}'
-         '#cmds button{background:#1c1c1c;color:#e8e8e8;border:1px solid #333;'
-         'border-radius:8px;padding:7px 11px;font:13px/1.2 system-ui,sans-serif;cursor:pointer}'
-         '#cmds button:hover{border-color:#555;background:#242424}'
-         '#cmds input{background:#141414;color:#e8e8e8;border:1px solid #333;border-radius:8px;'
-         'padding:6px 8px;font:13px/1.2 system-ui,sans-serif;width:7em}'
-         '</style>']
-    for c in cs:
-        name = escape(c["name"])
-        what = escape(c.get("tool") or c.get("act") or "")
-        if c.get("arg"):
-            h.append('<form method="get" action="/cmd">'
-                     '<input type="hidden" name="name" value="%s">'
-                     '<input name="arg" placeholder="%s" autocomplete="off">'
-                     '<button title="%s">%s</button></form>' % (name, escape(c["arg"]), what, name))
-        else:
-            h.append('<form method="get" action="/cmd">'
-                     '<input type="hidden" name="name" value="%s">'
-                     '<button title="%s">%s</button></form>' % (name, what, name))
-    h.append("</div>")
-    return "".join(h)
+    # pas de barre de boutons : les commandes se lisent dans le chat, en « /name ».
+    return ""
 
 
 def commands_legend():
-    # the legend of the chat box: the first word of every command, once, in order
-    seen, words = set(), []
-    for c in commands():
-        w = c["name"].split()[0]
-        if w in seen:
-            continue
-        seen.add(w)
-        words.append("/" + w)
-    if not words:
-        return ""
-    return "<br>".join(" ".join(words[i:i + 5]) for i in range(0, len(words), 5))
+    # ni pave dans le rail : une seule liste, dans la fenetre de chat.
+    return ""
 
 
 def run_command(name, arg):
@@ -176,9 +142,11 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         p = urlsplit(self.path).path
-        # a ping is not a visit: the table probes the page every fifteen seconds,
-        # and that probing kept it awake for ever.
+        # la sonde compte comme une visite : voir plus haut, elle exige une reponse
         if p == "/ping":
+            # une sonde qui exige une reponse tient le service eveille, qu on le veuille ou non :
+            # autant le compter comme une visite, sinon il se rendort et chaque reveil coute 4 s.
+            TOUCH[0] = time.time()
             return self.reply(200, b'{"state": "alive", "door": "dashboard"}', "application/json")
         TOUCH[0] = time.time()
         if p == "/cmd":
@@ -195,6 +163,11 @@ class Handler(BaseHTTPRequestHandler):
                     "<p><a href='/'>retour</a></p><h3>%s <b>%s</b></h3><pre>%s</pre>") % (
                 escape(name), escape(name), escape(status), escape(result or "(rien)"))
             return self.reply(200, page.encode(), "text/html; charset=utf-8")
+        if p == "/api/commands":
+            # la liste, pour le chat : une seule source, le fichier maitre
+            cs = [{"name": c["name"], "arg": c.get("arg") or "",
+                   "what": c.get("tool") or c.get("act") or ""} for c in commands()]
+            return self.reply(200, json.dumps({"commands": cs}).encode(), "application/json")
         if p in PAGE_ROUTES:
             return self.send_page()
         if p.startswith("/static/"):

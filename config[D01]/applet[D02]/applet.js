@@ -139,7 +139,7 @@ class LAInfoApplet extends Applet.TextIconApplet {
             this._board = obj;
             try { GLib.file_set_contents(CACHE, text); } catch (e) { }
             this._when = new Date();
-            this._approval = this._findApproval();
+            this._approval = this._demande();
             this._paint();
             this._dessinerLeMenu();
             this._updateNet();
@@ -155,12 +155,16 @@ class LAInfoApplet extends Applet.TextIconApplet {
     }
 
     // L APPROBATION SE LIT DANS LES LIGNES : la ligne « approbation » porte le geste en clair.
-    _findApproval() {
+    // LE GESTE VIENT ECRIT : la porte le pose dans la demande, le board le transporte.
+    // L applet ne decoupe plus « asked 812s ago » pour en deviner le nom.
+    _demande() {
         let found = null;
         this._rows().forEach((l) => {
             if (l.title !== "approbation" || found) { return; }
-            const m = String(l.verdict).match(/^([a-z_][a-z0-9_]*)(?: +([a-z_][a-z0-9_:]*))?/);
-            if (m && /asked|ago/.test(l.verdict)) { found = [m[1], m[2] || ""]; }
+            const geste = String(l.gesture || "").trim();
+            if (!geste) { return; }
+            const mots = geste.split(/\s+/);
+            found = [mots[0], mots.slice(1).join(" ")];
         });
         return found;
     }
