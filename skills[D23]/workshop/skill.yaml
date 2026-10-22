@@ -6,7 +6,6 @@ tags: ["workshop", "skill", "table", "spec"]
 SUMMARY:
   101: "Hold the workshop: the skills, the tool table, and the spec of the active skill."
   102: "skill_manage holds one skill FIELD BY FIELD; table_manage holds the table itself."
-  103: "write_spec writes ONE section of the active skill spec, bounded by cap."
   104: "load_doc returns the doc of the active skill before a sensitive tool."
 RULES:
   create_subfolder: true
@@ -17,7 +16,6 @@ PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G017: "skill_manage"
   G018: "table_manage"
-  G020: "write_spec"
   G022: "load_doc"
   G003: "list_dir"
   G043: "train_family_filter"

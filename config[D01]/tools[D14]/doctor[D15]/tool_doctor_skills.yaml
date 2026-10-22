@@ -22,7 +22,8 @@ COMMAND: |
   _named=$(tmpfile sknamed) || exit 1
   _bodies=$(tmpfile skbodies) || exit 1
   _all=$(tmpfile skall) || exit 1
-  trap 'rm -f "$_named" "$_bodies" "$_all"' EXIT INT TERM HUP
+  _disp=$(tmpfile skdisp) || exit 1
+  trap 'rm -f "$_named" "$_bodies" "$_all" "$_disp"' EXIT INT TERM HUP
 
   # ce qu une skill ouvre : les noms de son SKILL_TOOL_SET, avec ou sans guillemets
   awk '
@@ -44,6 +45,12 @@ COMMAND: |
   _R=$(cfg abs registry 2>/dev/null) || _R=$(cfg path tools)/registry.yaml
   awk '/^[[:space:]]*tool:/ { v = $0 ; sub(/^[[:space:]]*tool:[ \t]*/, "", v) ; gsub(/"/, "", v) ; print v }' "$_R" 2>/dev/null \
     | sort -u > "$_all"
+
+  # un dispatcher : un tool dont l enum porte au moins dix valeurs ; sa famille entre par lui
+  find "$_T" -name 'tool_*.yaml' -exec awk '
+    /^tool:/ { n = $0 ; sub(/^tool:[ \t]*/, "", n) ; gsub(/"/, "", n) }
+    /type: enum/ && /values:/ { v = $0 ; c = gsub(/,/, ",", v) ; if (c + 1 >= 10) print n }
+  ' {} + 2>/dev/null | sort -u > "$_disp"
 
   case $_op in
   all|dangling)
@@ -72,6 +79,15 @@ COMMAND: |
 
   case $_op in
   all|orphans)
+    # une declaration (machine + op, pas de corps) est faite par la machine : aucune skill ne l ouvre
+    find "$_T" -name 'tool_*.yaml' -exec awk '
+      /^machine:/ { m = $0 ; sub(/^machine:[ \t]*/, "", m) ; gsub(/"/, "", m) ; next }
+      /^COMMAND:/ { m = "" ; next }
+      /^op:/ && m != "" { print m ; m = "" }
+    ' {} + 2>/dev/null | sort | uniq -c | sort -rn \
+      | while read -r _c _m; do
+          printf 'report %s declaration(s) of %s: no body of their own, the machine runs them\n' "$_c" "$_m"
+        done
     _o=$(comm -23 "$_bodies" "$_named")
     _n=$(printf '%s' "$_o" | grep -c .)
     if [ "${_n:-0}" = 0 ]; then
@@ -83,14 +99,37 @@ COMMAND: |
         | sort | uniq -c | sort -rn \
         | while read -r _c _f; do
             _ex=$(printf '%s\n' "$_o" | grep -E "^${_f}([._]|$)" | head -3 | paste -sd, -)
+            _d=$(awk -v f="$_f" '{ n = $1 ; if (index(n, ".") > 0) sub(/\..*/, "", n) ; else sub(/_.*/, "", n) ; if (n == f) print }' "$_disp" | head -1)
             case $_f in
               engine|doctor|turn|watch|tunnel)
                 printf 'report %s body(ies) of %s, called by the engine, no skill names them (%s)\n' "$_c" "$_f" "$_ex" ;;
               *)
-                printf 'note %s body(ies) of %s in no skill: the model cannot call them (%s)\n' "$_c" "$_f" "$_ex" ;;
+                if [ -n "$_d" ]; then
+                  # la famille entre par un dispatcher : le modele n a pas besoin des noms
+                  printf 'report %s body(ies) of %s in no skill, the family is entered through %s (%s)\n' "$_c" "$_f" "$_d" "$_ex"
+                else
+                  printf 'note %s body(ies) of %s: no skill opens them and no dispatcher enters the family (%s)\n' "$_c" "$_f" "$_ex"
+                fi ;;
             esac
           done
     fi
+    ;;
+  esac
+
+  case $_op in
+  all|paths)
+    # un projet dont le chemin ne mene nulle part n ouvre aucun fichier
+    _c=0
+    for _k in "$_P"/*/project.yml; do
+      [ -f "$_k" ] || continue
+      _v=$(awk '/^[[:space:]]+path:/ { v = $0 ; sub(/^[^:]*:[[:space:]]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_k")
+      [ -n "$_v" ] || continue
+      _d=$_v ; case $_d in /*) ;; *) _d="$HOME/$_v" ;; esac
+      [ -d "$_d" ] && continue
+      _c=$((_c + 1))
+      printf 'FAULT project %s: its path %s is nowhere on the disk\n' "$(basename "$(dirname "$_k")")" "$_v"
+    done
+    [ "$_c" = 0 ] && printf 'report every project path lands on the disk\n'
     ;;
   esac
 
@@ -138,7 +177,7 @@ COMMAND: |
     for _k in "$_P"/*/project.yml; do
       [ -f "$_k" ] || continue
       _v=$(awk '/^RULES:/ { r = 1 ; next } r && /^[A-Z_]+:/ { r = 0 }
-                r && /^[[:space:]]+workspace:/ { v = $0 ; sub(/^[^:]*:[[:space:]]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_k")
+                r && /^[[:space:]]+writable_workspace:/ { v = $0 ; sub(/^[^:]*:[[:space:]]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_k")
       [ -n "$_v" ] && continue
       _w=$((_w + 1))
       printf 'FAULT project %s: no writable workspace, its skills write nowhere named\n' "$(basename "$(dirname "$_k")")"
@@ -148,10 +187,10 @@ COMMAND: |
   esac
 
   case $_op in
-  orphans|dangling|docs|empty|workspace|all) ;;
+  orphans|dangling|docs|empty|workspace|paths|all) ;;
   *) printf 'FAULT unknown op %s\n' "$_op" ;;
   esac
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: orphans,dangling,docs,empty,workspace}
+  - {name: op, type: enum, values: orphans,dangling,docs,empty,workspace,paths}

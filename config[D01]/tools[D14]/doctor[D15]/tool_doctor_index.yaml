@@ -68,9 +68,28 @@ COMMAND: |
       fi
     fi
     ;;
+  roles)
+    # une entree sans role, ou un nom dit deux fois : l index ne dit plus pourquoi le fichier vit
+    _I=$(cfg abs index_la) || exit 1
+    _t=$(tmpfile idxrole) || exit 1
+    awk -F'"' '/\{id: "/ { r = $6 ; gsub(/[[:space:]]/, "", r) ; if (r == "") print $4 }' "$_I" > "$_t"
+    _c=0
+    while read -r _n; do
+      [ -n "$_n" ] || continue
+      _c=$((_c + 1))
+      printf 'FAULT %s: it carries no role\n' "$_n"
+    done < "$_t"
+    for _n in $(awk -F'"' '/^dirs:/ { d = 1 ; next } d && /^[a-z]+:/ { d = 0 } d && /\{id: "/ { print $4 }' "$_I" | sort | uniq -d); do
+      _c=$((_c + 1))
+      printf 'FAULT %s: the index says it twice\n' "$_n"
+    done
+    [ "$_c" = 0 ] && printf 'report every entry of the index carries a role, and no name is said twice\n'
+    rm -f "$_t"
+    ;;
+
   *) printf 'FAULT unknown op %s\n' "$_op" ;;
   esac
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: tree,apk}
+  - {name: op, type: enum, values: tree,apk,roles}

@@ -7,7 +7,7 @@ tags: ["LA", "harness", "engine", "table", "spec"]
 RULES:
   enabled: true
   writeable: true
-  workspace: "work/"
+  writable_workspace: "work/"
   skillset:                  # les skills que le projet ouvre, rien d autre
     1: "workshop"
     2: "git"
@@ -27,7 +27,6 @@ RULES:
     17: "delegate-work"
     18: "manage-processes"
     20: "edit-table"
-    21: "write-spec"
     22: "tool-manager"
     23: "phone-tunnel"
     24: "download-file"

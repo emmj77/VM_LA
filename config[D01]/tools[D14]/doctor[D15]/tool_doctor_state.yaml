@@ -13,6 +13,9 @@ RULES:
   paths: read
 DESCRIPTION: "no orphan in the state folder: a file nobody writes and nobody reads is a leftover"
 COMMAND: |
+  _op=${1:-orphans}
+  case $_op in
+  all|orphans)
   # SAY.QUEUE AND SAY.DONE STAYED MONTHS (MOUSSA, 22/10): nothing named them, nothing missed them.
   _st=$(cfg path state 2>/dev/null)
   [ -n "$_st" ] || { printf 'FAULT no state folder in the tree\n' ; exit 0 ; }
@@ -36,7 +39,34 @@ COMMAND: |
   done
   _w=report; [ "${_o:-0}" = 0 ] || _w=note
   printf '%s %s file(s) in state, %s named by nobody\n' "$_w" "$_tot" "$_o"
+  ;;
+  esac
+
+  case $_op in
+  all|writers)
+    # un fichier d etat que nul corps et nul programme ne nomme ne vit pas : il traine
+    _I=$(cfg abs index_la) || exit 0
+    _t=$(tmpfile stwrite) || exit 0
+    awk -F'"' '/\{id: "N[0-9]/ { print $4 }' "$_I" > "$_t"
+    _P=$(cfg path programs 2>/dev/null)
+    # un seul balayage : les mots que les corps et les programmes ecrivent
+    _w=$(tmpfile stwords) || exit 0
+    grep -rhoE '[A-Za-z0-9_][A-Za-z0-9_.-]*' "$LA_HOME" "$_P" 2>/dev/null | sort -u > "$_w"
+    _c=0
+    while read -r _n; do
+      [ -n "$_n" ] || continue
+      grep -qxF -- "$_n" "$_w" && continue
+      _c=$((_c + 1))
+      printf 'FAULT %s: no body and no program names it\n' "$_n"
+    done < "$_t"
+    rm -f "$_w"
+    [ "$_c" = 0 ] && printf 'report every state file is named by a body or a program\n'
+    rm -f "$_t"
+    ;;
+  all|orphans) ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: orphans}
+  - {name: op, type: enum, values: orphans,writers}

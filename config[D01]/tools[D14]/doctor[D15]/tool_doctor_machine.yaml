@@ -84,9 +84,21 @@ COMMAND: |
     [ "${_bl:-0}" -gt 0 ] && printf 'ok the bridge listens on %s\n' "$_bd" \
       || printf 'FAULT the bridge listens on nothing at %s\n' "$_bd"
     ;;
+  declared)
+    # une machine qu un corps nomme doit exister dans le maitre : sinon il appelle le vide
+    _C=$(cfg abs la_config) || exit 1
+    _c=0
+    for _m in $(find "$_T" -name 'tool_*.yaml' -exec awk '/^machine:/ { v = $0 ; sub(/^machine:[ \t]*/, "", v) ; gsub(/"/, "", v) ; print v }' {} + 2>/dev/null | sort -u); do
+      grep -qE "^  ${_m}:" "$_C" && continue
+      _c=$((_c + 1))
+      printf 'FAULT machine %s: a body names it, the master file does not\n' "$_m"
+    done
+    [ "$_c" = 0 ] && printf 'report every machine a body names is declared in the master file\n'
+    ;;
+
   *) printf 'FAULT unknown op %s\n' "$_op" ;;
   esac
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: residents,instruments,benches,tunnel}
+  - {name: op, type: enum, values: residents,instruments,benches,tunnel,declared}

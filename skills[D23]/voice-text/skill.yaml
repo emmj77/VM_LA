@@ -1,0 +1,28 @@
+id: "K24"
+skill: "voice-text"
+date: "2026-10-17"
+tags: ["voice-text", "voice", "audio", "text"]
+
+SUMMARY:
+  101: "Vocalise a text: the words become a wav, and the wav is NAMED."
+  102: "voice_text makes the voice only; the reply stays the answer."
+  103: "What was WRITTEN is said, word for word, without rewriting it."
+RULES:
+  create_subfolder: true
+  max_section_lines: 100
+APPROVAL: false              # this skill does not touch the harness
+HUMAN_ONLY: false
+PERMANENT_TODO: false
+SKILL_TOOL_SET:
+  G025: "voice_text"
+  G022: "load_doc"
+  G062: "mkdir"
+DOCS:
+  300: "web_search"
+PLAN:
+WRITABLE_WORKSPACE:
+  workspace: "work/"
+  type-file: ".mp3 .wav .ogg .txt"
+ERROR:
+  600: "Voice missing: the resident is named in the config, never return a text instead."
+PORTEUR: ""

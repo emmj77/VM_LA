@@ -93,7 +93,8 @@ COMMAND: |
     ;;
   canon)
     _st=$(cfg abs project_active 2>/dev/null) && [ -r "$_st" ] || { printf 'ok no armed project, so no canon to hold\n'; exit 0; }
-    _ap=$(head -n 1 -- "$_st")
+    _ap=$(head -n 1 -- "$_st" | tr -d '\r')
+    [ -n "$_ap" ] || { printf 'ok no armed project, so no canon to hold\n'; exit 0; }
     _pd=$(project_dir "$_ap" 2>/dev/null) || { printf 'FAULT the armed project %s names no folder\n' "$_ap"; exit 0; }
     _f="$_pd/project.yml"
     [ -f "$_f" ] || { printf 'FAULT the armed project %s names no manifest\n' "$_ap"; exit 0; }
