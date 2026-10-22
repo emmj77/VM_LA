@@ -33,8 +33,11 @@ COMMAND: |
       [ -f "$_f" ] || continue
       _n=$((_n + 1))
       dash -n "$_f" 2>/dev/null || printf 'FAULT dash cannot read %s\n' "${_f##*/}"
-      _bad=$(grep 'LA_FROM' "$_f" 2>/dev/null | grep '\${\?LA_FROM' | grep -vc 'channel_is\|LA_FROM=' 2>/dev/null)
-      [ "${_bad:-0}" -eq 0 ] || printf 'FAULT %s reads the channel label by itself, the table is in cfg.sh\n' "${_f##*/}"
+      case ${_f##*/} in run.sh) continue ;; esac
+      grep -q '\${\?LA_FROM' "$_f" 2>/dev/null && printf 'FAULT %s reads the channel label by itself: run_call reads it once\n' "${_f##*/}"
+    done
+    for _f in "$(cfg path tools)"/*/*/tool_*.yaml; do
+      grep -q '\${\?LA_FROM' "$_f" 2>/dev/null && printf 'FAULT %s reads the channel label by itself: the flags come with the call\n' "${_f##*/}"
     done
     [ "$_n" -gt 0 ] && printf 'ok %s brick(s), syntax held\n' "$_n" \
       || printf 'FAULT no brick in the engine\n'

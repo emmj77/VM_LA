@@ -117,13 +117,14 @@ _door_cmd() {
 }
 
 # _door_register : the register the caller is allowed to read
-_door_register() { channel_is "${LA_FROM:-model}" self && cfg abs registry-engine || cfg abs registry; }
+_door_register() { [ "$LA_SELF" = yes ] && cfg abs registry-engine || cfg abs registry; }
 
 # run_call <name> [key=value ...] : the whole door, one shape out
 # 0 ok, 3 a human must sign, 124 the bound was reached, 1 refused
 run_call() {
   _name=${1:-}
   [ $# -gt 0 ] && shift
+  channel_set "${LA_FROM:-model}"
 
   # 1 an id : the register names it
   _reg=$(_door_register) || { shape_fail "$_name" "" refusals.tool_unknown; return 1; }
@@ -166,18 +167,7 @@ run_call() {
 
   # 5 the tools the active skill allows: the model alone is held to it
   # a permanent tool passes anywhere, the others need the toolset of the active skill
-  channel_is "${LA_FROM:-model}" gate ; _ch_rc=$?
-  if [ "$_ch_rc" -ne 1 ]; then
-    skl_gate "$_name"; _rc=$?
-    case $_rc in
-      0) : ;;
-      2) shape_fail "$_name" "" refusals.doc_first "$(skl_skill)"; return 1 ;;
-      3) shape_fail "$_name" "" refusals.plan_first; return 1 ;;
-      5) shape_fail "$_name" "" refusals.overdue "$(cfg num loop.todo_every 5)"; return 1 ;;
-      4) shape_fail "$_name" "" refusals.not_on_step; return 1 ;;
-      *) shape_fail "$_name" "" refusals.tool_not_allowed; return 1 ;;
-    esac
-  fi
+  if [ "$LA_GATE" != no ]; then skl_gate_ask "$_name" || return 1 ; fi
 
   # 6 arity and 7 types
   _decl=$(_door_decl "$_body")
@@ -233,8 +223,7 @@ run_call() {
   done
 
   # 9 approval : a gated body waits for a signed go; only a label whose row lifts it is exempt
-  channel_is "${LA_FROM:-model}" approval ; _ch_rc=$?
-  if [ "$_ch_rc" -ne 1 ] && is_gated "$_body"; then
+  if [ "$LA_APPROVAL" != no ] && is_gated "$_body"; then
     if approval_ok "$_name" "$@"; then
       :
     else

@@ -93,7 +93,7 @@ shell_exec() {
   # a bound of 0: no bound at all. the call keeps the hand and holds it (a service).
   _lim="timeout $_to"
   [ "$_to" = 0 ] && _lim=""
-  _out=$(LA_FROM="${LA_FROM:-model}" LA_DIR="$_eng" ROOT="$ROOT" W="$W" LA_HOME="$LA_HOME" LA_CONF="$LA_CONF" \
+  _out=$(LA_DIR="$_eng" ROOT="$ROOT" W="$W" LA_HOME="$LA_HOME" LA_CONF="$LA_CONF" \
     $_lim dash -c "$_pre
 $_c" dash "$@" 2>&1)
   _rc=$?
@@ -102,8 +102,7 @@ $_c" dash "$@" 2>&1)
     return 124
   fi
   # an engine call feeds the turn, not the model: no cap, no returns entry
-  channel_is "${LA_FROM:-model}" capture ; _ch_rc=$?
-  if [ "$_ch_rc" -ne 1 ]; then _res=$(printf '%s' "$_out" | cap_return "$_x")
+  if [ "$LA_CAPTURE" != no ]; then _res=$(printf '%s' "$_out" | cap_return "$_x")
   else _res=$_out ; fi
   # a route closes its step on the fact it has just read: the engine, never the model
   if [ "$_rc" -eq 0 ]; then

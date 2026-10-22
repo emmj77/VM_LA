@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "writes ONE message onto the agents board, and never more than one"
 
 COMMAND: |
-  N=${LA_FROM:-agent}
+  N=${LA_CHANNEL:-agent}
   D="{{to}}"
   T="{{body}}"
 

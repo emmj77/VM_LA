@@ -260,16 +260,7 @@ channel_set() {
   set -- $(awk -v l="$_l" '/^channels:/{c=1;next} c&&/^[^ #]/{c=0} c&&/^  [a-z]/{r=$1;sub(/:.*/,"",r);next} c&&r&&/^    /{k=$1;sub(/:.*/,"",k);v=$2;sub(/#.*/,"",v);gsub(/[ \t]/,"",v);if(r==l)g[k]=v;else if(r=="model")m[k]=v} END{n=split("self gate capture approval",K," ");for(i=1;i<=n;i++)printf "%s ",(K[i] in g)?g[K[i]]:((K[i] in m)?m[K[i]]:(K[i]=="self"?"no":"yes"))}' "${LA_CONF:?}")
   LA_SELF=${1:-yes} ; LA_GATE=${2:-yes} ; LA_CAPTURE=${3:-yes} ; LA_APPROVAL=${4:-yes}
   LA_CHANNEL=$_l
-}
-
-# channel_is <label> <self|gate|capture|approval> : the decisions of the row, and nothing else.
-channel_is() {
-  [ "${1:-model}" = "$LA_CHANNEL" ] || channel_set "${1:-model}"
-  case ${2:-} in
-    self) _ch=$LA_SELF ;; gate) _ch=$LA_GATE ;; capture) _ch=$LA_CAPTURE ;; approval) _ch=$LA_APPROVAL ;;
-    *) printf 'FAULT channel_is wants self, gate, capture or approval, not "%s"\n' "${2:-}" >&2 ; return 2 ;;
-  esac
-  case $_ch in no|off|false|0) return 1 ;; esac
+  export LA_SELF LA_GATE LA_CAPTURE LA_APPROVAL LA_CHANNEL
 }
 
 # project_dir <name> : the folder of a project, even when its name carries an id (la[D22])

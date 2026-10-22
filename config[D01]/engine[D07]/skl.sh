@@ -176,7 +176,7 @@ _skl_step_at() {
 skl_step_close() {
   _t=${1:-} ; _r=${2:-}
   [ -n "$_t" ] || return 1
-  channel_is ${LA_FROM:-model} self ; [ $? -eq 0 ] && return 1
+  [ "$LA_SELF" = yes ] && return 1
   _n=$(skl_skill 2>/dev/null) || return 1
   [ -n "$_n" ] || return 1
   skl_plan_is_closed "$_n" 2>/dev/null || return 1
@@ -311,6 +311,19 @@ _skl_gate_check() {
   [ $? = 3 ] && return 1
   skl_plan_is_closed "$_n" 2>/dev/null || { [ "$_t" = update_todo ] && return 0; }
   skl_carries "$_t" "" && return 0
+  return 1
+}
+
+# skl_gate_ask <tool> : the gate's word, its refusal included: the door obeys, it never translates
+skl_gate_ask() {
+  _skl_gate_check "${1:-}" ; case $? in
+    0) return 0 ;;
+    2) shape_fail "$1" "" refusals.doc_first "$(skl_skill)" ;;
+    3) shape_fail "$1" "" refusals.plan_first ;;
+    5) shape_fail "$1" "" refusals.overdue "$(cfg num loop.todo_every 5)" ;;
+    4) shape_fail "$1" "" refusals.not_on_step ;;
+    *) shape_fail "$1" "" refusals.tool_not_allowed ;;
+  esac
   return 1
 }
 
