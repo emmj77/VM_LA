@@ -367,11 +367,11 @@ body.offline .names p { color: #D08A8A; }
 .live-card { display: flex; gap: 9px; align-items: flex-start; }
 .live-body {
   flex: 1 1 auto;
-  padding: 10px 13px;
-  border: 1px dashed var(--line-2);
-  border-radius: 6px 18px 18px 18px;
-  background: rgba(18, 21, 29, .6);
+  padding: 2px 0;
+  border: 0;
+  background: none;
 }
+.live-body .think-line { color: var(--dim, #7f8b99); font-size: 12px; line-height: 1.45; white-space: pre-wrap; margin-top: 4px; }
 .live-title { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12.5px; }
 .dots { display: inline-flex; gap: 3px; }
 .dots i {
