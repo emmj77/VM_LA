@@ -69,14 +69,17 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `msg.sh` · `msg_str` | msg_str <dotted.key> : the raw text, no substitution |
 | `msg.sh` · `msg_has` | msg_has <dotted.key> : true when the phrase exists |
 | `run.sh` · `_door_field` | _door_field <body> <KEY> : one scalar of a body, top level or under a section |
-| `run.sh` · `_door_decl` | _door_decl <body> : the declared arguments, "name:type" in their order |
+| `run.sh` · `_door_decl` | _door_decl <body> : the declared arguments, name:type:values:stdin:required in their order |
 | `run.sh` · `_door_cmd` | _door_cmd <body> : the command text, unfolded |
+| `run.sh` · `_door_fill` | _door_fill <pattern> <value> : the text on stdin, every pattern replaced, a value carrying newlines kept whole |
+| `run.sh` · `_door_usage` | _door_usage <body> : the shape of one call, its arguments read from that body, nothing invented; what a refusal prints under its phrase. Not cmd_usage: that one lists the commands of the master file |
+| `run.sh` · `_door_arity_fail` | _door_arity_fail <name> <body> <phrase key> [arg ...] : the refusal and, under it, the shape of the call |
 | `run.sh` · `_door_register` | _door_register : the register the caller is allowed to read |
 | `run.sh` · `run_call` | 0 ok, 3 a human must sign, 124 the bound was reached, 1 refused |
 | `run.sh` · `say_err` | say <word ...> : the same line, on stderr, when there is no channel |
 | `run.sh` · `die` | die <phrase key> [arg ...] : the phrase, then stop this shell |
-| `shape.sh` · `shape` | shape <status> <tool> <line> <result> <return> : one line, one object |
-| `shape.sh` · `shape_ok` | shape_ok <tool> <line> <result> [return] : the call went through |
+| `shape.sh` · `shape` | shape <status> <tool> <line> <result> <return> : one line, one object; return is the code the body left, empty when the call never reached it |
+| `shape.sh` · `shape_ok` | shape_ok <tool> <line> <result> [return] : the call went through, with the code it left |
 | `shape.sh` · `shape_fail` | shape_fail <tool> <line> <phrase key> [arg ...] : a named refusal, in the same form |
 | `shape.sh` · `shape_get` | shape_get <line> <field> : one field back, empty when absent |
 | `shape.sh` · `shape_short` | shape_short <line> : the same object, cut for a narrow screen |
@@ -225,11 +228,11 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `bridge.py` · `Handler.send` | sends the response |
 | `bridge.py` · `main` | checks the environment, then serves |
 | `tts_daemon.py` · `load` | loads the onnx voice once |
-| `tts_daemon.py` · `say` | writes one text as a wav |
+| `tts_daemon.py` · `voice_text` | writes one text as a wav |
 | `tts_daemon.py` · `Service.log_message` | silences the http log |
 | `tts_daemon.py` · `Service.answer` | answers with a payload and its type |
 | `tts_daemon.py` · `Service.do_GET` | answers /health |
-| `tts_daemon.py` · `Service.do_POST` | answers /say |
+| `tts_daemon.py` · `Service.do_POST` | answers /voice_text |
 | `watch.py` · `STATE_DIR` | the state directory, from the environment |
 | `watch.py` · `_silent` | runs with stderr closed |
 | `watch.py` · `open_sessions` | opens the three onnx sessions |
@@ -305,7 +308,6 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `state/doctor.cache` | the last doctor output, read by the applet and the page |
 | `state/free_terminal.log` | every command of the free terminal, its time and its text |
 | `state/reply.stream` | the answer as it is being written |
-| `state/say.queue` | what waits to be said |
 | `state/second_head.yaml` | the product of the second head |
 | `state/stop` | the stop mark of a turn |
 | `state/trace.jsonl` | the live channel, one line per event |
@@ -322,11 +324,11 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `page` · `/api/head` | the page asks this address |
 | `page` · `/api/history` | the page asks this address |
 | `page` · `/api/live` | the page asks this address |
-| `page` · `/api/say` | the page asks this address |
+| `page` · `/api/user_say` | the page asks this address |
 | `page` · `/api/skill` | the page asks this address |
 | `page` · `/api/skills` | the page asks this address |
 | `page` · `/api/state` | the page asks this address |
-| `page` · `/api/tts` | the page asks this address |
+| `page` · `/api/voice_text` | the page asks this address |
 | `page` · `/api/update/apply` | the page asks this address |
 | `page` · `/api/update/check` | the page asks this address |
 | `page` · `/api/version` | the page asks this address |
@@ -337,12 +339,23 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `bridge` · `/image` | the bridge serves this address |
 | `bridge` · `/m` | the bridge serves this address |
 | `bridge` · `/ping` | the bridge serves this address |
-| `bridge` · `/say` | the bridge serves this address |
+| `bridge` · `/user_say` | the bridge serves this address |
 | `bridge` · `/spoken` | the bridge serves this address |
 | `bridge` · `/static/` | the bridge serves this address |
 | `bridge` · `/stop` | the bridge serves this address |
-| `bridge` · `/voice` | the bridge serves this address |
+| `bridge` · `/transcribe` | the bridge serves this address: the ear alone, no turn runs |
+| `bridge` · `/user_voice` | the bridge serves this address |
+| `bridge` · `/voice_text` | the bridge serves this address |
 | `bridge` · `/widget` | the bridge serves this address |
+
+## the free terminal
+
+| Name | What it is |
+|---|---|
+| `machine.free_terminal.deny` | the calls a free shell may not make: unlink, unlinkat, rmdir, and the three doors of io_uring (setup, enter, register) |
+| `machine.free_terminal.error` | what the kernel answers there: EPERM |
+
+A removal in that mode goes through `gio trash -- <path>` and through nothing else: the trash is a rename, `rm` never is. The refusal is the syscall's, so no binary and no disguise gets past it. `systemd-run` run from inside the shell is a door the filter does not follow: the daughter unit carries no filter at all, and that is assumed, never called a guarantee.
 
 ## the agents
 Five agents, named by their name alone: `jarvis` (the principal), `paul`, `albert`, `eleonore`, `claire`.

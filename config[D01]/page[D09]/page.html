@@ -100,7 +100,6 @@ header#head{grid-area:head;display:flex;align-items:center;gap:var(--s4);
 }
 .kv .lbl{color:var(--dim2);font-size:10.5px;letter-spacing:.03em}
 .kv b{font-weight:600;font-size:13px;color:var(--fg2);font-variant-numeric:tabular-nums}
-.live-head .dot{background:var(--warn);margin-right:6px;vertical-align:1px;animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
 
 /* ---------- the rail ---------- */
@@ -183,15 +182,12 @@ details.refus-box .body{margin:6px 0 0;padding:7px 10px;background:#171113;borde
   color:#e0aeb0;white-space:pre-wrap;word-break:break-word;max-height:150px;overflow:auto}
 details.refus-box .body + .body{margin-top:4px}
 
-details.think{margin:14px 0 16px;padding:4px 10px 4px 12px;border:1px solid #1b2431;border-left:3px solid #46617f;
-  border-radius:0 var(--r2) var(--r2) 0;background:#0b1016;max-width:min(900px,88%)}
-details.think > summary{cursor:pointer;color:#7d93ad;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
-  text-transform:uppercase;list-style:none;display:flex;align-items:center;gap:6px}
-details.think > summary::-webkit-details-marker{display:none}
-details.think > summary::before{content:"▸";color:var(--dim2);font-size:9px}
-details.think[open] > summary::before{content:"▾"}
-details.think pre{margin:6px 0 0;white-space:pre-wrap;font-family:var(--mono);font-size:11.5px;
-  line-height:1.6;color:#8c97a5;max-height:240px;overflow:auto}
+/* THE REASONING: grey words on the page itself — no frame, no card, no bubble */
+.tblock{margin:10px 0 12px;padding:0;background:none;border:0;max-width:min(980px,96%)}
+.tblock > .tl{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#5d6b7c;margin-bottom:3px}
+.tblock > pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(--mono);
+  font-size:11.5px;line-height:1.65;color:#7f8b99;max-height:340px;overflow:auto}
+.tblock.run > .tl{color:var(--warn)}
 .tools{display:flex;flex-wrap:wrap;gap:5px;margin-top:var(--s2)}
 .chip{font-family:var(--mono);font-size:11px;color:#9fb0c2;background:#0e1319;
       border:1px solid var(--line2);border-radius:20px;padding:1px 9px;white-space:nowrap}
@@ -210,24 +206,21 @@ details.think pre{margin:6px 0 0;white-space:pre-wrap;font-family:var(--mono);fo
 .msg .meta{margin-top:var(--s2);font-family:var(--mono);font-size:10.5px;color:var(--dim2)}
 .empty{color:var(--dim2);font-size:13px;text-align:center;margin:auto;max-width:430px;line-height:1.8}
 
-/* the turn in progress: a STRUCTURED list, not a wall of text */
-.live{border-top:1px solid var(--line);background:#0c1015;max-height:30vh;display:flex;
-      flex-direction:column;flex:0 0 auto}
-.live.hid{display:none}
-.live-head{display:flex;align-items:center;gap:var(--s2);padding:6px var(--s5);
-  border-bottom:1px solid var(--line);font-size:10.5px;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--warn)}
-.live-head .dim{text-transform:none;letter-spacing:0;font-family:var(--mono);font-size:11px}
-.live-body{overflow:auto;padding:var(--s2) var(--s5) var(--s3);font-family:var(--mono);
-  font-size:11.5px;line-height:1.6}
-.lrow-live{display:grid;grid-template-columns:52px 1fr;gap:var(--s2);padding:1px 0}
-.lrow-live .tm{color:var(--dim2)}
-.lrow-live .tx{white-space:pre-wrap;word-break:break-word;color:#95a2b1}
-.lrow-live.tool .tx{color:#a8b6c6}
-.lrow-live.tool .nm{color:#8fd6a8}
-.lrow-live.reply .tx{color:var(--fg);font-style:italic}
-.lrow-live.reply .nm{color:#e0b25c}
-.live-empty{color:var(--dim2)}
+/* THE TOOLS, ONE AT A TIME: a thin strip above the typing bar, one line, then gone */
+#toolstrip{display:none;align-items:center;gap:8px;padding:5px 14px;border-top:1px solid var(--line);
+  background:#0b0f14;font-family:var(--mono);font-size:11.5px;color:#a8b6c6;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#toolstrip.on{display:flex}
+#toolstrip .nm{color:#8fd6a8;flex:0 0 auto}
+#toolstrip .ar{color:#95a2b1;overflow:hidden;text-overflow:ellipsis}
+#toolstrip .tm{margin-left:auto;color:var(--dim2);flex:0 0 auto}
+/* THE TOOLS UNDER THE HAND: a small terminal that keeps the last lines of what was called */
+#toolbox{border-top:1px solid var(--line);background:#070a0e;max-height:104px;overflow:auto;
+  padding:4px 14px;font-family:var(--mono);font-size:11px;line-height:1.55;color:#8b98a6}
+#toolbox.hid{display:none}
+#toolbox .tbl{display:grid;grid-template-columns:96px 1fr;gap:8px;white-space:nowrap;overflow:hidden}
+#toolbox .tbl .n{color:#8fd6a8;overflow:hidden;text-overflow:ellipsis}
+#toolbox .tbl .a{color:#7f8b98;overflow:hidden;text-overflow:ellipsis}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--warn);display:inline-block;
      animation:pulse 1.6s infinite}
 
@@ -529,15 +522,11 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
   <div class="chat-main">
     <div id="feed" class="feed"></div>
 
-    <div id="live" class="live hid">
-      <div class="live-head">
-        <span class="dot"></span> tour en cours
-        <span class="dim" id="live-pid"></span>
-        <span class="grow"></span>
-        <span class="dim" id="live-count"></span>
-      </div>
-      <div id="live-body" class="live-body"></div>
+    <div id="toolstrip">
+      <span class="dot"></span><span class="nm"></span><span class="ar"></span><span class="tm"></span>
     </div>
+
+    <div id="toolbox" class="hid"><div class="tb-lines"></div></div>
 
     <form id="say-form" class="saybar" autocomplete="off">
       <div class="say-wrap">
@@ -695,6 +684,7 @@ nav#rail svg{fill:none;stroke:currentColor;width:16px;height:16px;flex:0 0 auto}
 const $ = (s) => document.querySelector(s);
 const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c;
   if (x !== undefined && x !== null) e.textContent = String(x); return e; };
+const SEEN_TOOLS = new Set();   // what the small terminal already printed: a call is shown once
 const S = { state: null, page: 'chat', hist: null, live: null, busy: false, pollMs: 1500,
             timer: null, filter: '', skill: null, project: null };
 
@@ -771,6 +761,18 @@ function glyph(who) {
 function shortTime(ts) {
   const m = String(ts || '').match(/[T ](\d\d:\d\d)/);
   return m ? m[1] : '';
+}
+
+/* THE DAY MATTERS: a turn from yesterday and a turn from today do not read the same */
+function stampTime(ts) {
+  const s = String(ts || '');
+  const d = s.match(/(\d\d\d\d)-(\d\d)-(\d\d)/);
+  const h = s.match(/[T ](\d\d:\d\d)/);
+  if (!d || !h) return shortTime(ts);
+  const now = new Date();
+  const same = (Number(d[1]) === now.getFullYear() && Number(d[2]) === now.getMonth() + 1
+                && Number(d[3]) === now.getDate());
+  return same ? h[1] : d[3] + '/' + d[2] + ' ' + h[1];
 }
 
 /* UNE COMMANDE SE LIT COMME UNE COMMANDE : « /name » en tete, ses lignes en liste.
@@ -864,11 +866,12 @@ function bubble(kind, who, text, extra, ts) {
   return m;
 }
 
-function turnSep(t) {
+function turnSep(t, i) {
   const d = el('div', 'turn-sep');
-  d.appendChild(el('span', 'n', 'tour ' + (t.exchange != null ? t.exchange : '?')));
+  const n = (t.n != null && t.n !== '') ? t.n : (i != null ? i + 1 : '?');
+  d.appendChild(el('span', 'n', 'tour ' + n));
   const bits = [];
-  if (t.ts) bits.push(shortTime(t.ts));
+  if (t.ts) bits.push(stampTime(t.ts));
   if (t.tokens) bits.push(Number(t.tokens).toLocaleString('fr-FR') + ' jetons');
   if (bits.length) d.appendChild(el('span', null, bits.join(' · ')));
   return d;
@@ -895,12 +898,10 @@ function chips(tools) {
   return d;
 }
 
-function thinkBox(list, ouvert) {
-  if (!list || !list.length) return null;
-  const d = el('details', 'think');
-  if (ouvert) d.open = true;
-  d.appendChild(el('summary', null, list.length > 1 ? 'raisonnement · ' + list.length + ' bloc(s)' : 'raisonnement'));
-  d.appendChild(el('pre', null, list.join('\n\n')));
+function tblock(text, live) {
+  const d = el('div', 'tblock' + (live ? ' run' : ''));
+  d.appendChild(el('div', 'tl', 'thinking'));
+  d.appendChild(el('pre', null, text));
   return d;
 }
 
@@ -916,18 +917,14 @@ function renderFeed() {
   }
   if (h.error) f.appendChild(bubble('note ko', 'sessions.db', h.error));
   const turns = h.turns || [];
-  turns.forEach((t) => {
-    f.appendChild(turnSep(t));
+  turns.forEach((t, i) => {
+    f.appendChild(turnSep(t, i));
     let last = null;
     (t.thread || []).forEach((b) => {
       const txt = (b && b.text) ? String(b.text) : '';
       if (!txt.trim()) return;
       if (b.role === 'user') { f.appendChild(bubble('me', 'toi', txt, null, shortTime(t.ts))); return; }
-      if (b.role === 'reasoning') {
-        const tb = thinkBox([txt], true);
-        if (tb) f.appendChild(tb);
-        return;
-      }
+      if (b.role === 'reasoning') { f.appendChild(tblock(txt)); return; }
       last = bubble('la', 'LA', txt, null, shortTime(t.ts));
       f.appendChild(last);
     });
@@ -954,47 +951,75 @@ function renderFeed() {
   f.scrollTop = f.scrollHeight;
 }
 
-function liveRow(txt, cls, nm) {
-  const r = el('div', 'lrow-live' + (cls ? ' ' + cls : ''));
-  r.appendChild(el('span', 'tm', txt.tm));
-  const tx = el('span', 'tx');
-  if (nm) tx.appendChild(el('span', 'nm', nm + ' '));
-  tx.appendChild(document.createTextNode(txt.body));
-  r.appendChild(tx);
-  return r;
-}
-
 function drawLive() {
   const L = S.live || {};
-  const box = $('#live');
   const st = S.state && S.state.turn;
   const running = !!(st && st.running);
-  const th = (L.thinking || []).slice(-8);
-  const j = (L.journal || []).slice(-14);
-  // the block lives ONLY during the turn: a finished turn is re-read in the thread, not here
-  if (!running) { box.classList.add('hid'); return; }
-  box.classList.remove('hid');
-  $('#live-pid').textContent = 'pid ' + st.pid;
-  const b = $('#live-body');
-  b.innerHTML = '';
-  th.forEach((x) => {
-    const txt = String(x.text || x.raw || '').trim();
-    if (txt) b.appendChild(liveRow({ tm: shortTime(x.ts), body: txt.slice(0, 900) }, 'think'));
-  });
+  const strip = $('#toolstrip');
+  // the channel writes "name key=value ..." on one line: the name is the first word, the rest is its argument
+  const j = (L.journal || []).map((x) => {
+    const raw = String((x && x.text) || '').trim();
+    const k = raw.indexOf(' ');
+    return { ts: Number((x && x.ts) || 0), name: k > 0 ? raw.slice(0, k) : raw, args: k > 0 ? raw.slice(k + 1) : '' };
+  }).filter((x) => x.name);
+
+  // A NEW TURN EMPTIES THE TERMINAL: it shows the tools of the turn being run, not yesterday's
+  const wasRunning = S.wasRunning;
+  S.wasRunning = running;
+  if (running && !wasRunning) {
+    SEEN_TOOLS.clear();
+    $('#toolbox .tb-lines').innerHTML = '';
+    $('#toolbox').classList.add('hid');
+  }
+
+  // THE TOOLS, ONE AT A TIME: one line above the typing bar, then the next, then gone
+  if (running && j.length) {
+    const k = Math.floor(Date.now() / 1500) % j.length;
+    const x = j[k] || {};
+    strip.classList.add('on');
+    strip.querySelector('.nm').textContent = x.name;
+    strip.querySelector('.ar').textContent = String(x.args || '').slice(0, 120);
+    strip.querySelector('.tm').textContent = shortTime(x.ts);
+  } else {
+    strip.classList.remove('on');
+  }
+
+  // THE TOOLS UNDER THE HAND: every call lands in the small terminal, one line each, newest at the bottom
+  const tb = $('#toolbox');
+  const lines = tb.querySelector('.tb-lines');
   j.forEach((x) => {
-    b.appendChild(liveRow({ tm: shortTime(x.ts), body: String(x.line || x.args || x.result || '').slice(0, 200) },
-      'tool', x.tool || x.name || '?'));
+    const key = String((x.ts || '') + '|' + x.name + '|' + (x.args || ''));
+    if (SEEN_TOOLS.has(key)) return;
+    SEEN_TOOLS.add(key);
+    const row = el('div', 'tbl');
+    row.appendChild(el('span', 'n', x.name));
+    row.appendChild(el('span', 'a', String(x.args || '').slice(0, 140)));
+    lines.appendChild(row);
+    tb.classList.remove('hid');
+    tb.scrollTop = tb.scrollHeight;
   });
-  // THE PROVISIONAL SENTENCE: the model speaks in a stream, sse.py writes it, it is shown BEFORE the
-  // validation of the turn. Provisional is said: the message may be refused and replayed.
+  while (lines.childNodes.length > 40) lines.removeChild(lines.firstChild);
+
+  const th = (L.thinking || []).map((x) => String(x.text || x.raw || '').trim()).filter(Boolean);
   const rep = ((L.reply || {}).text || '').trim();
-  if (rep) b.appendChild(liveRow({ tm: shortTime((L.reply || {}).ts), body: rep.slice(0, 900) }, 'reply', 'provisoire'));
-  $('#live-count').textContent = th.length + ' raisonnement(s) · ' + j.length + ' outil(s)';
-  if (!b.childNodes.length) b.appendChild(el('div', 'live-empty', 'il travaille…'));
+  let box = $('#feed .tblock.run');
+  if (running && (th.length || rep)) {
+    if (!box) { box = tblock('', true); $('#feed').appendChild(box); }
+    const body = th.join('\n\n') + (rep ? (th.length ? '\n\n' : '') + '→ ' + rep : '');
+    const pre = box.querySelector('pre');
+    if (pre.textContent !== body) {
+      pre.textContent = body;
+      $('#feed').scrollTop = $('#feed').scrollHeight;
+    }
+  } else if (box) {
+    box.remove();
+  }
 }
 
 async function loadHistory() {
   const h = await api('/api/history?turns=' + (S.state?.feed_turns || 12));
+  // the base answers newest first; the feed reads like time: oldest at the top, newest at the bottom
+  if (h && Array.isArray(h.turns)) h.turns.reverse();
   S.hist = h; renderFeed();
 }
 
@@ -1029,12 +1054,23 @@ async function send(text) {
   $('#feed').scrollTop = $('#feed').scrollHeight;
   S.busy = true; $('#send').disabled = true; $('#send').textContent = '…';
   try {
-    const d = await api('/api/say', { text });
+    const d = await api('/api/user_say', { text, channel: 'dashboard', input: 'text' });
     if (d.ok) {
       const br = d.bridge || {};
       const txt = br.response || br.note || '';
       if (br.queued) toast('un tour tourne : ton mot est dans la file, le modèle le lira à sa prochaine parole.', 'ok');
-      if (!br.queued && txt) $('#feed').appendChild(bubble('la', 'LA', txt));
+      if (!br.queued && txt) {
+        const bub = bubble('la', 'LA', txt);
+        if (br.audio) {
+          // the turn made the wav: it plays now, and the button plays it again
+          const re = el('button', 'ghost', 'réécouter');
+          re.addEventListener('click', (e) => { e.stopPropagation(); playWav(br.audio); });
+          bub.appendChild(re);
+          S.audioLast = txt; S.audioArmed = true;   // this answer is already voiced: no second wav
+          playWav(br.audio);
+        }
+        $('#feed').appendChild(bub);
+      }
     } else {
       $('#feed').appendChild(bubble('note ko', 'le pont', (d.bridge && (d.bridge.error || d.bridge.raw)) || d.error || 'échec'));
     }
@@ -1118,19 +1154,41 @@ async function loadHead() {
 }
 
 /* ------------------------------------------------------------------ the voice */
-/* READ A MESSAGE. The wav is made by the la-tts resident (via /api/tts of the dashboard), then played
+/* READ A MESSAGE. The wav is made by the la-tts resident (via /api/voice_text of the dashboard), then played
    by the browser. No turn is opened: reading is not asking. */
-let _AUDIO = null, _TTS = false, _TTS_URL = null;
+let _AUDIO = null, _TTS = false, _TTS_URL = null, _AUDIO_OK = false;
+
+/* THE BROWSER WANTS A GESTURE BEFORE IT MAKES SOUND. The first click anywhere unlocks the element once
+   and for all; the silent wav is 44 bytes, nobody hears it. */
+function audioArm() {
+  if (_AUDIO) return;
+  _AUDIO = new Audio();
+  _AUDIO.preload = 'auto';
+  _AUDIO.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YQAAAAA=';
+  _AUDIO.play().then(() => { _AUDIO_OK = true; }).catch(() => {});
+}
+document.addEventListener('pointerdown', audioArm, { once: true });
+document.addEventListener('keydown', audioArm, { once: true });
+
+/* PLAY A WAV THE TURN ALREADY MADE. Reading is not asking: no turn is opened here. */
+function playWav(name) {
+  if (!name) return;
+  audioArm();
+  _AUDIO.src = '/audio/' + encodeURIComponent(name);
+  _AUDIO.play().then(() => { _AUDIO_OK = true; }).catch(() => {
+    toast('le navigateur bloque le son : clique sur ▶ pour l\'entendre', 'ko');
+  });
+}
 
 async function speak(text, btn) {
   const t = String(text || '').trim();
   if (!t) return;
   if (_TTS) return;   // une lecture à la fois : on ne coupe pas la voix en cours de phrase
-  if (!_AUDIO) { _AUDIO = new Audio(); _AUDIO.preload = 'auto'; }
+  audioArm();
   _TTS = true;
   if (btn) { btn.classList.add('busy'); btn.textContent = '…'; }
   try {
-    const r = await fetch('/api/tts', {
+    const r = await fetch('/api/voice_text', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: t })
     });
@@ -1157,7 +1215,7 @@ async function speak(text, btn) {
 function lastAgentText() {
   const feed = $('#feed');
   if (!feed) return '';
-  const items = feed.querySelectorAll('.msg.agent');
+  const items = feed.querySelectorAll('.msg.la');
   return items.length ? msgText(items[items.length - 1]) : '';
 }
 

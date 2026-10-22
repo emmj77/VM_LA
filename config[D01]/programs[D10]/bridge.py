@@ -75,10 +75,10 @@ def ask(kind, tool, args, feed=None, secs=240):
     return v
 
 
-def delegate(tool, args):
+def delegate(tool, args, secs=120):
     """the only thing this file does besides transport: it hands the work to the door"""
     cmd = ["dash", os.environ["LA_TOOL"], "tool", tool] + args
-    p = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    p = subprocess.run(cmd, capture_output=True, text=True, timeout=secs)
     return {"tool": tool, "rc": p.returncode, "out": (p.stdout or "").strip(),
             "err": (p.stderr or "").strip()}
 
@@ -188,7 +188,7 @@ def approval_window():
 
 
 def _fields(path):
-    """les lignes « cle: valeur » d un fichier d etat, ou None s il n existe pas"""
+    """the "key: value" lines of a state file, or None when the file is not there"""
     d = {}
     try:
         with open(path, "r", encoding="utf-8", errors="replace") as f:
@@ -224,7 +224,7 @@ def approval_view():
         done = (bool(sig) and sig.get("digest") == req.get("digest") and out["left"] > 0)
         if not done:
             out.update({"pending": True, "tool": tool, "gesture": gesture, "age": age,
-                        "phrase": "le moteur demande %s" % (gesture or tool)})
+                        "phrase": "the engine asks for %s" % (gesture or tool)})
     return out
 
 
@@ -287,7 +287,7 @@ def _keep_turn(prompt, reply):
     msg = t.get("reply_msg") or {}
     said = " ".join(str(prompt or t.get("prompt") or "").split())
     answer = " ".join(str(reply or msg.get("content") or "").split())
-    thought = str(msg.get("reasoning") or "").strip()
+    thought = str(msg.get("reasoning") or msg.get("reasoning_content") or "").strip()
     for role, content in (("user", said), ("assistant", answer)):
         if not content:
             continue
@@ -583,7 +583,7 @@ def config_page():
 def voice(text):
     """the voice resident answers a wav; the bridge only carries it"""
     port = int(os.environ.get("LA_PORT_TTS") or 8090)
-    req = urllib.request.Request("http://127.0.0.1:%d/say" % port,
+    req = urllib.request.Request("http://127.0.0.1:%d/voice_text" % port,
                                  data=json.dumps({"text": text}).encode("utf-8"),
                                  headers={"Content-Type": "application/json"})
     try:
@@ -593,6 +593,29 @@ def voice(text):
         return {"error": "%s: %s" % (type(e).__name__, e), "audio": ""}
     name = said.split("speech : ")[-1].split(" ")[0] if "speech : " in said else ""
     return {"audio": os.path.basename(name), "path": name, "said": said}
+
+
+def run_turn(text, channel="cli", heard="text"):
+    """one turn: the text runs it, the answer comes back with the wav the turn made"""
+    got = ask("engine", "engine.turn",
+              ["text=" + text, "channel=" + channel, "input=" + heard], secs=1800)
+    rep, audio = "", ""
+    try:
+        with open(state_file("reply.stream"), "r", encoding="utf-8", errors="replace") as f:
+            rep = f.read().strip()
+    except OSError:
+        rep = ""
+    try:
+        with open(state_file("turn.json"), "r", encoding="utf-8", errors="replace") as f:
+            audio = str((json.load(f) or {}).get("voice") or "")
+    except Exception:
+        audio = ""
+    _keep_turn(text, rep)
+    out = {"response": rep, "audio": audio, "code": 0, "queued": False}
+    if isinstance(got, dict) and str(got.get("status") or "") in ("refused", "timeout", "failed"):
+        out["code"] = 1
+        out["note"] = str(got.get("result") or "").strip()[:300]
+    return out
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -655,9 +678,9 @@ class Handler(BaseHTTPRequestHandler):
                                     "provider": e.get("provider", ""),
                                     "active": e.get("alias", "") == cur})
                 return self.json({"engines": engines, "model": st.get("model") if isinstance(st, dict) else {}})
-            # THE VOICE (MOUSSA, 21/10): the app asks /tts to read a sentence and /transcribe
-            # to listen; both routes were missing, hence no sound and no microphone.
-            if p == "/tts":
+            # THE VOICE (MOUSSA, 21/10): the app asks /voice_text to read a sentence; the ear
+            # is /user_voice, which transcribes AND runs the turn.
+            if p == "/voice_text":
                 text = ""
                 try:
                     text = (json.loads(body or b"{}") or {}).get("text") or ""
@@ -669,39 +692,6 @@ class Handler(BaseHTTPRequestHandler):
                 if "error" in got:
                     return self.json(got, 502)
                 return self.json(got)
-            if p == "/transcribe":
-                if method != "POST" or not body:
-                    return self.json({"error": "POST with audio expected", "text": ""}, 405)
-                tmp = tempfile.mkdtemp()
-                try:
-                    raw = os.path.join(tmp, "in.raw")
-                    with open(raw, "wb") as f:
-                        f.write(body)
-                    wav = os.path.join(tmp, "in.wav")
-                    ff = subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw,
-                                         "-ac", "1", "-ar", "16000", "-c:a", "pcm_s16le", wav],
-                                        capture_output=True, text=True)
-                    if ff.returncode != 0 or not os.path.isfile(wav):
-                        return self.json({"error": "audio unreadable", "text": ""}, 400)
-                    port = int(os.environ.get("LA_PORT_ASR") or 8080)
-                    out = subprocess.run(["curl", "-s", "--max-time", "90", "-F", "file=@" + wav,
-                                          "-F", "response_format=json",
-                                          "http://127.0.0.1:%d/v1/audio/transcriptions" % port],
-                                         capture_output=True, text=True)
-                    try:
-                        return self.json(json.loads(out.stdout or "{}"))
-                    except Exception:
-                        return self.json({"text": ""})
-                finally:
-                    for f in os.listdir(tmp):
-                        try:
-                            os.unlink(os.path.join(tmp, f))
-                        except OSError:
-                            pass
-                    try:
-                        os.rmdir(tmp)
-                    except OSError:
-                        pass
             # THE ROUTES THE APP ASKS WITHOUT PREFIX (MOUSSA, 21/10): it reads /state,
             # /agents, /history, /skills, /projects, /toolmap. They return the same JSON as
             # /api/*, never a page: HTML breaks it (JSONObject on a string).
@@ -766,7 +756,7 @@ class Handler(BaseHTTPRequestHandler):
             if p == "/sw.js":
                 return self.file(os.path.join(os.environ["LA_PAGE"], "widget-sw.js"), "text/javascript; charset=utf-8")
             # THE PANELS OF THE PAGE: they belong to the page, not to the bridge.
-            if p in ("/say", "/command", "/voice", "/image", "/delegate"):
+            if p in ("/user_say", "/user_voice", "/transcribe", "/command", "/image", "/delegate"):
                 if method != "POST":
                     return self.json({"error": "POST expected for %s" % p}, 405)
                 return self.work(p, body, u.query)
@@ -870,18 +860,12 @@ class Handler(BaseHTTPRequestHandler):
             if "text" not in got:
                 got = {"ok": got.get("ok", True), "text": json.dumps(got)[:400]}
             return self.json(got)
-        if name == "say":
+        if name == "user_say":
             text = str(payload.get("text") or "").strip()
             if not text:
                 return self.json({"ok": False, "error": "a text is expected"}, 400)
-            r = door("engine", "engine.commands", ["op=say"], feed=text, secs=600)
-            got = as_json(r, {"text": (r.stdout or r.stderr or "").strip()})
-            out = str(got.get("text") or "").strip()
-            ok = r.returncode == 0 and not out.startswith("FAULT")
-            return self.json({"ok": ok, "bridge": {"queued": False,
-                                                   "response": out if ok else "",
-                                                   "note": "" if ok else out,
-                                                   "error": "" if ok else out}})
+            got = run_turn(text, "dashboard", "text")
+            return self.json({"ok": True, "bridge": got})
         if name == "doctor":
             r = door("engine", "engine.doctor", ["op=json"], secs=300)
             got = as_json(r, {"text": (r.stdout or "").strip()})
@@ -920,7 +904,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.json({"ok": False,
                                   "text": "the master file has no writer here yet"}, 400)
             return self.json(config_page())
-        if name == "tts":
+        if name == "voice_text":
             text = str(payload.get("text") or "").strip()
             if not text:
                 return self.json({"ok": False, "error": "a text is expected", "audio": ""}, 400)
@@ -968,19 +952,16 @@ class Handler(BaseHTTPRequestHandler):
 
     def work(self, p, body, query):
         payload = self.object(body)
-        if p == "/say":
-            # a sentence from the app runs the turn NOW: the app waits for the answer, not a queue
+        _q = urllib.parse.parse_qs(query or "")
+        if p == "/user_say":
+            # the human speaks: his text runs the turn NOW, and the answer comes back with its voice
             text = str(payload.get("text") or body.decode("utf-8", "replace")).strip()
             if not text:
                 return self.json({"error": "a text is expected"}, 400)
-            ask("engine", "engine.turn", ["text=" + text], secs=600)
-            try:
-                with open(state_file("reply.stream"), "r", encoding="utf-8", errors="replace") as f:
-                    rep = f.read().strip()
-            except OSError:
-                rep = ""
-            _keep_turn(text, rep)
-            return self.json({"response": rep, "code": 0, "queued": False})
+            ch = str(payload.get("channel") or (_q.get("channel") or [""])[0] or "cli")
+            if ch not in ("cli", "dashboard", "app"):
+                ch = "cli"
+            return self.json(run_turn(text, ch, "text"))
         if p == "/command":
             line = str(payload.get("line") or query or "").strip()
             if not line:
@@ -1000,8 +981,32 @@ class Handler(BaseHTTPRequestHandler):
         path = os.path.join(os.environ["LA_AUDIO"], name)
         with open(path, "wb") as f:
             f.write(body)
-        tool = "asr" if p == "/voice" else "vision"
-        out = delegate(tool, [os.path.basename(path)])
+        if p in ("/user_voice", "/transcribe"):
+            # the ear: the audio is transcribed on the machine; /transcribe stops there,
+            # /user_voice runs the turn on the words it heard
+            heard = delegate("transcribe", ["path=" + name], secs=300)
+            raw = str(heard.get("out") or "").strip()
+            text = ""
+            try:
+                env = json.loads(raw)
+                text = str((env.get("result") if isinstance(env, dict) else "") or "").strip()
+            except ValueError:
+                text = raw
+            out = {"file": name, "text": text, "rc": heard.get("rc")}
+            if heard.get("rc") != 0 or not text:
+                out["error"] = heard.get("err") or "the ear heard nothing"
+                return self.json(out)
+            if p == "/transcribe":
+                return self.json(out)
+            out["request"] = text
+            out["tool"] = "transcribe"
+            ch = str((_q.get("channel") or [""])[0] or "app")
+            if ch not in ("cli", "dashboard", "app"):
+                ch = "app"
+            out.update(run_turn(text, ch, "voice"))
+            return self.json(out)
+        out = delegate("local_analyze_img", ["model=small", "image=" + name,
+                                            "question=what is in this image? answer in french"])
         out["file"] = name
         return self.json(out)
 
@@ -1012,7 +1017,7 @@ class Handler(BaseHTTPRequestHandler):
         return os.path.join(root, n)
 
     def extension(self, p, body):
-        if p == "/voice":
+        if p in ("/user_voice", "/transcribe"):
             ctype = (self.headers.get("Content-Type") or "").lower()
             for ext, kind in ((".wav", "wav"), (".webm", "webm"), (".ogg", "ogg"), (".mp4", "mp4")):
                 if kind in ctype:
