@@ -16,6 +16,9 @@ refusals:
   plan_steps_bound: 'REFUSED: the plan takes %s steps at most.'
   plan_line_bound: 'REFUSED: a step takes %s characters at most.'
   plan_state_unknown: 'REFUSED: the state is %s or %s, nothing else.'
+  big_plan_open: 'REFUSED: the project carries an open big plan -- change_big_todo replaces it.'
+  big_plan_no_project: 'REFUSED: no project loaded -- the big plan lives in the project manifest (project.yml, PROJECT_PLAN).'
+  big_plan_missing: 'REFUSED: the loaded project carries no big plan -- big_todo writes it first.'
   step_no_effect: 'the file %s did not move (%s bytes), the step stays open'
 # french in code is forbidden
 kra_file_unreadable: 'refused: the .kra file %s cannot be read'

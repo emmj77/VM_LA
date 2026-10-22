@@ -1,7 +1,7 @@
 id: "G050"
 tool: "change_big_todo"
 date: "2026-10-17"
-tags: ["plan", "shell", "plan", "run"]
+tags: ["plan", "shell", "plan", "project"]
 
 RULES:
   enabled: true
@@ -10,17 +10,25 @@ RULES:
   approval: none
   turn: none
   count: false
-  paths: read
+  paths: write
 
-DESCRIPTION: "REWRITES the big plan of the project (it REPLACES every point) ; this one needs the user's validation"
+DESCRIPTION: "replaces the big plan of the loaded project: name, goal, and the new steps separated by ; -- same bounds as big_todo. The big plan is changed, not erased."
 
 COMMAND: |
-  [ -n "{{name}}" ] || { printf '%s\n' "$(msg workstream_name_required)" >&2 ; exit 1 ; }
-  [ -n "{{goal}}" ] || { printf '%s\n' "$(msg workstream_goal_required)" >&2 ; exit 1 ; }
-  PB=$(cfg path plan 2>/dev/null) ; [ -n "$PB" ] && [ -x "$PB/plan.sh" ] || { printf '%s\n' "refused: the plan brick is missing (plan/plan.sh)" >&2 ; exit 1 ; }
-  "$PB/plan.sh" big change "{{name}}" "{{goal}}"
+  [ -n "{{goal}}" ] || { printf '%s\n' "$(msg big_todo_goal_empty)" >&2 ; exit 1; }
+  [ -n "{{points}}" ] || { printf '%s\n' "$(msg big_todo_point_empty)" >&2 ; exit 1; }
+  PTS=$(printf '%s' "{{points}}" | tr ';' '\n')
+  skl_big_write "{{name}}" "{{goal}}" "$PTS" change
+  _rc=$?
+  case $_rc in
+    0) exit 0 ;;
+    10) printf '%s\n' "$(msg refusals.plan_steps_bound "$(cfg num loop.plan_steps 12)")" >&2 ; exit 1 ;;
+    11) printf '%s\n' "$(msg refusals.plan_line_bound "$(cfg num loop.plan_chars 100)")" >&2 ; exit 1 ;;
+    14) printf '%s\n' "$(msg refusals.big_plan_no_project)" >&2 ; exit 1 ;;
+    *) exit 1 ;;
+  esac
 
 ARGS:
   - {name: name, type: text}
   - {name: goal, type: text}
-  - {name: points, type: text, stdin: true}
+  - {name: points, type: text}

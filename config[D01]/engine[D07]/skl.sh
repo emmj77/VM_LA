@@ -51,13 +51,15 @@ skl_agent() {
   printf '%s\n' "$_a" | tr -cd 'A-Za-z0-9_-'
 }
 
-# skl_plan_file [agent] : the journal plan of an agent : ONE file, named <Agent>Todo.md, in the
+# skl_plan_file [agent] : the journal plan of an agent : ONE file, named <agent>_todo.md (all
+# lowercase), in the
 # state folder. a parallel session writes its own, so two plans never meet.
 skl_plan_file() {
   _a=${1:-$(skl_agent)}
   [ -n "$_a" ] || return 1
+  _a=$(printf '%s' "$_a" | tr 'A-Z' 'a-z')
   _t=$(cfg abs turn) || return 1
-  printf '%s/%sTodo.md\n' "$(dirname "$_t")" "$_a"
+  printf '%s/%s_todo.md\n' "$(dirname "$_t")" "$_a"
 }
 
 # skl_plan_src [name] : the file the plan is READ from : the skill.yaml for a route (the human
@@ -214,7 +216,7 @@ plan_status() {
   if skl_doc_seen; then printf 'doc: read\n'; else printf 'doc: TO READ -- load_doc first, it is the only tool of this turn\n'; fi
   _st=$(skl_plan_step "$_n" 2>/dev/null)
   case $? in
-    2) printf 'plan: NONE -- todo writes %sTodo.md\n' "$(skl_agent)"; return 0 ;;
+    2) printf 'plan: NONE -- todo writes %s_todo.md\n' "$(skl_agent | tr 'A-Z' 'a-z')"; return 0 ;;
     3) printf 'plan: FINISHED -- the skill closes\n'; return 0 ;;
   esac
   printf '%s\n' "$(printf '%s' "$_st" | awk -F'\t' '{ printf "plan: step %s OPEN", $1; if ($2 != "") printf " -- tools: %s", $2; printf "\n" }')"
@@ -305,6 +307,114 @@ skl_plan_advance() {
   _left=$(grep -c '\[in_progress\]' "$_p" 2>/dev/null)
   case $_left in ''|*[!0-9]*) _left=0 ;; esac
   printf 'ok the plan moved: %s -- %s steps in progress\n' "$_st" "$_left"
+  return 0
+}
+
+# --- the BIG plan : the project's chantier, in its manifest, under PROJECT_PLAN.
+# it is the second layer (the small plan is the agent's file). it does not evaporate:
+# it is CHANGED. same line shape, same two names : in_progress and completed.
+
+# skl_big_file : the project.yml of the armed project, empty when no project is loaded
+skl_big_file() {
+  _p=$(skl_project) || return 1
+  [ -n "$_p" ] || return 1
+  _d=$(cfg path projects) || return 1
+  _f="$_d/$_p/project.yml"
+  [ -r "$_f" ] || return 1
+  printf '%s\n' "$_f"
+}
+
+# _skl_big_body <file> : the body lines of the PROJECT_PLAN section
+_skl_big_body() {
+  awk '/^PROJECT_PLAN:/ { inb = 1 ; next } inb && /^[^ \t]/ { inb = 0 } inb { print }' "${1:?}"
+}
+
+# _skl_big_put <file> <bodyfile> : the PROJECT_PLAN body becomes that file, the section appears if absent
+_skl_big_put() {
+  _f=${1:?} ; _b=${2:?}
+  _t=$(mktemp "${TMPDIR:-/tmp}/big.XXXXXX") || return 1
+  awk -v B="$_b" '
+    BEGIN { while ((getline l < B) > 0) body[++nb] = l }
+    /^PROJECT_PLAN:/ { print ; seen = 1 ; for (i = 1 ; i <= nb ; i++) print body[i] ; next }
+    seen && /^[^ \t]/ { seen = 0 }
+    seen { next }
+    { print }
+  ' "$_f" > "$_t"
+  # the section may be absent: append it
+  if ! grep -q '^PROJECT_PLAN:' "$_t"; then
+    { printf 'PROJECT_PLAN:\n' ; cat "$_b" ; } >> "$_t"
+  fi
+  [ -s "$_t" ] || { rm -f "$_t" ; return 1 ; }
+  mv -f "$_t" "$_f"
+}
+
+# skl_big_write <name> <goal> <points> [change] : big_todo writes, change_big_todo replaces.
+# same bounds as the small plan. returns 0 written, 10/11 the bounds, 14 no project, 15 one is open.
+skl_big_write() {
+  _nm=${1:-} ; _g=${2:-} ; _ps=${3:-} ; _chg=${4:-}
+  [ -n "$_g" ] || return 1
+  _f=$(skl_big_file) || return 14
+  if [ -z "$_chg" ] && _skl_big_body "$_f" | grep -q '\[in_progress\]' 2>/dev/null; then return 15 ; fi
+  printf '%s\n' "$_ps" | grep -qv '^[[:space:]]*$' || return 1
+  _mx=$(cfg num loop.plan_steps 12) || _mx=12
+  _mc=$(cfg num loop.plan_chars 100) || _mc=100
+  _k=$(printf '%s\n' "$_ps" | grep -c '[^[:space:]]')
+  [ "$_k" -le "$_mx" ] || return 10
+  [ -z "$(printf '%s\n' "$_ps" | awk -v mc="$_mc" 'length($0) > mc { print ; exit }')" ] || return 11
+  _b=$(mktemp "${TMPDIR:-/tmp}/bigb.XXXXXX") || return 1
+  {
+    printf '  400: "PLAN %s: %s"\n' "${_nm:-$(skl_agent)}" "$_g"
+    _j=0 ; _i=400
+    printf '%s\n' "$_ps" | while IFS= read -r _l; do
+      [ -n "$(printf '%s' "$_l" | tr -d '[:space:]')" ] || continue
+      _j=$((_j+1)) ; _i=$((_i+1))
+      if [ "$_j" -eq 1 ]; then _m=in_progress ; else _m=todo ; fi
+      printf '  %s: "[%s] %s"\n' "$_i" "$_m" "$_l"
+    done
+  } > "$_b"
+  _skl_big_put "$_f" "$_b" || { rm -f "$_b" ; return 1 ; }
+  rm -f "$_b"
+  if [ -n "$_chg" ]; then _w=changed ; else _w=open ; fi
+  printf 'ok the big plan of %s is %s: %s steps -- %s\n' "$(skl_project)" "$_w" "$_k" "$_f"
+}
+
+# skl_big_advance <in_progress|completed> : update_big_todo moves the project's plan.
+# it never deletes: the big plan is changed, not erased. returns 0 moved, 2 the state,
+# 9 the last step closed, 14 no project, 5 no big plan.
+skl_big_advance() {
+  _st=${1:-completed}
+  case $_st in in_progress|completed) ;; *) return 2 ;; esac
+  _f=$(skl_big_file) || return 14
+  _b0=$(_skl_big_body "$_f")
+  [ -n "$_b0" ] || return 5
+  _t=$(mktemp "${TMPDIR:-/tmp}/biga.XXXXXX") || return 5
+  printf '%s\n' "$_b0" | awk -v st="$_st" '
+    { lines[NR] = $0 }
+    END {
+      for (i = 1; i <= NR; i++) {
+        l = lines[i]
+        if (l ~ /\[in_progress\]/ && ip == 0) ip = i
+        if (l ~ /\[todo\]/ && td == 0) td = i
+      }
+      if (st == "completed") {
+        if (ip) { sub(/\[in_progress\]/, "[completed]", lines[ip])
+                  if (td) sub(/\[todo\]/, "[in_progress]", lines[td]) ; else fin = 1 }
+        else if (td) sub(/\[todo\]/, "[in_progress]", lines[td])
+        else fin = 1
+      } else {
+        if (td && !ip) sub(/\[todo\]/, "[in_progress]", lines[td])
+      }
+      for (i = 1; i <= NR; i++) print lines[i]
+      if (fin) exit 9
+    }' > "$_t"
+  _rc=$?
+  _skl_big_put "$_f" "$_t" || { rm -f "$_t" ; return 5 ; }
+  rm -f "$_t"
+  if [ "$_rc" = 9 ]; then
+    printf 'ok the big plan of %s is finished at its last step (it stays: it is changed, not erased)\n' "$(skl_project)"
+    return 9
+  fi
+  printf 'ok the big plan moved: %s\n' "$_st"
   return 0
 }
 

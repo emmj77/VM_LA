@@ -16000,46 +16000,6 @@
   guardrail: true
   enabled: true
   visible: true
-- id: "P001"
-  tool: "plan.add"
-  family: PLAN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: "P002"
-  tool: "plan.change"
-  family: PLAN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: "P003"
-  tool: "plan.done"
-  family: PLAN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: "P004"
-  tool: "plan.progress"
-  family: PLAN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
-- id: "P005"
-  tool: "plan.read"
-  family: PLAN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: true
 - id: "U001"
   tool: "upipe_add_animator_layer"
   family: UNITY

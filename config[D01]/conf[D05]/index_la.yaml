@@ -23,7 +23,6 @@ dirs:
   - {id: "D15", name: "doctor[D15]", role: "the controls: one body per control"}
   - {id: "D16", name: "engine[D16]", role: "the engine bodies: what the engine does by itself"}
   - {id: "D17", name: "3d[D17]", role: "3d family: pixal3d and mesh inspection"}
-  - {id: "D18", name: "plan[D18]", role: "the plan, in five bodies"}
   - {id: "D19", name: "turn[D19]", role: "the eight steps of the turn"}
   - {id: "D20", name: "watch[D20]", role: "the judge: one event, wake or sleep"}
   - {id: "D21", name: "projects[D21]", role: "one directory per project"}

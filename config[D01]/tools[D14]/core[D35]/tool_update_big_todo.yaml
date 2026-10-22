@@ -1,7 +1,7 @@
 id: "G049"
 tool: "update_big_todo"
 date: "2026-10-17"
-tags: ["plan", "shell", "animation", "update"]
+tags: ["plan", "shell", "animation", "project"]
 
 RULES:
   enabled: true
@@ -10,19 +10,22 @@ RULES:
   approval: none
   turn: none
   count: false
-  paths: read
+  paths: write
 
-DESCRIPTION: "advances the BIG plan of the active project : the CURRENT point is done (an imposed call may pass its state)"
+DESCRIPTION: "moves the big plan of the loaded project: completed closes the open step and opens the next, in_progress keeps it. It never deletes the plan: the big plan is changed, not erased."
 
 COMMAND: |
   ST="{{state}}"
-  [ -n "$ST" ] || ST=complete
-  case "$ST" in
-    progress|complete) ;;
-    *) printf '%s\n' "$(msg unknown_state_st_progress "$ST")" >&2 ; exit 1 ;;
+  [ -n "$ST" ] || ST=completed
+  skl_big_advance "$ST"
+  _rc=$?
+  case $_rc in
+    0|9) exit 0 ;;
+    2) printf '%s\n' "$(msg refusals.plan_state_unknown in_progress completed)" >&2 ; exit 1 ;;
+    14) printf '%s\n' "$(msg refusals.big_plan_no_project)" >&2 ; exit 1 ;;
+    5) printf '%s\n' "$(msg refusals.big_plan_missing)" >&2 ; exit 1 ;;
+    *) exit 1 ;;
   esac
-  PB=$(cfg path plan 2>/dev/null) ; [ -n "$PB" ] && [ -x "$PB/plan.sh" ] || { printf '%s\n' "refused: the plan brick is missing (plan/plan.sh)" >&2 ; exit 1 ; }
-  "$PB/plan.sh" big progress "$ST"
 
 ARGS:
   - {name: state, type: text}
