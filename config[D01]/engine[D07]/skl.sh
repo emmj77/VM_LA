@@ -149,7 +149,7 @@ skl_lock() {
     printf '%s\n' "${_t:-update_todo}"
     return 0
   fi
-  _pe=$(cfg num loop.plan_every 3) || _pe=3
+  _pe=$(cfg num loop.todo_every 5) || _pe=5
   _at=$(skl_plan_stamp 2>/dev/null)
   _now=$(skl_turn_no)
   if [ -n "$_at" ] && [ "$_now" -gt 0 ] && [ $((_now - _at)) -ge "$_pe" ]; then
@@ -211,7 +211,7 @@ tool_allowed() {
 
 # skl_big_recall : one line of the head for the big plan. the three conditions hold together:
 # a project is loaded, its plan carries an open step, and no journal plan is open for this agent.
-# the cadence is loop.big_every. it reminds, it never closes the toolset.
+# the cadence is loop.big_todo_every. it reminds, it never closes the toolset.
 skl_big_recall() {
   _f=$(skl_big_file) || return 1
   _b=$(_skl_big_body "$_f")
@@ -224,7 +224,7 @@ skl_big_recall() {
   [ -n "$_at" ] || return 1
   _now=$(skl_turn_no)
   [ "$_now" -gt 0 ] 2>/dev/null || return 1
-  _be=$(cfg num loop.big_every 15) || _be=15
+  _be=$(cfg num loop.big_todo_every 15) || _be=15
   [ $((_now - _at)) -ge "$_be" ] || return 1
   _step=$(printf '%s\n' "$_b" | grep '\[in_progress\]' | head -n 1 | sed -e 's/^ *[0-9][0-9]*: "//' -e 's/"$//' -e 's/^\[in_progress\][[:space:]]*//')
   printf 'the big plan of %s has not moved for %s turns -- its open step: %s\n' "$(skl_project)" "$((_now - _at))" "$_step"

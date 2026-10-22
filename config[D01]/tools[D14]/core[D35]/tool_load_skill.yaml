@@ -8,7 +8,7 @@ RULES:
   enabled: true
   timeout: 600
   writable_workspace: "work"
-  approval: required
+  approval: none
   turn: none
   count: false
   paths: write
@@ -41,11 +41,12 @@ COMMAND: |
     printf '%s\n' "$PSK" | grep -qxF -- "$SLUG" \
       || { printf '%s\n' "$(msg project_skill_absent "$PNAME" "$SLUG" "$(printf '%s ' $PSK)")" >&2 ; exit 1 ; }
   fi
-  OUV=$(printf '' | "${PROCS:-$ROOT/config/engine}/plan.sh" status 2>/dev/null) || OUV=
-  case "$OUV" in
-    ''|'no open plan'*|'aucun plan ouvert'*) : ;;
-    *) { printf '%s\n' "$(msg plan_open_strict)" >&2; exit 1; } ;;
-  esac
+  if [ "${LA_FROM:-model}" = model ]; then
+    if ! approval_ok load_skill "name=$SLUG"; then
+      approval_request load_skill "name=$SLUG" >/dev/null 2>&1
+      printf '%s\n' "$(msg refusals.approval_required)" >&2 ; exit 3
+    fi
+  fi
   STATE="${LA_STATE_SKILL:-$SK/.active}"
   if [ -L "$STATE" ]; then printf '%s\n' "$(msg pointer_symlink "$STATE")" >&2; exit 1; fi
   ANC=$(sed -n '1p' "$STATE" 2>/dev/null)

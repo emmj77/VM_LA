@@ -33,10 +33,75 @@ _door_decl() {
         }
         f = "0"
         if ($0 ~ /stdin:[ \t]*true/) { f = "1" }
-        if (v != "") print n ":" t ":" v ":" f
-        else print n ":" t "::" f
+        q = "1"
+        if ($0 ~ /required:[ \t]*false/) { q = "0" }
+        if (v != "") print n ":" t ":" v ":" f ":" q
+        else print n ":" t "::" f ":" q
       }
     }' "$1"
+}
+
+# _door_usage <body> : the shape of the call, taken from the body, nothing added
+_door_usage() {
+  awk '
+    BEGIN { tool = "" ; n = 0 }
+    /^[ \t]*tool:[ \t]*/ {
+      v = $0; sub(/^[ \t]*tool:[ \t]*/, "", v); gsub(/"/, "", v); tool = v; next
+    }
+    /^[ \t]*ARGS:/ { ina = 1; next }
+    ina {
+      if ($0 !~ /^[ \t]/) { ina = 0; next }
+      line = $0
+      if (!match(line, /name:[ \t]*[A-Za-z_0-9]+/)) next
+      nm = substr(line, RSTART, RLENGTH); sub(/.*name:[ \t]*/, "", nm)
+      tp = "text"
+      if (match(line, /type:[ \t]*[a-z]+/)) { tp = substr(line, RSTART, RLENGTH); sub(/.*type:[ \t]*/, "", tp) }
+      ex = ""
+      if (tp == "enum" && match(line, /values:[ \t]*\[[^]]*\]/)) {
+        ex = substr(line, RSTART, RLENGTH); sub(/.*values:[ \t]*\[/, "", ex)
+        gsub(/[ \t]/, "", ex); gsub(/\]/, "", ex); ex = "[" ex "]"
+      }
+      s = ""
+      if (line ~ /stdin:[ \t]*true/) s = " or on standard input"
+      o = ""
+      if (line ~ /required:[ \t]*false/) o = " (optional)"
+      n++; a[n] = nm "=<" tp ">" ex s o
+    }
+    END {
+      printf "usage: %s", (tool == "" ? "tool" : tool)
+      for (i = 1; i <= n; i++) printf "%s %s", (i > 1 ? " |" : ""), a[i]
+      printf "\n"
+    }' "$1"
+}
+
+# _door_fill <pattern> <value> : the text on stdin, every pattern replaced, newlines kept
+# sed cannot carry a value with a newline in its replacement: the body came out empty
+# and the call answered ok with nothing in it. awk moves the bytes, no escaping.
+_door_fill() {
+  _f_pat=${1:-}
+  _f_val=${2-}
+  [ -n "$_f_pat" ] || cat
+  [ -n "$_f_pat" ] || return 0
+  _F_PAT="$_f_pat" _F_VAL="$_f_val" awk '
+    { line = $0
+      while ((i = index(line, ENVIRON["_F_PAT"])) > 0)
+        line = substr(line, 1, i - 1) ENVIRON["_F_VAL"] substr(line, i + length(ENVIRON["_F_PAT"]))
+      print line }'
+}
+
+# _door_arity_fail <name> <body> <phrase key> [arg ...] : the refusal, then the usage
+# the same six fields; the phrase and, under it, the shape of the call taken from the body
+_door_arity_fail() {
+  _u_n=${1:-}
+  _u_b=${2:-}
+  _u_k=${3:-}
+  [ $# -gt 2 ] && shift 3
+  _u_p=$(msg "$_u_k" "$@")
+  [ -n "$_u_p" ] || printf 'shape: no text for %s\n' "$_u_k" >&2
+  _u_u=$(_door_usage "$_u_b")
+  shape refused "$_u_n" "" "$_u_p
+$_u_u" ""
+  return 1
 }
 
 # _door_cmd <body> : the command text, unfolded
@@ -114,7 +179,7 @@ run_call() {
          0) : ;;
          2) shape_fail "$_name" "" refusals.doc_first "$(skl_skill)"; return 1 ;;
          3) shape_fail "$_name" "" refusals.plan_first; return 1 ;;
-         5) shape_fail "$_name" "" refusals.overdue "$(cfg num loop.plan_every 3)"; return 1 ;;
+         5) shape_fail "$_name" "" refusals.overdue "$(cfg num loop.todo_every 5)"; return 1 ;;
          4) shape_fail "$_name" "" refusals.not_on_step; return 1 ;;
          *) shape_fail "$_name" "" refusals.tool_not_allowed; return 1 ;;
        esac ;;
@@ -127,9 +192,11 @@ run_call() {
     _n=${_d%%:*}
     _rest=${_d#*:}
     _t=${_rest%%:*}
-    _rest2=${_rest#*:}
-    _vals=$(printf '%s' "${_rest2%:*}" | tr ',' ' ')
-    _sin=${_rest2##*:}
+    _rest=${_rest#*:}
+    _vals=$(printf '%s' "${_rest%%:*}" | tr ',' ' ')
+    _rest=${_rest#*:}
+    _sin=${_rest%%:*}
+    _req=${_rest#*:}
     _v=""
     for _pair in "$@"; do
       case $_pair in
@@ -140,15 +207,17 @@ run_call() {
       if [ "$_sin" = 1 ]; then
         if [ -t 0 ]; then _v="" ; else _v=$(cat) ; fi   # nothing piped, nothing to read
         [ -n "$_v" ] && set -- "$@" "$_n=$_v"
-      else
-        shape_fail "$_name" "" refusals.arity
+      fi
+      # nothing named, nothing piped, and the body asks for it: the refusal says the shape
+      if [ -z "$_v" ] && [ "$_req" != 0 ]; then
+        _door_arity_fail "$_name" "$_body" refusals.arity
         return 1
       fi
     fi
-    if [ "$_sin" = 1 ] && [ -z "$_v" ]; then
-      _w=''                             # nothing was piped: the body decides
+    if [ -z "$_v" ] && [ "$_t" != bool ]; then
+      _w=''                             # declared optional: the body decides
     else
-      _w=$(args_line "$_t" "$_v" $_vals) || { shape_fail "$_name" "" refusals.arity; return 1; }
+      _w=$(args_line "$_t" "$_v" $_vals) || { _door_arity_fail "$_name" "$_body" refusals.arity; return 1; }
     fi
     _args="$_args $_w"
   done
@@ -199,17 +268,27 @@ run_call() {
   fi
   for _d in $_decl; do
     _n=${_d%%:*}
+    _prov=0
     for _pair in "$@"; do
       case $_pair in
         "$_n"=*)
-          _sv=$(printf '%s' "${_pair#*=}" | sed 's/[\\&|]/\\&/g')
-          _cmd=$(printf '%s' "$_cmd" | sed "s|{{$_n}}|$_sv|g") ;;
+          _prov=1
+          _cmd=$(printf '%s' "$_cmd" | _door_fill "{{$_n}}" "${_pair#*=}") ;;
       esac
     done
+    # declared optional and not given: the hole is closed with nothing, the body decides
+    if [ "$_prov" = 0 ]; then
+      _r5=${_d#*:}; _r5=${_r5#*:}; _r5=${_r5#*:}
+      if [ "${_r5#*:}" = 0 ]; then
+        _cmd=$(printf '%s' "$_cmd" | _door_fill "{{$_n}}" "")
+      fi
+    fi
   done
   case $_cmd in
-    *"{{"*) shape_fail "$_name" "" refusals.arity; return 1 ;;
+    *"{{"*) _door_arity_fail "$_name" "$_body" refusals.arity; return 1 ;;
   esac
+  # a body that came out empty is a call that would answer ok with nothing in it
+  [ -n "$_cmd" ] || { _door_arity_fail "$_name" "$_body" refusals.arity; return 1 ; }
 
   # 11 run: the door launches nothing. it hands the text and the arguments to the runner
   # one road for the engine, shell_exec (shell.sh): one way in, one timeout, one form.
