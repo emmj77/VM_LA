@@ -72,6 +72,19 @@ loop_turn() {
   _tf=$(cfg abs turn)
   [ -s "$_tf" ] && _turn_set '.doc = ""' 2>/dev/null
 
+  # the bound of the turns: at the bound the journal turns over, the count restarts --
+  # a bound that never restarts ends by blocking the engine forever.
+  _mt=$(cfg num loop.max_turns 400) || _mt=400
+  _tn=$(skl_turn_no)
+  if [ "$_mt" -gt 0 ] && [ "${_tn:-0}" -ge "$_mt" ]; then
+    _keep=$(cfg num limits.trace_keep 5000) || _keep=5000
+    _trf=$(cfg abs trace) || _trf=""
+    if [ -n "$_trf" ] && [ -s "$_trf" ]; then
+      _brk=$(tmpfile trace) && tail -n "$_keep" -- "$_trf" > "$_brk" && mv -f -- "$_brk" "$_trf"
+    fi
+    trace_line step "the journal turned over: $_tn turns, the bound $_mt, $_keep lines kept"
+  fi
+
   trace_line turn "start"
   _t0=$(date +%s)
   _maxc=$(cfg num loop.max_calls) || _maxc=0
@@ -83,14 +96,7 @@ loop_turn() {
     step_run "$_s" || { _status=failed; break; }
   done
 
-  _mt=$(cfg num loop.max_turns 400) || _mt=400
   while [ "$_status" = ok ]; do
-    _tn=$(skl_turn_no)
-    if [ "$_mt" -gt 0 ] && [ "${_tn:-0}" -ge "$_mt" ]; then
-      trace_line step "stopped: turn $_tn, the bound $_mt"
-      _status=stopped
-      break
-    fi
     _before=$(_turn_get '.calls | length')
     for _s in $(loop_cycle); do
       step_run "$_s" || { _status=failed; break; }

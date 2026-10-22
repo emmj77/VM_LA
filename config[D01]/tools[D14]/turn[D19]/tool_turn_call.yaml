@@ -26,11 +26,32 @@ COMMAND: |
   # the effort of the turn comes from the reranker: it leaves with the request
   _ef=$(jq -r '.effort // ""' "$(cfg abs turn)" 2>/dev/null)
   [ -n "$_ef" ] || _ef=$(cfg str "engines.$_al.reasoning_effort") || _ef=""
+  # every provider is asked its own way: "effort" takes the level, "always" thinks on its own,
+  # "none" has no knob at all. Sending a field the provider ignores is noise, not a setting.
+  _rs=$(cfg str "engines.$_al.reasoning_style" effort) || _rs=effort
+  [ "$_rs" = effort ] || _ef=""
   _to=$(cfg num loop.timeout) || _to=600
+  # what the model reads is bounded: each message at msg_max, the whole at msg_budget --
+  # when the budget is short, the oldest messages go, the first one (the head) stays.
+  _mx=$(cfg num loop.msg_max 8000) || _mx=8000
+  _mb=$(cfg num loop.msg_budget 32000) || _mb=32000
   # -n: with no input jq still runs the filter (without it the body left empty)
   _body=$(jq -nc --arg m "$_model" --argjson mt "$_mt" --arg tc "$_tc" --arg ef "$_ef" \
+    --argjson mx "$_mx" --argjson mb "$_mb" \
     --slurpfile t "$(cfg abs turn)" '
-      {model:$m,messages:($t[0].messages +
+      def cap(x): if (x | type) == "string" then x[0:$mx] else x end;
+      (($t[0].messages // []) | map(if has("content") then .content |= cap(.) else . end)) as $all
+      | (if ($all | length) == 0 then []
+         else
+           $all[0] as $head
+           | ([$all[1:][]] | reverse
+              | reduce .[] as $mg ({a: [], s: ($head.content | tostring | length)};
+                  ($mg.content | tostring | length) as $l
+                  | if (.s + $l) <= $mb then {a: ([$mg] + .a), s: (.s + $l)} else . end)
+              | .a)
+           | [$head] + .
+         end) as $msgs
+      | {model:$m,messages:($msgs +
         (if (($t[0].retry // 0) > 0)
          then [{role:"user",content:"Answer now with the reply tool. If you have nothing to say, call reply with an empty text."}]
          else [] end)),max_tokens:$mt,tool_choice:$tc,stream:false}

@@ -220,7 +220,10 @@ families:
 # the turn, measured in numbers
 loop:
   feed_turns: 12
+  same_words_seconds: 300
   window: 4
+  msg_max: 8000
+  msg_budget: 32000
   max_turns: 400
   autosleep: 580
   memory_keep: 500
@@ -234,6 +237,7 @@ loop:
   plan_steps: 12
   plan_chars: 100
   big_todo_every: 15
+  update_every: 10
   timeout: 600
   share: 30
   speech_tries: 2
@@ -249,6 +253,7 @@ doctor:
 
 # every bound the engine applies
 limits:
+  said_window: 10
   live_lines: 40
   return_keep: 200
   vision_tokens: 1024
@@ -264,8 +269,10 @@ limits:
   db_busy_ms: 5000
   rerank_timeout: 15
   stop_tries: 50
+  frame_bytes: 400
   port_tries: 100
   boot_tries: 40
+  engine_bytes: 4000
   engine_lines: 200
   return_bytes: 4000
   engine_timeout: 600
@@ -532,6 +539,13 @@ schema:
     max: 400
     why: la borne de securite des tours (0 = aucune)
   - section: loop
+    key: msg_budget
+    kind: int
+    min: 4000
+    max: 128000
+    step: 4000
+    why: le budget en octets de tout ce que le modele lit
+  - section: loop
     key: todo_every
     kind: int
     min: 1
@@ -555,6 +569,12 @@ schema:
     min: 5
     max: 60
     why: le grand plan se rappelle, tous les N tours, quand rien ne le porte
+  - section: loop
+    key: update_every
+    kind: int
+    min: 1
+    max: 50
+    why: la mise a jour du grand plan et du canon, tous les N tours
   - section: loop
     key: share
     kind: int
