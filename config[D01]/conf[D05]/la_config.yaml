@@ -28,6 +28,7 @@ date: "2026-10-21"
 
 # what the machine offers; nothing here belongs to the repo
 machine:
+  landrun: "/home/moussa/.local/bin/landrun"          # the shell of a sandboxed run
   threads: 8
   free_terminal:                            # what a free shell may not do: the calls the kernel refuses
     deny: [unlink, unlinkat, rmdir, io_uring_setup, io_uring_enter, io_uring_register]

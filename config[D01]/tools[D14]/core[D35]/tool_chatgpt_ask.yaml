@@ -16,8 +16,8 @@ RULES:
 DESCRIPTION: "Ouvre ChatGPT dans le Chrome persistant, tape la question au rythme d'un humain, attend la reponse et la rend en texte."
 
 COMMAND: |
-  A=$(command -v agent-browser 2>/dev/null || echo /usr/local/bin/agent-browser)
-  [ -x "$A" ] || { echo "refuse: agent-browser not found" >&2 ; exit 1 ; }
+  A=$(command -v agent-browser 2>/dev/null || echo "$(cfg str machine.browser.bin)")
+  [ -x "$A" ] || { echo "refused: agent-browser is missing" >&2 ; exit 1 ; }
   # A real Chrome on the persistent profile: the bundled browser announces webdriver=true and
   # HeadlessChrome, and every captcha fails. Here we hold on to it over CDP.
   PORT=9222
@@ -25,7 +25,7 @@ COMMAND: |
     # headless passes, but only with a real Chrome fingerprint: without --user-agent
     # the binary announces HeadlessChrome and the captchas fail in a loop.
     /usr/bin/chromium --headless=new --remote-debugging-port=$PORT \
-      --user-data-dir=/home/moussa/.agent-browser/profile --profile-directory=Default \
+      --user-data-dir="$(cfg str machine.browser.profile)" --profile-directory=Default \
       --no-first-run --no-default-browser-check \
       --user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36" \
       about:blank >/dev/null 2>&1 &
@@ -34,42 +34,42 @@ COMMAND: |
       curl -s --max-time 1 "http://127.0.0.1:$PORT/json/version" >/dev/null 2>&1 && break
       sleep 1; n=$((n+1))
     done
-    curl -s --max-time 1 "http://127.0.0.1:$PORT/json/version" >/dev/null 2>&1 || { echo "refuse : Chrome ne demarre pas sur $PORT" >&2 ; exit 1 ; }
+    curl -s --max-time 1 "http://127.0.0.1:$PORT/json/version" >/dev/null 2>&1 || { echo "refused: chrome does not start on $PORT" >&2 ; exit 1 ; }
   fi
   B="$A --cdp $PORT"
-  Q=$(cat)
-  [ -n "$Q" ] || { echo "refuse : question vide" >&2 ; exit 1 ; }
-  $B open https://chatgpt.com/ >/dev/null 2>&1 || { echo "refuse : ChatGPT ne s'ouvre pas" >&2 ; exit 1 ; }
+  Q="{{question}}"
+  [ -n "$Q" ] || { echo "refused: empty question" >&2 ; exit 1 ; }
+  $B open https://chatgpt.com/ >/dev/null 2>&1 || { echo "refused: chatgpt does not open" >&2 ; exit 1 ; }
   case "$($B get url 2>/dev/null)" in
-    *sign_in*|*accounts.google.com*) echo "refuse : session ChatGPT absente (se connecter une fois dans le Chrome persistant)" >&2 ; exit 1 ;;
+    *sign_in*|*accounts.google.com*) echo "refused: no chatgpt session (sign in once in the persistent Chrome)" >&2 ; exit 1 ;;
   esac
   case "$($B get title 2>/dev/null)" in
-    *"Just a moment"*) echo "refuse : Cloudflare bloque la page (relancer)" >&2 ; exit 1 ;;
+    *"Just a moment"*) echo "refused: cloudflare holds the page (run it again)" >&2 ; exit 1 ;;
   esac
   j=0
   while [ "$j" -lt 20 ]; do
     $B is visible "[role=textbox]" 2>/dev/null | grep -q true && break
     sleep 1; j=$((j+1))
   done
-  $B click "[role=textbox]" >/dev/null 2>&1 || { echo "refuse : champ de saisie introuvable" >&2 ; exit 1 ; }
+  $B click "[role=textbox]" >/dev/null 2>&1 || { echo "refused: the input box is not there" >&2 ; exit 1 ; }
   # human typing: one character at a time, 70-220 ms, a longer pause between words.
   # dash has no $RANDOM: entropy comes from /dev/urandom.
   for w in $Q; do
     for c in $(printf '%s' "$w" | fold -w1); do
-      $B keyboard type "$c" >/dev/null 2>&1 || { echo "refuse : frappe impossible" >&2 ; exit 1 ; }
+      $B keyboard type "$c" >/dev/null 2>&1 || { echo "refused: cannot type" >&2 ; exit 1 ; }
       sleep 0.$(printf '%03d' $(( 70 + $(od -An -N1 -tu1 /dev/urandom) % 150 )))
     done
     $B keyboard type " " >/dev/null 2>&1
     sleep 0.$(printf '%03d' $(( 180 + $(od -An -N1 -tu1 /dev/urandom) % 420 )))
   done
-  $B press Enter >/dev/null 2>&1 || { echo "refuse: cannot send" >&2 ; exit 1 ; }
+  $B press Enter >/dev/null 2>&1 || { echo "refused: cannot send" >&2 ; exit 1 ; }
   ANS=; i=0
   while [ "$i" -lt 30 ]; do
     sleep 3; i=$((i+1))
     ANS=$($B eval "(()=>{const t=document.body.innerText||'';const k=[['ChatGPT said:','ChatGPT can make mistakes'],['ChatGPT a dit','ChatGPT peut faire des erreurs']];for(const [a,b] of k){const j=t.lastIndexOf(a);if(j<0)continue;let s=t.slice(j+a.length);const e=s.indexOf(b);if(e>=0)s=s.slice(0,e);s=s.trim();const p=s.indexOf('You.re using the free version');if(p>0)s=s.slice(0,p).trim();s=s.split('Upgrade for')[0].trim();if(s)return s}return ''})()" 2>/dev/null)
     [ -n "$ANS" ] && [ "$ANS" != '""' ] && break
   done
-  [ -n "$ANS" ] && [ "$ANS" != '""' ] || { echo "refuse : aucune reponse apres 90 s" >&2 ; exit 1 ; }
+  [ -n "$ANS" ] && [ "$ANS" != '""' ] || { echo "refused: no answer after 90 s" >&2 ; exit 1 ; }
   printf '%s' "$ANS" | sed 's/^"//; s/"$//; s/\\n/\n/g; s/\\"/"/g' \
     | sed '/using the free version/d; /^Upgrade /d; /^Try Plus/d' | sed '/^$/N;/^\n$/D' | head -n 180 | head -c 3500
 

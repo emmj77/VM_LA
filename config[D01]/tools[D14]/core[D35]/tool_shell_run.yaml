@@ -15,8 +15,8 @@ RULES:
 DESCRIPTION: "runs a shell command under landrun : read-only, writes into the workspace"
 
 COMMAND: |
-  C="$*"; [ -n "$C" ] || C=$(cat); [ -n "$C" ] || { printf '%s\n' "$(msg empty_missing_command)" >&2; exit 1; }
-  L=${LA_LANDRUN:-/home/moussa/.local/bin/landrun}; [ -x "$L" ] || { printf '%s\n' "$(msg landrun_not_found "$L")" >&2; exit 1; }
+  C="$*"; [ -n "$C" ] || C="{{command}}"; [ -n "$C" ] || { printf '%s\n' "$(msg empty_missing_command)" >&2; exit 1; }
+  L=${LA_LANDRUN:-$(cfg str machine.landrun)}; [ -x "$L" ] || { printf '%s\n' "$(msg landrun_not_found "$L")" >&2; exit 1; }
   cd "$ROOT" || exit 1
   "$L" --ro / --rox /usr --rox /bin --rox /lib --rox /lib64 --rw "$W" -- /bin/sh -c "$C"
 

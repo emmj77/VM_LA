@@ -18,7 +18,7 @@ DESCRIPTION: "starts ComfyUI on 127.0.0.1:8188 (the poste venv) and waits for th
 COMMAND: |
   LC_ALL=C; export LC_ALL
   S=/home/moussa/Applications/ComfyUI/bin/comfy.sh
-  [ -x "$S" ] || { echo "refuse : comfy.sh introuvable" >&2 ; exit 1 ; }
+  [ -x "$S" ] || { echo "refused: comfy.sh is missing" >&2 ; exit 1 ; }
   "$S" start 2>&1 | iconv -c -f utf-8 -t utf-8
 
 ARGS: []

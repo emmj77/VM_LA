@@ -18,15 +18,15 @@ DESCRIPTION: "opens a page with agent-browser and returns its text (cut to the e
 
 COMMAND: |
   LC_ALL=C; export LC_ALL
-  A=$(command -v agent-browser 2>/dev/null || echo /usr/local/bin/agent-browser)
+  A=$(command -v agent-browser 2>/dev/null || echo "$(cfg str machine.browser.bin)")
   [ -x "$A" ] || { echo "refused: agent-browser is missing (sudo npm i -g agent-browser)" >&2 ; exit 1 ; }
   U="{{url}}"
   [ -n "$U" ] || { echo "refused: empty url" >&2 ; exit 1 ; }
-  OUT=$("$A" --profile /home/moussa/.agent-browser/profile read "$U" 2>&1)
+  OUT=$("$A" --profile "$(cfg str machine.browser.profile)" read "$U" 2>&1)
   case "$OUT" in
     ''|✗*|*"Read request failed"*)
       # a host may refuse the direct reader: the page is returned and the text read
-      "$A" --profile /home/moussa/.agent-browser/profile open "$U" >/dev/null 2>&1 || { echo "refused: the page cannot be reached" >&2 ; exit 1 ; }
+      "$A" --profile "$(cfg str machine.browser.profile)" open "$U" >/dev/null 2>&1 || { echo "refused: the page cannot be reached" >&2 ; exit 1 ; }
       OUT=$("$A" eval "document.body.innerText" 2>/dev/null | sed 's/\\n/\n/g') ;;
   esac
   [ -n "$OUT" ] || { echo "refused: empty page" >&2 ; exit 1 ; }

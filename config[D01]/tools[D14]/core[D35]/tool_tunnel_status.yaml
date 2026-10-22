@@ -31,7 +31,7 @@ COMMAND: |
 
   if command -v ss >/dev/null 2>&1; then
     if ss -lun 2>/dev/null | grep -q ":$PORT "; then ECOUTE="$PORT/UDP ecoute"
-    else ECOUTE="$PORT/UDP muet" ; fi
+    else ECOUTE="$PORT/UDP silent" ; fi
   else
     ECOUTE="$PORT/UDP non verifie (ss absent)"
   fi
@@ -41,12 +41,12 @@ COMMAND: |
     N=$(printf '%s\n' "$WG" | grep -c '^peer:')
     case "$N" in ''|*[!0-9]*) N=0 ;; esac
     HS=$(printf '%s\n' "$WG" | sed -n 's/^  latest handshake:[[:space:]]*//p' | head -n 1)
-    if [ "$N" = 0 ]; then PAIRS='aucun pair'
-    elif [ -n "$HS" ]; then PAIRS="$N pair(s), dernier echange $HS"
-    else PAIRS="$N pair(s), aucun echange encore" ; fi
+    if [ "$N" = 0 ]; then PAIRS='no pair'
+    elif [ -n "$HS" ]; then PAIRS="$N pair(s), last exchange $HS"
+    else PAIRS="$N pair(s), no exchange yet" ; fi
   else
-    PAIRS='pairs illisibles (wg veut root et sudo -n a refuse)'
+    PAIRS='pairs unreadable (wg wants root and sudo -n refused)'
   fi
-  printf 'tunnel %s : %s | adresse %s | %s | %s\n' "$IFACE" "$STATE" "$ADR" "$ECOUTE" "$PAIRS"
+  printf 'tunnel %s: %s | address %s | %s | %s\n' "$IFACE" "$STATE" "$ADR" "$ECOUTE" "$PAIRS"
 
 ARGS: []
