@@ -175,7 +175,7 @@ cmd_has() {
 cmd_new_turn() {
   _s=$(cfg path state) || return 1
   _t=$(date +%s)
-  for _f in note.txt request.txt reply.stream board.tmp; do
+  for _f in note.txt request.txt reply.stream; do
     [ -f "$_s/$_f" ] || continue
     mv "$_s/$_f" "$_s/new.$_t.$_f" || return 1
   done

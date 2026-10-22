@@ -143,6 +143,13 @@ files:
   - {id: "N14", name: "phone.png", role: "the qr image the phone scans"}
   - {id: "N15", name: "note.txt", role: "the postit: a short note the agent writes for itself"}
   - {id: "N16", name: "turn.json", role: "the object of the turn, passed from step to step"}
+  - {id: "N17", name: "tree.map", role: "the map of the names, built by cfg map"}
+  - {id: "N18", name: "cli_history", role: "what was typed at the terminal, newest last"}
+  - {id: "N19", name: "free_terminal.log", role: "the trace of the free terminal"}
+  - {id: "N20", name: "kws.log", role: "the trace of the ear, written by engine.service kws"}
+  - {id: "N21", name: "surveil.json", role: "the state the watch keeps between two looks"}
+  - {id: "N22", name: "watch.armed", role: "the mark that the watch is armed"}
+  - {id: "N23", name: "watch.seen", role: "the last thing the watch already saw"}
   - {id: "P01", name: "board.py", role: "the panel and the cli: the board in a terminal, one line, one pass, one turn"}
   - {id: "P02", name: "bridge.py", role: "the bridge: API, audio, delegate. transport only, it decides nothing"}
   - {id: "P07", name: "dash_server.py", role: "the dashboard's own door: the page only, it exits when nobody looks"}

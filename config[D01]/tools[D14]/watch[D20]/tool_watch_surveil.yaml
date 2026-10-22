@@ -16,7 +16,7 @@ COMMAND: |
 
   _op=${1:-status}
   _d=$(cfg path state) || { printf 'FAULT no state in the tree\n'; exit 0; }
-  _j="$_d/surveil.json"
+  _j=$(cfg abs surveil) || _j="$_d/surveil.json"
   _x="$_d/surveil.sh"
   _max=$(cfg num loop.surveil_max 12) || _max=12
 

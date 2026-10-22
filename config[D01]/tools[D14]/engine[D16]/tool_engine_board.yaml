@@ -61,8 +61,10 @@ COMMAND: |
     _mo=0
     # ONE TEMPORARY FILE, OVERWRITTEN AT EVERY READ (MOUSSA, 21/10): a random name
     # pushed a 99-byte file to the trash at every applet call.
-    _tf="$LA_STATE/board.tmp"
-    _to="$LA_STATE/board2.tmp"
+    # les deux temporaires vivent dans state/tmp : la racine de l etat ne porte que des noms
+    _td="$LA_STATE/tmp"; mkdir -p -- "$_td"
+    _tf="$_td/board.tmp"
+    _to="$_td/board2.tmp"
     : > "$_tf"; : > "$_to"
     for _k in $(_flat | awk -F'\t' '$1 ~ /^units\.[a-z_]+\.unit$/ { k = $1; sub(/^units\./, "", k); sub(/\.unit$/, "", k); print k }' | sort -u) ; do
       _cnt=$(cfg str "units.$_k.count" false)

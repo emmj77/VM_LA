@@ -29,6 +29,10 @@ COMMAND: |
     "speech :"*)
       A=$(printf '%s' "$OUT" | sed -n 's/^speech : \([^ ]*\).*/\1/p')
       A=${A##*/}
+      # la voix ne garde que ses 20 dernieres prises : au-dela, l ancienne sort
+      if _ad=$(cfg path audio 2>/dev/null) && [ -d "$_ad" ]; then
+        ls -1t "$_ad"/*.wav 2>/dev/null | tail -n +21 | while read -r _old; do rm -f -- "$_old"; done
+      fi
       jq -cn --arg a "$A" --arg s "$OUT" '{audio:$a,said:$s}'
       ;;
     *) printf '%s\n' "$(msg voice_answered "${OUT:-rien}")" >&2 ; exit 1 ;;

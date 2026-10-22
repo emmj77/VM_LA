@@ -21,7 +21,7 @@ COMMAND: |
   for s in $DENY; do F="$F -p SystemCallFilter=~$s"; done
   B=$(command -v bwrap) || { printf '%s\n' "$(msg bwrap_missing)" >&2; exit 1; }
   SR=$(command -v systemd-run) || { printf '%s\n' "$(msg unit_missing)" >&2; exit 1; }
-  L="${LA_STATE:-$HOME/.la}/free_terminal.log"
+  L=$(cfg abs free_terminal) || { printf 'FAULT no free terminal log in the tree\n' >&2; exit 1; }
   printf '{"ts":%s,"cmd":"%s"}\n' "$(date +%s)" "$(fs_json "$C")" >> "$L" 2>/dev/null
   "$SR" -q --user --pipe --wait --collect -p "RuntimeMaxSec=$T" $F -p "SystemCallErrorNumber=$ERR" \
     -- "$B" --bind / / --dev /dev --proc /proc -- /bin/sh -c "$C"
