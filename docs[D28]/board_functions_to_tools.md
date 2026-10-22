@@ -147,47 +147,48 @@ La santé et l'inventaire. Voici **tous** les outils du docteur, avec leurs `op`
 ## 5. Le board ne recalcule plus — chaque fonction de board.py part dans son outil
 
 `engine.board` (E020) perd tout son Python. Voici **chaque fonction de `board.py`**
-(102 entrées) et sa destination. **La 4ᵉ colonne = la zone de l'outil cible — une seule
+(102 entrées) et sa destination. **La 1ʳᵉ colonne = le fichier d'origine** (où la fonction
+vit aujourd'hui) ; **la dernière colonne = la zone de l'outil cible — une seule
 règle, pas de catégorie « base » :**
 - **`engine.*`** (Engine) — c'est du moteur → l'outil doit être `engine.*` ;
 - **`doctor.*`** (Doctor) — c'est un contrôle de santé → l'outil doit être `doctor.*` ;
 - **`G…`** (Agent) — sinon, c'est un outil de l'agent ;
-- **—** — reste dans board (rendu, TUI, HTTP, util).
+- **—** — reste dans board : **le TUI seul** (le rendu part en SH dans `engine.board`).
 
 On ne transfère **jamais** une fonction moteur dans un outil qui n'est pas du moteur.
 
-| fonction board.py (l.) | rôle | état | outil cible (4ᵉ) |
-|---|---|---|---|
-| `state_dir` (35) | chemins d'état | part | `engine.config` (Engine — chemins) |
-| `num` (40) | lit un nombre de la config | part | `engine.config` (Engine) |
-| `_cfg` (53) | la config | part | `engine.config` (Engine) |
-| `bridge` (62) · `bridge_ping` (81) · `bridge_state` (86) | appels au pont HTTP | sh | `engine.board` (sh — via `curl`) |
-| `read_head` (90) | snapshot de tête | part | `head_state` (à vérifier) |
-| `_units` (94) · `alive` (284) | units / vivant résidents | part | `engine.residents` |
-| `_git_state` (119, +`one`) · `read_git` (638) | état git | part | `engine.update` (`op=check`) |
-| `_engine` (129) · `read_engine` (625) | endpoint / provider | part | `engine.board` / `engine.switch` |
-| `_db_counts` (145) · `_db_query` (151) · `class model` (216) | comptes / sql / tokens sur sessions.db | part | `engine.stat` (`op=exchanges·tools·cost`) |
-| `_table` (161, = `laconf.table()`) | lit les lignes du registre (`registry-*.yaml`) | part | `engine.map` (Engine) |
-| `read_table` (570) | intégrité : registre contre les corps → manquants, doublons | part | `doctor.tools` D010 (`op=table`) |
-| `read_registry` (495) | lit la table `id`↔`outil` depuis `la_config` | part | `engine.map` (Engine) |
-| `class laconf` (189) · `dotted` (206) | accès config | part | `engine.config` (Engine) |
-| `_port` (239) · `run` (268) | parse port / lance cmd | sh | `engine.board` (sh — util) |
-| `probe` (277) · `_rss_port` (379) · `size_of` (526) · `read_instruments` (478) · `read_machine_name` (690) | ports / mémoire / instruments / machine | part | `doctor.machine` |
-| `weight` (292) · `line` (302, +`build`) · `ago` (717) · `short` (960) · `tint` (1027) · `_footer` (1048) · `human_count` (1169) · `shorten` (1183) | mise en forme | sh | `engine.board` (sh — mise en forme `awk`/`printf`) |
-| `_router_models` (330) | routeur modèles | part | `engine.models` |
-| `read_residents` (340) | résidents | part | `engine.residents` |
-| `_appoint_rows` (368) · `read_appoints` (394) · `read_approval` (410) · `_approval_gesture` (903) | approbations / geste | part | `engine.approve` (`op=view`) |
-| `_models_in` (510) · `read_modeles` (543, +`place`) | fichiers modèles | part | `doctor.models` (`op=files`) |
-| `read_canon` (598) | canon | part | `doctor.knowledge` (`op=canon`) |
-| `read_doctor` (621) | cache docteur | part | `doctor.run` (Doctor) |
-| `read_traffic` (645) | trafic sessions / journal | part | `engine.stat` / `engine.trace` |
-| `read_turn` (668) · `_tool_line` (1242) · `class Tailer` (1208) | le canal vivant | part | `engine.trace` |
-| `read_state` (1188) | lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) | part | `engine.config` (Engine) |
-| `_read_history` (1499, dans Cli) | historique | part | `engine.hist` |
-| `one_turn` (1258, +`stream`) | un tour | part | `engine.turn` |
-| `control` (734) · `_expand` (866) · `_ratio_of` (879) · `board_object` (915, +`row`) · `sections` (976) · `one_line` (1013) · `snapshot` (1196) | composition du board | sh | `engine.board` (sh — composition, appels parallèles) |
-| `_sigwinch` (1023) · `_keys` (1037) · `tui` (1054) · `class Cli` (1297, +24 méthodes) · `cli` (1700) · `main` (1705) | interface terminal | reste | — (TUI — **Python seul, sh impossible**) |
-| `base` (1146) · `http` (1150) · `door_line` (1162) | serveur HTTP du board | à retirer | — (le dashboard `dash_server.py` possède déjà l'HTTP) |
+| fichier | fonction board.py (l.) | rôle | état | outil cible (zone) |
+|---|---|---|---|---|
+| `board.py` | `state_dir` (35) | chemins d'état | part | `engine.config` (Engine — chemins) |
+| `board.py` | `num` (40) | lit un nombre de la config | part | `engine.config` (Engine) |
+| `board.py` | `_cfg` (53) | la config | part | `engine.config` (Engine) |
+| `board.py` | `bridge` (62) · `bridge_ping` (81) · `bridge_state` (86) | appels au pont HTTP | sh | `engine.board` (sh — via `curl`) |
+| `board.py` | `read_head` (90) | snapshot de tête | part | `head_state` (à vérifier) |
+| `board.py` | `_units` (94) · `alive` (284) | units / vivant résidents | part | `engine.residents` |
+| `board.py` | `_git_state` (119, +`one`) · `read_git` (638) | état git | part | `engine.update` (`op=check`) |
+| `board.py` | `_engine` (129) · `read_engine` (625) | endpoint / provider | part | `engine.board` / `engine.switch` |
+| `board.py` | `_db_counts` (145) · `_db_query` (151) · `class model` (216) | comptes / sql / tokens sur sessions.db | part | `engine.stat` (`op=exchanges·tools·cost`) |
+| `board.py` | `_table` (161, = `laconf.table()`) | lit les lignes du registre (`registry-*.yaml`) | part | `engine.map` (Engine) |
+| `board.py` | `read_table` (570) | intégrité : registre contre les corps → manquants, doublons | part | `doctor.tools` D010 (`op=table`) |
+| `board.py` | `read_registry` (495) | lit la table `id`↔`outil` depuis `la_config` | part | `engine.map` (Engine) |
+| `board.py` | `class laconf` (189) · `dotted` (206) | accès config | part | `engine.config` (Engine) |
+| `board.py` | `_port` (239) · `run` (268) | parse port / lance cmd | sh | `engine.board` (sh — util) |
+| `board.py` | `probe` (277) · `_rss_port` (379) · `size_of` (526) · `read_instruments` (478) · `read_machine_name` (690) | ports / mémoire / instruments / machine | part | `doctor.machine` |
+| `board.py` | `weight` (292) · `line` (302, +`build`) · `ago` (717) · `short` (960) · `tint` (1027) · `_footer` (1048) · `human_count` (1169) · `shorten` (1183) | mise en forme | sh | `engine.board` (sh — mise en forme `awk`/`printf`) |
+| `board.py` | `_router_models` (330) | routeur modèles | part | `engine.models` |
+| `board.py` | `read_residents` (340) | résidents | part | `engine.residents` |
+| `board.py` | `_appoint_rows` (368) · `read_appoints` (394) · `read_approval` (410) · `_approval_gesture` (903) | approbations / geste | part | `engine.approve` (`op=view`) |
+| `board.py` | `_models_in` (510) · `read_modeles` (543, +`place`) | fichiers modèles | part | `doctor.models` (`op=files`) |
+| `board.py` | `read_canon` (598) | canon | part | `doctor.knowledge` (`op=canon`) |
+| `board.py` | `read_doctor` (621) | cache docteur | part | `doctor.run` (Doctor) |
+| `board.py` | `read_traffic` (645) | trafic sessions / journal | part | `engine.stat` / `engine.trace` |
+| `board.py` | `read_turn` (668) · `_tool_line` (1242) · `class Tailer` (1208) | le canal vivant | part | `engine.trace` |
+| `board.py` | `read_state` (1188) | lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) | part | `engine.config` (Engine) |
+| `board.py` | `_read_history` (1499, dans Cli) | historique | part | `engine.hist` |
+| `board.py` | `one_turn` (1258, +`stream`) | un tour | part | `engine.turn` |
+| `board.py` | `control` (734) · `_expand` (866) · `_ratio_of` (879) · `board_object` (915, +`row`) · `sections` (976) · `one_line` (1013) · `snapshot` (1196) | composition du board | sh | `engine.board` (sh — composition, appels parallèles) |
+| `board.py` | `_sigwinch` (1023) · `_keys` (1037) · `tui` (1054) · `class Cli` (1297, +24 méthodes) · `cli` (1700) · `main` (1705) | interface terminal | reste | — (TUI — **Python seul, sh impossible**) |
+| `board.py` | `base` (1146) · `http` (1150) · `door_line` (1162) | serveur HTTP du board | à retirer | — (le dashboard `dash_server.py` possède déjà l'HTTP) |
 
 **Les zones cibles existent** (`engine.*` / `doctor.*` / `G…`). La config et l'état iront
 dans un petit **`engine.config`** (lire une clé — Engine), le registre dans
@@ -195,7 +196,7 @@ dans un petit **`engine.config`** (lire une clé — Engine), le registre dans
 `engine.stat op=exchanges` disait « 28 messages » au lieu des échanges distincts), on
 **ajuste son `op` de quelques lignes** — jamais un lecteur parallèle.
 
-**Règle unique de la 4ᵉ colonne, sans « base » :** du moteur → **`engine.*`** (Engine) ;
+**Règle unique de la dernière colonne, sans « base » :** du moteur → **`engine.*`** (Engine) ;
 un contrôle → **`doctor.*`** (Doctor) ; sinon → **`G…`** (Agent) ; **—** → reste dans
 board. Aucune donnée du moteur ne finit dans un outil d'agent. Ainsi `_cfg`, `laconf`,
 `dotted`, `num`, `read_state` → **`engine.config`** ; `_table`, `read_registry` →
@@ -235,52 +236,52 @@ part dans un outil ; ce qui est **HTTP/plomberie** reste.
 
 **`bridge.py` — le pont (surface « app »), ~60 fonctions**
 
-| fonction (l.) | rôle | état | cible (langue) |
-|---|---|---|---|
-| `env`·`die`·`now`·`state_file`·`kind_of`·`cached`·`first_name` (36–56,168,483) | utilitaires | reste | — (Python — glue) |
-| `door`·`ask`·`delegate` (60/67/87) | appellent la porte `run_call` | reste | — (Python — l'unique entrée est la porte) |
-| `conf`·`conf_section`·`root_file`·`active_name`·`_fields` (97–212) | lisent la config en direct (yaml) | part | `engine.config` (Engine) |
-| `board_json` (265) | assemble l'état du board | part | `engine.board` (`op=json`) |
-| `_trace_events` (447) | lit les événements d'appels | part | `engine.trace` |
-| `head_snapshot` (530) | assemble la tête | part | `head_state` (Engine — à vérifier) |
-| `_machine_return` (323) | mémoire / ports | part | `doctor.machine` |
-| `approval_window`·`approval_view`·`feed_of` (189–238) | état d'approbation | part | `engine.approve` (`op=view`) |
-| `_watch_armed`·`_watch_once`·`watch_loop`·`warm` (351–470) | veille / chauffe | part | `engine.watch` (Engine — à vérifier) |
-| `_thinking_keep`·`_keep_turn`·`summary_text`·`short_agent_line` (288–520) | forme du tour / résumé | part | `engine.turn` (mise en forme) |
-| `config_page` (579) | la page de config | part | `engine.commands` + `config_list` |
-| `voice` (601) | la parole | part | `engine.tts` |
-| `run_turn` (616) · `_turn_file` (443) | un tour | part | `engine.turn` |
-| `agents_list` (146) | liste des agents | part | `send_agent_chat` G063 / `agent_list` (à vérifier) |
-| `class Handler` + 20 méthodes (639–1090) | serveur HTTP du pont | reste | — (Python — HTTP) |
-| `main` (1091) | démarrage | reste | — (Python) |
+| fichier | fonction (l.) | rôle | état | cible (langue) |
+|---|---|---|---|---|
+| `bridge.py` | `env`·`die`·`now`·`state_file`·`kind_of`·`cached`·`first_name` (36–56,168,483) | utilitaires | reste | — (Python — glue) |
+| `bridge.py` | `door`·`ask`·`delegate` (60/67/87) | appellent la porte `run_call` | reste | — (Python — l'unique entrée est la porte) |
+| `bridge.py` | `conf`·`conf_section`·`root_file`·`active_name`·`_fields` (97–212) | lisent la config en direct (yaml) | part | `engine.config` (Engine) |
+| `bridge.py` | `board_json` (265) | assemble l'état du board | part | `engine.board` (`op=json`) |
+| `bridge.py` | `_trace_events` (447) | lit les événements d'appels | part | `engine.trace` |
+| `bridge.py` | `head_snapshot` (530) | assemble la tête | part | `head_state` (Engine — à vérifier) |
+| `bridge.py` | `_machine_return` (323) | mémoire / ports | part | `doctor.machine` |
+| `bridge.py` | `approval_window`·`approval_view`·`feed_of` (189–238) | état d'approbation | part | `engine.approve` (`op=view`) |
+| `bridge.py` | `_watch_armed`·`_watch_once`·`watch_loop`·`warm` (351–470) | veille / chauffe | part | `engine.watch` (Engine — à vérifier) |
+| `bridge.py` | `_thinking_keep`·`_keep_turn`·`summary_text`·`short_agent_line` (288–520) | forme du tour / résumé | part | `engine.turn` (mise en forme) |
+| `bridge.py` | `config_page` (579) | la page de config | part | `engine.commands` + `config_list` |
+| `bridge.py` | `voice` (601) | la parole | part | `engine.tts` |
+| `bridge.py` | `run_turn` (616) · `_turn_file` (443) | un tour | part | `engine.turn` |
+| `bridge.py` | `agents_list` (146) | liste des agents | part | `send_agent_chat` G063 / `agent_list` (à vérifier) |
+| `bridge.py` | `class Handler` + 20 méthodes (639–1090) | serveur HTTP du pont | reste | — (Python — HTTP) |
+| `bridge.py` | `main` (1091) | démarrage | reste | — (Python) |
 
 **`dash_server.py` — le dashboard (surface « dashboard »), ~14 fonctions**
 
-| fonction (l.) | rôle | état | cible (langue) |
-|---|---|---|---|
-| `commands`·`commands_html`·`commands_legend` (31/57/62) | la liste des commandes | part | `engine.commands` E004 (Engine) |
-| `run_command` (67) | lance une commande par la porte | reste | — (appelle `run_call`, Python) |
-| `class Handler` + `relay` (91–190) | serveur HTTP + relais `/api/*`, `/doctor` | reste | — (Python — HTTP relais) |
-| `watch_idle`·`serve` (196/203) | boucle serveur | reste | — (Python) |
+| fichier | fonction (l.) | rôle | état | cible (langue) |
+|---|---|---|---|---|
+| `dash_server.py` | `commands`·`commands_html`·`commands_legend` (31/57/62) | la liste des commandes | part | `engine.commands` E004 (Engine) |
+| `dash_server.py` | `run_command` (67) | lance une commande par la porte | reste | — (appelle `run_call`, Python) |
+| `dash_server.py` | `class Handler` + `relay` (91–190) | serveur HTTP + relais `/api/*`, `/doctor` | reste | — (Python — HTTP relais) |
+| `dash_server.py` | `watch_idle`·`serve` (196/203) | boucle serveur | reste | — (Python) |
 
 ## 6 quater. Les fonctions du MOTEUR lui-même (.sh) — « tout dans le moteur »
 
 C'est le cœur de ta demande : **chaque brique du moteur**, fonction par fonction. Règle :
 **moteur-core = `reste` (jamais un outil)** ; ce qui **externalise une donnée** = outil.
 
-| fonction (fichier, l.) | rôle | état | cible (langue) |
-|---|---|---|---|
-| `la.sh` (24 l., 0 fonction) | aiguillage / point d'entrée | moteur | — (reste : le moteur) |
-| `boot.sh` (71 l., 0 fonction) | le liant : trouve maître, charge cfg + chaque brique | moteur | — (reste : le moteur) |
-| `run.sh` — `_door_field`·`_door_decl`·`_door_usage`·`_door_fill`·`_door_arity_fail`·`_door_cmd`·`_door_register`·`run_call`·`say_err`·`die` (5–289) | **la porte** (`run_call`) | moteur | — (reste : la porte) |
-| `shell.sh` — `shell_addr`·`shell_bin`·`shell_cmd`·`shell_exec`·`shell_run`·`krita_url` (5–129) | **l'exécutant** (`dash -c`, timeout, shape JSON) | moteur | — (reste : l'exécutant) |
-| `cfg.sh` — `conf_str`·`conf_num`·`conf_list`·`conf_has` (65–91) | lecture d'une valeur de config | part | `engine.config` E028 (Engine) |
-| `cfg.sh` — `cfg_dir`·`cfg_file`·`cfg_path`·`cfg_abs`·`cfg_here`·`cfg_table`·`cfg_root` (162–226) | chemins / localisation | part | `engine.config` (Engine) |
-| `cfg.sh` — `_flat_raw`·`_flat`·`_cfg_exts`·`_cfg_tree`·`_cfg_map_build`·`_cfg_locate`·`_cfg_world`·`_cfg_tree_list`·`_cfg_family`·`_cfg_place`·`cfg`·`channel_label`·`channel_set`·`project_dir`·`skill_rule` (5–279) | machinerie interne du config-engine | moteur | — (reste : interne) |
-| `tab.sh` — `table_block`·`table_entry`·`table_field`·`table_field_list`·`table_keys`·`table_ids`·`table_index`·`block_by_id`·`body_of`·`count` (25–122) | lecture du registre / de la table | part | `engine.map` E024 (Engine) |
-| `tab.sh` — `cmd_ids`·`cmd_get`·`cmd_usage`·`cmd_slash`·`cmd_has`·`cmd_new_turn`·`cmd_run` (134–186) | les **commandes** | part | `engine.commands` E004 (DOOR) |
-| `tab.sh` — `_block` (7) | interne d'accès bloc | moteur | — (reste) |
-| `head_second.sh` — `_sec_channel`·`_sec_human`·`_sec_project`·`_sec_skill`·`_sec_summary`·`_sec_plan`·`_sec_project_plan`·`_sec_note`·`_sec_agents`·`_sec_chat`·`_sec_toolset` (6–133) | construit la « seconde tête » (contexte) | part | `head_state` (Engine — à créer/vérifier) |
+| fichier | fonction (l.) | rôle | état | cible (langue) |
+|---|---|---|---|---|
+| `la.sh` | (24 l., 0 fonction) | aiguillage / point d'entrée | moteur | — (reste : le moteur) |
+| `boot.sh` | (71 l., 0 fonction) | le liant : trouve maître, charge cfg + chaque brique | moteur | — (reste : le moteur) |
+| `run.sh` | `_door_field`·`_door_decl`·`_door_usage`·`_door_fill`·`_door_arity_fail`·`_door_cmd`·`_door_register`·`run_call`·`say_err`·`die` (5–289) | **la porte** (`run_call`) | moteur | — (reste : la porte) |
+| `shell.sh` | `shell_addr`·`shell_bin`·`shell_cmd`·`shell_exec`·`shell_run`·`krita_url` (5–129) | **l'exécutant** (`dash -c`, timeout, shape JSON) | moteur | — (reste : l'exécutant) |
+| `cfg.sh` | `conf_str`·`conf_num`·`conf_list`·`conf_has` (65–91) | lecture d'une valeur de config | part | `engine.config` E028 (Engine) |
+| `cfg.sh` | `cfg_dir`·`cfg_file`·`cfg_path`·`cfg_abs`·`cfg_here`·`cfg_table`·`cfg_root` (162–226) | chemins / localisation | part | `engine.config` (Engine) |
+| `cfg.sh` | `_flat_raw`·`_flat`·`_cfg_exts`·`_cfg_tree`·`_cfg_map_build`·`_cfg_locate`·`_cfg_world`·`_cfg_tree_list`·`_cfg_family`·`_cfg_place`·`cfg`·`channel_label`·`channel_set`·`project_dir`·`skill_rule` (5–279) | machinerie interne du config-engine | moteur | — (reste : interne) |
+| `tab.sh` | `table_block`·`table_entry`·`table_field`·`table_field_list`·`table_keys`·`table_ids`·`table_index`·`block_by_id`·`body_of`·`count` (25–122) | lecture du registre / de la table | part | `engine.map` E024 (Engine) |
+| `tab.sh` | `cmd_ids`·`cmd_get`·`cmd_usage`·`cmd_slash`·`cmd_has`·`cmd_new_turn`·`cmd_run` (134–186) | les **commandes** | part | `engine.commands` E004 (DOOR) |
+| `tab.sh` | `_block` (7) | interne d'accès bloc | moteur | — (reste) |
+| `head_second.sh` | `_sec_channel`·`_sec_human`·`_sec_project`·`_sec_skill`·`_sec_summary`·`_sec_plan`·`_sec_project_plan`·`_sec_note`·`_sec_agents`·`_sec_chat`·`_sec_toolset` (6–133) | construit la « seconde tête » (contexte) | part | `head_state` (Engine — à créer/vérifier) |
 
 **Bilan moteur** : `la.sh`/`boot.sh`/`run.sh`/`shell.sh` + l'interne de `cfg.sh`/`tab.sh`
 = **le moteur, jamais des outils**. Ce qui rend une **donnée** (`cfg` → `engine.config`,
