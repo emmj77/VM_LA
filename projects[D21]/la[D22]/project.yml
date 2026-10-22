@@ -85,6 +85,7 @@ SPEC:                       # the canon: the machine's own facts, one verifiable
     - "channel_set reads that row once per call: four rules, four flags, one reader"
     - "no brick reads the label itself ; run_call reads it once, the doctor names any other reader"
     - "a row that does not carry its four rules is a fault, not a default"
+    - "channel_set reads the row with its own awk: the shape of that table moves, cfg.sh moves"
   loops:                    # section 7 : feedback loops, forced append, read
     - "skl_gate is the single decider : skillset, doc, plan, step toolset, due recall, end"
     - "an imposition closes the toolset : the tool the step names, plus update_todo"
