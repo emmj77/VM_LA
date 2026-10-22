@@ -207,7 +207,7 @@
     const b = document.createElement('div');
     b.className = 'bubble-bot md';
     if (m.text) b.innerHTML = md(m.text);
-    else if (m.thinking && m.thinking.length) b.hidden = true;   // la pensee seule ne fait pas une bulle
+    else if (m.thinking && m.thinking.length) b.classList.add('sans-texte');   // la pensee seule ne fait pas une bulle
     else b.innerHTML = '—';
     top.appendChild(av);
     top.appendChild(b);
