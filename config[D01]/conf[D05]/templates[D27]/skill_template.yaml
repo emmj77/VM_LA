@@ -8,9 +8,7 @@ SUMMARY:                      # for the secondary head, while the skill is loade
   102: "..."
   110: "..."
 RULES:                       # under SUMMARY: the laws the HARNESS applies
-  create_subfolder: true          # subfolders are allowed
-  execute_code: false
-  max_section_lines: 100   # the ceiling of one section, in lines
+  max_section_lines: 100     # the ceiling of one section, in lines
 APPROVAL: false              # MAY THIS SKILL TOUCH THE HARNESS?
                              # true: every act touching the TABLE or a SKILL (table_manage,
                              # skill_manage) asks for a HUMAN GO, at every call, and the
@@ -21,33 +19,34 @@ APPROVAL: false              # MAY THIS SKILL TOUCH THE HARNESS?
 PERMANENT_TODO: false        # IS THE PLAN A TUNNEL? (a closed route, not a suggestion)
                              # true: the PLAN is written HERE by the human, and the loop uses it:
                              #   - the MANDATORY TODO is dropped (the plan is already open);
-                             #   - the turn TOOLSET closes on the tools of the CURRENT STEP;
-                             #   - the step closes when ALL its tools returned status: ok, and
-                             #     the LOOP closes it, never the model.
-                             # One step = ONE line, 100 bytes, its tools named at the end:
-                             #   401: "[progress] lire l etat -- tools: tunnel_status"
-                             #   402: "[todo] lever wg0 -- tools: tunnel_up, tunnel_status"
+                             #   - the turn TOOLSET closes on the ONE tool of the current step;
+                             #   - the step closes on a FACT read from the machine (status ok AND
+                             #     the text begins with "ok "), never on the word of the model.
+                             # One step = ONE line, 100 bytes, ONE tool named at the end:
+                             #   401: "[in_progress] read the state -- tools: tunnel_status"
+                             #   402: "[todo] raise wg0 -- tools: tunnel_up"
                              # false: the plan is a JOURNAL, the model writes it and drives it.
                              # A skill that sets true needs nothing else: the plan IS the route.
-TOOLS:                       # the tools this skill opens, and them alone (200 to 299)
-  200: "..."              # one line, one tool name
+SKILL_TOOL_SET:              # THE one name: the tools this skill opens, and them alone (200 to 299)
+  200: "..."                 # one line, one tool name
   201: "..."
 DOCS:                        # the source: the NAME of a file, OR of a folder (no path)
   300: "..."                 # the model searches it and reads the one useful file; otherwise "web_search"
 PLAN:                        # a JOURNAL plan lives OUTSIDE: state/<agent>_todo.md (lowercase), written by todo,
                              # moved by update_todo (in_progress | completed, 12 steps at most, 100 chars
                              # a step). this section stays for a ROUTE only (PERMANENT_TODO: true): one
-                             # line per step, its state in front, its tools at the end. 20 lines at most.
-  400: "..."                 # a route: "[in_progress] read the tunnel state -- tools: tunnel_status"
+                             # line per step, its state in front, its ONE tool at the end.
+  400: "..."                 # a route: 400 the goal, 401.. the steps
+  401: "[in_progress] read the tunnel state -- tools: tunnel_status"
 WRITABLE_WORKSPACE:          # the write space: two things, and only two
-  workspace: "work/"        # the working folders
+  workspace: "work/"         # the working folders
   type-file: ".md .yaml .sh .json .txt"   # the file types accepted
 ERROR:                       # what the skill says when a tool refuses
   600: "..."
 # NO STEPS BLOCK (dropped 19/10): nothing applied it, neither the loop nor the engine.
 # A route that cannot be applied is one suggestion more. The route, when one is needed, is the
-# PERMANENT PLAN (PERMANENT_TODO: true, see above): each step names its tools, the harness closes
-# the toolset on them and opens it on a fact.
+# PERMANENT PLAN (PERMANENT_TODO: true, see above): each step names its ONE tool, the harness
+# closes the toolset on it and opens it on a fact.
 
 # THE CARRIER: the machine this skill holds open while it lives (optional).
 # It names an action of the engine family that knows start|stop (e.g. engine.models).

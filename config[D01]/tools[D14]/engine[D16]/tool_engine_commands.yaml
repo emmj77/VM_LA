@@ -110,7 +110,7 @@ COMMAND: |
       _d=$(cfg path skills) || exit 0
       [ -e "$_d/$_n" ] && { printf 'FAULT the skill %s already exists\n' "$_n"; exit 0; }
       mkdir -p "$_d/$_n" || { printf 'FAULT cannot create\n'; exit 0; }
-      printf 'tool: "%s"\ndate: "%s"\nWRITABLE_WORKSPACE:\n  workspace: "%s"\n  tools: ""\nTOOLS: []\nSUMMARY:\n  1: "%s"\n' \
+      printf 'tool: "%s"\ndate: "%s"\nWRITABLE_WORKSPACE:\n  workspace: "%s"\n  tools: ""\nSKILL_TOOL_SET: {}\nSUMMARY:\n  1: "%s"\n' \
         "$_n" "$(date +%%Y-%%m-%%d)" "$_n" "$_n" > "$_d/$_n/skill.yaml"
       printf 'ok skill %s written\n' "${_d#$ROOT/}/$_n"
       ;;

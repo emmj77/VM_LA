@@ -13,7 +13,7 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 PERMANENT_TODO: false
-TOOLS:
+SKILL_TOOL_SET:
   C002: "comfyui_status"
   C001: "comfyui_generate"
   C003: "comfyui_colorize"

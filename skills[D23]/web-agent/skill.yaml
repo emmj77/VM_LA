@@ -32,7 +32,7 @@ RULES:
 APPROVAL: false              # this skill does not touch the harness
 PERMANENT_TODO: false
 
-TOOLS:
+SKILL_TOOL_SET:
   G069: "web_read"
   G068: "gemini_image"
   G070: "chatgpt_ask"

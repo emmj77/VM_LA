@@ -13,7 +13,7 @@ RULES:
   count: false
   paths: write
 
-DESCRIPTION: "loads a skill : writes skills/.active ; its TOOLS become the tools the model may call (the skill must be in the project's list)"
+DESCRIPTION: "loads a skill : writes skills/.active ; its SKILL_TOOL_SET becomes the tools the model may call (the skill must be in the project's list)"
 
 COMMAND: |
   NAME="{{name}}"

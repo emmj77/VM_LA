@@ -17,7 +17,7 @@ RULES:
 APPROVAL: false              # this skill does not touch the harness
 PERMANENT_TODO: false
 
-TOOLS:
+SKILL_TOOL_SET:
   A002: "asset_builder_new"
   A003: "asset_builder_list"
   A004: "asset_builder_show"

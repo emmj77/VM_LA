@@ -25,7 +25,7 @@ COMMAND: |
       _nm=$(basename -- "$(dirname -- "$_s")")
       grep -q '^WRITABLE_WORKSPACE:' "$_s" || printf 'FAULT skill %s carries no WRITABLE_WORKSPACE\n' "$_nm"
       grep -q '^  workspace:' "$_s" || printf 'FAULT skill %s carries no workspace\n' "$_nm"
-      grep -q '^TOOLS:' "$_s" || printf 'FAULT skill %s carries no TOOLS\n' "$_nm"
+      grep -q '^SKILL_TOOL_SET:' "$_s" || printf 'FAULT skill %s carries no SKILL_TOOL_SET\n' "$_nm"
     done
     [ "$_n" -gt 0 ] && printf 'ok %s skill(s) read\n' "$_n" || printf 'FAULT no skill in skills\n'
     ;;

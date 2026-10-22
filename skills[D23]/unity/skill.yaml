@@ -13,7 +13,7 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 PERMANENT_TODO: false
-TOOLS:
+SKILL_TOOL_SET:
   G061: "unity_tools_find"
   G057: "tool_show"
   U409: "unity_status"

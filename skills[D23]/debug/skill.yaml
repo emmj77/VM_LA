@@ -5,7 +5,7 @@ tags: ["debug", "terminal", "host"]
 HUMAN_ONLY: true
 
 SUMMARY:
-  101: "The free terminal: the whole machine, under bubblewrap, with the binary blocklist (rm and the disk family)."
+  101: "The free terminal: the whole disk writable; the kernel refuses the calls that remove a name (machine.free_terminal.deny, io_uring included), so a file goes away with 'gio trash -- <path>' and never with rm."
   102: "The load is HUMAN only: the door refuses the model; 'la skill load debug' passes."
   103: "Every command is journaled in state/free_terminal.log; the output is raw, exit code included."
 RULES:
@@ -14,7 +14,7 @@ RULES:
   max_section_lines: 100
 APPROVAL: false
 PERMANENT_TODO: false
-TOOLS:
+SKILL_TOOL_SET:
   G077: "free_terminal"
   G001: "reply"
 DOCS:

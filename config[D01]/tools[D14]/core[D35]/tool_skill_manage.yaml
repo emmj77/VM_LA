@@ -123,7 +123,7 @@ COMMAND: |
     F="$1"; ID="$2"; R="$3"
     case "$ID" in
       1[0-9][0-9])      SEC=SUMMARY ; SUB=0 ;;
-      2[0-9][0-9])      SEC=TOOLS  ; SUB=0 ;;
+      2[0-9][0-9])      SEC=SKILL_TOOL_SET  ; SUB=0 ;;
       3[0-9][0-9])      SEC=DOCS   ; SUB=0 ;;
       4[0-9][0-9])      SEC=PLAN   ; SUB=0 ;;
       6[0-9][0-9])      SEC=ERROR  ; SUB=0 ;;

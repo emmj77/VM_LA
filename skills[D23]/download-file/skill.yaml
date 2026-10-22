@@ -32,7 +32,7 @@ RULES:
 APPROVAL: true
 PERMANENT_TODO: false
 
-TOOLS:
+SKILL_TOOL_SET:
   G067: "download_file"
   G002: "read_file"
   G003: "list_dir"

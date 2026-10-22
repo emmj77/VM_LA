@@ -478,7 +478,7 @@ skl_project_disarm() {
   return 0
 }
 
-# skl_tools_map [name] : the TOOLS map of the skill.yaml, one "key<TAB>name" per line,
+# skl_tools_map [name] : the SKILL_TOOL_SET map of the skill.yaml, one "key<TAB>name" per line,
 # kept as it is written : the key is a local rank, it names nothing in the register.
 skl_tools_map() {
   _n=${1:-$(skl_skill)}
@@ -486,7 +486,7 @@ skl_tools_map() {
   _d=$(cfg path skills) || return 1
   _f="$_d/$_n/skill.yaml"
   [ -r "$_f" ] || return 1
-  _flat "$_f" | awk -F'\t' '$1 ~ /^TOOLS\./ { sub(/^TOOLS\./, "", $1); printf "%s\t%s\n", $1, $2 }'
+  _flat "$_f" | awk -F'\t' '$1 ~ /^SKILL_TOOL_SET\./ { sub(/^SKILL_TOOL_SET\./, "", $1); printf "%s\t%s\n", $1, $2 }'
 }
 
 # skl_workspace [name] : where the armed skill writes, relative to the project root
@@ -557,7 +557,7 @@ skl_carries() {
   _f="$_d/$_s/skill.yaml"
   [ -r "$_f" ] || return 1
   _flat "$_f" | awk -F'\t' -v n="$_n" -v i="$_i" '
-    $1 ~ /^TOOLS\./ { k = $1; sub(/^TOOLS\./, "", k); if (k == i || $2 == n) f = 1 }
+    $1 ~ /^SKILL_TOOL_SET\./ { k = $1; sub(/^SKILL_TOOL_SET\./, "", k); if (k == i || $2 == n) f = 1 }
     END { exit(f ? 0 : 1) }'
 }
 

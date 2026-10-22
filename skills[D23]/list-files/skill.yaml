@@ -13,7 +13,7 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 PERMANENT_TODO: false
-TOOLS:
+SKILL_TOOL_SET:
   G003: "list_dir"
   G005: "search"
   G002: "read_file"

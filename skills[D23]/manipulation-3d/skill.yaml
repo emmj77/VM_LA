@@ -14,7 +14,7 @@ RULES:
   max_section_lines: 100
 APPROVAL: false              # this skill does not touch the harness
 PERMANENT_TODO: false
-TOOLS:
+SKILL_TOOL_SET:
   3D001: "image2glb"
   3D002: "mesh-convert2fbx"
   3D003: "mesh-render2png"

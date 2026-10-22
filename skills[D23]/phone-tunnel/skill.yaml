@@ -23,7 +23,7 @@ RULES:
 APPROVAL: false
 PERMANENT_TODO: true
 
-TOOLS:
+SKILL_TOOL_SET:
   G064: "tunnel_status"
   G065: "tunnel_up"
   G066: "tunnel_down"
