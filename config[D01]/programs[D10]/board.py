@@ -1174,6 +1174,13 @@ def http(route, body=None, timeout=1800.0):
             return r.status, {"response": raw.decode("utf-8", "replace"), "code": 0}
 
 
+def door_line(line, secs=120):
+    # the cli asks the bridge's own command function, in process: same door, no socket
+    import bridge as bridge_mod
+    v = bridge_mod.ask("engine", "engine.commands", ["op=line"], feed=line, secs=secs)
+    return v if isinstance(v, dict) else {"text": "" if v is None else str(v)}
+
+
 def human_count(n):
     try:
         n = int(n)
@@ -1604,9 +1611,9 @@ class Cli(App):
                 self.error("impossible d'ouvrir %s (%s)" % (name, e))
             return
         try:
-            _, d = http("/command", {"line": t}, timeout=120)
-        except (urllib.error.URLError, OSError) as e:
-            self.error("le bridge n'a pas pris la commande (%s)" % e)
+            d = door_line(t, secs=120)
+        except (OSError, subprocess.SubprocessError) as e:
+            self.error("la porte n'a pas pris la commande (%s)" % e)
             return
         if d.get("kind") == "agent":
             self.answer(d.get("text") or "")
