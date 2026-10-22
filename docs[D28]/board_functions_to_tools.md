@@ -55,7 +55,8 @@ son `id` au registre.
 Le moteur a aujourd'hui 26 outils (E001..E027, **E018 absent**). Voici leur forme
 finale. **Aucun n'est « à découper »** : chaque famille reste un outil, ses `op`
 choisissent la cible/le verbe de la même fonction. Seul `board` change de nature
-(il devient mince, cf. §5). Puis 6 petits outils de lecture sont ajoutés.
+(il devient mince, cf. §5). Puis 6 petits lecteurs (lignes 27–32) et `head_state` +
+`version` (lignes 33–34) sont ajoutés.
 
 | # | outil (final) | fonction | op |
 |---|---|---|---|
@@ -91,8 +92,16 @@ choisissent la cible/le verbe de la même fonction. Seul `board` change de natur
 | 30 | engine.journal_state | la queue du journal du pont (NOUVEAU) | — |
 | 31 | engine.usage_tokens | les jetons de la dernière session (NOUVEAU) | — |
 | 32 | engine.session_query | lecture libre de sessions.db en sqlite (NOUVEAU) | — |
+| 33 | engine.head_state | le snapshot de tête (`/api/head`, `head_snapshot()`) (NOUVEAU) | — |
+| 34 | engine.version | la chaîne de version (`/api/version`) (NOUVEAU) | — |
 
-**Total moteur = 32 outils** : 26 outils existants (24 familles + `commands` la porte + `board` mince) + 6 nouveaux lecteurs.
+(Note : `engine.approve op=view`, `engine.tts op=say`, `engine.asr op=transcribe` ne
+sont PAS de nouveaux outils — ce sont des `op` ajoutés aux familles des lignes 1, 17, 2.)
+
+**Total moteur = 34 outils** : 26 outils existants (24 familles + `commands` la porte
++ `board` mince) + 6 nouveaux lecteurs (lignes 27–32) + `head_state` et `version`
+(lignes 33–34). Les extensions `approve op=view`, `tts op=say`, `asr op=transcribe`
+ne créent pas d'outil : ce sont des `op` de familles existantes.
 
 ## 4 bis. Audit des trois sorties — outils AJOUTÉS pour le dashboard et l'app
 
@@ -124,7 +133,7 @@ Route par route, tout le reste est déjà couvert : `state`→board, `live`→`e
 `history`→`engine.hist`, `cmd`/`command`→`engine.commands`, `doctor`→`engine.doctor`,
 `residents`→`engine.residents`, `update`→`engine.update`, `approval/approve/deny`→`engine.approve`.
 
-**Nouveaux comptes : moteur 34** (32 + `head_state` + `version`), **catalogue/cœur 9**
+**Nouveaux comptes : moteur 34** (la table va jusqu'à 34), **catalogue/cœur 9**
 (`list_skills`, `show_skill`, `list_projects`, `list_agents`, `list_toolmap`,
 `list_commands`, `config_view`, `config_set`, `table_manage`), **docteur ~7**. Total
 visible par les trois sorties ≈ **50 outils** — et « de plus en plus d'outils YAML, ce
