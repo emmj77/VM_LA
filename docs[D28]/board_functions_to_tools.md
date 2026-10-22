@@ -161,7 +161,9 @@ met où.
 | `_git_state` (119, +`one`) · `read_git` (638) | état git | part | `engine.update` (`op=check`) |
 | `_engine` (129) · `read_engine` (625) | endpoint / provider | part | `engine.board` / `engine.switch` |
 | `_db_counts` (145) · `_db_query` (151) · `class model` (216) | comptes / sql / tokens sur sessions.db | part | `engine.stat` (`op=exchanges·tools·cost`) |
-| `_table` (161) · `read_table` (570) · `read_registry` (495) | registre / table | part | `table_manage` G018 |
+| `_table` (161, = `laconf.table()`) | lit les lignes du registre (`registry-*.yaml`) | part | `table_manage` G018 (`op=list`) |
+| `read_table` (570) | intégrité : registre contre les corps → manquants, doublons | part | `doctor.tools` D010 (`op=table`) |
+| `read_registry` (495) | lit la table `id`↔`outil` depuis `la_config` | part | `config_list` G080 |
 | `class laconf` (189) · `dotted` (206) | accès config | part | `config_list` G080 |
 | `_port` (239) · `run` (268) | parse port / lance cmd | reste | — (util) |
 | `probe` (277) · `_rss_port` (379) · `size_of` (526) · `read_instruments` (478) · `read_machine_name` (690) | ports / mémoire / instruments / machine | part | `doctor.machine` |
@@ -197,6 +199,11 @@ Et `read_state` n'est **pas** un `skill_list`/`project_list` : il lit la 1ʳᵉ 
 chemin de config (`skill_active`, `project_active`) — c'est une **lecture de config**,
 donc il rejoint `config_list` G080, exactement comme `class laconf` et `dotted`. Un seul
 domicile, jamais deux.
+
+Les trois du registre ne sont **pas** un fourre-tout : `_table` lit la table
+(→ `table_manage`, cœur), `read_table` vérifie le registre **contre les corps**
+(→ `doctor.tools`, docteur), `read_registry` lit `id`↔`outil` depuis `la_config`
+(→ `config_list`, cœur). Trois fonctions distinctes, trois domiciles distincts.
 
 ## 6. Route par route — les trois sorties, et l'outil existant qui y répond
 
