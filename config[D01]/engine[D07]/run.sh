@@ -238,9 +238,10 @@ run_call() {
     esac
   done
 
-  # 9 approval : four bodies wait for a human, never for a tool
+  # 9 approval : a gated body waits for a signed go, whatever the caller calls itself
+  # the human label is declared by the caller, and the cli carries it: it cannot exempt a gated body
   _gate=1
-  case ${LA_FROM:-model} in engine|human) _gate=0 ;; esac
+  case ${LA_FROM:-model} in engine) _gate=0 ;; esac
   if [ "$_gate" = 1 ] && is_gated "$_body"; then
     if approval_ok "$_name" "$@"; then
       :

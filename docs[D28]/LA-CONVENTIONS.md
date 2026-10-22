@@ -101,6 +101,7 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `skl.sh` · `tool_allowed` | tool_allowed <name> <id> : the two doors at once, the name for the master file, the id for the skill |
 | `skl.sh` · `approval_of` | approval_of <body> : what the body says a human must carry, empty when nothing |
 | `skl.sh` · `is_gated` | is_gated <body> : true when the call waits for a human signature |
+| `run.sh` · `_gate` | the same check at the door: only the engine is exempt. The human label is declared by the caller, and the cli carries it, so it exempts nothing |
 | `step.sh` · `_turn_file` | the path of state/turn.json |
 | `step.sh` · `_turn_get` | one field of turn.json, as a jq expression |
 | `step.sh` · `_turn_set` | rewrites turn.json with a jq filter, atomically |
@@ -428,7 +429,7 @@ Every `LA_*` name the code carries as a whole word, 99 of them: exported by boot
 | `LA_EMBED_MODEL` | the embedding model the memory bodies ask for |
 | `LA_EMBED_PORT` | where the embedding model listens, for the memory bodies |
 | `LA_ENV` | the key file, conf/.env: the secrets never travel by argument |
-| `LA_FROM` | who called the door: engine, model, bridge, applet. It decides the register read |
+| `LA_FROM` | who called the door: engine, model, human. The caller declares it, so it grants no exemption to a gated body; the engine alone is exempt |
 | `LA_GGUF_DIR` | where the quantised models sit, for a body that reads one |
 | `LA_HOME` | the home of the machine, used only by the installer and the uninstaller |
 | `LA_HOST` | the address the bridge listens on, from machine.host |
