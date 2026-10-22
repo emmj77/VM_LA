@@ -1,0 +1,73 @@
+id: "G080"
+tool: "spec_drop"
+date: "2026-10-22"
+tags: ["write", "shell", "project", "delete"]
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "drops one statement of one existing SPEC section, named by its number: the rest of the file is left as it stands"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  P=$(sed -n '1p' "$(cfg path projects)/.active" 2>/dev/null | tr -d '\r')
+  [ -n "$P" ] || { printf 'no active project: nothing to drop\n' >&2 ; exit 1 ; }
+  D=$(project_dir "$P") || exit 1
+  F="$D/project.yml"
+  [ -f "$F" ] || { printf 'the manifest is not there: %s\n' "$F" >&2 ; exit 1 ; }
+  python3 - "$F" "{{section}}" "{{at}}" <<'PY'
+  import sys, yaml, os, re
+  f, sec, at = sys.argv[1], sys.argv[2].strip(), sys.argv[3].strip()
+  d = yaml.safe_load(open(f, encoding='utf-8')) or {}
+  sp = d.get('SPEC') or {}
+  if not sp:
+      sys.exit('the project carries no SPEC zone: say it, do not fabricate one')
+  keys = [k for k, v in sp.items() if isinstance(v, list)]
+  if sec not in keys:
+      sys.exit('the section %s does not exist: naming it is the act of create-spec' % sec)
+  if not at.isdigit():
+      sys.exit('at must be the number of the statement to drop')
+  src = open(f, encoding='utf-8').read().split('\n')
+  hdr = re.compile(r'^  ' + re.escape(sec) + r':(\s|$)')
+  top = re.compile(r'^[^ \t]')
+  sec2 = re.compile(r'^  [A-Za-z_]+:')
+  i = next((k for k, l in enumerate(src) if re.match(r'^SPEC:', l)), None)
+  if i is None:
+      sys.exit('the manifest carries no SPEC line')
+  h = next((k for k in range(i + 1, len(src)) if hdr.match(src[k])), None)
+  if h is None:
+      sys.exit('the section %s has no place in the file' % sec)
+  end = len(src)
+  for k in range(h + 1, len(src)):
+      if top.match(src[k]) or sec2.match(src[k]):
+          end = k
+          break
+  marks = [k for k in range(h + 1, end) if src[k].startswith('    - ')]
+  n = int(at)
+  if n < 1 or n > len(marks):
+      sys.exit('the section %s holds %d statement(s): %d is not one' % (sec, len(marks), n))
+  gone = src[marks[n - 1]]
+  del src[marks[n - 1]]
+  out = '\n'.join(src)
+  try:
+      chk = yaml.safe_load(out) or {}
+  except Exception as e:
+      sys.exit('the edit would break the manifest: %s' % e)
+  if len(chk['SPEC'][sec]) != len(sp[sec]) - 1:
+      sys.exit('the edit did not land in %s: nothing dropped' % sec)
+  t = f + '.tmp'
+  open(t, 'w', encoding='utf-8').write(out)
+  os.replace(t, f)
+  print('ok spec: statement %d of %s dropped, %d left' % (n, sec, len(marks) - 1))
+  print('   dropped: %s' % gone.strip()[2:].strip().strip('"'))
+  PY
+
+ARGS:
+  - {name: section, type: text}
+  - {name: at, type: text}

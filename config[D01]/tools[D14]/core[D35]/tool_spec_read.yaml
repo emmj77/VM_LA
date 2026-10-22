@@ -1,0 +1,47 @@
+id: "G078"
+tool: "spec_read"
+date: "2026-10-22"
+tags: ["read", "shell", "project", "read"]
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "reads the SPEC zone of the loaded project: every section named, every statement numbered; one section when it is named"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  P=$(sed -n '1p' "$(cfg path projects)/.active" 2>/dev/null | tr -d '\r')
+  [ -n "$P" ] || { printf 'no active project: nothing to read\n' >&2 ; exit 1 ; }
+  D=$(project_dir "$P") || exit 1
+  F="$D/project.yml"
+  [ -f "$F" ] || { printf 'the manifest is not there: %s\n' "$F" >&2 ; exit 1 ; }
+  python3 - "$F" "$P" "{{section}}" <<'PY'
+  import sys, yaml
+  f, name, sec = sys.argv[1], sys.argv[2], sys.argv[3].strip()
+  d = yaml.safe_load(open(f, encoding='utf-8')) or {}
+  sp = d.get('SPEC') or {}
+  if not sp:
+      sys.exit('the project carries no SPEC zone: say it, do not fabricate one')
+  ver = sp.get('version', '?')
+  st = sp.get('state', '?')
+  cap = ((sp.get('cap') or {}).get('chars_per_line')) or 100
+  keys = [k for k, v in sp.items() if isinstance(v, list)]
+  if sec:
+      if sec not in keys:
+          sys.exit('the section %s does not exist: naming it is the act of create-spec' % sec)
+      keys = [sec]
+  print('spec %s %s (%s), %s bytes a statement at most' % (name, ver, st, cap))
+  for k in keys:
+      print(k)
+      for i, line in enumerate(sp[k], 1):
+          print(' [%d] %s' % (i, line))
+  PY
+
+ARGS:
+  - {name: section, type: text}

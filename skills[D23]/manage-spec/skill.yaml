@@ -1,0 +1,45 @@
+id: "K36"
+skill: "manage-spec"
+date: "2026-10-22"
+tags: ["spec", "canon", "project", "statement"]
+
+SUMMARY:
+  100: "The ONE skill that reads, corrects and verifies the SPEC zone of the loaded project."
+  101: "It creates nothing: a new section is the act of create-spec, a route. Here the section exists."
+  102: "It changes one statement at a time: write one, replace the one at a number, drop one."
+  103: "Every statement is one line, 100 bytes at most, and holds a fact the machine can read."
+  104: "What it cannot prove, it names: it never fills a hole with a plausible sentence."
+  110: "read: spec_read names every section and numbers every statement."
+  111: "write: spec_set writes a statement in an existing section; spec_drop takes one out."
+  112: "audit: spec_check names the three keys, every empty statement, every byte over the cap, every repeat."
+
+RULES:
+  create_subfolder: false
+  max_section_lines: 100
+
+# APPROVAL: false -- the spec tools touch the project manifest, not the TABLE nor a SKILL.
+APPROVAL: false
+HUMAN_ONLY: false
+PERMANENT_TODO: false
+
+SKILL_TOOL_SET:
+  G078: "spec_read"
+  G079: "spec_set"
+  G080: "spec_drop"
+  G081: "spec_check"
+  G002: "read_file"
+
+DOCS:
+  300: "manage-spec: read the canon with spec_read, change one statement with spec_set or spec_drop, audit it with spec_check."
+  301: "a section is never named here: create-spec names it. a statement is one line, one fact, 100 bytes at most."
+  302: "a statement the machine cannot hold is reported to the human, never replaced by a sentence that sounds right."
+
+PLAN:
+
+WRITABLE_WORKSPACE:
+  workspace: "work/"
+  type-file: ".md .txt .yaml"
+ERROR:
+  600: "the project carries no SPEC zone: say it, do not fabricate one"
+  601: "the statement is longer than cap.chars_per_line: cut it, or ask the human"
+PORTEUR: ""

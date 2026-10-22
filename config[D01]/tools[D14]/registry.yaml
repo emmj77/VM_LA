@@ -19865,16 +19865,40 @@
   enabled: true
   visible: false
   permanent: true
-- id: "G078"
-  tool: "voice_keywords"
+- id: "G077"
+  tool: "free_terminal"
   family: MANAGE
   sub_family: ""
   doc: ""
-  guardrail: false
+  guardrail: true
   enabled: true
   visible: true
-- id: "G077"
-  tool: "free_terminal"
+- id: "G078"
+  tool: "spec_read"
+  family: MANAGE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: true
+- id: "G079"
+  tool: "spec_set"
+  family: MANAGE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: true
+- id: "G080"
+  tool: "spec_drop"
+  family: MANAGE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: true
+- id: "G081"
+  tool: "spec_check"
   family: MANAGE
   sub_family: ""
   doc: ""

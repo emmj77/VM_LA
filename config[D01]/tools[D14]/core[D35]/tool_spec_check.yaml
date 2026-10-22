@@ -1,0 +1,63 @@
+id: "G081"
+tool: "spec_check"
+date: "2026-10-22"
+tags: ["read", "shell", "project", "test"]
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "audits the SPEC zone: the three keys, every section, every statement against the cap, no repeat. names what cannot hold"
+
+COMMAND: |
+  LC_ALL=C; export LC_ALL
+  P=$(sed -n '1p' "$(cfg path projects)/.active" 2>/dev/null | tr -d '\r')
+  [ -n "$P" ] || { printf 'no active project: nothing to check\n' >&2 ; exit 1 ; }
+  D=$(project_dir "$P") || exit 1
+  F="$D/project.yml"
+  [ -f "$F" ] || { printf 'the manifest is not there: %s\n' "$F" >&2 ; exit 1 ; }
+  python3 - "$F" "$P" <<'PY'
+  import sys, yaml
+  f, name = sys.argv[1], sys.argv[2]
+  d = yaml.safe_load(open(f, encoding='utf-8')) or {}
+  sp = d.get('SPEC') or {}
+  bad = []
+  if not sp:
+      sys.exit('the project carries no SPEC zone: say it, do not fabricate one')
+  for k in ('version', 'state', 'cap'):
+      if k not in sp:
+          bad.append('SPEC carries no %s' % k)
+  cap = int(((sp.get('cap') or {}).get('chars_per_line')) or 100)
+  secs = [k for k, v in sp.items() if isinstance(v, list)]
+  if not secs:
+      bad.append('SPEC carries no section')
+  seen = {}
+  total = 0
+  for k in secs:
+      if not sp[k]:
+          bad.append('the section %s holds no statement' % k)
+      for i, l in enumerate(sp[k], 1):
+          total += 1
+          s = str(l).strip()
+          if not s:
+              bad.append('%s [%d] is empty' % (k, i))
+          elif len(s.encode()) > cap:
+              bad.append('%s [%d] is %d bytes, the cap is %d' % (k, i, len(s.encode()), cap))
+          elif s in seen:
+              bad.append('%s [%d] repeats %s [%d]' % (k, i, seen[s][0], seen[s][1]))
+          else:
+              seen[s] = (k, i)
+  if bad:
+      for b in bad:
+          print('FAULT spec: ' + b)
+      sys.exit(1)
+  print('ok spec %s: %d section(s), %d statement(s), cap %d, state %s'
+        % (name, len(secs), total, cap, sp.get('state')))
+  PY
+
+ARGS: []
