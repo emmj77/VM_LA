@@ -163,8 +163,8 @@ run_call() {
     return 1
   fi
   _bfam=$(_door_field "$_body" family)
-  _bfam=$(printf '%s' "$_bfam" | tr 'A-Z' 'a-z')
-  _rfam=$(printf '%s' "$_rfam" | tr 'A-Z' 'a-z')
+  _bfam=$(lower "$_bfam")
+  _rfam=$(lower "$_rfam")
   if [ -n "$_bfam" ] && [ -n "$_rfam" ] && [ "$_bfam" != "$_rfam" ]; then
     shape_fail "$_name" "" refusals.arity
     return 1

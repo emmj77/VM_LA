@@ -19,7 +19,7 @@ COMMAND: |
   NAME="{{name}}"
   SK=$(cfg path skills)
   [ -d "$SK" ] || { printf '%s\n' "$(msg skills_dir_missing "$SK")" >&2 ; exit 1 ; }
-  SLUG=$(printf '%s' "$NAME" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//')
+  SLUG=$(slug "$NAME")
   [ -n "$SLUG" ] || { printf '%s\n' "$(msg name_no_slug "${NAME:-absent}")" >&2 ; exit 1 ; }
   C="$SK/$SLUG/skill.yaml"
   if [ -L "$SK/$SLUG" ]; then printf '%s\n' "$(msg target_symlink "$SLUG")" >&2 ; exit 1 ; fi

@@ -57,7 +57,7 @@ skl_agent() {
 skl_plan_file() {
   _a=${1:-$(skl_agent)}
   [ -n "$_a" ] || return 1
-  _a=$(printf '%s' "$_a" | tr 'A-Z' 'a-z')
+  _a=$(lower "$_a")
   _t=$(cfg abs turn) || return 1
   printf '%s/%s_todo.md\n' "$(dirname "$_t")" "$_a"
 }
@@ -237,7 +237,7 @@ plan_status() {
   if skl_doc_seen; then printf 'doc: read\n'; else printf 'doc: TO READ -- load_doc first, it is the only tool of this turn\n'; fi
   _st=$(skl_plan_step "$_n" 2>/dev/null)
   case $? in
-    2) printf 'plan: NONE -- todo writes %s_todo.md\n' "$(skl_agent | tr 'A-Z' 'a-z')"; skl_big_recall 2>/dev/null; return 0 ;;
+    2) printf 'plan: NONE -- todo writes %s_todo.md\n' "$(lower "$(skl_agent)")"; skl_big_recall 2>/dev/null; return 0 ;;
     3) printf 'plan: FINISHED -- the skill closes\n'; skl_big_recall 2>/dev/null; return 0 ;;
   esac
   printf '%s\n' "$(printf '%s' "$_st" | awk -F'\t' '{ printf "plan: step %s OPEN", $1; if ($2 != "") printf " -- tools: %s", $2; printf "\n" }')"
@@ -248,61 +248,51 @@ plan_status() {
   return 0
 }
 
-# skl_plan_write <goal> <points> : todo writes the journal plan of the agent. the bounds hold :
-# 12 steps, 100 characters a step, the first step in_progress, the header stamped with the turn.
-# returns 0 written, 1 the arguments, 10 too many steps, 11 a step too long.
-skl_plan_write() {
-  _nm=${1:-} ; _g=${2:-} ; _ps=${3:-}
-  [ -n "$_g" ] || return 1
-  printf '%s\n' "$_ps" | grep -qv '^[[:space:]]*$' || return 1
-  _mx=$(cfg num loop.plan_steps 12) || _mx=12
-  _mc=$(cfg num loop.plan_chars 100) || _mc=100
-  _k=0
-  while IFS= read -r _l; do
-    [ -n "$(printf '%s' "$_l" | tr -d '[:space:]')" ] || continue
-    _k=$((_k+1))
-    [ "$_k" -le "$_mx" ] || return 10
-    [ "${#_l}" -le "$_mc" ] || return 11
-  done <<EOF
-$_ps
-EOF
-  _p=$(skl_plan_file) || return 1
-  if [ -s "$_p" ] && grep -q '\[in_progress\]\|\[todo\]' "$_p" 2>/dev/null; then return 12; fi
-  _tn=$(skl_turn_no)
-  {
-    printf '400: "PLAN %s: %s -- turn %s"\n' "${_nm:-$(skl_agent)}" "$_g" "$_tn"
-    _k=0 ; _i=400
-    printf '%s\n' "$_ps" | while IFS= read -r _l; do
-      [ -n "$(printf '%s' "$_l" | tr -d '[:space:]')" ] || continue
-      _k=$((_k+1)) ; _i=$((_i+1))
-      if [ "$_k" -eq 1 ]; then _m=in_progress ; else _m=todo ; fi
-      printf '%s: "[%s] %s"\n' "$_i" "$_m" "$_l"
-    done
-  } | write_atomic "$_p"
-  printf 'ok the plan of %s is open: %s steps -- %s\n' "$(skl_agent)" "$_k" "$_p"
+# --- the plan, ONE machinery for the two layers. the journal plan is the agent's file
+# (state/<agent>_todo.md); the big plan is the PROJECT_PLAN section of the project's
+# manifest. same line shape, same two names (in_progress, completed), same bounds, same
+# move. the header carries its turn, so both recalls have their reference in the file.
+
+# lower <text> : the lowercase word the plan file name is built from
+lower() { printf '%s' "${1:-}" | tr 'A-Z' 'a-z'; }
+
+# slug <text> : the canonical name : lowercase, digits and dashes, 40 characters at most
+slug() {
+  printf '%s' "${1:-}" | tr 'A-Z' 'a-z' | tr -cs 'a-z0-9' '-' \
+    | sed -e 's/^-*//' -e 's/-*$//' | cut -c1-40 | sed -e 's/-*$//'
 }
 
-# skl_plan_advance <in_progress|completed> : update_todo moves the journal plan.
-# completed : the open step closes, the next one opens ; the last one closes the plan, the file
-# goes, the skill unloads. in_progress : the step stays, the header is restamped (the recall).
-# returns 0 moved, 2 the state, 4 a route (the machine advances it), 5 no plan, 9 finished.
-skl_plan_advance() {
-  _st=${1:-completed}
-  case $_st in in_progress|completed) ;; *) return 2 ;; esac
-  _n=$(skl_skill 2>/dev/null) || return 5
-  [ -n "$_n" ] || return 5
-  skl_plan_is_closed "$_n" 2>/dev/null && return 4
-  _p=$(skl_plan_file) || return 5
-  [ -s "$_p" ] || return 5
-  _tn=$(skl_turn_no)
-  _t=$(mktemp "${TMPDIR:-/tmp}/todo.XXXXXX") || return 5
-  awk -v st="$_st" -v tn="$_tn" '
-    function restamp(s) { if (match(s, /--[ \t]*turn[ \t]*[0-9]+/)) { return substr(s, 1, RSTART - 1) "-- turn " tn substr(s, RSTART + RLENGTH) } return s }
+# _skl_plan_render <indent> <name> <goal> : the steps arrive on stdin, the numbered lines
+# leave, the first step in_progress. 0 written, 10 too many steps, 11 a step too long.
+_skl_plan_render() {
+  _in=${1:-} ; _nm=${2:-} ; _g=${3:-}
+  _ps=$(cat)
+  _mx=$(cfg num loop.plan_steps 12) || _mx=12
+  _mc=$(cfg num loop.plan_chars 100) || _mc=100
+  _k=$(printf '%s\n' "$_ps" | grep -c '[^[:space:]]')
+  [ "$_k" -le "$_mx" ] || return 10
+  [ -z "$(printf '%s\n' "$_ps" | awk -v mc="$_mc" 'length($0) > mc { print ; exit }')" ] || return 11
+  printf '%s400: "PLAN %s: %s -- turn %s"\n' "$_in" "${_nm:-$(skl_agent)}" "$_g" "$(skl_turn_no)"
+  _j=0 ; _i=400
+  printf '%s\n' "$_ps" | while IFS= read -r _l; do
+    [ -n "$(printf '%s' "$_l" | tr -d '[:space:]')" ] || continue
+    _j=$((_j+1)) ; _i=$((_i+1))
+    if [ "$_j" -eq 1 ]; then _m=in_progress ; else _m=todo ; fi
+    printf '%s%s: "[%s] %s"\n' "$_in" "$_i" "$_m" "$_l"
+  done
+}
+
+# _skl_plan_move <in_progress|completed> : the plan body arrives on stdin, the moved body
+# leaves, its header restamped with the turn. 0 moved, 2 the state, 9 the last step closed.
+_skl_plan_move() {
+  case ${1:-completed} in in_progress|completed) ;; *) return 2 ;; esac
+  awk -v st="${1:-completed}" -v tn="$(skl_turn_no)" '
+    function restamp(s) { if (match(s, /--[ \t]*turn[ \t]*[0-9]+/)) return substr(s, 1, RSTART - 1) "-- turn " tn substr(s, RSTART + RLENGTH) ; return s }
     { lines[NR] = $0 }
     END {
       for (i = 1; i <= NR; i++) {
         l = lines[i]
-        if (l ~ /^400:/) { lines[i] = restamp(l); continue }
+        if (l ~ /^[ \t]*400:/) { lines[i] = restamp(l) ; continue }
         if (l ~ /\[in_progress\]/ && ip == 0) ip = i
         if (l ~ /\[todo\]/ && td == 0) td = i
       }
@@ -316,26 +306,55 @@ skl_plan_advance() {
       }
       for (i = 1; i <= NR; i++) print lines[i]
       if (fin) exit 9
-    }' "$_p" > "$_t"
+    }'
+}
+
+# skl_plan_write <name> <goal> <points> : todo writes the journal plan of the agent.
+# returns 0 written, 1 the arguments, 10 too many steps, 11 a step too long, 12 one is open.
+skl_plan_write() {
+  _nm=${1:-} ; _g=${2:-} ; _ps=${3:-}
+  [ -n "$_g" ] || return 1
+  [ -n "$(printf '%s' "$_ps" | tr -d '[:space:]')" ] || return 1
+  _p=$(skl_plan_file) || return 1
+  if [ -s "$_p" ] && grep -q '\[in_progress\]\|\[todo\]' "$_p" 2>/dev/null; then return 12 ; fi
+  _b=$(tmpfile todo) || return 1
+  printf '%s\n' "$_ps" | _skl_plan_render "" "$_nm" "$_g" > "$_b"
   _rc=$?
-  if [ "$_rc" = 9 ]; then
-    rm -f "$_t"
-    gio trash -- "$_p" 2>/dev/null || rm -f -- "$_p"
-    skl_disarm
-    printf '%s\n' "$(msg plan_done "$_n")"
-    return 9
-  fi
-  if [ "$_rc" != 0 ] || [ ! -s "$_t" ]; then rm -f "$_t" ; return 5 ; fi
-  if ! mv -f "$_t" "$_p"; then rm -f "$_t" ; return 5 ; fi
-  _left=$(grep -c '\[in_progress\]' "$_p" 2>/dev/null)
-  case $_left in ''|*[!0-9]*) _left=0 ;; esac
-  printf 'ok the plan moved: %s -- %s steps in progress\n' "$_st" "$_left"
-  return 0
+  [ "$_rc" = 0 ] || { rm -f "$_b" ; return "$_rc" ; }
+  [ -s "$_b" ] || { rm -f "$_b" ; return 1 ; }
+  write_atomic "$_p" < "$_b" || { rm -f "$_b" ; return 1 ; }
+  rm -f "$_b"
+  printf 'ok the plan of %s is open: %s steps -- %s\n' "$(skl_agent)" "$(grep -c '\[in_progress\]\|\[todo\]' "$_p")" "$_p"
+}
+
+# skl_plan_advance <in_progress|completed> : update_todo moves the journal plan.
+# completed : the open step closes, the next one opens ; the last one closes the plan, the
+# file goes, the skill unloads. in_progress : the step stays, the header is restamped.
+# returns 0 moved, 2 the state, 4 a route (the machine advances it), 5 no plan, 9 finished.
+skl_plan_advance() {
+  _st=${1:-completed}
+  case $_st in in_progress|completed) ;; *) return 2 ;; esac
+  _n=$(skl_skill 2>/dev/null) || return 5
+  [ -n "$_n" ] || return 5
+  skl_plan_is_closed "$_n" 2>/dev/null && return 4
+  _p=$(skl_plan_file) || return 5
+  [ -s "$_p" ] || return 5
+  _new=$(_skl_plan_move "$_st" < "$_p")
+  _rc=$?
+  case $_rc in
+    9) gio trash -- "$_p" 2>/dev/null || rm -f -- "$_p"
+       skl_disarm
+       printf '%s\n' "$(msg plan_done "$_n")"
+       return 9 ;;
+    0) ;; *) return 5 ;;
+  esac
+  [ -n "$_new" ] || return 5
+  printf '%s\n' "$_new" | write_atomic "$_p" || return 5
+  printf 'ok the plan moved: %s -- %s steps in progress\n' "$_st" "$(grep -c '\[in_progress\]' "$_p" 2>/dev/null)"
 }
 
 # --- the BIG plan : the project's chantier, in its manifest, under PROJECT_PLAN.
-# it is the second layer (the small plan is the agent's file). it is CHANGED, and it erases
-# itself at its last step. same line shape, same two names : in_progress and completed.
+# it is the second layer. it is CHANGED, and it erases itself at its last step.
 # it never holds the project: the project unloads whenever the human says so.
 
 # skl_big_file : the project.yml of the armed project, empty when no project is loaded
@@ -353,10 +372,11 @@ _skl_big_body() {
   awk '/^PROJECT_PLAN:/ { inb = 1 ; next } inb && /^[^ \t]/ { inb = 0 } inb { print }' "${1:?}"
 }
 
-# _skl_big_put <file> <bodyfile> : the PROJECT_PLAN body becomes that file, the section appears if absent
+# _skl_big_put <file> <bodyfile> : the PROJECT_PLAN body becomes that file, the section
+# appears if absent. an empty body file empties the section.
 _skl_big_put() {
   _f=${1:?} ; _b=${2:?}
-  _t=$(mktemp "${TMPDIR:-/tmp}/big.XXXXXX") || return 1
+  _t=$(tmpfile big) || return 1
   awk -v B="$_b" '
     BEGIN { while ((getline l < B) > 0) body[++nb] = l }
     /^PROJECT_PLAN:/ { print ; seen = 1 ; for (i = 1 ; i <= nb ; i++) print body[i] ; next }
@@ -364,7 +384,6 @@ _skl_big_put() {
     seen { next }
     { print }
   ' "$_f" > "$_t"
-  # the section may be absent: append it
   if ! grep -q '^PROJECT_PLAN:' "$_t"; then
     { printf 'PROJECT_PLAN:\n' ; cat "$_b" ; } >> "$_t"
   fi
@@ -373,77 +392,45 @@ _skl_big_put() {
 }
 
 # skl_big_write <name> <goal> <points> [change] : big_todo writes, change_big_todo replaces.
-# same bounds as the small plan. returns 0 written, 10/11 the bounds, 14 no project, 15 one is open.
+# same bounds, same renderer. returns 0, 10/11 the bounds, 14 no project, 15 one is open.
 skl_big_write() {
   _nm=${1:-} ; _g=${2:-} ; _ps=${3:-} ; _chg=${4:-}
   [ -n "$_g" ] || return 1
+  [ -n "$(printf '%s' "$_ps" | tr -d '[:space:]')" ] || return 1
   _f=$(skl_big_file) || return 14
   if [ -z "$_chg" ] && _skl_big_body "$_f" | grep -q '\[in_progress\]' 2>/dev/null; then return 15 ; fi
-  printf '%s\n' "$_ps" | grep -qv '^[[:space:]]*$' || return 1
-  _mx=$(cfg num loop.plan_steps 12) || _mx=12
-  _mc=$(cfg num loop.plan_chars 100) || _mc=100
-  _k=$(printf '%s\n' "$_ps" | grep -c '[^[:space:]]')
-  [ "$_k" -le "$_mx" ] || return 10
-  [ -z "$(printf '%s\n' "$_ps" | awk -v mc="$_mc" 'length($0) > mc { print ; exit }')" ] || return 11
-  _b=$(mktemp "${TMPDIR:-/tmp}/bigb.XXXXXX") || return 1
-  {
-    printf '  400: "PLAN %s: %s -- turn %s"\n' "${_nm:-$(skl_agent)}" "$_g" "$(skl_turn_no)"
-    _j=0 ; _i=400
-    printf '%s\n' "$_ps" | while IFS= read -r _l; do
-      [ -n "$(printf '%s' "$_l" | tr -d '[:space:]')" ] || continue
-      _j=$((_j+1)) ; _i=$((_i+1))
-      if [ "$_j" -eq 1 ]; then _m=in_progress ; else _m=todo ; fi
-      printf '  %s: "[%s] %s"\n' "$_i" "$_m" "$_l"
-    done
-  } > "$_b"
+  _b=$(tmpfile bigb) || return 1
+  printf '%s\n' "$_ps" | _skl_plan_render "  " "$_nm" "$_g" > "$_b"
+  _rc=$?
+  [ "$_rc" = 0 ] || { rm -f "$_b" ; return "$_rc" ; }
+  _n=$(grep -c '\[in_progress\]\|\[todo\]' "$_b")
   _skl_big_put "$_f" "$_b" || { rm -f "$_b" ; return 1 ; }
   rm -f "$_b"
   if [ -n "$_chg" ]; then _w=changed ; else _w=open ; fi
-  printf 'ok the big plan of %s is %s: %s steps -- %s\n' "$(skl_project)" "$_w" "$_k" "$_f"
+  printf 'ok the big plan of %s is %s: %s steps -- %s\n' "$(skl_project)" "$_w" "$_n" "$_f"
 }
 
 # skl_big_advance <in_progress|completed> : update_big_todo moves the project's plan.
-# it never deletes: the big plan is changed, not erased. returns 0 moved, 2 the state,
-# 9 the last step closed, 14 no project, 5 no big plan.
+# the last completed erases it. returns 0 moved, 2 the state, 5 no plan, 9 erased, 14 no project.
 skl_big_advance() {
   _st=${1:-completed}
   case $_st in in_progress|completed) ;; *) return 2 ;; esac
   _f=$(skl_big_file) || return 14
   _b0=$(_skl_big_body "$_f")
   [ -n "$_b0" ] || return 5
-  _t=$(mktemp "${TMPDIR:-/tmp}/biga.XXXXXX") || return 5
-  printf '%s\n' "$_b0" | awk -v st="$_st" '
-    { lines[NR] = $0 }
-    END {
-      for (i = 1; i <= NR; i++) {
-        l = lines[i]
-        if (l ~ /\[in_progress\]/ && ip == 0) ip = i
-        if (l ~ /\[todo\]/ && td == 0) td = i
-      }
-      if (st == "completed") {
-        if (ip) { sub(/\[in_progress\]/, "[completed]", lines[ip])
-                  if (td) sub(/\[todo\]/, "[in_progress]", lines[td]) ; else fin = 1 }
-        else if (td) sub(/\[todo\]/, "[in_progress]", lines[td])
-        else fin = 1
-      } else {
-        if (td && !ip) sub(/\[todo\]/, "[in_progress]", lines[td])
-      }
-      for (i = 1; i <= NR; i++) print lines[i]
-      if (fin) exit 9
-    }' > "$_t"
+  _new=$(printf '%s\n' "$_b0" | _skl_plan_move "$_st")
   _rc=$?
-  if [ "$_rc" = 9 ]; then
-    rm -f "$_t"
-    _e=$(mktemp "${TMPDIR:-/tmp}/bige.XXXXXX") || return 5
-    _skl_big_put "$_f" "$_e" || { rm -f "$_e" ; return 5 ; }
-    rm -f "$_e"
-    printf 'ok the big plan of %s is finished and erased: its last step closed, the section stays empty\n' "$(skl_project)"
-    return 9
-  fi
-  _skl_big_put "$_f" "$_t" || { rm -f "$_t" ; return 5 ; }
-  rm -f "$_t"
+  case $_rc in
+    9) _skl_big_put "$_f" /dev/null || return 5
+       printf 'ok the big plan of %s is finished and erased: its last step closed, the section stays empty\n' "$(skl_project)"
+       return 9 ;;
+    0) ;; *) return 5 ;;
+  esac
+  _b=$(tmpfile biga) || return 5
+  printf '%s\n' "$_new" > "$_b"
+  _skl_big_put "$_f" "$_b" || { rm -f "$_b" ; return 5 ; }
+  rm -f "$_b"
   printf 'ok the big plan moved: %s\n' "$_st"
-  return 0
 }
 
 # skl_arm <name> : a skill exists before it is armed

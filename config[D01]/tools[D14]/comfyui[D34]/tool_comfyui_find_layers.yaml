@@ -40,7 +40,7 @@ COMMAND: |
       VI=$(printf '%s' "$L" | sed -n 's/.*visible="\([0-9]*\)".*/\1/p')
       XX=$(printf '%s' "$L" | sed -n 's/.*[ ]x="\([-0-9]*\)".*/\1/p')
       YY=$(printf '%s' "$L" | sed -n 's/.*[ ]y="\([-0-9]*\)".*/\1/p')
-      case "$(printf '%s' "$NM" | tr 'A-Z' 'a-z')" in
+      case "$(lower "$NM")" in
         *encrage*|*trait*|*line*|*dessin*|*ink*)  ROLE=trait ;;
         *couleur*|*couleurs*|*color*)             ROLE=couleur ;;
         *decor*|*fond*|*back*|*arriere*)          ROLE=decor/fond ;;

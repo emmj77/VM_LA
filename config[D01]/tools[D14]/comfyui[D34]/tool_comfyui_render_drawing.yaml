@@ -17,7 +17,7 @@ DESCRIPTION: "flattens a .kra into a png or a jpg, on white or transparent, and 
 COMMAND: |
   SRC="$W/{{source}}"
   [ -f "$SRC" ] || { printf '%s\n' "$(msg source_missing '%s')""$SRC" >&2; exit 1; }
-  case "$(printf '%s' "$SRC" | tr 'A-Z' 'a-z')" in
+  case "$(lower "$SRC")" in
     *.kra) ;;
     *) printf '%s\n' "$(msg kra_required '%s')""$SRC" >&2; exit 1 ;;
   esac
