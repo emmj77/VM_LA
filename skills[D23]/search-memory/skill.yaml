@@ -16,6 +16,8 @@ PERMANENT_TODO: false
 SKILL_TOOL_SET:
   G022: "load_doc"
   G062: "mkdir"
+  G015: "todo"
+  G016: "update_todo"
 DOCS:
   300: "web_search"
 PLAN:

@@ -286,7 +286,6 @@ skl_gate() {
   {
     table_permanents
     skl_tools_map "$_n" | awk -F'\t' '{ print $2 }'
-    skl_plan_is_closed "$_n" 2>/dev/null || printf 'update_todo\ntodo\n'
   } | awk 'NF && !seen[$0]++'
   return 0
 }

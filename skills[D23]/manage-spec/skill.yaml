@@ -25,6 +25,8 @@ SKILL_TOOL_SET:
   G079: "app_spec"
   G002: "read_file"
 
+  G015: "todo"
+  G016: "update_todo"
 DOCS:
   300: "manage-spec: load_spec reads the canon (all, a section, a range of lines) and opens app_spec for this turn."
   301: "app_spec writes one or two statements where it is told: over=0 they land there, over=1 or 2 they replace what stands."

@@ -51,6 +51,8 @@ SKILL_TOOL_SET:
   C002: "comfyui_status"
   C023: "comfyui_stop"
 
+  G015: "todo"
+  G016: "update_todo"
 DOCS:
   300: "asset_builder"
 

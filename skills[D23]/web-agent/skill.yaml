@@ -31,6 +31,8 @@ SKILL_TOOL_SET:
   G070: "chatgpt_ask"
   G071: "deepseek_ask"
 
+  G015: "todo"
+  G016: "update_todo"
 DOCS:
   300: "agent-browser.md"
 
