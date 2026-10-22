@@ -4,38 +4,22 @@ date: "2026-10-19"
 tags: ["tunnel", "phone", "wireguard", "wg0", "pairing", "route"]
 
 SUMMARY:
-  100: "BRING THE PHONE UP TO THE BRIDGE, AND PROVE IT WITH THE MACHINE."
-  101: "This is not a recipe: it is a CLOSED ROUTE (PERMANENT_TODO: true)."
-  102: "At every step, the harness opens ONLY the tools named on the step line."
-  103: "You do not choose the next one, and you do not have to choose it: it opens when the"
-  104: "machine said yes -- that is, when ALL the tools of the step returned ok."
-  105: "A step that refuses (wg missing, conf unreadable) does not close: say what is missing."
-  110: "WHAT THE PHONE DOES, AND WHAT IT DOES NOT DO"
-  111: "The tunnel carries the phone bridge. The bridge listens on 127.0.0.1: it does not"
-  112: "open on the network: it is the tunnel that brings the phone up to it."
-  113: "Raising the tunnel opens NO service: it sets an address (10.10.0.1/24) and a port"
-  114: "listen on UDP. What passes next is the bridge, and it has its own door."
-  120: "THE FOUR ACTS, IN THIS ORDER, WITHOUT SKIPPING ONE"
-  121: "1. READ: tunnel_status. What already stands is not raised, what does not stand"
-  122: "   is not laid down. The state is read BEFORE the act, always."
-  123: "2. RAISE: tunnel_up. It refuses an interface already up, a missing conf, a sudo"
-  124: "   that wants a password. What it mounts, it says, and it says it through the machine."
-  125: "3. CHECK: tunnel_status again. The fact closes the step, not the"
-  126: "   word of tunnel_up. Address, listening port, peer that spoke: three things."
-  127: "4. REPORT: reply. Four lines at most: what stands, the address, the port, and"
-  128: "   what remains to be done on the phone side."
-  130: "WHAT YOU DO NOT DO HERE: lay the tunnel down without being asked, open the"
-  131: "bridge on the network, nor promise the phone is reachable before step 3"
-  132: "has seen an address AND a listening port."
+  100: "A ROUTE, NOT A RECIPE: bring the phone up to the bridge, and prove it with the machine."
+  101: "the FACT closes a step, never the word of tunnel_up. a step that cannot pass says what is missing."
+  102: "| # | act   | tool          | the step closes when                                       |"
+  103: "| 1 | read  | tunnel_status | an address AND a listening port are printed                |"
+  104: "| 2 | raise | tunnel_up     | it says what it mounted, or names what it lacks            |"
+  105: "| 3 | check | tunnel_status | address, port, and a peer that has spoken: three lines     |"
+  106: "| 4 | speak | reply         | four lines: what stands, the address, the port, phone side |"
+  107: "never: lay it down unasked, open the bridge on the network, promise before step 3 is read."
+  110: "the bridge listens on 127.0.0.1 only; the tunnel is what brings the phone to it."
+  111: "raising wg0 sets 10.10.0.1/24 and a UDP port; it opens no service of its own."
 
 RULES:
-  create_subfolder: true
-  execute_code: false
   max_section_lines: 100
 
-  # APPROVAL: false -- AND IT IS NOT AN OVERSIGHT. The three tunnel tools are not in GATED:
-  # MOUSSA's rule (19/10) is short and named ("just install_program and download_file").
-  # What bounds this skill is the TUNNEL itself: every step closes the toolset on its tools.
+# APPROVAL: false -- the three tunnel tools are outside GATED; what bounds this skill is the
+# tunnel itself: every step closes the toolset on the one tool it names.
 APPROVAL: false
 PERMANENT_TODO: true
 
@@ -49,15 +33,14 @@ DOCS:
   300: "TUNNEL_trois_skills_a_juger"
 
 PLAN:
-  400: "PLAN phone-tunnel: bring the phone up to the bridge, and prove it"
-  401: "[in_progress] read the tunnel state -- tools: tunnel_status"
-  402: "[todo] raise wg0 and say it -- tools: tunnel_up"
-  403: "[todo] state what is mounted -- tools: tunnel_status"
-  404: "[todo] rendre compte au telephone -- tools: reply"
+  400: "PLAN phone-tunnel: the phone on the bridge, proven"
+  401: "[in_progress] read what stands -- tools: tunnel_status"
+  402: "[todo] raise wg0 -- tools: tunnel_up"
+  403: "[todo] prove it by the fact -- tools: tunnel_status"
+  404: "[todo] report four lines -- tools: reply"
 
 WRITABLE_WORKSPACE:
-  # the tunnel WRITES nothing: it reads the machine state and reports. The workspace is the
-  # only thing it could touch, and it has no need of it -- it is declared for the form the
+  # the tunnel writes nothing: it reads the machine and reports. declared for the form the
   # harness demands, and it serves no step.
   workspace: "work/"
   type-file: ".md .yaml .txt .json"
