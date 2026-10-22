@@ -31,6 +31,15 @@ Deux décisions à prendre avant de l'écrire :
 2. `create-spec` écrit-elle aussi ses premiers énoncés (`load_spec` + `app_spec` dans la route), ou
    ouvre-t-elle la section et passe-t-elle la main à `manage-spec` ?
 
+## Demain — imposer `manage-spec`
+
+Quand un projet est charge, le modele doit travailler le canon de ce projet : il faut donc lui
+imposer `manage-spec`. Deux formes, a trancher :
+
+1. **au chargement du projet** : la porte charge `manage-spec` avec le projet, une fois, doc compris.
+2. **a cadence** : `manage-spec` revient tous les N tours tant qu un projet est charge — la cadence
+   en `la_config`, comme `loop.todo_every` et `loop.big_todo_every`.
+
 ## Reste ouvert (ancienne liste, à trancher)
 
 5. **Reranker, autres missions** : au-delà de l'effort, la palette et le réveil.
