@@ -311,8 +311,9 @@ skl_plan_advance() {
 }
 
 # --- the BIG plan : the project's chantier, in its manifest, under PROJECT_PLAN.
-# it is the second layer (the small plan is the agent's file). it does not evaporate:
-# it is CHANGED. same line shape, same two names : in_progress and completed.
+# it is the second layer (the small plan is the agent's file). it is CHANGED, and it erases
+# itself at its last step. same line shape, same two names : in_progress and completed.
+# it never holds the project: the project unloads whenever the human says so.
 
 # skl_big_file : the project.yml of the armed project, empty when no project is loaded
 skl_big_file() {
@@ -408,12 +409,16 @@ skl_big_advance() {
       if (fin) exit 9
     }' > "$_t"
   _rc=$?
-  _skl_big_put "$_f" "$_t" || { rm -f "$_t" ; return 5 ; }
-  rm -f "$_t"
   if [ "$_rc" = 9 ]; then
-    printf 'ok the big plan of %s is finished at its last step (it stays: it is changed, not erased)\n' "$(skl_project)"
+    rm -f "$_t"
+    _e=$(mktemp "${TMPDIR:-/tmp}/bige.XXXXXX") || return 5
+    _skl_big_put "$_f" "$_e" || { rm -f "$_e" ; return 5 ; }
+    rm -f "$_e"
+    printf 'ok the big plan of %s is finished and erased: its last step closed, the section stays empty\n' "$(skl_project)"
     return 9
   fi
+  _skl_big_put "$_f" "$_t" || { rm -f "$_t" ; return 5 ; }
+  rm -f "$_t"
   printf 'ok the big plan moved: %s\n' "$_st"
   return 0
 }

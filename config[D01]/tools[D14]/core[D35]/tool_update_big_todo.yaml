@@ -12,7 +12,7 @@ RULES:
   count: false
   paths: write
 
-DESCRIPTION: "moves the big plan of the loaded project: completed closes the open step and opens the next, in_progress keeps it. It never deletes the plan: the big plan is changed, not erased."
+DESCRIPTION: "moves the big plan of the loaded project: completed closes the open step and opens the next, in_progress keeps it. The last completed erases the plan: the PROJECT_PLAN section stays empty."
 
 COMMAND: |
   ST="{{state}}"

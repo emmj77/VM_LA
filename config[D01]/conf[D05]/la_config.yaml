@@ -30,7 +30,7 @@ date: "2026-10-21"
 machine:
   threads: 8
   free_terminal:                            # what a free shell may not do: the calls the kernel refuses
-    deny: [unlink, unlinkat, rmdir]
+    deny: [unlink, unlinkat, rmdir, io_uring_setup, io_uring_enter, io_uring_register]
     error: EPERM
   kws:
     root: "/home/moussa/Applications/sherpa-onnx/kws-en/sherpa-onnx-kws-zipformer-gigaspeech-3.3M-2024-01-01"
@@ -232,7 +232,7 @@ loop:
   max_tokens: 0
   max_calls: 0
   max_seconds: 0
-  plan_every: 10
+  plan_every: 5
   plan_steps: 12
   plan_chars: 100
   update_every: 10
@@ -675,7 +675,7 @@ board:
   # LE MENU VIT ICI : l ordre des sections, leurs icones, et la liste ordonnee de leurs lignes.
   # Un titre absent de ces listes ne disparait pas : il tombe dans la section « other ».
   sections:
-    - {name: "LA", icon: "🟢", lines: ["la status", "approbation", "sessions", "last_activity"]}
+    - {name: "LA", icon: "🟢", lines: ["la status", "approbation", "skills à signer", "sessions", "last_activity"]}
     - {name: "RESIDENT", icon: "👥", lines: ["residents*"]}
     - {name: "TOOLS", icon: "⚙", lines: ["indra ocr", "vision"]}
     - {name: "GPU/RAM", icon: "🧠", lines: ["ram of LA", "gpu RTX 3060", "gpu Quadro P2200"]}
@@ -687,6 +687,7 @@ board:
     "la status": "🟢"
     "residents": "👥"
     "approbation": "✍"
+    "skills à signer": "🔑"
     "sessions": "💬"
     "last_activity": "⏱"
     "embed": "🧩"
