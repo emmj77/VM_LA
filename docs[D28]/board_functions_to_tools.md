@@ -143,33 +143,49 @@ La santé et l'inventaire. Voici **tous** les outils du docteur, avec leurs `op`
 
 ---
 
-## 5. Le board ne recalcule plus — il compose l'existant
+## 5. Le board ne recalcule plus — chaque fonction de board.py part dans son outil
 
-`engine.board` (E020) perd tout son Python de lecture. Chaque `read_*` de `board.py`
-appelle un outil **qui existe déjà** (moteur, cœur ou docteur), par la porte :
+`engine.board` (E020) perd tout son Python. Voici **chaque fonction de `board.py`**
+(102 entrées) et sa destination. **La 4ᵉ colonne = l'outil où la fonction part** ;
+« — » = reste dans board (rendu, TUI, HTTP, utilitaire). On sait exactement ce qu'on
+met où.
 
-| fonction board.py | outil (déjà existant) | zone |
-|---|---|---|
-| `read_residents` (+ `alive`, `_units`, appoints) | `engine.residents` | moteur |
-| `_router_models` | `engine.models` | moteur |
-| `read_approval` | `engine.approve` | moteur |
-| `read_turn` / journal | `engine.trace` | moteur |
-| `read_traffic` (sessions) | `engine.stat` (`op=exchanges`) ou `recall` G056 / `search_sessions` G029 | moteur/cœur |
-| `read_git` | `engine.update` (`op=check`) | moteur |
-| `read_engine` (endpoint) | `engine.board` / `engine.switch` | moteur |
-| `read_state` (skill/projet armé) | `skill_list` G051 / `project_list` G033 | cœur |
-| `model.tokens` | `engine.stat` (`op=cost`) | moteur |
-| `_db_query` / `model.query` | `recall` G056 / `search_sessions` G029 | cœur |
-| `read_modeles` | `doctor.models` (`op=files`) | docteur |
-| `read_instruments` / `read_machine_name` | `doctor.machine` | docteur |
-| `read_canon` | `doctor.knowledge` (`op=canon`) | docteur |
-| `read_table` / `read_registry` | `table_manage` G018 | cœur |
-| `bridge` / `bridge_state` | — (la porte HTTP) | — |
+| fonction board.py (l.) | rôle | état | outil cible (4ᵉ) |
+|---|---|---|---|
+| `state_dir` (35) | chemins d'état | reste | — (util) |
+| `num` (40) | un nombre de section | reste | — (util) |
+| `_cfg` (53) | la config | part | `config_list` G080 |
+| `bridge` (62) · `bridge_ping` (81) · `bridge_state` (86) | appels au pont HTTP | reste | — (porte HTTP) |
+| `read_head` (90) | snapshot de tête | part | `head_state` (à vérifier) |
+| `_units` (94) · `alive` (284) | units / vivant résidents | part | `engine.residents` |
+| `_git_state` (119, +`one`) · `read_git` (638) | état git | part | `engine.update` (`op=check`) |
+| `_engine` (129) · `read_engine` (625) | endpoint / provider | part | `engine.board` / `engine.switch` |
+| `_db_counts` (145) | comptes sessions | part | `engine.stat` |
+| `_db_query` (151) · `class model` (216) | sql / tokens | part | `recall` G056 / `search_sessions` G029 |
+| `_table` (161) · `read_table` (570) · `read_registry` (495) | registre / table | part | `table_manage` G018 |
+| `class laconf` (189) · `dotted` (206) | accès config | part | `config_list` G080 |
+| `_port` (239) · `run` (268) | parse port / lance cmd | reste | — (util) |
+| `probe` (277) · `_rss_port` (379) · `size_of` (526) · `read_instruments` (478) · `read_machine_name` (690) | ports / mémoire / instruments / machine | part | `doctor.machine` |
+| `weight` (292) · `line` (302, +`build`) · `ago` (717) · `short` (960) · `tint` (1027) · `_footer` (1048) · `human_count` (1169) · `shorten` (1183) | mise en forme | reste | — (rendu) |
+| `_router_models` (330) | routeur modèles | part | `engine.models` |
+| `read_residents` (340) | résidents | part | `engine.residents` |
+| `_appoint_rows` (368) · `read_appoints` (394) · `read_approval` (410) · `_approval_gesture` (903) | approbations / geste | part | `engine.approve` (`op=view`) |
+| `_models_in` (510) · `read_modeles` (543, +`place`) | fichiers modèles | part | `doctor.models` (`op=files`) |
+| `read_canon` (598) | canon | part | `doctor.knowledge` (`op=canon`) |
+| `read_doctor` (621) | cache docteur | part | `engine.doctor` |
+| `read_traffic` (645) | trafic sessions / journal | part | `engine.stat` / `engine.trace` |
+| `read_turn` (668) · `_tool_line` (1242) · `class Tailer` (1208) | le canal vivant | part | `engine.trace` |
+| `read_state` (1188) | skill / projet armé | part | `skill_list` G051 / `project_list` G033 |
+| `_read_history` (1499, dans Cli) | historique | part | `engine.hist` / `recall` G056 |
+| `one_turn` (1258, +`stream`) | un tour | part | `engine.turn` |
+| `control` (734) · `_expand` (866) · `_ratio_of` (879) · `board_object` (915, +`row`) · `sections` (976) · `one_line` (1013) · `snapshot` (1196) | composition du board | reste | — (rendu board) |
+| `_sigwinch` (1023) · `_keys` (1037) · `tui` (1054) · `class Cli` (1297, +24 méthodes) · `cli` (1700) · `main` (1705) | interface terminal | reste | — (TUI) |
+| `base` (1146) · `http` (1150) · `door_line` (1162) | appels HTTP | reste | — (HTTP) |
 
-**Presque rien à créer** : ces outils existent. Là où un outil ne rend pas la donnée
-exacte d'une ligne (ex. `engine.stat op=exchanges` disait « 28 messages » au lieu des
-échanges distincts), on **ajuste son `op` de quelques lignes** — on ne crée pas un
-lecteur parallèle.
+**Toutes les fonctions qui « partent » existent déjà comme outils** — aucune à
+réinventer. Là où un outil ne rend pas la donnée exacte d'une ligne (ex.
+`engine.stat op=exchanges` disait « 28 messages » au lieu des échanges distincts), on
+**ajuste son `op` de quelques lignes** — jamais un lecteur parallèle.
 
 ## 6. Route par route — les trois sorties, et l'outil existant qui y répond
 
