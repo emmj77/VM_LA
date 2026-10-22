@@ -291,17 +291,17 @@ limits:
 channels:                                     # what a label carries: one table, read by channel_is.
   engine:                                     # an undeclared label takes the model row, so a new
     self: yes                                 # transport is shut until it is written down here.
-    model: no
+    gate: no
     capture: no
     approval: no
   model:
     self: no
-    model: yes
+    gate: yes
     capture: yes
     approval: yes
   human:
     self: no
-    model: no
+    gate: no
     capture: no
     approval: yes
 

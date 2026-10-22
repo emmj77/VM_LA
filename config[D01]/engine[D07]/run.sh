@@ -166,7 +166,7 @@ run_call() {
 
   # 5 the tools the active skill allows: the model alone is held to it
   # a permanent tool passes anywhere, the others need the toolset of the active skill
-  if channel_is "${LA_FROM:-model}" model; then
+  if channel_is "${LA_FROM:-model}" gate; then
     skl_gate "$_name"; _rc=$?
     case $_rc in
       0) : ;;

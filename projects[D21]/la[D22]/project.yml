@@ -77,7 +77,7 @@ SPEC:                       # the canon: the machine's own facts, one verifiable
     - "a turn runs prompt, model, tool, gate ; each step writes one trace line"
     - "la_config is the only source of values : bounds, cadences, paths, texts"
     - "an unknown command is refused ; a command is a la_config name, or a family and a tool"
-    - "a channel is a row of la_config channels: : self, model, capture, approval"
+    - "a channel is a row of la_config channels: : self, gate, capture, approval"
     - "channel_is is the only reader of that table ; a label nobody wrote down takes the model row"
     - "no brick reads the label itself ; one that does is a fault the doctor names"
   loops:                    # section 7 : feedback loops, forced append, read
