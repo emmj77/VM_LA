@@ -5,6 +5,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D002
   tool: "doctor.forms"
@@ -13,6 +16,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D003
   tool: "doctor.keys"
@@ -21,6 +27,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D004
   tool: "doctor.knowledge"
@@ -29,6 +38,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D005
   tool: "doctor.language"
@@ -37,6 +49,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D006
   tool: "doctor.machine"
@@ -45,6 +60,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D007
   tool: "doctor.manifest"
@@ -53,6 +71,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D008
   tool: "doctor.structure"
@@ -61,6 +82,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D009
   tool: "doctor.texts"
@@ -69,6 +93,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D010
   tool: "doctor.tools"
@@ -77,6 +104,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D011
   tool: "doctor.index"
@@ -85,6 +115,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D012
   tool: "doctor.models"
@@ -93,6 +126,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D013
   tool: "doctor.duplicates"
@@ -101,6 +137,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D015
   tool: "doctor.tags"
@@ -109,6 +148,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D016
   tool: "doctor.vision"
@@ -117,6 +159,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D017
   tool: "doctor.voice"
@@ -125,6 +170,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D018
   tool: "doctor.arguments"
@@ -133,6 +181,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D019
   tool: "doctor.pages"
@@ -141,6 +192,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D020
   tool: "doctor.state"
@@ -149,6 +203,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D021
   tool: "doctor.turn"
@@ -157,6 +214,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D022
   tool: "doctor.perms"
@@ -165,6 +225,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: D023
   tool: "doctor.skills"
@@ -173,6 +236,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E001
   tool: "engine.approve"
@@ -181,6 +247,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E002
   tool: "engine.asr"
@@ -189,6 +258,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E003
   tool: "engine.backup"
@@ -197,6 +269,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E004
   tool: "engine.commands"
@@ -205,6 +280,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E005
   tool: "engine.doctor"
@@ -213,6 +291,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E006
   tool: "engine.hist"
@@ -221,6 +302,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E007
   tool: "engine.install"
@@ -229,6 +313,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E008
   tool: "engine.models"
@@ -237,6 +324,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E009
   tool: "engine.retention"
@@ -245,6 +335,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E010
   tool: "engine.spec"
@@ -253,6 +346,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E011
   tool: "engine.stat"
@@ -261,6 +357,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E012
   tool: "engine.switch"
@@ -269,6 +368,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E013
   tool: "engine.trace"
@@ -277,6 +379,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E014
   tool: "engine.tts"
@@ -285,6 +390,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E015
   tool: "engine.tunnel"
@@ -293,6 +401,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E016
   tool: "engine.update"
@@ -301,6 +412,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E017
   tool: "engine.reload"
@@ -309,6 +423,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E019
   tool: "engine.signal"
@@ -317,6 +434,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E020
   tool: "engine.board"
@@ -325,6 +445,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E021
   tool: "engine.residents"
@@ -333,6 +456,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E022
   tool: "engine.service"
@@ -341,6 +467,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E023
   tool: "engine.turn"
@@ -349,6 +478,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E024
   tool: "engine.map"
@@ -357,6 +489,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E025
   tool: "engine.uninstall"
@@ -365,6 +500,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E026
   tool: "engine.wake"
@@ -373,6 +511,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: E027
   tool: "engine.purge"
@@ -381,6 +522,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: T001
   tool: "turn.call"
@@ -389,6 +533,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: T002
   tool: "turn.facts"
@@ -397,6 +544,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: T003
   tool: "turn.note"
@@ -405,6 +555,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: T004
   tool: "turn.prompt"
@@ -413,6 +566,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: T005
   tool: "turn.reply"
@@ -421,6 +577,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: T006
   tool: "turn.scope"
@@ -429,6 +588,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: T007
   tool: "turn.second"
@@ -437,6 +599,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: T008
   tool: "turn.tools"
@@ -445,6 +610,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: T009
   tool: "turn.effort"
@@ -453,6 +621,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: W001
   tool: "watch.judge"
@@ -461,6 +632,9 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false
 - id: W003
   tool: "watch.surveil"
@@ -469,4 +643,7 @@
   doc: ""
   guardrail: true
   enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
   visible: false

@@ -486,8 +486,6 @@ head:
     103: "G077, T001, U03 are the ids of the master file lines, not what I call."
     104: '[{"type":"function","function":{"name":"reply","description":"the answer to the human, in words: how it reaches them is the machine business","parameters":{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}}}]'
     105: "The same shape, another tool: read_file {path:work/note.md}."
-  PERMANENTS:
-    101: "Injected every turn by the loop, never loaded: @PERMANENTS@."
   MECHANISM:
     101: "ONE TURN: la(g, a) -> the engine runs line g -> the result comes back -> I continue."
     102: "The engine checks BEFORE the effect: id, line, arguments, scope. A refusal comes back as is."
