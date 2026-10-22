@@ -25,7 +25,8 @@ COMMAND: |
   if [ -L "$SK/$SLUG" ]; then printf '%s\n' "$(msg target_symlink "$SLUG")" >&2 ; exit 1 ; fi
   [ -d "$SK/$SLUG" ] && [ -f "$C" ] || { printf '%s\n' "$(msg skill_absent_file "$SLUG")" >&2 ; exit 1 ; }
   H=$(sed -n 's/^HUMAN_ONLY:[[:space:]]*//p' "$C" | head -n 1 | sed -e 's/#.*$//' | tr -d ' ')
-  if [ "$H" = true ] && channel_is "${LA_FROM:-model}" gate; then
+  channel_is "${LA_FROM:-model}" gate ; _g=$?
+  if [ "$H" = true ] && [ "$_g" -ne 1 ]; then
     printf '%s\n' "$(msg refusals.human_only_skill "$SLUG")" >&2 ; exit 1
   fi
   PROCS=${PROCS:-$(cfg path programs 2>/dev/null)}

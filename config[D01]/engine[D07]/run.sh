@@ -166,7 +166,8 @@ run_call() {
 
   # 5 the tools the active skill allows: the model alone is held to it
   # a permanent tool passes anywhere, the others need the toolset of the active skill
-  if channel_is "${LA_FROM:-model}" gate; then
+  channel_is "${LA_FROM:-model}" gate ; _ch_rc=$?
+  if [ "$_ch_rc" -ne 1 ]; then
     skl_gate "$_name"; _rc=$?
     case $_rc in
       0) : ;;
@@ -232,7 +233,8 @@ run_call() {
   done
 
   # 9 approval : a gated body waits for a signed go; only a label whose row lifts it is exempt
-  if channel_is "${LA_FROM:-model}" approval && is_gated "$_body"; then
+  channel_is "${LA_FROM:-model}" approval ; _ch_rc=$?
+  if [ "$_ch_rc" -ne 1 ] && is_gated "$_body"; then
     if approval_ok "$_name" "$@"; then
       :
     else

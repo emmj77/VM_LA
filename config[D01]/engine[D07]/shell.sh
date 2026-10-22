@@ -102,7 +102,8 @@ $_c" dash "$@" 2>&1)
     return 124
   fi
   # an engine call feeds the turn, not the model: no cap, no returns entry
-  if channel_is "${LA_FROM:-model}" capture; then _res=$(printf '%s' "$_out" | cap_return "$_x")
+  channel_is "${LA_FROM:-model}" capture ; _ch_rc=$?
+  if [ "$_ch_rc" -ne 1 ]; then _res=$(printf '%s' "$_out" | cap_return "$_x")
   else _res=$_out ; fi
   # a route closes its step on the fact it has just read: the engine, never the model
   if [ "$_rc" -eq 0 ]; then

@@ -51,9 +51,18 @@ COMMAND: |
     [ "$_n" -gt 0 ] && printf 'ok %s program(s), syntax held\n' "$_n" \
       || printf 'FAULT no program in programs\n'
     ;;
+  channels)
+    _c=$(cfg abs la_config) || { printf 'FAULT no master file\n'; exit 0 ; }
+    awk '/^channels:/{c=1;next} c&&/^[^ #]/{c=0} c&&/^  [a-z]/{
+           if (r != "" && n < 4) printf "FAULT row %s carries %d rule(s), it needs four\n", r, n
+           r = $1 ; sub(/:.*/, "", r) ; n = 0 ; next }
+         c&&r&&/^    /{n++}
+         END { if (r != "" && n < 4) printf "FAULT row %s carries %d rule(s), it needs four\n", r, n }' "$_c"
+    printf 'ok the channels table is read, %s row(s)\n' "$(awk '/^channels:/{c=1;next} c&&/^[^ #]/{c=0} c&&/^  [a-z]/' "$_c" | wc -l | tr -d ' ')"
+    ;;
   *) printf 'FAULT unknown op %s\n' "$_op" ;;
   esac
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: root,scripts,programs}
+  - {name: op, type: enum, values: root,scripts,programs,channels}

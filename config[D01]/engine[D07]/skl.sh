@@ -176,7 +176,7 @@ _skl_step_at() {
 skl_step_close() {
   _t=${1:-} ; _r=${2:-}
   [ -n "$_t" ] || return 1
-  channel_is ${LA_FROM:-model} self && return 1
+  channel_is ${LA_FROM:-model} self ; [ $? -eq 0 ] && return 1
   _n=$(skl_skill 2>/dev/null) || return 1
   [ -n "$_n" ] || return 1
   skl_plan_is_closed "$_n" 2>/dev/null || return 1
