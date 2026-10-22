@@ -235,6 +235,7 @@ loop:
   plan_every: 5
   plan_steps: 12
   plan_chars: 100
+  big_every: 15
   update_every: 10
   timeout: 600
   share: 30
@@ -449,16 +450,16 @@ head:
     101: "Each tool is one function of the API: the NAME is the tool name (reply, read_file, list_dir), and its arguments are named. No number, no line."
     102: "I fill only the declared argument names; free text goes to the argument the tool declares for it."
     103: "G077, T001, U03 are the ids of the master file lines, not what I call."
-    104: '[{"type":"function","function":{"name":"reply","description":"the only tool the human hears","parameters":{"type":"object","properties":{"mode":{"type":"string","enum":["talk","ask","answer"]},"form":{"type":"string","enum":["text","list","table","code"]},"text":{"type":"string"}},"required":["mode","form","text"]}}}]'
+    104: '[{"type":"function","function":{"name":"reply","description":"the answer to the human, in words: how it reaches them is the machine business","parameters":{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}}}]'
     105: "The same shape, another tool: read_file {path:work/note.md}."
   PERMANENTS:
     101: "Injected every turn by the loop, never loaded: @PERMANENTS@."
   MECHANISM:
     101: "ONE TURN: la(g, a) -> the engine runs line g -> the result comes back -> I continue."
     102: "The engine checks BEFORE the effect: id, line, arguments, scope. A refusal comes back as is."
-    103: "reply: mode, FORM (text/list/table/code), TEXT. Three arguments, in that order; only TEXT is heard by the human."
-    104: "One reply talk per turn, one SHORT sentence. Then the work tools. An open plan closes with update_todo, then reply answer."
-    105: "The 4th argument of reply is a work note, never said to the human. The conversation is not the state: PLAN and STATE live outside me."
+    103: "reply: TEXT, one argument. What the human hears, and how they hear it, is the machine's business, never mine."
+    104: "One reply per turn, one SHORT sentence, then the work tools. An open plan closes with update_todo, then reply."
+    105: "The conversation is not the state: PLAN and STATE live outside me."
     106: "recall(n) re-reads the last n messages: ask it once, on a memory hole."
   SKILL:
     101: "I see ONLY the ACTIVE SKILL: its scope, its tools, its SUMMARY."
@@ -545,6 +546,12 @@ schema:
     min: 40
     max: 400
     why: une ligne du plan, en caracteres, au plus
+  - section: loop
+    key: big_every
+    kind: int
+    min: 5
+    max: 60
+    why: le grand plan se rappelle, tous les N tours, quand rien ne le porte
   - section: loop
     key: update_every
     kind: int

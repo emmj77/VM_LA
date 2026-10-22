@@ -209,20 +209,43 @@ tool_allowed() {
   return $?
 }
 
+# skl_big_recall : one line of the head for the big plan. the three conditions hold together:
+# a project is loaded, its plan carries an open step, and no journal plan is open for this agent.
+# the cadence is loop.big_every. it reminds, it never closes the toolset.
+skl_big_recall() {
+  _f=$(skl_big_file) || return 1
+  _b=$(_skl_big_body "$_f")
+  [ -n "$_b" ] || return 1
+  printf '%s\n' "$_b" | grep -q '\[in_progress\]' || return 1
+  _p=$(skl_plan_file 2>/dev/null)
+  [ -n "$_p" ] || return 1
+  if [ -s "$_p" ] && grep -q '\[in_progress\]\|\[todo\]' "$_p" 2>/dev/null; then return 1; fi
+  _at=$(printf '%s\n' "$_b" | sed -n 's/.*-- turn \([0-9][0-9]*\).*/\1/p' | head -n 1)
+  [ -n "$_at" ] || return 1
+  _now=$(skl_turn_no)
+  [ "$_now" -gt 0 ] 2>/dev/null || return 1
+  _be=$(cfg num loop.big_every 15) || _be=15
+  [ $((_now - _at)) -ge "$_be" ] || return 1
+  _step=$(printf '%s\n' "$_b" | grep '\[in_progress\]' | head -n 1 | sed -e 's/^ *[0-9][0-9]*: "//' -e 's/"$//' -e 's/^\[in_progress\][[:space:]]*//')
+  printf 'the big plan of %s has not moved for %s turns -- its open step: %s\n' "$(skl_project)" "$((_now - _at))" "$_step"
+}
+
 # plan_status : what the head shows : the doc, the plan, and its open step
 plan_status() {
   _n=$(skl_skill 2>/dev/null)
-  [ -n "$_n" ] || { printf 'no skill armed\n'; return 0; }
+  [ -n "$_n" ] || { printf 'no skill armed\n'; skl_big_recall 2>/dev/null; return 0; }
   if skl_doc_seen; then printf 'doc: read\n'; else printf 'doc: TO READ -- load_doc first, it is the only tool of this turn\n'; fi
   _st=$(skl_plan_step "$_n" 2>/dev/null)
   case $? in
-    2) printf 'plan: NONE -- todo writes %s_todo.md\n' "$(skl_agent | tr 'A-Z' 'a-z')"; return 0 ;;
-    3) printf 'plan: FINISHED -- the skill closes\n'; return 0 ;;
+    2) printf 'plan: NONE -- todo writes %s_todo.md\n' "$(skl_agent | tr 'A-Z' 'a-z')"; skl_big_recall 2>/dev/null; return 0 ;;
+    3) printf 'plan: FINISHED -- the skill closes\n'; skl_big_recall 2>/dev/null; return 0 ;;
   esac
   printf '%s\n' "$(printf '%s' "$_st" | awk -F'\t' '{ printf "plan: step %s OPEN", $1; if ($2 != "") printf " -- tools: %s", $2; printf "\n" }')"
   _src=$(skl_plan_src "$_n" 2>/dev/null) || return 0
   [ -r "$_src" ] || return 0
   awk '/^[ \t]*4[0-1][0-9]:/ { print }' "$_src" | head -n 12
+  skl_big_recall 2>/dev/null
+  return 0
 }
 
 # skl_plan_write <goal> <points> : todo writes the journal plan of the agent. the bounds hold :
@@ -364,7 +387,7 @@ skl_big_write() {
   [ -z "$(printf '%s\n' "$_ps" | awk -v mc="$_mc" 'length($0) > mc { print ; exit }')" ] || return 11
   _b=$(mktemp "${TMPDIR:-/tmp}/bigb.XXXXXX") || return 1
   {
-    printf '  400: "PLAN %s: %s"\n' "${_nm:-$(skl_agent)}" "$_g"
+    printf '  400: "PLAN %s: %s -- turn %s"\n' "${_nm:-$(skl_agent)}" "$_g" "$(skl_turn_no)"
     _j=0 ; _i=400
     printf '%s\n' "$_ps" | while IFS= read -r _l; do
       [ -n "$(printf '%s' "$_l" | tr -d '[:space:]')" ] || continue
