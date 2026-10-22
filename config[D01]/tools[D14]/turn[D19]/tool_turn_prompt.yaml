@@ -145,7 +145,7 @@ COMMAND: |
       printf 'the chat is empty\n'
     fi
     printf '== THE TOOLSET ==\n'
-    _tl=$(printf '%s' "$(_turn_get '.tools')" | jq -r '.[]?.function.name' 2>/dev/null | tr '\n' ' ' | sed 's/ *$//')
+    _tl=$(printf '%s' "$(_turn_get '.tools')" | jq -r '.[]? | "- " + .function.name + " : " + (.function.description // "")' 2>/dev/null)
     [ -n "$_tl" ] && printf '%s\n' "$_tl" || printf 'no tool\n'
   )
 
