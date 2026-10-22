@@ -92,7 +92,43 @@ choisissent la cible/le verbe de la même fonction. Seul `board` change de natur
 | 31 | engine.usage_tokens | les jetons de la dernière session (NOUVEAU) | — |
 | 32 | engine.session_query | lecture libre de sessions.db en sqlite (NOUVEAU) | — |
 
-**Total moteur = 32 outils** (25 familles gardées + board-mince + 6 nouveaux lecteurs).
+**Total moteur = 32 outils** : 26 outils existants (24 familles + `commands` la porte + `board` mince) + 6 nouveaux lecteurs.
+
+## 4 bis. Audit des trois sorties — outils AJOUTÉS pour le dashboard et l'app
+
+J'ai lu `dash_server.py`, `bridge.py` (le pont que le dashboard relaie et que l'app
+appelle) et `Bridge.kt` / `ChatActivity.kt`. Le pont lit **lui-même** plusieurs
+données que rien n'outille (son commentaire : « no tool owns them yet »). Routés
+par la porte, il faut donc AJOUTER :
+
+**Moteur (engine) — nouveaux :**
+- `engine.head_state` — le snapshot de tête (`/api/head`, `head_snapshot()`)
+- `engine.version` — la chaîne de version (`/api/version`)
+
+**Moteur (engine) — étendre une famille existante (pas de nouvel outil) :**
+- `engine.approve` `op=view` — l'objet d'approbation pending·tool·gesture·phrase·age (`/api/approval`)
+- `engine.tts` `op=say` — lire un texte (`/voice_text`)
+- `engine.asr` `op=transcribe` — transcrire un fichier (`/transcribe`)
+
+**Catalogue (cœur) — les listes que l'app et la page affichent, lues en direct par le pont aujourd'hui :**
+- `list_skills` — skills[D23] + la skill armée (`/api/skills`)
+- `show_skill` — le détail d'une skill (`/api/skill/<nom>`)
+- `list_projects` — projects[D21] + le projet armé (`/api/projects`)
+- `list_agents` — les agents (`/api/agents`)
+- `list_toolmap` — les familles du registre + compte (`/api/toolmap`)
+- `list_commands` — les commandes du fichier maître (`/api/commands`)
+- `config_view` — la vue config (`/api/config` GET)
+- `config_set` — écrire un réglage (`/api/config` POST) — **existe déjà** (G081, cœur)
+
+Route par route, tout le reste est déjà couvert : `state`→board, `live`→`engine.trace`,
+`history`→`engine.hist`, `cmd`/`command`→`engine.commands`, `doctor`→`engine.doctor`,
+`residents`→`engine.residents`, `update`→`engine.update`, `approval/approve/deny`→`engine.approve`.
+
+**Nouveaux comptes : moteur 34** (32 + `head_state` + `version`), **catalogue/cœur 9**
+(`list_skills`, `show_skill`, `list_projects`, `list_agents`, `list_toolmap`,
+`list_commands`, `config_view`, `config_set`, `table_manage`), **docteur ~7**. Total
+visible par les trois sorties ≈ **50 outils** — et « de plus en plus d'outils YAML, ce
+n'est pas un problème ». Là encore, **rien n'est créé ni branché**, c'est le plan.
 
 ## 5. Le board ne recalcule plus — il compose
 
@@ -139,9 +175,9 @@ Composition et rendu seulement :
 
 ## 8. Comptes et ordre (on ne l'exécute PAS maintenant)
 
-- **32 outils moteur** (25 familles + board-mince + 6 nouveaux).
-- **~8 outils docteur/cœur** que le board lit à travers.
-- Total visible par le board ≈ **40 outils**. Trois sorties, une porte.
+- **34 outils moteur** (26 existants + 6 lecteurs + `head_state` + `version`).
+- **~9 outils catalogue/cœur** + **~7 docteur** que les sorties lisent à travers.
+- Total visible par les trois sorties ≈ **50 outils**. Trois sorties, une porte.
 - Ordre, plus tard et sur ton feu vert : découper `board` (chaque `read_*` → son
   outil, un commit par lecteur, sortie prouvée), créer les 6 nouveaux lecteurs,
   docteur vert à chaque étape. On ne branche rien tant que tu n'as pas validé.
