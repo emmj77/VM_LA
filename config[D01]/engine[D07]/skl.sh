@@ -697,6 +697,14 @@ approval_of() {
     }' "$1"
 }
 
+# skill_approval <skill.yaml> : true when the skill must be signed before it loads, false otherwise
+skill_approval() {
+  [ -r "${1:-}" ] || { printf 'false\n' ; return 0 ; }
+  _v=$(sed -n 's/^[[:space:]]*APPROVAL:[[:space:]]*//p' "$1" | head -n 1 \
+       | sed -e 's/#.*$//' -e 's/["'\'']//g' | tr -d '[:space:]' | tr 'A-Z' 'a-z')
+  [ "$_v" = true ] && printf 'true\n' || printf 'false\n'
+}
+
 # is_gated <body> : true when the call waits for a human signature
 is_gated() {
   _a=$(approval_of "${1:-}") || return 1

@@ -9,6 +9,11 @@
 - **La route** : le pas est une donnée (`text`, `tools`, `close`) ; le moteur ferme le pas sur le fait
   (`skl_step_close`, au retour de l'outil) ; `at:` dans le `skill.yaml` dit où l'on en est.
 - **Le doc** : la section `DOCS` est le doc, jamais vide, et les trois formes se mêlent.
+- **la-setting** (K37, `APPROVAL: true`), deux outils : `config_list` (les réglages ouverts au modèle,
+  valeur courante + bornes) et `config_set` (une clé déjà déclarée dans `schema.fields` des sections
+  `loop/limits/head/agents`, type et bornes vérifiés, écriture chirurgicale atomique ; le reste refusé).
+  Charger exige une signature : `load_skill` honore désormais `APPROVAL: true` (helper `skill_approval`),
+  au lieu de bloquer tous les chargements.
 
 ## Le pas suivant : la skill `create-spec`
 
