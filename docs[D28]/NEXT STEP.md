@@ -46,7 +46,7 @@ Quand un projet est charge, le modele doit travailler le canon de ce projet. Deu
     (note 211 body(ies) of unity: no skill opens them and no dispatcher enters the family).
     upipe_command n'en entre que 44 ; les 167 autres n'ont aucune porte nommée.
 
-Ce qu'il faut : un `unity_command` sur le dessin de `upipe_command` et de `krita_action` —
+Ce qu'il faut : un `unity_command` sur le dessin de `upipe_command` et de `krita_cli_tools` —
 l'opération en enum, la connaissance des fiches dans la DESCRIPTION, un seul fichier.
 
   1. lister les ops et ne garder que les corps dont ARGS est vide et dont le seul mot qui

@@ -1,5 +1,5 @@
 id: "K900"
-tool: "krita_action"
+tool: "krita_cli_tools"
 date: "2026-10-22"
 tags: ["krita", "krita", "img", "run"]
 
@@ -13,8 +13,9 @@ RULES:
   paths: read
 
 DESCRIPTION: |
-  the krita actions that take no argument: the action is the only word that changes.
-  one tool for the 16 the same gesture carried.
+  the krita cli tools: what the Krita service answers without argument. the route is the
+  service it declares in the master file (http, port 5678), never a shell. the action is the
+  only word that changes: one tool for the 16 the same gesture carried.
   - ai_generate: ai_generate
   - ai_list_regions: ai_list_regions
   - ai_status: ai_status

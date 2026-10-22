@@ -15823,7 +15823,7 @@
   enabled: true
   visible: true
 - id: K900
-  tool: "krita_action"
+  tool: "krita_cli_tools"
   family: KRITA
   sub_family: ""
   doc: ""
