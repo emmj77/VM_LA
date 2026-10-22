@@ -256,6 +256,16 @@ CARRIERS = laconf.get("board", "porteurs", [])
 # LE MENU VIENT DE LA CONFIG : les sections, leur ordre, leurs icones, et qui va ou.
 # « residents* » deplie la synthese puis chaque resident dans l'ordre declare.
 SECTIONS = laconf.get("board", "sections", []) or []
+
+# le texte du board (titres de blocs, gabarits, couleurs) vient de la config board:
+TITLES = laconf.get("board", "titles", {}) or {}
+_HEADERS = (TITLES.get("turn", "WHAT GOES THROUGH"), TITLES.get("models", "THE MODELS OF LA"),
+            TITLES.get("machine", "THE MACHINE"))
+_ONE = laconf.get("board", "one_line", "") or "{la} | {res} | table {table} | api {api}"
+_FOOT = (laconf.get("board", "footer", "") or
+         "  {faults} defaut(s)   {lo}-{hi}/{total}   q sortir  r rafraichir  a appli  j/k defiler  g/G")
+_TINT = laconf.get("board", "tint", {}) or {}
+_CODES = {"cyan": "\033[36m", "red": "\033[31m", "green": "\033[32m"}
 ICONS = {str(k).lower(): str(v) for k, v in (laconf.get("board", "icons", {}) or {}).items()}
 OTHER = laconf.text("board", "other", "AUTRE")
 # ce que la barre du panneau montre en permanence : la config le dit, l applet le lit
@@ -978,7 +988,7 @@ def sections(width):
     out = [line(x[0], x[1], "", width) for x in L]
 
     out.append("")
-    out.append("WHAT GOES THROUGH")
+    out.append(_HEADERS[0])
     turn = read_turn()
     if not turn:
         out.append("  the journal is silent (no call recorded)")
@@ -986,7 +996,7 @@ def sections(width):
         out.append(line("%s  %s" % (ts or "--:--:--", n), name, detail, width))
 
     out.append("")
-    out.append("THE MODELS OF LA")
+    out.append(_HEADERS[1])
     models = read_modeles()
     if not models:
         out.append("  none: our pieces name none")
@@ -998,7 +1008,7 @@ def sections(width):
 
     machine_name = read_machine_name()
     out.append("")
-    out.append("THE MACHINE")
+    out.append(_HEADERS[2])
     if "ram" in machine_name:
         u, total, lib = machine_name["ram"]
         out.append(line("ram", "%d/%d MB" % (u, total), "%d free" % lib, width))
@@ -1013,8 +1023,8 @@ def sections(width):
 def one_line():
     L, faults, *_ = control(light=True)
     d = dict((x[0], x[1]) for x in L)
-    return "%s | %s | table %s | api %s" % (d.get("LA status", "?"), d.get("residents", "?"),
-                                            d.get("table", "?"), d.get("api status", "?"))
+    return _ONE.format(la=d.get("LA status", "?"), res=d.get("residents", "?"),
+                       table=d.get("table", "?"), api=d.get("api status", "?"))
 
 
 SIGNAL = {"change": False}
@@ -1025,12 +1035,12 @@ def _sigwinch(sig, frame):
 
 
 def tint(l):
-    if l.startswith(("WHAT GOES", "THE MODELS", "THE MACHINE")):
-        return "\033[36m" + l + "\033[0m"
-    if l.rstrip().endswith("!!") or " !! " in l or "fault(s)" in l:
-        return "\033[31m" + l + "\033[0m"
-    if l.lstrip().startswith("LA status") and "active" in l:
-        return "\033[32m" + l + "\033[0m"
+    if l.startswith(_HEADERS):
+        return _CODES.get(_TINT.get("header", "cyan"), "") + l + "\033[0m"
+    if any(m in l for m in _TINT.get("fault_markers", ["!!", "fault(s)"])):
+        return _CODES.get(_TINT.get("fault", "red"), "") + l + "\033[0m"
+    if l.lstrip().startswith(_TINT.get("ok_prefix", "LA status")) and _TINT.get("ok_word", "active") in l:
+        return _CODES.get(_TINT.get("ok", "green"), "") + l + "\033[0m"
     return l
 
 
@@ -1046,8 +1056,7 @@ def _keys(fd, delay=0.06):
 
 
 def _footer(width, faults, bottom, total):
-    t = "  %d defaut(s)   %d-%d/%d   q sortir  r rafraichir  a appli  j/k defiler  g/G" % (
-        faults, (bottom + 1) if total else 0, min(total, bottom + 1), total)
+    t = _FOOT.format(faults=faults, lo=(bottom + 1) if total else 0, hi=min(total, bottom + 1), total=total)
     return t if len(t) <= width else t[:width]
 
 

@@ -731,6 +731,20 @@ board:
     - {name: "SYSTEME", icon: "📋", lines: ["table", "canon", "git", "doctor", "errors", "bridge", "dash", "cli"]}
   other: "AUTRE"
   bar: ["residents", "ram of LA"]        # ce que le panneau montre sans rien ouvrir
+  # le TEXTE du board (titres, gabarits, couleurs) vit ICI, pas dans board.py
+  titles:
+    turn: "WHAT GOES THROUGH"
+    models: "THE MODELS OF LA"
+    machine: "THE MACHINE"
+  one_line: "{la} | {res} | table {table} | api {api}"
+  footer: "  {faults} defaut(s)   {lo}-{hi}/{total}   q sortir  r rafraichir  a appli  j/k defiler  g/G"
+  tint:
+    header: cyan
+    fault: red
+    ok: green
+    fault_markers: ["!!", "fault(s)"]
+    ok_prefix: "LA status"
+    ok_word: "active"
   icons:
     "la status": "🟢"
     "residents": "👥"
