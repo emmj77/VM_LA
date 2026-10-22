@@ -32,7 +32,12 @@ SKILL_TOOL_SET:
   G002: "read_file"
 
 DOCS:
-  300: "tunnel.md"
+  300: "# phone-tunnel : a route, not a recipe. bring the phone to the bridge, prove it."
+  301: "the tools: tunnel_status (state, address, port, pairs) | tunnel_up (raise wg0, writes a lost profile) | tunnel_down"
+  302: "the law: a step closes on a FACT, never on the word of tunnel_up. the engine closes it, at the call."
+  303: "a step that cannot pass says what is missing: the literal the return does not carry"
+  304: "the steps: 401 read what stands -> 402 raise wg0 -> 403 prove it by the fact -> 404 report four lines"
+  305: "never: lay wg0 down unasked; open the bridge on the network (127.0.0.1 only); call it proven on the tool's word"
 
 PLAN:
   400: "the phone on the bridge, proven"

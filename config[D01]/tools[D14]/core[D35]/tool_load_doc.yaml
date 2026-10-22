@@ -73,8 +73,9 @@ COMMAND: |
       P="$C" ; break
     done
     if [ -z "$P" ]; then
-      printf '%s\n' "$(msg doc_outside_root "$A" "$R")"
-      printf '%s\n' "$(msg seek_on_web)"
+      # the DOCS section IS the doc : a value that names no file on disk is a line of it,
+      # printed as it stands. a skill with no DOCS asks for nothing, and the lock lifts anyway.
+      printf '%s\n' "$R"
       continue
     fi
     if [ -f "$P" ]; then

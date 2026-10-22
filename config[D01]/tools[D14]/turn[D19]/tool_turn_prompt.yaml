@@ -89,7 +89,7 @@ COMMAND: |
         for _c in "$_td/$_dname" "$ROOT/$_dname" "$_sd/$_sk/$_dname" "$_sd/$_dname"; do
           [ -f "$_c" ] && { _df=$_c ; break ; }
         done
-        if [ -n "$_df" ]; then printf 'doc %s :\n' "$_dname" ; head -n "$_dl" -- "$_df" ; else printf 'doc %s : not on disk\n' "$_dname" ; fi
+        if [ -n "$_df" ]; then printf 'doc %s :\n' "$_dname" ; head -n "$_dl" -- "$_df" ; else printf 'doc %s\n' "$_dname" ; fi
       done
     fi
     printf '== THE LOCAL MODEL SUMMARY ==\n'
