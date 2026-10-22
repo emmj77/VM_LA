@@ -21085,6 +21085,28 @@
   with_skill: false
   with_project: false
   visible: true
+- id: G080
+  tool: "config_list"
+  family: CORE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
+  visible: true
+- id: G081
+  tool: "config_set"
+  family: CORE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
+  visible: true
 - id: K001
   tool: "krita_status"
   family: KRITA

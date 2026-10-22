@@ -1,0 +1,38 @@
+id: "G080"
+tool: "config_list"
+date: "2026-10-22"
+tags: ["manage", "shell", "config", "setting"]
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: "lists every LA setting the model may change, with its current value and its bounds"
+
+COMMAND: |
+  python3 - "$LA_CONF" <<'PY'
+  import sys, yaml
+  MODEL = set(w.split(",")) if False else {"loop", "limits", "head", "agents"}
+  c = yaml.safe_load(open(sys.argv[1], encoding="utf-8")) or {}
+  fields = (c.get("schema") or {}).get("fields") or []
+  for f in fields:
+      sec, key = f.get("section"), f.get("key")
+      if sec not in MODEL or not key:
+          continue
+      node = c.get(sec) or {}
+      cur = node.get(key) if isinstance(node, dict) else None
+      if f.get("kind") == "int":
+          rng = " [%s..%s]" % (f.get("min"), f.get("max"))
+      elif f.get("kind") == "choice":
+          rng = " {%s}" % ",".join(map(str, f.get("choices") or []))
+      else:
+          rng = ""
+      print("%s.%s = %s%s" % (sec, key, cur, rng))
+  PY
+
+ARGS: []

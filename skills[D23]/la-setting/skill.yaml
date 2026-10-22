@@ -1,0 +1,36 @@
+id: "K37"
+skill: "la-setting"
+date: "2026-10-22"
+tags: ["la-setting", "config", "setting", "manage"]
+
+SUMMARY:
+  101: "Change the settings of LA that are open to the model, nothing free."
+  102: "config_list shows every editable setting with its current value and its bounds."
+  103: "config_set writes ONE setting: only a key already declared, checked against its type and bounds."
+  104: "A key absent from the list is refused: I never touch la_config by hand."
+RULES:
+  create_subfolder: false
+  max_section_lines: 100
+APPROVAL: true              # this skill touches the harness config : a human signs it before it loads
+HUMAN_ONLY: false
+PERMANENT_TODO: false
+SKILL_TOOL_SET:
+  G002: "read_file"
+  G004: "write_file"
+  G005: "search"
+  G022: "load_doc"
+  G003: "list_dir"
+  G062: "mkdir"
+  G015: "todo"
+  G016: "update_todo"
+  G080: "config_list"
+  G081: "config_set"
+DOCS:
+  300: "web_search"
+PLAN:
+WRITABLE_WORKSPACE:
+  workspace: "work/"
+  type-file: ".md .yaml .sh .json .txt"
+ERROR:
+  600: "A key not in the list: say it is not editable, name the editable ones, never write."
+PORTEUR: ""

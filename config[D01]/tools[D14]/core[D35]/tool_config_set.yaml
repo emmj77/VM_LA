@@ -1,0 +1,108 @@
+id: "G081"
+tool: "config_set"
+date: "2026-10-22"
+tags: ["manage", "shell", "config", "setting"]
+
+RULES:
+  enabled: true
+  timeout: 30
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "changes ONE LA setting already declared and open to the model; refuses any other key, checks type and bounds, writes it in place"
+
+COMMAND: |
+  KEY="{{key}}"
+  VAL="{{value}}"
+  [ -n "$KEY" ] || { printf 'REFUSED: key is required\n' >&2 ; exit 1 ; }
+  [ -n "$VAL" ] || { printf 'REFUSED: value is required\n' >&2 ; exit 1 ; }
+  python3 - "$LA_CONF" "$KEY" "$VAL" <<'PY'
+  import sys, yaml, os, tempfile
+  conf, key, value = sys.argv[1], sys.argv[2], sys.argv[3]
+  MODEL = {"loop", "limits", "head", "agents"}
+  data = yaml.safe_load(open(conf, encoding="utf-8")) or {}
+  field = None
+  for f in (data.get("schema") or {}).get("fields") or []:
+      if "%s.%s" % (f.get("section"), f.get("key")) == key:
+          field = f
+          break
+  if field is None:
+      sys.stderr.write("REFUSED: '%s' is not a setting open to the model\n" % key)
+      sys.exit(1)
+  section, k = field.get("section"), field.get("key")
+  if section not in MODEL:
+      sys.stderr.write("REFUSED: '%s' is not open to the model\n" % key)
+      sys.exit(1)
+  kind = field.get("kind", "int")
+  if kind == "int":
+      try:
+          iv = int(str(value).strip())
+      except ValueError:
+          sys.stderr.write("REFUSED: '%s' must be an integer\n" % key)
+          sys.exit(1)
+      lo, hi, st = field.get("min"), field.get("max"), field.get("step")
+      if lo is not None and iv < lo:
+          sys.stderr.write("REFUSED: '%s' minimum is %s\n" % (key, lo)); sys.exit(1)
+      if hi is not None and iv > hi:
+          sys.stderr.write("REFUSED: '%s' maximum is %s\n" % (key, hi)); sys.exit(1)
+      if st and lo is not None and (iv - lo) % int(st) != 0:
+          sys.stderr.write("REFUSED: '%s' must be %s + k*%s\n" % (key, lo, st)); sys.exit(1)
+      newval = str(iv)
+  elif kind == "choice":
+      choices = [str(c) for c in (field.get("choices") or [])]
+      if str(value).strip() not in choices:
+          sys.stderr.write("REFUSED: '%s' must be one of: %s\n" % (key, ", ".join(choices))); sys.exit(1)
+      newval = str(value).strip()
+  else:
+      newval = str(value).strip()
+  lines = open(conf, encoding="utf-8").read().split("\n")
+  n = len(lines)
+  sec_start = None
+  for idx in range(n):
+      l = lines[idx]
+      if not l.strip() or l.lstrip().startswith("#") or l[0].isspace():
+          continue
+      head = l.split("#")[0].rstrip()
+      if head.endswith(":") and head[:-1].strip() == section:
+          sec_start = idx
+          break
+  if sec_start is None:
+      sys.stderr.write("REFUSED: section '%s' not found\n" % section); sys.exit(1)
+  sec_end = n
+  for idx in range(sec_start + 1, n):
+      l = lines[idx]
+      if not l.strip() or l.lstrip().startswith("#"):
+          continue
+      if not l[0].isspace():
+          sec_end = idx
+          break
+  key_line = None
+  for idx in range(sec_start + 1, sec_end):
+      l = lines[idx]
+      if l.lstrip().startswith("#"):
+          continue
+      if l.lstrip().startswith(k + ":") and not l.lstrip().startswith(k + "_"):
+          key_line = idx
+          break
+  if key_line is not None:
+      indent = lines[key_line][:len(lines[key_line]) - len(lines[key_line].lstrip())]
+      lines[key_line] = "%s%s: %s" % (indent, k, newval)
+  else:
+      ins = sec_end
+      while ins - 1 > sec_start and not lines[ins - 1].strip():
+          ins -= 1
+      lines.insert(ins, "  %s: %s" % (k, newval))
+  d = os.path.dirname(conf)
+  fd, tmp = tempfile.mkstemp(dir=d)
+  with os.fdopen(fd, "w", encoding="utf-8") as fh:
+      fh.write("\n".join(lines))
+  os.replace(tmp, conf)
+  print("%s = %s" % (key, newval))
+  PY
+
+ARGS:
+  - {name: key, type: text}
+  - {name: value, type: text}
