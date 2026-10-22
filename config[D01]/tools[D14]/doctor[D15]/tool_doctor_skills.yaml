@@ -70,7 +70,8 @@ COMMAND: |
           || printf 'FAULT skill %s names %s, which no body carries\n' "$(basename "$(dirname "$_k")")" "$_v" >> "$_named.bad"
       done
     done
-    _g=$(grep -c . "$_named.bad" 2>/dev/null || printf 0)
+    _g=$(grep -c . "$_named.bad" 2>/dev/null | head -1)
+    _g=${_g:-0}
     [ "${_g:-0}" -gt 0 ] && cat "$_named.bad"
     [ "${_g:-0}" = 0 ] && printf 'report every tool a skill names exists in the register\n'
     rm -f "$_named.bad"
