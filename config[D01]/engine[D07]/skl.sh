@@ -240,7 +240,7 @@ skl_turn_no() {
 skl_doc_seen() {
   _n=$(skl_skill 2>/dev/null) || return 1
   [ -n "$_n" ] || return 1
-  _d=$(jq -r '.doc // ""' "$(cfg abs turn)" 2>/dev/null)
+  _d=$(jq -r --arg a "$(skl_agent)" 'if (.doc|type)=="object" then (.doc[$a]//"") elif (.doc|type)=="string" then .doc else "" end' "$(cfg abs turn)" 2>/dev/null)
   [ "$_d" = "$_n" ]
 }
 

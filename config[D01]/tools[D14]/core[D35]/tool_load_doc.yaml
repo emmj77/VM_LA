@@ -25,7 +25,7 @@ COMMAND: |
   S="$(cfg path skills)/$A/skill.yaml"
   [ -f "$S" ] || { printf '%s\n' "$(msg active_manifest_missing "$S")" >&2 ; exit 1; }
   # the lock lifts for this turn : the skill says which doc was asked, the content is not judged
-  _tf=$(cfg abs turn) ; [ -s "$_tf" ] && _turn_set ".doc = \"$A\"" 2>/dev/null
+  _tf=$(cfg abs turn) ; [ -s "$_tf" ] && _turn_set ".doc = ((.doc | if type==\"object\" then . else {} end) | .[\"$(skl_agent)\"] = \"$A\")" 2>/dev/null
   RES=$(sed -n '/^DOCS:/,/^[^[:space:]]/p' "$S" \
         | sed -n 's/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
         | sed -e 's/^"//' -e 's/"[[:space:]]*$//' | grep -v '^$')

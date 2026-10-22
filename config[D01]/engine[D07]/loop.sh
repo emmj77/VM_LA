@@ -71,7 +71,7 @@ loop_turn() {
   loop_busy && { shape_fail "" "" refusals.arity; return 1; }
   loop_mark || return 1
   _tf=$(cfg abs turn)
-  [ -s "$_tf" ] && _turn_set '.doc = ""' 2>/dev/null
+  [ -s "$_tf" ] && _turn_set ".doc = ((.doc | if type==\"object\" then . else {} end) | del(.[\"$(skl_agent)\"]))" 2>/dev/null
 
   # the bound of the turns: at the bound the journal turns over, the count restarts --
   # a bound that never restarts ends by blocking the engine forever.
