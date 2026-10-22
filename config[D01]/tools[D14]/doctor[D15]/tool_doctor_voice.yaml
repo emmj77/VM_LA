@@ -1,0 +1,62 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D017"
+tool: "doctor.voice"
+date: "2026-10-22"
+tags: ["manage", "shell", "audio", "voice"]
+RULES:
+  enabled: true
+  timeout: 180
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the whole voice chain: the mouth answers, the ear answers, a wav really comes out, and the last turn names one that exists"
+COMMAND: |
+  # THE CHAIN, NOT THE PARTS (MOUSSA, 22/10): a silent resident is only seen by a wav.
+  _tp=${LA_TTS_PORT:-8090}
+  _ap=${LA_ASR_PORT:-8080}
+  _ad=$(cfg path audio 2>/dev/null)
+  [ -n "$_ad" ] || _ad=$(find "$LA_HOME" -maxdepth 2 -type d -name 'audio[D*]' -print -quit 2>/dev/null)
+  if curl -s -m 5 -f "http://127.0.0.1:$_tp/health" >/dev/null 2>&1; then
+    printf 'ok the mouth answers on %s\n' "$_tp"
+  else
+    printf 'FAULT the mouth does not answer on %s: a reply would never be heard\n' "$_tp"
+  fi
+  if curl -s -m 5 -f "http://127.0.0.1:$_ap/ready" >/dev/null 2>&1; then
+    printf 'ok the ear answers on %s\n' "$_ap"
+  else
+    printf 'FAULT the ear does not answer on %s: a voice message would stay unread\n' "$_ap"
+  fi
+  _q=$(tmpfile voiceq) || exit 0
+  printf '%s' '{"text":"control"}' > "$_q"
+  _out=$(curl -s -m 90 -X POST "http://127.0.0.1:$_tp/voice_text" -H 'Content-Type: application/json' --data-binary @"$_q" 2>/dev/null)
+  case "$_out" in
+    "speech : "*)
+      _w=$(printf '%s' "$_out" | sed -n 's/^speech : \([^ ]*\).*/\1/p')
+      _w=${_w##*/}
+      if [ -n "$_w" ] && [ -f "$_ad/$_w" ]; then
+        printf 'ok the mouth wrote %s, %s byte(s)\n' "$_w" "$(wc -c < "$_ad/$_w" 2>/dev/null)"
+      else
+        printf 'FAULT the mouth answers but %s is not in the audio folder\n' "${_w:-nothing}"
+      fi
+      ;;
+    *) printf 'FAULT the mouth said nothing usable: %s\n' "${_out:-no answer}" ;;
+  esac
+  _tj=$(cfg abs turn 2>/dev/null)
+  if [ -f "$_tj" ]; then
+    _v=$(jq -r '.voice // ""' "$_tj" 2>/dev/null)
+    if [ -n "$_v" ]; then
+      if [ -f "$_ad/$_v" ]; then
+        printf 'ok the last turn names its wav and the file is there: %s\n' "$_v"
+      else
+        printf 'FAULT the last turn names %s and the audio folder does not hold it\n' "$_v"
+      fi
+    else
+      printf 'note the last turn carries no wav in turn.json\n'
+    fi
+  fi
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: chain}

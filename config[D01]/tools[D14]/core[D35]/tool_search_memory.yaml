@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "reads the memory table under a QUESTION and returns the entries that answer it, by sense, best first"
 
 COMMAND: |
-  T=$(cat); [ -n "$T" ] || { printf '%s\n' "$(msg empty_question)" >&2; exit 1; }
+  T="{{text}}"; [ -n "$T" ] || { printf '%s\n' "$(msg empty_question)" >&2; exit 1; }
   M=${LA_MEMORY_DB:-$ROOT/config/memory.db}
   [ -f "$M" ] || { printf '%s\n' "$(msg memory_database_missing_m "$M")" >&2; exit 1; }
   P=${LA_EMBED_PORT:-$(conf_num models port 8091)}

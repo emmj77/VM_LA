@@ -23,7 +23,7 @@ COMMAND: |
   T="${TMPDIR:-/tmp}"
   N="{{count}}"; case "$N" in ''|*[!0-9]*) N=4 ;; esac
   [ "$N" -ge 1 ] && [ "$N" -le 9 ] || { printf '%s\n' "$(msg count_range)""$N" >&2; exit 1; }
-  TEXT=$(cat)
+  TEXT="{{style}}"
   [ -n "$TEXT" ] || { printf '%s\n' "$(msg subject_missing)" >&2; exit 1; }
   FILE="$W/{{source}}"
   [ -f "$FILE" ] || { printf '%s\n' "$(msg drawing_missing)""$FILE" >&2; exit 1; }

@@ -26,8 +26,8 @@ COMMAND: |
     dashboard) exec python3 "$(cfg abs dash_server)" ;;
     kws)       _py=$(cfg str machine.kws.python 2>/dev/null)
                [ -x "$_py" ] || _py=python3
-               exec "$_py" "$(cfg abs kws)" --root "$(cfg str machine.kws.root)" \
-                 --keywords "$(cfg abs voice_keywords)" --log "$LA_STATE/kws.log" \
+               exec "$_py" "$(cfg abs ear)" --root "$(cfg str machine.kws.root)" \
+                 --master "$LA_CONF" --log "$LA_STATE/kws.log" \
                  --gate "$(cfg abs la)" --mic "$(cfg str machine.kws.mic default)" ;;
     *)         printf 'FAULT no service named %s\n' "${_n:-}" ; exit 2 ;;
   esac

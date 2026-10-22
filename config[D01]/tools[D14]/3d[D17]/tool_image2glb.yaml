@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "turns an image into a 3D asset (.glb) via ComfyUI Pixal3D / TRELLIS.2"
 
 COMMAND: |
-  I=$(cat); [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }
+  I="{{image}}"; [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }
   O="{{out}}"; [ -n "$O" ] || O="$ROOT/work/GLB_PIXAL3D"
   pixal3d gen "$I" --out "$O"
 

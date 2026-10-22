@@ -1,0 +1,68 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D018"
+tool: "doctor.arguments"
+date: "2026-10-22"
+tags: ["manage", "python", "text", "test"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "a text that waits for a name is never printed alone: every message holding %s receives its argument at the call"
+COMMAND: |
+  # THE PLACEHOLDER BUG FAMILY (MOUSSA, 22/10): a key with %s printed bare shows a hole,
+  # never an error. This control reads the calls, not the texts.
+  _tx=$(cfg abs texts) || { printf 'FAULT no texts in the tree\n' ; exit 0 ; }
+  _root=$(cfg path tools) || exit 1
+  _flat | python3 -c '
+  import os, re, sys
+
+  items = []
+  for line in sys.stdin:
+      p = line.rstrip("\n").split("\t")
+      if len(p) >= 2:
+          items.append((p[0], p[1]))
+
+  def needs(key):
+      zone, name = key.split(".", 1)
+      name = name.upper().replace("-", "_")
+      for fk, v in items:
+          parts = fk.split(".")
+          if len(parts) >= 2 and parts[0] == zone and parts[1] == name and "%s" in v:
+              return True
+      return False
+
+  root = sys.argv[1]
+  bad = []
+  total = bare = 0
+  for d, _, fs in os.walk(root):
+      for f in fs:
+          if not f.endswith((".yaml", ".sh")):
+              continue
+          path = os.path.join(d, f)
+          for n, line in enumerate(open(path, encoding="utf-8", errors="replace"), 1):
+              if line.rstrip().endswith("\\"):
+                  continue
+              m = re.search(r"(?:^|[^a-z_])msg ([a-z][a-z_0-9]*\.[A-Za-z_0-9]+)(.*)$", line)
+              if not m:
+                  continue
+              key, rest = m.group(1), m.group(2).split("#")[0].strip()
+              total += 1
+              if rest:
+                  continue
+              bare += 1
+              if needs(key):
+                  bad.append("%s:%d %s holds %%s and is called with nothing" % (os.path.relpath(path, root), n, key))
+
+  for b in bad[:25]:
+      print("FAULT", b)
+  print("note %d text key(s) read, %d static msg call(s), %d without argument" % (len(items), total, bare))
+  print("%s %d call(s) print a message that waits for a name and gets none" % ("ok" if not bad else "FAULT", len(bad)))
+  ' "$_root"
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: arguments}

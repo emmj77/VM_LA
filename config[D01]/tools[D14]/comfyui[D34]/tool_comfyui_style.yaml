@@ -16,7 +16,7 @@ DESCRIPTION: "draws a new image from free text, taking its palette and mood from
 
 COMMAND: |
   SERVICE=http://127.0.0.1:8188
-  T=$(cat)
+  T="{{style}}"
   [ -n "$T" ] || { printf '%s\n' "$(msg free_text_missing)" >&2; exit 1; }
   REF="$W/{{image}}"
   [ -f "$REF" ] || { printf '%s\n' "$(msg reference_missing '%s')""$REF" >&2; exit 1; }

@@ -1,0 +1,38 @@
+id: "G025"
+tool: "voice_text"
+date: "2026-10-17"
+tags: ["reply", "local", "audio", "voice"]
+
+RULES:
+  enabled: true
+  timeout: 600
+  writable_workspace: "work"
+  approval: none
+  turn: none
+  count: false
+  paths: write
+
+DESCRIPTION: "vocalise a text: the wav is written in config/audio/ and its name comes back as audio"
+
+COMMAND: |
+  SRV=127.0.0.1:${LA_TTS_PORT:-8090}
+  curl -s --max-time 5 -f "http://$SRV/health" >/dev/null 2>&1 \
+    || { printf '%s\n' "$(msg voice_unreachable "$SRV")" >&2; exit 1; }
+  T="{{text}}"
+  [ -n "$T" ] || { printf '%s\n' "$(msg nothing_to_say)" >&2; exit 1; }
+  Q=$(mktemp "${TMPDIR:-/tmp}/voice.XXXXXX") || { printf '%s\n' "$(msg temporary_space)" >&2 ; exit 1 ; }
+  trap 'rm -f "$Q"' EXIT INT TERM HUP
+  printf '%s' "$T" | python3 -c 'import json,sys; sys.stdout.write(json.dumps({"text": sys.stdin.read()}))' > "$Q" \
+    || { printf '%s\n' "$(msg voice_request_failed)" >&2; exit 1; }
+  OUT=$(curl -s --max-time 300 -X POST "http://$SRV/voice_text" -H 'Content-Type: application/json' --data-binary @"$Q")
+  case "$OUT" in
+    "speech :"*)
+      A=$(printf '%s' "$OUT" | sed -n 's/^speech : \([^ ]*\).*/\1/p')
+      A=${A##*/}
+      jq -cn --arg a "$A" --arg s "$OUT" '{audio:$a,said:$s}'
+      ;;
+    *) printf '%s\n' "$(msg voice_answered "${OUT:-rien}")" >&2 ; exit 1 ;;
+  esac
+
+ARGS:
+  - {name: text, type: text, stdin: true}

@@ -13,18 +13,12 @@ RULES:
   count: false
   paths: read
 
-DESCRIPTION: "speaks (talk), asks the human (ask) or returns the reply (answer), depending on the mode"
+DESCRIPTION: "the answer to the human, in words: the machine decides how it reaches them, the screen or the voice; the model only writes text"
 
 COMMAND: |
-  # the model text is the answer; without text, the input holds
+  # the model writes text; the medium is the machine's business
   _t="{{text}}"
-  [ -n "$_t" ] || _t=$(cat)
   printf '%s\n' "$_t"
 
 ARGS:
-  - {name: mode, type: enum, values: answer,ask,talk}
-  - {name: form, type: enum, values: text,voice}
-  - {name: text, type: text}
-  - {name: mode, type: enum, values: [talk, ask, answer]}
-  - {name: form, type: enum, values: [text, list, table, code]}
   - {name: text, type: text, stdin: true}

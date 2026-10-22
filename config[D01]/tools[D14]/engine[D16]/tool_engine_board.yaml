@@ -38,7 +38,6 @@ COMMAND: |
     printf '\n  THE TURN\n'
     printf '  %-14s %s\n' state "$(jq -r '.status // "idle"' "$_t" 2>/dev/null)${_sp:+$([ -f "$_sp" ] && printf ', stop asked')}"
     printf '  %-14s %s\n' words "$(sqlite3 "$_se" 'select count(*) from messages;' 2>/dev/null)"
-    printf '  %-14s %s\n' said "$(grep -c . "$(cfg abs say_done 2>/dev/null)" 2>/dev/null)"
     printf '\n  THE DOCTOR\n'
     printf '  %-14s %s\n' cached "$(head -n 1 "$_c" 2>/dev/null)"
     ;;

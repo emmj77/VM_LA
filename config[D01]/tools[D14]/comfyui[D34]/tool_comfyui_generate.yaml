@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "posts an image to ComfyUI and files it in the workspace, returns its path"
 
 COMMAND: |
-  P=$(cat); [ -n "$P" ] || { printf '%s\n' "$(msg empty_missing_prompt)" >&2; exit 1; }; N() { case "$1" in ''|*[!0-9]*) echo "$2" ;; *) echo "$1" ;; esac; }; W=$(N "{{width}}" 512); H=$(N "{{height}}" 512); S=$(N "{{steps}}" 25)
+  P="{{prompt}}"; [ -n "$P" ] || { printf '%s\n' "$(msg empty_missing_prompt)" >&2; exit 1; }; N() { case "$1" in ''|*[!0-9]*) echo "$2" ;; *) echo "$1" ;; esac; }; W=$(N "{{width}}" 512); H=$(N "{{height}}" 512); S=$(N "{{steps}}" 25)
   { [ "$W" -ge 64 ] && [ "$W" -le 2048 ] && [ "$H" -ge 64 ] && [ "$H" -le 2048 ] && [ "$S" -ge 1 ] && [ "$S" -le 100 ]; } || { printf '%s\n' "$(msg width_height_outside_range)" >&2; exit 1; }
   A=http://127.0.0.1:8188; curl -sS -m 5 "$A/system_stats" >/dev/null 2>&1 || { printf '%s\n' "$(msg comfy_service_down "$A")" >&2; exit 1; }
   Q=$(jq -cn --arg pr "$P" --argjson w "$W" --argjson h "$H" --argjson s "$S" --argjson sd "$(date +%s)" '{prompt:{"4":{class_type:"CheckpointLoaderSimple",inputs:{ckpt_name:"dreamshaper_8.safetensors"}},"5":{class_type:"EmptyLatentImage",inputs:{width:$w,height:$h,batch_size:1}},"6":{class_type:"CLIPTextEncode",inputs:{text:$pr,clip:["4",1]}},"7":{class_type:"CLIPTextEncode",inputs:{text:"",clip:["4",1]}},"3":{class_type:"KSampler",inputs:{seed:$sd,steps:$s,cfg:7,sampler_name:"euler",scheduler:"normal",denoise:1,model:["4",0],positive:["6",0],negative:["7",0],latent_image:["5",0]}},"8":{class_type:"VAEDecode",inputs:{samples:["3",0],vae:["4",2]}},"9":{class_type:"SaveImage",inputs:{filename_prefix:"la",images:["8",0]}}},client_id:"la"}')

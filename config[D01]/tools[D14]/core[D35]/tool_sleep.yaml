@@ -16,16 +16,15 @@ RULES:
 DESCRIPTION: "puts the session to rest in systemd; when the wait is over the timer wakes the model itself, with no judge in between"
 
 COMMAND: |
-  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
-  S={{seconds}}
+  S="{{seconds}}"
   _u="la-sleep-$(date +%s)"
   # everything sits in the body: systemd runs the command, no extra file
   _c="'${LA_TOOL:-}' engine engine.turn 'text=reveil: le sommeil de $S secondes est arrive a son terme'"
   systemd-run --user --unit="$_u" --on-active="${S}s" \
     --timer-property=AccuracySec=1s --collect /bin/dash -c "$_c" >/dev/null 2>&1 \
     || { printf 'FAULT the rest was not armed\n'; exit 0; }
-  _tr sleep "arme ${S}s sous $_u, reveil direct"
+  trace_line sleep "arme ${S}s sous $_u, reveil direct"
   printf 'ok le sommeil est arme pour %s s ; a l echeance le timer reveille le modele lui-meme\n' "$S"
   exit 0
 

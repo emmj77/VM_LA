@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "searches the sessions body and returns the exchanges that carry the words"
 
 COMMAND: |
-  T=$(cat); [ -n "$T" ] || { printf '%s\n' "$(msg empty_question)" >&2; exit 1; }
+  T="{{text}}"; [ -n "$T" ] || { printf '%s\n' "$(msg empty_question)" >&2; exit 1; }
   D=${LA_SESSIONS_DB:-$ROOT/config/sessions.db}
   [ -f "$D" ] || { printf '%s\n' "$(msg session_body_missing_d "$D")" >&2; exit 1; }
   _Q=$(printf '%s' "$T" | sed "s/'/''/g")

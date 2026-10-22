@@ -20,13 +20,14 @@ COMMAND: |
   curl -s --max-time 5 -f "http://$SRV/ready" >/dev/null 2>&1 \
     || { printf '%s\n' "$(msg ear_resident_silent "$SRV")" >&2; exit 1; }
   CONF=$(CDPATH= cd -- "$W/.." && pwd)
-  AUDIO="$CONF/config/audio"
+  AUDIO=${LA_AUDIO:-$(cfg path audio 2>/dev/null)}
+  [ -n "$AUDIO" ] || AUDIO="$CONF/config/audio"
   P="{{path}}"
   case "$P" in /*) printf '%s\n' "$(msg absolute_path_not_accepted "$P")" >&2 ; exit 1 ;; esac
   F="$W/$P"
   [ -f "$F" ] || F="$CONF/$P"
   [ -f "$F" ] || F="$AUDIO/${P##*/}"
-  [ -f "$F" ] || { printf '%s\n' "$(msg audio_file_not_found)" >&2 ; exit 1; }
+  [ -f "$F" ] || { printf '%s\n' "$(msg audio_file_not_found "$P")" >&2 ; exit 1; }
   case "$F" in
     *.wav|*.flac|*.mp3|*.ogg) A="$F" ;;
     *.webm|*.mp4|*.m4a)
@@ -34,9 +35,9 @@ COMMAND: |
       TD=$(mktemp -d "${TMPDIR:-/tmp}/transcribe.XXXXXX") || { printf '%s\n' "$(msg temporary_space)" >&2 ; exit 1 ; }
       trap 'rm -f "$TD/a.wav" ; rmdir "$TD" 2>/dev/null' EXIT INT TERM HUP
       A="$TD/a.wav"
-      ffmpeg -y -loglevel error -i "$F" -ar 16000 -ac 1 "$A" >/dev/null 2>&1 || { printf '%s\n' "$(msg audio_conversion_failed_path)" >&2 ; exit 1 ; }
+      ffmpeg -y -loglevel error -i "$F" -ar 16000 -ac 1 "$A" >/dev/null 2>&1 || { printf '%s\n' "$(msg audio_conversion_failed_path "$F")" >&2 ; exit 1; }
       ;;
-    *) printf '%s\n' "$(msg audio_format_not_allowed)" >&2 ; exit 1 ;;
+    *) printf '%s\n' "$(msg audio_format_not_allowed "$P")" >&2 ; exit 1 ;;
   esac
   OUT=$(curl -s --max-time 300 -X POST "http://$SRV/v1/audio/transcriptions" \
     -F "file=@$A" -F "response_format=json" \

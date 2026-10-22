@@ -16,7 +16,7 @@ dirs:
   - {id: "D07", name: "engine[D07]", role: "the engine: sixteen bricks, one sourced line"}
   - {id: "D08", name: "filter[D08]", role: "the family filter"}
   - {id: "D09", name: "page[D09]", role: "the page and the phone"}
-  - {id: "D10", name: "programs[D10]", role: "the programs, never sourced: the panel, the bridge, the dashboard, the voice, the ear, the watch"}
+  - {id: "D10", name: "programs[D10]", role: "the programs, never sourced: the panel, the bridge, the dashboard, the voice, the ear"}
   - {id: "D12", name: "state[D12]", role: "the running state, one turn at a time"}
   - {id: "D13", name: "returns[D13]", role: "what a call returns beyond the bound"}
   - {id: "D14", name: "tools[D14]", role: "every tool body, one file per tool. the only catalogue of the door"}
@@ -150,7 +150,6 @@ files:
   - {id: "P07", name: "dash_server.py", role: "the dashboard's own door: the page only, it exits when nobody looks"}
   - {id: "P08", name: "ear.py", role: "the ear. the keyword list is built from the master file at start, written for the second the spotter reads it, then thrown away"}
   - {id: "P03", name: "tts_daemon.py", role: "the voice: sherpa-onnx loads once, POST /voice_text answers a wav"}
-  - {id: "P04", name: "watch.py", role: "the watch: onnxruntime, the word passes, it signs what waits"}
   - {id: "Q01", name: "tool_template.yaml", role: "the gabarit of a tool body"}
   - {id: "Q02", name: "skill_template.yaml", role: "the gabarit of a skill"}
   - {id: "Q03", name: "project_template.yml", role: "the gabarit of a project file"}

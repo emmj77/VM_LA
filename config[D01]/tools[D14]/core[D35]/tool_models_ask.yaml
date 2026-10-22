@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "asks the local model a question and returns its answer"
 
 COMMAND: |
-  P=$(cat); [ -n "$P" ] || { printf '%s\n' "$(msg prompt_empty)" >&2; exit 1; }
+  P="{{prompt}}"; [ -n "$P" ] || { printf '%s\n' "$(msg prompt_empty)" >&2; exit 1; }
   C=$(printf '%s' "$P" | jq -Rs --arg s "{{system}}" '{model:"local",stream:false,max_tokens:1024,messages:((if $s=="" then [] else [{role:"system",content:$s}] end)+[{role:"user",content:.}])}') || { printf '%s\n' "$(msg request_not_built)" >&2; exit 1; }
   LP=${LA_LOCAL_PORT:-8088}
   R=$(curl -s -m 60 -H 'Content-Type: application/json' -d "$C" -w '\n%{http_code}' \

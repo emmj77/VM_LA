@@ -279,18 +279,18 @@ __label__search-memory dans la memoire, cherche la cle gpu
 __label__search-memory qu'ai je dit la derniere fois sur la machine
 __label__search-memory cherche la note sur le modele local
 __label__search-memory retrouve ce qu'on a decide hier
-__label__speak-text dis ce texte a voix haute
-__label__speak-text lis moi ce paragraphe
-__label__speak-text prononce cette phrase
-__label__speak-text fais une voix de ce texte
-__label__speak-text synthetise ce texte en audio
-__label__speak-text lis le resultat a haute voix
-__label__speak-text genere un fichier audio de ce texte
-__label__speak-text dis bonjour avec la voix
-__label__speak-text rends ce document en audio
-__label__speak-text parle et lis ce message
-__label__speak-text enregistre la voix de ce texte
-__label__speak-text lis a voix haute la reponse
+__label__voice-text dis ce texte a voix haute
+__label__voice-text lis moi ce paragraphe
+__label__voice-text prononce cette phrase
+__label__voice-text fais une voix de ce texte
+__label__voice-text synthetise ce texte en audio
+__label__voice-text lis le resultat a haute voix
+__label__voice-text genere un fichier audio de ce texte
+__label__voice-text dis bonjour avec la voix
+__label__voice-text rends ce document en audio
+__label__voice-text parle et lis ce message
+__label__voice-text enregistre la voix de ce texte
+__label__voice-text lis a voix haute la reponse
 __label__summarize-document resume ce document
 __label__summarize-document fais un resume fidele de ce texte long
 __label__summarize-document resume le rapport en dix lignes

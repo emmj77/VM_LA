@@ -109,7 +109,7 @@ class Service(BaseHTTPRequestHandler):
             self.answer(404, json.dumps({"error": "route inconnue"}))
 
     def do_POST(self):
-        if self.path.split("?")[0] != "/say":
+        if self.path.split("?")[0] != "/voice_text":
             self.answer(404, json.dumps({"error": "route inconnue"}))
             return
         try:

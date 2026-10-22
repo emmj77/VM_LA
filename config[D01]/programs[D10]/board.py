@@ -242,6 +242,7 @@ if not SPECS:      # le canon de l arbre actuel
 VISION = laconf.path("vision_log", "")
 TRACE = laconf.path("trace", "config/state/trace.jsonl")
 DEFAULT_WIDTH = num("board", "columns", 82)
+FRAME_BYTES = num("limits", "frame_bytes", 400)   # one line of the board, at most
 
 
 def _port(v):
@@ -1272,7 +1273,7 @@ def one_turn(text):
 
     def stream():
         try:
-            _, end["obj"] = http("/say", {"text": text}, timeout=1800)
+            _, end["obj"] = http("/user_say", {"text": text, "channel": "cli"}, timeout=1800)
         except Exception as e:
             end["fault"] = str(e)
 
@@ -1284,7 +1285,7 @@ def one_turn(text):
                 continue
             txt = " ".join(str(e.get("text") or "").split())
             if txt:
-                sys.stderr.write("· %s\n" % txt[:400])
+                sys.stderr.write("· %s\n" % txt[:FRAME_BYTES])
         for e in sj.new_lines():
             if e.get("kind") != "tool":
                 continue
@@ -1448,7 +1449,7 @@ class Cli(App):
                 continue
             txt = " ".join(str(e.get("text") or e.get("raw") or "").split())
             if txt:
-                self.stream.write(Text("· " + (txt[:400] + ("…" if len(txt) > 400 else "")),
+                self.stream.write(Text("· " + (txt[:FRAME_BYTES] + ("…" if len(txt) > FRAME_BYTES else "")),
                                     style="dim italic"))
         for e in self.sj.new_lines():
             if e.get("kind") != "tool":
@@ -1656,7 +1657,7 @@ class Cli(App):
 
     def _queue(self, text):
         try:
-            _, obj = http("/say", {"text": text}, timeout=1800)
+            _, obj = http("/user_say", {"text": text, "channel": "cli"}, timeout=1800)
         except Exception as e:
             self.call_from_thread(self.error, "le bridge n a pas pris le mot : %s" % e)
             return
@@ -1669,7 +1670,7 @@ class Cli(App):
 
     def _turn(self, text):
         try:
-            _, obj = http("/say", {"text": text}, timeout=1800)
+            _, obj = http("/user_say", {"text": text, "channel": "cli"}, timeout=1800)
         except Exception as e:
             self.call_from_thread(self._done, None, str(e))
             return

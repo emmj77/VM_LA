@@ -1,3 +1,4 @@
-tool: load_skill
-digest: 81af5ffc9e5caf943a7aca19d04d65cd
-ts: 1792617430
+tool: install_program
+gesture: install_program name=zzz
+digest: a096646b061e65ecc710c6f6e1059f55
+ts: 1792642432

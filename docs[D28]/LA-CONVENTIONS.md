@@ -236,15 +236,6 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `tts_daemon.py` · `Service.answer` | answers with a payload and its type |
 | `tts_daemon.py` · `Service.do_GET` | answers /health |
 | `tts_daemon.py` · `Service.do_POST` | answers /voice_text |
-| `watch.py` · `STATE_DIR` | the state directory, from the environment |
-| `watch.py` · `_silent` | runs with stderr closed |
-| `watch.py` · `open_sessions` | opens the three onnx sessions |
-| `watch.py` · `melspec` | the mel spectrogram of one buffer |
-| `watch.py` · `embeddings` | the embeddings of one spectrogram |
-| `watch.py` · `scores` | the score of a new sample against the known ones |
-| `watch.py` · `listen` | listens, and signs what passes the threshold |
-| `watch.py` · `signer` | signs the pending approval request |
-| `watch.py` · `main` | the entry: listen, or sign once |
 | `install.sh` · `conf` | reads one value from la_config for the script |
 | `install.sh` · `value` | prints one value, or its default |
 | `uninstall.sh` | no function: the script runs straight through, it removes what install put |

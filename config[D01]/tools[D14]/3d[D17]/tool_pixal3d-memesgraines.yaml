@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "image -> 3D (Pixal3D), fast variant with FIXED seeds (same as the base)"
 
 COMMAND: |
-  I=$(cat); [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }
+  I="{{image}}"; [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }
   W=/mnt/hermes_workspace/hermes/tools/pixal3d_variantes/optimise_memesgraines/workflow_pixal3d_rts_api.json
   O="{{out}}"; [ -n "$O" ] || O="$ROOT/work/GLB_PIXAL3D"
   pixal3d gen "$I" --workflow "$W" --out "$O"

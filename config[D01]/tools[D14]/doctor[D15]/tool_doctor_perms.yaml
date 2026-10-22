@@ -1,0 +1,31 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D022"
+tool: "doctor.perms"
+date: "2026-10-22"
+tags: ["manage", "shell", "config", "test"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the keys are read by the owner alone: the env file is 600 and nothing else can read it"
+COMMAND: |
+  # THE KEYS ARE IN THE TREE (MOUSSA, 22/10): one wrong mode and every process reads them.
+  _n=0
+  for _e in $(find "$LA_HOME" -maxdepth 2 -type f -name '.env*' 2>/dev/null); do
+    _n=$((_n + 1))
+    _m=$(stat -c %a "$_e" 2>/dev/null)
+    if [ "$_m" = 600 ]; then
+      printf 'ok %s is 600\n' "${_e#$LA_HOME/}"
+    else
+      printf 'FAULT %s is %s, it must be 600\n' "${_e#$LA_HOME/}" "${_m:-?}"
+    fi
+  done
+  [ "$_n" = 0 ] && printf 'note no env file in the tree\n'
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: keys}

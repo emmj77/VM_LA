@@ -16,7 +16,7 @@ DESCRIPTION: "draws one recurring character and holds it : identity from a face,
 
 COMMAND: |
   SERVICE=http://127.0.0.1:8188
-  T=$(cat)
+  T="{{subject}}"
   [ -n "$T" ] || { printf '%s\n' "$(msg free_text_missing)" >&2; exit 1; }
   PERSON="$W/{{character}}"
   [ -f "$PERSO" ] || { printf '%s\n' "$(msg face_reference_missing '%s')""$PERSO" >&2; exit 1; }

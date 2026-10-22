@@ -16,7 +16,7 @@ RULES:
 DESCRIPTION: "searches the web and returns the links found : title then address, two lines per result"
 
 COMMAND: |
-  Q=$(cat); [ ${#Q} -ge 2 ] || { printf '%s\n' "$(msg terms_empty)" >&2; exit 1; }
+  Q="{{terms}}"; [ ${#Q} -ge 2 ] || { printf '%s\n' "$(msg terms_empty)" >&2; exit 1; }
   D=${LA_DDGR:-/usr/bin/ddgr}; [ -x "$D" ] || { printf '%s\n' "$(msg ddgr_missing_d "$D")" >&2; exit 1; }
   timeout 25 "$D" --json -n 8 "$Q" 2>/dev/null | jq -r '.[] | .title + "\n" + .url + "\n"'
 

@@ -70,9 +70,9 @@ __label__search-files localise le document sur le disque
 __label__search-memory cherche la cle api dans ma memoire
 __label__search-memory retrouve la conversation sur ce sujet
 __label__search-memory qu'est ce que je t'ai dit sur la machine
-__label__speak-text lis ce texte a voix haute
-__label__speak-text prononce cette reponse
-__label__speak-text genere la voix de ce paragraphe
+__label__voice-text lis ce texte a voix haute
+__label__voice-text prononce cette reponse
+__label__voice-text genere la voix de ce paragraphe
 __label__summarize-document resume ce rapport
 __label__summarize-document fais un resume de ce document
 __label__summarize-document condense ce texte long

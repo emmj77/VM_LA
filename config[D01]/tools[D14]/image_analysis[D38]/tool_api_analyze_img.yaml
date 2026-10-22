@@ -35,7 +35,7 @@ COMMAND: |
     *.bmp) M=image/bmp ;;
     *) printf '%s\n' "$(msg image_type_unread)" >&2 ; exit 1 ;;
   esac
-  Q=$(cat); [ -n "$Q" ] || Q="Describe this image in detail."
+  Q="{{question}}"; [ -n "$Q" ] || Q="Describe this image in detail."
   command -v jq >/dev/null 2>&1 || { printf '%s\n' "$(msg jq_missing)" >&2 ; exit 1 ; }
   TD=$(mktemp -d "${TMPDIR:-/tmp}/api_analyze_img.XXXXXX") || { printf '%s\n' "$(msg no_temp_space_left)" >&2 ; exit 1 ; }
   trap 'rm -f "$TD/b" "$TD/q"' EXIT INT TERM HUP

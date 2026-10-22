@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "measures a 3D mesh"
 
 COMMAND: |
-  I=$(cat); [ -n "$I" ] || { printf '%s\n' "$(msg mesh_missing)" >&2; exit 1; }; [ -f "$I" ] || { printf '%s\n' "$(msg mesh_found_i "$I")" >&2; exit 1; }
+  I="{{input}}"; [ -n "$I" ] || { printf '%s\n' "$(msg mesh_missing)" >&2; exit 1; }; [ -f "$I" ] || { printf '%s\n' "$(msg mesh_found_i "$I")" >&2; exit 1; }
   mesh measure "$I"
 
 ARGS:

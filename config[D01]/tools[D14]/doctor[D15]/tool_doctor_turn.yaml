@@ -1,0 +1,41 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D021"
+tool: "doctor.turn"
+date: "2026-10-22"
+tags: ["manage", "shell", "turn", "test"]
+RULES:
+  enabled: true
+  timeout: 60
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the turn lock tells the truth: no pid file when nothing runs, no dead pid in it, no running turn without one"
+COMMAND: |
+  # A DEAD PID LOOKS LIKE A RUNNING TURN (MOUSSA, 22/10): then nothing starts any more.
+  _st=$(cfg path state 2>/dev/null) || { printf 'FAULT no state folder\n' ; exit 0 ; }
+  _p="$_st/turn.pid"
+  _tj=$(cfg abs turn 2>/dev/null)
+  _status=""
+  [ -f "$_tj" ] && _status=$(jq -r '.status // ""' "$_tj" 2>/dev/null)
+  if [ -f "$_p" ]; then
+    _pid=$(tr -dc '0-9' < "$_p" 2>/dev/null)
+    if [ -z "$_pid" ]; then
+      printf 'FAULT turn.pid holds no number\n'
+    elif kill -0 "$_pid" 2>/dev/null; then
+      printf 'ok a turn runs, pid %s\n' "$_pid"
+    else
+      printf 'FAULT turn.pid names pid %s and that process is gone: the next turn would wait for ever\n' "$_pid"
+    fi
+  else
+    if [ "$_status" = running ]; then
+      printf 'FAULT turn.json says running and no turn.pid is there\n'
+    else
+      printf 'ok no turn runs and no lock is left behind\n'
+    fi
+  fi
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: lock}

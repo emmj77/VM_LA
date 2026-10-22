@@ -72,6 +72,9 @@ COMMAND: |
   _turn_set_json '(.reply_msg = $v)' "$_msg"
   _turn_set "(.tokens = (.tokens + $_tk))"
   trace_line call "$_tk tokens"
+  # the thinking of the model is SAID on the channel too: two names, one meaning
+  _th=$(printf '%s' "$_msg" | jq -r '.reasoning // .reasoning_content // ""' 2>/dev/null)
+  [ -z "$_th" ] || trace_line think "$(printf '%s' "$_th" | tr '\n' ' ' | head -c 1200)"
   exit 0
 
 ARGS: []

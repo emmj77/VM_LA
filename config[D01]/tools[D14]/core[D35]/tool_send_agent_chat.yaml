@@ -17,7 +17,7 @@ DESCRIPTION: "writes ONE message onto the agents board, and never more than one"
 COMMAND: |
   N=${LA_FROM:-agent}
   D="{{to}}"
-  T=$(cat)
+  T="{{body}}"
 
   NAMES=$(conf_str agents names "")
   [ -n "$NAMES" ] || { printf '%s\n' "$(msg no_agent_names_in_config)" >&2 ; exit 1 ; }

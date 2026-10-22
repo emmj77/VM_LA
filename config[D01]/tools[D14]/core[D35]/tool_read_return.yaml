@@ -16,7 +16,7 @@ DESCRIPTION: "reads a past tool return kept in terminal_return.db : an id, a too
 
 COMMAND: |
   DB=${LA_RETURN_DB:-$ROOT/config/terminal_return.db}
-  Q=$(cat)
+  Q="{{want}}"
   command -v sqlite3 >/dev/null 2>&1 || { printf '%s\n' "$(msg sqlite3_missing_machine)" >&2 ; exit 1 ; }
   [ -f "$DB" ] || { printf '%s\n' "$(msg no_return_kept_yet)""$DB" >&2 ; exit 1 ; }
   case "$Q" in

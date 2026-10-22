@@ -13,18 +13,18 @@ RULES:
   paths: write
 DESCRIPTION: "the turn object, born before anything touches it"
 COMMAND: |
-  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _id=$(date +%Y%m%d-%H%M%S)
   _al=$(cfg str active_engine)
   jq -n \
     --arg id "$_id" --arg p "${PROMPT:-}" --arg a "$(cfg str agents.main)" \
     --arg s "$(skl_skill 2>/dev/null)" --arg j "$(skl_project 2>/dev/null)" \
+    --arg c "${LA_CHANNEL:-cli}" --arg i "${LA_INPUT:-text}" \
     --arg e "$_al" --arg m "$(cfg str "engines.$_al.model")" --argjson t "$(date +%s)" \
-    '{id:$id,prompt:$p,agent:$a,skill:$s,project:$j,engine:$e,model:$m,started:$t,
+    '{id:$id,prompt:$p,agent:$a,skill:$s,project:$j,channel:$c,input:$i,engine:$e,model:$m,started:$t,
       status:"running",family:"agent",calls:[],tokens:0,reply:"",messages:[]}' |
     write_atomic "$(cfg abs turn)"
-  _tr facts "$_id"
+  trace_line facts "$_id"
   exit 0
 
 ARGS: []

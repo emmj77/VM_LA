@@ -1,0 +1,54 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D019"
+tool: "doctor.pages"
+date: "2026-10-22"
+tags: ["manage", "python", "document", "test"]
+RULES:
+  enabled: true
+  timeout: 90
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the scripts of the two pages compile: a broken page shows nothing and says nothing"
+COMMAND: |
+  # A BROKEN PAGE IS SILENT (MOUSSA, 22/10): the screen stays empty and nobody knows why.
+  _pg=$(cfg path page 2>/dev/null)
+  [ -n "$_pg" ] || _pg=$(find "$LA_HOME" -maxdepth 2 -type d -name 'page[D*]' -print -quit 2>/dev/null)
+  [ -n "$_pg" ] || { printf 'FAULT no page folder in the tree\n' ; exit 0 ; }
+  if ! command -v node >/dev/null 2>&1; then
+    printf 'note node is not installed: the pages cannot be compiled here\n'
+    exit 0
+  fi
+  python3 - "$_pg" "${TMPDIR:-/tmp}" <<'PY'
+  import os, re, subprocess, sys
+
+  folder, tmp = sys.argv[1], sys.argv[2]
+  bad = 0
+  for name in ("page.html", "widget.html"):
+      path = os.path.join(folder, name)
+      if not os.path.exists(path):
+          print("FAULT %s is missing" % name)
+          bad += 1
+          continue
+      src = open(path, encoding="utf-8", errors="replace").read()
+      code = "\n;\n".join(re.findall(r"<script[^>]*>(.*?)</script>", src, re.S))
+      if not code.strip():
+          print("note %s carries no script" % name)
+          continue
+      out = os.path.join(tmp, "doctor_" + name + ".js")
+      open(out, "w", encoding="utf-8").write(code)
+      r = subprocess.run(["node", "--check", out], capture_output=True, text=True)
+      if r.returncode:
+          first = (r.stderr.strip().splitlines() or ["?"])[0]
+          print("FAULT %s does not compile: %s" % (name, first))
+          bad += 1
+      else:
+          print("ok %s compiles, %d line(s) of script" % (name, code.count("\n") + 1))
+  print("note %d broken page(s) out of 2" % bad)
+  PY
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: pages}

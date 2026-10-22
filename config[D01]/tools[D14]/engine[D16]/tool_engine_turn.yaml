@@ -11,13 +11,20 @@ RULES:
   turn: none
   count: false
   paths: write
-DESCRIPTION: "one turn of the loop: the text in, the answer out"
+DESCRIPTION: "one turn of the loop: the text in, the answer out; channel and input say where it came from and how"
 COMMAND: |
 
   _t="{{text}}"
+  LA_CHANNEL="{{channel}}"
+  LA_INPUT="{{input}}"
+  [ -n "$LA_CHANNEL" ] || LA_CHANNEL=cli
+  [ -n "$LA_INPUT" ] || LA_INPUT=text
+  export LA_CHANNEL LA_INPUT
   _l=$(cfg abs loop) || { printf 'FAULT the loop is not in the tree\n'; exit 1; }
   . "$_l" || exit 1
   loop_turn "$_t"
   exit $?
 ARGS:
   - {name: text, type: text}
+  - {name: channel, type: enum, values: [cli,dashboard,app], required: false}
+  - {name: input, type: enum, values: [text,voice], required: false}

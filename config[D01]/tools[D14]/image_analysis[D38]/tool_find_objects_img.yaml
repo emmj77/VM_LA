@@ -31,7 +31,7 @@ COMMAND: |
     *) printf 'refused: this image type is not read (%s)\n' "$F" >&2 ; exit 1 ;;
   esac
   curl -fsS -m 3 "$URL/health" >/dev/null 2>&1 || { printf 'refused: the router is silent on %s:%s -- start la-models\n' "$H" "$P" >&2 ; exit 1 ; }
-  WANT=$(cat); [ -n "$WANT" ] || WANT="the main objects"
+  WANT="{{want}}"; [ -n "$WANT" ] || WANT="the main objects"
   command -v jq >/dev/null 2>&1 || { printf 'refused: jq is missing\n' >&2 ; exit 1 ; }
   Q="Locate $WANT in this image. Reply ONLY with JSON: {\"objects\":[{\"name\":\"...\",\"box\":[x1,y1,x2,y2]}]} where the four numbers are integers scaled 0-1000 on the width and the height. One entry per object, the most visible first."
   TD=$(mktemp -d "${TMPDIR:-/tmp}/find_objects_img.XXXXXX") || { printf 'refused: no space left for a temp folder\n' >&2 ; exit 1 ; }

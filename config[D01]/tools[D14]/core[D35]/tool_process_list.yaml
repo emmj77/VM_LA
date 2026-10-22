@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "lists the machine's processes, filtered by a pattern"
 
 COMMAND: |
-  PAT=$(cat)
+  PAT="{{pattern}}"
   if [ -n "$PAT" ]; then hx proc -n 40 -- "$PAT"; else hx proc -n 40; fi
 
 ARGS:

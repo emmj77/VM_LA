@@ -64,21 +64,24 @@ def door(kind, tool, args=(), feed=None, secs=200, channel=None):
                           env=dict(os.environ, LA_FROM=channel or ("engine" if kind == "engine" else "model")))
 
 
-def ask(kind, tool, args, feed=None, secs=240):
-    """one round trip to the door, unwrapped: the bridge never decides anything itself"""
+def ask(kind, tool, args, feed=None, secs=240, fallback=None):
+    """one round trip to the door, opened: the bridge never decides what an answer means"""
     run = door(kind, tool, args, feed, secs)
     txt = (run.stdout or "").strip()
     try:
         d = json.loads(txt)
-    except Exception:
-        return {"error": txt or (run.stderr or "").strip()}
-    v = d.get("result", d) if isinstance(d, dict) else d
-    if isinstance(v, str):
-        try:
-            v = json.loads(v)
-        except Exception:
-            pass
-    return v
+    except ValueError:
+        v = {"error": txt or (run.stderr or "").strip()}
+    else:
+        v = d.get("result", d) if isinstance(d, dict) else d
+        if isinstance(v, str):
+            try:
+                v = json.loads(v)
+            except ValueError:
+                pass
+    if fallback is None:
+        return v
+    return v if isinstance(v, (dict, list)) and "error" not in v else fallback
 
 
 def delegate(tool, args, secs=120):
@@ -250,21 +253,6 @@ def board_json():
         return json.loads(out)
     except ValueError:
         return {"faults": 1, "sections": [], "error": out[:200]}
-
-
-def _door_read(kind, tool, args, fallback):
-    try:
-        v = ask(kind, tool, args)
-    except Exception:
-        return fallback
-    if isinstance(v, dict) and "error" in v:
-        return fallback
-    if isinstance(v, str):
-        try:
-            v = json.loads(v)
-        except ValueError:
-            return fallback
-    return v if isinstance(v, (dict, list)) else fallback
 
 
 _NOISE = re.compile(r"^(\d+\s*(tokens?|bytes?|octets?)|turn\s+(start|closed|done\b.*)|"
@@ -461,7 +449,7 @@ def warm():
              {"thinking": [], "journal": [], "reply": {}}),
             ("hist", "engine", "engine.hist", ["op=turns"], {"turns": []})):
         try:
-            _CACHE[key] = [time.time(), _door_read(kind, tool, args, fb)]
+            _CACHE[key] = [time.time(), ask(kind, tool, args, fallback=fb)]
         except Exception:
             pass
 

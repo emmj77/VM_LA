@@ -10,9 +10,9 @@ RULES:
   turn: none
   count: false
   paths: write
-DESCRIPTION: "a free shell on the host: the whole disk writable, and the calls that delete a name refused by the kernel (machine.free_terminal.deny). every command is logged."
+DESCRIPTION: "a free shell on the host: the whole disk writable. deleting a name is not a choice: rm, unlink, rmdir and the io_uring ring are refused by the kernel (machine.free_terminal.deny, EPERM), so a file goes away with 'gio trash -- <path>' and nothing else. every command is logged."
 COMMAND: |
-  C="$*"; [ -n "$C" ] || C=$(cat); [ -n "$C" ] || { printf '%s\n' "$(msg empty_missing_command)" >&2; exit 1; }
+  C="$*"; [ -n "$C" ] || C="{{command}}"; [ -n "$C" ] || { printf '%s\n' "$(msg empty_missing_command)" >&2; exit 1; }
   T=600
   DENY=$(cfg list machine.free_terminal.deny)
   ERR=$(cfg str machine.free_terminal.error)

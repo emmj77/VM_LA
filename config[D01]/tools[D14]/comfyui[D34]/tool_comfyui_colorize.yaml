@@ -17,7 +17,7 @@ DESCRIPTION: "colourises an ink drawing: the drawing machine proposes colours (l
 COMMAND: |
   SERVICE=http://127.0.0.1:8188
   APLAT=http://127.0.0.1:${LA_FLATTENER_PORT:-8097}
-  TEXT=$(cat)
+  TEXT="{{style}}"
   [ -n "$TEXT" ] || { printf '%s\n' "$(msg subject_missing)" >&2; exit 1; }
   curl -sf --max-time 10 "$SERVICE/system_stats" >/dev/null 2>&1 || { printf '%s\n' "$(msg comfy_no_answer)""$SERVICE" >&2; exit 1; }
   curl -sf --max-time 10 "$APLAT/health" >/dev/null 2>&1 || { printf '%s\n' "$(msg flattener_no_answer)""$APLAT" >&2; exit 1; }

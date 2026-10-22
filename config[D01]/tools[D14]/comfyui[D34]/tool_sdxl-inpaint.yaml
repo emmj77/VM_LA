@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "inpainting (SDXL, image + masque) via ComfyUI"
 
 COMMAND: |
-  I=$(cat); [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }
+  I="{{image}}"; [ -n "$I" ] || { echo 'refused: missing image' >&2; exit 1; }; [ -f "$I" ] || { echo "refused: image not found ($I)" >&2; exit 1; }
   M="{{mask}}"; [ -n "$M" ] || { printf '%s\n' "$(msg mask_absent)" >&2; exit 1; }; [ -f "$M" ] || { printf '%s\n' "$(msg mask_not_found "$M")" >&2; exit 1; }
   S=http://127.0.0.1:8188; curl -sS -m 5 "$S/system_stats" >/dev/null 2>&1 || { printf '%s\n' "$(msg comfyui_silent "$S")" >&2; exit 1; }
   D=/mnt/hermes_workspace/hermes/skills/software-development/comfyui

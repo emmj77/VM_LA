@@ -19,7 +19,7 @@ COMMAND: |
   command -v fasttext >/dev/null 2>&1 || { printf '%s\n' "$(msg binary_missing 'fasttext')" >&2 ; exit 1 ; }
   MODEL="${LA_LID_MODEL:-${LA_GGUF_DIR:-$HOME/LLM_GGUF}/lid.176.ftz}"
   [ -f "$MODEL" ] || { printf '%s\n' "$(msg language_model_missing "$MODEL")" >&2 ; exit 1 ; }
-  T=$(cat)
+  T="{{text}}"
   [ -n "$(printf '%s' "$T" | tr -d '[:space:]')" ] || { printf '%s\n' "$(msg nothing_to_read)" >&2 ; exit 1 ; }
   printf '%s\n' "$T" | fasttext predict-prob "$MODEL" - 1 \
     | sed -e 's/^__label__//'

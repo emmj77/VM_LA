@@ -15,7 +15,7 @@ RULES:
 DESCRIPTION: "reads a yaml, a json or a md's yaml header, with yq"
 
 COMMAND: |
-  Q=$(cat); [ -n "$Q" ] || { printf '%s\n' "$(msg query_empty)" >&2; exit 1; }
+  Q="{{query}}"; [ -n "$Q" ] || { printf '%s\n' "$(msg query_empty)" >&2; exit 1; }
   F="$ROOT/{{path}}"; case "$F" in *.md) E="-f extract" ;; *) E="" ;; esac
   yq eval -M $E --security-disable-env-ops --security-disable-file-ops --expression "$Q" "$F"
 

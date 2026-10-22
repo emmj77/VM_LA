@@ -257,15 +257,7 @@ cfg() {
 # undeclared label takes the model row, and an empty cell counts as yes: the door stays shut.
 channel_set() {
   _l=${1:-model}
-  set -- $(awk -v l="$_l" '
-    /^channels:/ { c = 1 ; next }
-    c && /^[^[:space:]#]/ { c = 0 }
-    c && /^  [a-z]/ { r = $1 ; sub(/:.*/, "", r) ; next }
-    c && r && /^    / { k = $1 ; sub(/:.*/, "", k) ; v = $2 ; sub(/#.*/, "", v) ; gsub(/[ \t]/, "", v)
-                        if (r == l) got[k] = v ; else if (r == "model") dflt[k] = v }
-    END { n = split("self gate capture approval", K, " ")
-          for (i = 1 ; i <= n ; i++) printf "%s ", (K[i] in got) ? got[K[i]] : ((K[i] in dflt) ? dflt[K[i]] : "yes") }
-  ' "${LA_CONF:?}")
+  set -- $(awk -v l="$_l" '/^channels:/{c=1;next} c&&/^[^ #]/{c=0} c&&/^  [a-z]/{r=$1;sub(/:.*/,"",r);next} c&&r&&/^    /{k=$1;sub(/:.*/,"",k);v=$2;sub(/#.*/,"",v);gsub(/[ \t]/,"",v);if(r==l)g[k]=v;else if(r=="model")m[k]=v} END{n=split("self gate capture approval",K," ");for(i=1;i<=n;i++)printf "%s ",(K[i] in g)?g[K[i]]:((K[i] in m)?m[K[i]]:"yes")}' "${LA_CONF:?}")
   LA_SELF=${1:-yes} ; LA_GATE=${2:-yes} ; LA_CAPTURE=${3:-yes} ; LA_APPROVAL=${4:-yes}
   LA_CHANNEL=$_l
 }
@@ -273,10 +265,7 @@ channel_set() {
 # channel_is <label> <self|gate|capture|approval> : the decisions of the row, and nothing else.
 channel_is() {
   [ "${1:-model}" = "$LA_CHANNEL" ] || channel_set "${1:-model}"
-  case ${2:-gate} in
-    self) _v=$LA_SELF ;; gate) _v=$LA_GATE ;; capture) _v=$LA_CAPTURE ;; approval) _v=$LA_APPROVAL ;;
-    *) return 1 ;;
-  esac
+  case ${2:-gate} in self) _v=$LA_SELF ;; gate) _v=$LA_GATE ;; capture) _v=$LA_CAPTURE ;; approval) _v=$LA_APPROVAL ;; *) return 1 ;; esac
   case $_v in no|off|false|0) return 1 ;; esac
 }
 

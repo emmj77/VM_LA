@@ -39,7 +39,6 @@ COMMAND: |
   fi
 
   TXT="{{text}}"
-  [ -n "$TXT" ] || TXT=$(cat)
   [ "$OP" = clear ] || [ -n "$TXT" ] || { printf 'refused: %s wants a text\n' "$OP" >&2 ; exit 1 ; }
 
   D=$(dirname -- "$N")

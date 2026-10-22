@@ -1,8 +1,0 @@
-▁HELP :1.0 #0.1 @help
-▁NEW :1.0 #0.1 @new
-▁ST O P :1.0 #0.1 @stop
-▁S K I LL ▁LI S T :1.0 #0.2 @skill_list
-▁S K I LL ▁LO AD :1.0 #0.2 @skill_load
-▁S K I LL ▁UN LO AD :1.0 #0.2 @skill_unload
-▁LO AD ▁PRO J E C T :1.0 #0.2 @load_project
-▁UN LO AD ▁PRO J E C T :1.0 #0.2 @unload_project

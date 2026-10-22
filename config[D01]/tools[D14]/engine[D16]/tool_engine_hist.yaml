@@ -47,8 +47,8 @@ COMMAND: |
   turns)
     _n=$(cfg num loop.feed_turns)
     [ -n "$_n" ] || _n=$_win
-    sqlite3 -json "$_f" "select min(ts) as ts, json_group_array(json_object('role', role, 'text', coalesce(content,''))) as thread from messages group by exchange order by max(id) desc limit $_n;" 2>/dev/null \
-      | jq '{turns: [.[] | {ts: .ts, thread: (.thread | fromjson)}]}' 2>/dev/null \
+    sqlite3 -json "$_f" "select exchange, dense_rank() over (order by exchange) as n, min(ts) as ts, json_group_array(json_object('role', role, 'text', coalesce(content,'')) order by k) as thread from (select id, exchange, ts, role, content, id*10 + case when role = 'reasoning' then 0 else 1 end as k from (select id, exchange, ts, role, content from messages where role in ('user','assistant') union all select id, exchange, ts, 'reasoning', reasoning from messages where coalesce(reasoning,'') <> '')) group by exchange order by max(id) desc limit $_n;" 2>/dev/null \
+      | jq '{turns: [.[] | {exchange: .exchange, n: .n, ts: .ts, thread: (.thread | fromjson)}]}' 2>/dev/null \
       || printf '{"turns":[],"error":"the base refused the question"}\n'
     ;;
   window)

@@ -1,0 +1,41 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D020"
+tool: "doctor.state"
+date: "2026-10-22"
+tags: ["manage", "shell", "file", "test"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "no orphan in the state folder: a file nobody writes and nobody reads is a leftover"
+COMMAND: |
+  # SAY.QUEUE AND SAY.DONE STAYED MONTHS (MOUSSA, 22/10): nothing named them, nothing missed them.
+  _st=$(cfg path state 2>/dev/null)
+  [ -n "$_st" ] || { printf 'FAULT no state folder in the tree\n' ; exit 0 ; }
+  _o=0
+  _tot=0
+  for _f in "$_st"/*; do
+    [ -f "$_f" ] || continue
+    _tot=$((_tot + 1))
+    _b=$(basename "$_f")
+    # a file born at run time carries a stamp: stop.1792.say.done -> the name to look for is stop
+    _stem=$_b
+    case $_b in
+      *.*[0-9]*) _stem=${_b%%.*} ;;
+    esac
+    _n=$(grep -rlF --exclude-dir='state*' --exclude-dir='audio*' --exclude-dir='work*' -- "$_stem" \
+         "$LA_HOME" "$HERE" 2>/dev/null | grep -vF "$_f" | wc -l)
+    if [ "${_n:-0}" = 0 ]; then
+      printf 'FAULT nothing names %s: it is a leftover in the state folder\n' "$_b"
+      _o=$((_o + 1))
+    fi
+  done
+  printf 'note %s file(s) in state, %s named by nobody\n' "$_tot" "$_o"
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: orphans}

@@ -27,7 +27,10 @@ COMMAND: |
       # FRENCH LIVES IN THE COMMENTS AND IN texts.yaml (MOUSSA, 21/10). Only
       # the .sh/.py code is looked at, outside comment lines, and the earlier pattern
       # had double backslashes: it caught any file holding a digit.
-      _h=$(LC_ALL=C grep -nP '[^\x00-\x7F]' "$_f" 2>/dev/null | grep -vcP '^[0-9]+:[[:space:]]*#' 2>/dev/null)
+      # a FRENCH LETTER is an accented letter. A quote « » or the tokenizer mark ▁ is not.
+      # The count is done in python: grep read the accent bytes differently depending on the
+      # locale of the shell, and blamed the machinery for a symbol.
+      _h=$(python3 -c 'import sys;acc=set("àâäçéèêëîïôöùûüÿœæÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸŒÆ");print(sum(1 for l in open(sys.argv[1],encoding="utf-8",errors="replace") if not l.lstrip().startswith("#") and any(c in acc for c in l)))' "$_f")
       [ "${_h:-0}" = 0 ] || { _bad=$((_bad + 1)); printf 'FAULT %s carries %s line(s) with a french letter\n' "${_f#$ROOT/}" "$_h"; }
     done
   done

@@ -192,7 +192,7 @@ function showReply(j) {
   if (j.request) { $('asked').textContent = j.request; }
   if (j.error) { note(j.error); return; }
   // 202 du pont : un tour tournait deja, le mot est entre dans la FILE (pas perdu, pas un
-  // second tour). Le modele le lira comme resultat de son prochain reply/talk.
+  // second tour). Le modele le lira comme resultat de son prochain reply.
   if (j.queued) { note(j.note || 'ton mot est entre dans la file du tour en cours'); $('reply').textContent = '(en attente du prochain mot du modele)'; return; }
   $('reply').textContent = (j.response !== undefined ? j.response : JSON.stringify(j));
   if (j.audio && !heard.has(j.audio)) {
@@ -220,12 +220,13 @@ async function turnFetch(url, options) {
   finally { turnOpen = false; }
 }
 
-// --- LE TEXTE : POST /say, le corps EST la demande
+// --- LE TEXTE : POST /user_say, le corps porte la demande et le canal
 async function say() {
   const t = $('text').value.trim();
   if (!t) return;
   $('text').value = '';
-  await turnFetch('/say', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: t });
+  await turnFetch('/user_say', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                 body: JSON.stringify({ text: t, channel: 'app', input: 'text' }) });
 }
 
 // --- LA PHOTO : la base conseille <input accept="image/*" capture="environment">.
@@ -292,7 +293,7 @@ async function startTalking() {
     $('talk').disabled = false; $('stop').disabled = true;
     if (!blob.size) { note('rien enregistre'); return; }
     $('voicenote').textContent = Math.round(blob.size / 1024) + ' Ko enregistres, envoi…';
-    await turnFetch('/voice', { method: 'POST', headers: { 'Content-Type': blob.type }, body: blob });
+    await turnFetch('/user_voice?channel=app', { method: 'POST', headers: { 'Content-Type': blob.type }, body: blob });
     $('voicenote').textContent = 'envoye (' + (blob.type || '?') + ')';
   });
   recorder.start();
