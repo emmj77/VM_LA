@@ -618,22 +618,6 @@ schema:
     max: 40
     why: la doc de la skill chargee, en lignes dans la tete secondaire
   - section: second
-    key: order
-    kind: order
-    choices:
-    - project
-    - skill
-    - summary
-    - plan
-    - agents
-    - messages
-    - tools
-    - reads
-    - next
-    - task
-    - stamp
-    why: l ordre des sections du head secondaire, du plus stable au plus volatil
-  - section: second
     key: agents_lines
     kind: int
     min: 3
