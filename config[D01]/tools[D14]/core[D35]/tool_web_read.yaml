@@ -14,22 +14,22 @@ RULES:
   count: false
   paths: read
 
-DESCRIPTION: "Ouvre une page avec agent-browser et rend son contenu lisible en texte (tronque a la taille de sortie du moteur)."
+DESCRIPTION: "opens a page with agent-browser and returns its text (cut to the engine output size)."
 
 COMMAND: |
   LC_ALL=C; export LC_ALL
   A=$(command -v agent-browser 2>/dev/null || echo /usr/local/bin/agent-browser)
-  [ -x "$A" ] || { echo "refuse : agent-browser introuvable (sudo npm i -g agent-browser)" >&2 ; exit 1 ; }
+  [ -x "$A" ] || { echo "refused: agent-browser is missing (sudo npm i -g agent-browser)" >&2 ; exit 1 ; }
   U="{{url}}"
-  [ -n "$U" ] || { echo "refuse : url vide" >&2 ; exit 1 ; }
+  [ -n "$U" ] || { echo "refused: empty url" >&2 ; exit 1 ; }
   OUT=$("$A" --profile /home/moussa/.agent-browser/profile read "$U" 2>&1)
   case "$OUT" in
     ''|✗*|*"Read request failed"*)
       # a host may refuse the direct reader: the page is returned and the text read
-      "$A" --profile /home/moussa/.agent-browser/profile open "$U" >/dev/null 2>&1 || { echo "refuse : page injoignable" >&2 ; exit 1 ; }
+      "$A" --profile /home/moussa/.agent-browser/profile open "$U" >/dev/null 2>&1 || { echo "refused: the page cannot be reached" >&2 ; exit 1 ; }
       OUT=$("$A" eval "document.body.innerText" 2>/dev/null | sed 's/\\n/\n/g') ;;
   esac
-  [ -n "$OUT" ] || { echo "refuse : page vide" >&2 ; exit 1 ; }
+  [ -n "$OUT" ] || { echo "refused: empty page" >&2 ; exit 1 ; }
   # the engine caps at 200 lines AND 4000 bytes: both stay under
   printf '%s' "$OUT" | head -n 180 | head -c 3500 | iconv -c -f utf-8 -t utf-8
 
