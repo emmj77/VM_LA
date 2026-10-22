@@ -50,12 +50,11 @@ COMMAND: |
     [ -s "$_f" ] || { printf 'FAULT the canon %s is empty\n' "${_f#$ROOT/}"; exit 0; }
     _spec=$(awk '/^SPEC:/ { f = 1 ; next } f && /^[^ \t]/ { f = 0 } f' "$_f")
     [ -n "$_spec" ] || { printf 'FAULT the canon carries no SPEC zone\n'; exit 0; }
-    _d=$(printf '%s\n' "$_spec" | grep -oE '^    [0-9]+:' | sort | uniq -d | tr '\n' ' ')
-    [ -z "$_d" ] || printf 'FAULT law used twice:%s\n' "$_d"
-    _l=$(printf '%s\n' "$_spec" | awk '{ l = $0 ; sub(/^[ \t]+/, "", l) ; if (length(l) > 100) n++ } END { print n + 0 }')
-    [ "$_l" = 0 ] || printf 'FAULT %s line(s) of the canon pass 100 bytes\n' "$_l"
-    printf 'ok canon %s, %s law(s)\n' "${_f#$ROOT/}" "$(printf '%s\n' "$_spec" | grep -cE '^    [0-9]+:')"
-
+    _d=$(printf '%s\n' "$_spec" | grep -E '^    - ' | sort | uniq -d | wc -l | tr -d ' ')
+    [ "$_d" = 0 ] || printf 'FAULT %s statement(s) written twice\n' "$_d"
+    _l=$(printf '%s\n' "$_spec" | awk '{ l = $0 ; sub(/^[ \t]*-[ \t]*/, "", l) ; sub(/^"/, "", l) ; sub(/"[ \t]*$/, "", l) ; if (length(l) > 100) n++ } END { print n + 0 }')
+    [ "$_l" = 0 ] || printf 'FAULT %s statement(s) pass 100 bytes\n' "$_l"
+    printf 'ok canon %s, %s statement(s)\n' "${_f#$ROOT/}" "$(printf '%s\n' "$_spec" | grep -cE '^    - ')"
     ;;
   *) printf 'FAULT unknown op %s\n' "$_op" ;;
   esac

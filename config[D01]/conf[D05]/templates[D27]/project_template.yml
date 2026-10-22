@@ -16,26 +16,48 @@ SUMMARY:                     # LE CONTEXTE : ce qu est ce projet (10 LIGNES MAXI
   101: "..."
   102: "..."
 
-SPEC:                        # LE CANON : dans le manifeste, il n y a plus de fichier a part
-  version: "1.0.0"
+SPEC:                       # the canon: the machine's own facts, one verifiable claim per line
+  version: "2.0.0"
+  state: provisional        # working draft: the sections move until the human validates them
   cap:
-    lines_per_section: 100
     chars_per_line: 100
-  "section 1":               # l echafaudage et le physique : comment le projet est pose, ou il vit
-    100: "..."
-  "section 2":               # le demon et le watcher, la synchronisation, le disque
-    200: "..."
-  "section 3":               # la documentation : ce qui est ecrit, ou, et pour qui
-    300: "..."
-  "section 4":               # la convention : les regles de nommage et de forme
-    400: "..."
-  "section 5":               # les roles du projet : qui fait quoi
-    500: "..."
-  "section 6":               # les flux de donnees, la pile technique et ses dependances
-    600: "..."
-  "section 7":               # les boucles de retroaction : l append force, la lecture
-    700: "..."
-  # section 8, section 9, section 10 ... : libres, si le projet en a besoin, numerotees a la suite
+  scaffolding:              # section 1 : the scaffold and the physical
+    - "the root holds config, projects, skills, state, tools ; la_config names every path, root relative"
+    - "index_la.yaml lists every folder and file with its id and role ; the doctor compares it to the disk"
+    - "names are ascii lowercase, hyphens between words ; a bracketed id marks a tree node : config[D01]"
+    - "an agent signs the state it writes ; the agent name is the key of every file it owns"
+  daemon:                   # section 2 : daemon, watcher, sync, disk
+    - "every state write is atomic : a temp file beside the target, then a rename"
+    - "the journal has one writer : trace_line, called from step.sh only"
+    - "the journal rotates at loop.max_turns : the newest trace_keep lines survive, the count restarts"
+    - "a write outside WRITABLE_WORKSPACE fails with EPERM"
+  documentation:            # section 3 : what is written, where, for whom
+    - "each skill folder holds skill.yaml ; its DOCS key names its documents"
+    - "a loaded skill has its doc read first : load_doc is then alone with reply"
+    - "a doc name resolves against tools, then root, then the skill folder ; a web doc states its source"
+    - "limits.doc_lines caps the doc lines carried by the second head"
+  convention:               # section 4 : naming and form
+    - "the name is the identifier : a tool is called by name, an argument by name ; ids stay in the files"
+    - "one template per file type ; a new file copies its template"
+    - "no french in a machine artifact : file, key, identifier and log line are english"
+    - "an empty value is not written : a rule without text never reaches the head"
+  roles:                    # section 5 : who does what
+    - "the human dictates the canon and validates ; the agent executes and reports"
+    - "the agent rewrites no canon without an explicit go"
+    - "the manifest declares the project : path, RULES, SUMMARY, SPEC, PROJECT_PLAN"
+    - "RULES.skillset is the exhaustive list of the skills the project opens"
+  flow:                     # section 6 : data flow, stack, dependencies
+    - "the engine is bash, the config is yaml, the programs are python ; nothing leaves the machine"
+    - "a turn runs prompt, model, tool, gate ; each step writes one trace line"
+    - "la_config is the only source of values : bounds, cadences, paths, texts"
+    - "an unknown command is refused ; a command is a la_config name, or a family and a tool"
+  loops:                    # section 7 : feedback loops, forced append, read
+    - "skl_gate is the single decider : skillset, doc, plan, step toolset, due recall, end"
+    - "an imposition closes the toolset : the tool the step names, plus update_todo"
+    - "a skill loaded opens its toolset ; the last plan step closes it and disarms the skill"
+    - "the journal plan lives in state/<agent>_todo.md and is deleted once closed"
+    - "the project plan lives in PROJECT_PLAN and erases itself at its last step"
+    - "a bound never stops the engine : it turns over"
 
 PROJECT_PLAN:                # LE GRAND PLAN : le chantier du projet, ecrit a son chargement
   400: "PLAN {{name}} : <ce que le projet doit produire>"   # le but
