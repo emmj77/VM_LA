@@ -6,8 +6,8 @@ tags: ["spec", "canon", "project", "statement"]
 SUMMARY:
   100: "The ONE skill that loads and appends the SPEC of the loaded project. Two acts, nothing else."
   101: "load_spec: all of the canon, one section, or a range of its lines. It opens app_spec, once."
-  102: "app_spec: one or two statements, at the offset it is told. It comes after load_spec, or it is refused."
-  103: "No section is named here: naming it is the act of create-spec. No line is ever dropped."
+  102: "app_spec: one or two statements, where it is told: they land, or replace what stands there. after a load."
+  103: "No section is named here: naming it is the act of create-spec. Two statements a write, never a sweep."
   104: "A statement is one line, one fact, 100 bytes at most. What cannot be proven is reported, never invented."
   110: "the order is the law: load, then append, once. after a write, load again to write again."
 
@@ -27,7 +27,7 @@ SKILL_TOOL_SET:
 
 DOCS:
   300: "manage-spec: load_spec reads the canon (all, a section, a range of lines) and opens app_spec for this turn."
-  301: "app_spec writes one or two statements at the offset it is told, in a section that exists, then closes."
+  301: "app_spec writes one or two statements where it is told: over=0 they land there, over=1 or 2 they replace what stands."
   302: "no section is named here (create-spec names it), no statement is dropped, nothing is invented: what cannot hold is said."
 
 PLAN:

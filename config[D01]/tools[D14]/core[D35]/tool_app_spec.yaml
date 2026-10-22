@@ -1,7 +1,7 @@
 id: "G079"
 tool: "app_spec"
 date: "2026-10-22"
-tags: ["write", "shell", "project", "add"]
+tags: ["write", "shell", "project", "set"]
 
 RULES:
   enabled: true
@@ -12,7 +12,7 @@ RULES:
   count: false
   paths: write
 
-DESCRIPTION: "appends one or two statements at a given offset of an existing SPEC section. comes after load_spec, once per turn, and names no section"
+DESCRIPTION: "writes one or two statements where it is told: they land there, or they replace the one or two that stand there. after load_spec, once per turn"
 
 COMMAND: |
   LC_ALL=C; export LC_ALL
@@ -24,9 +24,9 @@ COMMAND: |
   _tf=$(cfg abs turn)
   _sp=$([ -s "$_tf" ] && jq -r '.spec // ""' "$_tf" 2>/dev/null)
   [ "$_sp" = "$P" ] || { printf 'app_spec comes after load_spec: load the canon of %s first, in this turn\n' "$P" >&2 ; exit 1 ; }
-  python3 - "$F" "{{section}}" "{{after}}" "{{lines}}" "$P" <<'PY'
+  python3 - "$F" "{{section}}" "{{at}}" "{{over}}" "{{lines}}" "$P" <<'PY'
   import sys, yaml, os, re
-  f, sec, at, lines, name = sys.argv[1], sys.argv[2].strip(), sys.argv[3].strip(), sys.argv[4], sys.argv[5]
+  f, sec, at, over, lines, name = sys.argv[1], sys.argv[2].strip(), sys.argv[3].strip(), sys.argv[4].strip(), sys.argv[5], sys.argv[6]
   d = yaml.safe_load(open(f, encoding='utf-8')) or {}
   sp = d.get('SPEC') or {}
   if not sp:
@@ -36,8 +36,16 @@ COMMAND: |
       sys.exit('the section %s does not exist: naming it is the act of create-spec' % sec)
   cap = int(((sp.get('cap') or {}).get('chars_per_line')) or 100)
   at = at or '0'
+  over = over or '0'
   if not at.isdigit():
-      sys.exit('after says where the line lands: a statement number, 0 for the head')
+      sys.exit('at says where the write starts: a statement number, 0 for the head')
+  if not over.isdigit():
+      sys.exit('over says how many statements the write covers: 0 to insert, 1 or 2 to replace')
+  at, over = int(at), int(over)
+  if over > 2:
+      sys.exit('%d statements asked: two at most, a surgical write' % over)
+  if over > 0 and at < 1:
+      sys.exit('a replacement starts at a statement: at=0 is the head, where nothing stands to replace')
   new = [x.strip() for x in lines.split(';')]
   new = [x for x in new if x]
   if not new:
@@ -61,25 +69,34 @@ COMMAND: |
           end = k
           break
   marks = [k for k in range(h + 1, end) if src[k].startswith('    - ')]
-  n = int(at)
-  if n > len(marks):
-      sys.exit('the section %s holds %d statement(s): after=%d lands nowhere' % (sec, len(marks), n))
-  pos = (marks[n - 1] + 1) if n > 0 else h + 1
-  for x in reversed(new):
-      esc = x.replace('\\', '\\\\').replace('"', '\\"')
-      src.insert(pos, '    - "%s"' % esc)
+  if at > len(marks):
+      sys.exit('the section %s holds %d statement(s): at=%d lands nowhere' % (sec, len(marks), at))
+  if over > len(marks) - at + 1:
+      sys.exit('%d statement(s) stand from %d in %s: over=%d goes past the end'
+               % (len(marks) - at + 1, at, sec, over))
+  block = ['    - "%s"' % x.replace('\\', '\\\\').replace('"', '\\"') for x in new]
+  if over > 0:
+      first = marks[at - 1]
+      last = marks[at - 1 + over - 1]
+      src[first:last + 1] = block
+      what = '%d line(s) replace %d statement(s) of %s, from %d' % (len(new), over, sec, at)
+  else:
+      pos = marks[at - 1] if at > 0 else h + 1
+      for b in reversed(block):
+          src.insert(pos, b)
+      what = '%d line(s) land in %s, %s' % (len(new), sec,
+                                            ('after %d' % at) if at > 0 else 'at the head')
   out = '\n'.join(src)
   try:
       chk = yaml.safe_load(out) or {}
   except Exception as e:
       sys.exit('the edit would break the manifest: %s' % e)
-  if len(chk['SPEC'][sec]) != len(sp[sec]) + len(new):
+  if len(chk['SPEC'][sec]) != len(sp[sec]) - over + len(new):
       sys.exit('the edit did not land in %s: nothing written' % sec)
   t = f + '.tmp'
   open(t, 'w', encoding='utf-8').write(out)
   os.replace(t, f)
-  print('ok spec %s: %d line(s) written in %s, after %d (%d now)'
-        % (name, len(new), sec, n, len(chk['SPEC'][sec])))
+  print('ok spec %s: %s (%d now)' % (name, what, len(chk['SPEC'][sec])))
   PY
   _rc=$?
   [ "$_rc" -eq 0 ] && _turn_set '.spec = ""' 2>/dev/null
@@ -87,5 +104,6 @@ COMMAND: |
 
 ARGS:
   - {name: section, type: text}
-  - {name: after, type: text, required: false}
+  - {name: at, type: text, required: false}
+  - {name: over, type: text, required: false}
   - {name: lines, type: text}
