@@ -694,21 +694,15 @@ class Handler(BaseHTTPRequestHandler):
                 return self.json([str(e.get("text") or "") for e in _trace_events()
                                   if e.get("kind") == "tool" and (e.get("text") or "").strip()])
             if p == "/thinking":
-                # the expandable thinking: what the model thought, then the steps of the turn
-                lines = []
+                # the thinking is the model's words, nothing else: the steps of the turn live
+                # in /journal, the tool band. two sources, never mixed in one block.
                 try:
                     with open(_turn_file("turn.json"), "r", errors="replace") as f:
                         _t = json.load(f)
                     _r = str((_t.get("reply_msg") or {}).get("reasoning") or "").strip()
-                    if _r:
-                        lines += [x.strip() for x in _r.split("\n\n") if x.strip()]
                 except (OSError, ValueError):
-                    pass
-                lines += [str(e.get("text")) for e in _trace_events()
-                          if e.get("kind") in ("step", "call", "reply", "note") and e.get("text")]
-                # the engine writes counters next to the model's words: they are not reasoning
-                lines = [l for l in (_thinking_keep(x) for x in lines) if l]
-                return self.json(lines)
+                    _r = ""
+                return self.json([l for l in (_thinking_keep(x) for x in _r.split("\n\n")) if l])
             if p == "/approval":
                 # un OBJET, jamais une phrase : l app le passe a JSONObject et casse sinon.
                 # pending / tool / gesture / phrase / age : le meme contrat pour les trois fronts.

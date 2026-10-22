@@ -207,7 +207,8 @@
     const b = document.createElement('div');
     b.className = 'bubble-bot md';
     if (m.text) b.innerHTML = md(m.text);
-    else if (!(m.thinking && m.thinking.length)) b.innerHTML = '—';
+    else if (m.thinking && m.thinking.length) b.hidden = true;   // la pensee seule ne fait pas une bulle
+    else b.innerHTML = '—';
     top.appendChild(av);
     top.appendChild(b);
     // la pensee vit hors de la bulle, juste au-dessus : elle n habille pas le message
@@ -479,17 +480,31 @@
     if (txt) addMsg({ role: 'bot', kind: ok ? 'note' : 'error', text: (ok ? '' : '⚠️ ') + txt, ts: Date.now() });
   }
 
+  let approvalTimer = 0;
+
   function applyApproval(d) {
     if (!el.approvalBar) return;
     const pending = !!(d && d.pending);
-    if (!pending) { el.approvalBar.classList.add('hidden'); S.awaitApproval = false; return; }
-    const phrase = (d.phrase || d.gesture || '').trim();
-    el.approvalWho.textContent = phrase || '(geste)';
+    if (!pending) {
+      el.approvalBar.classList.add('hidden');
+      S.awaitApproval = false;
+      S.lastApprovalKey = '';
+      if (approvalTimer) { clearInterval(approvalTimer); approvalTimer = 0; }
+      return;
+    }
+    // l ecran parle francais : le pont envoie l objet, la phrase se fait ici
+    const who = (d.tool || d.gesture || 'un geste').trim();
+    const left = Number(d.left || 0);
+    const say = 'Le moteur demande : ' + who + (left ? ' — ' + left + ' s' : '');
+    el.approvalWho.textContent = say;
     el.approvalBar.classList.remove('hidden');
-    const key = (d.gesture || '') + '|' + (d.age || 0);
+    if (!approvalTimer) approvalTimer = setInterval(() => call('approval'), 5000);
+    const key = who + '|' + (d.age || 0);
     if (S.lastApprovalKey === key) return;
     S.lastApprovalKey = key;
-    if (S.voiceApproval !== false) { S.awaitApproval = true; call('speak', phrase); }
+    // une demande laisse une trace dans le fil : on ne demande jamais dans le vide
+    addMsg({ role: 'bot', kind: 'note', text: '⏸ ' + say, ts: Date.now() });
+    if (S.voiceApproval !== false) { S.awaitApproval = true; call('speak', who); }
   }
 
   function norm(s) {
@@ -636,16 +651,17 @@
       const ts = Date.parse(t.ts) || Date.now();
       const outils = (Array.isArray(t.tool_calls) && t.tool_calls.length) ? t.tool_calls
                     : (Array.isArray(t.tools) ? t.tools : []);
-      let lastBot = null;
+      let lastBot = null, thought = '';
       (Array.isArray(t.thread) ? t.thread : []).forEach((b, i) => {
         const txt = (b && b.text) ? String(b.text) : '';
         if (!txt.trim()) return;
-        if (b.role === 'user') { out.push({ role: 'user', text: txt, ts: ts + i }); return; }
-        if (b.role === 'reasoning') {
-          out.push({ role: 'bot', text: '', ts: ts + 1 + i, thinking: [txt], tools: [], code: 0 });
-          return;
-        }
-        lastBot = { role: 'bot', text: txt, ts: ts + 1 + i, thinking: [], tools: [], code: 0 };
+        if (b.role === 'user') { thought = ''; out.push({ role: 'user', text: txt, ts: ts + i }); return; }
+        // une pensee n est pas un message : elle se pose au-dessus de la reponse qui la suit
+        if (b.role === 'reasoning') { thought = thought ? thought + '\n\n' + txt : txt; return; }
+        const own = (b && b.reasoning) ? String(b.reasoning) : '';
+        lastBot = { role: 'bot', text: txt, ts: ts + 1 + i,
+                    thinking: [own || thought].filter(Boolean), tools: [], code: 0 };
+        thought = '';
         out.push(lastBot);
       });
       if (outils.length && lastBot) lastBot.tools = outils;

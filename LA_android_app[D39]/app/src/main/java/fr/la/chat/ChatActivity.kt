@@ -358,6 +358,18 @@ class ChatActivity : Activity() {
       }
     }
 
+    /** La demande en attente, seule, sans les cinq autres routes : le compte a rebours vit. */
+    @JavascriptInterface
+    fun approval() {
+      net.execute {
+        try {
+          pushJsonUi("approval", Bridge.approval(this@ChatActivity))
+        } catch (e: Exception) {
+          Log.w("LA", "approval introuvable", e)
+        }
+      }
+    }
+
     @JavascriptInterface
     fun speak(text: String) {
       val t = text.trim()
