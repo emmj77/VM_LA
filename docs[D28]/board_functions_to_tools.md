@@ -160,8 +160,7 @@ met où.
 | `_units` (94) · `alive` (284) | units / vivant résidents | part | `engine.residents` |
 | `_git_state` (119, +`one`) · `read_git` (638) | état git | part | `engine.update` (`op=check`) |
 | `_engine` (129) · `read_engine` (625) | endpoint / provider | part | `engine.board` / `engine.switch` |
-| `_db_counts` (145) | comptes sessions | part | `engine.stat` |
-| `_db_query` (151) · `class model` (216) | sql / tokens | part | `recall` G056 / `search_sessions` G029 |
+| `_db_counts` (145) · `_db_query` (151) · `class model` (216) | comptes / sql / tokens sur sessions.db | part | `engine.stat` (`op=exchanges·tools·cost`) |
 | `_table` (161) · `read_table` (570) · `read_registry` (495) | registre / table | part | `table_manage` G018 |
 | `class laconf` (189) · `dotted` (206) | accès config | part | `config_list` G080 |
 | `_port` (239) · `run` (268) | parse port / lance cmd | reste | — (util) |
@@ -176,7 +175,7 @@ met où.
 | `read_traffic` (645) | trafic sessions / journal | part | `engine.stat` / `engine.trace` |
 | `read_turn` (668) · `_tool_line` (1242) · `class Tailer` (1208) | le canal vivant | part | `engine.trace` |
 | `read_state` (1188) | skill / projet armé | part | `skill_list` G051 / `project_list` G033 |
-| `_read_history` (1499, dans Cli) | historique | part | `engine.hist` / `recall` G056 |
+| `_read_history` (1499, dans Cli) | historique | part | `engine.hist` |
 | `one_turn` (1258, +`stream`) | un tour | part | `engine.turn` |
 | `control` (734) · `_expand` (866) · `_ratio_of` (879) · `board_object` (915, +`row`) · `sections` (976) · `one_line` (1013) · `snapshot` (1196) | composition du board | reste | — (rendu board) |
 | `_sigwinch` (1023) · `_keys` (1037) · `tui` (1054) · `class Cli` (1297, +24 méthodes) · `cli` (1700) · `main` (1705) | interface terminal | reste | — (TUI) |
@@ -186,6 +185,13 @@ met où.
 réinventer. Là où un outil ne rend pas la donnée exacte d'une ligne (ex.
 `engine.stat op=exchanges` disait « 28 messages » au lieu des échanges distincts), on
 **ajuste son `op` de quelques lignes** — jamais un lecteur parallèle.
+
+**Un outil sert l'agent ET les trois sorties — c'est le but** (« une source, trois
+endpoints »). `engine.trace` écrit le canal (agent) et le board en lit la queue ;
+`engine.stat` compte `sessions.db` pour le board ET pour l'agent ; `skill_list` /
+`project_list` listent pour l'agent ET pour l'app. **Mais** chaque cible doit être la
+**bonne** fonction : `_db_query` (SQL brut sur `sessions.db`) va dans `engine.stat`,
+**pas** dans `search_sessions` (recherche sémantique, outil d'agent). Corrigé.
 
 ## 6. Route par route — les trois sorties, et l'outil existant qui y répond
 
