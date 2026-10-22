@@ -52,10 +52,8 @@ COMMAND: |
   [ "$_top" -lt 1 ] && _top=1
   _closed=0
   [ -n "$(skl_lock)" ] && _closed=1
-  # the cut only bites inside a skill: out of skill the agent keeps its whole base,
-  # else skill_list/load_skill would be cut and it could never enter a skill
-  _armed=$(skl_skill 2>/dev/null || true)
-  if [ "$_closed" != 1 ] && [ -n "$_armed" ] && [ "${_n:-0}" -gt "$_top" ]; then
+  # the cut is 50% everywhere: skill or not, only a closed plan holds the set
+  if [ "$_closed" != 1 ] && [ "${_n:-0}" -gt "$_top" ]; then
     _q=$(jq -r '.prompt // ""' "$(cfg abs turn)" 2>/dev/null)
     _m=$(cfg str models.rerank) || _m=""
     _h=$(cfg str models.host 127.0.0.1)

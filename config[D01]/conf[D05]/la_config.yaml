@@ -484,8 +484,12 @@ head:
     101: "Each tool is one function of the API: the NAME is the tool name (reply, read_file, list_dir), and its arguments are named. No number, no line."
     102: "I fill only the declared argument names; free text goes to the argument the tool declares for it."
     103: "G077, T001, U03 are the ids of the master file lines, not what I call."
-    104: '[{"type":"function","function":{"name":"reply","description":"the answer to the human, in words: how it reaches them is the machine business","parameters":{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}}}]'
+    104: "The two tools that never leave this head, reply and kill_proc, carry their exact schema under ALWAYS below."
     105: "The same shape, another tool: read_file {path:work/note.md}."
+  ALWAYS:
+    101: "ALWAYS OFFERED, fixed in this head, never cut and never reranked, on every turn: reply and kill_proc. Call them like any other function."
+    102: '[{"type":"function","function":{"name":"reply","description":"the answer to the human, in words: how it reaches them is the machine business","parameters":{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}}}]'
+    103: '[{"type":"function","function":{"name":"kill_proc","description":"kills a process by its pid, refuses its own pid and its ancestors","parameters":{"type":"object","properties":{"pid":{"type":"integer"},"signal":{"type":"string"}},"required":["pid","signal"]}}}]'
   MECHANISM:
     101: "ONE TURN: la(g, a) -> the engine runs line g -> the result comes back -> I continue."
     102: "The engine checks BEFORE the effect: id, line, arguments, scope. A refusal comes back as is."
