@@ -17,6 +17,7 @@ SKILL_TOOL_SET:
   G077: "free_terminal"
   G001: "reply"
 DOCS:
+  300: "the free terminal: one command at a time, journaled, raw output. the kernel refuses the calls that remove a name: a file goes away with gio trash, never rm. the blocklist binaries are masked."
 PLAN:
 WRITABLE_WORKSPACE:
   workspace: "/"

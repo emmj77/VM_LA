@@ -124,10 +124,10 @@ appele par `shell_exec` au retour de l outil, jamais par le modele).
     1  skills/<nom>/skill.yaml : PERMANENT_TODO: true, PLAN (400 + pas), SKILL_TOOL_SET,
        DOCS, WRITABLE_WORKSPACE, ERROR
     2  chaque nom de `tools` existe au registre (registry.yaml)
-    3  la section DOCS porte le doc elle-meme : ses lignes sont le doc, load_doc les rend
-       telles quelles et la porte lache le jeu du pas. une valeur qui nomme un fichier
-       existant se lit du fichier (tools/, la racine, skills/<nom>/, skills/), et
-       web_search renvoie a la source officielle. une skill sans DOCS ne demande rien.
+    3  DOCS n est JAMAIS vide : une phrase au moins, dans chaque skill. trois formes, et
+       elles se melangent : "web_search" (la source officielle), le NOM d un fichier du
+       disque (tools/, la racine, skills/<nom>/, skills/), ou la phrase elle-meme, que
+       load_doc rend telle quelle. le docteur nomme une skill sans doc.
     4  APPROVAL: false justifie : les outils de la route vivent hors GATED
     5  un agent arme : la skill load <nom> (l humain), ou la charge par la porte
     6  les pas : 12 au plus, `text` 100 octets, et chaque pas porte `text`, `tools`, `close`

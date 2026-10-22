@@ -55,6 +55,8 @@ COMMAND: |
           for k in tk:
               if k not in d:
                   print('FAULT skill %s misses %s, which the gabarit names' % (n, k))
+          if not any(str(v).strip() for v in (d.get('DOCS') or {}).values()):
+              print('FAULT skill %s carries no doc: DOCS holds one sentence at least' % n)
           for k in (d.get('RULES') or {}):
               if k not in trk:
                   print('FAULT skill %s carries RULES.%s, which the gabarit does not name' % (n, k))

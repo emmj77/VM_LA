@@ -31,8 +31,8 @@ PERMANENT_TODO: false        # IS THE PLAN A TUNNEL? (a closed route, not a sugg
 SKILL_TOOL_SET:              # THE one name: the tools this skill opens, and them alone (200 to 299)
   200: "..."                 # one line, one tool name
   201: "..."
-DOCS:                        # the source: the NAME of a file, OR of a folder (no path)
-  300: "..."                 # the model searches it and reads the one useful file; otherwise "web_search"
+DOCS:                        # NEVER empty: one sentence at least. a mode ("web_search"), the NAME of a
+  300: "..."                 # file on disk (no path), or a sentence of the doc itself -- the three may mix.
 PLAN:                        # a JOURNAL plan lives OUTSIDE: state/<agent>_todo.md (lowercase), written by todo,
                              # moved by update_todo (in_progress | completed, 12 steps at most, 100 chars
                              # a step). this section stays for a ROUTE only (PERMANENT_TODO: true): one
