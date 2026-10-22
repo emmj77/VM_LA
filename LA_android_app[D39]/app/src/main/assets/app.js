@@ -1199,9 +1199,13 @@
   if (a) {
     a.ready();
     setTimeout(syncShared, 250);
+    // une demande d approbation se voit en cinq secondes ; le reste du poste se relit dix fois moins
+    setInterval(() => {
+      if (document.visibilityState === 'visible' && !S.busy && !S.recording) call('approval');
+    }, 5000);
     setInterval(() => {
       if (document.visibilityState === 'visible' && !S.busy && !S.recording) syncShared();
-    }, 5000);
+    }, 30000);
   } else {
     el.statusLine.textContent = 'Aperçu hors application';
   }
