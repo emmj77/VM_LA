@@ -402,6 +402,10 @@ commands:
     name: "app"
     act: app
     # le raccourci du bureau passe par la : une seule porte, « la app »
+  - id: "V24"
+    name: "cmds"
+    act: cmds
+    # le panneau des commandes, dans le terminal : fleches, Entree
   - id: "V06"
     name: "skill list"
     tool: skill_list

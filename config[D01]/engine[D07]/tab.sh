@@ -242,6 +242,21 @@ cmd_run() {
                   fi ;;
     doctor)       run_call engine.doctor "op=${1:-short}" ;;
     app)          run_call engine.commands op=app ;;
+    cmds)
+      # le panneau, dans le terminal : whiptail le parcourt aux fleches, Entree l execute
+      if [ ! -t 0 ] || [ ! -t 1 ]; then printf 'note cmds wants a terminal\n'; exit 0; fi
+      set -- --title "LA - les commandes" --menu "fleches pour choisir, Entree pour lancer" \
+             26 84 18 --output-fd 1
+      for _i in $(cmd_ids); do
+        _n=$(cmd_get "$_i" name)
+        [ -n "$_n" ] || continue
+        _w=$(cmd_get "$_i" act)
+        [ -n "$_w" ] || _w=$(cmd_get "$_i" tool)
+        set -- "$@" "$_n" "${_w:-commande}"
+      done
+      _sel=$(whiptail "$@" 3>&1 1>&2 2>&3) || exit 0
+      [ -n "$_sel" ] && cmd_run "$_sel"
+      ;;
     tool_call)    LA_FROM=human; export LA_FROM; run_call "$@" ;;
     *)            printf 'no act: %s\n' "$_act" >&2; return 1 ;;
   esac

@@ -163,6 +163,7 @@ ul.cmdlist li{word-break:break-word}
 ul.cmdlist li.dim{color:var(--dim)}
 ul.cmdlist li.pick{cursor:pointer;border-radius:4px;margin-left:-6px;padding:1px 6px}
 ul.cmdlist li.pick:hover{background:var(--panel3);color:var(--fg)}
+ul.cmdlist li.pick.on{background:var(--acc-soft);color:var(--fg);outline:1px solid var(--acc)}
 .msg.me{margin-left:auto;background:var(--acc-soft);border-color:#1d3f60;border-right:2px solid var(--acc)}
 .msg.me .who{color:#7fb2e8}
 .msg.me .who .g{background:#16324c;color:#9cc8f5}
@@ -814,10 +815,30 @@ function paintCommands() {
     li.addEventListener('click', () => {
       $('#say').value = '/' + c.name + (c.arg ? ' ' : '');
       $('#say').focus();
+      cmdClose();
     });
   });
   $('#feed').appendChild(m);
   $('#feed').scrollTop = $('#feed').scrollHeight;
+  cmdMark(0);
+}
+
+/* LE PANNEAU SE PARCOURT AU CLAVIER : fleches pour choisir, Entree pour prendre, Echap pour fermer. */
+let cmdAt = 0;
+
+function cmdRows() { const m = document.getElementById('cmd-list'); return m ? m.querySelectorAll('li') : []; }
+
+function cmdMark(i) {
+  const ls = cmdRows();
+  if (!ls.length) return;
+  cmdAt = (i + ls.length) % ls.length;
+  ls.forEach((li, j) => li.classList.toggle('on', j === cmdAt));
+  ls[cmdAt].scrollIntoView({ block: 'nearest' });
+}
+
+function cmdClose() {
+  const m = document.getElementById('cmd-list');
+  if (m) m.remove();
 }
 
 function bubble(kind, who, text, extra, ts) {
@@ -998,7 +1019,9 @@ async function send(text) {
     $('#feed').appendChild(m);
     $('#feed').scrollTop = $('#feed').scrollHeight;
     if (d.kind === 'doctor') doctorBadge(d);
-    refresh(true);
+    // refresh(true) recharge l historique et EFFACE la bulle qu on vient d ecrire :
+    // une commande ne change pas la session, l etat suffit
+    refresh(false);
     return;
   }
   const mine = bubble('me', 'toi', text);
@@ -1622,11 +1645,24 @@ function bind() {
   $('#maj-check').addEventListener('click', () => loadMaj());
   $('#maj-apply').addEventListener('click', () => majApply());
   $('#say').addEventListener('keydown', (e) => {
+    // le panneau est ouvert : il prend les fleches, Entree et Echap
+    if (document.getElementById('cmd-list')) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); cmdMark(cmdAt + 1); return; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); cmdMark(cmdAt - 1); return; }
+      if (e.key === 'Escape') { e.preventDefault(); cmdClose(); return; }
+      if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        const li = cmdRows()[cmdAt];
+        if (li) li.click();
+        return;
+      }
+    }
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); send($('#say').value); }
   });
-  // un « / » seul ouvre la liste des commandes, dans le chat
+  // le panneau suit le champ : « / » l ouvre, tout le reste le ferme
   $('#say').addEventListener('input', () => {
     if ($('#say').value.trim() === '/') paintCommands();
+    else cmdClose();
   });
   $('#residents').addEventListener('click', async () => {
     const b = $('#residents');
