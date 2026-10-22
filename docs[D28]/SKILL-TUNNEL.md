@@ -1,13 +1,13 @@
 # SKILL TUNNEL — le mecanisme en une page
 
-Ecrit le 2026-10-22. Remplace le document du 21/10 (432 lignes) : meme sujet, verifie
-contre le code du jour. Corpus sans accent, prose francaise, identifiants anglais.
+Ecrit le 2026-10-22, version 2 : le pas devient une donnee, et c est le moteur qui valide.
+Corpus sans accent, prose francaise, identifiants anglais.
 
 ## 1. Une phrase
 
 Une skill tunnel est une ROUTE FERMEE : son plan est ecrit dans son propre `skill.yaml`, et
-le moteur n ouvre au modele, tour apres tour, que l outil du pas courant. Le modele ne
-choisit ni le plan, ni l ordre, ni l outil : il remplit un moule et rend compte.
+le moteur n ouvre au modele, tour apres tour, que les outils du pas courant. Le modele ne
+choisit ni le plan, ni l ordre, ni l outil : il remplit un moule.
 
 ## 2. La marque
 
@@ -18,46 +18,73 @@ C est elle, et rien d autre, qui fait basculer le moteur (`engine/skl.sh`) :
   - `skl_plan_src` lit alors le plan DANS `skills/<nom>/skill.yaml`, section `PLAN` ;
   - une skill ordinaire lit son plan dans `state/<agent>_todo.md`.
 
-## 3. Le pas
+## 3. Le pas — tout dans le YAML
 
-    400: "PLAN <nom> : <le but>"
-    401: "[in_progress] <le pas en cours> -- tools: <un seul outil>"
-    402: "[todo] <le pas suivant> -- tools: <un seul outil>"
+    PLAN:
+      400: "phone on the bridge, proven"
+      401:
+        text:  "read what stands"
+        tools: [tunnel_status]
+        close: ["10.10.0.1", "@"]
+      402:
+        text:  "raise wg0"
+        tools: [tunnel_up]
+        close: []
+      403:
+        text:  "prove it by the fact"
+        tools: [tunnel_status]
+        close: ["10.10.0.1", "@"]
+      404:
+        text:  "report four lines"
+        tools: [reply]
+        close: []
 
-  - marques : `[in_progress]` (une seule), `[todo]`, `[completed]` ;
-  - une ligne : 100 octets au plus ; une route : 12 pas au plus ;
-  - champs facultatifs : `-- bytes: <chemin>@<taille>` et `-- max: <n>` ;
-  - `skl_plan_step` rend quatre colonnes : id, outil, bytes, max.
+  - `text`  : une ligne, 100 octets au plus ;
+  - `tools` : la liste EXACTE des outils que ce pas ouvre (`reply` vient en plus, toujours) ;
+  - `close` : les preuves. Chaque litteral doit apparaitre dans le retour de l outil du pas.
+              Liste vide : la seule preuve est `status ok` plus le texte qui commence par
+              `ok `.
 
-## 4. Qui impose quoi
+Tout ce qui est propre a une skill vit ici, dans la donnee. Le moteur ne connait le nom
+d aucun outil d aucune skill : il lit trois champs et il applique.
 
-`skl_lock` (`engine/skl.sh`) est LE verrou du tour : elle nomme l unique outil tenu.
+## 4. Qui impose, et qui ferme le pas
+
+`skl_lock` (`engine/skl.sh`) nomme ce que le tour peut porter :
 
     1  doc du skill pas lu         -> load_doc
     2  pas de plan                 -> todo
-    3  route, un pas ouvert        -> l outil du pas (le champ -- tools:)
+    3  route, un pas ouvert        -> les `tools` du pas, et eux seuls
     4  route, plus de pas ouvert   -> rien : le jeu s ouvre
     5  skill ordinaire             -> update_todo, quand le plan n a pas bouge depuis
                                       loop.todo_every tours
 
 `skl_gate`, meme fichier, en est la seule porte, avec trois lecteurs : `turn.toolset` (le
-tableau envoye au modele), la porte `run.sh` (le refus avant execution), `loop.sh`
-(l echeance).
+tableau envoye au modele), la porte `run.sh` (le refus avant execution), et `loop.sh`.
 
-    verrou ouvert -> verrou + reply, et rien d autre
-    aucun verrou  -> les permanents + les outils de la skill (+ update_todo)
+**C est le moteur qui ferme le pas, pas le modele.** A chaque retour d un outil nomme par
+`tools`, le moteur evalue `close` :
 
-`reply` est toujours ouvert : c est la voix, jamais une action.
+    status ok   ET   le texte commence par "ok "   ET   chaque litteral de close est present
+    vrai  ->  le pas passe [completed], le suivant [in_progress], la ligne 400 est restampee
+    faux  ->  rien ne bouge, et le refus nomme ce qui manque :
+              "the step stays open: 10.10.0.1 is not in the return of tunnel_status"
 
-## 5. Ce qui ferme un pas
+Le modele ne declare donc plus rien sur une route : il appelle l outil du pas et il lit le
+retour. `update_todo` n a plus de role sur une route ; il reste le geste du journal.
 
-Le FAIT, jamais la parole. Deux conditions ensemble :
+## 5. Ce qui reste dans le shell
 
-    status == "ok"   ET   le texte du retour commence par "ok "
+Quatre gestes, et aucun ne connait une skill par son nom :
 
-Un corps qui imprime `FAULT` sort aussi en `status: ok` : le texte seul distingue l ouvrage
-du refus. Un pas qui refuse (wg absent, conf illisible) ne se ferme pas : le modele dit ce
-qui manque, il ne raconte pas que c est fait.
+    - lire le manifeste (la FORME du YAML, jamais le sens d une route) ;
+    - ouvrir exactement les `tools` du pas, plus `reply` ;
+    - evaluer `close` : status, prefixe, litteraux ;
+    - restamper la ligne 400 et faire avancer.
+
+Une route qui veut une preuve nouvelle n ajoute pas de bash : elle ajoute un litteral dans
+`close`. Si une preuve depasse un jour les litteraux (un octet, un port en ecoute), c est
+une decision humaine, pas une extension du moteur par la bande.
 
 ## 6. La fin
 
@@ -70,33 +97,42 @@ La route ne s efface pas : elle reste dans son `skill.yaml`, prete a repartir.
 |---|---|---|
 | la marque | `skills/<nom>/skill.yaml` | `PERMANENT_TODO: true` |
 | le plan lu | `engine/skl.sh` | `skl_plan_src`, `skl_plan_is_closed` |
-| le pas courant | `engine/skl.sh` | `skl_plan_step` : `-- tools` `-- bytes` `-- max` |
-| le verrou | `engine/skl.sh` | `skl_lock` : l unique outil du tour |
+| le pas, en donnee | `engine/skl.sh` | `skl_plan_step` : `text`, `tools`, `close` |
+| le verrou | `engine/skl.sh` | `skl_lock` : les `tools` du pas, plus `reply` |
 | la porte | `engine/skl.sh` | `skl_gate`, `_skl_gate_check` |
 | les outils ouverts | `tools/turn/tool_toolset.yaml` | lit `skl_gate`, mappe les noms |
 | le refus avant execution | `engine/run.sh` | `run_call`, meme `skl_gate` |
-| l avancee du pas | `tools/core/tool_update_todo.yaml` | `update_todo` -> `skl_plan_advance` |
+| la validation du pas | `engine/skl.sh` | `skl_close_check` : status, prefixe, litteraux |
 | la fin | `engine/loop.sh` | `skl_turn_end` decharge la skill |
 | la trace | `engine/step.sh` | `trace_line`, seul ecrivain du journal |
 
-Un seul endroit decide du perimetre : `skl_gate`. Le tableau envoye au modele et le refus de
-la porte lisent la meme fonction : ils ne peuvent pas diverger.
+Un seul endroit decide du perimetre (`skl_gate`), un seul valide le pas (`skl_close_check`).
 
 ## 8. Prerequis — une route qui en manque un est morte
 
-    1  skills/<nom>/skill.yaml : PERMANENT_TODO: true, PLAN (400 + pas), TOOLS, DOCS,
-       WRITABLE_WORKSPACE, ERROR
-    2  chaque -- tools: nomme un outil du registre (registry.yaml)
+    1  skills/<nom>/skill.yaml : PERMANENT_TODO: true, PLAN (400 + pas), SKILL_TOOL_SET,
+       DOCS, WRITABLE_WORKSPACE, ERROR
+    2  chaque nom de `tools` existe au registre (registry.yaml)
     3  le doc nomme dans DOCS existe sur le disque : tools/, la racine, skills/<nom>/,
        skills/ — sinon la porte ne lache que load_doc et la route ne demarre jamais
     4  APPROVAL: false justifie : les outils de la route vivent hors GATED
     5  un agent arme : la skill load <nom> (l humain), ou la charge par la porte
-    6  les pas : 12 au plus, 100 octets par ligne, un seul outil par pas
+    6  les pas : 12 au plus, `text` 100 octets, et chaque pas porte `text`, `tools`, `close`
 
-## 9. Les deux skills du canon
+## 9. Ce que la version 2 change, a valider avant de coder
+
+    - le pas : une ligne de texte -> un mapping a trois cles ;
+    - `-- tools:` disparait ; `tools:` le remplace, et accepte plusieurs outils ;
+    - sur une route, `update_todo` disparait : le moteur ferme le pas sur la preuve ;
+    - `skl_plan_step` sort le pas entier ; un validateur neuf, `skl_close_check`, rend vrai
+      ou faux et nomme le litteral manquant ;
+    - le docteur refuse une route dont un pas n a pas de `close` ;
+    - les routes existantes sont reecrites au nouveau pas (phone-tunnel d abord).
+
+## 10. Les deux skills du canon
 
     create-spec    une route (la forme ci-dessus) : pose une section qui n existe pas,
-                   un pas par section, chaque pas prouve.
+                   un pas par section, chaque pas prouve par ses litteraux.
     manage-spec    une skill ordinaire : lit, corrige, verifie un canon existant ;
                    elle ne cree rien.
 
