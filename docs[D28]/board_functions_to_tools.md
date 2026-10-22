@@ -53,9 +53,9 @@ Un corps par fonction : `tools[D14]/<zone>/tool_<nom>.yaml` — `id`, `tool`,
 Les trois sorties ne lisent pas « le moteur » : elles lisent les **trois zones**. Et
 **presque tout ce dont elles ont besoin existe déjà**. Je n'invente plus de « catalogue ».
 
-### 4.1 MOTEUR (engine / E) — 26 outils
+### 4.1 MOTEUR (engine / E) — 27 outils
 
-Le moteur a aujourd'hui 26 outils (E001..E027, **E018 absent**). **Aucun à découper** :
+Le moteur a 26 outils existants (E001..E027, **E018 absent**) **+ `engine.config` (E028, nouveau) = 27**. **Aucun à découper** :
 chaque famille reste un outil, ses `op` choisissent la cible/le verbe. Seul `board`
 devient mince (il compose, §5).
 
@@ -87,8 +87,9 @@ devient mince (il compose, §5).
 | E025 | engine.uninstall | ce que l'install a posé, retiré | units·command·desktop·applet·certs |
 | E026 | engine.wake | un réveil | — |
 | E027 | engine.purge | rendre le cache froid | all·list·la-asr·la-tts·la-models·la-bridge |
+| E028 | engine.config | lit une clé de config/état de la machine (NOUVEAU) | str·get |
 
-**Total moteur = 26 outils.**
+**Total moteur = 27 outils** (+ `engine.config` E028).
 
 ### 4.2 AGENT / CŒUR (core / G) — 71 outils (TOUS existants)
 
@@ -146,30 +147,30 @@ La santé et l'inventaire. Voici **tous** les outils du docteur, avec leurs `op`
 ## 5. Le board ne recalcule plus — chaque fonction de board.py part dans son outil
 
 `engine.board` (E020) perd tout son Python. Voici **chaque fonction de `board.py`**
-(102 entrées) et sa destination. **La 4ᵉ colonne = où la fonction va** :
-- un **outil** de la machine — `engine.*` (moteur) ou `doctor.*` (docteur) — que le
-  board **utilise** (ce ne sont pas « les outils du board », c'est normal) ;
-- ou la **brique de base `cfg`** / le **registre de base** — lire la config ou son
-  propre registre (la base, pas un outil) ;
-- ou « — » — reste dans board (rendu, TUI, HTTP, util).
+(102 entrées) et sa destination. **La 4ᵉ colonne = la zone de l'outil cible — une seule
+règle, pas de catégorie « base » :**
+- **`engine.*`** (Engine) — c'est du moteur → l'outil doit être `engine.*` ;
+- **`doctor.*`** (Doctor) — c'est un contrôle de santé → l'outil doit être `doctor.*` ;
+- **`G…`** (Agent) — sinon, c'est un outil de l'agent ;
+- **—** — reste dans board (rendu, TUI, HTTP, util).
 
-On sait exactement, ligne par ligne, ce qui sort de `board.py` et où ça va.
+On ne transfère **jamais** une fonction moteur dans un outil qui n'est pas du moteur.
 
 | fonction board.py (l.) | rôle | état | outil cible (4ᵉ) |
 |---|---|---|---|
 | `state_dir` (35) | chemins d'état | reste | — (util) |
-| `num` (40) | lit un nombre de la config | base | `cfg` (brique de base) |
-| `_cfg` (53) | la config | base | `cfg` (brique de base) |
+| `num` (40) | lit un nombre de la config | part | `engine.config` (Engine) |
+| `_cfg` (53) | la config | part | `engine.config` (Engine) |
 | `bridge` (62) · `bridge_ping` (81) · `bridge_state` (86) | appels au pont HTTP | reste | — (porte HTTP) |
 | `read_head` (90) | snapshot de tête | part | `head_state` (à vérifier) |
 | `_units` (94) · `alive` (284) | units / vivant résidents | part | `engine.residents` |
 | `_git_state` (119, +`one`) · `read_git` (638) | état git | part | `engine.update` (`op=check`) |
 | `_engine` (129) · `read_engine` (625) | endpoint / provider | part | `engine.board` / `engine.switch` |
 | `_db_counts` (145) · `_db_query` (151) · `class model` (216) | comptes / sql / tokens sur sessions.db | part | `engine.stat` (`op=exchanges·tools·cost`) |
-| `_table` (161, = `laconf.table()`) | lit les lignes du registre (`registry-*.yaml`) | base | registre (base, le board lit son propre registre) |
+| `_table` (161, = `laconf.table()`) | lit les lignes du registre (`registry-*.yaml`) | part | `engine.map` (Engine) |
 | `read_table` (570) | intégrité : registre contre les corps → manquants, doublons | part | `doctor.tools` D010 (`op=table`) |
-| `read_registry` (495) | lit la table `id`↔`outil` depuis `la_config` | base | `cfg` (brique de base) |
-| `class laconf` (189) · `dotted` (206) | accès config | base | `cfg` (brique de base) |
+| `read_registry` (495) | lit la table `id`↔`outil` depuis `la_config` | part | `engine.map` (Engine) |
+| `class laconf` (189) · `dotted` (206) | accès config | part | `engine.config` (Engine) |
 | `_port` (239) · `run` (268) | parse port / lance cmd | reste | — (util) |
 | `probe` (277) · `_rss_port` (379) · `size_of` (526) · `read_instruments` (478) · `read_machine_name` (690) | ports / mémoire / instruments / machine | part | `doctor.machine` |
 | `weight` (292) · `line` (302, +`build`) · `ago` (717) · `short` (960) · `tint` (1027) · `_footer` (1048) · `human_count` (1169) · `shorten` (1183) | mise en forme | reste | — (rendu) |
@@ -181,35 +182,35 @@ On sait exactement, ligne par ligne, ce qui sort de `board.py` et où ça va.
 | `read_doctor` (621) | cache docteur | part | `engine.doctor` |
 | `read_traffic` (645) | trafic sessions / journal | part | `engine.stat` / `engine.trace` |
 | `read_turn` (668) · `_tool_line` (1242) · `class Tailer` (1208) | le canal vivant | part | `engine.trace` |
-| `read_state` (1188) | lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) | base | `cfg` (brique de base, `cfg str <clé>`) |
+| `read_state` (1188) | lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) | part | `engine.config` (Engine) |
 | `_read_history` (1499, dans Cli) | historique | part | `engine.hist` |
 | `one_turn` (1258, +`stream`) | un tour | part | `engine.turn` |
 | `control` (734) · `_expand` (866) · `_ratio_of` (879) · `board_object` (915, +`row`) · `sections` (976) · `one_line` (1013) · `snapshot` (1196) | composition du board | reste | — (rendu board) |
 | `_sigwinch` (1023) · `_keys` (1037) · `tui` (1054) · `class Cli` (1297, +24 méthodes) · `cli` (1700) · `main` (1705) | interface terminal | reste | — (TUI) |
 | `base` (1146) · `http` (1150) · `door_line` (1162) | appels HTTP | reste | — (HTTP) |
 
-**Les outils cibles existent déjà** (`engine.*` / `doctor.*`) ; les lectures de config
-et de registre vont à la **base `cfg`** — rien à inventer. Là où un outil ne rend pas la
-donnée exacte d'une ligne (ex. `engine.stat op=exchanges` disait « 28 messages » au lieu
-des échanges distincts), on **ajuste son `op` de quelques lignes** — jamais un lecteur
-parallèle.
+**Les zones cibles existent** (`engine.*` / `doctor.*` / `G…`). La config et l'état iront
+dans un petit **`engine.config`** (lire une clé — Engine), le registre dans
+**`engine.map`**. Là où un outil ne rend pas la donnée exacte d'une ligne (ex.
+`engine.stat op=exchanges` disait « 28 messages » au lieu des échanges distincts), on
+**ajuste son `op` de quelques lignes** — jamais un lecteur parallèle.
 
-**Le board (la machine) n'entre PAS ses fonctions de base dans les outils normaux.**
-Lire la config / le registre = la **brique base `cfg`**, jamais `config_list` G080 —
-celui-ci est l'outil de l'agent pour *lister les réglages modifiables*, autre chose. Le
-board **utilise** quand même les outils `engine.*` / `doctor.*` pour les données vivantes
-(`engine.trace`, `engine.stat`, `doctor.machine`…) : « le moteur utilise les outils, ce
-ne sont pas les outils du moteur — c'est normal ». Et chaque cible = la **bonne**
-fonction : `_db_query` (SQL brut) → `engine.stat`, **pas** `search_sessions`.
+**Règle unique de la 4ᵉ colonne, sans « base » :** du moteur → **`engine.*`** (Engine) ;
+un contrôle → **`doctor.*`** (Doctor) ; sinon → **`G…`** (Agent) ; **—** → reste dans
+board. Aucune donnée du moteur ne finit dans un outil d'agent. Ainsi `_cfg`, `laconf`,
+`dotted`, `num`, `read_state` → **`engine.config`** ; `_table`, `read_registry` →
+**`engine.map`** ; `read_table` (registre contre corps) → **`doctor.tools`** ; et
+`_db_query` (SQL brut) → `engine.stat`, pas `search_sessions`.
 
-`read_state` n'est **pas** un `skill_list`/`project_list`, et **pas** `config_list` non
-plus : il lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) =
-**base `cfg`**, comme `class laconf`, `dotted`, `_cfg` et `num`. Un seul domicile : base.
+`read_state` lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) :
+c'est une lecture de **config de la machine** → **`engine.config`** (Engine), comme
+`_cfg`, `class laconf`, `dotted` et `num`. Ni `skill_list`/`project_list`, ni
+`config_list` — du moteur, jamais l'agent.
 
-Les trois du registre : `_table` lit la table (`registry-*.yaml`) → **base** (le board
-lit son propre registre) ; `read_table` vérifie le registre **contre les corps**
-→ `doctor.tools` (docteur) ; `read_registry` lit `id`↔`outil` de `la_config` → **base
-`cfg`**. Trois fonctions, trois domiciles — et aucun n'est un outil d'agent.
+Les trois du registre : `_table` lit la table (`registry-*.yaml`) → **`engine.map`**
+(Engine) ; `read_table` vérifie le registre **contre les corps** → **`doctor.tools`**
+(Doctor) ; `read_registry` lit `id`↔`outil` → **`engine.map`** (Engine). Donnée du
+moteur → Engine, contrôle → Doctor. Jamais l'agent pour du moteur.
 
 ## 6. Route par route — les trois sorties, et l'outil existant qui y répond
 
@@ -235,10 +236,10 @@ Composition et rendu seulement : `control()`, `board_object()`, `sections()`,
 
 ## 8. Comptes et ordre (on ne l'exécute PAS maintenant)
 
-- **MOTEUR (E) = 26** · **AGENT/CŒUR (G) = 71** · **DOCTEUR (D) = 22** — **tous existent déjà**.
+- **MOTEUR (E) = 27** (`+engine.config` E028) · **AGENT/CŒUR (G) = 71** · **DOCTEUR (D) = 22**.
 - Ce que j'avais compté « 50 » était faux : il n'y a pas 34+9+7. Ce sont trois zones
   réelles, existantes, et les sorties lisent les trois.
-- **À créer au plus : 4 petits** (`agent_list`, `list_commands`, `head_state`, `version`),
+- **À créer au plus : 5 petits** (`engine.config` E028, `agent_list`, `list_commands`, `head_state`, `version`),
   et seulement s'ils ne sont pas déjà couverts. Le reste = **router** les trois sorties
   par la porte sur ces outils (le pont lit en direct aujourd'hui) + **décomposer board**
   pour qu'il compose.
