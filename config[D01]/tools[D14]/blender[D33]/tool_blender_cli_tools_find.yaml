@@ -1,7 +1,7 @@
-id: "B900"
+id: "B1797"
 tool: "blender_cli_tools_find"
 date: "2026-10-22"
-tags: ["blender", "blender", "tool", "find"]
+tags: ["blender", "blender", "file", "find"]
 
 RULES:
   enabled: true

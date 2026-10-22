@@ -1,7 +1,7 @@
 id: "G081"
 tool: "config_set"
 date: "2026-10-22"
-tags: ["manage", "shell", "config", "setting"]
+tags: ["manage", "shell", "config", "set"]
 
 RULES:
   enabled: true

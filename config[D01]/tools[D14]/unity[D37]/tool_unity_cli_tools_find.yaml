@@ -1,7 +1,7 @@
 id: "U901"
 tool: "unity_cli_tools_find"
 date: "2026-10-22"
-tags: ["unity", "unity", "tool", "find"]
+tags: ["unity", "unity", "file", "find"]
 
 RULES:
   enabled: true

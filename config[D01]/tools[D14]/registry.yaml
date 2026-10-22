@@ -11031,6 +11031,17 @@
   with_skill: false
   with_project: false
   visible: true
+- id: B1797
+  tool: "blender_cli_tools_find"
+  family: BLENDER
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  permanent: false
+  with_skill: false
+  with_project: false
+  visible: true
 - id: B180
   tool: "blender_clip_setup_tracking_scene"
   family: BLENDER
@@ -18942,17 +18953,6 @@
   visible: true
 - id: B899
   tool: "blender_object_anim_transforms_to_deltas"
-  family: BLENDER
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  permanent: false
-  with_skill: false
-  with_project: false
-  visible: true
-- id: B900
-  tool: "blender_cli_tools_find"
   family: BLENDER
   sub_family: ""
   doc: ""

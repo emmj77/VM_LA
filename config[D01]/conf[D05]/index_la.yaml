@@ -70,6 +70,7 @@ files:
   - {id: "E14", name: "skl.sh", role: "the loaded set in one file: the active skill, the active project, its plan, the toolset and the skillset built from the register, the permanence readers, what is always allowed"}
   - {id: "E15", name: "step.sh", role: "one step of the turn: the order is conf/pipeline.yaml, the work is a body"}
   - {id: "E16", name: "tab.sh", role: "the register: block_by_id table_block table_entry body_of count, on the table it is given; and the command table: cmd_ids cmd_get cmd_has cmd_run cmd_slash"}
+  - {id: "E17", name: "head_second.sh", role: "the producers of the second head: one function _sec_<id> per section, called by turn.prompt in the order head.second_order names"}
   - {id: "F01", name: "family.bin", role: "the trained family filter"}
   - {id: "F02", name: "families.txt", role: "the training corpus of the family filter: one line, one label, one request"}
   - {id: "F03", name: "clean.txt", role: "the same corpus, cleaned of what repeats"}

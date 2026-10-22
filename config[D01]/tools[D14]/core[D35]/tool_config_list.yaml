@@ -1,7 +1,7 @@
 id: "G080"
 tool: "config_list"
 date: "2026-10-22"
-tags: ["manage", "shell", "config", "setting"]
+tags: ["manage", "shell", "config", "list"]
 
 RULES:
   enabled: true

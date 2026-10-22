@@ -1,7 +1,7 @@
 id: "K901"
 tool: "krita_cli_tools_find"
 date: "2026-10-22"
-tags: ["krita", "krita", "tool", "find"]
+tags: ["krita", "krita", "file", "find"]
 
 RULES:
   enabled: true
