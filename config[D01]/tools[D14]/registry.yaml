@@ -13783,6 +13783,14 @@
   enabled: true
   visible: true
 - id: B900
+  tool: "blender_cli_tools_find"
+  family: BLENDER
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: true
+- id: B900
   tool: "blender_object_armature_add"
   family: BLENDER
   sub_family: ""
@@ -15824,6 +15832,14 @@
   visible: true
 - id: K900
   tool: "krita_cli_tools"
+  family: KRITA
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: true
+- id: K901
+  tool: "krita_cli_tools_find"
   family: KRITA
   sub_family: ""
   doc: ""
@@ -19336,6 +19352,14 @@
   visible: true
 - id: U900
   tool: "upipe_command"
+  family: UNITY
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: true
+- id: U901
+  tool: "unity_cli_tools_find"
   family: UNITY
   sub_family: ""
   doc: ""

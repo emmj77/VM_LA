@@ -1,0 +1,71 @@
+id: "U901"
+tool: "unity_cli_tools_find"
+date: "2026-10-22"
+tags: ["unity", "unity", "tool", "find"]
+
+RULES:
+  enabled: true
+  timeout: 180
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+
+DESCRIPTION: |
+  the door of the 199 unity names: no operation lists what a sub family carries
+  (a tag narrows the list), an operation calls the tool it finds. the call is an embed:
+  the body of the tool found runs here, so no skill has to name it and nothing refuses it.
+  the unity program has to be up: only unity answers without its editor.
+
+COMMAND: |
+  _sub={{sub}}
+  _op={{op}}
+  _args={{args}}
+  _tag={{tag}}
+  _D=$(cfg path tools)/unity[D37] || exit 1
+
+  if [ -z "$_op" ]; then
+    # pas d operation : ce que la sous-famille porte, et le tag la resserre
+    _list=$(find "$_D" -name 'tool_unity_'"$_sub"'_*.yaml' 2>/dev/null | sort | while IFS= read -r _f; do
+      [ -n "$_tag" ] && { grep -q -- "\"$_tag\"" "$_f" || continue ; }
+      awk '/^tool:/ { v = $0 ; sub(/^tool:[ \t]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_f"
+    done)
+    [ -n "$_list" ] || { printf 'FAULT unity_%s_* carries nothing%s\n' "$_sub" "${_tag:+ with the tag $_tag}" ; exit 1 ; }
+    printf '%s\n' "$_list"
+    exit 0
+  fi
+
+  _F="$_D/tool_unity_${_sub}_${_op}.yaml"
+  [ -f "$_F" ] || { printf 'FAULT no tool named unity_%s_%s ; %s carries: %s\n' "$_sub" "$_op" "$_sub" \
+      "$(find "$_D" -name 'tool_unity_'"$_sub"'_*.yaml' 2>/dev/null | sed 's|.*/tool_unity_||; s|\.yaml$||' | sort | head -12 | paste -sd, -)" ; exit 1 ; }
+
+  # le corps du tool trouve, execute ici : ses marques prennent les arguments donnes
+  _T=$(tmpfile embed) || exit 1
+  awk '/^COMMAND: \|/ { c = 1 ; next } c && /^[A-Z_]+:/ { exit } c { print }' "$_F" > "$_T"
+  if [ -s "$_T" ]; then
+    for _kv in $_args; do
+      _tok=$(printf '\173\173%s\175\175' "${_kv%%=*}")
+      sed -i "s|$_tok|${_kv#*=}|g" "$_T" 2>/dev/null
+    done
+    set -- $_args
+    . "$_T"
+    _r=$?
+    rm -f "$_T"
+    exit $_r
+  fi
+  rm -f "$_T"
+
+  # une declaration : la machine fait le travail, la porte ne fabrique rien d autre
+  _m=$(awk '/^machine:/ { v = $0 ; sub(/^machine:[ \t]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_F")
+  _mo=$(awk '/^op:/ { v = $0 ; sub(/^op:[ \t]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_F")
+  [ -n "$_m" ] && [ -n "$_mo" ] || { printf 'FAULT %s carries neither a body nor a machine\n' "$_F" ; exit 1 ; }
+  command -v "$_m" >/dev/null 2>&1 || { printf 'FAULT the machine %s is not in the PATH: %s\n' "$_m" "$_mo" ; exit 1 ; }
+  for _kv in $_args; do set -- "$@" --arg "$_kv" ; done
+  "$_m" --op "$_mo" "$@"
+
+ARGS:
+  - {name: sub, type: enum, values: collaboration,vcs,projects,editors,pipeline,cloud,auth,config,templates,license,editor,context,analytics,cache,job,assets,diagnose,install,tools,watch,ci,hub,mcp,build,modules}
+  - {name: op, type: text, required: false}
+  - {name: args, type: text, required: false}
+  - {name: tag, type: text, required: false}

@@ -21,6 +21,7 @@ SKILL_TOOL_SET:
   G022: "load_doc"
   V002: "local_analyze_img"
   G062: "mkdir"
+  X900: "blender_cli_tools_find"
 DOCS:
   300: "blender"
 PLAN:
