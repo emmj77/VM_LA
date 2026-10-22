@@ -33,12 +33,12 @@ Deux décisions à prendre avant de l'écrire :
 
 ## Demain — imposer `manage-spec`
 
-Quand un projet est charge, le modele doit travailler le canon de ce projet : il faut donc lui
-imposer `manage-spec`. Deux formes, a trancher :
+Quand un projet est charge, le modele doit travailler le canon de ce projet. Deux formes, retenues :
 
-1. **au chargement du projet** : la porte charge `manage-spec` avec le projet, une fois, doc compris.
-2. **a cadence** : `manage-spec` revient tous les N tours tant qu un projet est charge — la cadence
-   en `la_config`, comme `loop.todo_every` et `loop.big_todo_every`.
+1. **a l'unload du projet** : au moment ou le projet se decharge, la porte impose `manage-spec`. Le canon
+   se travaille quand le chantier se ferme, jamais au chargement.
+2. **a cadence** : `manage-spec` revient tous les N tours tant qu'un projet est charge — la cadence en
+   `la_config`, comme `loop.todo_every` et `loop.big_todo_every`.
 
 ## Reste ouvert (ancienne liste, à trancher)
 
