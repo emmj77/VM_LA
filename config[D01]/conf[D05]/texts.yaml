@@ -325,6 +325,7 @@ project_unloaded_whole_skillset: 'project unloaded: the whole skillset is reopen
 write_file_wants_path: 'refused: write_file wants a path'
 file_already_exists: 'refused: the file already exists (%s)'
 parent_directories_cannot_be: 'refused: the parent directories of %s cannot be created'
+subfolder_refused: 'refused: the armed skill does not open subfolders (RULES.create_subfolder)'
 refused_generic: 'refused: %s'
 nothing_written: 'refused: nothing was written (%s)'
 colour_written_rrggbb: 'refused: a colour is written #rrggbb (%s)'

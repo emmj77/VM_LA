@@ -18,6 +18,11 @@ COMMAND: |
   C="{{path}}"
   [ -n "$C" ] || { printf '%s\n' "$(msg mkdir_wants_path)" >&2; exit 1; }
   [ -e "$W/$C" ] && [ ! -d "$W/$C" ] && { printf '%s\n' "$(msg path_exists_not_directory)""$C" >&2; exit 1; }
+  # the folder law: a new folder needs the armed skill to open subfolders
+  _sa=$(head -n 1 -- "$(cfg abs skill_active)" 2>/dev/null)
+  if [ ! -d "$W/$C" ] && [ -n "$_sa" ] && [ "$(skill_rule create_subfolder)" != true ]; then
+    printf '%s\n' "$(msg subfolder_refused)" >&2; exit 1
+  fi
   mkdir -p -- "$W/$C" 2>/dev/null || { printf '%s\n' "$(msg directory_cannot_be_created)""$W/$C" >&2; exit 1; }
   printf 'cree : %s\n' "$W/$C"
 

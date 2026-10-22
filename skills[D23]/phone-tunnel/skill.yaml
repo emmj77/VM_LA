@@ -16,6 +16,7 @@ SUMMARY:
   111: "raising wg0 sets 10.10.0.1/24 and a UDP port; it opens no service of its own."
 
 RULES:
+  create_subfolder: true
   max_section_lines: 100
 
 # APPROVAL: false -- the three tunnel tools are outside GATED; what bounds this skill is the

@@ -265,3 +265,14 @@ project_dir() {
   done
   return 1
 }
+
+# skill_rule <key> [skill] : RULES.<key> of the armed skill, empty when no skill is armed
+skill_rule() {
+  _k=${1:-}
+  _n=${2:-}
+  [ -n "$_n" ] || _n=$(head -n 1 -- "$(cfg abs skill_active)" 2>/dev/null)
+  [ -n "$_n" ] || return 0
+  _f="$(cfg path skills)/$_n/skill.yaml"
+  [ -r "$_f" ] || return 0
+  _flat "$_f" 2>/dev/null | awk -F'\t' -v k="RULES.$_k" '$1 == k { print $2 ; exit }'
+}

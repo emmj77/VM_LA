@@ -8,6 +8,7 @@ SUMMARY:                      # for the secondary head, while the skill is loade
   102: "..."
   110: "..."
 RULES:                       # under SUMMARY: the laws the HARNESS applies
+  create_subfolder: true     # may this skill create folders under its workspace?
   max_section_lines: 100     # the ceiling of one section, in lines
 APPROVAL: false              # MAY THIS SKILL TOUCH THE HARNESS?
                              # true: every act touching the TABLE or a SKILL (table_manage,
