@@ -13,7 +13,6 @@ RULES:
   paths: write
 DESCRIPTION: "the turn kept: memory, compaction, the cut"
 COMMAND: |
-  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _f=$(cfg abs memory) || { printf 'FAULT no memory in the tree\n'; exit 0; }
   mkdir -p -- "$(dirname -- "$_f")" || exit 0
@@ -48,13 +47,13 @@ COMMAND: |
         '{model:$m,messages:[{role:"system",content:$h}],max_tokens:1,cache_prompt:true,stream:false}' \
         | curl -sS -m 20 -H 'Content-Type: application/json' -d @- \
             "http://$_h:$_pt/v1/chat/completions" >/dev/null 2>&1 \
-        && _tr note "kv purge, la tete reste"
+        && trace_line note "kv purge, la tete reste"
     fi
   fi
   # the kernel takes back the page cache of the residents: memory does not grow without end
   run_call engine.purge "op=all" >/dev/null 2>&1
   _turn_set '(.status = "done")'
-  _tr note "turn closed"
+  trace_line note "turn closed"
   exit 0
 
 ARGS: []

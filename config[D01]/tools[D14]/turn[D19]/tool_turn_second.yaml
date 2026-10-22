@@ -13,7 +13,6 @@ RULES:
   paths: write
 DESCRIPTION: "the small head says who speaks"
 COMMAND: |
-  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _h=$(cfg str models.host) || _h=127.0.0.1
   _p=$(cfg num models.port) || _p=8091
@@ -29,7 +28,7 @@ COMMAND: |
     *)       _f=agent ;;
   esac
   _turn_set "(.family = \"$_f\")"
-  _tr second "$_f"
+  trace_line second "$_f"
   exit 0
 
 ARGS: []

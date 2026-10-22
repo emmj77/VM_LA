@@ -14,8 +14,6 @@ RULES:
 DESCRIPTION: "gives the cold page cache back to the kernel, and never the weights a resident holds: law 826, a resident that sleeps is a fault"
 COMMAND: |
 
-  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
-
   _op=${1:-all}
   # the margin kept above the processes: their weights stay warm (law 826)
   _marge=$(cfg num loop.purge_margin 150) || _marge=150
@@ -67,7 +65,7 @@ COMMAND: |
   case $_op in
   list|all)
     for _u in la-asr la-tts la-models la-bridge; do _one "$_u"; done
-    [ "$_op" = all ] && _tr purge "le froid rendu, les poids gardes"
+    [ "$_op" = all ] && trace_line purge "le froid rendu, les poids gardes"
     ;;
   *)
     _one "$_op"

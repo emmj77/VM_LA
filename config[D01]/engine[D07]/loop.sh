@@ -1,6 +1,5 @@
 # id: E09
 # the trace belongs to its body: the loop calls it, it never writes the channel
-_ltr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace op=line >/dev/null; }
 # role: the turn. one at a time, the steps of the pipeline in order, the calls repeated while there are some.
 
 # loop_steps : the pipeline split where it repeats: before call, the cycle, after the end
@@ -73,7 +72,7 @@ loop_turn() {
   _tf=$(cfg abs turn)
   [ -s "$_tf" ] && _turn_set '.doc = ""' 2>/dev/null
 
-  _ltr turn "start"
+  trace_line turn "start"
   _t0=$(date +%s)
   _maxc=$(cfg num loop.max_calls) || _maxc=0
   _maxs=$(cfg num loop.max_seconds) || _maxs=0
@@ -88,7 +87,7 @@ loop_turn() {
   while [ "$_status" = ok ]; do
     _tn=$(skl_turn_no)
     if [ "$_mt" -gt 0 ] && [ "${_tn:-0}" -ge "$_mt" ]; then
-      _ltr step "stopped: turn $_tn, the bound $_mt"
+      trace_line step "stopped: turn $_tn, the bound $_mt"
       _status=stopped
       break
     fi
@@ -98,7 +97,7 @@ loop_turn() {
     done
     [ "$_status" = ok ] || break
     _rep=$(_turn_get '[.calls[] | select(.tool == "reply")] | length')
-    [ "${_rep:-0}" -gt 0 ] 2>/dev/null && { _ltr step "stopped: the answer is said"; break; }
+    [ "${_rep:-0}" -gt 0 ] 2>/dev/null && { trace_line step "stopped: the answer is said"; break; }
     _after=$(_turn_get '.calls | length')
     if [ "$_after" -le "$_before" ]; then
       # the model called nothing: it is asked again for an answer, even empty,
@@ -107,18 +106,18 @@ loop_turn() {
       _rt=$(cfg num loop.retry 1) || _rt=1
       if [ "${_try:-0}" -lt "$_rt" ] 2>/dev/null; then
         _turn_set '.retry = ((.retry // 0) + 1)'
-        _ltr step "retry: a reply is asked again"
+        trace_line step "retry: a reply is asked again"
         continue
       fi
       break
     fi
     _calls=$_after
     if [ "$_maxc" -gt 0 ] && [ "$_calls" -ge "$_maxc" ]; then
-      _ltr step "stopped: $_calls calls, the bound"
+      trace_line step "stopped: $_calls calls, the bound"
       break
     fi
     if [ "$_maxs" -gt 0 ] && [ $(( $(date +%s) - _t0 )) -ge "$_maxs" ]; then
-      _ltr step "stopped: the time bound"
+      trace_line step "stopped: the time bound"
       break
     fi
     [ -e "$(cfg abs stop)" ] && { _status=stopped; break; }
@@ -133,7 +132,7 @@ loop_turn() {
 
   skl_turn_end
   loop_release
-  _ltr step "turn done in $(( $(date +%s) - _t0 ))s, $_calls calls, $_status"
+  trace_line step "turn done in $(( $(date +%s) - _t0 ))s, $_calls calls, $_status"
   [ "$_status" = ok ] || return 1
   return 0
 }

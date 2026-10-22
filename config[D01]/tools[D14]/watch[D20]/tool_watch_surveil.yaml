@@ -13,7 +13,6 @@ RULES:
   paths: write
 DESCRIPTION: "arms one repeating systemd timer: every N seconds it wakes the session with its mission, twelve times at most, and stops itself"
 COMMAND: |
-  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _op=${1:-status}
   _d=$(cfg path state) || { printf 'FAULT no state in the tree\n'; exit 0; }
@@ -37,7 +36,7 @@ COMMAND: |
       --timer-property=AccuracySec=1s --timer-property=OnUnitActiveSec="${_every}s" \
       --collect /bin/dash -c "$_cmd" >/dev/null 2>&1 \
       || { printf 'FAULT the watch was not armed\n'; exit 0; }
-    _tr surveil "programmee une fois, toutes les ${_every}s, $_max fois : $_target"
+    trace_line surveil "programmee une fois, toutes les ${_every}s, $_max fois : $_target"
     printf 'ok la surveillance de %s est programmee une fois pour toutes, toutes les %s s, %s reveils au plus\n' \
       "$_target" "$_every" "$_max"
     ;;

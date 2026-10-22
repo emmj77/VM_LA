@@ -15,8 +15,7 @@ _ap_sig() {
   printf '%s' "$1" | openssl dgst -sha256 -hmac "$_k" -r | cut -d' ' -f1
 }
 
-# _ap_trace <word> <line>: one trace line, through the body that owns it
-_ap_trace() { printf '%s %s\n' "${1:-approve}" "${2:-}" | run_call engine.trace op=line >/dev/null; }
+# trace_line <word> <line>: one trace line, through the body that owns it
 
 approval_request() {
   _d=$(_ap_digest "$*")
@@ -24,7 +23,7 @@ approval_request() {
   { printf 'tool: %s\n' "$1"; printf 'gesture: %s\n' "$*"; printf 'digest: %s\n' "$_d"
     printf 'ts: %s\n' "$(date +%s)"; } |
     write_atomic "$(cfg abs approve_request)" || return 1
-  _ap_trace approve "requested: $1"
+  trace_line approve "requested: $1"
   return 3
 }
 
@@ -52,13 +51,13 @@ approval_grant() {
     write_atomic "$(cfg abs approve)"
   # a granted request leaves the board: the file is the human's eye, it clears with the answer
   gio trash -- "$_f" 2>/dev/null
-  _ap_trace approve "granted: $_n"
+  trace_line approve "granted: $_n"
   return 0
 }
 
 approval_deny() {
   gio trash -- "$(cfg abs approve_request)" 2>/dev/null
-  _ap_trace approve "denied"
+  trace_line approve "denied"
   return 0
 }
 

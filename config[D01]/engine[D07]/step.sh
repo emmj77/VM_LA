@@ -6,6 +6,10 @@ _turn_get() { jq -r "${1:-.}" "$(_turn_file)" 2>/dev/null; }
 _turn_set() { jq "$1" "$(_turn_file)" | write_atomic "$(_turn_file)"; }
 _turn_set_json() { jq --argjson v "$2" "$1" "$(_turn_file)" | write_atomic "$(_turn_file)"; }
 
+# trace_line <kind> <text> : the ONE way to write a line of the journal. the tools call it
+# instead of carrying their own copy of the pipe.
+trace_line() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace op=line >/dev/null; }
+
 # step_list : the order, from the pipeline file. no name is written here.
 step_list() {
   _f=$(cfg abs pipeline) || return 1

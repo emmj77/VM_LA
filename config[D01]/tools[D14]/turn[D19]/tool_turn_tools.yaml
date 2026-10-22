@@ -13,10 +13,9 @@ RULES:
   paths: write
 DESCRIPTION: "every call the answer named, run through the door, then told back"
 COMMAND: |
-  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | run_call engine.trace "op=line" >/dev/null; }
 
   _calls=$(_turn_get '.reply_msg.tool_calls // [] | length')
-  [ "${_calls:-0}" -gt 0 ] 2>/dev/null || { _tr tools none; exit 0; }
+  [ "${_calls:-0}" -gt 0 ] 2>/dev/null || { trace_line tools none; exit 0; }
   _n=0
   while [ "$_n" -lt "$_calls" ]; do
     _name=$(_turn_get ".reply_msg.tool_calls[$_n].function.name")
@@ -30,7 +29,7 @@ COMMAND: |
     _turn_set_json '(.messages = (.messages + $v))' "$_msgs"
     _cj=$(jq -n --arg n "$_name" --arg a "$_args" --arg r "$_line" '{tool:$n,args:$a,result:$r}')
     _turn_set_json '(.calls = (.calls + [$v]))' "$_cj"
-    _tr tool "$_name: $(printf '%s' "$_line" | jq -r '.status // "?"' 2>/dev/null)"
+    trace_line tool "$_name: $(printf '%s' "$_line" | jq -r '.status // "?"' 2>/dev/null)"
     _n=$((_n + 1))
   done
   _turn_set '(.messages = (.messages + [{role: "assistant", content: (.reply_msg.content // "")}]))'

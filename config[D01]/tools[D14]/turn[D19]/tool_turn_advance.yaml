@@ -15,8 +15,6 @@ RULES:
 DESCRIPTION: "the step advances on a fact: the step's tool said ok, the file moved, the mark goes"
 COMMAND: |
 
-  _tr() { printf '%s %s\n' "${1:-step}" "${2:-}" | LA_FROM=engine run_call engine.trace op=line >/dev/null; }
-
   _sk=$(skl_skill 2>/dev/null) || exit 0
   [ -n "$_sk" ] || exit 0
   skl_plan_is_closed "$_sk" || exit 0
@@ -24,7 +22,7 @@ COMMAND: |
   _id=$(printf '%s' "$_st" | awk -F'\t' '{ print $1 }')
   _tool=$(printf '%s' "$_st" | awk -F'\t' '{ print $2 }')
   _bytes=$(printf '%s' "$_st" | awk -F'\t' '{ print $3 }')
-  [ -n "$_tool" ] || { _tr step "advance: step $_id names no tool"; printf 'note step %s names no tool\n' "$_id"; exit 0; }
+  [ -n "$_tool" ] || { trace_line step "advance: step $_id names no tool"; printf 'note step %s names no tool\n' "$_id"; exit 0; }
 
   # the fact: one call of THAT tool, status ok, and a result that starts with ok.
   # a body always exits 0, so status ok proves nothing about the work; the text does.
@@ -52,12 +50,12 @@ COMMAND: |
     _s1=""
     [ -n "$_pf" ] && [ -f "$_pf" ] && _s1=$(wc -c < "$_pf" | tr -d ' ')
     if [ -z "$_s1" ]; then
-      _tr step "advance: $_p cannot be read, step $_id stays open"
+      trace_line step "advance: $_p cannot be read, step $_id stays open"
       printf 'BOUND the file %s cannot be read, the step stays open\n' "$_p"
       exit 0
     fi
     if [ -n "$_s0" ] && [ "$_s1" = "$_s0" ]; then
-      _tr step "advance: no effect on $_p ($_s0 bytes), step $_id stays open"
+      trace_line step "advance: no effect on $_p ($_s0 bytes), step $_id stays open"
       printf 'BOUND %s\n' "$(msg refusals.step_no_effect "$_p" "$_s0")"
       exit 0
     fi
@@ -96,7 +94,7 @@ COMMAND: |
     END { exit (done ? 0 : 9) }' "$_f" > "$_t"
   if [ $? != 0 ] || [ ! -s "$_t" ]; then
     rm -f "$_t"
-    _tr step "advance: step $_id is not in the plan of $_sk"
+    trace_line step "advance: step $_id is not in the plan of $_sk"
     printf 'FAULT the plan of %s carries no step %s\n' "$_sk" "$_id"
     exit 0
   fi
@@ -109,10 +107,10 @@ COMMAND: |
   _left=$(grep -c '\[progress\]' "$_f" 2>/dev/null)
   case ${_left:-0} in ''|*[!0-9]*) _left=0 ;; esac
   if [ "$_left" = 0 ]; then
-    _tr step "advance: the plan of $_sk is finished at step $_id"
+    trace_line step "advance: the plan of $_sk is finished at step $_id"
     printf 'ok the plan of %s is finished at step %s\n' "$_sk" "$_id"
   else
-    _tr step "advance: step $_id closed, the plan of $_sk moved on"
+    trace_line step "advance: step $_id closed, the plan of $_sk moved on"
     printf 'ok step %s closed, the plan of %s moved on\n' "$_id" "$_sk"
   fi
   exit 0
