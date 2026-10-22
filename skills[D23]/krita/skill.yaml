@@ -20,7 +20,7 @@ SKILL_TOOL_SET:
   K002: "krita_open"
   K076: "krita_stroke"
   K011: "krita_export"
-  K078: "krita_undo"
+  K078: "krita_action"
   G002: "read_file"
   G003: "list_dir"
   G022: "load_doc"

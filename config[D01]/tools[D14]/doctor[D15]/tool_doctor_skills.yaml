@@ -21,7 +21,8 @@ COMMAND: |
   _P=$(cfg path projects) || exit 0
   _named=$(tmpfile sknamed) || exit 1
   _bodies=$(tmpfile skbodies) || exit 1
-  trap 'rm -f "$_named" "$_bodies"' EXIT INT TERM HUP
+  _all=$(tmpfile skall) || exit 1
+  trap 'rm -f "$_named" "$_bodies" "$_all"' EXIT INT TERM HUP
 
   # ce qu une skill ouvre : les noms de son SKILL_TOOL_SET, avec ou sans guillemets
   awk '
@@ -38,6 +39,36 @@ COMMAND: |
         _n=$(awk '/^tool:/ { v = $0 ; sub(/^tool:[ \t]*/, "", v) ; gsub(/"/, "", v) ; print v ; exit }' "$_f")
         [ -n "$_n" ] && printf '%s\n' "$_n"
       done | sort -u > "$_bodies"
+
+  # ce que le registre porte : un nom nomme par une skill doit exister la
+  _R=$(cfg abs registry 2>/dev/null) || _R=$(cfg path tools)/registry.yaml
+  awk '/^[[:space:]]*tool:/ { v = $0 ; sub(/^[[:space:]]*tool:[ \t]*/, "", v) ; gsub(/"/, "", v) ; print v }' "$_R" 2>/dev/null \
+    | sort -u > "$_all"
+
+  case $_op in
+  all|dangling)
+    : > "$_named.bad"
+    for _k in "$_S"/*/skill.yaml; do
+      [ -f "$_k" ] || continue
+      # une skill qui nomme un tool disparu ne peut plus l ouvrir
+      awk '
+        /^SKILL_TOOL_SET:/ { inb = 1 ; next }
+        inb && /^[A-Z_]+:/ { inb = 0 }
+        inb && /:[[:space:]]*[^[:space:]]/ {
+          v = $0 ; sub(/^[^:]*:[[:space:]]*/, "", v) ; gsub(/"/, "", v) ; print v
+        }
+      ' "$_k" | while read -r _v; do
+        [ -n "$_v" ] || continue
+        grep -qxF "$_v" "$_all" \
+          || printf 'FAULT skill %s names %s, which no body carries\n' "$(basename "$(dirname "$_k")")" "$_v" >> "$_named.bad"
+      done
+    done
+    _g=$(grep -c . "$_named.bad" 2>/dev/null || printf 0)
+    [ "${_g:-0}" -gt 0 ] && cat "$_named.bad"
+    [ "${_g:-0}" = 0 ] && printf 'report every tool a skill names exists in the register\n'
+    rm -f "$_named.bad"
+    ;;
+  esac
 
   case $_op in
   all|orphans)
@@ -117,10 +148,10 @@ COMMAND: |
   esac
 
   case $_op in
-  orphans|docs|empty|workspace|all) ;;
+  orphans|dangling|docs|empty|workspace|all) ;;
   *) printf 'FAULT unknown op %s\n' "$_op" ;;
   esac
   exit 0
 
 ARGS:
-  - {name: op, type: enum, values: orphans,docs,empty,workspace}
+  - {name: op, type: enum, values: orphans,dangling,docs,empty,workspace}
