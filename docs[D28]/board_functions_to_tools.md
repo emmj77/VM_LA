@@ -227,6 +227,76 @@ moteur → Engine, contrôle → Doctor. Jamais l'agent pour du moteur.
 **Tout existe sauf peut-être 4 petits** : `agent_list`, `list_commands`, `head_state`,
 `version` — à vérifier, souvent déjà couverts (`tools_list`, `config_list`).
 
+## 6 ter. Les deux surfaces Python — fonction par fonction
+
+Même mécanique : rôle · état (`part`/`sh`/`reste`/`à retirer`) · cible. Ces deux fichiers
+sont des **surfaces** (elles appellent la porte), pas le moteur : ce qui **lit une donnée**
+part dans un outil ; ce qui est **HTTP/plomberie** reste.
+
+**`bridge.py` — le pont (surface « app »), ~60 fonctions**
+
+| fonction (l.) | rôle | état | cible (langue) |
+|---|---|---|---|
+| `env`·`die`·`now`·`state_file`·`kind_of`·`cached`·`first_name` (36–56,168,483) | utilitaires | reste | — (Python — glue) |
+| `door`·`ask`·`delegate` (60/67/87) | appellent la porte `run_call` | reste | — (Python — l'unique entrée est la porte) |
+| `conf`·`conf_section`·`root_file`·`active_name`·`_fields` (97–212) | lisent la config en direct (yaml) | part | `engine.config` (Engine) |
+| `board_json` (265) | assemble l'état du board | part | `engine.board` (`op=json`) |
+| `_trace_events` (447) | lit les événements d'appels | part | `engine.trace` |
+| `head_snapshot` (530) | assemble la tête | part | `head_state` (Engine — à vérifier) |
+| `_machine_return` (323) | mémoire / ports | part | `doctor.machine` |
+| `approval_window`·`approval_view`·`feed_of` (189–238) | état d'approbation | part | `engine.approve` (`op=view`) |
+| `_watch_armed`·`_watch_once`·`watch_loop`·`warm` (351–470) | veille / chauffe | part | `engine.watch` (Engine — à vérifier) |
+| `_thinking_keep`·`_keep_turn`·`summary_text`·`short_agent_line` (288–520) | forme du tour / résumé | part | `engine.turn` (mise en forme) |
+| `config_page` (579) | la page de config | part | `engine.commands` + `config_list` |
+| `voice` (601) | la parole | part | `engine.tts` |
+| `run_turn` (616) · `_turn_file` (443) | un tour | part | `engine.turn` |
+| `agents_list` (146) | liste des agents | part | `send_agent_chat` G063 / `agent_list` (à vérifier) |
+| `class Handler` + 20 méthodes (639–1090) | serveur HTTP du pont | reste | — (Python — HTTP) |
+| `main` (1091) | démarrage | reste | — (Python) |
+
+**`dash_server.py` — le dashboard (surface « dashboard »), ~14 fonctions**
+
+| fonction (l.) | rôle | état | cible (langue) |
+|---|---|---|---|
+| `commands`·`commands_html`·`commands_legend` (31/57/62) | la liste des commandes | part | `engine.commands` E004 (Engine) |
+| `run_command` (67) | lance une commande par la porte | reste | — (appelle `run_call`, Python) |
+| `class Handler` + `relay` (91–190) | serveur HTTP + relais `/api/*`, `/doctor` | reste | — (Python — HTTP relais) |
+| `watch_idle`·`serve` (196/203) | boucle serveur | reste | — (Python) |
+
+## 6 quater. Les fonctions du MOTEUR lui-même (.sh) — « tout dans le moteur »
+
+C'est le cœur de ta demande : **chaque brique du moteur**, fonction par fonction. Règle :
+**moteur-core = `reste` (jamais un outil)** ; ce qui **externalise une donnée** = outil.
+
+| fonction (fichier, l.) | rôle | état | cible (langue) |
+|---|---|---|---|
+| `la.sh` (24 l., 0 fonction) | aiguillage / point d'entrée | moteur | — (reste : le moteur) |
+| `boot.sh` (71 l., 0 fonction) | le liant : trouve maître, charge cfg + chaque brique | moteur | — (reste : le moteur) |
+| `run.sh` — `_door_field`·`_door_decl`·`_door_usage`·`_door_fill`·`_door_arity_fail`·`_door_cmd`·`_door_register`·`run_call`·`say_err`·`die` (5–289) | **la porte** (`run_call`) | moteur | — (reste : la porte) |
+| `shell.sh` — `shell_addr`·`shell_bin`·`shell_cmd`·`shell_exec`·`shell_run`·`krita_url` (5–129) | **l'exécutant** (`dash -c`, timeout, shape JSON) | moteur | — (reste : l'exécutant) |
+| `cfg.sh` — `conf_str`·`conf_num`·`conf_list`·`conf_has` (65–91) | lecture d'une valeur de config | part | `engine.config` E028 (Engine) |
+| `cfg.sh` — `cfg_dir`·`cfg_file`·`cfg_path`·`cfg_abs`·`cfg_here`·`cfg_table`·`cfg_root` (162–226) | chemins / localisation | part | `engine.config` (Engine) |
+| `cfg.sh` — `_flat_raw`·`_flat`·`_cfg_exts`·`_cfg_tree`·`_cfg_map_build`·`_cfg_locate`·`_cfg_world`·`_cfg_tree_list`·`_cfg_family`·`_cfg_place`·`cfg`·`channel_label`·`channel_set`·`project_dir`·`skill_rule` (5–279) | machinerie interne du config-engine | moteur | — (reste : interne) |
+| `tab.sh` — `table_block`·`table_entry`·`table_field`·`table_field_list`·`table_keys`·`table_ids`·`table_index`·`block_by_id`·`body_of`·`count` (25–122) | lecture du registre / de la table | part | `engine.map` E024 (Engine) |
+| `tab.sh` — `cmd_ids`·`cmd_get`·`cmd_usage`·`cmd_slash`·`cmd_has`·`cmd_new_turn`·`cmd_run` (134–186) | les **commandes** | part | `engine.commands` E004 (DOOR) |
+| `tab.sh` — `_block` (7) | interne d'accès bloc | moteur | — (reste) |
+| `head_second.sh` — `_sec_channel`·`_sec_human`·`_sec_project`·`_sec_skill`·`_sec_summary`·`_sec_plan`·`_sec_project_plan`·`_sec_note`·`_sec_agents`·`_sec_chat`·`_sec_toolset` (6–133) | construit la « seconde tête » (contexte) | part | `head_state` (Engine — à créer/vérifier) |
+
+**Bilan moteur** : `la.sh`/`boot.sh`/`run.sh`/`shell.sh` + l'interne de `cfg.sh`/`tab.sh`
+= **le moteur, jamais des outils**. Ce qui rend une **donnée** (`cfg` → `engine.config`,
+table → `engine.map`, commandes → `engine.commands`, tête → `head_state`) = **outil**.
+Aucune fonction de surface n'entre ici.
+
+## 6 quinquies. La surface natale (Android)
+
+| fichier | rôle | état | cible (langue) |
+|---|---|---|---|
+| `Bridge.kt` | appels HTTP fins vers le pont | reste | — (Kotlin — surface) |
+| `ChatActivity.kt` (16 appels `Bridge.*`) | la vue / le chat | reste | — (Kotlin — surface) |
+
+La surface Android **ne contient aucune logique** : elle appelle le pont, qui appelle la
+porte. Rien à y externaliser.
+
 ## 6 bis. SH ou Python ? — la mesure (ce que j'avais dit de faux)
 
 J'avais dit « le rendu reste du code, pas du shell ». **Faux, et voici la preuve chiffrée :**
