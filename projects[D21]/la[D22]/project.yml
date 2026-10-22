@@ -83,7 +83,7 @@ SPEC:                       # the canon: the machine's own facts, one verifiable
     - "capture : the return of the channel is cut at the cap"
     - "approval : a gated body called by the channel waits for a signed go"
     - "channel_set reads that row once per call: four rules, four flags, one reader"
-    - "no brick reads the label itself ; run_call reads it once, the doctor names any other reader"
+    - "the label is read in cfg.sh alone ; the door and the body ask channel_label, nobody spells it"
     - "a row that does not carry its four rules is a fault, not a default"
     - "channel_set reads the row with its own awk: the shape of that table moves, cfg.sh moves"
   loops:                    # section 7 : feedback loops, forced append, read

@@ -14,7 +14,9 @@ RULES:
 DESCRIPTION: "the map of the names: rebuilt from the disk, the index names them and the map finds them"
 COMMAND: |
 
-  cfg map || { printf 'FAULT the map cannot be written\n'; exit 1; }
+  cfg map || { printf 'FAULT the map cannot be written\n'; exit 1 ; }
+  # the register is a derived table: a build that forgets it leaves the tree lying
+  run_call engine.reload op=build >/dev/null 2>&1 || printf 'FAULT the register was not rebuilt\n'
   printf 'note %s place(s) in the map\n' "$(wc -l < "$LA_STATE/tree.map")"
 ARGS:
   - {name: op, type: enum, values: rebuild}

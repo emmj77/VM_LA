@@ -1,4 +1,4 @@
-- id: "D001"
+- id: D001
   tool: "doctor.data"
   family: DOCTOR
   sub_family: ""
@@ -6,7 +6,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D002"
+- id: D002
   tool: "doctor.forms"
   family: DOCTOR
   sub_family: ""
@@ -14,7 +14,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D003"
+- id: D003
   tool: "doctor.keys"
   family: DOCTOR
   sub_family: ""
@@ -22,7 +22,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D004"
+- id: D004
   tool: "doctor.knowledge"
   family: DOCTOR
   sub_family: ""
@@ -30,7 +30,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D005"
+- id: D005
   tool: "doctor.language"
   family: DOCTOR
   sub_family: ""
@@ -38,7 +38,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D006"
+- id: D006
   tool: "doctor.machine"
   family: DOCTOR
   sub_family: ""
@@ -46,7 +46,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D007"
+- id: D007
   tool: "doctor.manifest"
   family: DOCTOR
   sub_family: ""
@@ -54,7 +54,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D008"
+- id: D008
   tool: "doctor.structure"
   family: DOCTOR
   sub_family: ""
@@ -62,7 +62,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D009"
+- id: D009
   tool: "doctor.texts"
   family: DOCTOR
   sub_family: ""
@@ -70,7 +70,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D010"
+- id: D010
   tool: "doctor.tools"
   family: DOCTOR
   sub_family: ""
@@ -78,295 +78,7 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "E001"
-  tool: "engine.approve"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E002"
-  tool: "engine.asr"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E003"
-  tool: "engine.backup"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E004"
-  tool: "engine.commands"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E005"
-  tool: "engine.doctor"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E006"
-  tool: "engine.hist"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E007"
-  tool: "engine.install"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "D017"
-  tool: "doctor.voice"
-  family: DOCTOR
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "D018"
-  tool: "doctor.arguments"
-  family: DOCTOR
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "D019"
-  tool: "doctor.pages"
-  family: DOCTOR
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "D020"
-  tool: "doctor.state"
-  family: DOCTOR
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "D021"
-  tool: "doctor.turn"
-  family: DOCTOR
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "D022"
-  tool: "doctor.perms"
-  family: DOCTOR
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E008"
-  tool: "engine.models"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E009"
-  tool: "engine.retention"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E010"
-  tool: "engine.spec"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E011"
-  tool: "engine.stat"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E012"
-  tool: "engine.switch"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E013"
-  tool: "engine.trace"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E014"
-  tool: "engine.tts"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E015"
-  tool: "engine.tunnel"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E016"
-  tool: "engine.update"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E017"
-  tool: "engine.reload"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "T001"
-  tool: "turn.call"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "T002"
-  tool: "turn.facts"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "T003"
-  tool: "turn.note"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "T004"
-  tool: "turn.prompt"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "T005"
-  tool: "turn.reply"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "T006"
-  tool: "turn.scope"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "T007"
-  tool: "turn.second"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "T008"
-  tool: "turn.tools"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "T009"
-  tool: "turn.effort"
-  family: TURN
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "W001"
-  tool: "watch.judge"
-  family: WATCH
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "G025"
-  tool: "voice_text"
-  family: REPLY
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E019"
-  tool: "engine.signal"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E020"
-  tool: "engine.board"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "D011"
+- id: D011
   tool: "doctor.index"
   family: DOCTOR
   sub_family: ""
@@ -374,79 +86,23 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "E021"
-  tool: "engine.residents"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E022"
-  tool: "engine.service"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E023"
-  tool: "engine.turn"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E024"
-  tool: "engine.map"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E025"
-  tool: "engine.uninstall"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "E026"
-  tool: "engine.wake"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: true
-  enabled: true
-  visible: false
-- id: "D012"
+- id: D012
   tool: "doctor.models"
   family: DOCTOR
   sub_family: ""
   doc: ""
-  guardrail: false
+  guardrail: true
   enabled: true
   visible: false
-- id: "W003"
-  tool: "watch.surveil"
-  family: WATCH
+- id: D013
+  tool: "doctor.duplicates"
+  family: DOCTOR
   sub_family: ""
   doc: ""
-  guardrail: false
-  enabled: true
-  visible: true
-- id: "E027"
-  tool: "engine.purge"
-  family: ENGINE
-  sub_family: ""
-  doc: ""
-  guardrail: false
+  guardrail: true
   enabled: true
   visible: false
-- id: "D015"
+- id: D015
   tool: "doctor.tags"
   family: DOCTOR
   sub_family: ""
@@ -454,9 +110,353 @@
   guardrail: true
   enabled: true
   visible: false
-- id: "D016"
+- id: D016
   tool: "doctor.vision"
   family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: D017
+  tool: "doctor.voice"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: D018
+  tool: "doctor.arguments"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: D019
+  tool: "doctor.pages"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: D020
+  tool: "doctor.state"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: D021
+  tool: "doctor.turn"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: D022
+  tool: "doctor.perms"
+  family: DOCTOR
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E001
+  tool: "engine.approve"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E002
+  tool: "engine.asr"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E003
+  tool: "engine.backup"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E004
+  tool: "engine.commands"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E005
+  tool: "engine.doctor"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E006
+  tool: "engine.hist"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E007
+  tool: "engine.install"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E008
+  tool: "engine.models"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E009
+  tool: "engine.retention"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E010
+  tool: "engine.spec"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E011
+  tool: "engine.stat"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E012
+  tool: "engine.switch"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E013
+  tool: "engine.trace"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E014
+  tool: "engine.tts"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E015
+  tool: "engine.tunnel"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E016
+  tool: "engine.update"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E017
+  tool: "engine.reload"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E019
+  tool: "engine.signal"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E020
+  tool: "engine.board"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E021
+  tool: "engine.residents"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E022
+  tool: "engine.service"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E023
+  tool: "engine.turn"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E024
+  tool: "engine.map"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E025
+  tool: "engine.uninstall"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E026
+  tool: "engine.wake"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: E027
+  tool: "engine.purge"
+  family: ENGINE
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: T001
+  tool: "turn.call"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: T002
+  tool: "turn.facts"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: T003
+  tool: "turn.note"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: T004
+  tool: "turn.prompt"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: T005
+  tool: "turn.reply"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: T006
+  tool: "turn.scope"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: T007
+  tool: "turn.second"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: T008
+  tool: "turn.tools"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: T009
+  tool: "turn.effort"
+  family: TURN
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: W001
+  tool: "watch.judge"
+  family: WATCH
+  sub_family: ""
+  doc: ""
+  guardrail: true
+  enabled: true
+  visible: false
+- id: W003
+  tool: "watch.surveil"
+  family: WATCH
   sub_family: ""
   doc: ""
   guardrail: true

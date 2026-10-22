@@ -1,0 +1,56 @@
+# one control of the doctor. it names what it sees, it never decides the verdict.
+id: "D013"
+tool: "doctor.duplicates"
+date: "2026-10-22"
+tags: ["manage", "duplicate", "clone", "copy"]
+RULES:
+  enabled: true
+  timeout: 120
+  writable_workspace: ""
+  approval: none
+  turn: none
+  count: false
+  paths: read
+DESCRIPTION: "the copies: the same block twice (jscpd, tokens) and the same law in several homes (ast-grep, shapes)"
+COMMAND: |
+
+  _op=${1:-clones}
+  case $_op in
+  clones)
+    _j="$HOME/.local/lib/node_modules/jscpd/run-jscpd.js"
+    [ -f "$_j" ] || { printf 'note jscpd is not on the disk: %s\n' "$_j" ; exit 0 ; }
+    _d=$(tmpfile clones) || exit 0
+    rm -f "$_d" ; mkdir -p "$_d" || exit 0
+    node "$_j" "$(cfg path engine)" "$(cfg path programs)" --format bash,python \
+      --min-tokens 50 --reporters json --output "$_d" --silent >/dev/null 2>&1
+    _r="$_d/jscpd-report.json"
+    [ -f "$_r" ] || { printf 'FAULT jscpd wrote no report\n' ; exit 0 ; }
+    jq -r '.duplicates[] | "\(.firstFile.name):\(.firstFile.start) = \(.secondFile.name):\(.secondFile.start)  \(.tokens) token(s), \(.lines) line(s)"' "$_r" 2>/dev/null \
+      | while IFS= read -r _l; do printf 'FAULT the same block twice: %s\n' "$_l" ; done
+    _c=$(jq -r '.statistics.total.clones // 0' "$_r" 2>/dev/null)
+    _p=$(jq -r '.statistics.total.percentage // 0' "$_r" 2>/dev/null)
+    if [ "${_c:-0}" -eq 0 ]; then printf 'ok no copied block above 50 tokens, %s%% of the lines\n' "${_p:-0}"
+    else printf 'note %s copied block(s), %s%% of the lines\n' "$_c" "${_p:-0}" ; fi
+    rm -f "$_r" 2>/dev/null ; rmdir "$_d" 2>/dev/null
+    ;;
+  shapes)
+    _sg=$(command -v ast-grep 2>/dev/null)
+    [ -n "$_sg" ] || { printf 'note ast-grep is not on the disk\n' ; exit 0 ; }
+    _e=$(cfg path engine) || exit 0
+    for _l in 'channel_set $$$A|the channels table' 'skl_gate_ask $$$A|the gate word' 'is_gated $$$A|the approval rule'; do
+      _p=${_l%%|*} ; _w=${_l#*|}
+      _o=$("$_sg" run -p "$_p" -l bash "$_e" 2>/dev/null)
+      _n=$(printf '%s\n' "$_o" | grep -c ':[0-9]*:' 2>/dev/null)
+      case ${_n:-0} in
+        1) printf 'ok %s has one home\n' "$_w" ;;
+        0) printf 'FAULT %s has no home: the shape is gone or renamed\n' "$_w" ;;
+        *) printf 'FAULT %s is written in %s homes\n' "$_w" "$_n" ; printf '%s\n' "$_o" | sed 's/^/  /' ;;
+      esac
+    done
+    ;;
+  *) printf 'FAULT unknown op %s\n' "$_op" ;;
+  esac
+  exit 0
+
+ARGS:
+  - {name: op, type: enum, values: clones,shapes}

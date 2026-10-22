@@ -33,8 +33,8 @@ COMMAND: |
       [ -f "$_f" ] || continue
       _n=$((_n + 1))
       dash -n "$_f" 2>/dev/null || printf 'FAULT dash cannot read %s\n' "${_f##*/}"
-      case ${_f##*/} in run.sh|cfg.sh) continue ;; esac
-      grep -q '\${\?LA_FROM' "$_f" 2>/dev/null && printf 'FAULT %s reads the channel label by itself: cfg.sh reads it once\n' "${_f##*/}"
+      case ${_f##*/} in cfg.sh) continue ;; esac
+      grep -q '\${\?LA_FROM' "$_f" 2>/dev/null && printf 'FAULT %s spells the channel label by itself: channel_label is its one reader\n' "${_f##*/}"
     done
     for _f in "$(cfg path tools)"/*/*/tool_*.yaml; do
       grep -q '\${\?LA_FROM' "$_f" 2>/dev/null && printf 'FAULT %s reads the channel label by itself: the flags come with the call\n' "${_f##*/}"

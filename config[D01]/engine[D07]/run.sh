@@ -124,7 +124,7 @@ _door_register() { [ "$LA_SELF" = yes ] && cfg abs registry-engine || cfg abs re
 run_call() {
   _name=${1:-}
   [ $# -gt 0 ] && shift
-  channel_set "${LA_FROM:-model}"
+  channel_set "$(channel_label)"
 
   # 1 an id : the register names it
   _reg=$(_door_register) || { shape_fail "$_name" "" refusals.tool_unknown; return 1; }
