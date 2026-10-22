@@ -219,10 +219,7 @@ families:
 # the turn, measured in numbers
 loop:
   feed_turns: 12
-  same_words_seconds: 300
   window: 4
-  msg_max: 8000
-  msg_budget: 32000
   max_turns: 400
   autosleep: 580
   memory_keep: 500
@@ -236,7 +233,6 @@ loop:
   plan_steps: 12
   plan_chars: 100
   big_todo_every: 15
-  update_every: 10
   timeout: 600
   share: 30
   speech_tries: 2
@@ -252,7 +248,6 @@ doctor:
 
 # every bound the engine applies
 limits:
-  said_window: 10
   live_lines: 40
   return_keep: 200
   vision_tokens: 1024
@@ -267,11 +262,9 @@ limits:
   tunnel_steps: 12
   db_busy_ms: 5000
   rerank_timeout: 15
-  frame_bytes: 400
   stop_tries: 50
   port_tries: 100
   boot_tries: 40
-  engine_bytes: 4000
   engine_lines: 200
   return_bytes: 4000
   engine_timeout: 600
@@ -474,6 +467,9 @@ head:
     104: "One reply per turn, one SHORT sentence, then the work tools. An open plan closes with update_todo, then reply."
     105: "The conversation is not the state: PLAN and STATE live outside me."
     106: "recall(n) re-reads the last n messages: ask it once, on a memory hole."
+  VOICE:
+    101: "Each turn carries its channel (cli, dashboard, app) and its input (text, voice), under THE CHANNEL."
+    102: "A voice input went through a transcription: what I read can be degraded, and I say so instead of inventing."
   SKILL:
     101: "I see ONLY the ACTIVE SKILL: its scope, its tools, its SUMMARY."
     102: "I do not hold the 3300+ register: a missing tool is a skill to LOAD (load_skill)."
@@ -485,7 +481,7 @@ head:
     100: "I answer the human in FRENCH. The machine speaks English."
     101: "I never name a path: the WORKSPACE sets the scope."
     102: "Every line carries its id; the obsolete is deleted, not annotated."
-    103: "In doubt: reply ask. Never an imposed choice."
+    103: "In doubt: reply with the question. Never an imposed choice."
   USER:
     101: "Moussa. Debian 13, terminal. CAPITALS = urgent."
     102: "Every tool leaves one log line on the human channel; it never enters my context."
@@ -535,13 +531,6 @@ schema:
     max: 400
     why: la borne de securite des tours (0 = aucune)
   - section: loop
-    key: msg_budget
-    kind: int
-    min: 4000
-    max: 128000
-    step: 4000
-    why: le budget en octets de tout ce que le modele lit
-  - section: loop
     key: todo_every
     kind: int
     min: 1
@@ -565,12 +554,6 @@ schema:
     min: 5
     max: 60
     why: le grand plan se rappelle, tous les N tours, quand rien ne le porte
-  - section: loop
-    key: update_every
-    kind: int
-    min: 1
-    max: 50
-    why: la mise a jour du grand plan et du canon, tous les N tours
   - section: loop
     key: share
     kind: int

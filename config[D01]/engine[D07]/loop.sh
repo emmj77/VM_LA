@@ -84,7 +84,14 @@ loop_turn() {
     step_run "$_s" || { _status=failed; break; }
   done
 
+  _mt=$(cfg num loop.max_turns 400) || _mt=400
   while [ "$_status" = ok ]; do
+    _tn=$(skl_turn_no)
+    if [ "$_mt" -gt 0 ] && [ "${_tn:-0}" -ge "$_mt" ]; then
+      _ltr step "stopped: turn $_tn, the bound $_mt"
+      _status=stopped
+      break
+    fi
     _before=$(_turn_get '.calls | length')
     for _s in $(loop_cycle); do
       step_run "$_s" || { _status=failed; break; }
