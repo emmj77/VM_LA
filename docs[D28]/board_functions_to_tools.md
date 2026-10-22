@@ -8,6 +8,11 @@ The motor stays minimal. Its tools are unified. The three surfaces — the CLI, 
 Android app, the dashboard — all read the SAME tools. Anything that checks health
 (the canon, duplicates, tags, index...) is a doctor function, never a motor tool.
 
+A tool stays SMALL: one function, a few lines of shell, its COMMAND goes through
+the door. The engine calls these small functions; the three surfaces only read them.
+If a line needs a datum a tool does not yet emit, adjust that op by 2-3 lines or add
+a small tool — never grow a big body.
+
 Column 2 names are evocative: reading the name tells you what it does.
 Column 3 states the route: EXISTING tool to reuse (with its op), or NEW small
 shell tool to create (with its source command).
