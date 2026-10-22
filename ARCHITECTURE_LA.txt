@@ -142,9 +142,7 @@ VM_LA
 │       ├── turn[D19]                                    D19
 │       ├── unity[D37]                                   D37
 │       └── watch[D20]                                   D20
-├── DECISION.txt                                         A02
 ├── docs[D28]                                            D28
-├── INDEX_A_JOUR.txt                                     A04
 ├── LA_android_app[D39]                                  D39
 │   ├── app
 │   │   ├── build.gradle                                 K06
