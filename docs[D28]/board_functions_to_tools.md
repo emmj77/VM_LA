@@ -133,11 +133,25 @@ Route par route, tout le reste est déjà couvert : `state`→board, `live`→`e
 `history`→`engine.hist`, `cmd`/`command`→`engine.commands`, `doctor`→`engine.doctor`,
 `residents`→`engine.residents`, `update`→`engine.update`, `approval/approve/deny`→`engine.approve`.
 
-**Nouveaux comptes : moteur 34** (la table va jusqu'à 34), **catalogue/cœur 9**
-(`list_skills`, `show_skill`, `list_projects`, `list_agents`, `list_toolmap`,
-`list_commands`, `config_view`, `config_set`, `table_manage`), **docteur ~7**. Total
-visible par les trois sorties ≈ **50 outils** — et « de plus en plus d'outils YAML, ce
-n'est pas un problème ». Là encore, **rien n'est créé ni branché**, c'est le plan.
+**Nouveaux comptes (exacts) : 34 moteur + 9 catalogue/cœur + 7 docteur = 50 outils.**
+Les **16** entre 34 et 50 = les **9 catalogue/cœur** + les **7 docteur** (§4 ter).
+Trois sorties, une porte. « De plus en plus d'outils YAML, ce n'est pas un problème. »
+Rien n'est créé ni branché, c'est le plan.
+
+## 4 ter. Les 16 outils hors moteur (entre 34 et 50)
+
+Ce sont les outils que les trois sorties lisent **à travers** le pont, en plus des 34
+du moteur. Ils ne sont pas « du moteur », mais les sorties en ont besoin.
+
+**9 catalogue/cœur** — les listes et réglages que l'app et la page affichent :
+`list_skills`, `show_skill`, `list_projects`, `list_agents`, `list_toolmap`,
+`list_commands`, `config_view`, `config_set` (existe, G081), `table_manage` (existe, G018).
+
+**7 docteur** — la santé et l'inventaire, jamais le moteur :
+`doctor.machine`, `doctor.models`, `doctor.knowledge`, `doctor.tools`, `doctor.tags`,
+`doctor.index`, `doctor.duplicates`.
+
+**34 + 9 + 7 = 50.**
 
 ## 5. Le board ne recalcule plus — il compose
 
@@ -185,8 +199,8 @@ Composition et rendu seulement :
 ## 8. Comptes et ordre (on ne l'exécute PAS maintenant)
 
 - **34 outils moteur** (26 existants + 6 lecteurs + `head_state` + `version`).
-- **~9 outils catalogue/cœur** + **~7 docteur** que les sorties lisent à travers.
-- Total visible par les trois sorties ≈ **50 outils**. Trois sorties, une porte.
+- **9 outils catalogue/cœur** + **7 docteur** que les sorties lisent à travers.
+- Total visible par les trois sorties = **50 outils** (34 moteur + 9 catalogue/cœur + 7 docteur). Trois sorties, une porte.
 - Ordre, plus tard et sur ton feu vert : découper `board` (chaque `read_*` → son
   outil, un commit par lecteur, sortie prouvée), créer les 6 nouveaux lecteurs,
   docteur vert à chaque étape. On ne branche rien tant que tu n'as pas validé.
