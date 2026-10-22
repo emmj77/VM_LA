@@ -251,6 +251,7 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 | `applet.js` · `main` | paints the applet |
 | `doctor.data` (D001) | the bases and the memory, one writer each |
 | `doctor.forms` (D002) | the forms of a return: their bounds are written and read |
+| `doctor.index` (D011) | the disk against the index, both ways; and the phone side: the apk the source builds against the one the bridge serves |
 | `doctor.keys` (D003) | la_config against the bodies: one owner per fact |
 | `doctor.knowledge` (D004) | the skills, the armed skill and project, the canon |
 | `doctor.language` (D005) | no french word in the machinery, and no dead skill name |
@@ -352,6 +353,7 @@ Two columns: the name as the code writes it, and one sentence. Shell bricks, the
 
 | Name | What it is |
 |---|---|
+| `machine.app.built` | the apk the phone source builds; `doctor.index op=apk` compares it to `machine.app.apk`, the one the bridge serves |
 | `machine.free_terminal.deny` | the calls a free shell may not make: unlink, unlinkat, rmdir, and the three doors of io_uring (setup, enter, register) |
 | `machine.free_terminal.error` | what the kernel answers there: EPERM |
 

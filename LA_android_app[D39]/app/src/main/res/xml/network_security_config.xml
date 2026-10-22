@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- UNE SEULE AUTORITE DE CONFIANCE : le certificat du pont, depose dans res/raw.
+     L autorite systeme n est pas listee : le telephone ne fait confiance qu a sa machine. -->
+<network-security-config>
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="@raw/bridge_cert" />
+    </trust-anchors>
+  </base-config>
+
+  <!-- Le poste en clair, borne a ces deux adresses et a elles seules. -->
+  <domain-config cleartextTrafficPermitted="true">
+    <domain includeSubdomains="false">10.10.0.1</domain>
+    <domain includeSubdomains="false">192.168.8.2</domain>
+    <trust-anchors>
+      <certificates src="@raw/bridge_cert" />
+    </trust-anchors>
+  </domain-config>
+</network-security-config>

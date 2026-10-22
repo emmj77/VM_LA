@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="bg">#0A0B0F</color>
+  <color name="accent">#7C8CFF</color>
+  <color name="text">#ECEEF5</color>
+
+  <!-- La bulle du systeme : elle ne suit pas le theme, ses couleurs sont fixes. -->
+  <color name="ov_head_bg">#141821</color>
+  <color name="ov_ring">#3A4356</color>
+  <color name="ov_ring_run">#FF6B6B</color>
+  <color name="ov_ring_send">#7C8CFF</color>
+  <color name="ov_text">#ECEEF5</color>
+  <color name="ic_bg">#0A0B0F</color>
+</resources>

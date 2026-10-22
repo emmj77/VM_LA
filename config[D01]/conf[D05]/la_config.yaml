@@ -83,6 +83,7 @@ machine:
     models: "/home/moussa/LLM_GGUF/indra-ocr"
   app:
     apk: "/home/moussa/Applications/LA-app.apk"
+    built: "LA_android_app[D39]/app/build/outputs/apk/debug/app-debug.apk"
   browser:                                    # the window of the page, as it was
     bin: "/usr/bin/chromium"
     class: "LA-Dashboard"
@@ -440,9 +441,6 @@ commands:
   - id: "V13"
     name: "tool"
     act: tool_call
-  - id: "V14"
-    name: "voice keywords"
-    tool: voice_keywords
   - id: "V15"
     name: "doctor"
     act: doctor
@@ -767,4 +765,4 @@ tags:
   natures: [read, write, manage, reply, plan, vision, blender, unity, krita, image]
   engines: [shell, api, local, indra, comfyui, llama, blender, unity, krita, git, systemd, python]
   objects: [img, document, audio, mesh, scene, project, plan, turn, process, config, table, text, file, object, node, material, texture, animation, render, draw]
-  verbs: [read, write, list, search, find, show, set, load, save, cut, repair, depth, boxes, ocr, analyze, generate, upscale, convert, run, manage, delete, remove, move, copy, open, close, speak, transcribe, translate, summarize, add, apply, clear, hide, select, install, update, reload, trace, test, import, export]
+  verbs: [read, write, list, search, find, show, set, load, save, cut, repair, depth, boxes, ocr, analyze, generate, upscale, convert, run, manage, delete, remove, move, copy, open, close, voice, transcribe, translate, project, summarize, add, apply, clear, hide, select, install, update, reload, trace, test, import, export]

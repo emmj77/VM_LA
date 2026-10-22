@@ -1,0 +1,41 @@
+plugins {
+  id 'com.android.application'
+  id 'org.jetbrains.kotlin.android'
+}
+
+android {
+  namespace 'fr.la.chat'
+  compileSdk 34
+
+  defaultConfig {
+    applicationId "fr.la.chat"
+    minSdk 26            // TYPE_APPLICATION_OVERLAY existe a partir d ici
+    targetSdk 34         // API 34 : type de service d avant-plan obligatoire
+    versionCode 20
+    versionName "3.8"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled true
+      shrinkResources true
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+
+  kotlinOptions {
+    jvmTarget = '17'
+  }
+
+  lint { abortOnError true }
+}
+
+dependencies {
+  // Uniquement le noyau AndroidX : notification, couleurs, FileProvider.
+  implementation 'androidx.core:core-ktx:1.13.1'
+}

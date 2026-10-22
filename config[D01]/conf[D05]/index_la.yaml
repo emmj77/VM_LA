@@ -3,7 +3,7 @@
 # Tool bodies are not here: their id lives in their header, the register projects it.
 # The doctor checks the disk against this document. Nothing else says it again.
 api: 1
-date: "2026-10-21"
+date: "2026-10-22"
 
 # each line: the id, the name, the role. the path is nowhere: the disk holds the tree.
 dirs:
@@ -16,7 +16,7 @@ dirs:
   - {id: "D07", name: "engine[D07]", role: "the engine: sixteen bricks, one sourced line"}
   - {id: "D08", name: "filter[D08]", role: "the family filter"}
   - {id: "D09", name: "page[D09]", role: "the page and the phone"}
-  - {id: "D10", name: "programs[D10]", role: "the four servers, never sourced"}
+  - {id: "D10", name: "programs[D10]", role: "the programs, never sourced: the panel, the bridge, the dashboard, the voice, the ear, the watch"}
   - {id: "D12", name: "state[D12]", role: "the running state, one turn at a time"}
   - {id: "D13", name: "returns[D13]", role: "what a call returns beyond the bound"}
   - {id: "D14", name: "tools[D14]", role: "every tool body, one file per tool. the only catalogue of the door"}
@@ -38,6 +38,7 @@ dirs:
   - {id: "D35", name: "core[D35]", role: "core family: read, write, search, process"}
   - {id: "D36", name: "krita[D36]", role: "krita family: the drawings"}
   - {id: "D37", name: "unity[D37]", role: "unity family: the editor"}
+  - {id: "D39", name: "LA_android_app[D39]", role: "the phone side as source: the kotlin envelope, the webview, its gradle build. the sub folders are the build tool's, the app folder is the one we name"}
 
 files:
   - {id: "A01", name: "ARCHITECTURE_LA.txt", role: "the architecture: how the machine is put together"}
@@ -56,7 +57,6 @@ files:
   - {id: "C06", name: "texts.yaml", role: "every phrase: refusals, turn, board, bridge, voice, doctor"}
   - {id: "C08", name: "second.yaml", role: "the second head kinds and bounds"}
   - {id: "C09", name: "llama_preset.ini", role: "the llama.cpp preset of the local engine"}
-  - {id: "C11", name: "voice_keywords.txt", role: "the voice commands, generated from la_config by voice_keywords; no comment line: the spotter reads none"}
   - {id: "E01", name: "approval.sh", role: "the human door: a signed go is checked here, never asked by a tool"}
   - {id: "E02", name: "args.sh", role: "declared arguments to a command line: path enum int bool text"}
   - {id: "E03", name: "boot.sh", role: "the only sourced line: it finds the master file, loads cfg, then every brick by its key"}
@@ -103,6 +103,36 @@ files:
   - {id: "H09", name: "widget-icon.svg", role: "the phone icon, served on /icon.svg"}
   - {id: "I01", name: "index_la.yaml", role: "this document: every folder, every file, its id, its role. the doctor checks the disk against it"}
   - {id: "J02", name: "project.yml", role: "the project LA, and inside it its canon"}
+  - {id: "K01", name: "build.gradle", role: "the phone build: the android plugin and the kotlin version, applied to no module"}
+  - {id: "K02", name: "settings.gradle", role: "the modules, the repositories the build may reach"}
+  - {id: "K03", name: "gradle.properties", role: "the memory of the build, the android and kotlin switches"}
+  - {id: "K04", name: "local.properties", role: "where the android sdk sits on this station. 0600, never a secret"}
+  - {id: "K05", name: "README.md", role: "what the app is and what state it is in"}
+  - {id: "K06", name: "build.gradle", role: "the module (app/): sdk bounds, application id, version, signing"}
+  - {id: "K07", name: "proguard-rules.pro", role: "the one class the shrinking keeps: the javascript gateway"}
+  - {id: "K08", name: "AndroidManifest.xml", role: "the permissions, the activity, the service, the provider"}
+  - {id: "K09", name: "app.css", role: "the look: one column, dark, the input under the thumb"}
+  - {id: "K10", name: "app.js", role: "the interface: every call leaves through the native gateway, none over the network"}
+  - {id: "K11", name: "index.html", role: "the page the webview loads"}
+  - {id: "K12", name: "Bridge.kt", role: "the bridge seen from the phone: a client, no key, the pinned certificate checked in place of the name"}
+  - {id: "K13", name: "ChatActivity.kt", role: "the envelope: the webview, and the gateway that hands it the mic, the speaker, the photos, the bubble, the service"}
+  - {id: "K14", name: "Clip.kt", role: "a short pcm wav, the form the ear reads reliably"}
+  - {id: "K15", name: "JarvisService.kt", role: "the background: the floating bubble, the listen when the screen changes app, the ping that keeps the state visible"}
+  - {id: "K16", name: "Recorder.kt", role: "the native microphone: aac mono in an m4a, one recorder at a time"}
+  - {id: "K17", name: "Speaker.kt", role: "the voice played locally: the wav is fetched by the same door that pins the certificate"}
+  - {id: "K18", name: "TurnEngine.kt", role: "one turn at a time, the journal and the thinking polled while it runs, then the answer and its wavs"}
+  - {id: "K19", name: "ic_launcher_foreground.xml", role: "the launcher icon, its foreground layer"}
+  - {id: "K20", name: "ic_mic.xml", role: "the microphone icon"}
+  - {id: "K21", name: "ov_badge.xml", role: "the badge of the floating bubble"}
+  - {id: "K22", name: "ov_bubble_la.xml", role: "the shape of the floating bubble"}
+  - {id: "K23", name: "ic_launcher.xml", role: "the adaptive icon: a background and a foreground"}
+  - {id: "K24", name: "bridge_cert.pem", role: "the certificate of the bridge, pinned in the app: the only authority the phone trusts"}
+  - {id: "K25", name: "colors.xml", role: "the palette: background, accent, icon"}
+  - {id: "K26", name: "strings.xml", role: "the words the system shows: the app name, the notification channel"}
+  - {id: "K27", name: "themes.xml", role: "the theme: no action bar, the dark background"}
+  - {id: "K28", name: "data_extraction_rules.xml", role: "nothing leaves the phone: no cloud backup, no device transfer"}
+  - {id: "K29", name: "file_paths.xml", role: "the folders the provider may hand out: the photos, the update"}
+  - {id: "K30", name: "network_security_config.xml", role: "the one authority it trusts, and the system list it refuses"}
   - {id: "N01", name: "approve", role: "the signed go: tool, digest, ts, sig"}
   - {id: "N02", name: "approve.request", role: "the pending request, waiting for a human signature"}
   - {id: "N03", name: "doctor.cache", role: "the last count the doctor wrote"}
@@ -119,7 +149,7 @@ files:
   - {id: "P01", name: "board.py", role: "the panel and the cli: the board in a terminal, one line, one pass, one turn"}
   - {id: "P02", name: "bridge.py", role: "the bridge: API, audio, delegate. transport only, it decides nothing"}
   - {id: "P07", name: "dash_server.py", role: "the dashboard's own door: the page only, it exits when nobody looks"}
-  - {id: "P08", name: "kws.py", role: "the ear: sherpa-onnx keyword spotter on the microphone, a heard command opens the door"}
+  - {id: "P08", name: "ear.py", role: "the ear. the keyword list is built from the master file at start, written for the second the spotter reads it, then thrown away"}
   - {id: "P03", name: "tts_daemon.py", role: "the voice: sherpa-onnx loads once, POST /voice_text answers a wav"}
   - {id: "P04", name: "watch.py", role: "the watch: onnxruntime, the word passes, it signs what waits"}
   - {id: "Q01", name: "tool_template.yaml", role: "the gabarit of a tool body"}

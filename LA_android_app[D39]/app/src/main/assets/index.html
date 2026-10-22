@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0B0F">
+<title>Jarvis</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="who">
+      <div class="mark" aria-hidden="true"><span class="mark-core"></span></div>
+      <div class="names">
+        <h1>Jarvis</h1>
+        <p id="statusLine">Connexion…</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="jarvisBtn" class="chip" type="button" aria-pressed="false" title="Mode Jarvis : voix → voix en continu">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M4 12v2a8 8 0 0 0 16 0v-2M8 6v6a4 4 0 0 0 8 0V6a4 4 0 0 0-8 0z"/></svg>
+        <span>Jarvis</span>
+      </button>
+      <button id="residentsBtn" class="chip power" type="button" aria-pressed="false" title="Demarrer / arreter les residents">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M12 3v9M6.5 6.5a8 8 0 1 0 11 0"/></svg>
+        <span>Marche</span>
+      </button>
+      <button id="activityBtn" class="icon-btn" type="button" aria-label="Activité du tour">
+        <svg viewBox="0 0 24 24" class="ic"><path d="M3 12h4l2.5-6 3 12L15 12h6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="views">
+
+    <!-- DISCUSSION -->
+    <section id="viewChat" class="view">
+      <div id="banner" class="banner" aria-live="polite">
+        <span class="banner-dot" aria-hidden="true"></span>
+        <span class="banner-model" id="bannerModel">modèle —</span>
+        <span class="banner-prov" id="bannerProvider"></span>
+      </div>
+      <div id="modelMenu" class="model-menu hidden" role="menu" aria-label="Modèles"></div>
+      <div id="thread" class="thread" role="log" aria-live="polite"></div>
+
+      <div id="approvalBar" class="approval-bar hidden" role="alert">
+        <div class="approval-text"><b>Approbation requise</b><span id="approvalWho">—</span></div>
+        <div class="row gap">
+          <button id="approvalYes" class="primary sm" type="button">Valider</button>
+          <button id="approvalNo" class="ghost sm" type="button">Refuser</button>
+        </div>
+      </div>
+
+      <div id="empty" class="empty">
+        <button id="orb" class="orb" type="button" aria-label="Appuyer pour parler">
+          <span class="orb-halo"></span>
+          <span class="orb-ring"></span>
+          <span class="orb-disc">
+            <svg viewBox="0 0 24 24" class="ic orb-ic"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zM17 11a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11z"/></svg>
+          </span>
+        </button>
+        <p class="orb-hint" id="orbHint">Appuie pour parler</p>
+        <p class="orb-sub">Une bulle, une phrase. La réponse revient en voix.</p>
+        <div class="suggest">
+          <button type="button" data-say="Où en est le plan ?">Où en est le plan ?</button>
+          <button type="button" data-say="Fais le point sur la journée.">Fais le point</button>
+          <button type="button" data-say="Quel est l'état du pont ?">État du pont</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACTIVITÉ -->
+    <section id="viewActivity" class="view hidden">
+      <div class="page">
+
+        <div class="card">
+          <div class="card-head"><h2>Skill active</h2></div>
+          <div id="actSkill" class="kv">—</div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Projet actif</h2></div>
+          <div id="actProject" class="kv">—</div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Agents</h2></div>
+          <div id="actAgents" class="agents-list"><p class="muted small">—</p></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Chat inter-agent</h2></div>
+          <div id="actBoard" class="board"><p class="muted small">La conversation entre agents.</p></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Tour en cours</h2><span id="actBadge" class="tag">repos</span></div>
+          <p id="actState" class="muted">Aucun tour. Le journal et le raisonnement repartent à zéro à chaque tour.</p>
+          <div id="actTools" class="chips"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Raisonnement</h2></div>
+          <pre id="actThinking" class="mono">—</pre>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Plan du poste</h2>
+            <button id="planRefresh" class="ghost sm" type="button">Lire /plan</button>
+          </div>
+          <pre id="actPlan" class="mono">—</pre>
+        </div>
+
+        <p class="foot-note">Vue unifiée du pipeline : skill, projet, agents et conversation viennent du poste (mêmes routes que le dashboard et le CLI).</p>
+      </div>
+    </section>
+
+    <!-- RÉGLAGES -->
+    <section id="viewSettings" class="view hidden">
+      <div class="page">
+
+        <div class="card">
+          <div class="card-head"><h2>Le pont</h2><span id="pingTag" class="tag">?</span></div>
+          <label class="field-label" for="addr">Adresse du poste</label>
+          <div class="row">
+            <input id="addr" type="url" inputmode="url" spellcheck="false" placeholder="https://100.66.81.33:8766">
+            <button id="saveAddr" class="primary sm" type="button">Garder</button>
+          </div>
+          <div class="row between">
+            <span class="muted small">Tester la connexion</span>
+            <button id="testBtn" class="ghost sm" type="button">Tester</button>
+          </div>
+          <div class="row between">
+            <div>
+              <div class="label">Repli d'adresse</div>
+              <div class="muted small">Si le moteur échoue, rejoue le tour une fois sur l'adresse suivante.</div>
+            </div>
+            <label class="switch"><input id="fallback" type="checkbox"><span></span></label>
+          </div>
+          <p id="certNote" class="warn hidden">Le certificat épinglé semble expiré : les connexions seront refusées.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Capacités</h2></div>
+          <div class="perm"><span>Micro</span><b id="permMic" class="tag">—</b></div>
+          <div class="perm"><span>Notifications</span><b id="permNotif" class="tag">—</b></div>
+          <div class="perm"><span>Par-dessus les applis</span><b id="permOverlay" class="tag">—</b></div>
+          <div class="row gap">
+            <button id="btnOverlay" class="ghost sm" type="button">Autoriser la bulle</button>
+            <button id="btnAppSettings" class="ghost sm" type="button">Réglages de l'app</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Bulle et arrière-plan</h2></div>
+          <div class="row between">
+            <div>
+              <div class="label">Service Jarvis</div>
+              <div class="muted small">Bulle flottante + lien vivant, écran éteint. Démarre dès que la bulle est autorisée.</div>
+            </div>
+            <label class="switch"><input id="serviceSw" type="checkbox"><span></span></label>
+          </div>
+          <p class="muted small">La bulle se déplace au doigt, s'ouvre au toucher, parle sur appui maintenu.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Adresses du poste</h2>
+            <button id="enginesRefresh" class="ghost sm" type="button">Lire</button>
+          </div>
+          <div id="engines" class="engines"><p class="muted small">Aucune liste lue.</p></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Conversation</h2></div>
+          <div class="row between">
+            <span class="muted small">La conversation est partagée avec le poste (sessions.db) ; « Vider » ne nettoie que l'affichage du téléphone.</span>
+            <button id="clearBtn" class="danger sm" type="button">Vider</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Voix</h2></div>
+          <div class="row between">
+            <span>Validation vocale — dis « Valider » ou « Refuser »</span>
+            <label class="switch"><input id="voiceApproval" type="checkbox"><span></span></label>
+          </div>
+          <div class="row between">
+            <span>Mot d'éveil « Jarvis » / « Agent One » (app ouverte)</span>
+            <label class="switch"><input id="wakeWord" type="checkbox"><span></span></label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Application</h2><span id="appVer" class="tag">v—</span></div>
+          <div class="row between">
+            <span class="muted small">Mettre à jour sans réinstaller : télécharge l'APK servie par le poste.</span>
+            <button id="btnUpdate" class="primary sm" type="button">Mettre à jour</button>
+          </div>
+          <p id="updateState" class="muted small hidden"></p>
+        </div>
+
+        <p class="foot-note">client léger du pont · le téléphone ne porte ni modèle ni clé.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- LA PAROLE DE L'AGENT (TTS) -->
+  <div id="speakingPill" class="speaking-pill hidden" role="status" aria-live="polite">
+    <span class="spk-ic" aria-hidden="true"><svg viewBox="0 0 24 24" class="ic"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zM17 11a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11z"/></svg></span>
+    <span id="speakingWho">Agent One parle…</span>
+    <span class="spk-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+  </div>
+
+  <!-- BARRE D'ENREGISTREMENT -->
+  <div id="recBar" class="rec-bar hidden">
+    <button id="recCancel" class="icon-btn" type="button" aria-label="Annuler">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="rec-mid">
+      <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <span id="recTime">0:00</span>
+    </div>
+    <button id="recSend" class="send" type="button" aria-label="Envoyer la voix">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+
+  <!-- BANDE D'OUTILS DU TOUR (fixe, au-dessus de la saisie) -->
+  <div id="toolBand" class="tool-band hidden" aria-live="polite"></div>
+
+  <!-- PALETTE DES COMMANDES (au-dessus de la saisie) -->
+  <div id="palette" class="palette hidden" role="listbox" aria-label="Commandes"></div>
+
+  <!-- COMPOSITEUR -->
+  <form id="composer" class="composer" autocomplete="off">
+    <button id="attachBtn" class="icon-btn" type="button" aria-label="Joindre une image">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <textarea id="input" rows="1" placeholder="Écris à Jarvis…" enterkeyhint="send" maxlength="8000"></textarea>
+    <button id="micBtn" class="icon-btn mic-btn" type="button" aria-label="Parler">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zM17 11a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11z"/></svg>
+    </button>
+    <button id="sendBtn" class="send" type="submit" aria-label="Envoyer" disabled>
+      <svg viewBox="0 0 24 24" class="ic"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+    </button>
+  </form>
+
+  <!-- ONGLETS -->
+  <nav class="tabbar" aria-label="Navigation">
+    <button class="tab on" type="button" data-tab="chat">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/></svg>
+      <span>Discussion</span>
+    </button>
+    <button class="tab" type="button" data-tab="activity">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M3 12h4l2.5-6 3 12L15 12h6"/></svg>
+      <span>Activité</span>
+    </button>
+    <button class="tab" type="button" data-tab="settings">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.3 1a7 7 0 0 0-1.7-1L14.5 3h-4l-.4 2.1a7 7 0 0 0-1.7 1l-2.3-1-2 3.4L6 11a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 1.7 1l.4 2.1h4l.4-2.1a7 7 0 0 0 1.7-1l2.3 1 2-3.4-2-1.5c.1-.3.1-.7.1-1z"/></svg>
+      <span>Réglages</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- FEUILLE JOINDRE -->
+<div id="sheet" class="sheet hidden">
+  <div class="sheet-card">
+    <div class="grabber"></div>
+    <button type="button" id="pickGallery" class="sheet-row">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M3 5h18v14H3z"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg>
+      Choisir dans la galerie
+    </button>
+    <button type="button" id="pickCamera" class="sheet-row">
+      <svg viewBox="0 0 24 24" class="ic"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      Prendre une photo
+    </button>
+    <button type="button" id="sheetCancel" class="sheet-row quiet">Annuler</button>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Jarvis</string>
+  <string name="notif_channel">Jarvis — bulle et écoute</string>
+  <string name="notif_title">Jarvis</string>
+  <string name="notif_text">Bulle active · appui long pour parler</string>
+  <string name="notif_stop">Arrêter</string>
+  <string name="bubble_desc">Bulle Jarvis : appui long pour parler, toucher pour ouvrir</string>
+  <string name="listening">J’écoute…</string>
+  <string name="sending">J’envoie…</string>
+  <string name="thinking">Jarvis réfléchit…</string>
+  <string name="mic_failed">Micro indisponible : %1$s</string>
+  <string name="nothing_recorded">Rien n’a été enregistré</string>
+  <string name="mic_denied">Micro refusé : autorise-le dans Réglages</string>
+  <string name="station_silent">Le poste n’a pas répondu</string>
+</resources>

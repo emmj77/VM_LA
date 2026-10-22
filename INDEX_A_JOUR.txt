@@ -1,37 +1,52 @@
-INDEX A JOUR — les lignes exactes a coller (21/10/2026, 20 h)
+INDEX A JOUR — ce qui a change (22/10/2026, 02 h 45)
 
-Le free terminal ne masque plus de binaires : le noyau refuse l'appel systeme.
-Aucun fichier nouveau. Une ligne retiree, un bloc ajoute.
-
-===========================================================================
-1) config[D01]/conf[D05]/la_config.yaml     section "machine:", sous threads: 8
-===========================================================================
-  free_terminal:                            # what a free shell may not do: the calls the kernel refuses
-    deny: [unlink, unlinkat, rmdir]
-    error: EPERM
+L app du telephone rentre a la maison : elle vit dans VM_LA, sous son nom, elle est indexee, et
+le docteur la controle pour de vrai — le disque, et l APK que le pont sert.
 
 ===========================================================================
-2) config[D01]/conf[D05]/index_la.yaml      section "files:"
+1) LE DOSSIER
 ===========================================================================
-- RETIRER la ligne C10 (blocked_commands.txt) : le fichier est a la corbeille.
-- Rien d'autre a declarer : le refus vit dans la maitresse, pas dans un fichier.
+   /home/moussa/Applications/LA-chat-v2   ->   Documents/VM_LA/LA_android_app[D39]
+   16 journaux de build partis a la corbeille. Le build repart de la nouvelle place, exit 0.
+   L APK est refait et recopie : sha256 8f572b4b5c4130c7c393253c563a0b3addb638190c89ec2bb75b56f56cd21989
 
 ===========================================================================
-3) Rien d'autre
+2) config[D01]/conf[D05]/index_la.yaml
 ===========================================================================
-- le corps de l'outil   config[D01]/tools[D14]/core[D35]/tool_free_terminal.yaml
-  -> reecrit en place (G077), indexe par son dossier (D35 core)
-- l'appel des textes     filter_missing, unit_missing (texts.yaml)
-- la doc                 docs[D28]/BREAK_GLASS_FREE_TERMINAL.md, section 5bis
-- la convention          docs[D28]/LA-CONVENTIONS.md : cmd_*, table_ids,
-                         commands / commands_html / commands_legend / run_command,
-                         /cmd, les deux reperes, state/free_terminal.log
-- la map                 la map -> state[D12]/tree.map, 2 894 places
+   dirs  : + {id: "D39", name: "LA_android_app[D39]", ...}
+   files : + K01 .. K30, un fichier par ligne avec son role.
+   Les sous-dossiers de l app sont ceux de gradle (src/main/java, res/values ...) : ils ne portent
+   pas d id et ne sont pas nommes. Le dossier de l app, lui, en porte un.
 
 ===========================================================================
-4) Ce que ca donne, mesure
+3) config[D01]/conf[D05]/la_config.yaml     section machine.app
 ===========================================================================
-rm           -> "Operation non permise", code 1
-python3      -> PermissionError: [Errno 1] Operation not permitted
-touch, id -un -> libre (moussa)
-journal      -> state[D12]/free_terminal.log
+  app:
+    apk: "/home/moussa/Applications/LA-app.apk"
+    built: "LA_android_app[D39]/app/build/outputs/apk/debug/app-debug.apk"
+
+===========================================================================
+4) config[D01]/tools[D14]/doctor[D15]/tool_doctor_index.yaml
+===========================================================================
+   tree : .kt .xml .gradle .properties .pem .pro entrent dans les extensions vues. Le produit du
+          build (build/, app/build/, .gradle/, .kotlin/) est ecarte : la source, jamais.
+   apk  : nouvel op. L APK que la source construit contre celui que le pont sert, compare par sha256.
+
+===========================================================================
+5) .gitignore
+===========================================================================
+   Le build de l app et local.properties (le sdk de cette station) sortent de git.
+
+===========================================================================
+6) docs[D28]/LA-CONVENTIONS.md
+===========================================================================
+   + doctor.index (D011), et + machine.app.built.
+
+===========================================================================
+VERDICT DU DOCTEUR — la.sh doctor all
+===========================================================================
+   1 fault(s), 9 note(s), 112 ok
+   ok   the served apk is the one the source builds, 2026-10-22 02:41
+   note 161 path(s) in the index, 0 absent from the disk
+   note 0 file(s) on the disk and outside the index
+   FAULT the model list is missing: /home/moussa/LLM_GGUF/models.ini   (anterieur, hors sujet)

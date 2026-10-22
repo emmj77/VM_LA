@@ -66,3 +66,11 @@ config*/conf*/.env
 
 # LES SONDES TEMPORAIRES DU DOCTEUR : un nom tire au hasard, jamais du source.
 config\[D01\]/state\[D12\]/tmp/
+
+# --- LA APP DU TELEPHONE (LA_android_app) : la source est du source, le build est un produit ---
+LA_android_app*/build/
+LA_android_app*/app/build/
+LA_android_app*/.gradle/
+LA_android_app*/.kotlin/
+# CE FICHIER DIT OU EST LE SDK SUR CETTE STATION : il se refait, il ne se partage pas.
+LA_android_app*/local.properties
