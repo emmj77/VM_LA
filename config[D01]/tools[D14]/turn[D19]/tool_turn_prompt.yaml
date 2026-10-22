@@ -37,15 +37,22 @@ COMMAND: |
     }')
   _sys=$(printf '%s, you answer in %s.%s' "$_who" "$_lang" "$_head")
 
-  # the second head: what moves, after the stable prefix
+  # the second head: what moves. THE ORDER comes from head.second_order in la_config:
+  # the code emits exactly the sections named there, in that order. add a name to the
+  # list to add a section; reorder the list to reorder the head. no order lives here.
   _req=$(_turn_get '.prompt' 2>/dev/null)
   [ -n "$_req" ] || _req=${PROMPT:-}
-  _second=$(
+
+  _sec_channel() {
     printf '== THE CHANNEL ==\n'
     printf 'channel : %s ; input : %s\n' "$(_turn_get '.channel // "cli"')" "$(_turn_get '.input // "text"')"
+  }
+  _sec_human() {
     printf '== THE HUMAN ==\n'
     printf 'you are talking with the human (%s) ; the agent answering is %s\n' \
       "$(cfg str agents.human user)" "$(cfg str agents.main jarvis)"
+  }
+  _sec_project() {
     printf '== THE ACTIVE PROJECT ==\n'
     _pr=$(skl_project 2>/dev/null)
     if [ -n "$_pr" ]; then printf 'project : %s\n' "$_pr"; else printf 'no project loaded : every skill is reachable\n'; fi
@@ -56,6 +63,8 @@ COMMAND: |
         awk '/^RULES:/ { f = 1 ; next } f && /^[^ \t]/ { f = 0 } !f { next } /^  skillset:/ { sk = 1 ; next } sk && /^  [^ ]/ { sk = 0 } sk { next } /[a-z]/ && !/^[ \t]*#/ && !/: *""? *$/ { sub(/^[ \t]+/, "") ; print "rule : " $0 }' "$_pf" | head -n 6
       fi
     fi
+  }
+  _sec_skill() {
     printf '== THE ACTIVE SKILL ==\n'
     _sk=$(skl_skill 2>/dev/null)
     if [ -n "$_sk" ]; then printf 'skill : %s\n' "$_sk"; else printf 'no skill loaded : no skill is active\n'; fi
@@ -90,6 +99,8 @@ COMMAND: |
         if [ -n "$_df" ]; then printf 'doc %s :\n' "$_dname" ; head -n "$_dl" -- "$_df" ; else printf 'doc %s\n' "$_dname" ; fi
       done
     fi
+  }
+  _sec_summary() {
     printf '== THE LOCAL MODEL SUMMARY ==\n'
     _sf=$(cfg abs second 2>/dev/null)
     _sm=""; _ex=none; _sy=none
@@ -103,29 +114,36 @@ COMMAND: |
     else
       printf 'no summary yet\n'
     fi
+  }
+  _sec_plan() {
     printf '== THE LOADED SKILL PLAN ==\n'
     _pl=$(plan_status 2>/dev/null | head -n 8)
     if [ -n "$_pl" ]; then printf '%s\n' "$_pl"; else printf 'no open plan\n'; fi
+  }
+  _sec_project_plan() {
     _bpf=$(skl_big_file 2>/dev/null)
-    if [ -n "$_bpf" ]; then
-      printf '== THE PROJECT PLAN ==\n'
-      _bpt=$(_skl_big_body "$_bpf" 2>/dev/null)
-      if [ -z "$_bpt" ]; then printf 'the big plan is not written\n' ; else
-        printf '%s\n' "$_bpt" | awk '
-          { l = $0 ; sub(/^[ \t]*[0-9]+:[ \t]*"?/, "", l) ; sub(/"?[ \t]*$/, "", l)
-            if (l ~ /^\[in_progress\]/) { sub(/^\[in_progress\][ \t]*/, "", l) ; ip = l }
-            else if (l ~ /^\[completed\]/) { sub(/^\[completed\][ \t]*/, "", l) ; lc = l }
-            else if (l ~ /^\[todo\]/) { sub(/^\[todo\][ \t]*/, "", l) ; if (nx == "") nx = l } }
-          END {
-            if (lc != "") printf "done : %s\n", lc
-            printf "now  : %s\n", (ip != "" ? ip : "nothing in progress")
-            printf "next : %s\n", (nx != "" ? nx : "nothing left")
-          }'
-      fi
+    [ -n "$_bpf" ] || return 0
+    printf '== THE PROJECT PLAN ==\n'
+    _bpt=$(_skl_big_body "$_bpf" 2>/dev/null)
+    if [ -z "$_bpt" ]; then printf 'the big plan is not written\n' ; else
+      printf '%s\n' "$_bpt" | awk '
+        { l = $0 ; sub(/^[ \t]*[0-9]+:[ \t]*"?/, "", l) ; sub(/"?[ \t]*$/, "", l)
+          if (l ~ /^\[in_progress\]/) { sub(/^\[in_progress\][ \t]*/, "", l) ; ip = l }
+          else if (l ~ /^\[completed\]/) { sub(/^\[completed\][ \t]*/, "", l) ; lc = l }
+          else if (l ~ /^\[todo\]/) { sub(/^\[todo\][ \t]*/, "", l) ; if (nx == "") nx = l } }
+        END {
+          if (lc != "") printf "done : %s\n", lc
+          printf "now  : %s\n", (ip != "" ? ip : "nothing in progress")
+          printf "next : %s\n", (nx != "" ? nx : "nothing left")
+        }'
     fi
+  }
+  _sec_note() {
     printf '== THE STICKY NOTE ==\n'
     _sn=$(cfg abs note 2>/dev/null)
     if [ -n "$_sn" ] && [ -s "$_sn" ]; then head -c 1200 "$_sn"; printf '\n'; else printf 'the note is empty\n'; fi
+  }
+  _sec_agents() {
     printf '== THE AGENTS ==\n'
     _main=$(cfg str agents.main jarvis)
     _st=$(jq -r '.status // "idle"' "$_t" 2>/dev/null)
@@ -136,6 +154,8 @@ COMMAND: |
         printf '%s  idle : no turn runs\n' "$_a"
       fi
     done
+  }
+  _sec_chat() {
     printf '== THE CHAT ==\n'
     _cf=$(cfg str agents.chat 2>/dev/null)
     case $_cf in ""|/*) ;; *) _cf="$LA_ROOT/$_cf" ;; esac
@@ -144,9 +164,31 @@ COMMAND: |
     else
       printf 'the chat is empty\n'
     fi
+  }
+  _sec_toolset() {
     printf '== THE TOOLSET ==\n'
     _tl=$(printf '%s' "$(_turn_get '.tools')" | jq -r '.[]? | select(.function.name != "reply" and .function.name != "kill_proc" and .function.name != "toolset") | "- " + .function.name + " : " + (.function.description // "")' 2>/dev/null)
     [ -n "$_tl" ] && printf '%s\n' "$_tl" || printf 'no tool\n'
+  }
+
+  _second=$(
+    _t=$(cfg abs turn) 2>/dev/null ; _t=${_t:-}
+    for _s in $(cfg list head.second_order); do
+      case $_s in
+        channel)      _sec_channel ;;
+        human)        _sec_human ;;
+        project)      _sec_project ;;
+        skill)        _sec_skill ;;
+        summary)      _sec_summary ;;
+        plan)         _sec_plan ;;
+        project_plan) _sec_project_plan ;;
+        note)         _sec_note ;;
+        agents)       _sec_agents ;;
+        chat)         _sec_chat ;;
+        toolset)      _sec_toolset ;;
+        *) : ;;
+      esac
+    done
   )
 
   _sys=$(printf '%s\n\n%s' "$_sys" "$_second")

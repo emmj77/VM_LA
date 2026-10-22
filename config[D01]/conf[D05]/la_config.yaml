@@ -474,6 +474,9 @@ commands:
 head:
   name: "LA"
   language_response: "french"
+  # the order of the secondary head sections, from the most stable to the most volatile.
+  # the code emits exactly these, in this order; reorder here, never in the shell.
+  second_order: "channel human project skill summary plan project_plan note agents chat toolset"
   source: "agent"
   date: "2026-10-15"
   WHERE:
