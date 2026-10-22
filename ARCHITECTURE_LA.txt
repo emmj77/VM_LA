@@ -1,5 +1,5 @@
 LA - ARCHITECTURE                                            root: ~/Documents/VM_LA   # la reference unique
-2026-10-20   # ce fichier dit ce que le moteur doit etre, pas ce qu il est
+2026-10-22   # ce fichier dit ce que le moteur doit etre, pas ce qu il est
 left = the machine, english. right = the human, french after #   # anglais a gauche, francais a droite
 
 RULES
@@ -42,132 +42,164 @@ CRITERION   # trois questions, dans cet ordre
     trace   one kind per call, or the live channel becomes unreadable          # la trace distingue l etape
 
 VM_LA
-├── ARCHITECTURE_LA.txt                   R01  # ce fichier
-├── config[D01]                                     # les treize dossiers, aucun fichier a la racine
-│   ├── applet[D02]                                 # l applet Cinnamon
-│   │   ├── applet.js                     G01  # lit la sortie courte du docteur, la garde, peint
-│   │   └── metadata.json                 G02  # identite de l applet
-│   ├── audio[D03]                                  # la matiere sonore (runtime)
-│   ├── certs[D04]                                  # le TLS du pont (runtime)
-│   │   ├── bridge-cert.pem               Z01  # le certificat du pont
-│   │   └── bridge-key.pem                Z02  # sa cle privee, 0600
-│   ├── conf[D05]                                   # la configuration : noms, phrases, pipeline, tetes, cles
-│   │   ├── .env                          C01  # cles d API, 0600
-│   │   ├── head.yaml                     C02  # tete gelee : prompt systeme + schema la(g,a)
-│   │   ├── la_config.yaml                C03  # les noms : paths ports units models lists caps thresholds
-│   │   ├── pipeline.yaml                 C04  # le tour en etapes ordonnees : facts second scope prompt call tools reply note
-│   │   ├── second.head                   C05  # la tete secondaire : son prompt
-│   │   └── texts.yaml                    C06  # toutes les phrases : refus, tour, board, pont, voix, docteur
-│   ├── data[D06]                                   # les bases, un ecrivain chacune
-│   │   ├── memory.db                     B01  # la memoire durable : une note par tour
-│   │   └── sessions.db                   B02  # messages, returns, vectors, usage, meta
-│   ├── engine[D07]                                 # le moteur : 16 .sh, dont onze briques jamais executees
-│   │   ├── approval.sh                   E01  # la porte humaine : la signature, le refus, la fenetre
-│   │   ├── args.sh                       E02  # arguments declares vers argv : path enum int bool text, canon des chemins
-│   │   ├── boot.sh                       E03  # la seule ligne sourcee : HERE ROOT LC_ALL, chemins, puis les briques
-│   │   ├── canon.sh                      E04  # le canon : canon_path, loi numero N
-│   │   ├── cap.sh                        E05  # bornes head tail, table returns, state/returns
-│   │   ├── cfg.sh                        E06  # le lecteur unique de la_config : conf_num conf_str conf_has conf_list
-│   │   ├── fs.sh                         E07  # abs_path state_paths tmpfile write_atomic
-│   │   ├── la.sh                         E08  # le maitre : racine, environnement, aiguillage, exec
-│   │   ├── loop.sh                       E09  # la boucle : signal, repos, reprise, marque du tour, etape par etape
-│   │   ├── msg.sh                        E10  # les phrases de texts.yaml : msg msg_str tpn
-│   │   ├── run.sh                        E11  # LA PORTE : valide, execute, met en forme
-│   │   ├── shape.sh                      E12  # la forme unique : status tool line result ts return, et les refus nommes
-│   │   ├── shell.sh                      E13  # LE SHELL : machine + operation + arguments vers une commande
-│   │   ├── skl.sh                        E14  # competence et projet actifs, PERIMETER, permanent, approval_of, is_gated
-│   │   ├── step.sh                       E15  # execute une etape du pipeline : lit turn.json, appelle, ecrit
-│   │   └── tab.sh                        E16  # le registre : block_by_id table_block table_index body_of count, sur la table qu on lui donne
-│   ├── filter[D08]                                 # le filtre de famille
-│   │   └── family.bin                    F01  # le filtre entraine
-│   ├── page[D09]                                   # la page et le telephone
-│   │   └── page.html                     H01  # tout dedans : style, client, flux. Servi sur / et sur /m
-│   ├── programs[D10]                               # les quatre serveurs : jamais sources
-│   │   ├── board.py                      P01  # le tableau et le CLI : une passe, une ligne, un menu, un tour
-│   │   ├── bridge.py                     P02  # le pont : page, API, audio, delegate. Transport seulement
-│   │   ├── tts_daemon.py                 P03  # la voix : sherpa-onnx charge une fois, POST /say vers un wav
-│   │   └── watch.py                      P04  # la veille : onnxruntime, le mot passe, il signe ce qui attend
-│   ├── setup[D11]                                  # l installation
-│   │   ├── install.sh                    S01  # pose units, commande la, bureau, applet, certs
-│   │   └── uninstall.sh                  S02  # retire ce qui a ete pose, garde les donnees
-│   ├── state[D12]                                  # l etat d execution
-│   │   ├── approve                       N01  # le feu vert signe
-│   │   ├── approve.request               N02  # la demande en attente
-│   │   ├── doctor.cache                  N03  # la derniere sortie du docteur
-│   │   ├── reply.stream                  N04  # la reponse qui s ecrit
-│   │   ├── returns[D13]                            # au-dela de la borne
-│   │   ├── say.queue                     N05  # ce qui attend d etre dit
-│   │   ├── second_head.yaml              N06  # le produit de la tete secondaire
-│   │   ├── stop                          N07  # la marque d arret d un tour
-│   │   ├── trace.jsonl                   N08  # le canal vivant
-│   │   ├── turn.json                     N09  # l objet du tour, passe d etape en etape
-│   │   └── turn.pid                      N10  # le pid du tour en cours
-│   └── tools[D14]                                  # les tools, seul catalogue de la porte
-│       ├── doctor[D15]                             # les controles : une famille de tools
-│       │   ├── tool_doctor_data.yaml          # ops bases memory
-│       │   ├── tool_doctor_forms.yaml         # ops forms
-│       │   ├── tool_doctor_keys.yaml          # ops keys : la_config contre les corps
-│       │   ├── tool_doctor_knowledge.yaml     # ops skills active canon
-│       │   ├── tool_doctor_language.yaml      # ops vocab
-│       │   ├── tool_doctor_machine.yaml       # ops residents instruments benches
-│       │   ├── tool_doctor_manifest.yaml      # ops manifest
-│       │   ├── tool_doctor_structure.yaml     # ops root scripts programs
-│       │   ├── tool_doctor_texts.yaml         # ops prompt
-│       │   └── tool_doctor_tools.yaml         # ops table paths
-│       ├── engine[D16]                             # les actions du moteur, en tools
-│       │   ├── registry-engine.yaml      T01  # SON registre : appele par nom, jamais envoye au modele
-│       │   ├── tool_engine_approve.yaml       # la demande, la lecture de l etat, la signature humaine
-│       │   ├── tool_engine_asr.yaml           # l oreille
-│       │   ├── tool_engine_backup.yaml        # la sauvegarde hors disque
-│       │   ├── tool_engine_commands.yaml      # les surfaces de la commande la
-│       │   ├── tool_engine_doctor.yaml        # le diagnostic : short light json all
-│       │   ├── tool_engine_hist.yaml          # sessions.db : init add window apply result
-│       │   ├── tool_engine_install.yaml       # ce qu on pose : units command desktop applet certs
-│       │   ├── tool_engine_models.yaml        # charger le reranker, demarrer, arreter, dire l etat
-│       │   ├── tool_engine_retention.yaml     # applique les bornes : audio returns journaux bases
-│       │   ├── tool_engine_spec.yaml          # ecrit une loi du canon
-│       │   ├── tool_engine_stat.yaml          # lit sessions.db et rend un compte
-│       │   ├── tool_engine_switch.yaml        # change de moteur
-│       │   ├── tool_engine_trace.yaml         # trace.jsonl : une ligne par evenement, kind=step
-│       │   ├── tool_engine_tts.yaml           # la voix
-│       │   ├── tool_engine_tunnel.yaml        # wireguard : serveur et telephone
-│       │   └── tool_engine_update.yaml        # la mise a jour et le retour arriere
-│       ├── <familie>[D17]                          # une famille de tools
-│       │   └── tool_<nom>.yaml                # un corps par ligne : COMMAND ou machine+op, ARGS, TIMEOUT
-│       ├── plan[D18]                               # le plan, en cinq corps
-│       │   ├── tool_plan_add.yaml             # ajouter un point
-│       │   ├── tool_plan_change.yaml          # reecrire un point
-│       │   ├── tool_plan_done.yaml            # marquer un point fait
-│       │   ├── tool_plan_progress.yaml        # marquer un point en cours
-│       │   └── tool_plan_read.yaml            # lire le plan de la competence
-│       ├── registry.yaml                 T02  # id tool family sub_family guardrail description
-│       ├── turn[D19]                               # les huit etapes du tour
-│       │   ├── tool_turn_call.yaml            # l appel au modele : une reprise
-│       │   ├── tool_turn_facts.yaml           # les faits du tour
-│       │   ├── tool_turn_note.yaml            # la note de fin : memoire, compactage, coupe
-│       │   ├── tool_turn_prompt.yaml          # le prompt : tete, protocole, portee, mots
-│       │   ├── tool_turn_reply.yaml           # la reponse : flux, bornes, base
-│       │   ├── tool_turn_scope.yaml           # la portee : vecteurs, cosinus, candidats
-│       │   ├── tool_turn_second.yaml          # la tete secondaire : compose, borne
-│       │   └── tool_turn_tools.yaml           # les outils demandes, un par un, par la porte
-│       └── watch[D20]                              # le juge
-│           └── tool_watch_judge.yaml          # un evenement juge : reveiller ou dormir
-├── .gitignore                        R02  # secret, bases, audio, state, work
-├── projects[D21]                                   # un dossier par projet
-│   ├── .active                           J01  # le projet charge
-│   └── la[D22]                                     # le projet LA
-│       ├── project.yml                   J02  # le projet LA
-│       └── spec.yaml                     J03  # son canon
-├── skills[D23]                                     # une competence par dossier
-│   ├── .active                           K01  # la competence chargee
-│   └── <nom>[D24]                                  # une competence
-│       └── skill.yaml                    K02  # une competence et sa palette
-└── work[D25]                                       # les livraisons de l agent
+├── .gitignore                                           R02
+├── ARCHITECTURE_LA.txt                                  A01
+├── config[D01]                                          D01
+│   ├── applet[D02]                                      D02
+│   │   ├── applet.js                                    G01
+│   │   ├── icons
+│   │   │   ├── la-active.svg                            G05
+│   │   │   ├── la-disabled.svg                          G06
+│   │   │   └── la-unknown.svg                           G07
+│   │   ├── metadata.json                                G02
+│   │   ├── settings-schema.json                         G03
+│   │   └── stylesheet.css                               G04
+│   ├── audio[D03]                                       D03     runtime
+│   ├── certs[D04]                                       D04     runtime
+│   ├── conf[D05]                                        D05
+│   │   ├── .env                                         C01
+│   │   ├── index_la.yaml                                I01
+│   │   ├── install.sh                                   S01
+│   │   ├── la_config.yaml                               C03
+│   │   ├── llama_preset.ini                             C09
+│   │   ├── pipeline.yaml                                C04
+│   │   ├── second.head                                  C05
+│   │   ├── second.yaml                                  C08
+│   │   ├── templates[D27]                               D27
+│   │   │   ├── code_template.yaml                       Q06
+│   │   │   ├── project_template.yml                     Q03
+│   │   │   ├── registry_template.yaml                   Q05
+│   │   │   ├── skill_template.yaml                      Q02
+│   │   │   └── tool_template.yaml                       Q01
+│   │   ├── texts.yaml                                   C06
+│   │   ├── uninstall.sh                                 S02
+│   │   └── units[D26]                                   D26
+│   │       ├── la-asr.service.in                        U02
+│   │       ├── la-audio-purge.service.in                U05
+│   │       ├── la-audio-purge.timer.in                  U06
+│   │       ├── la-dash.service.in                       U04
+│   │       ├── la-models.service.in                     U01
+│   │       └── la-tts.service.in                        U03
+│   ├── data[D06]                                        D06     runtime
+│   ├── engine[D07]                                      D07
+│   │   ├── approval.sh                                  E01
+│   │   ├── args.sh                                      E02
+│   │   ├── boot.sh                                      E03
+│   │   ├── canon.sh                                     E04
+│   │   ├── cap.sh                                       E05
+│   │   ├── cfg.sh                                       E06
+│   │   ├── fs.sh                                        E07
+│   │   ├── la.sh                                        E08
+│   │   ├── loop.sh                                      E09
+│   │   ├── msg.sh                                       E10
+│   │   ├── run.sh                                       E11
+│   │   ├── shape.sh                                     E12
+│   │   ├── shell.sh                                     E13
+│   │   ├── skl.sh                                       E14
+│   │   ├── step.sh                                      E15
+│   │   └── tab.sh                                       E16
+│   ├── filter[D08]                                      D08
+│   │   ├── clean.txt                                    F03
+│   │   ├── families.txt                                 F02
+│   │   ├── family.bin                                   F01
+│   │   ├── family.vec                                   F07
+│   │   ├── family_test.bin                              F08
+│   │   ├── family_test.vec                              F09
+│   │   ├── judge.txt                                    F06
+│   │   ├── learned.txt                                  F04
+│   │   ├── requests.txt                                 F05
+│   │   ├── skills.txt                                   F14
+│   │   ├── skills_judge.txt                             F15
+│   │   ├── test.txt                                     F10
+│   │   ├── test_expected.txt                            F12
+│   │   ├── test_raw.txt                                 F11
+│   │   └── test_seen.txt                                F13
+│   ├── page[D09]                                        D09
+│   │   ├── la.svg                                       H08
+│   │   ├── page.html                                    H01
+│   │   ├── widget-icon.svg                              H09
+│   │   ├── widget-sw.js                                 H06
+│   │   ├── widget.html                                  H05
+│   │   └── widget.webmanifest                           H07
+│   ├── programs[D10]                                    D10
+│   │   ├── board.py                                     P01
+│   │   ├── bridge.py                                    P02
+│   │   ├── dash_server.py                               P07
+│   │   ├── ear.py                                       P08
+│   │   └── tts_daemon.py                                P03
+│   ├── state[D12]                                       D12     runtime
+│   └── tools[D14]                                       D14
+│       ├── 3d[D17]                                      D17
+│       ├── asset_builder[D32]                           D32
+│       ├── blender[D33]                                 D33
+│       ├── comfyui[D34]                                 D34
+│       ├── core[D35]                                    D35
+│       ├── doctor[D15]                                  D15
+│       ├── engine[D16]                                  D16
+│       │   └── registry-engine.yaml                     T01
+│       ├── krita[D36]                                   D36
+│       ├── registry.yaml                                T02
+│       ├── turn[D19]                                    D19
+│       ├── unity[D37]                                   D37
+│       └── watch[D20]                                   D20
+├── DECISION.txt                                         A02
+├── docs[D28]                                            D28
+├── INDEX_A_JOUR.txt                                     A04
+├── LA_android_app[D39]                                  D39
+│   ├── app
+│   │   ├── build.gradle                                 K06
+│   │   ├── proguard-rules.pro                           K07
+│   │   └── src
+│   │       └── main
+│   │           ├── AndroidManifest.xml                  K08
+│   │           ├── assets
+│   │           │   ├── app.css                          K09
+│   │           │   ├── app.js                           K10
+│   │           │   └── index.html                       K11
+│   │           ├── java
+│   │           │   └── fr
+│   │           │       └── la
+│   │           │           └── chat
+│   │           │               ├── Bridge.kt            K12
+│   │           │               ├── ChatActivity.kt      K13
+│   │           │               ├── Clip.kt              K14
+│   │           │               ├── JarvisService.kt     K15
+│   │           │               ├── Recorder.kt          K16
+│   │           │               ├── Speaker.kt           K17
+│   │           │               └── TurnEngine.kt        K18
+│   │           └── res
+│   │               ├── drawable
+│   │               │   ├── ic_launcher_foreground.xml   K19
+│   │               │   ├── ic_mic.xml                   K20
+│   │               │   ├── ov_badge.xml                 K21
+│   │               │   └── ov_bubble_la.xml             K22
+│   │               ├── mipmap-anydpi-v26
+│   │               │   └── ic_launcher.xml              K23
+│   │               ├── raw
+│   │               │   └── bridge_cert.pem              K24
+│   │               ├── values
+│   │               │   ├── colors.xml                   K25
+│   │               │   ├── strings.xml                  K26
+│   │               │   └── themes.xml                   K27
+│   │               └── xml
+│   │                   ├── data_extraction_rules.xml    K28
+│   │                   ├── file_paths.xml               K29
+│   │                   └── network_security_config.xml  K30
+│   ├── build.gradle                                     K01
+│   ├── gradle.properties                                K03
+│   ├── local.properties                                 K04
+│   ├── README.md                                        K05
+│   └── settings.gradle                                  K02
+├── projects[D21]                                        D21
+│   └── la[D22]                                          D22
+│       └── project.yml                                  J02
+├── skills[D23]                                          D23
+└── work[D25]                                            D25
 
-25 directories, 97 files
+46 directories, 109 files, plus what a turn writes in the runtime folders
 
 DOCTOR - one control is a tool          # un controle est un tool, pas un .sh a part
-  family  tools/doctor: nine bodies, seventeen controls in ops       # neuf corps, dix-sept controles
+  family  tools/doctor: twenty bodies, thirty-four controls in ops   # vingt corps, trente-quatre controles
   door    the same run.sh as every tool: one shape, one trace, one cap  # aucun chemin a part
   in      nothing. The LA_* environment only, like a program.        # rien, l environnement suffit
   out     the shape of the door: status ok|note|fail, result, return # une ligne, une forme
@@ -176,6 +208,8 @@ DOCTOR - one control is a tool          # un controle est un tool, pas un .sh a 
   count   engine.doctor walks the family and sums: one fail = red    # le compte, jamais l avis
   order   the registry order of the family, there is no list to keep # l ordre est le registre
   cache   state/doctor.cache, for the applet and the page            # pour qui ne lit pas du texte
+  app     doctor.index tree and apk: the disk against the index, and the apk the source
+          builds against the one the bridge serves                  # la app du telephone, des deux bouts
 
 DOOR - engine/run.sh
   in      run.sh <id|name> [arg ...]           stdin: leftover text  # un id, ou un nom pour le moteur
@@ -195,6 +229,8 @@ APPROVAL - engine/approval.sh, tool engine.approve
   tool    the model may call engine.approve to ask (request) or to read (status)
   human   only a human channel signs: an hmac of the request id with a key of conf/.env
   never   a tool signs for the human. a grant without a valid signature is a refusal
+  label   the caller says who it is: engine, model, human. the channels table says what a label
+          carries (self, gate, capture, approval), read once by run_call  # la table, pas le code
   window  state/approve expires, past the window the tool is refused again
 
 SHELL - engine/shell.sh
@@ -213,43 +249,57 @@ TEXTS - conf/texts.yaml                     # toutes les phrases, une cle, un us
   rule      a key without reader = fail, a reader without key = fail, no french
   where     nowhere else: not in a .sh, not in a .py
 
-TOOLS - family engine                       # seize actions, un corps YAML chacune
-  models     40 l.  load unload status       # charger le reranker, demarrer, arreter, l etat
-  asr        22 l.  start stop status        # l oreille
-  tts        26 l.  start stop status        # la voix
-  retention  64 l.  audio returns logs bases # applique les bornes
-  tunnel     60 l.  up down status qr        # wireguard, serveur et telephone
-  backup     78 l.  now verify restore       # la sauvegarde hors disque
-  update    151 l.  check apply rollback     # la mise a jour, et le retour arriere
-  switch     82 l.  list take                # change de moteur
-  spec       27 l.  add list                 # ecrit une loi du canon
-  stat       28 l.  exchanges tools          # lit sessions.db et rend un compte
-  approve    76 l.  request grant deny status# la demande, la signature, le refus
-  commands  117 l.  board app once cli say turn doctor tool new update help # les surfaces de la
-  install   274 l.  units command desktop applet certs # ce qu on pose sur la machine
-  hist       90 l.  init add window apply result# sessions.db, ce que le tour ecrit
-  trace      60 l.  line                     # trace.jsonl, ce que le tour raconte
-  doctor    418 l.  short light json all     # le diagnostic : parcourt la famille doctor
+TOOLS - family engine                       # vingt-six actions, un corps YAML chacune
+  approve     request,allow,grant,deny,status
+  asr         start,stop,status
+  backup      now,verify,restore
+  board       line,once,json,menu
+  commands    board,once,app,cli,say,turn,doctor,tool,new,update,help,line
+  doctor      short,light,json,all,badge
+  hist        init,add,window,turns,apply,result
+  install     units,command,desktop,applet,certs
+  map         rebuild
+  models      load,unload,status
+  purge       all,list,la-asr,la-tts,la-models,la-bridge
+  reload      build
+  residents   status,up,down,toggle,listen,listen-on,listen-off
+  retention   audio,returns,logs,bases
+  service     models,asr,tts,kws,bridge,dashboard
+  signal      raise,take,list
+  spec        add,list
+  stat        exchanges,tools,cost
+  switch      list,take
+  trace       line,json,tail
+  tts         start,stop,status
+  tunnel      up,down,status,qr
+  turn        cli,dashboard,app
+  uninstall   units,command,desktop,applet,certs
+  update      check,apply,rollback
+  wake        -
+  model says la(g, a). the door reads the body by name. shell.sh runs it, capped
 
-  model says   la(g, a)                      # g = id de la ligne du registre
-  door reads   tools/<family>/tool_<action>.yaml
-  body says    COMMAND: | its own shell code, inline. or machine + op for a machine
-  one carrier  shell.sh takes the block out of the body and runs it, capped
-  door returns status tool line result ts return
-
-TOOLS - family doctor                        # les controles, en tools comme le reste
-  structure   root scripts programs          # racine, cles, syntaxe, programmes, litteraux
-  tools       table paths                    # registre et corps, chemins cites par la table
-  texts       prompt                         # les phrases que lit le modele
-  knowledge   skills active canon            # competence, projet, canon
-  data        bases memory                   # bases, memoire
-  machine     residents instruments benches  # ce qui ecoute, ce qui est appele, les bancs
-  forms       forms                          # formulaires de retour
-  language    vocab                          # aucun mot francais
-  manifest    manifest                       # le disque contre ce fichier
-  keys        keys                           # la_config contre les corps
-  entry       engine.doctor: short light json all                     # le compte et le verdict
-  light       benches skip, programs partial                          # ce que --light epargne
+TOOLS - family doctor                       # vingt corps, trente-quatre controles en ops
+  arguments   arguments
+  data        bases,memory
+  forms       forms
+  index       tree,apk
+  keys        keys,used
+  knowledge   skills,active,canon
+  language    vocab
+  machine     residents,instruments,benches,tunnel
+  manifest    manifest
+  models      router,files,binary,residents
+  pages       pages
+  perms       keys
+  state       orphans
+  structure   root,scripts,programs
+  tags        all
+  texts       prompt
+  tools       table,paths
+  turn        lock
+  vision      all
+  voice       chain
+  entry engine.doctor: the family walked, one fail = red
 
 ENGINE FAMILY - not tools like the others  # la famille ENGINE n est pas une famille comme les autres
   visible   the model never sees them: no head schema, no palette, no permanent   # invisibles au modele
@@ -273,8 +323,8 @@ PIPELINE - conf/pipeline.yaml              # le tour est une suite declaree, pas
 
 SIX LISTS - where each one landed           # les six listes, et leur adresse
   commands    engine.commands, ops are the surfaces of la           # les onze surfaces
-  checks      family doctor, ops are the controls                   # dix-sept controles
-  residents   engine.models asr tts: unit port probe                # ce qui ecoute
+  checks      family doctor, ops are the controls                   # trente-quatre controles
+  residents   engine.residents and units: in the master file         # ce qui ecoute
   retention   engine.retention, ops are the folders                 # les bornes
   units       engine.install: units command desktop applet certs    # ce qu on pose
   env         la_config paths: and ports:, exported by boot.sh      # les LA_*
@@ -292,22 +342,20 @@ CONFIG - conf/la_config.yaml, the names      # tout ce qui se nomme, et qui le p
   names     paths ports models lists caps thresholds                 # des noms, jamais du texte
   families  name, base (root|work|none), registry (model|engine)     # les familles, declarees une fois
   owners    each key: config, read by cfg.sh, or body, carried by the body   # qui possede le fait
-  readers   engine/cfg.sh and programs/laconf.py only. a body never parses la_config
-  why       engine.sh:298 and 367 hold the ten families twice, and doctor.sh greps the source to get them
-                                                                     # ce que la table supprime
+  readers   engine/cfg.sh alone. a program reads os.environ, a body never parses la_config
+  index     conf/index_la.yaml: every folder and every file, its id, its role. the disk answers
+  why       two readers of one fact are two truths, and the doctor counts them
 
-TWO TRUTHS - and the control that separates them   # trois endroits ou deux verites peuvent cohabiter
-  doc vs disk       check_manifest reads the tree lines of this file and compares them to
-                    `tree -a`: a path here without a file, or a file without a path, is
-                    one fail. the runtime dirs are declared in the file, never guessed  # le disque contre le document
-  registry vs body  check_tools: every line has a body, every body has a line; the family of
-                    the body equals its folder; an id is unique; a model line names no
-                    engine body; an engine body carries no numeric id                     # le registre contre les corps
-  config vs body    check_keys: la_config carries owners:. a key owned by config that a body
+TWO TRUTHS - and the controls that separate them   # trois endroits ou deux verites peuvent cohabiter
+  doc vs disk       doctor.index tree: the index names a place the disk lost, or the disk
+                    holds a file no index names. the runtime folders are declared, never guessed
+  registry vs body  doctor.tools: every line has a body, every body has a line; the family of
+                    the body equals its folder; an id is unique; an engine body carries no numeric id
+  config vs body    doctor.keys: la_config carries owners:. a key owned by config that a body
                     reads, or a key owned by body that la_config still carries, is one fail
-                                                                                        # la config contre les corps
+  phone vs source   doctor.index apk: the sha256 of the apk the source builds against the one
+                    the bridge serves. a build left behind is the drift that broke the phone once
   rule    a fact lives at its owner, once. the doctor proves it, nobody argues        # un fait, une adresse
-  cost    three bodies of family doctor: manifest, tools, keys                        # trois controles
 
 ENVIRONMENT GIVEN TO PROGRAMS         # ce qu un programme recoit, et rien de plus
   source  la_config paths: and ports:, exported once by boot.sh     # une seule origine, un seul moment
@@ -319,9 +367,9 @@ ENVIRONMENT GIVEN TO PROGRAMS         # ce qu un programme recoit, et rien de pl
   gain    a new LA_* is one line of la_config, and nothing else moves  # le moteur ne bouge plus
 
 DEPENDENCIES
-  dash coreutils awk sed grep find xargs jq sqlite3 curl        # le socle
-  systemctl --user tailscale git tesseract ffmpeg node          # services et instruments
-  tree                                                          # le corps manifest compare l arbre
+  dash coreutils awk sed grep find xargs jq sqlite3 curl ffmpeg  # le socle
+  systemctl --user tailscale git node                            # services et instruments
+  tree                                                           # doctor.manifest reads the tree
   forbidden: python3 outside programs/, yq, heredoc, eval        # ce qui n entre pas
 
 COMMANDS
@@ -329,3 +377,656 @@ COMMANDS
   la doctor [--short|--light|--json|--all]        # le diagnostic, par la porte
   la tool <id|name> [args]                        # un tool par la porte, par id ou par nom
   la new skill|project|tool <name>                # les gabarits, sans fichier gabarit
+
+LA CONVENTION
+  every name in the engine: the name as the code writes it, and one sentence. before naming
+  anything, read this; a new name enters with a line, a dead name leaves, nothing is annotated.
+  the tables below are the catalogue itself, kept whole.
+
+Two columns: the name as the code writes it, and one sentence. Shell bricks, then the python programs, the shell programs, the applet, the bodies, the families, the services, the state files, the registers, and the addresses the page asks against the ones the bridge serves.
+
+| Name | What it is |
+|---|---|
+| `approval.sh` · `_ap_key` | the human door: a signed go, checked here, never asked by a tool |
+| `approval.sh` · `_ap_digest` | the 32-character digest of a request, the thing the signature covers |
+| `approval.sh` · `_ap_sig` | the hmac of a digest, with the key read from conf/.env |
+| `approval.sh` · `approval_request` | writes the pending request (tool, digest, ts) and answers 3 |
+| `approval.sh` · `approval_ok` | true when a signed grant exists, matches the digest, and still sits inside the window |
+| `approval.sh` · `approval_grant` | turns the pending request into a signed grant; the signature is made here |
+| `approval.sh` · `approval_deny` | sends the pending request to the trash |
+| `approval.sh` · `approval_status` | the tool named in the grant, or the word none |
+| `approval.sh` · `run_approval` | the entry of engine.approve: allow, deny, or status |
+| `args.sh` · `args_word` | args_word <value> : the value as one shell word, quoted for the command |
+| `args.sh` · `args_ok` | args_ok <type> <value> [enum1 enum2 ...] : true when the value fits the type |
+| `args.sh` · `args_bool` | args_bool <value> : the value as 0 or 1 |
+| `args.sh` · `args_path` | args_path <value> : the value as a full path, no symlink taken, no way above the root |
+| `args.sh` · `args_line` | args_line <type> <value> [enum ...] : the word a command receives, refused if it does not fit |
+| `args.sh` · `args_env` | args_env <name> <value> : one assignment line for the command environment |
+| `args.sh` · `args_split` | args_split <decl> : one item per line, name:type or name:type:a,b,c |
+| `args.sh` · `args_decl` | args_decl <decl> <name> : the type of one declared argument, empty when it is not declared |
+| `args.sh` · `args_enum` | args_enum <decl> <name> : the allowed values of one declared argument |
+| `canon.sh` · `canon_file` | canon_file [project] : the canon of the project, spec.yaml when it exists, project.yml otherwise |
+| `canon.sh` · `canon_decl` | canon_decl [project] : the declaration of the project, always project.yml |
+| `canon.sh` · `canon_root` | canon_root [project] : the root the project declares, relative to the home of the machine |
+| `canon.sh` · `canon_get` | canon_get <key> [project] : one field of the declaration |
+| `canon.sh` · `canon_rule` | canon_rule <name> [project] : one value under RULES |
+| `canon.sh` · `canon_law` | canon_law [project] : what the project wants said when a call is refused, one line per entry |
+| `canon.sh` · `canon_summary` | canon_summary [project] : the lines of the project, in the order of their rank |
+| `canon.sh` · `canon_skills` | canon_skills [project] : the skills the project carries, in the order of their rank |
+| `canon.sh` · `canon_path` | the name the document gives this brick |
+| `cap.sh` · `cap_bytes` | cap_bytes <max> : stdin, at most max bytes, the cut is said |
+| `cap.sh` · `cap_head` | cap_head <lines> : the first lines, the rest is said |
+| `cap.sh` · `cap_tail` | cap_tail <lines> : the last lines, the start is said |
+| `cap.sh` · `cap_lines` | cap_lines <max> : stdin cut to max lines, the middle goes first |
+| `cap.sh` · `cap_return` | the bound is read, never written here: a missing key is a refusal, not a default. |
+| `cfg.sh` · `_flat` | flatten the master file into "dotted.key<TAB>value" lines |
+| `cfg.sh` · `conf_str` | conf_str <dotted.key> : the value, empty if absent |
+| `cfg.sh` · `conf_num` | conf_num <dotted.key> : the value if it is a number |
+| `cfg.sh` · `conf_list` | conf_list <dotted.key> : the items, one space between them |
+| `cfg.sh` · `conf_has` | conf_has <dotted.key> : true when the key carries something |
+| `cfg.sh` · `_cfg_tree` | the path is rebuilt from the indentation, so the reader never needs the box drawing. |
+| `cfg.sh` · `cfg_dir` | the path of a directory, read from the tree, then from the world section |
+| `cfg.sh` · `cfg_file` | the path of a file, read from the tree, then from the world section |
+| `cfg.sh` · `_cfg_world` | the world section answers for the dirs outside this one |
+| `cfg.sh` · `_cfg_tree_list` | the id is the third column; the population (a tool body) carries none until the build names it. |
+| `cfg.sh` · `_cfg_here` | one resolver: the tree is written by the document, the root is where it stands. |
+| `cfg.sh` · `cfg_path` | cfg_path <key> : a directory key resolved against the root |
+| `cfg.sh` · `cfg_abs` | cfg_abs <file key> : a file key resolved against the root |
+| `cfg.sh` · `cfg` | cfg <verb> <arg> : the one word the rest of the engine uses |
+| `fs.sh` · `abs_path` | abs_path <path> : the path made whole against ROOT, an absolute one is left alone |
+| `fs.sh` · `state_paths` | state_paths [key] : the state directory, or one of its files when a key is given |
+| `fs.sh` · `tmpfile` | tmpfile [prefix] : a fresh file in the state directory, its name already made |
+| `fs.sh` · `write_atomic` | write_atomic <path> : the text arrives on stdin, the file appears in one move |
+| `fs.sh` · `fs_json` | fs_json <text> : the text escaped for one JSON string, newlines kept as \n |
+| `fs.sh` · `fs_age` | fs_age <path> : seconds since the file was last written, fails when absent |
+| `fs.sh` · `env_get` | env_get <NAME> : one value of the key file, empty when it is not there |
+| `loop.sh` · `_ltr` | the trace belongs to its body: the loop calls it, it never writes the channel |
+| `loop.sh` · `loop_before` | loop_steps : the pipeline split where it repeats: before call, the cycle, after tools |
+| `loop.sh` · `loop_cycle` | the steps from call to tools, the half that talks to the model |
+| `loop.sh` · `loop_after` | the steps after tools, the half that writes and replies |
+| `loop.sh` · `loop_busy` | loop_busy : true when another turn holds the mark |
+| `loop.sh` · `loop_mark` | loop_mark : this shell owns the turn |
+| `loop.sh` · `loop_release` | loop_release : the turn is over, the mark goes |
+| `loop.sh` · `loop_turn` | loop_turn <prompt> : the whole turn |
+| `msg.sh` · `msg` | msg <dotted.key> [arg ...] : the phrase, arguments filled in order |
+| `msg.sh` · `msg_str` | msg_str <dotted.key> : the raw text, no substitution |
+| `msg.sh` · `msg_has` | msg_has <dotted.key> : true when the phrase exists |
+| `run.sh` · `_door_field` | _door_field <body> <KEY> : one scalar of a body, top level or under a section |
+| `run.sh` · `_door_decl` | _door_decl <body> : the declared arguments, name:type:values:stdin:required in their order |
+| `run.sh` · `_door_cmd` | _door_cmd <body> : the command text, unfolded |
+| `run.sh` · `_door_fill` | _door_fill <pattern> <value> : the text on stdin, every pattern replaced, a value carrying newlines kept whole |
+| `run.sh` · `_door_usage` | _door_usage <body> : the shape of one call, its arguments read from that body, nothing invented; what a refusal prints under its phrase. Not cmd_usage: that one lists the commands of the master file |
+| `run.sh` · `_door_arity_fail` | _door_arity_fail <name> <body> <phrase key> [arg ...] : the refusal and, under it, the shape of the call |
+| `run.sh` · `_door_register` | _door_register : the register the caller is allowed to read |
+| `run.sh` · `run_call` | 0 ok, 3 a human must sign, 124 the bound was reached, 1 refused |
+| `run.sh` · `say_err` | say <word ...> : the same line, on stderr, when there is no channel |
+| `run.sh` · `die` | die <phrase key> [arg ...] : the phrase, then stop this shell |
+| `shape.sh` · `shape` | shape <status> <tool> <line> <result> <return> : one line, one object; return is the code the body left, empty when the call never reached it |
+| `shape.sh` · `shape_ok` | shape_ok <tool> <line> <result> [return] : the call went through, with the code it left |
+| `shape.sh` · `shape_fail` | shape_fail <tool> <line> <phrase key> [arg ...] : a named refusal, in the same form |
+| `shape.sh` · `shape_get` | shape_get <line> <field> : one field back, empty when absent |
+| `shape.sh` · `shape_short` | shape_short <line> : the same object, cut for a narrow screen |
+| `shell.sh` · `shell_addr` | shell_addr <machine> <field> : one address of a machine, from the master file |
+| `shell.sh` · `shell_bin` | shell_bin <machine> : the binary of that machine, root+cli when it is split |
+| `shell.sh` · `shell_cmd` | shell_cmd <machine> <operation> [arg ...] : the command line, built from the master file only |
+| `shell.sh` · `shell_run` | shell_run <machine> <operation> [arg ...] : the same line, run, bounded, shaped |
+| `shell.sh` · `krita_url` | krita_url : the krita service, checked before anything is asked of it |
+| `skl.sh` · `skl_skill` | skl_skill : the name of the armed skill, empty when none |
+| `skl.sh` · `skl_project` | skl_project : the name of the armed project, empty when none |
+| `skl.sh` · `skl_arm` | skl_arm <name> : a skill exists before it is armed |
+| `skl.sh` · `skl_disarm` | skl_disarm : no skill, no tool is allowed any more |
+| `skl.sh` · `skl_project_arm` | skl_project_arm <name> : a project exists before it is armed |
+| `skl.sh` · `skl_project_disarm` | skl_project_disarm |
+| `skl.sh` · `skl_toolset` | skl_toolset [name] : the tool ids the skill carries, one per line (the TOOLS map of its skill.yaml) |
+| `skl.sh` · `skl_workspace` | skl_workspace [name] : where the armed skill writes, relative to the project root |
+| `skl.sh` · `skl_in_toolset` | skl_in_toolset <id> : true when the armed skill carries that tool id |
+| `skl.sh` · `skl_permanent` | skl_permanent <name> : allowed whatever the skill, because the master file says so |
+| `skl.sh` · `tool_allowed` | tool_allowed <name> <id> : the two doors at once, the name for the master file, the id for the skill |
+| `skl.sh` · `approval_of` | approval_of <body> : what the body says a human must carry, empty when nothing |
+| `skl.sh` · `is_gated` | is_gated <body> : true when the call waits for a human signature |
+| `run.sh` · `_gate` | the same check at the door, through the row's flag: a label whose row lifts the approval passes, no other does |
+| `la_config` · `channels:` | the table: `self`, `gate`, `capture`, `approval` per label. An undeclared label takes the model row, so a new transport is shut until it is written down |
+| `cfg.sh` · `channel_set` | `channel_set <label>`: the only reader of that table, one pass per call, four flags out (`LA_SELF`, `LA_GATE`, `LA_CAPTURE`, `LA_APPROVAL`). An empty cell takes the safe value; no surface decides a rule by itself |
+| `step.sh` · `_turn_file` | the path of state/turn.json |
+| `step.sh` · `_turn_get` | one field of turn.json, as a jq expression |
+| `step.sh` · `_turn_set` | rewrites turn.json with a jq filter, atomically |
+| `step.sh` · `_turn_set_json` | the same, with a JSON value handed as an argument |
+| `step.sh` · `step_list` | step_list : the order, from the pipeline file. no name is written here. |
+| `step.sh` · `prompt_text` | prompt_text : what the human asked, as one string |
+| `step.sh` · `step_run` | step_run <name> : a step is a body of the family turn, and the door is the only way in |
+| `tab.sh` · `table_block` | the indent of the table does not matter: the anchor is "- id:" wherever it sits. |
+| `tab.sh` · `table_entry` | table_entry <table> <id\|name> : the entry, whether it is given by its id or by its name |
+| `tab.sh` · `table_field` | table_field <table> <id\|name> <key> : one value of one entry, empty when it is not there |
+| `tab.sh` · `table_ids` | table_ids <table> : every id of the table, one per line, block style |
+| `tab.sh` · `cmd_ids` | cmd_ids [file] : the ids of the commands block, one per line |
+| `tab.sh` · `cmd_get` | cmd_get <id> <key> : one field of one command |
+| `tab.sh` · `cmd_has` | cmd_has <name> : true when the name prefixes a declared command |
+| `tab.sh` · `cmd_usage` | cmd_usage : the usage lines the door prints, read from the commands block |
+| `tab.sh` · `cmd_slash` | cmd_slash : the legend of the chat, the first word of every command, once |
+| `tab.sh` · `cmd_new_turn` | cmd_new_turn : archives the turn file, the next turn is born |
+| `tab.sh` · `cmd_run` | cmd_run <word ...> : the longest declared name wins and the rest is its argument; a tool goes through the human door, an act runs inside the engine |
+| `tab.sh` · `table_field_list` | table_field_list <table> <id\|name> <key> : a bracketed list, one word per line |
+| `tab.sh` · `table_keys` | table_keys <table> <id\|name> : the keys of one entry, one per line |
+| `tab.sh` · `table_index` | table_index : the whole table as id\|tool\|family\|guardrail\|description, kept once in TABLE_INDEX |
+| `tab.sh` · `block_by_id` | block_by_id <id> : the block of an id in the table carried by TABLE, one pass, no temp file |
+| `tab.sh` · `body_of` | body_of <id> : what the document calls the block of an id |
+| `tab.sh` · `count` | count <file> : how big it is, "bytes lines" on the standard output |
+| `dash_server.py` · `commands` | the commands block of the master file, in order, read at render |
+| `dash_server.py` · `commands_html` | the bar of buttons, one form per declared command |
+| `dash_server.py` · `commands_legend` | the legend of the chat: first word of every command, once |
+| `dash_server.py` · `run_command` | runs one command through the door, allowlist only |
+| `board.py` · `_port` | an argument read as a port number |
+| `board.py` · `run` | runs a command, returns its exit code and its output |
+| `board.py` · `probe` | the http code of one address |
+| `board.py` · `alive` | true when the unit of a model answers |
+| `board.py` · `weight` | a value kept inside its bounds |
+| `board.py` · `line` | one line of the board, drawn by its nested build |
+| `board.py` · `build (l.89)` | builds the coloured segments of that line |
+| `board.py` · `read_residents` | the units that listen, with their port |
+| `board.py` · `_rss_port` | the port of one resident, read from its state file |
+| `board.py` · `read_appoints` | what waits for a human |
+| `board.py` · `read_approval` | the signed grant and its age |
+| `board.py` · `read_instruments` | the instruments the bodies may call |
+| `board.py` · `read_registry` | the register, as one map of tools |
+| `board.py` · `_models_in` | the models one family declares |
+| `board.py` · `size_of` | the size of a file, in a readable unit |
+| `board.py` · `read_modeles` | the loaded models, and where each one sits |
+| `board.py` · `place (l.260)` | places one model in the table of the two gpus |
+| `board.py` · `read_table` | the table of a family, from la_config |
+| `board.py` · `read_canon` | the canon of the active project |
+| `board.py` · `read_doctor` | the verdicts of the doctor |
+| `board.py` · `read_engine` | which engine is active |
+| `board.py` · `read_git` | the git state of the tree |
+| `board.py` · `read_traffic` | the traffic of the bridge |
+| `board.py` · `read_turn` | the turn in progress, from the trace |
+| `board.py` · `read_machine_name` | the name of the machine |
+| `board.py` · `ago` | a timestamp, as an age in words |
+| `board.py` · `control` | calls every reader and returns the data of the board |
+| `board.py` · `sections` | the data of the board, cut into sections |
+| `board.py` · `one_line` | the board on one line, for the applet |
+| `board.py` · `_sigwinch` | marks that the window changed size |
+| `board.py` · `tint` | colours a section title |
+| `board.py` · `frame` | the frame of the board, section by section |
+| `board.py` · `_keys` | reads one key without blocking |
+| `board.py` · `_footer` | the footer of the board |
+| `board.py` · `tui` | the loop of the tui: keys, refresh, quit |
+| `board.py` · `base` | the address of the bridge |
+| `board.py` · `http` | one http call to the bridge |
+| `board.py` · `human_count` | the number of humans the bridge saw |
+| `board.py` · `shorten` | a text cut to the width it gets |
+| `board.py` · `read_state` | the state of the engine, read from the bridge |
+| `board.py` · `snapshot` | the data of the board, on one line |
+| `board.py` · `Tailer.__init__` | opens the trace at its end |
+| `board.py` · `Tailer.size` | the size of the trace |
+| `board.py` · `Tailer.new_lines` | the lines added since the last read |
+| `board.py` · `_tool_line` | the trace line of one tool call |
+| `board.py` · `one_turn` | follows one turn through the trace |
+| `board.py` · `Tailer.stream` | the live lines of the trace |
+| `board.py` · `Cli.__init__` | sets up the interface |
+| `board.py` · `Cli.compose` | draws the skeleton of the interface |
+| `board.py` · `Cli.on_mount` | wires the stream widget |
+| `board.py` · `Cli.banner` | prints the banner |
+| `board.py` · `Cli.echo` | writes a line in the stream |
+| `board.py` · `Cli.request` | prints what was asked |
+| `board.py` · `Cli.answer` | prints an answer |
+| `board.py` · `Cli.error` | prints an error |
+| `board.py` · `Cli.state` | refreshes the state panel |
+| `board.py` · `Cli._probe` | asks the bridge for the state |
+| `board.py` · `Cli._show` | keeps the last state |
+| `board.py` · `Cli._render` | paints the state panel |
+| `board.py` · `title (l.966)` | the title of the state panel |
+| `board.py` · `Cli.pump` | moves the trace lines into the stream |
+| `board.py` · `Cli.on_input_submitted` | sends what was typed |
+| `board.py` · `Cli._remember` | keeps the line in the history |
+| `board.py` · `Cli._read_history` | loads the history from disk |
+| `board.py` · `Cli.on_key` | handles tab completion and the shortcuts |
+| `board.py` · `Cli.completer` | the completion of one command |
+| `board.py` · `Cli.command` | runs one command of the cli |
+| `board.py` · `Cli.start_turn` | starts a turn from the cli |
+| `board.py` · `Cli._queue` | queues the text of the turn |
+| `board.py` · `Cli._turn` | follows the turn it started |
+| `board.py` · `Cli._done` | marks the turn finished |
+| `board.py` · `Cli.action_post` | the action: post the input |
+| `board.py` · `Cli.action_last` | the action: show the last turn |
+| `board.py` · `Cli.action_quit` | the action: quit |
+| `board.py` · `cli` | the entry of the tui |
+| `board.py` · `main` | the entry of the program: one line, one pass, or the tui |
+| `board.py` · `title (l.1300)` | the title of a model line |
+| `board.py` · `short (l.1318)` | the short name of a model at the given width |
+| `bridge.py` · `env` | one environment variable, stripped |
+| `bridge.py` · `die` | prints a message and stops |
+| `bridge.py` · `state_file` | the path of one file under the state dir |
+| `bridge.py` · `kind_of` | the content type of a file, from its extension |
+| `bridge.py` · `now` | the time, in iso seconds |
+| `bridge.py` · `delegate` | sends a tool call to the door and returns its answer |
+| `bridge.py` · `Handler.log_message` | writes the http log to stderr |
+| `bridge.py` · `Handler.do_GET` | answers a GET |
+| `bridge.py` · `Handler.do_POST` | answers a POST |
+| `bridge.py` · `Handler.route` | reads the path, then dispatches |
+| `bridge.py` · `Handler.work` | the dispatch itself, path by path |
+| `bridge.py` · `Handler.inside` | true when a name stays inside its root |
+| `bridge.py` · `Handler.extension` | the dispatch of the extra endpoints |
+| `bridge.py` · `Handler.body` | reads the request body |
+| `bridge.py` · `Handler.object` | the body as json |
+| `bridge.py` · `Handler.lines` | the last lines of a file |
+| `bridge.py` · `Handler.json` | answers with json |
+| `bridge.py` · `Handler.file` | answers with a file |
+| `bridge.py` · `Handler.send` | sends the response |
+| `bridge.py` · `main` | checks the environment, then serves |
+| `tts_daemon.py` · `load` | loads the onnx voice once |
+| `tts_daemon.py` · `voice_text` | writes one text as a wav |
+| `tts_daemon.py` · `Service.log_message` | silences the http log |
+| `tts_daemon.py` · `Service.answer` | answers with a payload and its type |
+| `tts_daemon.py` · `Service.do_GET` | answers /health |
+| `tts_daemon.py` · `Service.do_POST` | answers /voice_text |
+| `install.sh` · `conf` | reads one value from la_config for the script |
+| `install.sh` · `value` | prints one value, or its default |
+| `uninstall.sh` | no function: the script runs straight through, it removes what install put |
+| `applet.js` · `ratioOf` | the share of one value in the total |
+| `applet.js` · `parseRows` | reads the short output of the doctor |
+| `applet.js` · `iconOf` | the icon of a verdict |
+| `applet.js` · `main` | paints the applet |
+| `doctor.data` (D001) | the bases and the memory, one writer each |
+| `doctor.forms` (D002) | the forms of a return: their bounds are written and read |
+| `doctor.index` (D011) | the disk against the index, both ways; and the phone side: the apk the source builds against the one the bridge serves |
+| `doctor.keys` (D003) | la_config against the bodies: one owner per fact |
+| `doctor.knowledge` (D004) | the skills, the armed skill and project, the canon |
+| `doctor.language` (D005) | no french word in the machinery, and no dead skill name |
+| `doctor.machine` (D006) | what listens, what is called, and the benches |
+| `doctor.manifest` (D007) | the document against the disk, both ways |
+| `doctor.structure` (D008) | the root, the syntax of the bricks, the syntax and the import of the programs |
+| `doctor.texts` (D009) | the head of the model, the refusals the door needs, and the french left |
+| `doctor.tools` (D010) | the register against the bodies by id, and every path they cite |
+| `engine.approve` (E001) | the human door: request, grant, deny, status |
+| `engine.asr` (E002) | the ear: start, stop, status |
+| `engine.backup` (E003) | the net outside the disk: now, verify, restore |
+| `engine.commands` (E004) | the surfaces of la: board, once, app, cli, say, turn, doctor, tool, new, update, help, line |
+| `engine.doctor` (E005) | runs every control of the doctor family and counts: one fault makes it red |
+| `engine.hist` (E006) | sessions.db: init, add, window, apply, result |
+| `engine.install` (E007) | what is placed on the machine: units, command, desktop, applet, certs |
+| `engine.models` (E008) | the router of the models: load, unload, status |
+| `engine.retention` (E009) | the bounds applied: audio, returns, logs, bases |
+| `engine.spec` (E010) | the canon: add one law, or read it |
+| `engine.stat` (E011) | sessions.db, counted: exchanges, tools |
+| `engine.switch` (E012) | the active provider: list, take |
+| `engine.trace` (E013) | one line in the living channel |
+| `engine.tts` (E014) | the voice: start, stop, status |
+| `engine.tunnel` (E015) | wireguard between the desktop and the phone: up, down, status, qr |
+| `engine.update` (E016) | the project by git: check, apply, rollback |
+| `engine.reload` (E017) | the register rebuilt from the bodies: the body carries its id, the line repeats it |
+| `turn.call` (T001) | one exchange with the provider, bounded |
+| `turn.facts` (T002) | the turn object, born before anything touches it |
+| `turn.note` (T003) | the turn kept: memory, compaction, the cut |
+| `turn.prompt` (T004) | the messages: the head first, then what the human asked |
+| `turn.reply` (T005) | the words of the answer, on the stream and on the board |
+| `turn.scope` (T006) | the tools of this turn and nothing more, as the provider wants them |
+| `turn.second` (T007) | the small head says who speaks |
+| `turn.tools` (T008) | every call the answer named, run through the door, then told back |
+| `watch.judge` (W001) | asks the reranker whether an event of the bridge wakes the session or waits |
+| `family` · `READ` | base root, register model |
+| `family` · `WRITE` | base work, register model |
+| `family` · `MANAGE` | base none, register model |
+| `family` · `REPLY` | base none, register model |
+| `family` · `PLAN` | base none, register model |
+| `family` · `VISION` | base root, register model |
+| `family` · `BLENDER` | base work, register model |
+| `family` · `UNITY` | base work, register model |
+| `family` · `KRITA` | base work, register model |
+| `family` · `IMAGE` | base work, register model |
+| `family` · `ENGINE` | base none, register engine |
+| `family` · `DOCTOR` | base none, register engine |
+| `family` · `WATCH` | base none, register engine |
+| `family` · `TURN` | base none, register engine |
+| `service` · `models` | the unit service: runs llama serve with the local model la_config names |
+| `service` · `asr` | the unit service: runs asr serve |
+| `service` · `tts` | the unit service: runs the tts program |
+| `service` · `dashboard` | the unit service: runs the dashboard program |
+| `state/approve` | the signed go, kept until it expires |
+| `state/approve.request` | the pending request, waiting for a human signature |
+| `state/doctor.cache` | the last doctor output, read by the applet and the page |
+| `state/free_terminal.log` | every command of the free terminal, its time and its text |
+| `state/reply.stream` | the answer as it is being written |
+| `state/second_head.yaml` | the product of the second head |
+| `state/stop` | the stop mark of a turn |
+| `state/trace.jsonl` | the live channel, one line per event |
+| `state/turn.json` | the object of the turn, passed from step to step |
+| `state/turn.pid` | the pid of the turn in progress |
+| `tools/registry.yaml` | the register the model reads, one line per tool it may ask |
+| `tools/engine/registry-engine.yaml` | the register the engine reads, one line per body it calls by name |
+| `dashboard` · `/cmd` | the dashboard runs one command of the master file, name and arg, through the door |
+| `page` · `<!-- the commands -->` | where the dashboard writes the command bar, at render |
+| `page` · `<!-- the commands legend -->` | where the dashboard writes the chat legend, at render |
+| `page` · `/api/agents` | the page asks this address |
+| `page` · `/api/cmd` | the page asks this address |
+| `page` · `/api/config` | the page asks this address |
+| `page` · `/api/head` | the page asks this address |
+| `page` · `/api/history` | the page asks this address |
+| `page` · `/api/live` | the page asks this address |
+| `page` · `/api/user_say` | the page asks this address |
+| `page` · `/api/skill` | the page asks this address |
+| `page` · `/api/skills` | the page asks this address |
+| `page` · `/api/state` | the page asks this address |
+| `page` · `/api/voice_text` | the page asks this address |
+| `page` · `/api/update/apply` | the page asks this address |
+| `page` · `/api/update/check` | the page asks this address |
+| `page` · `/api/version` | the page asks this address |
+| `bridge` · `/apk` | the bridge serves this address |
+| `bridge` · `/audio/` | the bridge serves this address |
+| `bridge` · `/command` | the bridge serves this address |
+| `bridge` · `/delegate` | the bridge serves this address |
+| `bridge` · `/image` | the bridge serves this address |
+| `bridge` · `/m` | the bridge serves this address |
+| `bridge` · `/ping` | the bridge serves this address |
+| `bridge` · `/user_say` | the bridge serves this address |
+| `bridge` · `/spoken` | the bridge serves this address |
+| `bridge` · `/static/` | the bridge serves this address |
+| `bridge` · `/stop` | the bridge serves this address |
+| `bridge` · `/transcribe` | the bridge serves this address: the ear alone, no turn runs |
+| `bridge` · `/user_voice` | the bridge serves this address |
+| `bridge` · `/voice_text` | the bridge serves this address |
+| `bridge` · `/widget` | the bridge serves this address |
+
+## the free terminal
+
+| Name | What it is |
+|---|---|
+| `machine.app.built` | the apk the phone source builds; `doctor.index op=apk` compares it to `machine.app.apk`, the one the bridge serves |
+| `machine.free_terminal.deny` | the calls a free shell may not make: unlink, unlinkat, rmdir, and the three doors of io_uring (setup, enter, register) |
+| `machine.free_terminal.error` | what the kernel answers there: EPERM |
+
+A removal in that mode goes through `gio trash -- <path>` and through nothing else: the trash is a rename, `rm` never is. The refusal is the syscall's, so no binary and no disguise gets past it. `systemd-run` run from inside the shell is a door the filter does not follow: the daughter unit carries no filter at all, and that is assumed, never called a guarantee.
+
+## the agents
+Five agents, named by their name alone: `jarvis` (the principal), `paul`, `albert`, `eleonore`, `claire`.
+No number, no prefix: the name IS the id.
+The name is a file name: lowercase, `a-z 0-9 _ -`, one word. A name that does not fit is refused.
+The chat runs between agents only: no other name ever enters `from` or `to`.
+The LAUNCHER poses the name (`LA_FROM`), the model never chooses it (law 206).
+The name grants nothing by itself: the `channels:` table says what it carries (`self`, `gate`, `capture`, `approval`), and `channel_set` is its only reader. A label nobody wrote down takes the model row.
+`agents.names` in the master file is the ONLY list; `agents.main` names the principal and is one of them.
+
+## the environment
+
+Every `LA_*` name the code carries as a whole word, 99 of them: exported by boot.sh, owned by the door, or read by one body. Two rules: a name is written once, in boot.sh; a program reads the environment and never builds a path.
+
+| Name | What it is |
+|---|---|
+| `LA_ANIMA_CFG` | a knob of the animate-background body: unet, vae, clip, patch, length, force |
+| `LA_ANIMA_CLIP` | a knob of the animate-background body: unet, vae, clip, patch, length, force |
+| `LA_ANIMA_SIDE` | a knob of the animate-background body: unet, vae, clip, patch, length, force |
+| `LA_ANIMA_STEPS` | a knob of the animate-background body: unet, vae, clip, patch, length, force |
+| `LA_ANIMA_FORCE` | a knob of the animate-background body: unet, vae, clip, patch, length, force |
+| `LA_ANIMA_PATCH` | a knob of the animate-background body: unet, vae, clip, patch, length, force |
+| `LA_ANIMA_UNET` | a knob of the animate-background body: unet, vae, clip, patch, length, force |
+| `LA_ANIMA_VAE` | a knob of the animate-background body: unet, vae, clip, patch, length, force |
+| `LA_API_MODEL` | the model name a vision body sends to its provider |
+| `LA_API_URL` | the provider address a vision body calls |
+| `LA_APK_FILE` | the built phone application, served by /apk, empty when nothing was built |
+| `LA_FLATTENER_PORT` | a knob read by the body that names it |
+| `LA_FLATTENER_THRESHOLD` | a knob of the colouring bodies: the flatting endpoint or its threshold |
+| `LA_APPROVED` | set by the door when a human signed: the body may pass the approval gate |
+| `LA_APPROVE_KEY` | a knob read by the body that names it |
+| `LA_ASR_PORT` | where the ear listens, for a body that calls it |
+| `LA_AUDIO` | the folder of the spoken words and the recorded voice |
+| `LA_BENCHES` | a knob read by the body that names it |
+| `LA_CAP_BYTES` | the byte bound of one return, from limits.return_bytes |
+| `LA_CAP_LINES` | the line bound of one return, from limits.engine_lines |
+| `LA_COMFY_CFG` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_CKPT` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_CLIP_VISION` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_CONTROLNET` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_CONTROLNET_POSE` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_SAMPLER` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_STEPS` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_FORCE` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_FORCE_CONTROLNET` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_FORCE_LORA` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_FORCE_LORA_CLIP` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_FORCE_POSE` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_HEIGHT` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_IPA` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_IPA_COSTUME` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_IPA_FACE` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_WIDTH` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_LORA` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_SCHEDULER` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_RESOLUTION` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_SIZE` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_UPSCALE` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_WEIGHT` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_WEIGHT_COSTUME` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_COMFY_WEIGHT_FACE` | a knob of the comfyui body that reads it: checkpoint, clip, controlnet, steps, size, weights or a force flag |
+| `LA_CONF` | the config folder of the tree, as boot.sh reads it |
+| `LA_CONFIG` | the master file itself, la_config.yaml: what a body or a program reads instead of a path |
+| `LA_DATA` | the data folder: the bases and the measurement files |
+| `LA_DDGR` | the search endpoint a body calls instead of a browser |
+| `LA_DEPTH` | how deep a delegate body already is |
+| `LA_DIR` | the folder of the bricks, the engine folder, where boot.sh and run.sh stand |
+| `LA_DOOR_ENTERED` | 1 once run.sh has entered: boot.sh sources it, so a second entry would be a loop |
+| `LA_EMBED_MODEL` | the embedding model the memory bodies ask for |
+| `LA_EMBED_PORT` | where the embedding model listens, for the memory bodies |
+| `LA_ENV` | the key file, conf/.env: the secrets never travel by argument |
+| `LA_FROM` | the label the launcher poses: engine, model, human. It carries only what the `channels:` row says, read once by `run_call` |
+| `LA_GGUF_DIR` | where the quantised models sit, for a body that reads one |
+| `LA_HOME` | the home of the machine, used only by the installer and the uninstaller |
+| `LA_HOST` | the address the bridge listens on, from machine.host |
+| `LA_INDEX` | index_la.yaml: the file that says where every other file lives |
+| `LA_LANDRUN` | the runner a shell_run body uses |
+| `LA_LID_MODEL` | the language-identification model, for the body that names a language |
+| `LA_LIGHTPANDA` | the proxy address the extract body goes through |
+| `LA_LLAMA_BIN` | the llama.cpp binary a body calls |
+| `LA_LOCAL_PORT` | where the local model listens, for a body that asks it |
+| `LA_LOOP` | the counter of the turn, for a body that reads how many calls were made |
+| `LA_MAX_TURNS` | the turn bound a delegate body hands down |
+| `LA_MEMORY_DB` | memory.db, what was learned, kept apart from the conversation |
+| `LA_NOTE_BYTES` | the size bound of one note |
+| `LA_NOTE_FILE` | where a sticky note body keeps its note |
+| `LA_PAGE` | the folder of the page: page.html, the icons, the service worker |
+| `LA_PORT_ASR` | the port of the ear, from units.asr.port |
+| `LA_PORT_BRIDGE` | the port of the bridge, from ports.bridge |
+| `LA_PORT_MODELS` | the port of the model resident, from units.models.port |
+| `LA_PORT_DASH` | the port the dashboard unit answers on, from ports.dash: the same server as the bridge |
+| `LA_PORT_TLS` | the port the phone reaches over tls, from ports.tls: served only when the certificate exists |
+| `LA_PORT_TTS` | the port of the voice resident, from units.tts.port |
+| `LA_REPLY_STREAM` | the answer as it is being written, before the turn is closed |
+| `LA_RETURNS` | the folder of the returns: what a tool gave, kept out of the conversation |
+| `LA_RETURN_DB` | the base of the returns, for the body that reads one back |
+| `LA_ROOT` | the root of the tree, exported once by boot.sh: every other path hangs from it |
+| `LA_SESSIONS_DB` | sessions.db, the conversation: one row per message |
+| `LA_SKILLSET` | the tool ids the armed skill carries, as one string |
+| `LA_STATE` | the state folder: marks, queues, the turn object |
+| `LA_STATE_PROJECT` | the project armed for this turn, as a state file |
+| `LA_STATE_SKILL` | the skill armed for this turn, as a state file |
+| `LA_STOP_FILE` | the stop mark, for a body that must not run after a stop |
+| `LA_TABLE` | the register a table body reads |
+| `LA_TOOL` | the door itself, la.sh: the one way in, for the model and for the bridge |
+| `LA_TRACE` | trace.jsonl, the living channel: one line per event of the turn |
+| `LA_TTS_MODEL` | the onnx voice of the resident, read by tts_daemon.py |
+| `LA_TTS_PORT` | the port the voice resident binds, the same number as LA_PORT_TTS |
+| `LA_TTS_SID` | the speaker id of the voice, read by tts_daemon.py |
+| `LA_TTS_THREADS` | how many threads the voice resident gives to onnx |
+| `LA_UNITY_CLI` | the unity command line, on the machine that owns the editor, for the 482 unity bodies |
+| `LA_UNITY_MCP` | the unity mcp endpoint, for the coplay bodies |
+| `LA_VISION_MODEL` | the vision model a body loads |
+| `LA_WRITEABLE_WORKSPACE` | the workspace of the armed skill or project: where a write lands |
+
+
+DECISION.txt                                        root: ~/Documents/VM_LA
+2026-10-20
+Recueil des decisions d architecture et de yamlisation, telles qu elles ont ete
+prononcees. Une ligne = une decision. La parole de Moussa est citee entre guillemets.
+Quand deux decisions se contredisent, la plus recente gagne et l ancienne est notee.
+
+
+1. LE MAITRE
+
+  1.1  ARCHITECTURE_LA.txt est le maitre. Aucun fichier, aucun dossier ne peut
+       exister s il n y est pas nomme.
+       "1 ARCHITECTURE_LA est le maitre aucun fichier ne peut exister s il n est
+       pas dedans" (2026-10-20)
+
+  1.2  Le maitre est verrouille en lecture seule, par sudo, pour que l agent ne
+       puisse plus le toucher : chown root, chmod 444, chattr +i.
+
+  1.3  la_config est une copie conforme du maitre, jamais une addition :
+       memes dossiers, memes ids, meme ordre. Un chemin dans la_config que le
+       document ne nomme pas est un mensonge.
+
+  1.4  Le document dit ce que le moteur doit etre, pas ce qu il est.
+       Anglais a gauche, francais apres le diese.
+
+  1.5  Le document n a pas ete ecrit par moi. Toute modification de l architecture
+       est une decision de Moussa, jamais une initiative de l agent.
+
+
+2. LE MOTEUR
+
+  2.1  Le moteur est un chef d orchestre : il ne fait rien lui-meme, il appelle
+       dans l ordre les corps dont il a besoin. Une etape qui tombe arrete le tour.
+       Le modele ne voit jamais ces corps.
+       "le moteur deviens un appeleur de tools il est un chef d orchestre selon moi.
+       maintenant est ce que c est viable?"
+
+  2.2  Viabilite mesuree avant de s engager : un fork dash coute 2 ms, un passage
+       par la porte environ 15 ms, 32 appels par tour environ 0,5 s. C est tenable.
+
+  2.3  Trois conditions, ou le chef d orchestre n existe pas :
+         caller  la porte sait qui appelle (le modele, ou le moteur)
+         state   state/turn.json, deux processus ne partagent aucune variable
+         trace   un kind par appel, sinon le canal vivant devient illisible
+
+  2.4  Seize fichiers .sh, un par metier, 200 lignes maximum.
+       Rien ne s execute au source, sauf engine/la.sh.
+
+  2.5  Une seule porte vers le shell : engine/run.sh <id> [args].
+
+  2.6  Deux registres, deux canaux : le modele lit le sien, le moteur lit le sien.
+       Le canal du modele ne grossit pas quand le moteur s ajoute une action.
+
+  2.7  engine/shell.sh seul batit une ligne de commande.
+
+  2.8  Pas de python, pas de heredoc, pas de eval dans un .sh. Le shell reste du shell.
+
+  2.9  Aucun litteral : chemin, port, unite, modele, liste, borne, seuil.
+       Chaque liste est une table de conf/.
+
+  2.10 Chaque fait a un proprietaire : la_config dit de chaque cle si elle est
+       config ou corps.
+
+  2.11 Chaque fichier d etat, journal, base a un seul ecrivain, et une borne.
+
+  2.12 Python ne lit que l environnement : jamais un YAML, jamais un chemin.
+
+  2.13 Le moteur ne se contourne pas. Un tool ne peut pas approuver un tool : il
+       peut porter une decision qu un humain a signee, la porte verifie la
+       signature (HMAC, fenetre 300 s), jamais la bonne foi de l appelant.
+
+  2.14 Le moteur ne connait aucun instrument : un binaire est atteint par un corps.
+
+  2.15 Un critere, trois questions dans cet ordre :
+         tourne pendant un tour sans que le modele demande  -> brique, sourcee
+         action demandee, parametres, verdict               -> corps YAML
+         le shell ne sait pas l ecrire (http, onnx, sherpa) -> instrument
+
+  2.16 La vision est un tool normal, jamais dans l architecture du moteur.
+
+
+3. LA YAMLISATION
+
+  3.1  Tout ce qui peut etre une donnee est une donnee. Le code qui reste est le
+       strict minimum : lire, valider, executer, mettre en forme.
+       "ok donc finis de tout yamaliser dont les 6 listes oubliees"
+
+  3.2  tools/ ne contient que du YAML. Un corps porte son code, il n y a aucun
+       script a cote de lui.
+
+  3.3  Les dix familles, leur base et leur registre vivent dans la_config
+       (families:). Aucun case, aucune liste dans un .sh.
+
+  3.4  Les adresses vivent dans la_config : unite, port, sonde.
+       Option A retenue : les .in de config/units sont generes depuis la, jamais
+       ecrits a la main.
+
+  3.5  L effet d un tool sur le tour est une propriete de son corps, pas une liste
+       dans loop.sh.
+
+  3.6  Tout ce qui descend du maitre est genere, jamais edite : en-tete
+       "generated", et l indexeur n ecrit jamais dans la_config.
+
+  3.7  la_tools est une projection des corps, pas un registre tenu a la main.
+       Reecrite au build, et sur reload_tools. Pas de daemon : un daemon ne gagne
+       aucune seconde et ajoute une panne silencieuse.
+
+  3.8  Un refus est une cle de conf, jamais une chaine dans un .sh.
+
+  3.9  Les onze briques chaudes restent sourcees : cfg msg fs tab skl canon trace
+       shape args, plus cap. Un corps coute un processus ; on ne paie pas trente
+       processus par tour pour un INSERT.
+
+  3.10 Les tools ne s appellent pas par id : l id sert au modele pour choisir,
+       l appel garde le nom.
+
+  3.11 Quatre tools portent une approbation, pas un de plus.
+       On n ajoute pas d approbation aux tools du moteur.
+
+
+4. LES IDS
+
+  4.1  Un fichier = un id = une place. Aucun fichier sans id.
+       "meme spec.yaml enfaite il ne doit plus y avoir aucun fichier sans id."
+
+  4.2  L id d un dossier est dans son nom : nom[D##]. L id d un fichier est en
+       tete du fichier, et dans le document avant le diese.
+
+  4.3  Un id n est jamais reutilise, jamais renumerote. Une reference est un id,
+       jamais un chemin.
+
+  4.4  Deux mondes, deux comportements :
+         population  les tools. Un id nouveau entre, un id retire sort au build.
+                     Aucun ecart n est une erreur.
+         decision    tout le reste. Un id qui apparait ou disparait leve une erreur.
+
+  4.5  Lettres d aire : R racine, C conf, E engine, P programs, S setup,
+       G applet, H page, B bases, N etat, F filter, Z certs, T registre,
+       K skill, J projet, D dossier. Le corps d un tool garde son numero.
+
+  4.6  Le controle va dans les deux sens : declare sans disque, disque sans id.
+
+
+5. LA METHODE
+
+  5.1  Rien ne s efface : gio trash. Jamais rm.
+
+  5.2  Un fichier = un metier. 200 lignes maximum.
+
+  5.3  Le nouveau code ne contient aucune variable en dur, aucun chemin en dur,
+       et zero mot de francais, meme dans les commentaires.
+       "le nouveau code ne doit contenir aucune variable aucun path en dur, et 0
+       mot de francais meme dans les commentaires"
+
+  5.4  Ce qui marche deja garde son visage : le CLI, le dashboard, l applet, l app
+       Android. On corrige leurs chemins, on ne redessine pas leur layout.
+
+  5.5  Ne pas bricoler. Le doute et l ambiguite imposent une question courte, en
+       texte, avant d agir. Aucune decision sans validation explicite.
+
+  5.6  Un chantier a la fois, une action a la fois, et on attend le retour.
+
+  5.7  Les tools sont un chantier, le moteur en est un autre.
+       "on construit le engine les tools c est autre chose"
+
+
+6. CE QUI RESTE OUVERT
+
+  6.1  Quarante et un corps de tools sont nommes par le document et n existent pas
+       sur le disque (familles doctor, engine, plan, turn, watch). Ils n ont pas
+       d id, faute de corps.
+
+  6.2  Le disque n a pas encore le nom du document : la nouvelle arborescence est
+       dans config_new/, le document dit config[D01]/... Le passage n est pas fait.
+
+  6.3  Des fichiers reels ne sont pas nommes par le document : le dashboard
+       (8 fichiers), huit .py, les units (6), les templates (5), les icones de
+       l applet. Le document tranche : ils n existent pas. Rien n a ete jete.
+
+  6.4  Le build (state/index.stamp) et le reload_tools ne sont pas ecrits.
