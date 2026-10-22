@@ -174,7 +174,7 @@ met où.
 | `read_doctor` (621) | cache docteur | part | `engine.doctor` |
 | `read_traffic` (645) | trafic sessions / journal | part | `engine.stat` / `engine.trace` |
 | `read_turn` (668) · `_tool_line` (1242) · `class Tailer` (1208) | le canal vivant | part | `engine.trace` |
-| `read_state` (1188) | skill / projet armé | part | `skill_list` G051 / `project_list` G033 |
+| `read_state` (1188) | lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) | part | `config_list` G080 (`cfg str <clé>`) |
 | `_read_history` (1499, dans Cli) | historique | part | `engine.hist` |
 | `one_turn` (1258, +`stream`) | un tour | part | `engine.turn` |
 | `control` (734) · `_expand` (866) · `_ratio_of` (879) · `board_object` (915, +`row`) · `sections` (976) · `one_line` (1013) · `snapshot` (1196) | composition du board | reste | — (rendu board) |
@@ -192,6 +192,11 @@ endpoints »). `engine.trace` écrit le canal (agent) et le board en lit la queu
 `project_list` listent pour l'agent ET pour l'app. **Mais** chaque cible doit être la
 **bonne** fonction : `_db_query` (SQL brut sur `sessions.db`) va dans `engine.stat`,
 **pas** dans `search_sessions` (recherche sémantique, outil d'agent). Corrigé.
+
+Et `read_state` n'est **pas** un `skill_list`/`project_list` : il lit la 1ʳᵉ ligne d'un
+chemin de config (`skill_active`, `project_active`) — c'est une **lecture de config**,
+donc il rejoint `config_list` G080, exactement comme `class laconf` et `dotted`. Un seul
+domicile, jamais deux.
 
 ## 6. Route par route — les trois sorties, et l'outil existant qui y répond
 
