@@ -4,23 +4,42 @@ path: "{{path}}"            # le chemin du projet : ou il vit
 date: "{{date}}"
 tags: ["{{name}}"]           # un tag vu dans le prompt CHARGE le projet
 
-RULES:                       # l'etat du projet, et ce qui le borne
+RULES:                       # les regles du projet : son etat, ses skills, sa pile
   enabled: true              # le projet est-il actif ? (true | false)
   writeable: true            # le fichier est-il editable ? (true | false)
-  # ... deux ou trois autres choses a decider (a completer)
+  skillset:                  # LE JEU DE SKILLS : tout ce qui s ouvre pour ce projet, et rien d autre
+    1: "skill-un"
+    2: "skill-deux"
+  stack: "..."               # la pile technique et ses dependances, en une ligne
 
-SUMMARY:                     # LE CONTEXTE : ce qu'est ce projet (10 LIGNES MAXIMUM)
+SUMMARY:                     # LE CONTEXTE : ce qu est ce projet (10 LIGNES MAXIMUM)
   101: "..."
   102: "..."
 
+SPEC:                        # LE CANON : dans le manifeste, il n y a plus de fichier a part
+  version: "1.0.0"
+  cap:
+    lines_per_section: 100
+    chars_per_line: 100
+  "section 1":               # l echafaudage et le physique : comment le projet est pose, ou il vit
+    100: "..."
+  "section 2":               # le demon et le watcher, la synchronisation, le disque
+    200: "..."
+  "section 3":               # la documentation : ce qui est ecrit, ou, et pour qui
+    300: "..."
+  "section 4":               # la convention : les regles de nommage et de forme
+    400: "..."
+  "section 5":               # les roles du projet : qui fait quoi
+    500: "..."
+  "section 6":               # les flux de donnees, la pile technique et ses dependances
+    600: "..."
+  "section 7":               # les boucles de retroaction : l append force, la lecture
+    700: "..."
+  # section 8, section 9, section 10 ... : libres, si le projet en a besoin, numerotees a la suite
+
 PROJECT_PLAN:                # LE GRAND PLAN : le chantier du projet, ecrit a son chargement
   400: "PLAN {{name}} : <ce que le projet doit produire>"   # le but
-  401: "[progress] <le point en cours>"                    # le premier point OUVRE en progress
-  402: "[todo] <un point pas commence>"                     # les etats : todo, progress, complete
-  # Il se lit et s ecrit avec les corps plan.* de tools/plan/ : meme forme, deux lignes par tache.
-  # Il ne s efface jamais tout seul : un grand plan se CHANGE (change_big_todo), avec validation.
-
-SKILLS:                      # LE TOOLSET DU PROJET = une liste de SKILLS (pas des tools !)
-  1: "skill-un"              # une ligne, un nom de skill que le projet ouvre
-  2: "skill-deux"
-  3: "skill-trois"
+  401: "[in_progress] <le point en cours>"                  # le premier point OUVRE en in_progress
+  402: "[todo] <un point pas commence>"                     # les etats : todo, in_progress, completed
+  # Il se lit et s ecrit avec big_todo, update_big_todo, change_big_todo.
+  # Il s efface a sa derniere etape ; un grand plan se CHANGE, avec validation.

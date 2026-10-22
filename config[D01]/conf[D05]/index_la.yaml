@@ -99,18 +99,15 @@ files:
   - {id: "H08", name: "la.svg", role: "the page icon"}
   - {id: "H09", name: "widget-icon.svg", role: "the phone icon, served on /icon.svg"}
   - {id: "I01", name: "index_la.yaml", role: "this document: every folder, every file, its id, its role. the doctor checks the disk against it"}
-  - {id: "J02", name: "project.yml", role: "the project LA"}
-  - {id: "J03", name: "spec.yaml", role: "its canon"}
+  - {id: "J02", name: "project.yml", role: "the project LA, and inside it its canon"}
   - {id: "N01", name: "approve", role: "the signed go: tool, digest, ts, sig"}
   - {id: "N02", name: "approve.request", role: "the pending request, waiting for a human signature"}
   - {id: "N03", name: "doctor.cache", role: "the last count the doctor wrote"}
   - {id: "N04", name: "reply.stream", role: "the answer as it is being written"}
-  - {id: "N05", name: "say.queue", role: "what waits to be said"}
   - {id: "N06", name: "second_head.yaml", role: "the product of the second head"}
   - {id: "N07", name: "stop", role: "the stop mark of a turn"}
   - {id: "N08", name: "trace.jsonl", role: "the live channel, one line per event"}
   - {id: "N09", name: "turn.pid", role: "the pid of the turn in progress"}
-  - {id: "N11", name: "say.done", role: "what was already said, one line each"}
   - {id: "N12", name: "signal", role: "task signals: name and seconds, one line each"}
   - {id: "N13", name: "phone.conf", role: "the wireguard profile of the phone"}
   - {id: "N14", name: "phone.png", role: "the qr image the phone scans"}
@@ -120,7 +117,7 @@ files:
   - {id: "P02", name: "bridge.py", role: "the bridge: API, audio, delegate. transport only, it decides nothing"}
   - {id: "P07", name: "dash_server.py", role: "the dashboard's own door: the page only, it exits when nobody looks"}
   - {id: "P08", name: "kws.py", role: "the ear: sherpa-onnx keyword spotter on the microphone, a heard command opens the door"}
-  - {id: "P03", name: "tts_daemon.py", role: "the voice: sherpa-onnx loads once, POST /say answers a wav"}
+  - {id: "P03", name: "tts_daemon.py", role: "the voice: sherpa-onnx loads once, POST /voice_text answers a wav"}
   - {id: "P04", name: "watch.py", role: "the watch: onnxruntime, the word passes, it signs what waits"}
   - {id: "Q01", name: "tool_template.yaml", role: "the gabarit of a tool body"}
   - {id: "Q02", name: "skill_template.yaml", role: "the gabarit of a skill"}

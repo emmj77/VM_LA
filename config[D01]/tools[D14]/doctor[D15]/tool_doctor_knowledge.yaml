@@ -42,15 +42,20 @@ COMMAND: |
     [ -n "$_p" ] && printf 'ok the armed project is %s\n' "$_p" || printf 'ok no armed project\n'
     ;;
   canon)
-    _ap=$(cfg str active_project 2>/dev/null)
-    [ -n "$_ap" ] || { printf 'ok no armed project, so no canon to hold\n'; exit 0; }
-    _f=$(canon_path 2>/dev/null) || { printf 'FAULT no canon: the armed project names none\n'; exit 0; }
+    _st=$(cfg abs project_active 2>/dev/null) && [ -r "$_st" ] || { printf 'ok no armed project, so no canon to hold\n'; exit 0; }
+    _ap=$(head -n 1 -- "$_st")
+    _pd=$(project_dir "$_ap" 2>/dev/null) || { printf 'FAULT the armed project %s names no folder\n' "$_ap"; exit 0; }
+    _f="$_pd/project.yml"
+    [ -f "$_f" ] || { printf 'FAULT the armed project %s names no manifest\n' "$_ap"; exit 0; }
     [ -s "$_f" ] || { printf 'FAULT the canon %s is empty\n' "${_f#$ROOT/}"; exit 0; }
-    _d=$(grep -oE '^  [0-9]+:' "$_f" | sort | uniq -d | tr '\n' ' ')
+    _spec=$(awk '/^SPEC:/ { f = 1 ; next } f && /^[^ \t]/ { f = 0 } f' "$_f")
+    [ -n "$_spec" ] || { printf 'FAULT the canon carries no SPEC zone\n'; exit 0; }
+    _d=$(printf '%s\n' "$_spec" | grep -oE '^    [0-9]+:' | sort | uniq -d | tr '\n' ' ')
     [ -z "$_d" ] || printf 'FAULT law used twice:%s\n' "$_d"
-    _l=$(awk 'length($0) > 100' "$_f" | wc -l | tr -d ' ')
+    _l=$(printf '%s\n' "$_spec" | awk '{ l = $0 ; sub(/^[ \t]+/, "", l) ; if (length(l) > 100) n++ } END { print n + 0 }')
     [ "$_l" = 0 ] || printf 'FAULT %s line(s) of the canon pass 100 bytes\n' "$_l"
-    printf 'ok canon %s, %s law(s)\n' "${_f#$ROOT/}" "$(grep -cE '^  [0-9]+:' "$_f")"
+    printf 'ok canon %s, %s law(s)\n' "${_f#$ROOT/}" "$(printf '%s\n' "$_spec" | grep -cE '^    [0-9]+:')"
+
     ;;
   *) printf 'FAULT unknown op %s\n' "$_op" ;;
   esac

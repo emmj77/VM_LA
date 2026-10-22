@@ -55,7 +55,7 @@ COMMAND: |
     if [ -n "$_pr" ]; then
       _pf=$(skl_big_file 2>/dev/null)
       if [ -n "$_pf" ]; then
-        awk '/^RULES:/ { f = 1 ; next } f && /^[^ \t]/ { f = 0 } f && /[a-z]/ && !/^[ \t]*#/ { sub(/^[ \t]+/, "") ; print "rule : " $0 }' "$_pf" | head -n 6
+        awk '/^RULES:/ { f = 1 ; next } f && /^[^ \t]/ { f = 0 } !f { next } /^  skillset:/ { sk = 1 ; next } sk && /^  [^ ]/ { sk = 0 } sk { next } /[a-z]/ && !/^[ \t]*#/ && !/: *""? *$/ { sub(/^[ \t]+/, "") ; print "rule : " $0 }' "$_pf" | head -n 6
       fi
     fi
     printf '== THE ACTIVE SKILL ==\n'

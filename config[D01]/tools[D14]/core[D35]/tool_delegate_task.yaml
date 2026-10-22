@@ -64,7 +64,7 @@ COMMAND: |
     PNAME=$(sed -n '1p' "$PAF" 2>/dev/null | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
     DECL=''
     if [ -n "$PNAME" ]; then
-      DECL=$(sed -n '/^SKILLS:/,/^[A-Z_]/p' "$ROOT/projects/$PNAME/project.yml" 2>/dev/null \
+      DECL=$(sed -n '/^  skillset:/,/^[^[:space:]]/p' "$ROOT/projects/$PNAME/project.yml" 2>/dev/null \
              | sed -n 's/^  [0-9][0-9]*:[[:space:]]*"\([a-z0-9_-]*\)".*/\1/p')
     fi
     if [ -z "$DECL" ]; then

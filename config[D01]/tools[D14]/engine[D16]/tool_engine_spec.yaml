@@ -19,9 +19,9 @@ COMMAND: |
   [ -f "$_f" ] || { printf 'FAULT the canon is not on the disk\n'; exit 0; }
   case $_op in
   list)
-    _n=$(grep -cE '^  [0-9]+:' "$_f")
+    _n=$(grep -cE '^    [0-9]+:' "$_f")
     printf 'ok %s law(s) in %s\n' "$_n" "${_f#$ROOT/}"
-    sed -nE 's/^  ([0-9]+):.*/    \1/p' "$_f" | tail -n 5
+    sed -nE 's/^    ([0-9]+):.*/    \1/p' "$_f" | tail -n 5
     ;;
   add)
     _in=$(cat)
@@ -30,11 +30,11 @@ COMMAND: |
     case $_num in ''|*[!0-9]*) printf 'FAULT add wants the law number then the law, on the input\n'; exit 0 ;; esac
     [ -n "$_law" ] || { printf 'FAULT the law is empty\n'; exit 0; }
     _t=$(tmpfile spec) || exit 0
-    awk -v id="$_num" -v new="  $_num: $_law" '
+    awk -v id="$_num" -v new="    $_num: $_law" '
       function num(s) { if (match(s, /[0-9]+/)) return substr(s, RSTART, RLENGTH) + 0; return -1 }
       BEGIN { placed = 0; band = int(id / 100) * 100; inband = 0 }
-      /^SECTION : / { if (inband && !placed) { print new; placed = 1 } inband = 0; print; next }
-      /^  [0-9]+:/ {
+      /^  [A-Za-z0-9_"]+:/ && !/^    / { if (inband && !placed) { print new; placed = 1 } inband = 0; print; next }
+      /^    [0-9]+:/ {
         cur = num($0)
         if (int(cur / 100) * 100 == band) {
           if (!inband) inband = 1

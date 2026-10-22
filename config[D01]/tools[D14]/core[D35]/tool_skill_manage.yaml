@@ -40,7 +40,7 @@ COMMAND: |
   }
   envelope() {   # returns the skills the project ENV_NAME opens, one per line; empty = wide
     [ -n "$ENV_NAME" ] || return 0
-    sed -n '/^SKILLS:/,/^[^[:space:]]/p' "$ROOT/projects/$ENV_NAME/project.yml" \
+    sed -n '/^  skillset:/,/^[^[:space:]]/p' "$ROOT/projects/$ENV_NAME/project.yml" \
       | sed -n 's/^[[:space:]]*-[[:space:]]*//p; s/^[[:space:]]*[0-9][0-9]*:[[:space:]]*//p' \
       | sed -e 's/^"//' -e 's/"$//' | grep -v '^$'
   }

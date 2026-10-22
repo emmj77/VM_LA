@@ -1,26 +1,18 @@
 # id: E04
 # role: the canon. the project says where its root is, what it forbids, and what it wants said instead.
 
-# canon_file [project] : the canon of the project, spec.yaml when it exists, project.yml otherwise
+# canon_file [project] : the canon of the project, in its manifest, zone SPEC
 canon_file() {
-  _n=${1:-$(skl_project)}
-  [ -n "$_n" ] || return 1
-  _d=$(cfg path projects) || return 1
-  if [ -f "$_d/$_n/spec.yaml" ]; then
-    printf '%s\n' "$_d/$_n/spec.yaml"
-  else
-    [ -f "$_d/$_n/project.yml" ] || return 1
-    printf '%s\n' "$_d/$_n/project.yml"
-  fi
+  canon_decl "${1:-}"
 }
 
 # canon_decl [project] : the declaration of the project, always project.yml
 canon_decl() {
   _n=${1:-$(skl_project)}
   [ -n "$_n" ] || return 1
-  _d=$(cfg path projects) || return 1
-  [ -f "$_d/$_n/project.yml" ] || return 1
-  printf '%s\n' "$_d/$_n/project.yml"
+  _p=$(project_dir "$_n") || return 1
+  [ -f "$_p/project.yml" ] || return 1
+  printf '%s\n' "$_p/project.yml"
 }
 
 # canon_root [project] : the root the project declares, relative to the home of the machine
@@ -63,7 +55,7 @@ canon_summary() {
 # canon_skills [project] : the skills the project carries, in the order of their rank
 canon_skills() {
   _f=$(canon_decl "$1") || return 1
-  _flat "$_f" | awk -F'\t' '$1 ~ /^SKILLS\./ { n = $1; sub(/^SKILLS\./, "", n); print n "\t" $2 }' |
+  _flat "$_f" | awk -F'\t' '$1 ~ /^RULES\.skillset\./ { n = $1; sub(/^RULES\.skillset\./, "", n); print n "\t" $2 }' |
     sort -n | cut -f2-
 }
 

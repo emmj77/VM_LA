@@ -7,17 +7,17 @@ tags: ["rav8", "modele-ra", "graphe", "proc", "alpine"]
 RULES:
   enabled: true
   writeable: true
+  skillset:                  # les skills que le projet ouvre, rien d autre
+    1: "search-code"
+    2: "edit-file"
+    3: "git"
+    4: "read-log"
+    5: "manage-processes"
+    6: "computer-debug"
 
 SUMMARY:
   101: "MODELE_RA V8 : la suite de RA (meme depot, Documents/MODELE_RA)."
   102: "..."                  # a completer : ce que V8 change par rapport a V7
 
-SKILLS:
-  1: "search-code"
-  2: "edit-file"
-  3: "git"
-  4: "read-log"
-  5: "manage-processes"
-  6: "computer-debug"
 
 PROJECT_PLAN:                # LE GRAND PLAN (le chantier) ; vide : il s ecrit au chargement

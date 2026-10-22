@@ -7,6 +7,13 @@ tags: ["rav7", "modele-ra", "graphe", "proc", "alpine"]
 RULES:
   enabled: true
   writeable: true
+  skillset:                  # les skills que le projet ouvre, rien d autre
+    1: "search-code"
+    2: "edit-file"
+    3: "git"
+    4: "read-log"
+    5: "manage-processes"
+    6: "computer-debug"
 
 SUMMARY:
   101: "MODELE_RA V7 (RA) : le processeur de lois. RA = une VM ou le graphe EST la loi."
@@ -16,12 +23,5 @@ SUMMARY:
   105: "VM_RA/ = la maison (graphe, tables, rootfs, image) ; RA boote de la."
   106: "Filet : backup/ (tables en anneau) + git (origin emmj77/MODELE_RA)."
 
-SKILLS:
-  1: "search-code"
-  2: "edit-file"
-  3: "git"
-  4: "read-log"
-  5: "manage-processes"
-  6: "computer-debug"
 
 PROJECT_PLAN:                # LE GRAND PLAN (le chantier) ; vide : il s ecrit au chargement

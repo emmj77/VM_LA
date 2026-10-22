@@ -11,7 +11,7 @@ RULES:
   turn: none
   count: false
   paths: write
-DESCRIPTION: "the surfaces of la: board, once, app, cli, say, turn, doctor, tool, new, update, help"
+DESCRIPTION: "the surfaces of la: board, once, app, cli, user_say, doctor, tool, new, update, help"
 COMMAND: |
 
   _op=${1:-help}
@@ -28,8 +28,8 @@ COMMAND: |
     [ -n "$_l" ] || { printf 'FAULT line wants a command on the input\n'; exit 0; }
     _c=${_l%% *}
     case $_c in
-    to)     printf '/%s' "$_l" | run_call engine.commands op=say ;;
-    say)    printf '%s' "${_l#say }" | run_call engine.commands op=say ;;
+    to)     printf '/%s' "$_l" | run_call engine.commands op=user_say ;;
+    user_say) printf '%s' "${_l#user_say }" | run_call engine.commands op=user_say ;;
     update) run_call engine.update "op=$(printf '%s' "${_l#update }" | sed -e 's/^--//' -e 's/^$//')" ;;
     *)
       if cmd_has "$_c"; then set -- $_l; cmd_run "$@"
@@ -85,8 +85,9 @@ COMMAND: |
       loop_turn "$_l"
     done
     ;;
-  say|turn)
-    [ -n "$_in" ] || { printf 'FAULT say wants the text on the input\n'; exit 0; }
+  user_say)
+    [ -n "$_in" ] || { printf 'FAULT user_say wants the text on the input\n'; exit 0; }
+    LA_CHANNEL=cli; LA_INPUT=text; export LA_CHANNEL LA_INPUT
     loop_turn "$_in"
     ;;
   doctor)
@@ -117,7 +118,7 @@ COMMAND: |
       _d=$(cfg path projects) || exit 0
       [ -e "$_d/$_n" ] && { printf 'FAULT the project %s already exists\n' "$_n"; exit 0; }
       mkdir -p "$_d/$_n" || { printf 'FAULT cannot create\n'; exit 0; }
-      printf 'path: "%s"\nSKILLS: [];\nSUMMARY:\n  1: "%s"\nERROR:\n  1: ""\n' "$_n" "$_n" > "$_d/$_n/project.yml"
+      printf 'path: "%s"\nRULES:\n  enabled: true\n  writeable: true\n  skillset: {}\n  stack: ""\nSPEC:\n  version: "1.0.0"\nSUMMARY:\n  1: "%s"\nERROR:\n  1: ""\n' "$_n" "$_n" > "$_d/$_n/project.yml"
       printf 'ok project %s written\n' "${_d#$ROOT/}/$_n"
       ;;
     tool)
@@ -137,7 +138,7 @@ COMMAND: |
     run_call engine.update "op=$_o"
     ;;
   help|*)
-    printf 'la board | once | app | cli | say <text> | turn <text> | doctor [--short|--light|--json|--all]\n'
+    printf 'la board | once | app | cli | user_say <text> | doctor [--short|--light|--json|--all]\n'
     printf 'la tool <name> [k=v ...] | new skill|project|tool <name> | update [--check|--apply|--rollback] | help\n'
     ;;
   esac

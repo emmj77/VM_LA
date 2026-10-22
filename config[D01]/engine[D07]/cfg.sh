@@ -252,3 +252,16 @@ cfg() {
     *)    return 2 ;;
   esac
 }
+
+# project_dir <name> : the folder of a project, even when its name carries an id (la[D22])
+project_dir() {
+  _n=${1:-}
+  [ -n "$_n" ] || return 1
+  _base=$(cfg path projects) || return 1
+  [ -d "$_base/$_n" ] && { printf '%s\n' "$_base/$_n"; return 0; }
+  for _c in "$_base"/*/; do
+    _b=$(basename -- "$_c") ; _b=${_b%%[*}
+    [ "$_b" = "$_n" ] && { printf '%s\n' "${_c%/}"; return 0; }
+  done
+  return 1
+}

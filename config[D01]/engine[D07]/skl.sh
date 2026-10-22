@@ -361,8 +361,8 @@ skl_plan_advance() {
 skl_big_file() {
   _p=$(skl_project) || return 1
   [ -n "$_p" ] || return 1
-  _d=$(cfg path projects) || return 1
-  _f="$_d/$_p/project.yml"
+  _d=$(project_dir "$_p") || return 1
+  _f="$_d/project.yml"
   [ -r "$_f" ] || return 1
   printf '%s\n' "$_f"
 }
@@ -466,8 +466,8 @@ skl_turn_end() {
 # skl_project_arm <name> : a project exists before it is armed
 skl_project_arm() {
   _n=${1:-}
-  _d=$(cfg path projects) || return 1
-  [ -n "$_n" ] && [ -f "$_d/$_n/project.yml" ] || return 1
+  _p=$(project_dir "$_n") || return 1
+  [ -n "$_n" ] && [ -f "$_p/project.yml" ] || return 1
   printf '%s\n' "$_n" | write_atomic "$(cfg abs project_active)"
 }
 

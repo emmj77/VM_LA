@@ -7,6 +7,12 @@ tags: ["webtoon-destin", "destin", "dessin", "storyboard"]
 RULES:
   enabled: true
   writeable: true
+  skillset:                  # les skills que le projet ouvre, rien d autre
+    1: "comfyui"
+    2: "krita"
+    3: "blender"
+    4: "manipulation-3d"
+    5: "analyze-image"
 
 SUMMARY:
   101: "WEBTOON DESTIN : les planches du webtoon DESTIN."
@@ -14,11 +20,5 @@ SUMMARY:
   103: "Outils du dessin : Krita, ComfyUI (colorier, poser un decor)."
   104: "..."                  # a completer
 
-SKILLS:
-  1: "comfyui"
-  2: "krita"
-  3: "blender"
-  4: "manipulation-3d"
-  5: "analyze-image"
 
 PROJECT_PLAN:                # LE GRAND PLAN (le chantier) ; vide : il s ecrit au chargement
