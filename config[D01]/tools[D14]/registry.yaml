@@ -20487,7 +20487,7 @@
   doc: ""
   guardrail: true
   enabled: true
-  permanent: true
+  permanent: false
   with_skill: false
   with_project: false
   visible: true

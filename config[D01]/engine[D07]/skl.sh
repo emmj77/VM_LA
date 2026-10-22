@@ -286,7 +286,7 @@ skl_gate() {
   {
     table_permanents
     skl_tools_map "$_n" | awk -F'\t' '{ print $2 }'
-    skl_plan_is_closed "$_n" 2>/dev/null || printf 'update_todo\n'
+    skl_plan_is_closed "$_n" 2>/dev/null || printf 'update_todo\ntodo\n'
   } | awk 'NF && !seen[$0]++'
   return 0
 }
@@ -309,7 +309,7 @@ _skl_gate_check() {
   [ -n "$_n" ] || return 1
   _st=$(skl_plan_step "$_n" 2>/dev/null)
   [ $? = 3 ] && return 1
-  skl_plan_is_closed "$_n" 2>/dev/null || { [ "$_t" = update_todo ] && return 0; }
+  skl_plan_is_closed "$_n" 2>/dev/null || { [ "$_t" = update_todo ] && return 0; [ "$_t" = todo ] && return 0; }
   skl_carries "$_t" "" && return 0
   return 1
 }
