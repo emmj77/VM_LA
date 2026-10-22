@@ -294,6 +294,8 @@ skl_gate() {
 _skl_gate_check() {
   _t=${1:-}
   [ -n "$_t" ] || return 1
+  # these three are never refused: they live in the primary head, every turn, closed plan or not
+  case "$_t" in reply|kill_proc|toolset) return 0 ;; esac
   _l=$(skl_lock)
   if [ -n "$_l" ]; then
     printf '%s\n' "$_l" | grep -qxF -- "$_t" && return 0

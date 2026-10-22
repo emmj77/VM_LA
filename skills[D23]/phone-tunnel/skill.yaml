@@ -31,6 +31,11 @@ SKILL_TOOL_SET:
   G066: "tunnel_down"
   G002: "read_file"
 
+  G004: "write_file"
+  G005: "search"
+  G022: "load_doc"
+  G003: "list_dir"
+  G062: "mkdir"
 DOCS:
   300: "# phone-tunnel : a route, not a recipe. bring the phone to the bridge, prove it."
   301: "the tools: tunnel_status (state, address, port, pairs) | tunnel_up (raise wg0, writes a lost profile) | tunnel_down"

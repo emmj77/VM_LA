@@ -21,6 +21,8 @@ SKILL_TOOL_SET:
   G062: "mkdir"
   G015: "todo"
   G016: "update_todo"
+  G002: "read_file"
+  G005: "search"
 DOCS:
   300: "web_search"
 PLAN:

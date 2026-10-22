@@ -29,6 +29,8 @@ SKILL_TOOL_SET:
   X900: "unity_cli_tools_find"
   G015: "todo"
   G016: "update_todo"
+  G004: "write_file"
+  G005: "search"
 DOCS:
   300: "unity"
 PLAN:

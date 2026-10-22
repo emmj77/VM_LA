@@ -15,8 +15,8 @@ DESCRIPTION: "the tools of this turn and nothing more, as the provider wants the
 COMMAND: |
 
   [ -f "$(cfg abs registry)" ] || { printf 'FAULT no register\n' ; exit 0 ; }
-  # reply and kill_proc live in the primary head: always offered, never reranked
-  _base="reply kill_proc"
+  # reply, kill_proc and toolset live in the primary head: always offered, never reranked
+  _base="reply kill_proc toolset"
   _names=$( { printf '%s\n' $_base; skl_gate; } | sort -u | grep -v '^$')
   _arr='[]'
   for _n in $_names; do
