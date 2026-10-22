@@ -12,6 +12,13 @@ unset _la_here
 case ${1:-} in
   -h|--help)  cmd_usage ;;
   engine)     LA_FROM=engine; export LA_FROM; shift; run_call "$@" ;;
-  "")         LA_FROM=engine; export LA_FROM; run_call engine.turn "text=$(cat)" ;;
+  "")
+      LA_FROM=engine; export LA_FROM
+      # a real terminal with no word: the cli takes the screen. a pipe keeps its turn.
+      if [ -t 0 ] && [ -t 1 ]; then
+        cmd_run cli
+      else
+        run_call engine.turn "text=$(cat)"
+      fi ;;
   *)          LA_FROM=human; export LA_FROM; cmd_run "$@" ;;
 esac
