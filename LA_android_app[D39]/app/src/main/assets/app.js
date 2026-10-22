@@ -645,6 +645,23 @@
   }
 
   function applyHistory(h) {
+    // le fil vient deja taille par le pont : une seule source, trois dessins
+    if (h && Array.isArray(h.feed)) {
+      const fed = h.feed.filter(m => (m.text || '').trim()).map(m => ({
+        role: m.role === 'user' ? 'user' : 'bot',
+        text: m.text || '',
+        ts: Date.parse(m.ts) || Date.now(),
+        thinking: m.reasoning ? [m.reasoning] : [],
+        tools: [], code: 0
+      }));
+      const sigF = fed.length + '|' + (fed.length ? (fed[fed.length - 1].role + ':' + (fed[fed.length - 1].text || '').length) : '');
+      if (!fed.length || sigF === lastHistSig) return;
+      lastHistSig = sigF;
+      msgs = fed.slice(-MAX);
+      renderThread();
+      paintToolBand();
+      return;
+    }
     const turns = h && Array.isArray(h.turns) ? h.turns : [];
     const out = [];
     turns.forEach(t => {
@@ -668,7 +685,7 @@
     });
     // an empty answer from the base is not a reason to erase what the phone already holds
     if (!out.length) return;
-    const next = out.slice(-MAX);
+    const next = out.slice(-MAX).sort((a, b) => a.ts - b.ts);   // le fil se lit du plus ancien au plus recent
     const last = next.length ? next[next.length - 1] : null;
     const sig = next.length + '|' + (last ? (last.role + ':' + (last.text || '').length + ':' + last.ts) : '');
     if (sig === lastHistSig) return;   // rien n'a change -> on ne redessine pas (fin des sauts a repetition)

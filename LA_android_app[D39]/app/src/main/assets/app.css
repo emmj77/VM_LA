@@ -952,6 +952,4 @@ details.tools-bundle[open] > summary::before { content: '\25BE  '; }
 
 /* --- la pensee : hors cadre, deux lignes, un clic pour tout lire --- */
 .think-wrap { margin: 2px 0 8px; padding: 0; border: 0; background: none; cursor: pointer; }
-.think-wrap .think-line { color: var(--dim, #7f8b99); font-size: 12px; line-height: 1.45; white-space: pre-wrap;
-  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
-.think-wrap.open .think-line { display: block; -webkit-line-clamp: unset; overflow: visible; }
+.think-wrap .think-line { color: var(--dim, #7f8b99); font-size: 12px; line-height: 1.45; white-space: pre-wrap; }

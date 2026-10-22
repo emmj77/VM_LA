@@ -24,7 +24,8 @@ loop_cycle() {
   _seen=0
   for _s in $(step_list); do
     if [ "$_s" = call ]; then _seen=1; fi
-    if [ "$_seen" = 1 ]; then printf '%s\n' "$_s"; fi
+    # advance is the boundary of the cycle, not a step: no body carries it
+    if [ "$_seen" = 1 ] && [ "$_s" != advance ]; then printf '%s\n' "$_s"; fi
     [ "$_s" = "$_end" ] && break
   done
 }
@@ -104,6 +105,11 @@ loop_turn() {
     [ "$_status" = ok ] || break
     _rep=$(_turn_get '[.calls[] | select(.tool == "reply")] | length')
     [ "${_rep:-0}" -gt 0 ] 2>/dev/null && { trace_line step "stopped: the answer is said"; break; }
+    # the model answered in words instead of calling reply: the words ARE the answer, no second call
+    if [ -n "$(_turn_get '.reply_msg.content // ""')" ]; then
+      trace_line step "stopped: the answer came as text"
+      break
+    fi
     _after=$(_turn_get '.calls | length')
     if [ "$_after" -le "$_before" ]; then
       # the model called nothing: it is asked again for an answer, even empty,

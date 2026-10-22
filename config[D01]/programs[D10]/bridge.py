@@ -209,6 +209,32 @@ def _fields(path):
     return d
 
 
+def feed_of(turns):
+    """le fil, tel que les trois fronts le lisent : du plus ancien au plus recent, la pensee
+    posee sur la reponse qu elle precede. une source, trois dessins."""
+    out = []
+    for t in reversed(list(turns or [])):
+        ts = str(t.get("ts") or "")
+        thought = ""
+        for b in (t.get("thread") or []):
+            txt = " ".join(str((b or {}).get("text") or "").split())
+            if not txt:
+                continue
+            role = str((b or {}).get("role") or "")
+            if role == "user":
+                thought = ""
+                out.append({"role": "user", "text": txt, "ts": ts, "turn": ts, "reasoning": ""})
+                continue
+            if role == "reasoning":
+                thought = (thought + "\n\n" + txt) if thought else txt
+                continue
+            own = str((b or {}).get("reasoning") or "").strip()
+            out.append({"role": "assistant", "text": txt, "ts": ts, "turn": ts,
+                        "reasoning": own or thought})
+            thought = ""
+    return out
+
+
 def approval_view():
     """LA demande en attente, telle que les trois fronts la dessinent : un objet, jamais une
     phrase a decouper. L app, la page et l applet lisent ceci et rien d autre."""
@@ -827,6 +853,9 @@ class Handler(BaseHTTPRequestHandler):
             # the enum arg goes in positionally: "op=turns" is a word the body never knows
             got = cached("hist", 5.0, lambda: as_json(
                 door("engine", "engine.hist", ["op=turns"]), {"turns": []}))
+            # the feed is built HERE, once, and the page, the phone and the terminal draw it
+            if isinstance(got, dict):
+                got["feed"] = feed_of(got.get("turns"))
             return self.json(got)
         if name == "cmd":
             line = str(payload.get("line") or urllib.parse.parse_qs(query).get("line", [""])[0]).strip()

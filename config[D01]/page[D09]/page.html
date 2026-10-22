@@ -916,6 +916,19 @@ function renderFeed() {
     return;
   }
   if (h.error) f.appendChild(bubble('note ko', 'sessions.db', h.error));
+  // le fil est taille par le pont : la page, le telephone et le terminal dessinent le meme
+  if (Array.isArray(h.feed) && h.feed.length) {
+    let cur = null, i = 0;
+    h.feed.forEach((m) => {
+      if (m.turn !== cur) { cur = m.turn; i += 1; f.appendChild(turnSep({ ts: m.turn, n: i }, null)); }
+      if (m.role === 'user') { f.appendChild(bubble('me', 'toi', m.text, null, shortTime(m.ts))); return; }
+      if (m.reasoning) f.appendChild(tblock(m.reasoning));
+      f.appendChild(bubble('la', 'LA', m.text, null, shortTime(m.ts)));
+    });
+    drawLive();
+    f.scrollTop = f.scrollHeight;
+    return;
+  }
   const turns = h.turns || [];
   turns.forEach((t, i) => {
     f.appendChild(turnSep(t, i));
