@@ -91,14 +91,6 @@ def read_head():
     return bridge("/api/head", ttl=2.0)
 
 
-def read_hist(turns=12):
-    return bridge("/api/history?turns=%d" % turns, ttl=2.0)
-
-
-def read_live():
-    return bridge("/api/live", ttl=1.0)
-
-
 def _units(names):
     """l etat d une unite, tel que read_residents l attend : state, pid, memoire"""
     out = {}
@@ -1040,13 +1032,6 @@ def tint(l):
     if l.lstrip().startswith("LA status") and "active" in l:
         return "\033[32m" + l + "\033[0m"
     return l
-
-
-def frame(width, height):
-    out, faults = sections(width)
-    head = ["LA — LE TABLEAU   %s UTC   %d colonnes" % (time.strftime("%H:%M:%S", time.gmtime()),
-                                                        width), ""]
-    return [(l if len(l) <= width else l[:width]) for l in head + out][:height], faults
 
 
 def _keys(fd, delay=0.06):
