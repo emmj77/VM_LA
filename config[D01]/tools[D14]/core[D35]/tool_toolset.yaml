@@ -15,19 +15,11 @@ RULES:
 DESCRIPTION: "shows the COMPLETE list of the tour's tools (the active skill's palette, plus the permanent tools)"
 
 COMMAND: |
-  T="$(cfg path tools)/registry.yaml"
-  W="${TMPDIR:-/tmp}/toolset.$$"
-  skl_gate | grep -v '^$' | sort -u > "$W.names"
-  awk -v NAMES="$W.names" '
-    BEGIN { while ((getline n < NAMES) > 0) keep[n] = 1 }
-    /^- id: /{ i = $3; f = ""; d = "" }
-    /^  tool: /{ t = $2; gsub(/"/, "", t) }
-    /^  family: /{ f = $2 }
-    /^  doc: /{ d = $2 }
-    /^  visible: /{ if (keep[t]) { gsub(/"/, "", d); gsub(/"/, "", f); printf "%s  %s  %s\n", i, t, (d == "" ? f : d) } }' "$T" > "$W"
-  RC=0
-  if [ -s "$W" ]; then cat "$W"; else printf '%s\n' "$(msg no_tool_for_this_turn)" >&2; RC=1; fi
-  rm -f "$W" "$W.names"
-  exit $RC
+  table_index || { printf 'FAULT no register\n' >&2 ; exit 1 ; }
+  _names=$(skl_gate | grep -v '^$' | sort -u)
+  _out=$(printf '%s\n' "$TABLE_INDEX" | awk -F'|' -v N="$_names" '
+    BEGIN { n = split(N, a, "\n") ; for (i = 1 ; i <= n ; i++) if (a[i] != "") keep[a[i]] = 1 }
+    keep[$2] { printf "%s  %s  %s\n", $1, $2, ($5 != "" ? $5 : $3) }')
+  if [ -n "$_out" ]; then printf '%s\n' "$_out" ; else printf '%s\n' "$(msg no_tool_for_this_turn)" >&2 ; exit 1 ; fi
 
 ARGS: []                    # no argument: this tool names itself

@@ -14,7 +14,7 @@ RULES:
 DESCRIPTION: "the tools of this turn and nothing more, as the provider wants them"
 COMMAND: |
 
-  _reg=$(cfg abs registry) || { printf 'FAULT no register\n'; exit 0; }
+  [ -f "$(cfg abs registry)" ] || { printf 'FAULT no register\n' ; exit 0 ; }
   _names=$(skl_gate | sort -u | grep -v '^$')
   _arr='[]'
   for _n in $_names; do
