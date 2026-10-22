@@ -53,9 +53,9 @@ Un corps par fonction : `tools[D14]/<zone>/tool_<nom>.yaml` — `id`, `tool`,
 Les trois sorties ne lisent pas « le moteur » : elles lisent les **trois zones**. Et
 **presque tout ce dont elles ont besoin existe déjà**. Je n'invente plus de « catalogue ».
 
-### 4.1 MOTEUR (engine / E) — 27 outils
+### 4.1 MOTEUR (engine / E) — 26 outils
 
-Le moteur a 26 outils existants (E001..E027, **E018 absent**) **+ `engine.config` (E028, nouveau) = 27**. **Aucun à découper** :
+Le moteur a 25 outils existants (E001..E027, **E018 absent**, `engine.doctor` **déplacé au docteur**) **+ `engine.config` (E028, nouveau) = 26**. **Aucun à découper** :
 chaque famille reste un outil, ses `op` choisissent la cible/le verbe. Seul `board`
 devient mince (il compose, §5).
 
@@ -65,7 +65,6 @@ devient mince (il compose, §5).
 | E002 | engine.asr | l'oreille | start·stop·status |
 | E003 | engine.backup | le filet hors du disque | now·verify·restore |
 | E004 | engine.commands | la porte/dispatch des surfaces (zéro logique) | board·once·app·cli·say·turn·doctor·tool·new·update·help·line |
-| E005 | engine.doctor | le médecin de l'engine (mince) | short·light·json·all·badge |
 | E006 | engine.hist | la base des sessions | init·add·window·turns·apply·result |
 | E007 | engine.install | ce qui est posé | units·command·desktop·applet·certs |
 | E008 | engine.models | le routeur des modèles | load·unload·status |
@@ -89,7 +88,7 @@ devient mince (il compose, §5).
 | E027 | engine.purge | rendre le cache froid | all·list·la-asr·la-tts·la-models·la-bridge |
 | E028 | engine.config | lit une clé de config/état de la machine (NOUVEAU) | str·get |
 
-**Total moteur = 27 outils** (+ `engine.config` E028).
+**Total moteur = 26 outils** (dont `engine.config` E028 ; `engine.doctor` E005 parti au docteur).
 
 ### 4.2 AGENT / CŒUR (core / G) — 71 outils (TOUS existants)
 
@@ -111,7 +110,7 @@ dans le moteur**, ce sont les outils de l'agent/cœur, déjà écrits. Extrait r
 `engine.tunnel` E015 **et** `tunnel_*` G064-72 ; `engine.models` E008 **et**
 `models_status` G010. La doctrine « une seule source » veut en garder un.)
 
-### 4.3 DOCTEUR (doctor / D) — 22 outils (TOUS existants)
+### 4.3 DOCTEUR (doctor / D) — 23 outils (22 existants + `doctor.run`)
 
 La santé et l'inventaire. Voici **tous** les outils du docteur, avec leurs `op` :
 
@@ -139,8 +138,9 @@ La santé et l'inventaire. Voici **tous** les outils du docteur, avec leurs `op`
 | D021 | doctor.turn | le verrou de tour dit la vérité | lock |
 | D016 | doctor.vision | la famille vision : chaque outil enregistré | all |
 | D017 | doctor.voice | la chaîne de voix entière | chain |
+| D024 | doctor.run | l'entrée de la famille : lance tous les contrôles docteur et compte les fautes (ex-`engine.doctor` E005) | short·light·json·all·badge |
 
-**Total docteur = 22 outils.**
+**Total docteur = 23 outils.**
 
 ---
 
@@ -179,7 +179,7 @@ On ne transfère **jamais** une fonction moteur dans un outil qui n'est pas du m
 | `_appoint_rows` (368) · `read_appoints` (394) · `read_approval` (410) · `_approval_gesture` (903) | approbations / geste | part | `engine.approve` (`op=view`) |
 | `_models_in` (510) · `read_modeles` (543, +`place`) | fichiers modèles | part | `doctor.models` (`op=files`) |
 | `read_canon` (598) | canon | part | `doctor.knowledge` (`op=canon`) |
-| `read_doctor` (621) | cache docteur | part | `engine.doctor` |
+| `read_doctor` (621) | cache docteur | part | `doctor.run` (Doctor) |
 | `read_traffic` (645) | trafic sessions / journal | part | `engine.stat` / `engine.trace` |
 | `read_turn` (668) · `_tool_line` (1242) · `class Tailer` (1208) | le canal vivant | part | `engine.trace` |
 | `read_state` (1188) | lit la 1ʳᵉ ligne d'un chemin de config (`skill_active`, `project_active`) | part | `engine.config` (Engine) |
@@ -220,7 +220,7 @@ moteur → Engine, contrôle → Doctor. Jamais l'agent pour du moteur.
 - `/api/config` GET → `config_list` G080 · POST → `config_set` G081
 - `/voice_text` → `voice_text` G025 · `/transcribe` → `transcribe` G021
 - `/api/state` → `engine.board` · `/api/live` → `engine.trace` · `/api/history` → `engine.hist`
-- `/api/doctor` → `engine.doctor` · `/api/residents` → `engine.residents` · `/api/update` → `engine.update`
+- `/api/doctor` → `doctor.run` (Doctor) · `/api/residents` → `engine.residents` · `/api/update` → `engine.update`
 - `/api/approval`·`/approve`·`/deny` → `engine.approve` · `/api/version` → version (à vérifier)
 - `/api/head` → snapshot de tête (à vérifier : sans outil dédié peut-être)
 
@@ -236,7 +236,7 @@ Composition et rendu seulement : `control()`, `board_object()`, `sections()`,
 
 ## 8. Comptes et ordre (on ne l'exécute PAS maintenant)
 
-- **MOTEUR (E) = 27** (`+engine.config` E028) · **AGENT/CŒUR (G) = 71** · **DOCTEUR (D) = 22**.
+- **MOTEUR (E) = 26** (25 + `engine.config` E028) · **AGENT/CŒUR (G) = 71** · **DOCTEUR (D) = 23**.
 - Ce que j'avais compté « 50 » était faux : il n'y a pas 34+9+7. Ce sont trois zones
   réelles, existantes, et les sorties lisent les trois.
 - **À créer au plus : 5 petits** (`engine.config` E028, `agent_list`, `list_commands`, `head_state`, `version`),
