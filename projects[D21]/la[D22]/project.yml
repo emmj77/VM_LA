@@ -23,7 +23,7 @@ RULES:
     12: "web-search"
     14: "search-memory"
     15: "models-bench"
-    16: "speak-text"
+    16: "voice-text"
     17: "delegate-work"
     18: "manage-processes"
     20: "edit-table"

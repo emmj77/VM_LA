@@ -40,6 +40,21 @@ Quand un projet est charge, le modele doit travailler le canon de ce projet. Deu
 2. **a cadence** : `manage-spec` revient tous les N tours tant qu'un projet est charge — la cadence en
    `la_config`, comme `loop.todo_every` et `loop.big_todo_every`.
 
+## Demain — le dispatcher unity
+
+    le docteur le dit maintenant : 211 corps de la famille unity n'ont ni skill ni dispatcher
+    (note 211 body(ies) of unity: no skill opens them and no dispatcher enters the family).
+    upipe_command n'en entre que 44 ; les 167 autres n'ont aucune porte nommée.
+
+Ce qu'il faut : un `unity_command` sur le dessin de `upipe_command` et de `krita_action` —
+l'opération en enum, la connaissance des fiches dans la DESCRIPTION, un seul fichier.
+
+  1. lister les ops et ne garder que les corps dont ARGS est vide et dont le seul mot qui
+     change est l'opération (le même scan que pour les 44 upipe) ;
+  2. prouver le même argv avant et après avec un faux CLI, op par op ;
+  3. les corps qui portent des arguments réels restent des tools : une fusion ne vaut que
+     pour ce qui ne diffère que par un mot.
+
 ## Reste ouvert (ancienne liste, à trancher)
 
 5. **Reranker, autres missions** : au-delà de l'effort, la palette et le réveil.
