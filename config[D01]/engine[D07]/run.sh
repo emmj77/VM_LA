@@ -27,10 +27,14 @@ _door_decl() {
         t = "text"
         if (match($0, /type:[ \t]*[a-z]+/)) { t = substr($0, RSTART, RLENGTH); sub(/.*type:[ \t]*/, "", t) }
         v = ""
-        if (match($0, /values:[ \t]*[^}]+/)) {
+        # two writings of the same field: with brackets, and bare up to the closing brace.
+        # a bare list is never followed by another key on the line (measured on the corpus).
+        if (match($0, /values:[ \t]*\[[^]]*\]/)) {
           v = substr($0, RSTART, RLENGTH); sub(/.*values:[ \t]*/, "", v)
-          gsub(/[ \t]/, "", v); gsub(/[\[\]]/, "", v)
+        } else if (match($0, /values:[ \t]*[^}]+/)) {
+          v = substr($0, RSTART, RLENGTH); sub(/.*values:[ \t]*/, "", v)
         }
+        if (v != "") { gsub(/[ \t]/, "", v); gsub(/[\[\]]/, "", v) }
         f = "0"
         if ($0 ~ /stdin:[ \t]*true/) { f = "1" }
         q = "1"
