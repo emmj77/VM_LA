@@ -135,6 +135,12 @@ run_call() {
   [ -r "$_reg" ] || { shape_fail "$_name" "" refusals.tool_unknown; return 1; }
   # the caller may name the tool or give its id: the register holds both, the id is the identity
   _id=$(table_field "$_reg" "$_name" id)
+  # THE ENGINE MAY NAME A TOOL THE MODEL OWNS: its own register first, then the model one.
+  # the model never gets this road: for it the engine register stays foreign.
+  if [ -z "$_id" ] && [ "$LA_SELF" = yes ]; then
+    _reg2=$(cfg abs registry 2>/dev/null) || _reg2=""
+    [ -r "${_reg2:-/nonexistent}" ] && _id=$(table_field "$_reg2" "$_name" id) && _reg=$_reg2
+  fi
   [ -n "$_id" ] || { shape_fail "$_name" "" refusals.tool_unknown; return 1; }
   # the id names the tool: from here on we hold its name, whatever the caller gave
   _nm=$(table_field "$_reg" "$_id" tool)
