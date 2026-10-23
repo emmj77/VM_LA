@@ -24,6 +24,8 @@ COMMAND: |
     '{id:$id,prompt:$p,agent:$a,skill:$s,project:$j,channel:$c,input:$i,engine:$e,model:$m,started:$t,
       status:"running",family:"agent",calls:[],tokens:0,reply:"",messages:[]}' |
     write_atomic "$(cfg abs turn)"
+  # the turn opens the words: thinking.stream holds THIS turn, never the one before
+  : > "$LA_STATE/thinking.stream"
   trace_line facts "$_id"
   exit 0
 

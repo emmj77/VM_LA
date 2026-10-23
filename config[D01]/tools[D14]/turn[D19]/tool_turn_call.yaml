@@ -23,6 +23,8 @@ COMMAND: |
   _model=$(cfg str "engines.$_al.model")
   _mt=$(cfg num "engines.$_al.max_tokens") || _mt=4096
   _tc=$(cfg str "engines.$_al.tool_choice") || _tc=auto
+  # the engine declares whether it streams: the body obeys, it does not decide
+  _st=$(cfg str "engines.$_al.stream" false) || _st=false
   # the effort of the turn comes from the reranker: it leaves with the request
   _ef=$(jq -r '.effort // ""' "$(cfg abs turn)" 2>/dev/null)
   [ -n "$_ef" ] || _ef=$(cfg str "engines.$_al.reasoning_effort") || _ef=""
@@ -37,7 +39,7 @@ COMMAND: |
   _mb=$(cfg num loop.msg_budget 32000) || _mb=32000
   # -n: with no input jq still runs the filter (without it the body left empty)
   _body=$(jq -nc --arg m "$_model" --argjson mt "$_mt" --arg tc "$_tc" --arg ef "$_ef" \
-    --argjson mx "$_mx" --argjson mb "$_mb" \
+    --argjson mx "$_mx" --argjson mb "$_mb" --argjson st "$_st" \
     --slurpfile t "$(cfg abs turn)" '
       def cap(x): if (x | type) == "string" then x[0:$mx] else x end;
       (($t[0].messages // []) | map(if has("content") then .content |= cap(.) else . end)) as $all
@@ -54,21 +56,56 @@ COMMAND: |
       | {model:$m,messages:($msgs +
         (if (($t[0].retry // 0) > 0)
          then [{role:"user",content:"Answer now with the reply tool. If you have nothing to say, call reply with an empty text."}]
-         else [] end)),max_tokens:$mt,tool_choice:$tc,stream:false}
+         else [] end)),max_tokens:$mt,tool_choice:$tc,stream:$st}
+      + (if $st then {stream_options:{include_usage:true}} else {} end)
       + (if ($t[0].tools // [] | length) > 0 then {tools:$t[0].tools} else {} end)
       + (if $ef != "" then {reasoning_effort:$ef} else {} end)' /dev/null)
-  _resp=$(printf '%s' "$_body" | curl -sS -m "$_to" -H "$_hdr: Bearer $_key" \
-    -H 'Content-Type: application/json' -d @- "$_post" 2>&1)
-  _rc=$?
-  if [ "$_rc" -ne 0 ]; then
+  # THE WORDS LAND AS THEY COME: the answer is read as a stream, the reasoning is written to
+  # thinking.stream at once, and the whole message is rebuilt from the chunks at the end.
+  _rf=$LA_STATE/thinking.stream
+  _nd=$(tmpfile call.stream) || exit 0
+  _raw=$_nd.raw
+  : > "$_rf"; : > "$_nd"; : > "$_raw"; : > "$_nd.rc"
+  { printf '%s' "$_body" | curl -sS -N -m "$_to" -H "$_hdr: Bearer $_key" \
+      -H 'Content-Type: application/json' -H 'Accept: text/event-stream' -d @- "$_post" 2>/dev/null
+    printf '%s' "$?" > "$_nd.rc"; } | while IFS= read -r _l; do
+    case $_l in
+      'data: '*)
+        _p=${_l#data: }
+        [ "$_p" = '[DONE]' ] && continue
+        printf '%s\n' "$_p" >> "$_nd"
+        printf '%s' "$_p" | jq -r '(.choices[0].delta.reasoning_content // .choices[0].delta.reasoning // "")' >> "$_rf" 2>/dev/null
+        ;;
+      *) printf '%s\n' "$_l" >> "$_raw" ;;
+    esac
+  done
+  _rc=$(cat "$_nd.rc" 2>/dev/null); [ -n "$_rc" ] || _rc=0
+  if [ "$_rc" -ne 0 ] && [ ! -s "$_nd" ] && [ ! -s "$_raw" ]; then
     trace_line call "curl rc=$_rc"
     _turn_set '(.status = "failed")'
     printf 'FAULT the provider did not answer (rc=%s)\n' "$_rc"
     exit 0
   fi
-  printf '%s' "$_resp" | jq -e . >/dev/null 2>&1 || { trace_line call "answer is not json"; printf 'FAULT the answer is not json\n'; exit 0; }
-  _msg=$(printf '%s' "$_resp" | jq -c '.choices[0].message // {}')
-  _tk=$(printf '%s' "$_resp" | jq -r '.usage.total_tokens // 0')
+  if [ -s "$_nd" ]; then
+    _tk=$(jq -s '[.[] | .usage.total_tokens // empty] | last // 0' "$_nd" 2>/dev/null)
+    _msg=$(jq -s '
+      { role: "assistant",
+        content: ([.[] | (.choices[0].delta.content // empty)] | join("")),
+        reasoning: ([.[] | (.choices[0].delta.reasoning_content // .choices[0].delta.reasoning // empty)] | join("")),
+        tool_calls: ([.[] | .choices[0].delta.tool_calls[]?]
+          | group_by(.index)
+          | map({ id: ([.[] | .id // empty] | map(select(. != "")) | last // ""),
+                  type: "function",
+                  function: { name: ([.[] | (.function.name // "")] | map(select(. != "")) | last // ""),
+                              arguments: ([.[] | (.function.arguments // "")] | join("")) } })
+          | map(select(.function.name != ""))) }' "$_nd" 2>/dev/null)
+  else
+    # an engine that declares stream:false answers in one piece: the same file, one value
+    _tk=$(jq -s 'last | .usage.total_tokens // 0' "$_raw" 2>/dev/null)
+    _msg=$(jq -s 'last | .choices[0].message // empty' "$_raw" 2>/dev/null)
+  fi
+  [ -n "$_tk" ] || _tk=0
+  case $_msg in ''|null) trace_line call "the stream carried no message"; printf 'FAULT the stream carried no message\n'; exit 0 ;; esac
   _turn_set_json '(.reply_msg = $v)' "$_msg"
   _turn_set "(.tokens = (.tokens + $_tk))"
   trace_line call "$_tk tokens"

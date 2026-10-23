@@ -722,12 +722,20 @@ class Handler(BaseHTTPRequestHandler):
             if p == "/thinking":
                 # the thinking is the model's words, nothing else: the steps of the turn live
                 # in /journal, the tool band. two sources, never mixed in one block.
+                # while the call streams, the words land in thinking.stream; once the call is
+                # done they sit in turn.json. one read, either way, never two.
                 try:
-                    with open(_turn_file("turn.json"), "r", errors="replace") as f:
-                        _t = json.load(f)
-                    _r = str((_t.get("reply_msg") or {}).get("reasoning") or "").strip()
-                except (OSError, ValueError):
+                    with open(state_file("thinking.stream"), "r", errors="replace") as f:
+                        _r = f.read().strip()
+                except OSError:
                     _r = ""
+                if not _r:
+                    try:
+                        with open(_turn_file("turn.json"), "r", errors="replace") as f:
+                            _t = json.load(f)
+                        _r = str((_t.get("reply_msg") or {}).get("reasoning") or "").strip()
+                    except (OSError, ValueError):
+                        _r = ""
                 return self.json([l for l in (_thinking_keep(x) for x in _r.split("\n\n")) if l])
             if p == "/approval":
                 # un OBJET, jamais une phrase : l app le passe a JSONObject et casse sinon.
